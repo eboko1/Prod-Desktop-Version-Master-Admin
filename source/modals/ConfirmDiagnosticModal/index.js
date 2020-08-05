@@ -263,6 +263,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 checked: true,
                 commentary: commentary,
                 status: status,
+                automaticly: true,
             });
         }
         else {
@@ -414,6 +415,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         checked: true,
                         commentary: servicesComment,
                         status: status,
+                        automaticly: true,
                     });
                     serviceArray.push(laborObjCopy);
                 })
@@ -641,11 +643,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         disabled={!data.checked}
                         style={{ width: "100%"}}
                         onSelect={(value, option)=>{
-                            this.addServicesByLaborId(value, index);
-                        }}
-                        onChange={(inputValue)=>{
-                            data.name = inputValue;
-                            this.setState({update: true});
+                            this.addServicesByLaborId(value, index, data.commentary, data.status);
                         }}
                         placeholder={this.props.intl.formatMessage({id: 'order_form_table.service.placeholder'})}
                         getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalServices}`)}
@@ -653,7 +651,11 @@ class ConfirmDiagnosticModal extends React.Component{
                             option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
                         }
                     >
-                        {this.servicesOptions}
+                        {
+                            data.automaticly ?
+                            this.servicesOptions.filter((elem)=>elem.props.product_id == data.productId) :
+                            this.servicesOptions
+                        }
                     </Select>
                 </div>
                 <div style={{ width: '30%' }}>
@@ -688,6 +690,7 @@ class ConfirmDiagnosticModal extends React.Component{
                             onClick={()=>this.deleteServiceRow(index)}
                             type="delete"
                             className={Styles.delete_diagnostic_button}
+                            style={!data.name ? {color: "rgba(0, 0, 0, 0.25)", pointerEvents: "none"} : {}}
                         />
                     </div>
                 </div>
@@ -828,6 +831,7 @@ class ConfirmDiagnosticModal extends React.Component{
                             onClick={()=>this.deleteDetailRow(index)}
                             type="delete"
                             className={Styles.delete_diagnostic_button}
+                            style={!data.name ? {color: "rgba(0, 0, 0, 0.25)", pointerEvents: "none"} : {}}
                         />
                     </div>
                 </div>
@@ -1115,25 +1119,22 @@ class CommentaryButton extends React.Component{
         return (
             <div>
                 {commentary.comment ? (
-                    <Button
-                        className={Styles.commentaryButton}
-                        onClick={this.showModal}
-                        title={this.props.intl.formatMessage({id: "commentary.edit"})}
-                    >
                         <Icon
+                            onClick={this.showModal}
+                            title={this.props.intl.formatMessage({id: "commentary.edit"})}
                             className={Styles.commentaryButtonIcon}
                             style={{color: "rgba(0, 0, 0, 0.65)"}}
-                            type="form"/>
-                    </Button>
+                            type="form"
+                        />
                 ) : (
-                    <Button
-                        disabled={disabled}
-                        type="primary"
-                        onClick={this.showModal}
-                        title={this.props.intl.formatMessage({id: "commentary.add"})}
-                    >
-                        <Icon type="message" />
-                    </Button>
+                        <Icon
+                            style={disabled ? {color: "rgba(0, 0, 0, 0.25)", pointerEvents: "none"} : {}}
+                            type="message"
+                            onClick={()=>{
+                                if(!disabled) this.showModal()
+                            }}
+                            title={this.props.intl.formatMessage({id: "commentary.add"})}
+                        />
                 )}
                 <Modal
                     visible={visible}
