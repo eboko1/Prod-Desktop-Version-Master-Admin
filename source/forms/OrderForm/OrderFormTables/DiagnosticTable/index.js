@@ -516,10 +516,8 @@ class DiagnosticTable extends Component {
                 key:       'status',
                 width:     '15%',
                 render: (text, rowProp) => {
-                    console.log(rowProp)
                     return rowProp.plan ? (
                         <DiagnosticStatusButton
-                            orderId={this.props.orderId}
                             disabled={this.props.disabled || rowProp.disabled}
                             getCurrentDiagnostic={this.getCurrentDiagnostic}
                             status={text}
@@ -1297,8 +1295,9 @@ class DiagnosticStatusButton extends React.Component{
     }
 
     handleClick = async (status) => {
-        const { rowProp, orderId } = this.props;
-        await sendDiagnosticAnswer(orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, status, rowProp.commentary);
+        const { rowProp } = this.props;
+        console.log(rowProp)
+        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, status, rowProp.commentary);
         await this.props.getCurrentDiagnostic();
     }
     render(){
