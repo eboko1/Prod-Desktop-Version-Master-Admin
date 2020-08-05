@@ -495,11 +495,11 @@ class ServicesTable extends Component {
                     comment: labor.comment || {
                         comment: undefined,
                         positions: [],
+                        problems: [],
                     },
                 }
             ]
         }
-        console.log(data)
         if(!isForbidden(this.props.user, permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,)) {
             data.services[0].agreement = labor.agreement;
         }
@@ -549,6 +549,7 @@ class ServicesTable extends Component {
                 comment: {
                     comment: undefined,
                     positions: [],
+                    problems: [],
                 },
                 count: 0,
                 price: 0,

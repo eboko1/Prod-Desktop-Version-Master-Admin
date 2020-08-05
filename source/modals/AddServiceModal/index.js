@@ -257,6 +257,7 @@ class AddServiceModal extends React.Component{
                                 {
                                     comment: undefined,
                                     positions: [],
+                                    problems: [],
                                 }
                             }
                             detail={detail}
@@ -458,10 +459,11 @@ class AddServiceModal extends React.Component{
         this.props.hideModal();
     };
 
-    setComment(comment, positions) {
+    setComment(comment, positions, problems) {
         this.state.mainTableSource[0].comment = {
             comment: comment,
             positions: positions,
+            problems: problems,
         };
         this.state.mainTableSource[0].serviceName = comment || this.state.mainTableSource[0].serviceName;
         this.setState({
@@ -768,6 +770,7 @@ class CommentaryButton extends React.Component{
             currentCommentaryProps: {
                 name: props.detail,
                 positions : [],
+                problems: [],
             },
             currentCommentary: undefined,
         }
@@ -807,7 +810,7 @@ class CommentaryButton extends React.Component{
         this.setState({
             loading: true,
         });
-        this.props.setComment(currentCommentary, currentCommentaryProps.positions);
+        this.props.setComment(currentCommentary, currentCommentaryProps.positions, currentCommentaryProps.problems);
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
         }, 500);
@@ -819,7 +822,8 @@ class CommentaryButton extends React.Component{
             currentCommentary: this.props.detail, 
             currentCommentaryProps: {
                 name: this.props.detail,
-                positions : [],
+                positions: [],
+                problems: [],
             },
         });
     };
@@ -868,6 +872,7 @@ class CommentaryButton extends React.Component{
                 currentCommentaryProps: {
                     name: detail,
                     positions: commentary.positions || [],
+                    problems: commentary.problems || [],
                 }
             })
         }

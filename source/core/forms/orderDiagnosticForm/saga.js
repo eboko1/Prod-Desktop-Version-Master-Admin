@@ -36,10 +36,7 @@ export function getDiagnosticsTemplates(getData) {
 export async function sendDiagnosticAnswer(orderId, templateId, groupId, partId, index, answer, comment) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
-    let params = `/orders/diagnostics/answer?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}&index=${index}&answer=${answer}`;
-
-    if(comment) params += `&comment=${comment}`;
-
+    let params = `/orders/diagnostics/answer`
     url += params;
     try {
         const response = await fetch(url, {
@@ -48,6 +45,15 @@ export async function sendDiagnosticAnswer(orderId, templateId, groupId, partId,
                 'Authorization': token,
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify({
+                orderId: orderId,
+                templateId: templateId,
+                groupId: groupId,
+                partId: partId,
+                index: index,
+                answer: String(answer),
+                comment: {...comment},
+            })
         });
         const result = await response.json();
         if(result.success) {
@@ -141,7 +147,7 @@ export async function deleteDiagnosticProcess(orderId, templateId, groupId, part
 export async function addNewDiagnosticRow(orderId, templateId, groupId, partId, index) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
-    let params = `/orders/diagnostics/part?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}`;
+    let params = `/orders/diagnostics/part?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}&index=${index}`;
 
     url += params;
     try {
