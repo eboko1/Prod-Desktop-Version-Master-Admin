@@ -34,6 +34,7 @@ export function getDiagnosticsTemplates(getData) {
 }
 
 export async function sendDiagnosticAnswer(orderId, templateId, groupId, partId, index, answer, comment) {
+    console.log(orderId)
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/diagnostics/answer`
