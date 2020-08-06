@@ -610,6 +610,7 @@ class DetailProductModal extends React.Component{
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         this.state.mainTableSource[key].detailCode = code;
         this.state.mainTableSource[key].brandId = brandId;
+        this.state.mainTableSource[key].brandName = brand.brandName;
         this.state.mainTableSource[key].storeId = storeId;
         if(this.state.radioValue == 3) {
             this.state.mainTableSource[key].storeGroupId = storeGroupId;
