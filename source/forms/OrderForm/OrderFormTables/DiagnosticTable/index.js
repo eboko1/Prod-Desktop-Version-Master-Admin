@@ -489,6 +489,7 @@ class DiagnosticTable extends Component {
                         type="primary"
                         disabled={this.props.disabled || rowProp.disabled || !rowProp.partId}
                         onClick={async ()=>{
+                            console.log(rowProp)
                             await addNewDiagnosticRow(
                                 rowProp.orderId,
                                 rowProp.diagnosticTemplateId,
@@ -546,7 +547,7 @@ class DiagnosticTable extends Component {
                 width:     '5%',
                 render: (text, rowProp) => (
                     <DeleteProcessButton
-                        disabled={this.props.disabled || rowProp.disabled}
+                        disabled={this.props.disabled || rowProp.disabled || rowProp.status > 0}
                         deleteRow = {this.deleteRow}
                         rowProp={rowProp}
                     />
@@ -631,6 +632,7 @@ class DiagnosticTable extends Component {
             return response.json()
         })
         .then(function (data) {
+            console.log(data);
             that.state.orderDiagnostic = data.diagnosis;
             that.updateDataSource();
         })
@@ -1903,6 +1905,7 @@ class DeleteProcessButton extends React.Component{
 
     handleClick = () => {
         const { rowProp } = this.props;
+            console.log(rowProp)
             if(rowProp.partId) {
             deleteDiagnosticProcess(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex);
             ReactDOM.findDOMNode(this).parentNode.parentNode.style.backgroundColor = "";
