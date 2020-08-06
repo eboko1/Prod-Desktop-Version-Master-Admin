@@ -489,7 +489,6 @@ class DiagnosticTable extends Component {
                         type="primary"
                         disabled={this.props.disabled || rowProp.disabled || !rowProp.partId}
                         onClick={async ()=>{
-                            console.log(rowProp)
                             await addNewDiagnosticRow(
                                 rowProp.orderId,
                                 rowProp.diagnosticTemplateId,
