@@ -64,7 +64,10 @@ class ConfirmDiagnosticModal extends React.Component{
         this.state.servicesList.map((element)=>{
             if(element.checked && element.id != null) {
                 data.services.push({
-                    serviceName: element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`),
+                    serviceName:
+                        element.commentary.positions.length ?
+                        element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
+                        element.name,
                     serviceId: element.id,
                     count: element.hours,
                     servicePrice: element.price,
@@ -82,7 +85,9 @@ class ConfirmDiagnosticModal extends React.Component{
         this.state.detailsList.map((element)=>{
             if(element.checked && element.id != null) {
                 data.details.push({
-                    name: element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`),
+                    name: element.commentary.positions.length ?
+                        element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
+                        element.name,
                     storeGroupId: element.id,
                     count: element.count,
                     comment: {

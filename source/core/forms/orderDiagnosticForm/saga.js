@@ -72,7 +72,6 @@ export async function confirmDiagnostic(orderId, data) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/${orderId}`;
-    
     url += params;
     try {
         const response = await fetch(url, {
@@ -99,7 +98,6 @@ export async function lockDiagnostic(orderId) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/${orderId}/diagnostics`;
-    
     url += params;
     try {
         const response = await fetch(url, {
@@ -121,10 +119,10 @@ export async function lockDiagnostic(orderId) {
 }
 
 export async function deleteDiagnosticProcess(orderId, templateId, groupId, partId, index) {
+    console.log(orderId, templateId, groupId, partId, index);
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/diagnostics/part?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}&index=${index}`;
-
     url += params;
     try {
         const response = await fetch(url, {
@@ -148,8 +146,7 @@ export async function deleteDiagnosticProcess(orderId, templateId, groupId, part
 export async function addNewDiagnosticRow(orderId, templateId, groupId, partId, index) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
-    let params = `/orders/diagnostics/part?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}&index=${index}`;
-
+    let params = `/orders/diagnostics/part?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}&index=${index || 0}`;
     url += params;
     try {
         const response = await fetch(url, {
@@ -174,7 +171,6 @@ export async function addNewDiagnosticTemplate(orderId, templateId) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/diagnostics/template?orderId=${orderId}&templateId=${templateId}`;
-
     url += params;
     try {
         const response = await fetch(url, {
@@ -199,7 +195,6 @@ export async function deleteDiagnosticTemplate(orderId, templateId) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/diagnostics/template?orderId=${orderId}&templateId=${templateId}`;
-
     url += params;
     try {
         const response = await fetch(url, {
@@ -224,7 +219,6 @@ export async function createAgreement(orderId, lang, confirmFunc, errorFunc) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/create_agreement?orderId=${orderId}`;
-
     url += params;
     fetch(url, {
         method: 'POST',
@@ -253,7 +247,6 @@ export async function getPartProblems(partId, getData) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/diagnostics/problems_mask?partId=${partId}`;
-
     url += params;
     try {
         const response = await fetch(url, {
@@ -273,7 +266,6 @@ export async function sendMessage(orderId) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/${orderId}/send_diagnostics_complete_message`;
-
     url += params;
     fetch(url, {
         method: 'GET',
@@ -302,7 +294,6 @@ export async function getDiagnosticsReport(orderId) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/diagnostics/report?orderId=${orderId}`;
-
     url += params;
     try {
         const response = await fetch(url, {
@@ -329,7 +320,6 @@ export async function getDiagnosticsAct(orderId) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/reports/diagnosticsReport/${orderId}`;
-
     url += params;
     try {
         const response = await fetch(url, {
