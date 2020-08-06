@@ -146,7 +146,7 @@ export async function deleteDiagnosticProcess(orderId, templateId, groupId, part
 export async function addNewDiagnosticRow(orderId, templateId, groupId, partId, index) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
-    let params = `/orders/diagnostics/part?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}&index=${index}`;
+    let params = `/orders/diagnostics/part?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}&index=${index || 0}`;
     url += params;
     try {
         const response = await fetch(url, {

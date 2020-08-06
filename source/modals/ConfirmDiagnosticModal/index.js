@@ -85,7 +85,9 @@ class ConfirmDiagnosticModal extends React.Component{
         this.state.detailsList.map((element)=>{
             if(element.checked && element.id != null) {
                 data.details.push({
-                    name: element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`),
+                    name: element.commentary.positions.length ?
+                        element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
+                        element.name,
                     storeGroupId: element.id,
                     count: element.count,
                     comment: {
