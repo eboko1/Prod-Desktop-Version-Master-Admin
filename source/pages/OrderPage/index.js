@@ -360,7 +360,10 @@ class OrderPage extends Component {
                         purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
                         count: detail.count ? detail.count : 1,
                         price: detail.price ? Math.round(detail.price*10)/10 : 1,
-                        comment: detail.comment,
+                        comment: detail.comment || {
+                            comment: undefined,
+                            positions: [],
+                        },
                     }
                 ));
                 copyData.services = services.map((labor)=>(
@@ -372,7 +375,11 @@ class OrderPage extends Component {
                         purchasePrice: labor.purchasePrice ? Math.round(labor.purchasePrice*10)/10 : 0,
                         count: labor.count ? labor.count : 1,
                         servicePrice: labor.price ? Math.round(labor.price*10)/10 : 1,
-                        comment: labor.comment,
+                        comment: labor.comment || {
+                            comment: undefined,
+                            positions: [],
+                            problems: [],
+                        },
                     }
                 ));
                 this.props.createOrderCopy(copyData);

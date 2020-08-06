@@ -95,6 +95,7 @@ class AgreementPage extends Component {
         this.business = data.business;
         this.manager = data.manager;
         this.setState({
+            isOpened: data.isOpened,
             dataSource: data,
             loading: false,
         });
@@ -323,6 +324,7 @@ class AgreementPage extends Component {
                 : null}
                 <div>
                     <TextArea
+                        disabled={!this.state.isOpened}
                         className={Styles.commentaryTextArea}
                         placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
                         rows={5}
@@ -334,6 +336,7 @@ class AgreementPage extends Component {
                     <span className={Styles.totalSum}>{Math.round((this.servicesTotal + this.detailsTotal)*10)/10} <FormattedMessage id='cur'/></span>
                 </div>
                 <Button
+                    disabled={!this.state.isOpened}
                     type="primary"
                     onClick={()=>{this.showConfirm()}}
                 >
@@ -366,7 +369,7 @@ class ServiceElement extends React.Component{
                     <p style={{padding: "5px 0"}}>{data.serviceName}</p>
                     {data.comment ? 
                         <p style={{fontStyle:"italic", padding: "5px 0"}}>
-                            {`${data.comment.problems.map((problem)=>" " + problem.toLowerCase())}`}
+                            {data.comment.problems ? `${data.comment.problems.map((problem)=>" " + problem.toLowerCase())}` : ``}
                         </p> 
                         :
                         null
@@ -397,7 +400,7 @@ class ServiceElement extends React.Component{
                     <span>{data.serviceName}</span>
                 </div>
                 <div className={Styles.rowComment}>
-                    <span>{data.comment ? `${data.comment.problems.map((problem)=>" " + problem.toLowerCase())}` : null}</span>
+                    <span>{data.comment && data.comment.problems ? `${data.comment.problems.map((problem)=>" " + problem.toLowerCase())}` : null}</span>
                 </div>
                 <div className={Styles.rowPrice}>
                     <span>{Math.round(data.price*10)/10}</span>
