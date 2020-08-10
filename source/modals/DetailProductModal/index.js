@@ -796,15 +796,15 @@ class DetailProductModal extends React.Component{
                             })
                         }} 
                     >
-                        <Radio value={1}>Подбор по автомобилю</Radio>
-                        <Radio value={2}>Прямое редактирование</Radio>
-                        <Radio value={3}>Подбор по коду товара</Radio>
-                        <Radio value={4} disabled>Масла и жидкости</Radio>
+                        <Radio value={1}><FormattedMessage id="details_table.selection_by_car"/></Radio>
+                        <Radio value={2}><FormattedMessage id="details_table.direct_editing"/></Radio>
+                        <Radio value={3}><FormattedMessage id="details_table.selection_by_product_code"/></Radio>
+                        <Radio value={4} disabled><FormattedMessage id="details_table.oils_and_liquids"/></Radio>
                     </Radio.Group>
                     </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
-                            <div style={{display: 'block'}}>Узел/деталь</div>
+                            <div style={{display: 'block'}}><FormattedMessage id="order_form_table.diagnostic.detail"/></div>
                         </div>
                         <Table
                             dataSource={this.state.mainTableSource}
@@ -836,7 +836,7 @@ class DetailProductModal extends React.Component{
                         </div> : null
                     }
                     <div style={{marginTop: 15}}>
-                        Сопутствующие: детали 
+                        <FormattedMessage id="add_order_form.related"/>: <FormattedMessage id="add_order_form.details"/>
                         <Checkbox
                             style={{marginLeft: 5}}
                             disabled
@@ -847,7 +847,7 @@ class DetailProductModal extends React.Component{
                                 })
                             }}
                         /> 
-                        работы
+                        <FormattedMessage id="add_order_form.services"/>
                         <Checkbox
                             style={{marginLeft: 5}}
                             disabled
