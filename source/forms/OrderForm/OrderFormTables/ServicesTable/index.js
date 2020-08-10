@@ -143,10 +143,11 @@ class ServicesTable extends Component {
                 key: "hours",
                 dataIndex: 'hours',
                 render: (data) => {
+                    let strVal = Number(data).toFixed(1);
                     return (
                         <span>
                             {data ? 
-                            <>{data} <FormattedMessage id="order_form_table.hours_short" /></> : 
+                            <>{strVal} <FormattedMessage id="order_form_table.hours_short" /></> : 
                             <FormattedMessage id="long_dash"/>}
                         </span> 
                     )
@@ -195,9 +196,10 @@ class ServicesTable extends Component {
                 key: "count",
                 dataIndex: 'count',
                 render: (data) => {
+                    let strVal = Number(data).toFixed(1);
                     return (
                         <span>
-                            {data ? data : 0} <FormattedMessage id="order_form_table.hours_short" />
+                            {data ? strVal : 0} <FormattedMessage id="order_form_table.hours_short" />
                         </span> 
                     )
                 },
