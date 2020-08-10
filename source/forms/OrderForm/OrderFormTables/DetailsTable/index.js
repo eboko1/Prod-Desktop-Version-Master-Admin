@@ -136,7 +136,7 @@ export default class DetailsTable extends Component {
             },
             {
                 title: <FormattedMessage id="order_form_table.supplier" />,
-                width: "10%",
+                width: "8%",
                 key: "supplierName",
                 dataIndex: 'supplierName',
                 render: (data) => {
@@ -194,10 +194,10 @@ export default class DetailsTable extends Component {
                 key: "purchasePrice",
                 dataIndex: 'purchasePrice',
                 render: (data) => {
-                    let strVal = String(Math.round(data*10)/10);
+                    let strVal = Number(data).toFixed(2);
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : <FormattedMessage id="long_dash"/>}
                         </span> 
                     )
                 },
@@ -207,14 +207,14 @@ export default class DetailsTable extends Component {
                             <FormattedMessage id="order_form_table.price" />
                         </div>,
                 className: Styles.numberColumn,
-                width: "5%",
+                width: "7%",
                 key: "price",
                 dataIndex: 'price',
                 render: (data) => {
-                    let strVal = String(Math.round(data*10)/10);
+                    let strVal = Number(data).toFixed(2);
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : <FormattedMessage id="long_dash"/>}
                         </span> 
                     )
                 },
@@ -244,10 +244,10 @@ export default class DetailsTable extends Component {
                 key: "sum",
                 dataIndex: 'sum',
                 render: (data) => {
-                    let strVal = String(Math.round(data*10)/10);
+                    let strVal = Number(data).toFixed(2);
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : <FormattedMessage id="long_dash"/>}
                         </span> 
                     )
                 },

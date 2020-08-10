@@ -161,10 +161,10 @@ class ServicesTable extends Component {
                 key: "purchasePrice",
                 dataIndex: 'purchasePrice',
                 render: (data) => {
-                    let strVal = String(Math.round(data*10)/10);
+                    let strVal = Number(data).toFixed(2);
                     return (
                         <span е>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : <FormattedMessage id="long_dash"/>}
                         </span> 
                     )
                 },
@@ -178,10 +178,10 @@ class ServicesTable extends Component {
                 key: "price",
                 dataIndex: 'price',
                 render: (data) => {
-                    let strVal = String(Math.round(data*10)/10);
+                    let strVal = Number(data).toFixed(2);
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : <FormattedMessage id="long_dash"/>}
                         </span> 
                     )
                 },
@@ -211,10 +211,10 @@ class ServicesTable extends Component {
                 key: "sum",
                 dataIndex: 'sum',
                 render: (data) => {
-                    let strVal = String(Math.round(data*10)/10);
+                    let strVal = Number(data).toFixed(2);
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : <FormattedMessage id="long_dash"/>}
                         </span> 
                     )
                 },
