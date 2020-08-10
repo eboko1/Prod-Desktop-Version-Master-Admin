@@ -741,7 +741,7 @@ class AddServiceModal extends React.Component{
                         />
                     </div>
                     <div style={{marginTop: 15}}>
-                        Сопутствующие: детали
+                        <FormattedMessage id="add_order_form.related"/>: <FormattedMessage id="add_order_form.details"/>
                         <Checkbox
                             style={{marginLeft: 5}}
                             disabled
