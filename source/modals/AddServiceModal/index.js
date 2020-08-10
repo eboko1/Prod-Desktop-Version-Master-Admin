@@ -136,7 +136,7 @@ class AddServiceModal extends React.Component{
                                 this.state.mainTableSource[0].laborId = value;
                                 this.state.mainTableSource[0].serviceName = option.props.children;
                                 //this.state.mainTableSource[0].masterLaborId = option.props.master_id;
-                                //this.state.mainTableSource[0].storeGroupId = option.props.product_id;
+                                this.state.mainTableSource[0].tmpStoreGroupId = option.props.product_id;
                                 this.state.mainTableSource[0].count = count;
                                 this.state.mainTableSource[0].price = price;
                                 this.state.mainTableSource[0].sum = price * count;
@@ -360,7 +360,7 @@ class AddServiceModal extends React.Component{
                         <LaborsNormHourModal
                             user={this.props.user}
                             tecdocId={this.props.tecdocId}
-                            storeGroupId={elem.storeGroupId}
+                            storeGroupId={elem.tmpStoreGroupId}
                             onSelect={this.setHours}
                             hours={data}
                         />
