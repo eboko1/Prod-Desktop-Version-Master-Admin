@@ -177,7 +177,8 @@
     "hours": "Hours",
     "description": "Name",
     "long_dash" : "—",
-    "message_sent": "Message sent to recipient"
+    "message_sent": "Message sent to recipient",
+    "update_price": "Update price"
   },
   "ru": {
     "currency": "грн.",
@@ -357,7 +358,8 @@
     "hours": "Часы",
     "description": "Наименование",
     "long_dash" : "—",
-    "message_sent": "Сообщение отправлено"
+    "message_sent": "Сообщение отправлено",
+    "update_price": "Обновить цену"
   },
   "uk": {
     "currency": "грн.",
@@ -537,6 +539,7 @@
     "hours": "Години",
     "description": "Найменування",
     "long_dash" : "—",
-    "message_sent": "Повідомлення відправлено"
+    "message_sent": "Повідомлення відправлено",
+    "update_price": "Оновити вартість"
   }
 }

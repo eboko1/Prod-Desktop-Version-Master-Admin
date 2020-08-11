@@ -17,7 +17,7 @@
         "order-task-modal.open_status_helper": "Открыть справочник по статусам"
     },
     "uk": {
-        "order-task-modal.order_number": "Номер Заказу",
+        "order-task-modal.order_number": "Номер Замовлення",
         "order-task-modal.transfer_change_task": "Перевести/Змінити Задачу",
         "order-task-modal.change_task": "Змінити Задачу",
         "add_task": "Додати Задачу",
