@@ -53,6 +53,13 @@ export default {
                     name: 'navigation.employees',
                 },
                 {
+                    key:      '/warehouses',
+                    link:     book.warehouses,
+                    disabled: user =>
+                        isForbidden(user, permissions.VIEW_STORE) || true,
+                    name: 'navigation.warehouses',
+                },
+                {
                     key:      '/suppliers',
                     link:     book.suppliersPage,
                     disabled: user =>
@@ -125,6 +132,30 @@ export default {
             name:     'navigation.storage',
             items:    [
                 {
+                    key:      '/storage-orders',
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
+                    link:     book.storageOrders,
+                    name:     'navigation.storage_orders',
+                },
+                {
+                    key:      '/storage-incomes',
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
+                    link:     book.storageIncomes,
+                    name:     'navigation.incomes',
+                },
+                {
+                    key:      '/storage-expenses',
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
+                    link:     book.storageExpenses,
+                    name:     'navigation.expenses',
+                },
+                {
+                    key:      '/storage-transfers',
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE) || true,
+                    link:     book.storageTransfers,
+                    name:     'navigation.transfers',
+                },
+                {
                     key:      '/storage-balance',
                     disabled: user => isForbidden(user, permissions.VIEW_STORE),
                     link:     book.storageBalance,
@@ -137,17 +168,23 @@ export default {
                     name:     'navigation.storage_movement',
                 },
                 {
+                    key:      '/storage-inventory',
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE) || true,
+                    link:     book.storageInventory,
+                    name:     'navigation.inventory',
+                },
+                {
                     key:      '/tracking',
                     disabled: user => isForbidden(user, permissions.VIEW_STORE),
                     link:     book.productsTracking,
-                    name:     'navigation.products_tracking',
+                    name:     'Tracking OLD',
                 },
                 {
                     key:      '/incomes',
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_INCOME_STORE_DOCS),
                     link: book.storageIncomes,
-                    name: 'navigation.incomes',
+                    name: 'Incomes OLD',
                 },
                 {
                     key:      '/expenses',
@@ -157,7 +194,7 @@ export default {
                             permissions.ACCESS_EXPENSE_STORE_DOCS,
                         ),
                     link: book.storageExpenses,
-                    name: 'navigation.expenses',
+                    name: 'Expenses OLD',
                 },
             ],
         },
@@ -238,6 +275,13 @@ export default {
                         isForbidden(user, permissions.ACCESS_ACCOUNTING),
                     link: book.cashSettingsPage,
                     name: 'navigation.cash_settings',
+                },
+                {
+                    key:      '/storage',
+                    disabled: user =>
+                        !isForbidden(user, permissions.VIEW_STORE) && !isAdmin(user) || true,
+                    link: book.storage,
+                    name: 'navigation.storage',
                 },
                 {
                     key:      '/requisites',

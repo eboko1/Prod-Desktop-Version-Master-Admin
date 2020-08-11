@@ -506,87 +506,12 @@ class AddServiceModal extends React.Component{
     }
 
     fetchData() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/labors`;
-        url += params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            data.labors.map((elem, index)=>{
-                elem.key = index;
-                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
-            })
-            that.labors = data.labors;
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        params = `/labors/master?makeTree=true`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.masterLabors = data.masterLabors;
-            that.buildLaborsTree();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        params = `/store_groups`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.storeGroups = data;
-            that.buildStoreGroupsTree();
-            that.getOptions();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
+        this.masterLabors = this.props.masterLabors;
+        this.labors = this.props.labors;
+        this.storeGroups = this.props.details;
+        this.buildLaborsTree();
+        this.buildStoreGroupsTree();
+        this.getOptions();
     }
 
     buildStoreGroupsTree() {

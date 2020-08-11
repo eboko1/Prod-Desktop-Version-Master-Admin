@@ -305,7 +305,7 @@ class DetailStorageModal extends React.Component{
                                 `Послезавтра: ${store[2]} шт.\n` +
                                 `Позже: ${store[3]} шт.`;
                         if(store[0] != '0') {
-                            color = 'rgb(81, 205, 102)';
+                            color = 'var(--green)';
                         }
                         else if(store[1] != 0) {
                             color = 'yellow';

@@ -56,7 +56,7 @@ const mapDispatchToProps = {
     null,
     mapDispatchToProps,
 )
-class ExpensesPage extends Component {
+class StorageOrdersPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -76,7 +76,7 @@ class ExpensesPage extends Component {
     }
 
     componentDidMount() {
-        fetchStorage('EXPENSE', (data)=>{
+        fetchStorage('ORDER', (data)=>{
             data.list.map((elem, i)=>{
                 elem.key = i;
             })
@@ -163,7 +163,7 @@ class ExpensesPage extends Component {
 
         return (
             <Layout
-                title={ <FormattedMessage id='navigation.expenses' /> }
+                title={ <FormattedMessage id='navigation.storage_orders' /> }
                 controls={
                     <>
                     <StorageDocumentsFilters 
@@ -183,7 +183,7 @@ class ExpensesPage extends Component {
             >
                 <StorageDocumentsContainer
                     documentsList={filtredDocumentsList}
-                    documentType={'EXPENSES'}
+                    documentType={'ORDER'}
                     onSearch={this.querySearchFilter}
                 />
             </Layout>
@@ -191,4 +191,4 @@ class ExpensesPage extends Component {
     }
 }
 
-export default ExpensesPage;
+export default StorageOrdersPage;

@@ -1,0 +1,11 @@
+.filtersWrap {
+    display: flex;
+}
+
+.filterRadioButtonGroup {
+    margin: 0 10px 0 0;
+}
+
+.filterDatePicker {
+    margin: 0 10px 0 0;
+}

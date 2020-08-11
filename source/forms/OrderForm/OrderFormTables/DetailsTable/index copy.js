@@ -824,7 +824,7 @@ export default class DetailsTable extends Component {
                             color = 'rgb(255, 126, 126)';
                             break;
                         case "agreed":
-                            color = 'rgb(81, 205, 102)';
+                            color = 'var(--green)';
                             break;
                         default:
                             color = null;

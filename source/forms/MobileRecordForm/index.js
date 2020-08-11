@@ -353,6 +353,7 @@ export class MobileRecordForm extends Component {
     }
 }
 
+@injectIntl
 class MobileDiagnostic extends Component {
     _isMounted = false;
 
@@ -657,7 +658,9 @@ class MobileDiagnostic extends Component {
                         style={{marginTop: 15, width: '100%'}}
                         onClick={()=>{
                             notification.success({
-                                message: 'Сообщение отправлено!',
+                                message: this.props.intl.formatMessage({
+                                    id: `message_sent`,
+                                }),
                             });
                             sendMessage(this.props.orderId);
                         }}
@@ -712,7 +715,7 @@ class MobileDiagnosticStatusButton extends React.Component{
                     disabled={this.props.disabled}
                     className={Styles.diagnostic_status_button_ok}
                     onClick={()=>this.handleClick(1)}
-                    style={{background:'rgb(81, 205, 102)'}}
+                    style={{background:'var(--green)'}}
                 >
                     <FormattedMessage id='order_form_table.diagnostic.status.ok' />
                 </Button>
