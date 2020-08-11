@@ -317,7 +317,7 @@ class DetailProductModal extends React.Component{
                                 `Послезавтра: ${elem.store[2]} шт.\n` +
                                 `Позже: ${elem.store[3]} шт.`;
                         if(elem.store[0] != '0') {
-                            color = 'rgb(81, 205, 102)';
+                            color = 'var(--green)';
                         }
                         else if(elem.store[1] != 0) {
                             color = 'yellow';
@@ -671,38 +671,10 @@ class DetailProductModal extends React.Component{
     }
 
     fetchData() {
+        this.labors = this.props.labors;
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/labors`;
-        url += params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            data.labors.map((elem, index)=>{
-                elem.key = index;
-                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
-            })
-            that.labors = data.labors;
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        url = __API_URL__ + '/business_suppliers?super=true';
+        let url =  __API_URL__ + '/business_suppliers?super=true';
         fetch(url, {
             method: 'GET',
             headers: {
@@ -732,7 +704,7 @@ class DetailProductModal extends React.Component{
 
 
     getOptions() {
-        this.servicesOptions = this.labors.map((elem, index)=>(
+        this.servicesOptions = this.props.labors.map((elem, index)=>(
             <Option key={index} value={elem.laborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
                 {elem.name ? elem.name : elem.defaultName}
             </Option>

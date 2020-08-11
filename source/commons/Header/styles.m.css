@@ -18,6 +18,12 @@
     width: calc(100% - 80px);
 }
 
+@media screen and (max-width: 1199px) {
+    .headerCollapsed {
+        width: 100%;
+    }
+}
+
 .headerWeb {
     display: flex;
     align-items: center;

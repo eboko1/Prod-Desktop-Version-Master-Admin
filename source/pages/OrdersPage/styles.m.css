@@ -13,8 +13,8 @@
 }
 
 .ordersWrrapper {
-    padding: 205px 0 0 0;
-    margin: 0 16px;
+    padding: 186px 0 0 0;
+    /*margin: 0 16px;*/
 }
 
 .ordersWrrapperUF {
@@ -49,6 +49,12 @@
     width: calc(100% - 80px);
 }
 
+@media screen and (max-width: 1199px) {
+    .funelWithFiltersCollapsed {
+        width: 100%;
+    }
+}
+
 .funelMobile {
     width: 100%;
 }
@@ -75,4 +81,10 @@
 
 .universalFiltersCollapsed {
     width: calc(100% - 80px);
+}
+
+@media screen and (max-width: 1199px) {
+    .universalFiltersCollapsed {
+        width: 100%;
+    }
 }

@@ -32,14 +32,6 @@ export default class DetailsTable extends Component {
         this.updateDetail = this.updateDetail.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
 
-        this.details = this.props.allDetails.details.map(
-            ({ id, name }) => (
-                <Option value={String(id)} key={`allDetails-${id}`}>
-                    {name}
-                </Option>
-            ),
-        );
-
         this.brands = this.props.allDetails.brands.map(
             ({ supplierId, brandId, brandName }) => (
                 <Option value={String(brandId)} key={`allBrands-${brandId}`}>
@@ -160,7 +152,7 @@ export default class DetailsTable extends Component {
                                 `Послезавтра: ${elem.store[2]} шт.\n` +
                                 `Позже: ${elem.store[3]} шт.`;
                         if(elem.store[0] != '0') {
-                            color = 'rgb(81, 205, 102)';
+                            color = 'var(--green)';
                         }
                         else if(elem.store[1] != 0) {
                             color = 'yellow';
@@ -266,7 +258,7 @@ export default class DetailsTable extends Component {
                             color = 'rgb(255, 126, 126)';
                             break;
                         case "agreed":
-                            color = 'rgb(81, 205, 102)';
+                            color = 'var(--green)';
                             break;
                         default:
                             color = null;
@@ -287,7 +279,7 @@ export default class DetailsTable extends Component {
                             <Option key={0} value={'undefined'}>
                                 <FormattedMessage id='status.undefined'/>
                             </Option>
-                            <Option key={1} value={'agreed'} style={{color: 'rgb(81, 205, 102)'}}>
+                            <Option key={1} value={'agreed'} style={{color: 'var(--green)'}}>
                                 <FormattedMessage id='status.agreed'/>
                             </Option>
                             <Option key={2} value={'rejected'} style={{color: 'rgb(255, 126, 126)'}}>
@@ -406,32 +398,8 @@ export default class DetailsTable extends Component {
     }
 
     fetchData() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let params = `/store_groups`;
-        let url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.storeGroups = data;
-            that.buildStoreGroupsTree();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
+        this.storeGroups = this.props.details;
+        this.buildStoreGroupsTree();
     }
 
     buildStoreGroupsTree() {
@@ -622,6 +590,7 @@ export default class DetailsTable extends Component {
                     pagination={false}
                 />
                 <DetailProductModal
+                    labors={this.props.labors}
                     treeData={this.treeData}
                     user={this.props.user}
                     tecdocId={this.props.tecdocId}

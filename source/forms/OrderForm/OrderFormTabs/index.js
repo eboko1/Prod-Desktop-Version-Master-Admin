@@ -87,6 +87,8 @@ export default class OrderFormTabs extends React.PureComponent {
             orderId,
             allServices,
             allDetails,
+            labors,
+            details,
             employees,
             selectedClient,
             detailsSuggestions,
@@ -101,8 +103,6 @@ export default class OrderFormTabs extends React.PureComponent {
             clientVehicleId,
 
             //fields
-            services,
-            details,
             initialStation,
             initialBeginDatetime,
 
@@ -199,6 +199,8 @@ export default class OrderFormTabs extends React.PureComponent {
                             selectedClient={selectedClient}
                             orderServices={orderServices}
                             orderDetails={orderDetails}
+                            labors={labors}
+                            details={details}
                             reloadOrderPageComponents={this.props.reloadOrderPageComponents}
                         />
                     </TabPane>
@@ -221,10 +223,11 @@ export default class OrderFormTabs extends React.PureComponent {
                             errors={errors}
                             orderId={orderId}
                             fields={servicesTableFieldsProps}
-                            services={services}
                             employees={employees}
                             form={form}
                             allServices={allServices}
+                            labors={labors}
+                            details={details}
                             orderServices={orderServices}
                             user={user}
                             fetchedOrder={fetchedOrder}
@@ -261,6 +264,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             errors={errors}
                             orderId={orderId}
                             fields={detailsTableFieldsProps}
+                            labors={labors}
                             details={details}
                             tecdocId={tecdocId}
                             clientVehicleId={clientVehicleId}

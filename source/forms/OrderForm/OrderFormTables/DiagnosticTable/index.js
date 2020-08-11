@@ -12,7 +12,7 @@ import {
     Select,
     Input,
     InputNumber,
-    AutoComplete,
+    Popconfirm,
     Radio,
     notification,
 } from 'antd';
@@ -92,20 +92,22 @@ class DiagnosticTable extends Component {
             {
                 title:  ()=>{
                     const {filterPlan, filterStage, filterStatus, filterCommentary, filterPhoto} = this.state;
+                    const filtered = filterPlan || filterStage || filterStatus || filterCommentary;
                     var count = this.props.disabled ? 
                         this.state.dataSource.length :
+                        filtered ? this.state.dataSource.length :
                         this.state.dataSource.length - 1;
                     if(count < 0) count = 0;
-                    let type = filterPlan==null&&filterStage==null&&filterStatus==null&&filterCommentary==null&&filterPhoto==null?"":"danger";
+                    let type = filtered ? "danger" : "normal";
                     return(
                         <div className={Styles.filter_column_header_wrap}>
                             <p style={{paddingLeft: 10}}>#</p>
                             <Button
                                 type={type}
                                 style={{
-                                    color: '#fff',
-                                    backgroundColor: '#ff2a2c',
-                                    borderColor: '#ff2a2c',
+                                    color: '#fff !important',
+                                    backgroundColor: '#ff2a2c !important',
+                                    borderColor: '#ff2a2c !important',
                                 }}
                                 style={{maxWidth: 60}}
                                 onClick={()=>{
@@ -119,7 +121,9 @@ class DiagnosticTable extends Component {
                                     {this.getCurrentDiagnostic()}
                                 }}
                             >
-                                {count}
+                                {filtered ?
+                                <Icon type="close-circle"/> : 
+                                count}
                             </Button>
                         </div>
                     )
@@ -243,7 +247,7 @@ class DiagnosticTable extends Component {
             },
             {
                 title:  ()=>{
-                    let bgColorOK = this.state.filterStatus=="OK"?"rgb(81, 205, 102)":"rgb(200,225,180)",
+                    let bgColorOK = this.state.filterStatus=="OK"?"var(--green)":"rgb(200,225,180)",
                         bgColorBAD = this.state.filterStatus=="BAD"?"rgb(255, 255, 0)":"rgb(255,240,180)",
                         bgColorCRITICAL = this.state.filterStatus=="CRITICAL"?"rgb(255, 126, 126)":"rgb(250,175,175)",
                         bgColorBAD_AND_CRITICAL = {
@@ -426,31 +430,29 @@ class DiagnosticTable extends Component {
             },
             {
                 title:  ()=>{
-                    /*
-                    <Button
-                        type={this.state.filterCommentary == null?"primary":""}
-                        onClick={()=>{
-                            if(this.state.filterCommentary != null) {
-                                this.setState({
-                                    filterCommentary: null,
-                                });
-                            }
-                            else {
-                                this.setState({
-                                    filterCommentary: "COMMENTARY",
-                                });
-                            }
-                            {this.getCurrentDiagnostic()}
-                        }}
-                    >
-                        {this.withCommentary}
-                    </Button>
-                    */
                     return(
                         <div className={Styles.filter_column_header_wrap}>
                             <p style={{whiteSpace: 'nowrap', overflowX: "hidden"}}>
                                 <FormattedMessage id='order_form_table.diagnostic.commentary' />
                             </p>
+                            <Button
+                                style={this.state.filterCommentary ? {backgroundColor: 'rgb(210, 190, 230)'} : {}}
+                                onClick={()=>{
+                                    if(this.state.filterCommentary != null) {
+                                        this.setState({
+                                            filterCommentary: null,
+                                        });
+                                    }
+                                    else {
+                                        this.setState({
+                                            filterCommentary: "COMMENTARY",
+                                        });
+                                    }
+                                    this.getCurrentDiagnostic();
+                                }}
+                            >
+                                {this.withCommentary}
+                            </Button>
                         </div>
                     )
                 },
@@ -529,7 +531,9 @@ class DiagnosticTable extends Component {
                             style={{width: '100%'}}
                             onClick={()=>{
                                 notification.success({
-                                    message: 'Сообщение отправлено!',
+                                    message: this.props.intl.formatMessage({
+                                        id: `message_sent`,
+                                    }),
                                 });
                                 sendMessage(this.props.orderId);
                             }}
@@ -631,7 +635,6 @@ class DiagnosticTable extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.state.orderDiagnostic = data.diagnosis;
             that.updateDataSource();
         })
@@ -817,8 +820,7 @@ class DiagnosticTable extends Component {
         if(filterStatus == "CRITICAL") data = data.filter((data, i) => data.status == 3);
         if(filterStatus == "BAD&CRITICAL") data = data.filter((data, i) => data.status == 2 || data.status == 3);
         if(filterStatus == "OPEN") data = data.filter((data, i) => data.status == 0);
-        if(filterCommentary != null) data = data.filter((data, i) => data.commentary != null);
-        if(filterPhoto != null) data = data.filter((data, i) => data.photo != null && data.photo.length > 0);
+        if(filterCommentary != null) data = data.filter((data, i) => data.commentary.comment != null);
         return data;
     }
 
@@ -942,7 +944,6 @@ class DiagnosticTable extends Component {
                     if(data.status == 3) this.critical++;
                 }
                 if(data.commentary.comment) this.withCommentary++;
-                if(data.photo != undefined && data.photo.length > 0) this.withPhoto++;
             })
             /*filtredData.push({
                 key: key,
@@ -968,7 +969,6 @@ class DiagnosticTable extends Component {
         else{
             dataSource.map((data)=>{
                 if(data.commentary.comment) this.withCommentary++;
-                if(data.photo != undefined && data.photo.length > 0) this.withPhoto++;
             })
             if(!disabled) {
                 dataSource.push({
@@ -1088,6 +1088,8 @@ class DiagnosticTable extends Component {
                     orderDetails={this.props.orderDetails}
                     updateTabs={this.props.updateTabs}
                     reloadOrderPageComponents={this.props.reloadOrderPageComponents}
+                    labors={this.props.labors}
+                    details={this.props.details}
                 />
                 <Table
                     className={!disabled?Styles.diagnosticTable:Styles.diagnosticTableDisabled}
@@ -1194,7 +1196,7 @@ class DiagnosticTableHeader extends React.Component{
                         defaultEmployeeId={this.props.defaultEmployeeId}
                         user={this.props.user}
                         tecdocId={this.props.tecdocId}
-                        confirmed={disabled}
+                        disabled={disabled}
                         orderId={this.props.orderId}
                         isMobile={false}
                         dataSource = {this.state.dataSource.slice(0)}
@@ -1203,6 +1205,8 @@ class DiagnosticTableHeader extends React.Component{
                         getCurrentDiagnostic={this.props.getCurrentDiagnostic}
                         updateTabs={this.props.updateTabs}
                         reloadOrderPageComponents={this.props.reloadOrderPageComponents}
+                        labors={this.props.labors}
+                        details={this.props.details}
                     />
                 </div>
                 <div style={{ width: "10%" }}>
@@ -1220,7 +1224,7 @@ class DiagnosticTableHeader extends React.Component{
                         disabled={disabled}
                         className={Styles.diagnostic_status_button}
                         onClick={()=>{this.handleClickStatusButtons(1)}}
-                        style={{background:"rgb(81, 205, 102)"}}
+                        style={{background:"var(--green)"}}
                         title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.ok_title"})}
                     >
                         <FormattedMessage id='order_form_table.diagnostic.status.ok' />
@@ -1334,7 +1338,7 @@ class DiagnosticStatusButton extends React.Component{
                     disabled={disabled}
                     className={Styles.diagnostic_status_button}
                     onClick={()=>this.handleClick(1)}
-                    style={{background:'rgb(81, 205, 102)'}}
+                    style={{background:'var(--green)'}}
                     title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.ok_title"})}
                 >
                     <FormattedMessage id='order_form_table.diagnostic.status.ok' />
@@ -1406,36 +1410,6 @@ class CommentaryButton extends React.Component{
             {name: "deg", symbol: "°"},
         ];
         this._isMounted = false;
-    }
-
-    getPositions() {
-        const that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/diagnostics/positions?partId=${this.props.rowProp.partId}`;
-        url += params;
-
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            console.log(data);
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        })
     }
 
     showModal = async () => {
@@ -1594,8 +1568,7 @@ class CommentaryButton extends React.Component{
                         }
                     },
                 })
-            }
-            //await this.getPositions();
+            };
         }
     }
 
@@ -1893,7 +1866,7 @@ class PhotoButton extends React.Component{
     }
 }
 
-
+@injectIntl
 class DeleteProcessButton extends React.Component{
     constructor(props) {
         super(props);
@@ -1904,10 +1877,8 @@ class DeleteProcessButton extends React.Component{
 
     handleClick = () => {
         const { rowProp } = this.props;
-            console.log(rowProp)
-            if(rowProp.partId) {
+        if(rowProp.partId) {
             deleteDiagnosticProcess(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex);
-            ReactDOM.findDOMNode(this).parentNode.parentNode.style.backgroundColor = "";
             this.props.deleteRow(this.props.rowProp.key-1);
             this.setState({deleted:true});
         }
@@ -1917,11 +1888,17 @@ class DeleteProcessButton extends React.Component{
         const { disabled, rowProp } = this.props;
         return (
         <div className={Styles.delete_diagnostic_button_wrap} style={{width: "5%"}}>
+            <Popconfirm
+                disabled={disabled}
+                type="warning"
+                title={<FormattedMessage id='add_order_form.delete_confirm'/>}
+                onConfirm={this.handleClick}
+            >
             <Icon
                 type="delete"
                 className={!disabled?Styles.delete_diagnostic_button:Styles.delete_diagnostic_button_disabled}
-                onClick={this.handleClick}
             />
+            </Popconfirm>
         </div>
         );
     }

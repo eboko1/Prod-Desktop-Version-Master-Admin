@@ -27,6 +27,7 @@ class ServicesTable extends Component {
         this.laborTimeMultiplier = this.props.laborTimeMultiplier || 1;
         this.updateLabor = this.updateLabor.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
+        this.masterLabors = [];
 
         this.columns = [
             {
@@ -82,6 +83,9 @@ class ServicesTable extends Component {
                                     updateDataSource={this.updateDataSource}
                                     employees={this.props.employees}
                                     user={this.props.user}
+                                    masterLabors={this.masterLabors}
+                                    labors={this.props.labors}
+                                    details={this.props.details}
                                 />
                             :
                                 <QuickEditModal
@@ -235,7 +239,7 @@ class ServicesTable extends Component {
                             color = 'rgb(255, 126, 126)';
                             break;
                         case "agreed":
-                            color = 'rgb(81, 205, 102)';
+                            color = 'var(--green)';
                             break;
                         default:
                             color = null;
@@ -256,7 +260,7 @@ class ServicesTable extends Component {
                             <Option key={0} value={'undefined'}>
                                 <FormattedMessage id='status.undefined'/>
                             </Option>
-                            <Option key={1} value={'agreed'} style={{color: 'rgb(81, 205, 102)'}}>
+                            <Option key={1} value={'agreed'} style={{color: 'var(--green)'}}>
                                 <FormattedMessage id='status.agreed'/>
                             </Option>
                             <Option key={2} value={'rejected'} style={{color: 'rgb(255, 126, 126)'}}>
@@ -396,43 +400,6 @@ class ServicesTable extends Component {
         }
     }
 
-    async updateDuration() {
-        let hours = 0;
-        this.state.dataSource.map((elem)=>{
-            hours += elem.count;
-        })
-        hours = Math.round(hours*10)/10;
-        
-        if(hours > 8) {
-            message.warning('Количество часов превышает 8. ');
-            hours = 8;
-        }
-
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/orders/${this.props.orderId}`;
-        url += params;
-        try {
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': token,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({duration: hours}),
-            });
-            const result = await response.json();
-            if(result.success) {
-                window.location.reload();
-            }
-            else {
-                console.log("BAD", result);
-            }
-        } catch (error) {
-            console.error('ERROR:', error);
-        }
-    }
-
     showServiceProductModal(key) {
         this.setState({
             serviceModalVisible: true,
@@ -533,7 +500,35 @@ class ServicesTable extends Component {
         await this.updateDataSource();
     }
 
+    fetchLaborsTree() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/labors/master?makeTree=true`;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.masterLabors = data.masterLabors;
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
     componentDidMount() {
+        this.fetchLaborsTree();
         let tmp = [...this.props.orderServices];
         tmp.map((elem,i)=>elem.key=i);
         this.setState({
@@ -583,6 +578,9 @@ class ServicesTable extends Component {
                     hideModal={()=>this.hideServicelProductModal()}
                     orderId={this.props.orderId}
                     tecdocId={this.props.tecdocId}
+                    masterLabors={this.masterLabors}
+                    labors={this.props.labors}
+                    details={this.props.details}
                 />
             </Catcher>
         );
