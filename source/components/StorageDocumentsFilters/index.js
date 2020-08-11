@@ -25,8 +25,20 @@ class StorageDocumentsFilters extends Component {
         };
     }
 
+    verifyDate(dateRange) {
+        if(dateRange.length != 2) {
+            const thisYear = new Date("1/1/" + (new Date()).getFullYear());
+            const defaultDateRange = [moment(thisYear, this.props.dateFormat), moment(new Date(), this.props.dateFormat)];
+            return defaultDateRange;
+        }
+        else {
+            return dateRange;
+        }
+    }
+
     render() {
-        const { dateRange, dateFormat, documentTypeFilter, documentStatusFilter } = this.props;
+        const { dateRange, dateFormat, onDateChange, documentTypeFilter, documentStatusFilter } = this.props;
+
         return (
             <div className={Styles.filtersWrap}>
                 <div className={Styles.filterRadioButtonGroup}>
@@ -72,8 +84,12 @@ class StorageDocumentsFilters extends Component {
                 </div>
                 <div className={Styles.filterDatePicker}>
                     <RangePicker
-                        defaultValue={dateRange}
+                        allowClear={false}
+                        value={this.verifyDate(dateRange)}
                         format={dateFormat}
+                        onChange={(newDate)=>{
+                            onDateChange(newDate)
+                        }}
                     />
                 </div>
             </div>

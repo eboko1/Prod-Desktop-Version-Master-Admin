@@ -54,12 +54,12 @@ class StorageTable extends Component {
                         allowClear
                     />
                     <Button
-                        disabled={listType != 'EXPENSE'}
+                        disabled={listType == 'INCOME'}
                     >
                         <FormattedMessage id='storage_document.storage_expenses' />,
                     </Button>
                     <Button
-                        disabled={listType != 'INCOME'}
+                        disabled={listType == 'EXPENSE'}
                     >
                         <FormattedMessage id='storage_document.storage_income' />,
                     </Button>

@@ -1,5 +1,6 @@
 .filtersWrap {
     display: flex;
+    align-items: center;
 }
 
 .filterRadioButtonGroup {

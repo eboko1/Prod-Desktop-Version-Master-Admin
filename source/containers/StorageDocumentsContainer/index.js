@@ -15,6 +15,7 @@ import { StorageDocumentsFilters } from 'components';
 import book from 'routes/book';
 
 // own
+const dateFormat = 'YYYY-MM-DD';
 const fetchStorage = (type, action) => {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = __API_URL__;
@@ -66,8 +67,10 @@ class StorageDocumentsContainer extends Component {
                 documentTypeFilter: null,
                 documentStatusFilter: null,
             },
+            dateRange: [],
         };
 
+        this.onDateChange = this.onDateChange.bind(this);
         this.querySearchFilter = this.querySearchFilter.bind(this);
         this.documentTypeFilter = this.documentTypeFilter.bind(this);
         this.documentStatusFilter = this.documentStatusFilter.bind(this);
@@ -75,13 +78,38 @@ class StorageDocumentsContainer extends Component {
     }
 
     componentDidMount() {
+        const thisYear = new Date("1/1/" + (new Date()).getFullYear());
+        const dateRange = [moment(thisYear, dateFormat), moment(new Date(), dateFormat)];
+
         fetchStorage(this.props.listType, (data)=>{
             data.list.map((elem, i)=>{
                 elem.key = i;
             })
+            const resutList = data.list.filter((elem)=>moment(elem.createdDatetime).isBetween(dateRange[0], dateRange[1]));
             this.setState({
-                storageDocumentsList: data.list,
-                filtredDocumentsList: data.list,
+                dateRange: dateRange,
+                storageDocumentsList: resutList,
+                filtredDocumentsList: resutList,
+            })
+        });
+        
+    }
+
+    onDateChange(dateRange) {
+        if(!dateRange.length) {
+            const thisYear = new Date("1/1/" + (new Date()).getFullYear());
+            const defaultDateRange = [moment(thisYear, dateFormat), moment(new Date(), dateFormat)];
+            dateRange = defaultDateRange;
+        }
+        fetchStorage(this.props.listType, (data)=>{
+            data.list.map((elem, i)=>{
+                elem.key = i;
+            })
+            const resutList = data.list.filter((elem)=>moment(elem.createdDatetime).isBetween(dateRange[0], dateRange[1]));
+            this.setState({
+                dateRange: dateRange,
+                storageDocumentsList: resutList,
+                filtredDocumentsList: resutList,
             })
         });
     }
@@ -112,7 +140,7 @@ class StorageDocumentsContainer extends Component {
 
     filterDocumentList() {
         const { storageDocumentsList, documentFilters } = this.state;
-        const { querySearch, documentTypeFilter, documentStatusFilter} = documentFilters;
+        const { querySearch, documentTypeFilter, documentStatusFilter } = documentFilters;
         const isFiltred = querySearch || documentTypeFilter || documentStatusFilter;
        
         if(!isFiltred) {
@@ -155,10 +183,7 @@ class StorageDocumentsContainer extends Component {
     }
 
     render() {
-        const { storageDocumentsList, filtredDocumentsList, isFiltred } = this.state;
-        const dateFormat = 'YYYY-MM-DD';
-        const thisYear = new Date("1/1/" + (new Date()).getFullYear());
-        const dateRange = [moment(thisYear, dateFormat), moment(new Date(), dateFormat)];
+        const { dateRange, filtredDocumentsList, isFiltred } = this.state;
 
         return (
             <Layout
@@ -168,6 +193,7 @@ class StorageDocumentsContainer extends Component {
                     <StorageDocumentsFilters 
                         dateRange={dateRange}
                         dateFormat={dateFormat}
+                        onDateChange={this.onDateChange}
                         documentTypeFilter={this.documentTypeFilter}
                         documentStatusFilter={this.documentStatusFilter}
                     />
