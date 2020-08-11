@@ -143,6 +143,11 @@ export default class Private extends Component {
                 { /* Storage */ }
                 <Route
                     exact
+                    component={ ProductsGroupsPage }
+                    path={ book.productsGroups }
+                />
+                <Route
+                    exact
                     component={ PriceGroupsPage }
                     path={ book.priceGroups }
                 />
