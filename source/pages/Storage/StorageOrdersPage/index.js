@@ -13,7 +13,7 @@ import { StorageDocumentsContainer } from 'containers';
 
 // own
 
-class IncomesPage extends Component {
+class StorageOrdersPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -24,10 +24,10 @@ class IncomesPage extends Component {
     render() {
         return (
             <StorageDocumentsContainer
-                listType = 'INCOME'
+                listType = 'ORDER'
             />
         );
     }
 }
 
-export default IncomesPage;
+export default StorageOrdersPage;

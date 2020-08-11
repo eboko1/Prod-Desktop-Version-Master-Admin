@@ -36,6 +36,12 @@
     width: calc(100% - 80px);
 }
 
+@media screen and (max-width: 1199px) {
+    .filtersCollapsed {
+        width: 100%;
+    }
+}
+
 .content {
     margin: 172px 16px 0;
 }

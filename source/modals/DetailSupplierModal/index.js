@@ -108,7 +108,7 @@ class DetailSupplierModal extends React.Component{
                                 `Послезавтра: ${elem.availableIn2} шт.\n` +
                                 `Позже: ${elem.availableIn3} шт.`;
                         if(elem.availableIn0 != '0') {
-                            color = 'rgb(81, 205, 102)';
+                            color = 'var(--green)';
                         }
                         else if(elem.availableIn1 != 0) {
                             color = 'yellow';

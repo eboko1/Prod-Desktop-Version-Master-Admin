@@ -317,7 +317,7 @@ class DetailProductModal extends React.Component{
                                 `Послезавтра: ${elem.store[2]} шт.\n` +
                                 `Позже: ${elem.store[3]} шт.`;
                         if(elem.store[0] != '0') {
-                            color = 'rgb(81, 205, 102)';
+                            color = 'var(--green)';
                         }
                         else if(elem.store[1] != 0) {
                             color = 'yellow';
@@ -671,38 +671,10 @@ class DetailProductModal extends React.Component{
     }
 
     fetchData() {
+        this.labors = this.props.labors;
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/labors`;
-        url += params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            data.labors.map((elem, index)=>{
-                elem.key = index;
-                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
-            })
-            that.labors = data.labors;
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        url = __API_URL__ + '/business_suppliers?super=true';
+        let url =  __API_URL__ + '/business_suppliers?super=true';
         fetch(url, {
             method: 'GET',
             headers: {
@@ -732,7 +704,7 @@ class DetailProductModal extends React.Component{
 
 
     getOptions() {
-        this.servicesOptions = this.labors.map((elem, index)=>(
+        this.servicesOptions = this.props.labors.map((elem, index)=>(
             <Option key={index} value={elem.laborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
                 {elem.name ? elem.name : elem.defaultName}
             </Option>
@@ -796,15 +768,15 @@ class DetailProductModal extends React.Component{
                             })
                         }} 
                     >
-                        <Radio value={1}>Подбор по автомобилю</Radio>
-                        <Radio value={2}>Прямое редактирование</Radio>
-                        <Radio value={3}>Подбор по коду товара</Radio>
-                        <Radio value={4} disabled>Масла и жидкости</Radio>
+                        <Radio value={1}><FormattedMessage id="details_table.selection_by_car"/></Radio>
+                        <Radio value={2}><FormattedMessage id="details_table.direct_editing"/></Radio>
+                        <Radio value={3}><FormattedMessage id="details_table.selection_by_product_code"/></Radio>
+                        <Radio value={4} disabled><FormattedMessage id="details_table.oils_and_liquids"/></Radio>
                     </Radio.Group>
                     </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
-                            <div style={{display: 'block'}}>Узел/деталь</div>
+                            <div style={{display: 'block'}}><FormattedMessage id="order_form_table.diagnostic.detail"/></div>
                         </div>
                         <Table
                             dataSource={this.state.mainTableSource}
@@ -836,7 +808,7 @@ class DetailProductModal extends React.Component{
                         </div> : null
                     }
                     <div style={{marginTop: 15}}>
-                        Сопутствующие: детали 
+                        <FormattedMessage id="add_order_form.related"/>: <FormattedMessage id="add_order_form.details"/>
                         <Checkbox
                             style={{marginLeft: 5}}
                             disabled
@@ -847,7 +819,7 @@ class DetailProductModal extends React.Component{
                                 })
                             }}
                         /> 
-                        работы
+                        <FormattedMessage id="add_order_form.services"/>
                         <Checkbox
                             style={{marginLeft: 5}}
                             disabled

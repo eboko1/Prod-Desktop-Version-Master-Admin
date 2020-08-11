@@ -5,7 +5,7 @@
         "cancel_reason.other_cancel_reason": "Other refusal reason"
     },
     "ru": {
-        "cancel_reason.title": "Отказаться от закказа?",
+        "cancel_reason.title": "Отказаться от заказа?",
         "cancel_reason.select_cancel_reason": "Выберите причину отмены",
         "cancel_reason.other_cancel_reason": "Другая причина отмены"
     },

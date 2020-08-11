@@ -545,7 +545,9 @@ class OrderPage extends Component {
                                         });
                                         const confirmFunc = ()=>{
                                             notification.success({
-                                                message: 'Сообщение отправлено!',
+                                                message: this.props.intl.formatMessage({
+                                                    id: `message_sent`,
+                                                }),
                                             });
                                         };
                                         const errorFunc = ()=>{
