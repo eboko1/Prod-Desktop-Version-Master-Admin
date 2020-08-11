@@ -14,8 +14,8 @@
     "reviews.count_not_recommended": "Не рекомендуют"
   },
   "uk": {
-    "reviews.rating": "Загальний рейтинг компании",
-    "reviews.nps_rating": "Загальний NPS компании",
+    "reviews.rating": "Загальний рейтинг компанії",
+    "reviews.nps_rating": "Загальний NPS компанії",
     "reviews.count_reviews": "Всього відгуків",
     "reviews.count_recommended": "Рекомендують",
     "reviews.count_not_recommended": "Не рекомендують"

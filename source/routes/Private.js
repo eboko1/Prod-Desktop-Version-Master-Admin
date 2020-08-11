@@ -143,6 +143,11 @@ export default class Private extends Component {
                 { /* Storage */ }
                 <Route
                     exact
+                    component={ ProductsGroupsPage }
+                    path={ book.productsGroups }
+                />
+                <Route
+                    exact
                     component={ PriceGroupsPage }
                     path={ book.priceGroups }
                 />
@@ -194,7 +199,11 @@ export default class Private extends Component {
                         <IncomeDocPage key={ props.match.params.id } { ...props } />
                     ) }
                 />
-                
+                <Route
+                    exact
+                    component={ ProductsTrackingPage }
+                    path={ book.productsTracking }
+                />
                 { /* Statistics */ }
                 <Route
                     exact
