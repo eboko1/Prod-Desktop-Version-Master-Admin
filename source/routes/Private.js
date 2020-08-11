@@ -47,6 +47,7 @@ import {
     DiagnosticPatternsPage,
     AvailabilitiesPage,
     StorageOrdersPage,
+    StorageTransferPage,
 } from 'pages';
 import book from './book';
 
@@ -142,11 +143,6 @@ export default class Private extends Component {
                 { /* Storage */ }
                 <Route
                     exact
-                    component={ ProductsGroupsPage }
-                    path={ book.productsGroups }
-                />
-                <Route
-                    exact
                     component={ PriceGroupsPage }
                     path={ book.priceGroups }
                 />
@@ -173,7 +169,7 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
-                    component={ ExpensesPage }
+                    component={ StorageTransferPage }
                     path={ book.storageTransfers }
                 />
                 <Route
@@ -197,25 +193,6 @@ export default class Private extends Component {
                     render={ props => (
                         <IncomeDocPage key={ props.match.params.id } { ...props } />
                     ) }
-                />
-
-
-                <Route
-                    exact
-                    component={ ProductsTrackingPage }
-                    path={ book.productsTracking }
-                />
-                <Route
-                    exact
-                    path={ book.storageIncomeDocId }
-                    render={ props => (
-                        <IncomeDocPage key={ props.match.params.id } { ...props } />
-                    ) }
-                />
-                <Route
-                    exact
-                    path={ book.storageIncomeDoc }
-                    render={ props => <IncomeDocPage { ...props } /> }
                 />
                 
                 { /* Statistics */ }

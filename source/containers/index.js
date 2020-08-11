@@ -23,6 +23,7 @@ import SubscriptionProductsContainer from './SubscriptionProductsContainer';
 import StoreProductsContainer from './StoreProductsContainer';
 import DiagnosticPatternsContainer from './DiagnosticPatternsContainer';
 import StorageDocumentsContainer from './StorageDocumentsContainer';
+import StorageTable from './StorageDocumentsContainer/storageTable';
 
 export {
     OrdersContainer,
@@ -50,4 +51,5 @@ export {
     StoreProductsContainer,
     DiagnosticPatternsContainer,
     StorageDocumentsContainer,
+    StorageTable,
 };

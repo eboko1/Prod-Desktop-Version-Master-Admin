@@ -1,11 +1,13 @@
 import StorageOrdersPage from './StorageOrdersPage';
 import IncomesPage from './IncomesPage';
 import ExpensesPage from './ExpensesPage';
+import StorageTransferPage from './StorageTransferPage'
 
 export {
     StorageOrdersPage,
     IncomesPage,
     ExpensesPage,
+    StorageTransferPage,
 };
 
 export { ProductsGroupsPage } from './ProductsGroupsPage';

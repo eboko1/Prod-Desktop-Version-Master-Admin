@@ -151,7 +151,7 @@ export default {
                 },
                 {
                     key:      '/storage-transfers',
-                    disabled: user => isForbidden(user, permissions.VIEW_STORE) || true,
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
                     link:     book.storageTransfers,
                     name:     'navigation.transfers',
                 },
@@ -172,29 +172,6 @@ export default {
                     disabled: user => isForbidden(user, permissions.VIEW_STORE) || true,
                     link:     book.storageInventory,
                     name:     'navigation.inventory',
-                },
-                {
-                    key:      '/tracking',
-                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
-                    link:     book.productsTracking,
-                    name:     'Tracking OLD',
-                },
-                {
-                    key:      '/incomes',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_INCOME_STORE_DOCS),
-                    link: book.storageIncomes,
-                    name: 'Incomes OLD',
-                },
-                {
-                    key:      '/expenses',
-                    disabled: user =>
-                        isForbidden(
-                            user,
-                            permissions.ACCESS_EXPENSE_STORE_DOCS,
-                        ),
-                    link: book.storageExpenses,
-                    name: 'Expenses OLD',
                 },
             ],
         },

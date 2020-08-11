@@ -19,14 +19,14 @@ import Styles from './styles.m.css';
 /* eslint-disable complexity */
 export function columnsConfig(
     activeRoute,
-    documentType,
+    listType,
     formatMessage,
     deleteAction,
 ) {
 
     var documentTag; 
     
-    switch (documentType) {
+    switch (listType) {
         case 'ORDER':
             documentTag = 'ORD';
             break;
@@ -35,7 +35,7 @@ export function columnsConfig(
             documentTag = 'INS';
             break;
     
-        case 'EXPENSES':
+        case 'EXPENSE':
             documentTag = 'OUT';
             break;
     
@@ -69,13 +69,19 @@ export function columnsConfig(
         // fixed:     'left',
         render:    (_, document) => (
             <>
-                <Link
-                    to={ `/income-document/${document.id}` }
-                >
-                    {documentType == 'EXPENSES' ? 
-                    document.orderNum :
-                    `${documentTag}-${document.businessId}-${document.supplierDocNumber.padStart(7, '0')}` }
-                </Link>
+            {document.orderId && listType == 'EXPENSE' ? 
+            <Link
+                to={ `/order/${document.orderId}` }
+            >
+                {documentTag + document.orderNum.slice(3)}
+            </Link> :
+            <Link
+                to={ `/storage-document/${document.id}` }
+            >
+                {`${documentTag}-${document.businessId}-${(document.supplierDocNumber || "").padStart(7, '0')}`}
+            </Link>
+            }
+                
             </>
         ),
     };
@@ -88,9 +94,11 @@ export function columnsConfig(
         width:     80,
         render:    (_, document) => (
             <div>
-                { document.createdDatetime
-                    ? moment(document.createdDatetime).format('DD.MM.YYYY HH:mm')
-                    : '-' }
+                {document.createdDatetime ?
+                moment(document.createdDatetime).format('DD.MM.YYYY HH:mm') :
+                listType == 'EXPENSE' ?
+                moment(document.orderDatetime).format('DD.MM.YYYY HH:mm') :
+                <FormattedMessage id='long_dash'/>}
             </div>
         ),
     };;
@@ -118,7 +126,7 @@ export function columnsConfig(
         render:    (_, document) => (
             <div>
                 {document.counterpartBusinessSupplierId ? <FormattedMessage id='storage_document.supplier'/> :
-                document.counterpartClientId ? <FormattedMessage id='storage_document.client'/> :
+                document.counterpartClientId || document.clientId ? <FormattedMessage id='storage_document.client'/> :
                 document.counterpartEmployeeId ? <FormattedMessage id='storage_document.own_consumption'/> :
                 document.warehouseId && document.type == 'EXPENSE' ? <FormattedMessage id='storage_document.inventory'/> :
                 <FormattedMessage id='long_dash'/>}
@@ -176,12 +184,12 @@ export function columnsConfig(
 
     const documentStorageExpensesCol = {
         title:     <FormattedMessage id='storage_document.storage_expenses' />,
-        dataIndex: 'expenses',
-        key:       'expenses',
+        dataIndex: 'expense',
+        key:       'expense',
         width:     80,
         render:    (_, document) => (
             <div>
-                {documentType == 'EXPENSES' ? <FormattedMessage id='storage_document.status_confirmed'/> : <FormattedMessage id='long_dash'/>}
+                {listType == 'EXPENSE' && ( document.warehouseName || <FormattedMessage id='long_dash'/> )}
             </div>
         ),
     };
@@ -193,7 +201,7 @@ export function columnsConfig(
         width:     80,
         render:    (_, document) => (
             <div>
-                {documentType == 'INCOME' ? <FormattedMessage id='storage_document.status_confirmed'/> : <FormattedMessage id='long_dash'/>}
+                {listType == 'INCOME' && ( document.warehouseName || <FormattedMessage id='long_dash'/> )}
             </div>
         ),
     };
@@ -246,7 +254,7 @@ export function columnsConfig(
                 sumCol,
                 documentTypeCol,
                 documentStatusCol,
-                documentStorageExpensesCol,
+                //documentStorageExpensesCol,
                 documentStorageIncomeCol,
                 deleteActionCol,
             ];
@@ -262,7 +270,7 @@ export function columnsConfig(
                 documentTypeCol,
                 documentStatusCol,
                 documentStorageExpensesCol,
-                documentStorageIncomeCol,
+                //documentStorageIncomeCol,
                 deleteActionCol,
             ];
 
