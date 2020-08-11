@@ -274,6 +274,19 @@ export function columnsConfig(
                 deleteActionCol,
             ];
 
+        case '/storage-transfers':
+            return [
+                indexCol,
+                orderCol,
+                datetimeCol,
+                sumCol,
+                documentTypeCol,
+                documentStatusCol,
+                documentStorageExpensesCol,
+                documentStorageIncomeCol,
+                deleteActionCol,
+            ];
+
         
         default:
             return [
