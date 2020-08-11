@@ -43,7 +43,7 @@ class StorageDocumentsFilters extends Component {
             <div className={Styles.filtersWrap}>
                 <div className={Styles.filterRadioButtonGroup}>
                     <Radio.Group
-                        buttonStyle="solid"
+                        //buttonStyle="solid"
                         onChange={(event)=>{
                             documentTypeFilter(event.target.value)
                         }}
@@ -65,7 +65,7 @@ class StorageDocumentsFilters extends Component {
                 </div>
                 <div className={Styles.filterRadioButtonGroup}>
                     <Radio.Group
-                        buttonStyle="solid"
+                        //buttonStyle="solid"
                         onChange={(event)=>{
                             documentStatusFilter(event.target.value)
                         }}
