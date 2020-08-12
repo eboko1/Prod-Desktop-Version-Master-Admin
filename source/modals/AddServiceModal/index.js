@@ -360,7 +360,7 @@ class AddServiceModal extends React.Component{
                         <LaborsNormHourModal
                             user={this.props.user}
                             tecdocId={this.props.tecdocId}
-                            storeGroupId={elem.tmpStoreGroupId}
+                            storeGroupId={elem.tmpStoreGroupId || elem.storeGroupId}
                             onSelect={this.setHours}
                             hours={data}
                         />
