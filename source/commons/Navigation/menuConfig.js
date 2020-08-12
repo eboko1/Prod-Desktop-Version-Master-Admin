@@ -133,37 +133,37 @@ export default {
             items:    [
                 {
                     key:      '/storage-orders',
-                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE) || true,
                     link:     book.storageOrders,
                     name:     'navigation.storage_orders',
                 },
                 {
                     key:      '/storage-incomes',
-                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE) || true,
                     link:     book.storageIncomes,
                     name:     'navigation.incomes',
                 },
                 {
                     key:      '/storage-expenses',
-                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE) || true,
                     link:     book.storageExpenses,
                     name:     'navigation.expenses',
                 },
                 {
                     key:      '/storage-transfers',
-                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE) || true,
                     link:     book.storageTransfers,
                     name:     'navigation.transfers',
                 },
                 {
                     key:      '/storage-balance',
-                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE) || true,
                     link:     book.storageBalance,
                     name:     'navigation.storage_balance',
                 },
                 {
                     key:      '/storage-movement',
-                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE) || true,
                     link:     book.storageMovement,
                     name:     'navigation.storage_movement',
                 },
