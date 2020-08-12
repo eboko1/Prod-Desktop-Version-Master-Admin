@@ -218,7 +218,7 @@
         "add_order_form.delete_confirm": "Видалити?",
         "add_order_form.delivery_date": "Дата видачі",
         "add_order_form.delivery_time": "Час видачі",
-        "add_order_form.applied_on": "Записан на",
+        "add_order_form.applied_on": "Записаний на",
         "order_form_table.station": "Пост",
         "order-form.update_modification_info": "Оновіть, будь ласка, модифікацію автомобіля",
         "order-form.warning": "Увага!",
