@@ -34,35 +34,35 @@ class TecDocInfoModal extends React.Component{
 
         this.columnsTypeB = [
             {
-                title:     'Параметр',
+                title:     <FormattedMessage id="info_modal.parameter" />,
                 key:       'itemmptext',
                 dataIndex: 'itemmptext',
                 width:     '20%',
                 
             },
             {
-                title:     'Значение',
+                title:     <FormattedMessage id="info_modal.value" />,
                 key:       'valuetext',
                 dataIndex: 'valuetext',
                 width:     '15%',
                 
             },
             {
-                title:     'Е/И',
+                title:     <FormattedMessage id="info_modal.units" />,
                 key:       'quantitytext',
                 dataIndex: 'quantitytext',
                 width:     '10%',
                 
             },
             {
-                title:     'Комментарий 1',
+                title:      `${this.props.intl.formatMessage({ id: 'comment' })} 1`,
                 key:       'qualcoltext',
                 dataIndex: 'qualcoltext',
                 width:     '15%',
                 
             },
             {
-                title:     'Комментарий 2',
+                title:     `${this.props.intl.formatMessage({ id: 'comment' })} 2`,
                 key:       'addtext',
                 dataIndex: 'addtext',
                 width:     '15%',
@@ -72,13 +72,14 @@ class TecDocInfoModal extends React.Component{
 
         this.columnsTypeA = [...this.columnsTypeB, 
             {
-                title:     'Кол-во',
+                title:     <FormattedMessage id="order_form_table.count" />,
                 key:       'count',
                 dataIndex: 'count',
                 width:     '5%',
                 render:    (data, elem)=>{
                     return (
                        <InputNumber
+                            disabled
                             min={0}
                             step={1}
                             value={data}
@@ -99,6 +100,7 @@ class TecDocInfoModal extends React.Component{
                 render:    ()=>{
                     return (
                         <Button
+                            disabled
                             type='primary'
                             onClick={()=>{
                                 this.handleCancel();

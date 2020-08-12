@@ -17,7 +17,8 @@
     "order-page.create_copy": "Create copy",
     "order-page.diagnostic": "Diagnostic",
     "order-page.tech_info": "Technical information",
-    "order-page.send_agreement": "Submit cost estimate for approval"
+    "order-page.send_agreement": "Submit cost estimate for approval",
+    "order-page.no_positions": "There are no items to be agreed in the order"
   },
   "ru": {
     "order-page.title": "Заказы",
@@ -37,11 +38,12 @@
     "order-page.create_copy": "Создать копию заказа",
     "order-page.diagnostic": "Диагностика",
     "order-page.tech_info": "Инфо по автомобилю",
-    "order-page.send_agreement": "Послать калькуляцию на согласование"
+    "order-page.send_agreement": "Послать калькуляцию на согласование",
+    "order-page.no_positions": "В заказе нет позиций к согласованию"
   },
   "uk": {
-    "order-page.title": "Транзакции",
-    "order-page.description": "Управление Вашими заказами",
+    "order-page.title": "Транзакції",
+    "order-page.description": "Керування вашими замовленнями",
     "order-page.creation_date": "Дата Створення",
     "order-status.call": "Дзвінок",
     "order-status.not_complete": "Новий",
@@ -57,6 +59,7 @@
     "order-page.create_copy": "Створити копію",
     "order-page.diagnostic": "Діагностика",
     "order-page.tech_info": "Інфо по автомобілю",
-    "order-page.send_agreement": "Відправити калькуляцію на узгодження"
+    "order-page.send_agreement": "Відправити калькуляцію на узгодження",
+    "order-page.no_positions": "В замовленні відсутні позицій до узгодження"
   }
 }

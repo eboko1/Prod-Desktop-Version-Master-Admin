@@ -176,7 +176,9 @@
     "count": "Count",
     "hours": "Hours",
     "description": "Name",
-    "long_dash" : "—"
+    "long_dash" : "—",
+    "message_sent": "Message sent to recipient",
+    "update_price": "Update price"
   },
   "ru": {
     "currency": "грн.",
@@ -355,7 +357,9 @@
     "count": "Кол-во",
     "hours": "Часы",
     "description": "Наименование",
-    "long_dash" : "—"
+    "long_dash" : "—",
+    "message_sent": "Сообщение отправлено",
+    "update_price": "Обновить цену"
   },
   "uk": {
     "currency": "грн.",
@@ -425,9 +429,9 @@
     "monday": "Понеділок",
     "tuesday": "Вівторок",
     "wednesday": "Середа",
-    "thursday": "Четверг",
+    "thursday": "Четвер",
     "friday": "П'ятниця",
-    "saturday": "Суббота",
+    "saturday": "Субота",
     "sunday": "Неділя",
     "enter": "Увійти",
     "comment": "Коментар",
@@ -534,6 +538,8 @@
     "count": "К-сть",
     "hours": "Години",
     "description": "Найменування",
-    "long_dash" : "—"
+    "long_dash" : "—",
+    "message_sent": "Повідомлення відправлено",
+    "update_price": "Оновити вартість"
   }
 }

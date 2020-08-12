@@ -272,7 +272,7 @@ class FavouriteDetailsModal extends React.Component{
                                 `Послезавтра: ${elem.store[2]} шт.\n` +
                                 `Позже: ${elem.store[3]} шт.`;
                         if(elem.store[0] != '0') {
-                            color = 'rgb(81, 205, 102)';
+                            color = 'var(--green)';
                         }
                         else if(elem.store[1] != 0) {
                             color = 'yellow';
@@ -606,7 +606,7 @@ class FavouriteDetailsModal extends React.Component{
                 >
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
-                            <div style={{display: 'block'}}>Узел/деталь</div>
+                            <div style={{display: 'block'}}><FormattedMessage id="order_form_table.diagnostic.detail"/></div>
                         </div>
                         {this.state.fetched ? 
                             <Table

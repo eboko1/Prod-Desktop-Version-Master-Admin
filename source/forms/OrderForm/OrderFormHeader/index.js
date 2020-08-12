@@ -719,6 +719,7 @@ export default class OrderFormHeader extends Component {
         const { fetchedOrder, fields } = this.props;
         const { getFieldDecorator } = this.props.form;
         const { errors, totalPrice, cashSum, remainPrice } = this.props;
+        const mask = '0,0.00';
 
         return (
             <div className={Styles.headerCol}>
@@ -727,6 +728,7 @@ export default class OrderFormHeader extends Component {
                         <span className={Styles.sumWrapper}>
                             <FormattedMessage id="sum" />
                             <Numeral
+                                mask={mask}
                                 className={Styles.sumNumeral}
                                 nullText="0"
                                 currency={this.props.intl.formatMessage({
@@ -739,6 +741,7 @@ export default class OrderFormHeader extends Component {
                         <span className={Styles.sumWrapper}>
                             <FormattedMessage id="paid" />
                             <Numeral
+                                mask={mask}
                                 className={Styles.sumNumeral}
                                 nullText="0"
                                 currency={this.props.intl.formatMessage({
@@ -760,6 +763,7 @@ export default class OrderFormHeader extends Component {
                     >
                         <FormattedMessage id="remain" />
                         <Numeral
+                            mask={mask}
                             className={Styles.totalSum}
                             currency={this.props.intl.formatMessage({
                                 id: "currency",

@@ -55,6 +55,7 @@ import ClientContainer from 'containers/ClientContainer/messages';
 import ClientRequisitesContainer from 'containers/ClientRequisitesContainer/messages';
 import ClientsContainer from 'containers/ClientsContainer/messages';
 import ReviewsContainer from 'containers/ReviewsContainer/messages';
+import StorageDocumentsContainer from 'containers/StorageDocumentsContainer/messages';
 
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
@@ -97,6 +98,7 @@ import InviteModal from 'modals/InviteModal/messages';
 import UniversalChartModal from 'modals/UniversalChartModal/messages';
 import ConfirmRescheduleModal from 'modals/ConfirmRescheduleModal/messages';
 import SupplierModal from 'modals/SupplierModal/messages';
+import TecDocInfoModal from 'modals/TecDocInfoModal/messages'
 
 // components
 import StatusIcons from 'components/StatusIcons/messages';
@@ -171,6 +173,7 @@ const messages = merge.all([
     ClientContainer,
     ClientRequisitesContainer,
     ReviewsContainer,
+    StorageDocumentsContainer,
     // forms
     ProfileForm,
     UniversalFiltersForm,
@@ -205,6 +208,7 @@ const messages = merge.all([
     UniversalChartModal,
     ConfirmRescheduleModal,
     SupplierModal,
+    TecDocInfoModal,
     // components
     StatusIcons,
     OrderFormTables,

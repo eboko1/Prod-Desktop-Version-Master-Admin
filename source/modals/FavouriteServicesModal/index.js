@@ -448,9 +448,7 @@ class FavouriteServicesModal extends React.Component{
     fetchData() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/orders/frequent/labors`;
-        url += params;
+        let url = __API_URL__ + `/orders/frequent/labors`;
         fetch(url, {
             method: 'GET',
             headers: {
@@ -482,88 +480,12 @@ class FavouriteServicesModal extends React.Component{
         .catch(function (error) {
             console.log('error', error)
         });
-
-        params = `/labors`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            data.labors.map((elem, index)=>{
-                elem.key = index;
-                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
-            })
-            that.labors = data.labors;
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        params = `/labors/master?makeTree=true`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.masterLabors = data.masterLabors;
-            that.buildLaborsTree();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        params = `/store_groups`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.storeGroups = data;
-            that.buildStoreGroupsTree();
-            that.getOptions();
-            that.setState({
-                update: true
-            })
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
+        this.masterLabors = this.props.masterLabors;
+        this.labors = this.props.labors;
+        this.storeGroups = this.props.details;
+        this.buildLaborsTree();
+        this.buildStoreGroupsTree();
+        this.getOptions();
     }
 
     buildStoreGroupsTree() {
@@ -652,7 +574,7 @@ class FavouriteServicesModal extends React.Component{
     }
 
     getOptions() {
-        this.servicesOptions = this.labors.map((elem, index)=>(
+        this.servicesOptions = this.props.labors.map((elem, index)=>(
             <Option key={index} value={elem.laborId} master_id={elem.masterLaborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
                 {elem.name ? elem.name : elem.defaultName}
             </Option>

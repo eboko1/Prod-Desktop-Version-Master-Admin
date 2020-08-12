@@ -27,6 +27,7 @@ class ConfirmDiagnosticModal extends React.Component{
             allDetails: null,
             servicesList: [],
             detailsList: [],
+            autoConfirmed: false,
         }
         this.tmp = {};
         this.servicesOptions = null;
@@ -173,36 +174,7 @@ class ConfirmDiagnosticModal extends React.Component{
     fetchOptionsSourceData() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/labors`;
-        url += params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.setState({
-                labors: data,
-            });
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        url = API_URL;
-        params = `/store_groups?keepFlat=true`;
-        url += params;
+        let url = __API_URL__ + `/store_groups?keepFlat=true`;
         fetch(url, {
             method: 'GET',
             headers: {
@@ -221,6 +193,7 @@ class ConfirmDiagnosticModal extends React.Component{
         .then(function (data) {
             that.setState({
                 allDetails: data,
+                labors: that.props.labors,
             });
         })
         .catch(function (error) {
@@ -258,7 +231,7 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     addServicesByLaborId(id, index = -1, commentary, status) {
-        const service = this.state.labors.labors.find(x => x.laborId == id);
+        const service = this.props.labors.find(x => x.laborId == id);
         if(service == undefined) return;
 
         if(index == -1) {
@@ -343,7 +316,7 @@ class ConfirmDiagnosticModal extends React.Component{
 
 
     changeResolved(index, type) {
-        this.state.diagnosticList[index].resolved = type=='disabled'?true:!this.state.diagnosticList[index].resolved;
+        this.state.diagnosticList[index].resolved = type=='disabled' ? true : !this.state.diagnosticList[index].resolved;
         this.state.diagnosticList[index].type = type;
         this.setState({
             update: true,
@@ -438,6 +411,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 detailArrat.push(detailObjCopy);
             })
             that.setState({
+                autoConfirmed: true,
                 servicesList: serviceArray,
                 detailsList: detailArrat,
             })
@@ -600,7 +574,7 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getServicesOptions() {
         const { Option } = Select;
-        return this.state.labors.labors.map(
+        return this.props.labors.map(
             (data, index) => (
                 <Option
                     value={ String(data.laborId) }
@@ -858,8 +832,8 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     render() {
-        const { visible } = this.state;
-        const { isMobile } = this.props;
+        const { visible, autoConfirmed } = this.state;
+        const { isMobile, disabled } = this.props;
         const { TabPane } = Tabs;
         return (
             <div>
@@ -870,11 +844,13 @@ class ConfirmDiagnosticModal extends React.Component{
                         type="primary"
                         onClick={()=>{
                             notification.success({
-                                message: 'Сообщение отправлено!',
+                                message: this.props.intl.formatMessage({
+                                    id: `message_sent`,
+                                }),
                             });
                             sendMessage(this.props.orderId);
                         }}
-                        disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
+                        disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM) || disabled}
                     >
                         <FormattedMessage id='end'/>
                     </Button>
@@ -884,7 +860,7 @@ class ConfirmDiagnosticModal extends React.Component{
                             style={{ width: "35%", marginRight: 5 }}
                             type="primary"
                             onClick={this.showModal}
-                            disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW)}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW) || disabled}
                         >
                             <FormattedMessage id='order_form_table.diagnostic.create_order'/>
                         </Button>
@@ -893,11 +869,13 @@ class ConfirmDiagnosticModal extends React.Component{
                             type="primary"
                             onClick={()=>{
                                 notification.success({
-                                    message: 'Сообщение отправлено!',
+                                    message: this.props.intl.formatMessage({
+                                        id: `message_sent`,
+                                    }),
                                 });
                                 sendMessage(this.props.orderId);
                             }}
-                            disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM) || disabled}
                         >
                             <FormattedMessage id='end'/>
                         </Button>
@@ -924,8 +902,11 @@ class ConfirmDiagnosticModal extends React.Component{
                             <div className={Styles.confirm_diagnostic_modal_element_title} style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                                 <FormattedMessage id='order_form_table.diagnostic.results' />
                                 <Button
+                                    disabled={autoConfirmed}
                                     type="primary"
-                                    onClick={()=>{this.automaticlyConfirmDiagnostic()}}
+                                    onClick={()=>{
+                                        this.automaticlyConfirmDiagnostic()
+                                    }}
                                     title={this.props.intl.formatMessage({id: "confirm_diagnostic_modal.auto"})}
                                 >
                                     <FormattedMessage id='order_form_table.diagnostic.automaticly' />

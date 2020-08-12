@@ -12,15 +12,15 @@
     display: flex;
     justify-content: space-between;
     background: white;
-    position: fixed;
     z-index: 130;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     box-sizing: border-box;
-    width: calc(100% - 256px);
+    width: 100%;
     padding: 10px 16px;
     top: 128px;
 }
+
 
 .buttonFilterGroup {
     flex: 1 1 60%;

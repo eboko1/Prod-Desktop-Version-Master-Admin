@@ -26,7 +26,12 @@
     width: calc(100% - 80px);
 }
 
+@media screen and (max-width: 1199px) {
+    .filtersCollapsed {
+        width: 100%;
+    }
+}
+
 .table {
-    padding: 140px 0 0 0;
-    margin: 0 16px;
+    padding: 116px 0 0 0;
 }

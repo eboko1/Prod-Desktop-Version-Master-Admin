@@ -522,7 +522,7 @@ class OrderPage extends Component {
                             <div title={this.props.intl.formatMessage({id: "order-page.send_agreement"})}>
                                 <Popconfirm
                                     title={
-                                        'Отправить сообщение клиенту?'
+                                        `${this.props.intl.formatMessage({id: 'send_message'})}?`
                                     }
                                     onConfirm={async ()=>{
                                         var data = {
@@ -545,12 +545,16 @@ class OrderPage extends Component {
                                         });
                                         const confirmFunc = ()=>{
                                             notification.success({
-                                                message: 'Сообщение отправлено!',
+                                                message: this.props.intl.formatMessage({
+                                                    id: `message_sent`,
+                                                }),
                                             });
                                         };
                                         const errorFunc = ()=>{
                                             notification.error({
-                                                message: 'В заказе нет позиций к согласованию!',
+                                                message: this.props.intl.formatMessage({
+                                                    id: `order-page.no_positions`,
+                                                }),
                                             });
                                         };
                                         await createAgreement(this.props.order.id, this.props.user.language, confirmFunc, errorFunc);

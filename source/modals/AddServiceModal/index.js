@@ -136,7 +136,7 @@ class AddServiceModal extends React.Component{
                                 this.state.mainTableSource[0].laborId = value;
                                 this.state.mainTableSource[0].serviceName = option.props.children;
                                 //this.state.mainTableSource[0].masterLaborId = option.props.master_id;
-                                //this.state.mainTableSource[0].storeGroupId = option.props.product_id;
+                                this.state.mainTableSource[0].tmpStoreGroupId = option.props.product_id;
                                 this.state.mainTableSource[0].count = count;
                                 this.state.mainTableSource[0].price = price;
                                 this.state.mainTableSource[0].sum = price * count;
@@ -360,7 +360,7 @@ class AddServiceModal extends React.Component{
                         <LaborsNormHourModal
                             user={this.props.user}
                             tecdocId={this.props.tecdocId}
-                            storeGroupId={elem.storeGroupId}
+                            storeGroupId={elem.tmpStoreGroupId || elem.storeGroupId}
                             onSelect={this.setHours}
                             hours={data}
                         />
@@ -506,87 +506,12 @@ class AddServiceModal extends React.Component{
     }
 
     fetchData() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/labors`;
-        url += params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            data.labors.map((elem, index)=>{
-                elem.key = index;
-                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
-            })
-            that.labors = data.labors;
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        params = `/labors/master?makeTree=true`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.masterLabors = data.masterLabors;
-            that.buildLaborsTree();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        params = `/store_groups`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.storeGroups = data;
-            that.buildStoreGroupsTree();
-            that.getOptions();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
+        this.masterLabors = this.props.masterLabors;
+        this.labors = this.props.labors;
+        this.storeGroups = this.props.details;
+        this.buildLaborsTree();
+        this.buildStoreGroupsTree();
+        this.getOptions();
     }
 
     buildStoreGroupsTree() {
@@ -741,7 +666,7 @@ class AddServiceModal extends React.Component{
                         />
                     </div>
                     <div style={{marginTop: 15}}>
-                        Сопутствующие: детали
+                        <FormattedMessage id="add_order_form.related"/>: <FormattedMessage id="add_order_form.details"/>
                         <Checkbox
                             style={{marginLeft: 5}}
                             disabled
