@@ -146,7 +146,6 @@ class AgreementPage extends Component {
         const { dataSource, confirmed, loading } = this.state;
         const { business, manager } = this;
         const { formatMessage } = this.props.intl;
-        const totalSum = Math.round((this.servicesTotal + this.detailsTotal)*10)/10;
 
         if(loading) {
             return (
@@ -208,6 +207,7 @@ class AgreementPage extends Component {
                 />
             )
         });
+        const totalSum = Math.round((this.servicesTotal + this.detailsTotal)*10)/10;
         return isMobile ? (
             <div className={Styles.agreementPage}>
                 <div className={Styles.agreementHeader}>

@@ -358,7 +358,7 @@ class OrderPage extends Component {
                         brandName: detail.brandName ? detail.brandName : null,
                         purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
                         count: detail.count ? detail.count : 1,
-                        price: detail.price ? Math.round(detail.price*10)/10 : 1,
+                        price: Math.round(detail.price*10)/10,
                         comment: detail.comment || {
                             comment: undefined,
                             positions: [],
@@ -373,7 +373,7 @@ class OrderPage extends Component {
                         serviceHours: labor.hours ? labor.hours : 0,
                         purchasePrice: labor.purchasePrice ? Math.round(labor.purchasePrice*10)/10 : 0,
                         count: labor.count ? labor.count : 1,
-                        servicePrice: labor.price ? Math.round(labor.price*10)/10 : 1,
+                        servicePrice: Math.round(labor.price*10)/10,
                         comment: labor.comment || {
                             comment: undefined,
                             positions: [],
