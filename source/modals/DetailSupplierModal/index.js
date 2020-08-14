@@ -8,6 +8,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
 import { permissions, isForbidden } from "utils";
+import { AvailabilityIndicator } from 'components';
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
@@ -100,36 +101,15 @@ class DetailSupplierModal extends React.Component{
                 sorter: (a, b) => Number(a.availableIn0) - Number(b.availableIn0),
                 sortDirections: ['descend', 'ascend'],
                 render: (elem)=>{
-                    let color = 'brown',
-                    title = 'Поставщик не выбран!';
-                    if(elem){
-                        title=  `Сегодня: ${elem.availableIn0} шт.\n` +
-                                `Завтра: ${elem.availableIn1} шт.\n` +
-                                `Послезавтра: ${elem.availableIn2} шт.\n` +
-                                `Позже: ${elem.availableIn3} шт.`;
-                        if(elem.availableIn0 != '0') {
-                            color = 'var(--green)';
-                        }
-                        else if(elem.availableIn1 != 0) {
-                            color = 'yellow';
-                        }
-                        else if(elem.availableIn2 != 0) {
-                            color = 'orange';
-                        }
-                        else if(elem.availableIn3 != 0) {
-                            color = 'red';
-                        }
-                    }
-                    else {
-                        color = 'grey';
-                        
-                    }
-                    
                     return (
-                        <div
-                            style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: color}}
-                            title={title}
-                        ></div>
+                        <AvailabilityIndicator
+                            indexArray={[
+                                elem.availableIn0,
+                                elem.availableIn1,
+                                elem.availableIn2,
+                                elem.availableIn3,
+                            ]}
+                        />
                     )
                 }
             },

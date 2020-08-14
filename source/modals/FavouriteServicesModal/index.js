@@ -58,7 +58,7 @@ class FavouriteServicesModal extends React.Component{
                             style={{maxWidth: 220}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.laborsTreeData}
+                            treeData={this.props.laborsTreeData}
                             filterTreeNode={(input, node) => {
                                 return (
                                     node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -480,10 +480,8 @@ class FavouriteServicesModal extends React.Component{
         .catch(function (error) {
             console.log('error', error)
         });
-        this.masterLabors = this.props.masterLabors;
         this.labors = this.props.labors;
         this.storeGroups = this.props.details;
-        this.buildLaborsTree();
         this.buildStoreGroupsTree();
         this.getOptions();
     }
@@ -534,43 +532,6 @@ class FavouriteServicesModal extends React.Component{
             }
         }
         this.storeGroupsTreeData = treeData;
-    }
-
-    buildLaborsTree() {
-        var treeData = [];
-        for(let i = 0; i < this.masterLabors.length; i++) {
-            const parentGroup = this.masterLabors[i];
-            treeData.push({
-                title: `${parentGroup.defaultMasterLaborName} (#${parentGroup.masterLaborId})`,
-                name: parentGroup.defaultMasterLaborName,
-                value: parentGroup.masterLaborId,
-                className: Styles.groupTreeOption,
-                key: `${i}`,
-                children: [],
-            })
-            for(let j = 0; j < parentGroup.childGroups.length; j++) {
-                const childGroup = parentGroup.childGroups[j];
-                treeData[i].children.push({
-                    title: `${childGroup.defaultMasterLaborName} (#${childGroup.masterLaborId})`,
-                    name: childGroup.defaultMasterLaborName,
-                    value: childGroup.masterLaborId,
-                    className: Styles.groupTreeOption,
-                    key: `${i}-${j}`,
-                    children: [],
-                })
-                for(let k = 0; k < childGroup.childGroups.length; k++) {
-                    const lastNode = childGroup.childGroups[k];
-                    treeData[i].children[j].children.push({
-                        title: `${lastNode.defaultMasterLaborName} (#${lastNode.masterLaborId})`,
-                        name: lastNode.defaultMasterLaborName,
-                        value: lastNode.masterLaborId,
-                        className: Styles.groupTreeOption,
-                        key: `${i}-${j}-${k}`,
-                    })
-                }
-            }
-        }
-        this.laborsTreeData = treeData;
     }
 
     getOptions() {

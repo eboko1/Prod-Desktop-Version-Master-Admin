@@ -28,6 +28,7 @@ class ServicesTable extends Component {
         this.updateLabor = this.updateLabor.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
         this.masterLabors = [];
+        this.laborsTreeData = [];
 
         this.columns = [
             {
@@ -83,7 +84,7 @@ class ServicesTable extends Component {
                                     updateDataSource={this.updateDataSource}
                                     employees={this.props.employees}
                                     user={this.props.user}
-                                    masterLabors={this.masterLabors}
+                                    laborsTreeData={this.laborsTreeData}
                                     labors={this.props.labors}
                                     details={this.props.details}
                                 />
@@ -521,10 +522,53 @@ class ServicesTable extends Component {
         })
         .then(function (data) {
             that.masterLabors = data.masterLabors;
+            that.buildLaborsTree();
         })
         .catch(function (error) {
             console.log('error', error)
         });
+    }
+
+    buildLaborsTree() {
+        var treeData = [];
+        for(let i = 0; i < this.masterLabors.length; i++) {
+            const parentGroup = this.masterLabors[i];
+            treeData.push({
+                title: `${parentGroup.defaultMasterLaborName} (#${parentGroup.masterLaborId})`,
+                name: parentGroup.defaultMasterLaborName,
+                value: parentGroup.masterLaborId,
+                className: Styles.groupTreeOption,
+                key: `${i}`,
+                selectable: false,
+                children: [],
+            })
+            for(let j = 0; j < parentGroup.childGroups.length; j++) {
+                const childGroup = parentGroup.childGroups[j];
+                treeData[i].children.push({
+                    title: `${childGroup.defaultMasterLaborName} (#${childGroup.masterLaborId})`,
+                    name: childGroup.defaultMasterLaborName,
+                    value: childGroup.masterLaborId,
+                    className: Styles.groupTreeOption,
+                    key: `${i}-${j}`,
+                    selectable: false,
+                    children: [],
+                })
+                for(let k = 0; k < childGroup.childGroups.length; k++) {
+                    const lastNode = childGroup.childGroups[k];
+                    treeData[i].children[j].children.push({
+                        title: `${lastNode.defaultMasterLaborName} (#${lastNode.masterLaborId})`,
+                        name: lastNode.defaultMasterLaborName,
+                        value: lastNode.masterLaborId,
+                        className: Styles.groupTreeOption,
+                        key: `${i}-${j}-${k}`,
+                    })
+                }
+            }
+        }
+        this.laborsTreeData = treeData;
+        this.setState({
+            update: true,
+        })
     }
 
     componentDidMount() {
@@ -578,7 +622,7 @@ class ServicesTable extends Component {
                     hideModal={()=>this.hideServicelProductModal()}
                     orderId={this.props.orderId}
                     tecdocId={this.props.tecdocId}
-                    masterLabors={this.masterLabors}
+                    laborsTreeData={this.laborsTreeData}
                     labors={this.props.labors}
                     details={this.props.details}
                 />

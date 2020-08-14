@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import { Link } from "react-router-dom";
 import { Form, Button, Input, Select, Modal, Icon, Upload, notification, InputNumber } from 'antd';
 import { v4 } from 'uuid';
 import _ from 'lodash';
@@ -19,6 +20,7 @@ import {
 
 // proj
 // import { onChangeMobileRecordForm } from 'core/forms/mobileRecordForm/duck';
+import book from "routes/book";
 import {
     onChangeOrderForm,
 } from 'core/forms/orderForm/duck';
@@ -105,7 +107,7 @@ export class MobileRecordForm extends Component {
                     { status !== 'cancel' && (
                         <Button
                             className={ Styles.mobileRecordSubmitBtn }
-                            onClick={ () => onStatusChange('cancel') }
+                            onClick={ () => onStatusChange(status, undefined, undefined,`${book.dashboard}`) }
                         >
                             <FormattedMessage id='close' />
                         </Button>
@@ -531,7 +533,7 @@ class MobileDiagnostic extends Component {
 
     getDiagnosticElementsByTitle(title) {
         const dataSource = this.state.dataSource;
-        return dataSource.map((data)=>{
+        return dataSource.map((data, key)=>{
             let color = "";
             if(data.status == 1) {
                 color = "rgb(200,225,180)";
@@ -544,7 +546,7 @@ class MobileDiagnostic extends Component {
             }
             if(data.plan == title) {
                 return  (
-                    <div className={Styles.diagnostic} style={{backgroundColor: color}}>
+                    <div className={Styles.diagnostic} style={{backgroundColor: color}} key={key}>
                         <div className={Styles.diagnostic_key}>{data.key}</div>                           
                         <div className={Styles.diagnistic_info}>
                             <div className={Styles.diagnistic_info_up}>
@@ -608,8 +610,8 @@ class MobileDiagnostic extends Component {
             }
         }
         
-        return diagnosicTitles.map((data)=>
-            <div>
+        return diagnosicTitles.map((data, key)=>
+            <div key={key}>
                 <div className={Styles.diagnostic_title}>{data}</div>
                 {this.getDiagnosticElementsByTitle(data)}
             </div>)

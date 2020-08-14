@@ -276,6 +276,7 @@ class DiagnosticPatternsPage extends Component {
                 let templateIndex = resultData.findIndex((elem)=>elem.diagnosticTemplateTitle==part.diagnosticTemplateTitle);
                 if(templateIndex == -1) {
                     resultData.push({
+                        diagnosticTemplateId: part.diagnosticTemplateId,
                         diagnosticTemplateTitle: part.diagnosticTemplateTitle,
                         groups: [],
                     })
@@ -288,6 +289,7 @@ class DiagnosticPatternsPage extends Component {
                 let groupIndex = resultData[templateIndex].groups.findIndex((elem)=>elem.groupTitle==part.groupTitle);
                 if(groupIndex == -1) {
                     resultData[templateIndex].groups.push({
+                        groupId: part.groupId,
                         groupTitle: part.groupTitle,
                         partIds: [],
                     })
