@@ -32,10 +32,7 @@ const mapDispatchToProps = {
 
 @withResponsive()
 @withRouter
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export class LayoutComponent extends Component {
     static defaultProps = {
         paper: true,

@@ -112,8 +112,5 @@ const mapDispatchToProps = {
 };
 
 export const ProductsExcelTable = injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(ProductsExcelTableComponent),
+    connect(mapStateToProps, mapDispatchToProps)(ProductsExcelTableComponent),
 );

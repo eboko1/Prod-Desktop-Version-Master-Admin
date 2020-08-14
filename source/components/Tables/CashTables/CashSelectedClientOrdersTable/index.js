@@ -28,10 +28,7 @@ const mapDispatchToProps = {
     fetchSearchOrder,
 };
 
-@connect(
-    null,
-    mapDispatchToProps,
-)
+@connect(null, mapDispatchToProps)
 @injectIntl
 export class CashSelectedClientOrdersTable extends Component {
     constructor(props) {

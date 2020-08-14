@@ -99,9 +99,11 @@ const ProductsExcelFormComponent = memo(props => {
 
     const _renderButtonGroup = () => {
         const availableToSubmit = !_.isEmpty(
-            props.invalidProductsExcel ? props.invalidProductsExcel.filter(
-                product => !product.alreadyExists,
-            ) : [],
+            props.invalidProductsExcel
+                ? props.invalidProductsExcel.filter(
+                    product => !product.alreadyExists,
+                )
+                : [],
         );
 
         return (
@@ -165,8 +167,7 @@ const mapStateToProps = state => ({
 });
 
 export const ProductsExcelForm = injectIntl(
-    connect(
-        mapStateToProps,
-        { productsExcelImport, productsExcelImportReset },
-    )(Form.create()(ProductsExcelFormComponent)),
+    connect(mapStateToProps, { productsExcelImport, productsExcelImportReset })(
+        Form.create()(ProductsExcelFormComponent),
+    ),
 );

@@ -1,20 +1,20 @@
 // vendor
-import React, { Component } from 'react';
-import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
-import { Table, Rate, Radio, Icon } from 'antd';
-import moment from 'moment';
-import { v4 } from 'uuid';
-import classNames from 'classnames/bind';
+import React, { Component } from "react";
+import { withRouter } from "react-router";
+import { Link } from "react-router-dom";
+import { FormattedMessage } from "react-intl";
+import { Table, Rate, Radio, Icon } from "antd";
+import moment from "moment";
+import { v4 } from "uuid";
+import classNames from "classnames/bind";
 
 // proj
-import { Catcher } from 'commons';
-import book from 'routes/book';
+import { Catcher } from "commons";
+import book from "routes/book";
 // import { permissions, isForbidden } from 'utils';
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -26,75 +26,75 @@ export default class EmployeesTable extends Component {
         super(props);
         this.columns = [
             {
-                title:     <FormattedMessage id='employee-table.employee' />,
-                dataIndex: 'name',
-                width:     '25%',
-                render:    (text, record) => (
+                title: <FormattedMessage id="employee-table.employee" />,
+                dataIndex: "name",
+                width: "25%",
+                render: (text, record) => (
                     <div>
                         <Link
-                            className={ Styles.employeeName }
-                            to={ book.editEmployee.replace(':id', record.id) }
+                            className={Styles.employeeName}
+                            to={book.editEmployee.replace(":id", record.id)}
                         >
-                            { `${record.name} ${record.surname}` }
-                            <div className={ Styles.jobTitle }>
-                                { record.jobTitle }
+                            {`${record.name} ${record.surname}`}
+                            <div className={Styles.jobTitle}>
+                                {record.jobTitle}
                             </div>
                         </Link>
                     </div>
                 ),
             },
             {
-                title:     <FormattedMessage id='employee-table.status' />,
-                dataIndex: 'fireDate',
-                width:     '20%',
-                render:    (data, record) =>
+                title: <FormattedMessage id="employee-table.status" />,
+                dataIndex: "fireDate",
+                width: "20%",
+                render: (data, record) =>
                     record.fireDate ? (
-                        <div className={ Styles.fired }>
-                            <FormattedMessage id='employee-table.fired' />
-                            <div className={ Styles.fireReason }>
-                                { record.fireReason }
+                        <div className={Styles.fired}>
+                            <FormattedMessage id="employee-table.fired" />
+                            <div className={Styles.fireReason}>
+                                {record.fireReason}
                             </div>
                         </div>
                     ) : (
-                        <div className={ Styles.working }>
-                            <FormattedMessage id='employee-table.working' />
+                        <div className={Styles.working}>
+                            <FormattedMessage id="employee-table.working" />
                         </div>
                     ),
             },
             {
-                title:     <FormattedMessage id='employee-table.manager' />,
-                dataIndex: 'isManager',
-                width:     '10%',
-                render:    (isManager, { managerEnabled }) =>
+                title: <FormattedMessage id="employee-table.manager" />,
+                dataIndex: "isManager",
+                width: "10%",
+                render: (isManager, { managerEnabled }) =>
                     isManager ? (
                         <Icon
-                            type='check-circle'
-                            className={ this._managerIconClassName(
+                            type="check-circle"
+                            className={this._managerIconClassName(
                                 managerEnabled,
-                            ) }
+                            )}
                         />
                     ) : null,
             },
             {
-                title:     <FormattedMessage id='employee-table.hire_date' />,
-                dataIndex: 'hireDate',
-                width:     '25%',
-                render:    (text, record) => (
+                title: <FormattedMessage id="employee-table.hire_date" />,
+                dataIndex: "hireDate",
+                width: "25%",
+                render: (text, record) => (
                     <div>
-                        { record.hireDate &&
-                            moment(record.hireDate).format('DD.MM.YYYY') }
-                        { record.fireDate &&
+                        {record.hireDate &&
+                            moment(record.hireDate).format("DD.MM.YYYY")}
+                        {record.fireDate &&
                             ` - ${moment(record.fireDate).format(
-                                'DD.MM.YYYY',
-                            )}` }
+                                "DD.MM.YYYY",
+                            )}`}
                     </div>
                 ),
             },
             {
-                title:     <FormattedMessage id='employee-table.rating' />,
-                dataIndex: 'rating',
-                width:     '20%',
-                render:    value => value && this._renderRatingStars(value),
+                title: <FormattedMessage id="employee-table.rating" />,
+                dataIndex: "rating",
+                width: "20%",
+                render: value => value && this._renderRatingStars(value),
             },
         ];
     }
@@ -107,7 +107,7 @@ export default class EmployeesTable extends Component {
     _managerIconClassName = enabled =>
         cx({
             managerIconDisabled: !enabled,
-            managerIcon:         true,
+            managerIcon: true,
         });
 
     render() {
@@ -117,23 +117,23 @@ export default class EmployeesTable extends Component {
 
         return (
             <Catcher>
-                { statusFilter }
+                {statusFilter}
                 <Table
                     dataSource={
                         employees && employees.length > 0
                             ? employees.map((task, index) => ({
-                                ...task,
-                                index,
-                                key: v4(),
-                            }))
+                                  ...task,
+                                  index,
+                                  key: v4(),
+                              }))
                             : null
                     }
-                    columns={ columns }
-                    scroll={ { x: 840 } }
-                    pagination={ false }
-                    locale={ {
-                        emptyText: <FormattedMessage id='no_data' />,
-                    } }
+                    columns={columns}
+                    scroll={{ x: 840 }}
+                    pagination={false}
+                    locale={{
+                        emptyText: <FormattedMessage id="no_data" />,
+                    }}
                 />
             </Catcher>
         );
@@ -143,10 +143,10 @@ export default class EmployeesTable extends Component {
         const value = rating / 2;
         const ratingStarts = (
             <Rate
-                className={ Styles.ratingStars }
+                className={Styles.ratingStars}
                 allowHalf
                 disabled
-                defaultValue={ value }
+                defaultValue={value}
             />
         );
 
@@ -157,39 +157,39 @@ export default class EmployeesTable extends Component {
         const { status } = this.props;
 
         return (
-            <RadioGroup value={ status }>
+            <RadioGroup value={status}>
                 <RadioButton
-                    value='all'
-                    onClick={ () =>
+                    value="all"
+                    onClick={() =>
                         this._setEmployeesFilterStatus({
-                            status:   'all',
+                            status: "all",
                             disabled: null,
                         })
                     }
                 >
-                    <FormattedMessage id='all' />
+                    <FormattedMessage id="all" />
                 </RadioButton>
                 <RadioButton
-                    value='working'
-                    onClick={ () =>
+                    value="working"
+                    onClick={() =>
                         this._setEmployeesFilterStatus({
-                            status:   'working',
+                            status: "working",
                             disabled: false,
                         })
                     }
                 >
-                    <FormattedMessage id='employee-table.filter.working' />
+                    <FormattedMessage id="employee-table.filter.working" />
                 </RadioButton>
                 <RadioButton
-                    value='fired'
-                    onClick={ () =>
+                    value="fired"
+                    onClick={() =>
                         this._setEmployeesFilterStatus({
-                            status:   'fired',
+                            status: "fired",
                             disabled: true,
                         })
                     }
                 >
-                    <FormattedMessage id='employee-table.filter.fired' />
+                    <FormattedMessage id="employee-table.filter.fired" />
                 </RadioButton>
             </RadioGroup>
         );

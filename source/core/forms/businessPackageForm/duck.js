@@ -6,7 +6,6 @@ const prefix = `cpb/${moduleName}`;
 
 export const ON_CHANGE_BUSINESS_PACKAGE_FORM = `${prefix}/ON_CHANGE_BUSINESS_PACKAGE_FORM`;
 
-
 /**
  * Reducer
  * */

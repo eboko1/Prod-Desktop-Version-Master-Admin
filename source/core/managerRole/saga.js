@@ -86,5 +86,10 @@ function* updateManagerRoleSaga({
 }
 
 export function* saga() {
-    yield all([ takeLatest(SET_MANAGER_SEARCH_FILTER, setSearchQuerySaga), call(fetchManagerRolesSaga), takeEvery(UPDATE_MANAGER_ROLE, updateManagerRoleSaga), takeEvery([ SET_FILTERS, SET_SORT, SET_PAGE ], refetchManagerRolesSaga) ]);
+    yield all([
+        takeLatest(SET_MANAGER_SEARCH_FILTER, setSearchQuerySaga),
+        call(fetchManagerRolesSaga),
+        takeEvery(UPDATE_MANAGER_ROLE, updateManagerRoleSaga),
+        takeEvery([ SET_FILTERS, SET_SORT, SET_PAGE ], refetchManagerRolesSaga),
+    ]);
 }

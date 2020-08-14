@@ -66,16 +66,26 @@ class ChangeStatusDropdown extends React.Component {
                 action: () => setModal(modals.TO_SUCCESS),
             };
 
-            const statuses = [ changeToReserve, changeToRequired, changeToNotComplete, changeToApprove, changeToProgress, changeToSuccess ];
+            const statuses = [
+                changeToReserve,
+                changeToRequired,
+                changeToNotComplete,
+                changeToApprove,
+                changeToProgress,
+                changeToSuccess,
+            ];
             const appointments = [ 'required', 'not_complete', 'reserve' ];
             const approves = [ 'approve' ];
-            const statusesChain = [[ 'call', 'invite' ], appointments, approves, 'progress', 'success' ];
+            const statusesChain = [
+                [ 'call', 'invite' ],
+                appointments,
+                approves,
+                'progress',
+                'success',
+            ];
 
-            const statusIndex = _.findIndex(
-                statusesChain,
-                elem =>
-                    _.isArray(elem) ? elem.includes(status) : elem === status,
-            );
+            const statusIndex = _.findIndex(statusesChain, elem =>
+                _.isArray(elem) ? elem.includes(status) : elem === status);
 
             const suggestStatus = ~statusIndex
                 ? _.flatten(statusesChain.slice(statusIndex + 1))

@@ -7,9 +7,11 @@ import { fetchAPI } from 'utils';
 // own
 import { fetchClient } from '../client/duck';
 
-
-import { CREATE_CLIENT_REQUISITE, UPDATE_CLIENT_REQUISITE, DELETE_CLIENT_REQUISITE } from './duck';
-
+import {
+    CREATE_CLIENT_REQUISITE,
+    UPDATE_CLIENT_REQUISITE,
+    DELETE_CLIENT_REQUISITE,
+} from './duck';
 
 export function* updateClientRequisiteSaga() {
     while (true) {
@@ -30,7 +32,13 @@ export function* createClientRequisiteSaga() {
         } = yield take(CREATE_CLIENT_REQUISITE);
         const payload = { ...entity };
 
-        yield call(fetchAPI, 'POST', `clients/${clientId}/requisites`, null, payload);
+        yield call(
+            fetchAPI,
+            'POST',
+            `clients/${clientId}/requisites`,
+            null,
+            payload,
+        );
 
         yield put(fetchClient(clientId));
     }

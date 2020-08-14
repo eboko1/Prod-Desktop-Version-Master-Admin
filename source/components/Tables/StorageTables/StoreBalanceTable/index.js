@@ -82,8 +82,5 @@ const mapDispatchToProps = {
 };
 
 export const StoreBalanceTable = injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(StoreBalanceTableComponent),
+    connect(mapStateToProps, mapDispatchToProps)(StoreBalanceTableComponent),
 );

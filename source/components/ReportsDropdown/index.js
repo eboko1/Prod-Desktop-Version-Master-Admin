@@ -92,14 +92,18 @@ class ReportsDropdown extends React.Component {
                 <Menu.Item
                     key={ `${this.reports.length}` }
                     className={ `${Styles.itemDisabled}` }
-                    onClick={()=>{getDiagnosticsAct(orderId)}}
+                    onClick={ () => {
+                        getDiagnosticsAct(orderId);
+                    } }
                 >
                     <FormattedMessage id='diagnosticAct' />
                 </Menu.Item>
                 <Menu.Item
                     key={ `${this.reports.length}` }
                     className={ `${Styles.itemDisabled}` }
-                    onClick={()=>{getDiagnosticsReport(orderId)}}
+                    onClick={ () => {
+                        getDiagnosticsReport(orderId);
+                    } }
                 >
                     <FormattedMessage id='diagnosticResult' />
                 </Menu.Item>

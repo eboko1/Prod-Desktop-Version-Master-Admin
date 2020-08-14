@@ -1,21 +1,21 @@
 // vendor
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { DropTarget } from 'react-dnd';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { DropTarget } from "react-dnd";
 
 // own
-import { DragItemTypes, ROW_HEIGHT } from '../dashboardConfig';
+import { DragItemTypes, ROW_HEIGHT } from "../dashboardConfig";
 
 const dropTarget = {
     drop(props, monitor) {
         const { mode, globalPosition, day, stationNum, employeeId } = props;
 
         return {
-            time:       globalPosition,
-            day:        day,
+            time: globalPosition,
+            day: day,
             stationNum:
-                mode === 'calendar' ? monitor.getItem().station : stationNum,
+                mode === "calendar" ? monitor.getItem().station : stationNum,
             employeeId: employeeId,
         };
     },
@@ -23,19 +23,19 @@ const dropTarget = {
 
 const collect = (connect, monitor) => ({
     connectDropTarget: connect.dropTarget(),
-    isOver:            monitor.isOver(),
-    canDrop:           monitor.canDrop(),
+    isOver: monitor.isOver(),
+    canDrop: monitor.canDrop(),
 });
 
 @DropTarget(DragItemTypes.ORDER, dropTarget, collect)
 export default class DashboardEmptyCell extends Component {
     static propTypes = {
-        x:                 PropTypes.number,
-        y:                 PropTypes.number,
-        isOver:            PropTypes.bool,
-        canDrop:           PropTypes.bool,
+        x: PropTypes.number,
+        y: PropTypes.number,
+        isOver: PropTypes.bool,
+        canDrop: PropTypes.bool,
         connectDropTarget: PropTypes.func,
-        children:          PropTypes.node,
+        children: PropTypes.node,
     };
 
     render() {
@@ -58,20 +58,20 @@ export default class DashboardEmptyCell extends Component {
         return (
             <StyledDashboardEmptyCell
                 // className={ className }
-                mode={ mode }
-                daysWithConflicts={ daysWithConflicts }
-                stationsWithConflicts={ stationsWithConflicts }
-                employeesWithConflicts={ employeesWithConflicts }
-                day={ day }
-                stationNum={ stationNum }
-                employeeId={ employeeId }
-                globalPosition={ globalPosition }
-                ref={ cell => connectDropTarget(cell) }
+                mode={mode}
+                daysWithConflicts={daysWithConflicts}
+                stationsWithConflicts={stationsWithConflicts}
+                employeesWithConflicts={employeesWithConflicts}
+                day={day}
+                stationNum={stationNum}
+                employeeId={employeeId}
+                globalPosition={globalPosition}
+                ref={cell => connectDropTarget(cell)}
             >
-                { children }
-                { isOver && !canDrop && <EmptyCellOverlay color={ 'red' } /> }
-                { !isOver && canDrop && <EmptyCellOverlay color={ 'yellow' } /> }
-                { isOver && canDrop && <EmptyCellOverlay color={ 'green' } /> }
+                {children}
+                {isOver && !canDrop && <EmptyCellOverlay color={"red"} />}
+                {!isOver && canDrop && <EmptyCellOverlay color={"yellow"} />}
+                {isOver && canDrop && <EmptyCellOverlay color={"green"} />}
             </StyledDashboardEmptyCell>
         );
     }
@@ -90,35 +90,35 @@ export const StyledDashboardEmptyCell = styled.div`
         employeeId,
         globalPosition,
     }) {
-        if (mode === 'calendar') {
+        if (mode === "calendar") {
             if (daysWithConflicts.includes(day)) {
                 return globalPosition % 2
-                    ? 'rgba(var(--warningRGB), 0.3)'
-                    : 'rgba(var(--warningRGB), 0.5)';
+                    ? "rgba(var(--warningRGB), 0.3)"
+                    : "rgba(var(--warningRGB), 0.5)";
             }
 
-            return globalPosition % 2 ? 'white' : 'var(--snow)';
+            return globalPosition % 2 ? "white" : "var(--snow)";
         }
-        if(mode === 'stations') {
+        if (mode === "stations") {
             if (stationsWithConflicts.includes(stationNum)) {
                 return globalPosition % 2
-                    ? 'rgba(var(--warningRGB), 0.3)'
-                    : 'rgba(var(--warningRGB), 0.5)';
+                    ? "rgba(var(--warningRGB), 0.3)"
+                    : "rgba(var(--warningRGB), 0.5)";
             }
 
-            return globalPosition % 2 ? 'white' : 'var(--snow)';
+            return globalPosition % 2 ? "white" : "var(--snow)";
         }
-        if(mode === 'employees') {
+        if (mode === "employees") {
             if (employeesWithConflicts.includes(employeeId)) {
                 return globalPosition % 2
-                    ? 'rgba(var(--warningRGB), 0.3)'
-                    : 'rgba(var(--warningRGB), 0.5)';
+                    ? "rgba(var(--warningRGB), 0.3)"
+                    : "rgba(var(--warningRGB), 0.5)";
             }
 
-            return globalPosition % 2 ? 'white' : 'var(--snow)';
+            return globalPosition % 2 ? "white" : "var(--snow)";
         }
 
-        return globalPosition % 2 ? 'white' : 'var(--snow)';
+        return globalPosition % 2 ? "white" : "var(--snow)";
     }};
 `;
 

@@ -1,18 +1,18 @@
 // vendor
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Select, Spin } from 'antd';
-import { injectIntl } from 'react-intl';
-import { FormattedMessage } from 'react-intl';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Select, Spin } from "antd";
+import { injectIntl } from "react-intl";
+import { FormattedMessage } from "react-intl";
 
 // proj
-import { setBusinessSearchQuery } from 'core/search/duck';
+import { setBusinessSearchQuery } from "core/search/duck";
 
 // own
 const Option = Select.Option;
 
 const mapStateToProps = state => ({
-    businesses:           state.search.businesses,
+    businesses: state.search.businesses,
     isFetchingBusinesses: state.search.isFetchingBusinesses,
 });
 
@@ -21,10 +21,7 @@ const mapDispatchToProps = {
 };
 
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class BusinessSearchField extends Component {
     render() {
         const { onSelect, setBusinessSearchQuery } = this.props;
@@ -32,25 +29,31 @@ export default class BusinessSearchField extends Component {
 
         return (
             <Select
-                placeholder={ this.props.intl.formatMessage({id: 'business_placeholder'}) }
-                style={ this.props.selectStyles }
+                placeholder={this.props.intl.formatMessage({
+                    id: "business_placeholder",
+                })}
+                style={this.props.selectStyles}
                 showSearch
                 allowClear
-                filterOption={ false }
+                filterOption={false}
                 notFoundContent={
-                    isFetchingBusinesses ? <Spin size='small' /> : <FormattedMessage id='not_found' />
+                    isFetchingBusinesses ? (
+                        <Spin size="small" />
+                    ) : (
+                        <FormattedMessage id="not_found" />
+                    )
                 }
-                onSearch={ item => setBusinessSearchQuery(item) }
-                onChange={ businessId => onSelect(businessId) }
-                value={ businessId }
+                onSearch={item => setBusinessSearchQuery(item)}
+                onChange={businessId => onSelect(businessId)}
+                value={businessId}
             >
-                { isFetchingBusinesses
+                {isFetchingBusinesses
                     ? []
                     : businesses.map(({ businessId, name, address }) => (
-                        <Option key={ businessId } value={ businessId }>
-                            ({ businessId }) { name } [{ address }]
-                        </Option>
-                    )) }
+                          <Option key={businessId} value={businessId}>
+                              ({businessId}) {name} [{address}]
+                          </Option>
+                      ))}
             </Select>
         );
     }

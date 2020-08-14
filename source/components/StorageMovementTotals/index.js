@@ -19,10 +19,9 @@ const mapStateToProps = state => ({
     total:     selectStoreMovementTotal(state),
 });
 
-export const StorageMovementTotals = connect(
-    mapStateToProps,
-    { setStoreMovementFilters },
-)(props => {
+export const StorageMovementTotals = connect(mapStateToProps, {
+    setStoreMovementFilters,
+})(props => {
     const { total, collapsed } = props;
 
     const SkeletonLoader = (

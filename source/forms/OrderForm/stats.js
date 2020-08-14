@@ -15,24 +15,31 @@ function calculateStats(entries) {
 export const servicesStats = (selectedServices, allServices) => {
     const selectedSimpleServices = _(selectedServices)
         .filter(service => _.get(service, 'serviceName'))
-        .map(({ laborId, servicePrice, serviceHours, serviceName, primeCost }) => ({
-            price:          !_.isNil(servicePrice) ? servicePrice : 0,
-            hours:          !_.isNil(serviceHours) ? serviceHours : 0,
-            count:          !_.isNil(serviceHours) ? serviceHours : 0,
-            id:             laborId ? laborId : serviceName,
-            name:           serviceName,
-            servicesProfit:
-                !_.isNil(primeCost) &&
-                !_.isNil(servicePrice) &&
-                !_.isNil(serviceHours)
-                    ? (servicePrice - primeCost) * serviceHours
-                    : 0,
-        }))
+        .map(
+            ({
+                laborId,
+                servicePrice,
+                serviceHours,
+                serviceName,
+                primeCost,
+            }) => ({
+                price:          !_.isNil(servicePrice) ? servicePrice : 0,
+                hours:          !_.isNil(serviceHours) ? serviceHours : 0,
+                count:          !_.isNil(serviceHours) ? serviceHours : 0,
+                id:             laborId ? laborId : serviceName,
+                name:           serviceName,
+                servicesProfit:
+                    !_.isNil(primeCost) &&
+                    !_.isNil(servicePrice) &&
+                    !_.isNil(serviceHours)
+                        ? (servicePrice - primeCost) * serviceHours
+                        : 0,
+            }),
+        )
         .value();
 
     const totalHours = selectedSimpleServices.reduce(
-        (prev, { hours }) =>
-            prev + hours,
+        (prev, { hours }) => prev + hours,
         0,
     );
 
@@ -42,6 +49,7 @@ export const servicesStats = (selectedServices, allServices) => {
             0,
         )
         .toFixed(2);
+
     /* Marian service table fix
     const allServicesHours = _(allServices)
         .map(({ id, type, serviceHours }) => [ `${type}|${id}`, ~~serviceHours ])

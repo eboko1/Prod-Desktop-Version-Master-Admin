@@ -53,5 +53,10 @@ export function columnsConfig(props) {
             ),
     };
 
-    return [ serviceNameCol, detailNameCol, quantityCol, deleteCol ];
+    return [
+        serviceNameCol,
+        detailNameCol,
+        quantityCol,
+        deleteCol,
+    ];
 }

@@ -65,5 +65,10 @@ export function* deleteRoleSaga() {
 }
 
 export function* saga() {
-    yield all([ call(fetchRolesSaga), call(updateRoleSaga), call(createRoleSaga), call(deleteRoleSaga) ]);
+    yield all([
+        call(fetchRolesSaga),
+        call(updateRoleSaga),
+        call(createRoleSaga),
+        call(deleteRoleSaga),
+    ]);
 }

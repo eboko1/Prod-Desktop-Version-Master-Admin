@@ -108,7 +108,7 @@ export function* refreshDashboardSaga() {
                 yield put(fetchDashboardCalendarSuccess(data));
             } else if (mode === 'stations') {
                 const beginDate = yield select(selectDashboardDate);
-                
+
                 const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
                     stations:  true,
                     beginDate: beginDate.format('YYYY-MM-DD'),
@@ -119,7 +119,7 @@ export function* refreshDashboardSaga() {
                 const beginDate = yield select(selectDashboardDate);
 
                 const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
-                    employees:  true,
+                    employees: true,
                     beginDate: beginDate.format('YYYY-MM-DD'),
                 });
 
@@ -190,7 +190,7 @@ export function* fetchDashboardEmployeesSaga() {
 
             const beginDate = yield select(selectDashboardDate);
             const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
-                employees:  true,
+                employees: true,
                 beginDate: beginDate.format('YYYY-MM-DD'),
             });
 
@@ -233,13 +233,13 @@ export function* updateDashboardOrderSaga() {
         try {
             const { payload: order } = yield take(UPDATE_DASHBOARD_ORDER);
             yield nprogress.start();
-            if(order.mode == 'employees') {
+            if (order.mode == 'employees') {
                 yield call(
                     fetchAPI,
                     'PUT',
                     `/orders/${order.orderId}`,
                     {},
-                    _.omit(order, [ 'orderId', 'mode']),
+                    _.omit(order, [ 'orderId', 'mode' ]),
                 );
             } else {
                 yield call(
@@ -250,7 +250,6 @@ export function* updateDashboardOrderSaga() {
                     _.omit(order, [ 'stationLoadId', 'employeeId' ]),
                 );
             }
-            
 
             yield put(updateDashboardOrderSuccess());
             yield put(refreshDashboard());

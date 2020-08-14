@@ -12,7 +12,6 @@ import Link from "./link";
 import Styles from "./styles.m.css";
 import menuConfig from "./menuConfig";
 
-
 @withRouter
 export default class SiderMenu extends Component {
     render() {
@@ -137,12 +136,12 @@ export default class SiderMenu extends Component {
                     {isMobile && (
                         <Menu.Item
                             key={menuConfig.sections.length}
-                            onClick={()=>{
+                            onClick={() => {
                                 this.props.logout();
                             }}
                         >
-                            <Icon type='logout' />
-                            <FormattedMessage id='header.logout' />
+                            <Icon type="logout" />
+                            <FormattedMessage id="header.logout" />
                         </Menu.Item>
                     )}
                 </Menu>
