@@ -46,14 +46,9 @@ export function* getReportSaga({ payload: report }) {
     try {
         yield nprogress.start();
 
-        const response = yield call(
-            fetchAPI,
-            'GET',
-            report.link,
-            null,
-            null,
-            { rawResponse: true },
-        );
+        const response = yield call(fetchAPI, 'GET', report.link, null, null, {
+            rawResponse: true,
+        });
         const reportFile = yield response.blob();
 
         const contentDispositionHeader = response.headers.get(

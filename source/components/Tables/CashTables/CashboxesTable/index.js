@@ -1,14 +1,14 @@
 // vendor
-import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { connect } from 'react-redux';
-import { Table } from 'antd';
+import React, { Component } from "react";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { connect } from "react-redux";
+import { Table } from "antd";
 
 // proj
-import { fetchCashboxes, deleteCashbox } from 'core/cash/duck';
+import { fetchCashboxes, deleteCashbox } from "core/cash/duck";
 
 // own
-import { columnsConfig } from './config';
+import { columnsConfig } from "./config";
 
 const mapStateToProps = state => ({
     cashboxes: state.cash.cashboxes,
@@ -20,10 +20,7 @@ const mapDispatchToProps = {
 };
 
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export class CashboxesTable extends Component {
     constructor(props) {
         super(props);
@@ -43,14 +40,14 @@ export class CashboxesTable extends Component {
 
         return (
             <Table
-                size='small'
-                columns={ this.columns }
-                dataSource={ cashboxes }
-                loading={ cashboxesFetching }
-                pagination={ false }
-                locale={ {
-                    emptyText: <FormattedMessage id='no_data' />,
-                } }
+                size="small"
+                columns={this.columns}
+                dataSource={cashboxes}
+                loading={cashboxesFetching}
+                pagination={false}
+                locale={{
+                    emptyText: <FormattedMessage id="no_data" />,
+                }}
             />
         );
     }

@@ -114,5 +114,10 @@ export function* deletePackageSaga() {
 }
 
 export function* saga() {
-    yield all([ call(fetchPackagesSaga), call(updatePackageSaga), call(createPackageSaga), call(deletePackageSaga) ]);
+    yield all([
+        call(fetchPackagesSaga),
+        call(updatePackageSaga),
+        call(createPackageSaga),
+        call(deletePackageSaga),
+    ]);
 }

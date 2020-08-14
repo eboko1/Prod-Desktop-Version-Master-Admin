@@ -48,6 +48,7 @@ import {
     AvailabilitiesPage,
     StorageOrdersPage,
     StorageTransferPage,
+    AgreementPage,
 } from 'pages';
 import book from './book';
 
@@ -292,6 +293,11 @@ export default class Private extends Component {
                 <Route
                     component={ ExceptionPage }
                     path={ book.exceptionStatusCode }
+                />
+                <Route 
+                    exact
+                    component={ AgreementPage }
+                    path={ book.agreement }
                 />
                 <Redirect exact from='/' to={ book.ordersAppointments } />
                 <Redirect to={ `${book.exception}/404` } />

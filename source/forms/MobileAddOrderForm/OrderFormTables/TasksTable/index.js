@@ -101,9 +101,9 @@ class TasksTable extends Component {
                 width:     '8%',
                 render:    (text, record) => {
                     return (
-                        <div style={ { wordBreak: 'normal' } }>{ `${text} ${
-                            record.responsibleSurname
-                        }` }</div>
+                        <div
+                            style={ { wordBreak: 'normal' } }
+                        >{ `${text} ${record.responsibleSurname}` }</div>
                     );
                 },
             },

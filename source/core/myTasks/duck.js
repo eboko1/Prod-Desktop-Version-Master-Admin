@@ -153,7 +153,7 @@ export const setManager = managerId => ({
 
 export const fetchMyTasks = (filter, firstLoading) => ({
     type:    FETCH_MY_TASKS,
-    payload: {filter, firstLoading},
+    payload: { filter, firstLoading },
 });
 
 export const fetchMyTasksSuccess = data => ({

@@ -31,7 +31,10 @@ export function* fetchPartAttributesSaga() {
         const findQuery = { partCode: partNumber, supplierId };
 
         const allAttributes = yield select(selectAttributes);
-        let attributes = _.chain(allAttributes).find(findQuery).get('attributes').value();
+        let attributes = _.chain(allAttributes)
+            .find(findQuery)
+            .get('attributes')
+            .value();
         if (!attributes) {
             attributes = yield call(
                 fetchAPI,
@@ -42,7 +45,9 @@ export function* fetchPartAttributesSaga() {
             );
         }
 
-        yield put(fetchPartAttributesSuccess(partNumber, supplierId, attributes));
+        yield put(
+            fetchPartAttributesSuccess(partNumber, supplierId, attributes),
+        );
     }
 }
 
@@ -54,7 +59,10 @@ export function* fetchSuggestionPartsSaga() {
 
         const query = { productId, modificationId };
         const allSuggestions = yield select(selectSuggestions);
-        let suggestions = _.chain(allSuggestions).find(query).get('suggestions').value();
+        let suggestions = _.chain(allSuggestions)
+            .find(query)
+            .get('suggestions')
+            .value();
 
         if (!suggestions) {
             suggestions = yield call(
@@ -66,7 +74,9 @@ export function* fetchSuggestionPartsSaga() {
             );
         }
 
-        yield put(fetchSuggestionPartsSuccess(productId, modificationId, suggestions));
+        yield put(
+            fetchSuggestionPartsSuccess(productId, modificationId, suggestions),
+        );
     }
 }
 
@@ -78,7 +88,10 @@ export function* fetchCrossPartsSaga() {
 
         const query = { productId, modificationId };
         const allCrosses = yield select(selectCrosses);
-        let crosses = _.chain(allCrosses).find(query).get('crosses').value();
+        let crosses = _.chain(allCrosses)
+            .find(query)
+            .get('crosses')
+            .value();
 
         if (!crosses) {
             crosses = yield call(

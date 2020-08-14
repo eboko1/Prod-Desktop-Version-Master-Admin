@@ -1,17 +1,17 @@
 // vendor
-import React, { Component } from 'react';
-import { Table } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { Table } from "antd";
+import { FormattedMessage, injectIntl } from "react-intl";
+import _ from "lodash";
 
 // proj
-import { Catcher } from 'commons';
+import { Catcher } from "commons";
 
-import { permissions, isForbidden } from 'utils';
+import { permissions, isForbidden } from "utils";
 
 // own
-import { columnsConfig } from './tableConfig.js';
-import Styles from './styles.m.css';
+import { columnsConfig } from "./tableConfig.js";
+import Styles from "./styles.m.css";
 
 @injectIntl
 export default class StationsTable extends Component {
@@ -21,20 +21,26 @@ export default class StationsTable extends Component {
 
         this.uuid = stationLoads.length;
         this.state = {
-            keys: [ ..._.keys(stationLoads), this.uuid++ ],
+            keys: [..._.keys(stationLoads), this.uuid++],
         };
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return (
+            !_.isEqual(nextProps, this.props) ||
+            !_.isEqual(nextState, this.state)
+        );
     }
 
     componentDidUpdate() {
-        const loads = _.get(this.props.fields, 'stationLoads', []);
+        const loads = _.get(this.props.fields, "stationLoads", []);
         const propsLoadsLength = loads.length;
         const keysLength = this.state.keys.length;
 
-        if (propsLoadsLength === keysLength && !loads.some(load => _.values(load).some(_.isNil))) {
+        if (
+            propsLoadsLength === keysLength &&
+            !loads.some(load => _.values(load).some(_.isNil))
+        ) {
             this._handleAdd();
         }
     }
@@ -47,13 +53,13 @@ export default class StationsTable extends Component {
 
         this.setState({ keys: keys.filter(key => redundantKey !== key) });
         this.props.form.setFieldsValue({
-            [ `stationLoads[${redundantKey}]` ]: void 0,
+            [`stationLoads[${redundantKey}]`]: void 0,
         });
     };
 
     _handleAdd = () => {
         const { keys } = this.state;
-        this.setState({ keys: [ ...keys, this.uuid++ ] });
+        this.setState({ keys: [...keys, this.uuid++] });
     };
 
     render() {
@@ -75,11 +81,11 @@ export default class StationsTable extends Component {
         return (
             <Catcher>
                 <Table
-                    className={ Styles.stationLoadsTable }
+                    className={Styles.stationLoadsTable}
                     // dataSource={ orderStationLoads }
-                    dataSource={ keys.map(key => ({ key })) }
-                    columns={ columns }
-                    rowClassName={ ({ key }) => {
+                    dataSource={keys.map(key => ({ key }))}
+                    columns={columns}
+                    rowClassName={({ key }) => {
                         // const wasEdited = _.get(fields, [ 'stationLoads', key ]);
                         // const exists = _.get(stationLoads, [ key ]);
 
@@ -92,12 +98,12 @@ export default class StationsTable extends Component {
                         // } else if (wasEdited) {
                         //     return Styles.editedStationLoadsRow;
                         // }
-                    } }
-                    pagination={ false }
-                    size='small'
-                    locale={ {
-                        emptyText: <FormattedMessage id='no_data' />,
-                    } }
+                    }}
+                    pagination={false}
+                    size="small"
+                    locale={{
+                        emptyText: <FormattedMessage id="no_data" />,
+                    }}
                 />
             </Catcher>
         );

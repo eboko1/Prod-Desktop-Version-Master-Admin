@@ -87,8 +87,5 @@ const mapDispatchToProps = {
 };
 
 export const TrackingTable = injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(TrackingTableComponent),
+    connect(mapStateToProps, mapDispatchToProps)(TrackingTableComponent),
 );

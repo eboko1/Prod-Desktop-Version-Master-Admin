@@ -97,12 +97,10 @@ export class EmployeeForm extends Component {
                         )}
                         onChange={() => this._setPasswordField()}
                     />
-                     <DecoratedCheckbox
+                    <DecoratedCheckbox
                         field="isMechanic"
                         formItem
-                        label={
-                            <FormattedMessage id="employee.is_mechanic" />
-                        }
+                        label={<FormattedMessage id="employee.is_mechanic" />}
                         formItemLayout={formItemLayout}
                         getFieldDecorator={getFieldDecorator}
                         initialValue={Boolean(

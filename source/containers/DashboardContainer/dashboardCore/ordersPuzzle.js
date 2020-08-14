@@ -20,9 +20,10 @@ const ordersPuzzle = (data, maxRow) => {
                     .fill(0)
                     .map((value, index) => value + index);
                 // Empty block configs
-                const emptyRows = _.difference(allRows, allBlockRows).map(
-                    value => ({ min: value, max: value + 1, data: [] }),
-                );
+                const emptyRows = _.difference(
+                    allRows,
+                    allBlockRows,
+                ).map(value => ({ min: value, max: value + 1, data: [] }));
 
                 const newBlocks = [
                     ...blocks.map(block => ({

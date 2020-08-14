@@ -1,23 +1,23 @@
 //vendor
-import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, Button, Select } from 'antd';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { Form, Button, Select } from "antd";
+import _ from "lodash";
 // proj
-import { onChangeRoleForm } from 'core/forms/editRoleForm/duck';
+import { onChangeRoleForm } from "core/forms/editRoleForm/duck";
 
 import {
     DecoratedInput,
     DecoratedSelect,
     DecoratedCheckbox,
-} from 'forms/DecoratedFields';
+} from "forms/DecoratedFields";
 import {
     withReduxForm,
     getPermissionsLabels,
     groupedPermissions,
     getGroupsLabels,
     permissions,
-} from 'utils';
+} from "utils";
 
 // own
 const OptGroup = Select.OptGroup;
@@ -25,7 +25,7 @@ const Option = Select.Option;
 
 @injectIntl
 @withReduxForm({
-    name:    'roleForm',
+    name: "roleForm",
     actions: {
         change: onChangeRoleForm,
     },
@@ -44,76 +44,77 @@ export class RoleForm extends Component {
         return (
             <Form>
                 <DecoratedInput
-                    field={ 'name' }
+                    field={"name"}
                     formItem
-                    initialValue={ role.name }
-                    rules={ [
+                    initialValue={role.name}
+                    rules={[
                         {
                             required: true,
-                            message:  this.props.intl.formatMessage({
-                                id: 'edit-role-form.name_field_required',
+                            message: this.props.intl.formatMessage({
+                                id: "edit-role-form.name_field_required",
                             }),
                         },
-                    ] }
+                    ]}
                     hasFeedback
-                    label={ <FormattedMessage id='edit-role-form.name_field' /> }
-                    getFieldDecorator={ getFieldDecorator }
+                    label={<FormattedMessage id="edit-role-form.name_field" />}
+                    getFieldDecorator={getFieldDecorator}
                 />
                 <DecoratedSelect
-                    field={ 'grants' }
-                    initialValue={ roleGrants }
+                    field={"grants"}
+                    initialValue={roleGrants}
                     formItem
-                    getPopupContainer={ trigger => trigger.parentNode }
-                    rules={ [
+                    getPopupContainer={trigger => trigger.parentNode}
+                    rules={[
                         {
                             required: true,
-                            message:  this.props.intl.formatMessage({
-                                id: 'edit-role-form.grants_field_required',
+                            message: this.props.intl.formatMessage({
+                                id: "edit-role-form.grants_field_required",
                             }),
                         },
-                    ] }
+                    ]}
                     hasFeedback
                     label={
-                        <FormattedMessage id='edit-role-form.grants_field' />
+                        <FormattedMessage id="edit-role-form.grants_field" />
                     }
-                    mode={ 'multiple' }
-                    getFieldDecorator={ getFieldDecorator }
+                    mode={"multiple"}
+                    getFieldDecorator={getFieldDecorator}
                 >
-                    { _.toPairs(groupedPermissions).map(([ name, value ]) => (
-                        <OptGroup label={ groupsLabels[ name ] }>
-                            { value.map(value => (
-                                <Option value={ value } key={ value }>
-                                    { permissionsLabels[ value ] }
+                    {_.toPairs(groupedPermissions).map(([name, value]) => (
+                        <OptGroup label={groupsLabels[name]}>
+                            {value.map(value => (
+                                <Option value={value} key={value}>
+                                    {permissionsLabels[value]}
                                 </Option>
-                            )) }
+                            ))}
                         </OptGroup>
-                    )) }
+                    ))}
                 </DecoratedSelect>
                 <DecoratedCheckbox
-                    field={ 'grantOther' }
-                    initialValue={ !!role.grantOther }
+                    field={"grantOther"}
+                    initialValue={!!role.grantOther}
                     formItem
                     label={
-                        <FormattedMessage id='edit-role-form.grant_other_field' />
+                        <FormattedMessage id="edit-role-form.grant_other_field" />
                     }
-                    getFieldDecorator={ getFieldDecorator }
-                    colon={ false }
-                    formItemLayout={ {
-                        labelCol:   { span: 14 },
+                    getFieldDecorator={getFieldDecorator}
+                    colon={false}
+                    formItemLayout={{
+                        labelCol: { span: 14 },
                         wrapperCol: { span: 6 },
-                    } }
+                    }}
                 />
                 <Button
-                    type='primary'
-                    style={ { width: '100%' } }
-                    onClick={ () =>
+                    type="primary"
+                    style={{ width: "100%" }}
+                    onClick={() =>
                         validateFields(
                             (err, values) =>
-                                !err && this.props.updateRole(role.roleId, values),
+                                !err &&
+                                this.props.updateRole(role.roleId, values),
                         )
                     }
                 >
-                    <FormattedMessage id='edit-role-form.edit' />
+                    <FormattedMessage id="edit-role-form.edit" />
                 </Button>
             </Form>
         );

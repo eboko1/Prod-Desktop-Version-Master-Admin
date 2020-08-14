@@ -1,17 +1,10 @@
 // vendor
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import { Button, Modal, Icon, Select, Input, InputNumber, Spin, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
-import {
-    API_URL,
-    confirmDiagnostic,
-    createAgreement,
-    lockDiagnostic,
-} from 'core/forms/orderDiagnosticForm/saga';
-import { images } from 'utils';
 import { DetailStorageModal, DetailSupplierModal } from 'modals'
+import { AvailabilityIndicator } from 'components';
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
@@ -263,37 +256,12 @@ class FavouriteDetailsModal extends React.Component{
                         </div>,
                 key:       'AI',
                 width:     '3%',
-                render: (elem)=>{
-                    let color = 'brown',
-                        title = 'Поставщик не выбран!';
-                    if(elem.store){
-                        title=  `Сегодня: ${elem.store[0]} шт.\n` +
-                                `Завтра: ${elem.store[1]} шт.\n` +
-                                `Послезавтра: ${elem.store[2]} шт.\n` +
-                                `Позже: ${elem.store[3]} шт.`;
-                        if(elem.store[0] != '0') {
-                            color = 'var(--green)';
-                        }
-                        else if(elem.store[1] != 0) {
-                            color = 'yellow';
-                        }
-                        else if(elem.store[2] != 0) {
-                            color = 'orange';
-                        }
-                        else if(elem.store[3] != 0) {
-                            color = 'red';
-                        }
-                    }
-                    else {
-                        color = 'grey';
-                        
-                    }
-                    
+                dataIndex: 'store',
+                render: (store)=>{
                     return (
-                        <div
-                            style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: color}}
-                            title={title}
-                        ></div>
+                        <AvailabilityIndicator
+                            indexArray={store}
+                        />
                     )
                 }
             },
@@ -491,7 +459,7 @@ class FavouriteDetailsModal extends React.Component{
 
     async addDetailsAndLabors(data) {
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/orders/${this.props.orderId}`;
         url += params;
         try {
@@ -519,7 +487,7 @@ class FavouriteDetailsModal extends React.Component{
         if(!(this.props.tecdocId) || this.state.fetched) return;
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/orders/frequent/details?modificationId=${this.props.tecdocId}`;
         url += params;
         fetch(url, {

@@ -14,6 +14,7 @@ import {
 } from 'core/forms/orderDiagnosticForm/saga';
 // own
 import Styles from './styles.m.css';
+const { TabPane } = Tabs;
 
 @injectIntl
 class ConfirmDiagnosticModal extends React.Component{
@@ -162,7 +163,7 @@ class ConfirmDiagnosticModal extends React.Component{
         this.updateState();
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState) {
         if(this.state.labors != null && this.servicesOptions == null) {
             this.servicesOptions = this.getServicesOptions();
         }
@@ -382,10 +383,10 @@ class ConfirmDiagnosticModal extends React.Component{
             const serviceArray = [];
             const detailArrat = [];
             
-            data.map((elem)=>{
+            data.map((elem, index)=>{
                 elem.labor.map((labor)=>{
                     let laborObjCopy = Object.assign({}, {
-                        key: that.state.servicesList.length+1,
+                        key: that.state.servicesList.length+index+1,
                         id: labor.laborId,
                         productId: labor.productId,
                         name: labor.name,
@@ -399,7 +400,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 })
 
                 let detailObjCopy = Object.assign({}, {
-                    key: that.state.detailsList.length+1,
+                    key: that.state.detailsList.length+index+1,
                     id: elem.storeGroup.id,
                     name: elem.storeGroup.name,
                     count: 1,
@@ -449,7 +450,7 @@ class ConfirmDiagnosticModal extends React.Component{
         }
         this.state.diagnosticList = diagnosticList;
 
-        return tmpSource.map((data)=>{
+        return tmpSource.map((data, divKey)=>{
         let index = this.state.diagnosticList.findIndex(x => x.id == data.partId && x.templateIndex == data.templateIndex),
             key = this.state.diagnosticList[index].key,
             bgColor = this.state.diagnosticList[index].disabled?"#d9d9d9":"",
@@ -470,7 +471,7 @@ class ConfirmDiagnosticModal extends React.Component{
         }
 
         return (
-        <div className={Styles.confirm_diagnostic_modal_row} style={{backgroundColor: bgColor, color: txtColor}}>
+        <div className={Styles.confirm_diagnostic_modal_row} style={{backgroundColor: bgColor, color: txtColor}} key={divKey}>
             <div style={{ width: '10%' }}>
                 {key} <Checkbox
                         onChange={()=>this.disableDiagnosticRow(index)}
@@ -528,8 +529,8 @@ class ConfirmDiagnosticModal extends React.Component{
             }
         }
 
-        return stageList.map((stage)=>
-            <div>
+        return stageList.map((stage, key)=>
+            <div key={key}>
                 <div className={Styles.confirm_diagnostic_modal_row_title}>{stage}</div>
                 {this.getDiagnostics(stage)}
             </div>
@@ -605,7 +606,7 @@ class ConfirmDiagnosticModal extends React.Component{
         this.addNewServicesRow();
         let tmpServicesArray = [...this.state.servicesList];
         tmpServicesArray = tmpServicesArray.map((data, index)=>
-            <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null}>
+            <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null} key={index}>
                 <div style={{ width: '10%' }}>
                     {data.key} <Checkbox
                         checked={data.checked}
@@ -748,7 +749,7 @@ class ConfirmDiagnosticModal extends React.Component{
         this.addNewDetailsRow();
         let tmpDetailsArray = [...this.state.detailsList];
         tmpDetailsArray = tmpDetailsArray.map((data, index)=>
-            <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null}>
+            <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null} key={index}>
                 <div style={{ width: '10%' }}>
                     {data.key} <Checkbox
                         checked={data.checked}
@@ -833,8 +834,11 @@ class ConfirmDiagnosticModal extends React.Component{
 
     render() {
         const { visible, autoConfirmed } = this.state;
-        const { isMobile, disabled } = this.props;
-        const { TabPane } = Tabs;
+        const { isMobile, disabled, intl: {formatMessage} } = this.props;
+        
+        const diagnosticComponents = this.getDiagnosticContent(),
+              servicesComponents = this.getServicesContent(),
+              detailsComponents = this.getDetailsContent();
         return (
             <div>
                 <>
@@ -844,7 +848,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         type="primary"
                         onClick={()=>{
                             notification.success({
-                                message: this.props.intl.formatMessage({
+                                message: formatMessage({
                                     id: `message_sent`,
                                 }),
                             });
@@ -869,7 +873,7 @@ class ConfirmDiagnosticModal extends React.Component{
                             type="primary"
                             onClick={()=>{
                                 notification.success({
-                                    message: this.props.intl.formatMessage({
+                                    message: formatMessage({
                                         id: `message_sent`,
                                     }),
                                 });
@@ -907,13 +911,13 @@ class ConfirmDiagnosticModal extends React.Component{
                                     onClick={()=>{
                                         this.automaticlyConfirmDiagnostic()
                                     }}
-                                    title={this.props.intl.formatMessage({id: "confirm_diagnostic_modal.auto"})}
+                                    title={formatMessage({id: "confirm_diagnostic_modal.auto"})}
                                 >
                                     <FormattedMessage id='order_form_table.diagnostic.automaticly' />
                                 </Button>
                             </div>
                             <div className={Styles.confirm_diagnostic_modal_element_content}>
-                                {this.getDiagnosticContent()}
+                                {diagnosticComponents}
                             </div>
                         </div>
                         <div id={Styles.diagnosticModalServices} className={Styles.confirm_diagnostic_modal_element}>
@@ -921,7 +925,7 @@ class ConfirmDiagnosticModal extends React.Component{
                                 <FormattedMessage id='add_order_form.services' />
                             </div>
                             <div className={Styles.confirm_diagnostic_modal_element_content}>
-                                {this.getServicesContent()}
+                                {servicesComponents}
                             </div>
                         </div>
                         <div id={Styles.diagnosticModalDetails} className={Styles.confirm_diagnostic_modal_element}>
@@ -929,45 +933,45 @@ class ConfirmDiagnosticModal extends React.Component{
                                 <FormattedMessage id='add_order_form.details' />
                             </div>
                             <div className={Styles.confirm_diagnostic_modal_element_content}>
-                                {this.getDetailsContent()}
+                                {detailsComponents}
                             </div>
                         </div>
                     </div> 
                     ):(
-                        <div className={Styles.confirm_diagnostic_modal_wrap}>
-                            <Tabs defaultActiveKey="1">
-                                <TabPane tab={<Icon type="reconciliation" className={Styles.modal_tab_icon} />} key="1">
-                                    <div className={Styles.confirm_diagnostic_modal_element_mobile}>
-                                        <div className={Styles.confirm_diagnostic_modal_element_title}>
-                                            <FormattedMessage id='order_form_table.diagnostic.results' />
-                                        </div>
-                                        <div className={Styles.confirm_diagnostic_modal_element_content}>
-                                            {this.getDiagnosticContent()}
-                                        </div>
+                    <div className={Styles.confirm_diagnostic_modal_wrap}>
+                        <Tabs defaultActiveKey="1">
+                            <TabPane tab={<Icon type="reconciliation" className={Styles.modal_tab_icon} />} key="1">
+                                <div className={Styles.confirm_diagnostic_modal_element_mobile}>
+                                    <div className={Styles.confirm_diagnostic_modal_element_title}>
+                                        <FormattedMessage id='order_form_table.diagnostic.results' />
                                     </div>
-                                </TabPane>
-                                <TabPane tab={<Icon type="tool" className={Styles.modal_tab_icon} />} key="2">
-                                    <div id={Styles.diagnosticModalServices} className={Styles.confirm_diagnostic_modal_element_mobile}>
-                                        <div className={Styles.confirm_diagnostic_modal_element_title}>
-                                            <FormattedMessage id='add_order_form.services' />
-                                        </div>
-                                        <div className={Styles.confirm_diagnostic_modal_element_content}>
-                                            {this.getServicesContent()}
-                                        </div>
+                                    <div className={Styles.confirm_diagnostic_modal_element_content}>
+                                        {diagnosticComponents}
                                     </div>
-                                </TabPane>
-                                <TabPane tab={<Icon type="setting" className={Styles.modal_tab_icon} />} key="3">
-                                    <div id={Styles.diagnosticModalDetails} className={Styles.confirm_diagnostic_modal_element_mobile}>
-                                        <div className={Styles.confirm_diagnostic_modal_element_title}>
-                                            <FormattedMessage id='add_order_form.details' />
-                                        </div>
-                                        <div className={Styles.confirm_diagnostic_modal_element_content}>
-                                            {this.getDetailsContent()}
-                                        </div>
+                                </div>
+                            </TabPane>
+                            <TabPane tab={<Icon type="tool" className={Styles.modal_tab_icon} />} key="2">
+                                <div id={Styles.diagnosticModalServices} className={Styles.confirm_diagnostic_modal_element_mobile}>
+                                    <div className={Styles.confirm_diagnostic_modal_element_title}>
+                                        <FormattedMessage id='add_order_form.services' />
                                     </div>
-                                </TabPane>
-                            </Tabs>
-                        </div>
+                                    <div className={Styles.confirm_diagnostic_modal_element_content}>
+                                        {servicesComponents}
+                                    </div>
+                                </div>
+                            </TabPane>
+                            <TabPane tab={<Icon type="setting" className={Styles.modal_tab_icon} />} key="3">
+                                <div id={Styles.diagnosticModalDetails} className={Styles.confirm_diagnostic_modal_element_mobile}>
+                                    <div className={Styles.confirm_diagnostic_modal_element_title}>
+                                        <FormattedMessage id='add_order_form.details' />
+                                    </div>
+                                    <div className={Styles.confirm_diagnostic_modal_element_content}>
+                                        {detailsComponents}
+                                    </div>
+                                </div>
+                            </TabPane>
+                        </Tabs>
+                    </div>
                     )}
                 </Modal>
             </div>

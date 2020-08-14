@@ -59,9 +59,9 @@ class DiscountPanel extends Component {
                         step={ 1 }
                         formatter={ value => `${Math.round(value)}%` }
                         parser={ value => value.replace('%', '') }
-                        onChange={(value)=>{
+                        onChange={ value => {
                             this.props.reloadOrderForm();
-                        }}
+                        } }
                     />
                     <FormItem
                         label={
@@ -72,7 +72,7 @@ class DiscountPanel extends Component {
                     >
                         <InputNumber
                             disabled
-                            style={{color: 'black'}}
+                            style={ { color: 'black' } }
                             value={ price }
                             min={ 0 }
                             formatter={ value =>
@@ -92,7 +92,7 @@ class DiscountPanel extends Component {
                     >
                         <InputNumber
                             disabled
-                            style={{color: 'black'}}
+                            style={ { color: 'black' } }
                             value={ total }
                             min={ 0 }
                             formatter={ value =>
@@ -124,7 +124,7 @@ class DiscountPanel extends Component {
                                         ? totalServicesProfit
                                         : totalDetailsProfit
                                 }
-                                style={{color: profit < 0 ? 'red' : 'black'}}
+                                style={ { color: profit < 0 ? 'red' : 'black' } }
                                 formatter={ value =>
                                     `${value}`.replace(
                                         /\B(?=(\d{3})+(?!\d))/g,

@@ -1,24 +1,24 @@
 //vendor
-import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, Button, Select } from 'antd';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { Form, Button, Select } from "antd";
+import _ from "lodash";
 
 const Option = Select.Option;
 // proj
-import { onChangeBusinessPackageForm } from 'core/forms/addBusinessPackageForm/duck';
+import { onChangeBusinessPackageForm } from "core/forms/addBusinessPackageForm/duck";
 
 import {
     DecoratedDatePicker,
     DecoratedSelect,
     DecoratedTextArea,
     DecoratedInputNumber,
-} from 'forms/DecoratedFields';
-import { withReduxForm } from 'utils';
+} from "forms/DecoratedFields";
+import { withReduxForm } from "utils";
 
 @injectIntl
 @withReduxForm({
-    name:    'addBusinessPackageForm',
+    name: "addBusinessPackageForm",
     actions: {
         change: onChangeBusinessPackageForm,
     },
@@ -30,22 +30,22 @@ export class AddBusinessPackageForm extends Component {
         const { formatMessage } = this.props.intl;
 
         return (
-            <Form layout={ 'horizontal' }>
-                <FormattedMessage id='add-business-package-form.business' />:{ ' ' }
-                <b>{ businessName }</b>
+            <Form layout={"horizontal"}>
+                <FormattedMessage id="add-business-package-form.business" />:{" "}
+                <b>{businessName}</b>
                 <br />
                 <DecoratedSelect
                     formItem
-                    getPopupContainer={ trigger => trigger.parentNode }
-                    getFieldDecorator={ getFieldDecorator }
+                    getPopupContainer={trigger => trigger.parentNode}
+                    getFieldDecorator={getFieldDecorator}
                     label={
-                        <FormattedMessage id='add-business-package-form.package' />
+                        <FormattedMessage id="add-business-package-form.package" />
                     }
                     hasFeedback
-                    field='packageId'
-                    optionFilterProp='children'
+                    field="packageId"
+                    optionFilterProp="children"
                     allowClear
-                    filterOption={ (input, option) =>
+                    filterOption={(input, option) =>
                         Boolean(
                             option.props.children
                                 .toLowerCase()
@@ -54,98 +54,98 @@ export class AddBusinessPackageForm extends Component {
                     }
                     showSearch
                 >
-                    { this.props.rolesPackages.map(({ packageId, name }) => (
-                        <Option key={ packageId } value={ packageId }>
-                            { name }
+                    {this.props.rolesPackages.map(({ packageId, name }) => (
+                        <Option key={packageId} value={packageId}>
+                            {name}
                         </Option>
-                    )) }
+                    ))}
                 </DecoratedSelect>
                 <DecoratedDatePicker
-                    field={ 'activationDatetime' }
+                    field={"activationDatetime"}
                     formItem
                     showTime
-                    format='YYYY-MM-DD HH:mm:ss'
-                    getCalendarContainer={ trigger => trigger.parentNode }
-                    formatMessage={ formatMessage }
-                    rules={ [
+                    format="YYYY-MM-DD HH:mm:ss"
+                    getCalendarContainer={trigger => trigger.parentNode}
+                    formatMessage={formatMessage}
+                    rules={[
                         {
                             required: true,
-                            message:  this.props.intl.formatMessage({
+                            message: this.props.intl.formatMessage({
                                 id:
-                                    'add-business-package-form.activation_datetime_error',
+                                    "add-business-package-form.activation_datetime_error",
                             }),
                         },
-                    ] }
+                    ]}
                     hasFeedback
                     label={
-                        <FormattedMessage id='add-business-package-form.activation_datetime' />
+                        <FormattedMessage id="add-business-package-form.activation_datetime" />
                     }
-                    getFieldDecorator={ getFieldDecorator }
+                    getFieldDecorator={getFieldDecorator}
                 />
                 <DecoratedDatePicker
-                    field={ 'expirationDatetime' }
+                    field={"expirationDatetime"}
                     formItem
                     showTime
-                    format='YYYY-MM-DD HH:mm:ss'
-                    getCalendarContainer={ trigger => trigger.parentNode }
-                    formatMessage={ formatMessage }
-                    rules={ [
+                    format="YYYY-MM-DD HH:mm:ss"
+                    getCalendarContainer={trigger => trigger.parentNode}
+                    formatMessage={formatMessage}
+                    rules={[
                         {
                             required: true,
-                            message:  this.props.intl.formatMessage({
+                            message: this.props.intl.formatMessage({
                                 id:
-                                    'add-business-package-form.expiration_datetime_error',
+                                    "add-business-package-form.expiration_datetime_error",
                             }),
                         },
-                    ] }
+                    ]}
                     hasFeedback
                     label={
-                        <FormattedMessage id='add-business-package-form.expiration_datetime' />
+                        <FormattedMessage id="add-business-package-form.expiration_datetime" />
                     }
-                    getFieldDecorator={ getFieldDecorator }
+                    getFieldDecorator={getFieldDecorator}
                 />
                 <DecoratedTextArea
-                    field='comment'
+                    field="comment"
                     formItem
-                    rules={ [
+                    rules={[
                         {
-                            max:     2000,
+                            max: 2000,
                             message: formatMessage({
-                                id: 'field_should_be_below_2000_chars',
+                                id: "field_should_be_below_2000_chars",
                             }),
                         },
-                    ] }
-                    getPopupContainer={ trigger => trigger.parentNode }
+                    ]}
+                    getPopupContainer={trigger => trigger.parentNode}
                     label={
-                        <FormattedMessage id='add-business-package-form.comment' />
+                        <FormattedMessage id="add-business-package-form.comment" />
                     }
-                    getFieldDecorator={ getFieldDecorator }
+                    getFieldDecorator={getFieldDecorator}
                 />
                 <DecoratedInputNumber
-                    field='amount'
+                    field="amount"
                     formItem
-                    style={ { width: '100%' } }
-                    getPopupContainer={ trigger => trigger.parentNode }
+                    style={{ width: "100%" }}
+                    getPopupContainer={trigger => trigger.parentNode}
                     label={
-                        <FormattedMessage id='add-business-package-form.amount' />
+                        <FormattedMessage id="add-business-package-form.amount" />
                     }
-                    getFieldDecorator={ getFieldDecorator }
+                    getFieldDecorator={getFieldDecorator}
                 />
                 <Button
-                    style={ { width: '100%' } }
-                    onClick={ () =>
+                    style={{ width: "100%" }}
+                    onClick={() =>
                         validateFields(
                             (err, values) =>
                                 !err &&
                                 this.props.createBusinessPackage(
                                     businessId,
                                     values.packageId,
-                                    _.omit(values, [ 'packageId' ]),
+                                    _.omit(values, ["packageId"]),
                                 ),
                         )
                     }
                 >
-                    <FormattedMessage id='add-business-package-form.create' />
+                    <FormattedMessage id="add-business-package-form.create" />
                 </Button>
             </Form>
         );

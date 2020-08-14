@@ -1,126 +1,137 @@
 //vendor
-import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, Button, Select } from 'antd';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { Form, Button, Select } from "antd";
+import _ from "lodash";
 
 // proj
-import { onChangePackageForm } from 'core/forms/editPackageForm/duck';
+import { onChangePackageForm } from "core/forms/editPackageForm/duck";
 
-import { DecoratedInput, DecoratedSelect } from 'forms/DecoratedFields';
+import { DecoratedInput, DecoratedSelect } from "forms/DecoratedFields";
 import {
     withReduxForm,
     getPermissionsLabels,
     groupedPermissions,
     getGroupsLabels,
     permissions,
-} from 'utils';
+} from "utils";
 
 const OptGroup = Select.OptGroup;
 const Option = Select.Option;
 
 @injectIntl
 @withReduxForm({
-    name:    'packageForm',
+    name: "packageForm",
     actions: {
         change: onChangePackageForm,
     },
 })
 export class PackageForm extends Component {
     render() {
-        const { editPackageId, initPackageName, updatePackage, initPackage, roles } = this.props;
+        const {
+            editPackageId,
+            initPackageName,
+            updatePackage,
+            initPackage,
+            roles,
+        } = this.props;
         const { getFieldDecorator } = this.props.form;
 
-        const packageGrants = _.intersection(initPackage.grants, _.values(permissions));
+        const packageGrants = _.intersection(
+            initPackage.grants,
+            _.values(permissions),
+        );
         const groupsLabels = getGroupsLabels(this.props.intl);
         const permissionsLabels = getPermissionsLabels(this.props.intl);
-        const roleIds = _.map(initPackage.roles, 'roleId');
+        const roleIds = _.map(initPackage.roles, "roleId");
 
         return (
-            <Form layout={ 'horizontal' }>
+            <Form layout={"horizontal"}>
                 <DecoratedInput
-                    initialValue={ initPackageName }
-                    field={ 'name' }
+                    initialValue={initPackageName}
+                    field={"name"}
                     formItem
-                    rules={ [
+                    rules={[
                         {
                             required: true,
-                            message:  this.props.intl.formatMessage({
-                                id: 'edit-package-form.name_field_required',
+                            message: this.props.intl.formatMessage({
+                                id: "edit-package-form.name_field_required",
                             }),
                         },
-                    ] }
+                    ]}
                     hasFeedback
                     label={
-                        <FormattedMessage id='edit-package-form.name_field' />
+                        <FormattedMessage id="edit-package-form.name_field" />
                     }
-                    getFieldDecorator={ getFieldDecorator }
+                    getFieldDecorator={getFieldDecorator}
                 />
                 <DecoratedSelect
-                    field={ 'grants' }
-                    initialValue={ packageGrants }
+                    field={"grants"}
+                    initialValue={packageGrants}
                     formItem
-                    getPopupContainer={ trigger => trigger.parentNode }
-                    rules={ [
+                    getPopupContainer={trigger => trigger.parentNode}
+                    rules={[
                         {
                             required: true,
-                            message:  this.props.intl.formatMessage({
-                                id: 'required_field',
+                            message: this.props.intl.formatMessage({
+                                id: "required_field",
                             }),
                         },
-                    ] }
+                    ]}
                     hasFeedback
                     label={
-                        <FormattedMessage id='edit-package-form.grants_field' />
+                        <FormattedMessage id="edit-package-form.grants_field" />
                     }
-                    mode={ 'multiple' }
-                    getFieldDecorator={ getFieldDecorator }
+                    mode={"multiple"}
+                    getFieldDecorator={getFieldDecorator}
                 >
-                    { _.toPairs(groupedPermissions).map(([ name, value ]) => (
-                        <OptGroup label={ groupsLabels[ name ] }>
-                            { value.map(value => (
-                                <Option value={ value } key={ value }>
-                                    { permissionsLabels[ value ] }
+                    {_.toPairs(groupedPermissions).map(([name, value]) => (
+                        <OptGroup label={groupsLabels[name]}>
+                            {value.map(value => (
+                                <Option value={value} key={value}>
+                                    {permissionsLabels[value]}
                                 </Option>
-                            )) }
+                            ))}
                         </OptGroup>
-                    )) }
+                    ))}
                 </DecoratedSelect>
                 <DecoratedSelect
-                    field={ 'roles' }
-                    initialValue={ roleIds }
+                    field={"roles"}
+                    initialValue={roleIds}
                     formItem
-                    getPopupContainer={ trigger => trigger.parentNode }
-                    rules={ [
+                    getPopupContainer={trigger => trigger.parentNode}
+                    rules={[
                         {
                             required: true,
-                            message:  this.props.intl.formatMessage({
-                                id: 'required_field',
+                            message: this.props.intl.formatMessage({
+                                id: "required_field",
                             }),
                         },
-                    ] }
+                    ]}
                     hasFeedback
-                    label={ <FormattedMessage id='edit-package-form.roles_field' /> }
-                    mode={ 'multiple' }
-                    getFieldDecorator={ getFieldDecorator }
+                    label={
+                        <FormattedMessage id="edit-package-form.roles_field" />
+                    }
+                    mode={"multiple"}
+                    getFieldDecorator={getFieldDecorator}
                 >
-                    { roles.map(({ name, roleId }) => (
-                        <Option value={ roleId } key={ roleId }>
-                            { name }
+                    {roles.map(({ name, roleId }) => (
+                        <Option value={roleId} key={roleId}>
+                            {name}
                         </Option>
-                    )) }
+                    ))}
                 </DecoratedSelect>
                 <Button
-                    style={ { width: '100%' } }
-                    onClick={ () => {
+                    style={{ width: "100%" }}
+                    onClick={() => {
                         this.props.form.validateFields((err, values) => {
                             if (!err) {
                                 updatePackage(editPackageId, values);
                             }
                         });
-                    } }
+                    }}
                 >
-                    <FormattedMessage id='edit-package-form.edit' />
+                    <FormattedMessage id="edit-package-form.edit" />
                 </Button>
             </Form>
         );

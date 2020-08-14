@@ -10,11 +10,9 @@ import {
     createEmployeeScheduleSuccess,
     updateEmployeeScheduleSuccess,
     deleteEmployeeScheduleSuccess,
-
     createEmployeeBreakScheduleSuccess,
     updateEmployeeBreakScheduleSuccess,
     deleteEmployeeBreakScheduleSuccess,
-
     fetchEmployeeSchedule,
     fetchEmployeeScheduleSuccess,
 } from './duck';
@@ -23,15 +21,13 @@ import {
     CREATE_EMPLOYEE_SCHEDULE,
     UPDATE_EMPLOYEE_SCHEDULE,
     DELETE_EMPLOYEE_SCHEDULE,
-
     CREATE_BREAK_EMPLOYEE_SCHEDULE,
     UPDATE_BREAK_EMPLOYEE_SCHEDULE,
     DELETE_BREAK_EMPLOYEE_SCHEDULE,
-
     FETCH_EMPLOYEE_SCHEDULE,
 } from './duck';
 
-export function* fetchEmployeeScheduleSaga({payload: id}) {
+export function* fetchEmployeeScheduleSaga({ payload: id }) {
     const data = yield call(fetchAPI, 'GET', `employees/${id}`);
     yield put(fetchEmployeeScheduleSuccess(data));
 }
@@ -50,7 +46,9 @@ export function* updateEmployeeScheduleSaga({
     yield put(fetchEmployeeSchedule(employeeId));
 }
 
-export function* deleteEmployeeScheduleSaga({ payload: { scheduleId, employeeId } }) {
+export function* deleteEmployeeScheduleSaga({
+    payload: { scheduleId, employeeId },
+}) {
     yield call(fetchAPI, 'DELETE', `schedule/${scheduleId}`);
     yield put(deleteEmployeeScheduleSuccess());
     yield put(fetchEmployeeSchedule(employeeId));

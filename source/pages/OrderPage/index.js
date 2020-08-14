@@ -208,7 +208,6 @@ class OrderPage extends Component {
                     history,
                     'location.state.fromDashboard',
                 );
-
                 this.props.updateOrder({
                     id,
                     order: convertFieldsValuesToDbEntity(
@@ -359,7 +358,7 @@ class OrderPage extends Component {
                         brandName: detail.brandName ? detail.brandName : null,
                         purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
                         count: detail.count ? detail.count : 1,
-                        price: detail.price ? Math.round(detail.price*10)/10 : 1,
+                        price: Math.round(detail.price*10)/10,
                         comment: detail.comment || {
                             comment: undefined,
                             positions: [],
@@ -374,7 +373,7 @@ class OrderPage extends Component {
                         serviceHours: labor.hours ? labor.hours : 0,
                         purchasePrice: labor.purchasePrice ? Math.round(labor.purchasePrice*10)/10 : 0,
                         count: labor.count ? labor.count : 1,
-                        servicePrice: labor.price ? Math.round(labor.price*10)/10 : 1,
+                        servicePrice: Math.round(labor.price*10)/10,
                         comment: labor.comment || {
                             comment: undefined,
                             positions: [],
@@ -482,6 +481,7 @@ class OrderPage extends Component {
             forbiddenUpdate,
         } = this.getSecurityConfig();
         const viewTasks = !isForbidden(user, permissions.GET_TASKS);
+        const copyDisabled = isForbidden(user, permissions.CREATE_ORDER);
 
         return spinner ? (
             <Spinner spin={ spinner }/>
@@ -518,7 +518,7 @@ class OrderPage extends Component {
                             :
                             <></>
                         }
-                        {!isForbidden(user, permissions.ACCESS_AGREEMENT) ? 
+                        {!isForbidden(user, permissions.ACCESS_AGREEMENT) && !isMobile ? 
                             <div title={this.props.intl.formatMessage({id: "order-page.send_agreement"})}>
                                 <Popconfirm
                                     title={
@@ -563,7 +563,7 @@ class OrderPage extends Component {
                                     <Icon
                                         type='file-protect'
                                         style={ {
-                                            fontSize: isMobile ? 12 : 24,
+                                            fontSize: isMobile ? 14 : 24,
                                             cursor:   'pointer',
                                             margin:   '0 10px',
                                         } }
@@ -608,26 +608,8 @@ class OrderPage extends Component {
                                 <FormattedMessage id='order-page.create_invite_order'/>
                             </StyledButton>
                         ) : null }
-                        { status === 'success' ? (
-                            <Button
-                                icon='copy'
-                                type='primary'
-                                disabled={
-                                    !isInviteEnabled ||
-                                    isForbidden(
-                                        user,
-                                        permissions.CREATE_ORDER,
-                                    )
-                                }
-                                onClick={ () => {
-                                    this._getCurrentOrder();
-                                } }
-                                className={ Styles.inviteButton }
-                            >
-                                <FormattedMessage id='order-page.create_copy'/>
-                            </Button>
-                        ) : null }
                         { !isMobile && (
+                            <>
                             <ChangeStatusDropdown
                                 user={ user }
                                 orderStatus={ status }
@@ -636,19 +618,33 @@ class OrderPage extends Component {
                                 modals={ MODALS }
                                 isMobile={ isMobile }
                             />
+                            <ReportsDropdown
+                                user={ this.props.user }
+                                orderId={ id }
+                                orderStatus={ status }
+                                download={ this.props.getReport }
+                                isMobile={ isMobile }
+                            />
+                            </>
                         ) }
-                        <ReportsDropdown
-                            user={ this.props.user }
-                            orderId={ id }
-                            orderStatus={ status }
-                            download={ this.props.getReport }
-                            isMobile={ isMobile }
-                        />
+                        { !copyDisabled ?
+                        <Icon
+                            title={this.props.intl.formatMessage({ id: `order-page.create_copy`})}
+                            type='copy'
+                            onClick={ () => {
+                                this._getCurrentOrder();
+                            } }
+                            style={ {
+                                fontSize: isMobile ? 14 : 24,
+                                cursor:   'pointer',
+                                margin:   '0 10px',
+                            } }
+                        /> : null}
                         { !hideEditButton && (
                             <Icon
                                 type='save'
                                 style={ {
-                                    fontSize: isMobile ? 12 : 24,
+                                    fontSize: isMobile ? 14 : 24,
                                     cursor:   'pointer',
                                     margin:   '0 10px',
                                     ...disabledEditButton
@@ -666,7 +662,7 @@ class OrderPage extends Component {
                             <Icon
                                 type='delete'
                                 style={ {
-                                    fontSize: isMobile ? 12 : 24,
+                                    fontSize: isMobile ? 14 : 24,
                                     cursor:   'pointer',
                                     margin:   '0 10px',
                                 } }
@@ -677,7 +673,7 @@ class OrderPage extends Component {
                         ) }
                         <Icon
                             style={ {
-                                fontSize: isMobile ? 12 : 24,
+                                fontSize: isMobile ? 14 : 24,
                                 cursor:   'pointer',
                             } }
                             type='close'
