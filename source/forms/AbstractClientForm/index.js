@@ -40,7 +40,7 @@ export class AbstractClientForm extends Component {
         const { client, errors, searchQuery } = this.props;
         const { getFieldDecorator } = this.props.form;
 
-        const searchQueryNumber = searchQuery ? searchQuery.replace(/\D+/g,"").slice(0, 9) : undefined;
+        const searchQueryNumber = searchQuery ? searchQuery.replace(/\D+/g,"").replace(/^[38]{2}/,"").slice(0, 10) : undefined;
 
         if (errors.length) {
             const currentComponentErrors = errors.filter(({ response }) =>

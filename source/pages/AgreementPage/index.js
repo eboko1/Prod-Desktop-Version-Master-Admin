@@ -145,6 +145,8 @@ class AgreementPage extends Component {
         const isMobile = window.innerWidth < 1200;
         const { dataSource, confirmed, loading } = this.state;
         const { business, manager } = this;
+        const { formatMessage } = this.props.intl;
+        const totalSum = Math.round((this.servicesTotal + this.detailsTotal)*10)/10;
 
         if(loading) {
             return (
@@ -209,19 +211,29 @@ class AgreementPage extends Component {
         return isMobile ? (
             <div className={Styles.agreementPage}>
                 <div className={Styles.agreementHeader}>
-                    <div style={{textTransform: "uppercase"}}>
-                        <p>{vehicleNumber}</p>
-                        <p>{vehicleMake} {vehicleModel}</p>
+                    <div 
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            width: '100%'
+                        }}
+                    >
+                        <div style={{textTransform: "uppercase"}}>
+                            <p>{vehicleNumber}</p>
+                            <p>{vehicleMake} {vehicleModel}</p>
+                        </div>
+                        <div>
+                            <Button
+                                style={{height: "100%"}}
+                                type="primary"
+                                onClick={()=>{this.showConfirm()}}
+                            >
+                                <FormattedMessage id='save'/>
+                            </Button>
+                        </div>
                     </div>
-                    <div>{Math.round((this.servicesTotal + this.detailsTotal)*10)/10} <FormattedMessage id='cur'/></div>
-                    <div style={{height: "100%"}}>
-                        <Button
-                            style={{height: "100%"}}
-                            type="primary"
-                            onClick={()=>{this.showConfirm()}}
-                        >
-                            <FormattedMessage id='save'/>
-                        </Button>
+                    <div style={{marginTop: 15}}>
+                        {`${formatMessage({id: 'order_form_table.total_sum'})}: ${totalSum} ${formatMessage({id: 'order_form_table.total_sum'})}`}
                     </div>
                 </div>
                 <div className={Styles.businessInfo}>
@@ -332,8 +344,8 @@ class AgreementPage extends Component {
                     />
                 </div>
                 <div className={`${Styles.agreementTotalSum} ${Styles.totalWrap}`}>
-                    <span>Итог:</span>
-                    <span className={Styles.totalSum}>{Math.round((this.servicesTotal + this.detailsTotal)*10)/10} <FormattedMessage id='cur'/></span>
+                    <FormattedMessage id='order_form_table.total_sum'/>
+                    <span className={Styles.totalSum}>{totalSum} <FormattedMessage id='cur'/></span>
                 </div>
                 <Button
                     disabled={!this.state.isOpened}

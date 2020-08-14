@@ -1,14 +1,13 @@
 // vendor
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { Button, Modal, Icon, Select, Input, InputNumber, Spin, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
 import { permissions, isForbidden } from "utils";
-import { getSupplier } from 'components/PartSuggestions/supplierConfig.js';
-import { DetailSupplierModal } from 'modals'
+import { DetailSupplierModal } from 'modals';
+import { AvailabilityIndicator } from 'components';
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
@@ -297,36 +296,10 @@ class DetailStorageModal extends React.Component{
                 },
                 sortDirections: ['descend', 'ascend'],
                 render: (store) => {
-                    let color = 'brown',
-                    title = 'Поставщик не выбран!';
-                    if(store){
-                        title=  `Сегодня: ${store[0]} шт.\n` +
-                                `Завтра: ${store[1]} шт.\n` +
-                                `Послезавтра: ${store[2]} шт.\n` +
-                                `Позже: ${store[3]} шт.`;
-                        if(store[0] != '0') {
-                            color = 'var(--green)';
-                        }
-                        else if(store[1] != 0) {
-                            color = 'yellow';
-                        }
-                        else if(store[2] != 0) {
-                            color = 'orange';
-                        }
-                        else if(store[3] != 0) {
-                            color = 'red';
-                        }
-                    }
-                    else {
-                        color = 'grey';
-                        
-                    }
-                    
                     return (
-                        <div
-                            style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: color}}
-                            title={title}
-                        ></div>
+                        <AvailabilityIndicator
+                            indexArray={store}
+                        />
                     )
                 },
             },
@@ -692,7 +665,7 @@ class DetailStorageModal extends React.Component{
 export default DetailStorageModal;
 
 
-class PhotoModal extends React.Component{
+export class PhotoModal extends React.Component{
     constructor(props) {
         super(props);
         this.state={

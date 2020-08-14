@@ -9,6 +9,7 @@ import { Catcher } from "commons";
 import { permissions, isForbidden, images } from 'utils';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { DetailProductModal, FavouriteDetailsModal } from 'modals'
+import { AvailabilityIndicator } from 'components';
 
 // own
 import Styles from "./styles.m.css";
@@ -143,37 +144,12 @@ export default class DetailsTable extends Component {
                         </div>,
                 width: "3%",
                 key: "AI",
-                render: (elem)=>{
-                    let color = 'brown',
-                        title = 'Поставщик не выбран!';
-                    if(elem.store){
-                        title=  `Сегодня: ${elem.store[0]} шт.\n` +
-                                `Завтра: ${elem.store[1]} шт.\n` +
-                                `Послезавтра: ${elem.store[2]} шт.\n` +
-                                `Позже: ${elem.store[3]} шт.`;
-                        if(elem.store[0] != '0') {
-                            color = 'var(--green)';
-                        }
-                        else if(elem.store[1] != 0) {
-                            color = 'yellow';
-                        }
-                        else if(elem.store[2] != 0) {
-                            color = 'orange';
-                        }
-                        else if(elem.store[3] != 0) {
-                            color = 'red';
-                        }
-                    }
-                    else {
-                        color = 'grey';
-                        
-                    }
-                    
+                dataIndex: "store",
+                render: (store)=>{
                     return (
-                        <div
-                            style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: color}}
-                            title={title}
-                        ></div>
+                        <AvailabilityIndicator
+                            indexArray={store}
+                        />
                     )
                 }
             },

@@ -203,7 +203,6 @@ export function* updateOrderSaga() {
             yield call(fetchAPI, 'PUT', `orders/${id}`, {}, mergedOrder, {
                 handleErrorInternally: true,
             });
-
             if(redirectTo) {
                 yield put(push(redirectTo));
             }

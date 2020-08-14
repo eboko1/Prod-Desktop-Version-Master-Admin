@@ -117,7 +117,7 @@ class ReportsDropdown extends React.Component {
                     className={ forbidden ? Styles.forbiddenPrint : '' }
                     type='printer'
                     style={ {
-                        fontSize: isMobile ? 12 : 24,
+                        fontSize: isMobile ? 14 : 24,
                         cursor:   'pointer',
                         margin:   '0 10px',
                     } }

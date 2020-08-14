@@ -1,17 +1,10 @@
 // vendor
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
-import {
-    API_URL,
-    confirmDiagnostic,
-    createAgreement,
-    lockDiagnostic,
-} from 'core/forms/orderDiagnosticForm/saga';
-import { images } from 'utils';
-import { DetailStorageModal, DetailSupplierModal } from 'modals'
+import { DetailStorageModal, DetailSupplierModal } from 'modals';
+import { AvailabilityIndicator } from 'components';
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
@@ -307,38 +300,13 @@ class DetailProductModal extends React.Component{
                             <FormattedMessage id="order_form_table.AI" />
                         </div>,
                 key:       'AI',
+                dataIndex: 'store',
                 width:     '3%',
-                render: (elem)=>{
-                    let color = 'brown',
-                        title = 'Поставщик не выбран!';
-                    if(elem.store){
-                        title=  `Сегодня: ${elem.store[0]} шт.\n` +
-                                `Завтра: ${elem.store[1]} шт.\n` +
-                                `Послезавтра: ${elem.store[2]} шт.\n` +
-                                `Позже: ${elem.store[3]} шт.`;
-                        if(elem.store[0] != '0') {
-                            color = 'var(--green)';
-                        }
-                        else if(elem.store[1] != 0) {
-                            color = 'yellow';
-                        }
-                        else if(elem.store[2] != 0) {
-                            color = 'orange';
-                        }
-                        else if(elem.store[3] != 0) {
-                            color = 'red';
-                        }
-                    }
-                    else {
-                        color = 'grey';
-                        
-                    }
-                    
+                render: (store)=>{
                     return (
-                        <div
-                            style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: color}}
-                            title={title}
-                        ></div>
+                        <AvailabilityIndicator
+                            indexArray={store}
+                        />
                     )
                 }
             },
@@ -563,7 +531,7 @@ class DetailProductModal extends React.Component{
         }
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/store_groups/default_detail?storeGroupId=${storeGroupId}&modificationId=${this.props.tecdocId}`;
         if(this.state.editing) params += `&excludePricelist=true`;
         url += params;
@@ -646,7 +614,7 @@ class DetailProductModal extends React.Component{
 
     async addDetailsAndLabors(data) {
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/orders/${this.props.orderId}`;
         url += params;
         try {
