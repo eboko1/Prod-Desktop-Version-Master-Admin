@@ -233,7 +233,7 @@ class AgreementPage extends Component {
                         </div>
                     </div>
                     <div style={{marginTop: 15}}>
-                        {`${formatMessage({id: 'order_form_table.total_sum'})}: ${totalSum} ${formatMessage({id: 'order_form_table.total_sum'})}`}
+                        {`${formatMessage({id: 'order_form_table.total_sum'})}: ${totalSum} ${formatMessage({id: 'cur'})}`}
                     </div>
                 </div>
                 <div className={Styles.businessInfo}>
