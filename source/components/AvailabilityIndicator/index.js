@@ -11,33 +11,32 @@ export default class AvailabilityIndicator extends React.Component{
 
     render() {
         const { formatMessage } = this.props.intl;
-        const indexArray = this.props.indexArray || [];
-
-        const in0 = indexArray[0],
-              in1 = indexArray[1],
-              in2 = indexArray[2],
-              inX = indexArray[3];
-
+        const indexArray = this.props.indexArray;
 
         let color = 'brown',
             title = 'Поставщик не выбран!';
 
 
         if(indexArray){
-            title=  `${formatMessage({id: 'availabilities-page.avail_0'})}: ${in0} ${formatMessage({id: 'pc'})}\n` +
+            const in0 = indexArray[0],
+                  in1 = indexArray[1],
+                  in2 = indexArray[2],
+                  inX = indexArray[3];
+
+            title = `${formatMessage({id: 'availabilities-page.avail_0'})}: ${in0} ${formatMessage({id: 'pc'})}\n` +
                     `${formatMessage({id: 'availabilities-page.avail_1'})}: ${in1} ${formatMessage({id: 'pc'})}\n` +
                     `${formatMessage({id: 'availabilities-page.avail_2'})}: ${in2} ${formatMessage({id: 'pc'})}\n` +
                     `${formatMessage({id: 'availabilities-page.avail_x'})}: ${inX} ${formatMessage({id: 'pc'})}\n`;
-            if(in0 != '0') {
+            if(in0) {
                 color = 'var(--green)';
             }
-            else if(in1 != 0) {
+            else if(in1) {
                 color = 'yellow';
             }
-            else if(in2 != 0) {
+            else if(in2) {
                 color = 'orange';
             }
-            else if(inX != 0) {
+            else if(inX) {
                 color = 'red';
             }
         }
