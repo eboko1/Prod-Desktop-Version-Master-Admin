@@ -91,8 +91,5 @@ const mapDispatchToProps = {
 };
 
 export const StoreMovementTable = injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(StoreMovementTableComponent),
+    connect(mapStateToProps, mapDispatchToProps)(StoreMovementTableComponent),
 );

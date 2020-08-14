@@ -322,8 +322,5 @@ const mapDispatchToProps = {
 };
 
 export const StoreProductForm = injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(Form.create()(ProductForm)),
+    connect(mapStateToProps, mapDispatchToProps)(Form.create()(ProductForm)),
 );

@@ -30,7 +30,6 @@ export const DecoratedInputPhone = props => {
         ...initialValue ? { initialValue } : {},
         rules,
     })(
-
         <Input
             prefix={
                 icon ? (
@@ -47,8 +46,7 @@ export const DecoratedInputPhone = props => {
             placeholder={ placeholder }
             disabled={ disabled }
             onChange={ onChange }
-        />
-        ,
+        />,
     );
 
     return formItem ? (
@@ -64,10 +62,10 @@ export const DecoratedInputPhone = props => {
                 { input }
             </InputGroup>
         </FormItem>
-    ) :
+    ) : (
         <InputGroup compact>
             <Input style={ { width: '20%' } } defaultValue='+38' disabled />
             { input }
         </InputGroup>
-    ;
+    );
 };

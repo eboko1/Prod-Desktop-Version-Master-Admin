@@ -1,19 +1,19 @@
 // vendor
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { injectIntl } from "react-intl";
 
 // proj
-import { stateSelector, setFilters } from 'core/servicesSuggestions/duck';
+import { stateSelector, setFilters } from "core/servicesSuggestions/duck";
 import {
     createService,
     updateService,
     deleteService,
-} from 'core/forms/servicesForm/duck';
+} from "core/forms/servicesForm/duck";
 
-import { Catcher, Paper } from 'commons';
-import { ServicesForm } from 'forms';
-import { EditableTable } from 'components';
+import { Catcher, Paper } from "commons";
+import { ServicesForm } from "forms";
+import { EditableTable } from "components";
 
 const mapDispatchToProps = {
     setFilters,
@@ -28,10 +28,7 @@ const mapStateToProps = state => ({
 });
 
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class ServiceContainer extends Component {
     render() {
         const {
@@ -53,21 +50,21 @@ export default class ServiceContainer extends Component {
                 <Paper>
                     <ServicesForm />
                 </Paper>
-                { list ? (
+                {list ? (
                     <Paper>
                         <EditableTable
-                            loading={ loading }
-                            data={ list }
-                            createService={ createService }
-                            updateService={ updateService }
-                            deleteService={ deleteService }
-                            setFilters={ setFilters }
-                            count={ count }
-                            details={ details }
-                            filters={ filters }
+                            loading={loading}
+                            data={list}
+                            createService={createService}
+                            updateService={updateService}
+                            deleteService={deleteService}
+                            setFilters={setFilters}
+                            count={count}
+                            details={details}
+                            filters={filters}
                         />
                     </Paper>
-                ) : null }
+                ) : null}
             </Catcher>
         );
     }

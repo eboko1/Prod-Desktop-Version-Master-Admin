@@ -61,9 +61,6 @@ export function* createClientSaga() {
 }
 /* eslint-disable array-element-newline */
 export function* saga() {
-    yield all([
-        call(fetchAddClientFormSaga),
-        call(createClientSaga),
-    ]);
+    yield all([ call(fetchAddClientFormSaga), call(createClientSaga) ]);
 }
 /* eslint-enable array-element-newline */

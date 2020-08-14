@@ -314,7 +314,7 @@ export default class OrderFormHeader extends Component {
 
     _getEmployeesOptions = () => {
         return _.get(this.props, "employees", []).map(employee => {
-            if(!employee.disabled) {
+            if (!employee.disabled) {
                 return (
                     <Option
                         value={employee.id}
@@ -323,7 +323,7 @@ export default class OrderFormHeader extends Component {
                     >
                         {`${employee.name} ${employee.surname}`}
                     </Option>
-                )
+                );
             }
         });
     };
@@ -402,15 +402,21 @@ export default class OrderFormHeader extends Component {
                     label={
                         <>
                             <span>
-                                {`${this._getLocalization("time")} (${zeroStationLoadDuration}${this._getLocalization("add_order_form.hours_shortcut")})`}
+                                {`${this._getLocalization(
+                                    "time",
+                                )} (${zeroStationLoadDuration}${this._getLocalization(
+                                    "add_order_form.hours_shortcut",
+                                )})`}
                             </span>
-                            <span style={{marginLeft: 10}}>
+                            <span style={{ marginLeft: 10 }}>
                                 <Icon
                                     className={Styles.updateDurationIcon}
-                                    type='redo'
-                                    title='Пересчитать длительность'
+                                    type="redo"
+                                    title="Пересчитать длительность"
                                     onClick={() => this.props.updateDuration()}
-                                    title={this.props.intl.formatMessage({id: "duration.recalculate"})}
+                                    title={this.props.intl.formatMessage({
+                                        id: "duration.recalculate",
+                                    })}
                                 />
                             </span>
                         </>
@@ -633,7 +639,7 @@ export default class OrderFormHeader extends Component {
             authentificatedManager,
             fields,
             errors,
-            location
+            location,
         } = this.props;
 
         const isOwnBusiness =
@@ -680,7 +686,10 @@ export default class OrderFormHeader extends Component {
                     className={Styles.durationPanelItem}
                     disabled={this.bodyUpdateIsForbidden()}
                     getFieldDecorator={getFieldDecorator}
-                    initialValue={_.get(fetchedOrder, "order.employeeId") || (location.state ? location.state.employeeId : undefined)}
+                    initialValue={
+                        _.get(fetchedOrder, "order.employeeId") ||
+                        (location.state ? location.state.employeeId : undefined)
+                    }
                     placeholder={this._getLocalization(
                         "order_form_table.select_master",
                     )}
@@ -719,7 +728,7 @@ export default class OrderFormHeader extends Component {
         const { fetchedOrder, fields } = this.props;
         const { getFieldDecorator } = this.props.form;
         const { errors, totalPrice, cashSum, remainPrice } = this.props;
-        const mask = '0,0.00';
+        const mask = "0,0.00";
 
         return (
             <div className={Styles.headerCol}>

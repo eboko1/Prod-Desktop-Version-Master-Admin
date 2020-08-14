@@ -73,10 +73,7 @@ function formatVehicleLabel(vehicle, formatMessage) {
 
 @withRouter
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class ClientsContainer extends Component {
     componentDidMount() {
         this.props.fetchClients(this.props.filter);

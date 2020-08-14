@@ -7,9 +7,9 @@ import { Link as ReactLink } from 'react-router-dom';
 // own
 
 /*
-* Taken form https://gist.github.com/shprink/bf9599e1d66b9dc4d151e89c1199ccb8
-* The problem described in https://github.com/ReactTraining/react-router/issues/1147
-* */
+ * Taken form https://gist.github.com/shprink/bf9599e1d66b9dc4d151e89c1199ccb8
+ * The problem described in https://github.com/ReactTraining/react-router/issues/1147
+ * */
 export default class Link extends Component {
     parseTo(to) {
         let parser = document.createElement('a');

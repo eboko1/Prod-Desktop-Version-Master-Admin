@@ -1,13 +1,13 @@
 // vendor
-import React, { Component } from 'react';
-import { Form, Select, Icon, Tooltip } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import _ from 'lodash';
-import moment from 'moment';
+import React, { Component } from "react";
+import { Form, Select, Icon, Tooltip } from "antd";
+import { FormattedMessage, injectIntl } from "react-intl";
+import _ from "lodash";
+import moment from "moment";
 
 //proj
-import { onChangeOrderTasksForm } from 'core/forms/orderTaskForm/duck';
-import { withReduxForm } from 'utils';
+import { onChangeOrderTasksForm } from "core/forms/orderTaskForm/duck";
+import { withReduxForm } from "utils";
 const Option = Select.Option;
 
 // own
@@ -16,12 +16,12 @@ import {
     DecoratedSelect,
     DecoratedDatePicker,
     DecoratedTimePicker,
-} from 'forms/DecoratedFields';
-import Styles from './styles.m.css';
+} from "forms/DecoratedFields";
+import Styles from "./styles.m.css";
 
 @injectIntl
 @withReduxForm({
-    name:    'orderTaskForm',
+    name: "orderTaskForm",
     actions: {
         change: onChangeOrderTasksForm,
     },
@@ -49,98 +49,98 @@ export class OrderTaskForm extends Component {
         const { toggleDirectory } = this.state;
 
         const textDirectory = (
-            <div className={ Styles.directory }>
+            <div className={Styles.directory}>
                 <Icon
-                    onClick={ () => this.setState({ toggleDirectory: false }) }
-                    type='close-circle-o '
+                    onClick={() => this.setState({ toggleDirectory: false })}
+                    type="close-circle-o "
                 />
-                <div className={ Styles.info }>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='calculation' />
+                <div className={Styles.info}>
+                    <div className={Styles.infoDirectory}>
+                        <div className={Styles.infoDirectoryName}>
+                            <FormattedMessage id="calculation" />
                         </div>
                         <div>
-                            <FormattedMessage id='manager_prepares_cost_estimate' />
+                            <FormattedMessage id="manager_prepares_cost_estimate" />
                         </div>
                     </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='harmonization' />
+                    <div className={Styles.infoDirectory}>
+                        <div className={Styles.infoDirectoryName}>
+                            <FormattedMessage id="harmonization" />
                         </div>
                         <div>
-                            <FormattedMessage id='communication_with_the_client' />
+                            <FormattedMessage id="communication_with_the_client" />
                         </div>
                     </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='waiting_for_arrival' />:
+                    <div className={Styles.infoDirectory}>
+                        <div className={Styles.infoDirectoryName}>
+                            <FormattedMessage id="waiting_for_arrival" />:
                         </div>
                         <div>
-                            <FormattedMessage id='all_agreed' />
+                            <FormattedMessage id="all_agreed" />
                         </div>
                     </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='acceptance' />:
+                    <div className={Styles.infoDirectory}>
+                        <div className={Styles.infoDirectoryName}>
+                            <FormattedMessage id="acceptance" />:
                         </div>
                         <div>
-                            <FormattedMessage id='manager_accepts_cars' />
+                            <FormattedMessage id="manager_accepts_cars" />
                         </div>
                     </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='diagnostics' />:
+                    <div className={Styles.infoDirectory}>
+                        <div className={Styles.infoDirectoryName}>
+                            <FormattedMessage id="diagnostics" />:
                         </div>
                         <div>
-                            <FormattedMessage id='passes_car_diagnostics' />
+                            <FormattedMessage id="passes_car_diagnostics" />
                         </div>
                     </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='waiting_for_repair' />:
+                    <div className={Styles.infoDirectory}>
+                        <div className={Styles.infoDirectoryName}>
+                            <FormattedMessage id="waiting_for_repair" />:
                         </div>
                         <div>
-                            <FormattedMessage id='auto_waiting_for_repair' />
+                            <FormattedMessage id="auto_waiting_for_repair" />
                         </div>
                     </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='waiting_for_spare_parts' />:
+                    <div className={Styles.infoDirectory}>
+                        <div className={Styles.infoDirectoryName}>
+                            <FormattedMessage id="waiting_for_spare_parts" />:
                         </div>
                         <div>
-                            <FormattedMessage id='auto_expects_spare_parts' />
+                            <FormattedMessage id="auto_expects_spare_parts" />
                         </div>
                     </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='order_task.repairs' />:
+                    <div className={Styles.infoDirectory}>
+                        <div className={Styles.infoDirectoryName}>
+                            <FormattedMessage id="order_task.repairs" />:
                         </div>
                         <div>
-                            <FormattedMessage id='there_is_a_repair' />
+                            <FormattedMessage id="there_is_a_repair" />
                         </div>
                     </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='extradition' />:
+                    <div className={Styles.infoDirectory}>
+                        <div className={Styles.infoDirectoryName}>
+                            <FormattedMessage id="extradition" />:
                         </div>
                         <div>
-                            <FormattedMessage id='repair_is_completed' />
+                            <FormattedMessage id="repair_is_completed" />
                         </div>
                     </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='closed' />:
+                    <div className={Styles.infoDirectory}>
+                        <div className={Styles.infoDirectoryName}>
+                            <FormattedMessage id="closed" />:
                         </div>
                         <div>
-                            <FormattedMessage id='repair_is_closed' />
+                            <FormattedMessage id="repair_is_closed" />
                         </div>
                     </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='other' />:
+                    <div className={Styles.infoDirectory}>
+                        <div className={Styles.infoDirectoryName}>
+                            <FormattedMessage id="other" />:
                         </div>
                         <div>
-                            <FormattedMessage id='custom_tasks' />
+                            <FormattedMessage id="custom_tasks" />
                         </div>
                     </div>
                 </div>
@@ -149,238 +149,238 @@ export class OrderTaskForm extends Component {
 
         const popup = (
             <span
-                className={ Styles.statusTooltip }
-                onClick={ () =>
+                className={Styles.statusTooltip}
+                onClick={() =>
                     this.setState({ toggleDirectory: !toggleDirectory })
                 }
             >
-                <FormattedMessage id='order-task-modal.open_status_helper' />
+                <FormattedMessage id="order-task-modal.open_status_helper" />
             </span>
         );
 
         return (
-            <Form layout='horizontal'>
-                <div className={ Styles.orderDescription }>
-                    { num ? (
+            <Form layout="horizontal">
+                <div className={Styles.orderDescription}>
+                    {num ? (
                         <div>
-                            <FormattedMessage id='order-task-modal.order_number' />
-                            :{ num }
+                            <FormattedMessage id="order-task-modal.order_number" />
+                            :{num}
                         </div>
-                    ) : null }
-                    { activeVehicle ? (
+                    ) : null}
+                    {activeVehicle ? (
                         <div>
-                            <FormattedMessage id='order-task-modal.vehicle' />:
-                            { activeVehicle }
+                            <FormattedMessage id="order-task-modal.vehicle" />:
+                            {activeVehicle}
                         </div>
-                    ) : null }
+                    ) : null}
                 </div>
-                <div className={ Styles.statusPanel }>
+                <div className={Styles.statusPanel}>
                     <DecoratedSelect
-                        field={ 'status' }
-                        initialValue={ _.get(initialOrderTask, 'status') }
+                        field={"status"}
+                        initialValue={_.get(initialOrderTask, "status")}
                         showSearch
                         formItem
                         hasFeedback
-                        label={ <FormattedMessage id='status' /> }
-                        getFieldDecorator={ getFieldDecorator }
-                        className={ Styles.statusSelect }
+                        label={<FormattedMessage id="status" />}
+                        getFieldDecorator={getFieldDecorator}
+                        className={Styles.statusSelect}
                         placeholder={
-                            <FormattedMessage id='order_task_modal.progressStatus_placeholder' />
+                            <FormattedMessage id="order_task_modal.progressStatus_placeholder" />
                         }
-                        rules={ [
+                        rules={[
                             {
                                 required: true,
-                                message:  formatMessage({
-                                    id: 'required_field',
+                                message: formatMessage({
+                                    id: "required_field",
                                 }),
                             },
-                        ] }
-                        getPopupContainer={ trigger => trigger.parentNode }
+                        ]}
+                        getPopupContainer={trigger => trigger.parentNode}
                     >
-                        { progressStatusOptions.map(({ id }) => {
+                        {progressStatusOptions.map(({ id }) => {
                             return (
-                                <Option value={ id } key={ String(id) }>
-                                    <FormattedMessage id={ id } />
+                                <Option value={id} key={String(id)}>
+                                    <FormattedMessage id={id} />
                                 </Option>
                             );
-                        }) }
+                        })}
                     </DecoratedSelect>
                     <Tooltip
-                        placement='top'
-                        title={ popup }
-                        getPopupContainer={ trigger => trigger.parentNode }
+                        placement="top"
+                        title={popup}
+                        getPopupContainer={trigger => trigger.parentNode}
                     >
                         <Icon
-                            type='question-circle-o'
-                            style={ { marginBottom: 8 } }
+                            type="question-circle-o"
+                            style={{ marginBottom: 8 }}
                         />
                     </Tooltip>
                 </div>
-                { toggleDirectory ? (
-                    <div>{ textDirectory }</div>
+                {toggleDirectory ? (
+                    <div>{textDirectory}</div>
                 ) : (
                     <div>
                         <DecoratedSelect
-                            field={ 'priority' }
+                            field={"priority"}
                             showSearch
-                            initialValue={ _.get(initialOrderTask, 'priority') }
+                            initialValue={_.get(initialOrderTask, "priority")}
                             formItem
                             hasFeedback
-                            label={ <FormattedMessage id='priority' /> }
-                            getFieldDecorator={ getFieldDecorator }
-                            className={ Styles.selectMargin }
+                            label={<FormattedMessage id="priority" />}
+                            getFieldDecorator={getFieldDecorator}
+                            className={Styles.selectMargin}
                             placeholder={
-                                <FormattedMessage id='order_task_modal.priority_placeholder' />
+                                <FormattedMessage id="order_task_modal.priority_placeholder" />
                             }
-                            getPopupContainer={ trigger => trigger.parentNode }
+                            getPopupContainer={trigger => trigger.parentNode}
                         >
-                            { priorityOptions.map(({ id }) => {
+                            {priorityOptions.map(({ id }) => {
                                 return (
-                                    <Option value={ id } key={ String(id) }>
-                                        <FormattedMessage id={ id } />
+                                    <Option value={id} key={String(id)}>
+                                        <FormattedMessage id={id} />
                                     </Option>
                                 );
-                            }) }
+                            })}
                         </DecoratedSelect>
                         <DecoratedSelect
-                            field={ 'stationName' }
+                            field={"stationName"}
                             showSearch
                             formItem
                             hasFeedback
-                            initialValue={ _.get(initialOrderTask, 'stationNum') }
-                            className={ Styles.selectMargin }
-                            label={ <FormattedMessage id='stationName' /> }
-                            getFieldDecorator={ getFieldDecorator }
+                            initialValue={_.get(initialOrderTask, "stationNum")}
+                            className={Styles.selectMargin}
+                            label={<FormattedMessage id="stationName" />}
+                            getFieldDecorator={getFieldDecorator}
                             placeholder={
-                                <FormattedMessage id='order_task_modal.post_placeholder' />
+                                <FormattedMessage id="order_task_modal.post_placeholder" />
                             }
                             // optionFilterProp='children'
-                            getPopupContainer={ trigger => trigger.parentNode }
+                            getPopupContainer={trigger => trigger.parentNode}
                         >
-                            { stations.map(({ name, num }) => {
+                            {stations.map(({ name, num }) => {
                                 return (
-                                    <Option value={ num } key={ String(num) }>
-                                        { name || num }
+                                    <Option value={num} key={String(num)}>
+                                        {name || num}
                                     </Option>
                                 );
-                            }) }
+                            })}
                         </DecoratedSelect>
                         <DecoratedSelect
-                            field={ 'responsible' }
-                            initialValue={ _.get(
+                            field={"responsible"}
+                            initialValue={_.get(
                                 initialOrderTask,
-                                'responsibleId',
-                            ) }
+                                "responsibleId",
+                            )}
                             showSearch
                             formItem
                             hasFeedback
-                            className={ Styles.selectMargin }
-                            label={ <FormattedMessage id='responsible' /> }
-                            getFieldDecorator={ getFieldDecorator }
+                            className={Styles.selectMargin}
+                            label={<FormattedMessage id="responsible" />}
+                            getFieldDecorator={getFieldDecorator}
                             placeholder={
-                                <FormattedMessage id='order_task_modal.responsible_placeholder' />
+                                <FormattedMessage id="order_task_modal.responsible_placeholder" />
                             }
-                            rules={ [
+                            rules={[
                                 {
                                     required: true,
-                                    message:  formatMessage({
-                                        id: 'required_field',
+                                    message: formatMessage({
+                                        id: "required_field",
                                     }),
                                 },
-                            ] }
+                            ]}
                             // optionFilterProp='children'
-                            getPopupContainer={ trigger => trigger.parentNode }
+                            getPopupContainer={trigger => trigger.parentNode}
                         >
-                            { managers.map(
+                            {managers.map(
                                 ({ managerName, managerSurname, id }) => {
                                     return (
-                                        <Option value={ id } key={ String(id) }>
-                                            { `${managerName} ${managerSurname}` }
+                                        <Option value={id} key={String(id)}>
+                                            {`${managerName} ${managerSurname}`}
                                         </Option>
                                     );
                                 },
-                            ) }
+                            )}
                         </DecoratedSelect>
-                        <div className={ Styles.dateTimePickerBlock }>
+                        <div className={Styles.dateTimePickerBlock}>
                             <DecoratedDatePicker
-                                field='deadlineDate'
+                                field="deadlineDate"
                                 initialValue={
-                                    _.get(initialOrderTask, 'deadlineDate')
+                                    _.get(initialOrderTask, "deadlineDate")
                                         ? moment(
-                                            _.get(
-                                                initialOrderTask,
-                                                'deadlineDate',
-                                            ),
-                                        )
+                                              _.get(
+                                                  initialOrderTask,
+                                                  "deadlineDate",
+                                              ),
+                                          )
                                         : void 0
                                 }
-                                label={ <FormattedMessage id='deadlineDate' /> }
+                                label={<FormattedMessage id="deadlineDate" />}
                                 formItem
-                                formatMessage={ formatMessage }
-                                className={ Styles.selectMargin }
-                                getFieldDecorator={ getFieldDecorator }
-                                value={ null }
-                                getCalendarContainer={ trigger =>
+                                formatMessage={formatMessage}
+                                className={Styles.selectMargin}
+                                getFieldDecorator={getFieldDecorator}
+                                value={null}
+                                getCalendarContainer={trigger =>
                                     trigger.parentNode
                                 }
-                                format={ 'YYYY-MM-DD' }
+                                format={"YYYY-MM-DD"}
                                 placeholder={
-                                    <FormattedMessage id='order_task_modal.deadlineDate_placeholder' />
+                                    <FormattedMessage id="order_task_modal.deadlineDate_placeholder" />
                                 }
                             />
                             <DecoratedTimePicker
-                                allowClear={ false }
-                                minuteStep={ 30 }
-                                field='deadlineTime'
+                                allowClear={false}
+                                minuteStep={30}
+                                field="deadlineTime"
                                 initialValue={
-                                    _.get(initialOrderTask, 'deadlineDate')
+                                    _.get(initialOrderTask, "deadlineDate")
                                         ? moment(
-                                            _.get(
-                                                initialOrderTask,
-                                                'deadlineDate',
-                                            ),
-                                        )
+                                              _.get(
+                                                  initialOrderTask,
+                                                  "deadlineDate",
+                                              ),
+                                          )
                                         : void 0
                                 }
-                                label={ <FormattedMessage id='deadlineTime' /> }
+                                label={<FormattedMessage id="deadlineTime" />}
                                 formItem
-                                formatMessage={ formatMessage }
-                                className={ Styles.selectMargin }
-                                getFieldDecorator={ getFieldDecorator }
-                                value={ null }
-                                format={ 'HH:mm' }
-                                getPopupContainer={ trigger =>
+                                formatMessage={formatMessage}
+                                className={Styles.selectMargin}
+                                getFieldDecorator={getFieldDecorator}
+                                value={null}
+                                format={"HH:mm"}
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
-                                placeholder={ formatMessage({
+                                placeholder={formatMessage({
                                     id:
-                                        'order_task_modal.deadlineTime_placeholder',
-                                }) }
+                                        "order_task_modal.deadlineTime_placeholder",
+                                })}
                             />
                         </div>
                         <DecoratedTextArea
-                            field='comment'
-                            initialValue={ _.get(initialOrderTask, 'comment') }
-                            label={ <FormattedMessage id='comment' /> }
-                            placeholder={ formatMessage({
-                                id: 'order_task_modal.comment_placeholder',
-                            }) }
+                            field="comment"
+                            initialValue={_.get(initialOrderTask, "comment")}
+                            label={<FormattedMessage id="comment" />}
+                            placeholder={formatMessage({
+                                id: "order_task_modal.comment_placeholder",
+                            })}
                             formItem
-                            autosize={ { minRows: 2, maxRows: 6 } }
-                            rules={ [
+                            autosize={{ minRows: 2, maxRows: 6 }}
+                            rules={[
                                 {
-                                    max:     2000,
+                                    max: 2000,
                                     message: formatMessage({
-                                        id: 'field_should_be_below_2000_chars',
+                                        id: "field_should_be_below_2000_chars",
                                     }),
                                 },
-                            ] }
-                            className={ Styles.selectMargin }
-                            getPopupContainer={ trigger => trigger.parentNode }
-                            getFieldDecorator={ getFieldDecorator }
+                            ]}
+                            className={Styles.selectMargin}
+                            getPopupContainer={trigger => trigger.parentNode}
+                            getFieldDecorator={getFieldDecorator}
                         />
                     </div>
-                ) }
+                )}
             </Form>
         );
     }

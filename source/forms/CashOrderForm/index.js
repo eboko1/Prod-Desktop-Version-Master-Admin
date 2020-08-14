@@ -162,7 +162,7 @@ export class CashOrderForm extends Component {
         if (!editMode && !printMode) {
             fetchCashOrderNextId();
             fetchCashboxes();
-            setFieldsValue({ "tag": defaultTagValue });
+            setFieldsValue({ tag: defaultTagValue });
         }
     }
 
@@ -335,7 +335,8 @@ export class CashOrderForm extends Component {
             case cashOrderTypes.INCOME:
                 return this.setState(prevState => {
                     setFieldsValue({ [prevState.sumType]: null });
-                    if(!editMode && !printMode) setFieldsValue({ "tag": defaultTagValue });
+                    if (!editMode && !printMode)
+                        setFieldsValue({ tag: defaultTagValue });
 
                     return {
                         sumType: "increase",
@@ -346,7 +347,7 @@ export class CashOrderForm extends Component {
             case cashOrderTypes.EXPENSE:
                 return this.setState(prevState => {
                     setFieldsValue({ [prevState.sumType]: null });
-                    if(!editMode && !printMode) setFieldsValue({ "tag": null });
+                    if (!editMode && !printMode) setFieldsValue({ tag: null });
 
                     return {
                         sumType: "decrease",
@@ -358,7 +359,8 @@ export class CashOrderForm extends Component {
                 if (!this.props.editMode) {
                     return this.setState(prevState => {
                         setFieldsValue({ [prevState.sumType]: null });
-                        if(!editMode && !printMode) setFieldsValue({ "tag": null });
+                        if (!editMode && !printMode)
+                            setFieldsValue({ tag: null });
 
                         return {
                             sumType: "increase",

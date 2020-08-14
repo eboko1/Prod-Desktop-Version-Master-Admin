@@ -1,13 +1,13 @@
 // vendor
-import React, { Component } from 'react';
-import { injectIntl } from 'react-intl';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { injectIntl } from "react-intl";
+import _ from "lodash";
 
 // proj
-import { PartAttributes, PartSuggestions } from 'components';
+import { PartAttributes, PartSuggestions } from "components";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 
 @injectIntl
 export default class TecDocModals extends Component {
@@ -39,23 +39,23 @@ export default class TecDocModals extends Component {
             attributesSupplierId &&
             _.chain(allAttributes)
                 .find({
-                    partCode:   attributesPartCode,
+                    partCode: attributesPartCode,
                     supplierId: attributesSupplierId,
                 })
                 .value();
 
-        const attributes = _.get(attributesEntity, 'attributes');
-        const images = _.get(attributesEntity, 'images');
+        const attributes = _.get(attributesEntity, "attributes");
+        const images = _.get(attributesEntity, "images");
 
         const suggestions =
             suggestionsProductId &&
             suggestionsModificationId &&
             _.chain(allSuggestions)
                 .find({
-                    productId:      suggestionsProductId,
+                    productId: suggestionsProductId,
                     modificationId: suggestionsModificationId,
                 })
-                .get('suggestions')
+                .get("suggestions")
                 .value();
 
         const crosses =
@@ -63,10 +63,10 @@ export default class TecDocModals extends Component {
             crossesModificationId &&
             _.chain(allCrosses)
                 .find({
-                    productId:      crossesProductId,
+                    productId: crossesProductId,
                     modificationId: crossesModificationId,
                 })
-                .get('crosses')
+                .get("crosses")
                 .value();
 
         return { crosses, suggestions, attributes, images };
@@ -96,27 +96,27 @@ export default class TecDocModals extends Component {
         return (
             <div>
                 <PartAttributes
-                    product={ product }
-                    images={ images }
-                    supplier={ supplier }
-                    detailCode={ detailCode }
-                    attributes={ attributes }
-                    showModal={ Boolean(selectedAttributes) }
-                    hideModal={ clearPartAttributes }
+                    product={product}
+                    images={images}
+                    supplier={supplier}
+                    detailCode={detailCode}
+                    attributes={attributes}
+                    showModal={Boolean(selectedAttributes)}
+                    hideModal={clearPartAttributes}
                 />
                 <PartSuggestions
-                    fetchPartAttributes={ fetchPartAttributes }
-                    onSelect={ onSelect }
-                    suggestions={ suggestions }
-                    showModal={ Boolean(suggestions) && !selectedAttributes }
-                    hideModal={ clearSuggestionParts }
+                    fetchPartAttributes={fetchPartAttributes}
+                    onSelect={onSelect}
+                    suggestions={suggestions}
+                    showModal={Boolean(suggestions) && !selectedAttributes}
+                    hideModal={clearSuggestionParts}
                 />
                 <PartSuggestions
-                    fetchPartAttributes={ fetchPartAttributes }
-                    onSelect={ onSelect }
-                    suggestions={ crosses }
-                    showModal={ Boolean(crosses) && !selectedAttributes }
-                    hideModal={ clearCrossParts }
+                    fetchPartAttributes={fetchPartAttributes}
+                    onSelect={onSelect}
+                    suggestions={crosses}
+                    showModal={Boolean(crosses) && !selectedAttributes}
+                    hideModal={clearCrossParts}
                 />
             </div>
         );

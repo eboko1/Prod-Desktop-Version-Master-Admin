@@ -327,9 +327,6 @@ const mapDispatchToProps = {
 
 export const IncomeDocForm = withRouter(
     injectIntl(
-        connect(
-            mapStateToProps,
-            mapDispatchToProps,
-        )(Form.create()(IncomeForm)),
+        connect(mapStateToProps, mapDispatchToProps)(Form.create()(IncomeForm)),
     ),
 );

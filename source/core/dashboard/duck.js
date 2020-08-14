@@ -60,10 +60,10 @@ const ReducerState = {
     endDate: moment()
         .endOf('week')
         .isoWeekday(7),
-    load:                  [],
-    daysWithConflicts:     [],
-    stationsWithConflicts: [],
-    employeesWithConflicts:[],
+    load:                   [],
+    daysWithConflicts:      [],
+    stationsWithConflicts:  [],
+    employeesWithConflicts: [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -120,7 +120,7 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 ...payload,
             };
-            
+
         case FETCH_DASHBOARD_EMPLOYEES_SUCCESS:
             return {
                 ...state,
@@ -154,7 +154,12 @@ export const selectDasboardData = createSelector(
             .map(time => time >= 10 ? `${time}:00` : `0${time}:00`);
 
         const rows = time.length * 2;
-        const columns = mode === 'calendar' ?  days.length :  (mode === 'employees' ? employees.length : stations.length );
+        const columns =
+            mode === 'calendar'
+                ? days.length
+                : mode === 'employees'
+                    ? employees.length
+                    : stations.length;
 
         const dashboard = { rows, columns };
 

@@ -53,7 +53,6 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
-
         case FETCH_BUSINESS_PACKAGES_SUCCESS:
             return {
                 ...state,
@@ -170,11 +169,7 @@ export const setShowUpdateBusinessPackageForm = businessPackage => ({
     payload: businessPackage,
 });
 
-export const createBusinessPackage = (
-    businessId,
-    packageId,
-    fields,
-) => ({
+export const createBusinessPackage = (businessId, packageId, fields) => ({
     type:    CREATE_BUSINESS_PACKAGE,
     payload: {
         businessId,

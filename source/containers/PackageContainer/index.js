@@ -1,13 +1,13 @@
 // vendor
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {Button, Table, Icon, Modal, notification} from 'antd';
-import {FormattedMessage, injectIntl} from 'react-intl';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Button, Table, Icon, Modal, notification } from "antd";
+import { FormattedMessage, injectIntl } from "react-intl";
+import _ from "lodash";
 
 // proj
-import {Catcher} from 'commons';
-import {PackageForm, AddPackageForm} from 'forms';
+import { Catcher } from "commons";
+import { PackageForm, AddPackageForm } from "forms";
 
 // own
 import {
@@ -18,8 +18,8 @@ import {
     deletePackage,
     hideForms,
     handleError,
-} from 'core/package/duck';
-import Styles from './styles.m.css';
+} from "core/package/duck";
+import Styles from "./styles.m.css";
 
 const mapDispatchToProps = {
     setCreatePackage,
@@ -32,56 +32,53 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = state => ({
-    editPackageId:     state.packages.editPackageId,
+    editPackageId: state.packages.editPackageId,
     createPackageForm: state.packages.createPackageForm,
-    packages:          state.packages.packages,
-    errors:            state.packages.errors,
-    roles:             state.packages.roles,
+    packages: state.packages.packages,
+    errors: state.packages.errors,
+    roles: state.packages.roles,
 });
 
 const openNotificationWithIcon = (type, message, description) => {
-    notification[ type ]({
+    notification[type]({
         message,
         description,
     });
 };
 
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class PackageContainer extends Component {
     constructor(props) {
         super(props);
 
         this.apiErrorsMap = {
             REFERENCE_VIOLATION: props.intl.formatMessage({
-                id: 'package-container.roles_businesses_restriction',
+                id: "package-container.roles_businesses_restriction",
             }),
             UNIQUE_CONSTRAINT_VIOLATION: props.intl.formatMessage({
-                id: 'package-container.unique_name_error',
+                id: "package-container.unique_name_error",
             }),
         };
 
         this.columns = [
             {
-                title:     <FormattedMessage id='package-container.index'/>,
-                dataIndex: 'index',
-                width:     'auto',
-                render:    field => field + 1,
+                title: <FormattedMessage id="package-container.index" />,
+                dataIndex: "index",
+                width: "auto",
+                render: field => field + 1,
             },
             {
-                title:     <FormattedMessage id='package-container.name'/>,
-                dataIndex: 'name',
-                width:     '30%',
-                render:    (name, record) => record.name,
+                title: <FormattedMessage id="package-container.name" />,
+                dataIndex: "name",
+                width: "30%",
+                render: (name, record) => record.name,
             },
             {
-                title:     <FormattedMessage id='package-container.roles'/>,
-                dataIndex: 'roles',
-                width:     '30%',
-                render:    field => field.map(({name}) => name).join(','),
+                title: <FormattedMessage id="package-container.roles" />,
+                dataIndex: "roles",
+                width: "30%",
+                render: field => field.map(({ name }) => name).join(","),
             },
             // {
             //     title:  <FormattedMessage id='package-container.view' />,
@@ -94,23 +91,27 @@ export default class PackageContainer extends Component {
             // },
             {
                 // title:  <FormattedMessage id='package-container.edit' />,
-                width:  '15%',
+                width: "15%",
                 render: record => (
                     <Icon
-                        onClick={ () => this.props.setEditPackageId(record.packageId) }
-                        className={ Styles.editPackageIcon }
-                        type='edit'
+                        onClick={() =>
+                            this.props.setEditPackageId(record.packageId)
+                        }
+                        className={Styles.editPackageIcon}
+                        type="edit"
                     />
                 ),
             },
             {
                 // title:  <FormattedMessage id='package-container.delete' />,
-                width:  '15%',
+                width: "15%",
                 render: record => (
                     <Icon
-                        onClick={ () => this.props.deletePackage(record.packageId) }
-                        className={ Styles.deletePackageIcon }
-                        type='delete'
+                        onClick={() =>
+                            this.props.deletePackage(record.packageId)
+                        }
+                        className={Styles.deletePackageIcon}
+                        type="delete"
                     />
                 ),
             },
@@ -130,8 +131,9 @@ export default class PackageContainer extends Component {
         } = this.props;
 
         if (errors.length) {
-            const currentComponentErrors = errors.filter(({response}) =>
-                _.keys(this.apiErrorsMap).includes(_.get(response, 'message')));
+            const currentComponentErrors = errors.filter(({ response }) =>
+                _.keys(this.apiErrorsMap).includes(_.get(response, "message")),
+            );
 
             currentComponentErrors.forEach(componentError => {
                 const description = this.apiErrorsMap[
@@ -139,9 +141,9 @@ export default class PackageContainer extends Component {
                 ];
 
                 openNotificationWithIcon(
-                    'error',
+                    "error",
                     this.props.intl.formatMessage({
-                        id: 'package-container.error',
+                        id: "package-container.error",
                     }),
                     description,
                 );
@@ -155,51 +157,55 @@ export default class PackageContainer extends Component {
             key: packageEntity.packageId,
         }));
 
-        const initPackage = editPackageId && _.find(packages, {packageId: editPackageId});
-        const initPackageName = _.get(initPackage, 'name');
+        const initPackage =
+            editPackageId && _.find(packages, { packageId: editPackageId });
+        const initPackageName = _.get(initPackage, "name");
 
         return (
             <Catcher>
                 <Button
-                    type='primary'
-                    className={ Styles.addPackageButton }
-                    onClick={ () => this.props.setCreatePackage(true) }
+                    type="primary"
+                    className={Styles.addPackageButton}
+                    onClick={() => this.props.setCreatePackage(true)}
                 >
-                    <FormattedMessage id='package-container.create'/>
+                    <FormattedMessage id="package-container.create" />
                 </Button>
                 <Table
-                    size='small'
-                    pagination={ {
+                    size="small"
+                    pagination={{
                         hideOnSinglePage: true,
-                        size:             'large',
-                    } }
-                    dataSource={ packageRows }
-                    columns={ this.columns }
+                        size: "large",
+                    }}
+                    dataSource={packageRows}
+                    columns={this.columns}
                 />
                 <Modal
                     title={
                         editPackageId ? (
-                            <FormattedMessage id='package-container.edit_title'/>
+                            <FormattedMessage id="package-container.edit_title" />
                         ) : (
-                            <FormattedMessage id='package-container.create_title'/>
+                            <FormattedMessage id="package-container.create_title" />
                         )
                     }
-                    visible={ editPackageId || createPackageForm }
-                    onCancel={ () => this.props.hideForms() }
-                    footer={ null }
+                    visible={editPackageId || createPackageForm}
+                    onCancel={() => this.props.hideForms()}
+                    footer={null}
                 >
-                    { editPackageId && (
+                    {(editPackageId && (
                         <PackageForm
-                            roles={ roles }
-                            initPackage={ initPackage }
-                            editPackageId={ editPackageId }
-                            initPackageName={ initPackageName }
-                            updatePackage={ updatePackage }
+                            roles={roles}
+                            initPackage={initPackage}
+                            editPackageId={editPackageId}
+                            initPackageName={initPackageName}
+                            updatePackage={updatePackage}
                         />
-                    ) ||
-                    createPackageForm && (
-                        <AddPackageForm roles={ roles } createPackage={ createPackage }/>
-                    ) }
+                    )) ||
+                        (createPackageForm && (
+                            <AddPackageForm
+                                roles={roles}
+                                createPackage={createPackage}
+                            />
+                        ))}
                 </Modal>
             </Catcher>
         );

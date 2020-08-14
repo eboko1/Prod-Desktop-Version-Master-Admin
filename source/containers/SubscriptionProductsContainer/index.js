@@ -47,10 +47,7 @@ const mapDispatchToProps = {
 };
 
 // own
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class SubscriptionProductsContainer extends Component {
     componentDidMount() {
         this.props.fetchSubscriptionProducts();

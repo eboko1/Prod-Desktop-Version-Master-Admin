@@ -1,27 +1,27 @@
 // vendor
-import React, { Component } from 'react';
-import { List, Form, Row, Col, notification, Icon, Button, Modal } from 'antd';
-import { injectIntl } from 'react-intl';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { List, Form, Row, Col, notification, Icon, Button, Modal } from "antd";
+import { injectIntl } from "react-intl";
+import _ from "lodash";
 
 // proj
-import { withReduxForm2 } from 'utils';
-import { AddClientVehicleForm } from 'forms';
-import { DecoratedInput, DecoratedCheckbox } from 'forms/DecoratedFields';
+import { withReduxForm2 } from "utils";
+import { AddClientVehicleForm } from "forms";
+import { DecoratedInput, DecoratedCheckbox } from "forms/DecoratedFields";
 import {
     onChangeClientVehicleForm,
     setEditableItem,
     setEditVehicle,
     setSelectedVehicle,
     handleError,
-} from 'core/forms/editClientVehicleForm/duck';
-import { permissions, isForbidden } from 'utils';
+} from "core/forms/editClientVehicleForm/duck";
+import { permissions, isForbidden } from "utils";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 
 const openNotificationWithIcon = (type, message, description) => {
-    notification[ type ]({
+    notification[type]({
         message,
         description,
     });
@@ -29,7 +29,7 @@ const openNotificationWithIcon = (type, message, description) => {
 
 @injectIntl
 @withReduxForm2({
-    name:    'clientVehicleForm',
+    name: "clientVehicleForm",
     actions: {
         change: onChangeClientVehicleForm,
         setEditableItem,
@@ -47,7 +47,7 @@ export class EditClientVehicleForm extends Component {
 
         this.apiErrorsMap = {
             REFERENCE_VIOLATION: props.intl.formatMessage({
-                id: 'reference_violation',
+                id: "reference_violation",
             }),
         };
     }
@@ -57,11 +57,11 @@ export class EditClientVehicleForm extends Component {
 
         return canBeSaved ? (
             <Icon
-                type='save'
-                className={ Styles.saveIcon }
-                onClick={ () => {
+                type="save"
+                className={Styles.saveIcon}
+                onClick={() => {
                     this.props.form.validateFields(
-                        [ `clientVehicles[${index}]` ],
+                        [`clientVehicles[${index}]`],
                         (err, values) => {
                             if (!err) {
                                 const vehicleModelId = (selectedVehicle || item)
@@ -74,7 +74,7 @@ export class EditClientVehicleForm extends Component {
                                     item.id,
                                     clientId,
                                     {
-                                        ...values.clientVehicles[ index ],
+                                        ...values.clientVehicles[index],
                                         vehicleModelId,
                                         vehicleModificationId,
                                     },
@@ -84,7 +84,7 @@ export class EditClientVehicleForm extends Component {
                             }
                         },
                     );
-                } }
+                }}
             />
         ) : null;
     };
@@ -107,7 +107,8 @@ export class EditClientVehicleForm extends Component {
 
         if (errors.length) {
             const currentComponentErrors = errors.filter(({ response }) =>
-                _.keys(this.apiErrorsMap).includes(_.get(response, 'message')));
+                _.keys(this.apiErrorsMap).includes(_.get(response, "message")),
+            );
 
             currentComponentErrors.forEach(componentError => {
                 const description = this.apiErrorsMap[
@@ -115,9 +116,9 @@ export class EditClientVehicleForm extends Component {
                 ];
 
                 openNotificationWithIcon(
-                    'error',
+                    "error",
                     this.props.intl.formatMessage({
-                        id: 'package-container.error',
+                        id: "package-container.error",
                     }),
                     description,
                 );
@@ -135,8 +136,8 @@ export class EditClientVehicleForm extends Component {
 
                 return (
                     <label>
-                        <s>{ `${item.make} ${item.model}` }</s>{ ' ' }
-                        { `${makeName} ${modelName} ${modificationName}` }
+                        <s>{`${item.make} ${item.model}`}</s>{" "}
+                        {`${makeName} ${modelName} ${modificationName}`}
                     </label>
                 );
             }
@@ -146,155 +147,149 @@ export class EditClientVehicleForm extends Component {
             }
 
             return (
-                <label>{ `${item.make} ${item.model}${
-                    item.modification ? ' ' + item.modification : ''
-                }` }</label>
+                <label>{`${item.make} ${item.model}${
+                    item.modification ? " " + item.modification : ""
+                }`}</label>
             );
         };
 
         return (
             <List
-                size='small'
+                size="small"
                 bordered
-                dataSource={ clientEntity.vehicles }
-                className= {Styles.list }
-                renderItem={ (item, index) => (
-                    <List.Item className={ Styles.listItem }>
+                dataSource={clientEntity.vehicles}
+                className={Styles.list}
+                renderItem={(item, index) => (
+                    <List.Item className={Styles.listItem}>
                         <Form>
-                            <Row gutter={ 8 } type='flex' align='bottom'>
-                                <Col span={ 8 }>
-                                    { vehicleLabel(item, index) }{ ' ' }
-                                    { editableItem === index &&
-                                        !editVehicle && (
+                            <Row gutter={8} type="flex" align="bottom">
+                                <Col span={8}>
+                                    {vehicleLabel(item, index)}{" "}
+                                    {editableItem === index && !editVehicle && (
                                         <Button
-                                            icon='swap'
-                                            onClick={ () =>
-                                                setEditVehicle(true)
-                                            }
+                                            icon="swap"
+                                            onClick={() => setEditVehicle(true)}
                                         />
-                                    ) }
-                                    { editableItem === index &&
-                                        editVehicle && (
+                                    )}
+                                    {editableItem === index && editVehicle && (
                                         <Modal
                                             visible
-                                            style={ { minWidth: '950px' } }
-                                            footer={ null }
-                                            onCancel={ () =>
+                                            style={{ minWidth: "950px" }}
+                                            footer={null}
+                                            onCancel={() =>
                                                 setEditVehicle(false)
                                             }
                                         >
                                             <AddClientVehicleForm
                                                 onlyVehicles
-                                                addClientVehicle={ vehicle => {
-                                                    setSelectedVehicle(
-                                                        vehicle,
-                                                    );
-                                                } }
-                                                editableVehicle={ item }
+                                                addClientVehicle={vehicle => {
+                                                    setSelectedVehicle(vehicle);
+                                                }}
+                                                editableVehicle={item}
                                             />
                                         </Modal>
-                                    ) }
+                                    )}
                                 </Col>
-                                <Col span={ 2 }>
+                                <Col span={2}>
                                     <DecoratedCheckbox
-                                        fields={ {} }
-                                        field={ `clientVehicles[${index}].enabled` }
-                                        initialValue={ !item.disabled }
-                                        disabled={ editableItem !== index }
+                                        fields={{}}
+                                        field={`clientVehicles[${index}].enabled`}
+                                        initialValue={!item.disabled}
+                                        disabled={editableItem !== index}
                                         getFieldDecorator={
                                             this.props.form.getFieldDecorator
                                         }
                                     />
                                 </Col>
-                                <Col span={ 4 }>
-                                    { editableItem === index ? (
+                                <Col span={4}>
+                                    {editableItem === index ? (
                                         <DecoratedInput
                                             formItem
                                             className={
                                                 Styles.editClientVehicleFormItem
                                             }
-                                            field={ `clientVehicles[${index}].vehicleNumber` }
-                                            initialValue={ item.number }
-                                            rules={ [
+                                            field={`clientVehicles[${index}].vehicleNumber`}
+                                            initialValue={item.number}
+                                            rules={[
                                                 {
                                                     required: true,
-                                                    message:  this.props.intl.formatMessage(
+                                                    message: this.props.intl.formatMessage(
                                                         {
                                                             id:
-                                                                'required_field',
+                                                                "required_field",
                                                         },
                                                     ),
                                                 },
-                                            ] }
+                                            ]}
                                             hasFeedback
                                             getFieldDecorator={
                                                 this.props.form
                                                     .getFieldDecorator
                                             }
                                         />
-                                    ) : 
+                                    ) : (
                                         item.number
-                                    }
+                                    )}
                                 </Col>
-                                <Col span={ 4 }>
-                                    { editableItem === index ? (
+                                <Col span={4}>
+                                    {editableItem === index ? (
                                         <DecoratedInput
-                                            fields={ {} }
+                                            fields={{}}
                                             className={
                                                 Styles.editClientVehicleFormItem
                                             }
                                             formItem
-                                            field={ `clientVehicles[${index}].vehicleVin` }
-                                            initialValue={ item.vin }
+                                            field={`clientVehicles[${index}].vehicleVin`}
+                                            initialValue={item.vin}
                                             getFieldDecorator={
                                                 this.props.form
                                                     .getFieldDecorator
                                             }
                                         />
-                                    ) : 
+                                    ) : (
                                         item.vin
-                                    }
+                                    )}
                                 </Col>
-                                <Col span={ 3 }>
-                                    { !isEditForbidden ? 
-                                        editableItem === index ? 
+                                <Col span={3}>
+                                    {!isEditForbidden ? (
+                                        editableItem === index ? (
                                             this.renderSubmitEditIcon(
                                                 clientId,
                                                 item,
                                                 index,
                                                 selectedVehicle,
                                             )
-                                            : (
-                                                <Icon
-                                                    type='edit'
-                                                    className={ Styles.editIcon }
-                                                    onClick={ () =>
-                                                        this.props.setEditableItem(
-                                                            index,
-                                                        )
-                                                    }
-                                                />
-                                            )
-                                        : null }
+                                        ) : (
+                                            <Icon
+                                                type="edit"
+                                                className={Styles.editIcon}
+                                                onClick={() =>
+                                                    this.props.setEditableItem(
+                                                        index,
+                                                    )
+                                                }
+                                            />
+                                        )
+                                    ) : null}
                                 </Col>
-                                <Col span={ 3 }>
-                                    { !isEditForbidden ? (
+                                <Col span={3}>
+                                    {!isEditForbidden ? (
                                         <Icon
-                                            type='delete'
-                                            className={ Styles.deleteIcon }
-                                            onClick={ () =>
+                                            type="delete"
+                                            className={Styles.deleteIcon}
+                                            onClick={() =>
                                                 this.props.deleteClientVehicle(
                                                     clientId,
                                                     item.id,
                                                 )
                                             }
                                         />
-                                    ) : null }
+                                    ) : null}
                                 </Col>
                             </Row>
                         </Form>
                     </List.Item>
-                ) }
+                )}
             />
         );
     }

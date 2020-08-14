@@ -15,7 +15,6 @@ import { Catcher } from 'commons';
 import Styles from './styles.m.css';
 const { RangePicker } = DatePicker;
 
-
 @injectIntl
 class StorageDocumentsFilters extends Component {
     constructor(props) {
@@ -26,70 +25,86 @@ class StorageDocumentsFilters extends Component {
     }
 
     verifyDate(dateRange) {
-        if(dateRange.length != 2) {
-            const thisYear = new Date("1/1/" + (new Date()).getFullYear());
-            const defaultDateRange = [moment(thisYear, this.props.dateFormat), moment(new Date(), this.props.dateFormat)];
+        if (dateRange.length != 2) {
+            const thisYear = new Date('1/1/' + new Date().getFullYear());
+            const defaultDateRange = [ moment(thisYear, this.props.dateFormat), moment(new Date(), this.props.dateFormat) ];
+
             return defaultDateRange;
         }
-        else {
-            return dateRange;
-        }
+
+        return dateRange;
     }
 
     render() {
-        const { dateRange, dateFormat, onDateChange, documentTypeFilter, documentStatusFilter } = this.props;
+        const {
+            dateRange,
+            dateFormat,
+            onDateChange,
+            documentTypeFilter,
+            documentStatusFilter,
+        } = this.props;
 
         return (
-            <div className={Styles.filtersWrap}>
-                <div className={Styles.filterRadioButtonGroup}>
+            <div className={ Styles.filtersWrap }>
+                <div className={ Styles.filterRadioButtonGroup }>
                     <Radio.Group
                         //buttonStyle="solid"
-                        onChange={(event)=>{
-                            documentTypeFilter(event.target.value)
-                        }}
-                        defaultValue={null}
+                        onChange={ event => {
+                            documentTypeFilter(event.target.value);
+                        } }
+                        defaultValue={ null }
                     >
-                        <Radio.Button value={null}>
-                            <FormattedMessage id='storage_document.all'/>
+                        <Radio.Button value={ null }>
+                            <FormattedMessage id='storage_document.all' />
                         </Radio.Button>
-                        <Radio.Button value="INCOME">
-                            <FormattedMessage id='storage_document.income'/>
+                        <Radio.Button value='INCOME'>
+                            <FormattedMessage id='storage_document.income' />
                         </Radio.Button>
-                        <Radio.Button value="RETURN">
-                            <FormattedMessage id='storage_document.return'/>
+                        <Radio.Button value='RETURN'>
+                            <FormattedMessage id='storage_document.return' />
                         </Radio.Button>
-                        <Radio.Button value="EXCESS">
-                            <FormattedMessage id='storage_document.excess'/>
+                        <Radio.Button value='EXCESS'>
+                            <FormattedMessage id='storage_document.excess' />
                         </Radio.Button>
                     </Radio.Group>
                 </div>
-                <div className={Styles.filterRadioButtonGroup}>
+                <div className={ Styles.filterRadioButtonGroup }>
                     <Radio.Group
                         //buttonStyle="solid"
-                        onChange={(event)=>{
-                            documentStatusFilter(event.target.value)
-                        }}
-                        defaultValue={null}
+                        onChange={ event => {
+                            documentStatusFilter(event.target.value);
+                        } }
+                        defaultValue={ null }
                     >
-                        <Radio.Button value={null}>
-                            <FormattedMessage id='storage_document.all'/>
+                        <Radio.Button value={ null }>
+                            <FormattedMessage id='storage_document.all' />
                         </Radio.Button>
-                        <Radio.Button value="NEW">
-                            <FormattedMessage id='storage_document.status_created'/> <Icon type='clock-circle' theme='filled' style={{color: 'var(--orange)'}}/>
+                        <Radio.Button value='NEW'>
+                            <FormattedMessage id='storage_document.status_created' />{ ' ' }
+                            <Icon
+                                type='clock-circle'
+                                theme='filled'
+                                style={ { color: 'var(--orange)' } }
+                            />
                         </Radio.Button>
-                        <Radio.Button value="DONE">
-                            <FormattedMessage id='storage_document.status_confirmed'/> <Icon type='check-circle' theme='filled' style={{color: 'var(--green)'}}/>
+                        <Radio.Button value='DONE'>
+                            <FormattedMessage id='storage_document.status_confirmed' />{ ' ' }
+                            <Icon
+                                type='check-circle'
+                                theme='filled'
+                                style={ { color: 'var(--green)' } }
+                            />
                         </Radio.Button>
                     </Radio.Group>
                 </div>
-                <div className={Styles.filterDatePicker}>
+                <div className={ Styles.filterDatePicker }>
                     <RangePicker
-                        allowClear={false}
-                        value={this.verifyDate(dateRange)}
-                        format={dateFormat}
-                        onChange={(newDate)=>{
-                            onDateChange(newDate)
-                        }}
+                        allowClear={ false }
+                        value={ this.verifyDate(dateRange) }
+                        format={ dateFormat }
+                        onChange={ newDate => {
+                            onDateChange(newDate);
+                        } }
                     />
                 </div>
             </div>

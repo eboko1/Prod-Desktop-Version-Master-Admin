@@ -347,7 +347,7 @@ export default class OrderFormBody extends Component {
 
     _getEmployeesOptions = () => {
         return _.get(this.props, "employees", []).map(employee => {
-            if(!employee.disabled) {
+            if (!employee.disabled) {
                 return (
                     <Option
                         value={employee.id}
@@ -356,7 +356,7 @@ export default class OrderFormBody extends Component {
                     >
                         {`${employee.name} ${employee.surname}`}
                     </Option>
-                )
+                );
             }
         });
     };
@@ -443,21 +443,19 @@ export default class OrderFormBody extends Component {
                     step={0.5}
                     max={8}
                 />
-                <div style={{display: 'none'}}>
+                <div style={{ display: "none" }}>
                     <DecoratedInput
                         errors={errors}
                         fieldValue={_.get(fields, "stationLoads[0].status")}
                         defaultGetValueProps
                         field="stationLoads[0].status"
-                        hiddeninput='hiddeninput'
+                        hiddeninput="hiddeninput"
                         formItem
                         formItemLayout={formHeaderItemLayout}
                         className={`${Styles.duration} ${Styles.deliveryDatetime}`}
                         colon={false}
                         disabled={this.bodyUpdateIsForbidden()}
-                        initialValue={
-                            'TO_DO'
-                        }
+                        initialValue={"TO_DO"}
                         label={`${this._getLocalization(
                             "time",
                         )} (${zeroStationLoadDuration}${this._getLocalization(
@@ -679,7 +677,7 @@ export default class OrderFormBody extends Component {
             authentificatedManager,
             fields,
             errors,
-            location
+            location,
         } = this.props;
 
         const isOwnBusiness =
@@ -726,7 +724,10 @@ export default class OrderFormBody extends Component {
                     className={Styles.durationPanelItem}
                     disabled={this.bodyUpdateIsForbidden()}
                     getFieldDecorator={getFieldDecorator}
-                    initialValue={_.get(fetchedOrder, "order.employeeId") || (location.state ? location.state.employeeId : undefined)}
+                    initialValue={
+                        _.get(fetchedOrder, "order.employeeId") ||
+                        (location.state ? location.state.employeeId : undefined)
+                    }
                     placeholder={this._getLocalization(
                         "order_form_table.select_master",
                     )}

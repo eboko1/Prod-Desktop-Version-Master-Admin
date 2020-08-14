@@ -66,13 +66,13 @@ class ClientsVehiclesTable extends Component {
                 render: (text, record) => {
                     return (
                         <EditVheliceModal
-                            vehicle={this.props.vehicles[record.index]}
+                            vehicle={ this.props.vehicles[ record.index ] }
                             addClientVehicle={ this.props.addClientVehicle }
-                            index={record.index}
-                            removeClientVehicle={this.props.removeClientVehicle}
+                            index={ record.index }
+                            removeClientVehicle={ this.props.removeClientVehicle }
                         />
-                    )
-                }
+                    );
+                },
             },
             {
                 title: this.props.intl.formatMessage({
@@ -123,7 +123,7 @@ class EditVheliceModal extends React.Component {
 
         this.state = {
             visible: false,
-        }
+        };
     }
 
     showModal = () => {
@@ -132,45 +132,48 @@ class EditVheliceModal extends React.Component {
         });
     };
 
-    editClientVehicle = (vehicle) => {
-        const { addClientVehicle, removeClientVehicle, index  } = this.props;
+    editClientVehicle = vehicle => {
+        const { addClientVehicle, removeClientVehicle, index } = this.props;
         removeClientVehicle(index);
         addClientVehicle(vehicle);
         this.handleCancel;
-    }
+    };
 
     handleCancel = () => {
         this.setState({
             visible: false,
-        })
-    }
+        });
+    };
 
     render() {
-        const { vehicle, addClientVehicle, removeClientVehicle, index  } = this.props;
+        const {
+            vehicle,
+            addClientVehicle,
+            removeClientVehicle,
+            index,
+        } = this.props;
 
         const { visible } = this.state;
+
         return (
             <>
-                <Button
-                    type='primary'
-                    onClick={this.showModal}
-                >
+                <Button type='primary' onClick={ this.showModal }>
                     <FormattedMessage id='edit' />
                 </Button>
                 <Modal
-                    visible={visible}
-                    title={<FormattedMessage id='edit' />}
-                    onCancel={this.handleCancel}
-                    footer={null}
+                    visible={ visible }
+                    title={ <FormattedMessage id='edit' /> }
+                    onCancel={ this.handleCancel }
+                    footer={ null }
                 >
                     <AddClientVehicleForm
-                        {...vehicle}
-                        editClientVehicle={this.editClientVehicle}
-                        editMode={true}
+                        { ...vehicle }
+                        editClientVehicle={ this.editClientVehicle }
+                        editMode
                     />
                 </Modal>
             </>
-        )
+        );
     }
 }
 

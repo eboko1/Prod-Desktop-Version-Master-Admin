@@ -1,13 +1,13 @@
 // vendor
-import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Modal, List, Carousel } from 'antd';
+import React, { Component } from "react";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { Modal, List, Carousel } from "antd";
 
 // proj
-import { Catcher } from 'commons';
+import { Catcher } from "commons";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 
 @injectIntl
 export default class PartAttributes extends Component {
@@ -24,56 +24,61 @@ export default class PartAttributes extends Component {
 
         const detailCodeAttribute = detailCode
             ? {
-                value:       detailCode,
-                description: formatMessage({
-                    id: 'partAttributes.detailCode',
-                }),
-            }
+                  value: detailCode,
+                  description: formatMessage({
+                      id: "partAttributes.detailCode",
+                  }),
+              }
             : null;
         const supplierAttribute = supplier
             ? {
-                value:       supplier.brandName,
-                description: formatMessage({
-                    id: 'partAttributes.brandName',
-                }),
-            }
+                  value: supplier.brandName,
+                  description: formatMessage({
+                      id: "partAttributes.brandName",
+                  }),
+              }
             : null;
 
         const supplierAdditionalAttributes =
             supplier && supplier.supplierId === 85
                 ? [
-                    {
-                        value: (
-                            <a
-                                style={ { color: 'red ' } }
-                                target='_blank'
-                                rel='noopener noreferrer'
-                                href={ 'https://kyb-europe.com/rus/qr/' }
-                            >
+                      {
+                          value: (
+                              <a
+                                  style={{ color: "red " }}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  href={"https://kyb-europe.com/rus/qr/"}
+                              >
                                   Перейти
-                            </a>
-                        ),
-                        description: 'Техническая информация по установке',
-                    },
-                    {
-                        value: (
-                            <a
-                                style={ { color: 'red ' } }
-                                target='_blank'
-                                rel='noopener noreferrer'
-                                href={
-                                    'https://kyb-europe.com/rus/izobrazheniya-360/'
-                                }
-                            >
+                              </a>
+                          ),
+                          description: "Техническая информация по установке",
+                      },
+                      {
+                          value: (
+                              <a
+                                  style={{ color: "red " }}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  href={
+                                      "https://kyb-europe.com/rus/izobrazheniya-360/"
+                                  }
+                              >
                                   Перейти
-                            </a>
-                        ),
-                        description: '3-D изображение запчасти',
-                    },
-                ]
+                              </a>
+                          ),
+                          description: "3-D изображение запчасти",
+                      },
+                  ]
                 : [];
         const attributes = initAttributes
-            ? [ detailCodeAttribute, supplierAttribute, ...initAttributes, ...supplierAdditionalAttributes ].filter(Boolean)
+            ? [
+                  detailCodeAttribute,
+                  supplierAttribute,
+                  ...initAttributes,
+                  ...supplierAdditionalAttributes,
+              ].filter(Boolean)
             : [];
 
         const hasImages = Boolean(images && images.length);
@@ -81,55 +86,53 @@ export default class PartAttributes extends Component {
         return (
             <Catcher>
                 <Modal
-                    title={ <FormattedMessage id='partAttributes.title' /> }
-                    cancelText={ <FormattedMessage id='cancel' /> }
-                    visible={ showModal }
-                    onOk={ () => hideModal() }
-                    onCancel={ () => hideModal() }
-                    footer={ null }
+                    title={<FormattedMessage id="partAttributes.title" />}
+                    cancelText={<FormattedMessage id="cancel" />}
+                    visible={showModal}
+                    onOk={() => hideModal()}
+                    onCancel={() => hideModal()}
+                    footer={null}
                 >
-                    { images &&
+                    {images &&
                         attributes &&
                         (hasImages ? (
                             <Carousel
-                                className={ Styles.attributesCarousel }
+                                className={Styles.attributesCarousel}
                                 autoplay
                             >
-                                { images.map(({ pictureName, supplierId }) => (
+                                {images.map(({ pictureName, supplierId }) => (
                                     <div
                                         className={
                                             Styles.attributesCarouselSlide
                                         }
                                     >
                                         <img
-                                            onError={ e => {
+                                            onError={e => {
                                                 e.target.onerror = null;
                                                 e.target.src = `${__TECDOC_IMAGES_URL__}/not_found.png`;
-                                            } }
-                                            src={ `${__TECDOC_IMAGES_URL__}/${supplierId}/${pictureName}` }
+                                            }}
+                                            src={`${__TECDOC_IMAGES_URL__}/${supplierId}/${pictureName}`}
                                         />
                                     </div>
-                                )) }
+                                ))}
                             </Carousel>
-                        ) : null) }
+                        ) : null)}
                     <List
                         bordered
-                        dataSource={ attributes }
-                        renderItem={ item => (
+                        dataSource={attributes}
+                        renderItem={item => (
                             <List.Item>
-                                { item.description &&
-                                    item.value && (
+                                {item.description && item.value && (
                                     <div>
-                                        <a>{ item.description }</a>:{ ' ' }
-                                        { item.value }
+                                        <a>{item.description}</a>: {item.value}
                                     </div>
-                                ) }
-                                { item.description &&
+                                )}
+                                {item.description &&
                                     !item.value &&
-                                    item.description }
-                                { !item.description && item.value }
+                                    item.description}
+                                {!item.description && item.value}
                             </List.Item>
-                        ) }
+                        )}
                     />
                 </Modal>
             </Catcher>

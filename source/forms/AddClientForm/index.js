@@ -1,33 +1,36 @@
 // vendor
-import _ from 'lodash';
-import React, { Component } from 'react';
-import { Form, Select, Row, Col, Button, notification } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { v4 } from 'uuid';
+import _ from "lodash";
+import React, { Component } from "react";
+import { Form, Select, Row, Col, Button, notification } from "antd";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { v4 } from "uuid";
 
 // proj
 import {
     MAKE_VEHICLES_INFO_FILTER_TYPE,
     YEAR_VEHICLES_INFO_FILTER_TYPE,
     MODEL_VEHICLES_INFO_FILTER_TYPE,
-} from 'core/forms/addClientForm/duck';
+} from "core/forms/addClientForm/duck";
 
 import {
     DecoratedSelect,
     DecoratedInput,
     DecoratedDatePicker,
-} from 'forms/DecoratedFields';
+} from "forms/DecoratedFields";
 
-import { ClientsVehiclesTable } from 'forms/OrderForm/OrderFormTables';
-import { ArrayInput } from 'components';
+import { ClientsVehiclesTable } from "forms/OrderForm/OrderFormTables";
+import { ArrayInput } from "components";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const findLabel = (arr, id, keyName) => [ keyName, (_(arr).find({ id }) || {}).name ];
+const findLabel = (arr, id, keyName) => [
+    keyName,
+    (_(arr).find({ id }) || {}).name,
+];
 
 const openNotificationWithIcon = (type, message, description) => {
-    notification[ type ]({
+    notification[type]({
         message,
         description,
     });
@@ -40,7 +43,7 @@ export class AddClientForm extends Component {
 
         this.apiErrorsMap = {
             CLIENT_EXISTS: props.intl.formatMessage({
-                id: 'add_client_form.client_exists_error',
+                id: "add_client_form.client_exists_error",
             }),
         };
     }
@@ -68,7 +71,8 @@ export class AddClientForm extends Component {
 
         if (errors.length) {
             const currentComponentErrors = errors.filter(({ response }) =>
-                _.keys(this.apiErrorsMap).includes(_.get(response, 'message')));
+                _.keys(this.apiErrorsMap).includes(_.get(response, "message")),
+            );
 
             _.each(currentComponentErrors, componentError => {
                 const description = this.apiErrorsMap[
@@ -76,231 +80,247 @@ export class AddClientForm extends Component {
                 ];
 
                 const errorTitle = this.props.intl.formatMessage({
-                    id: 'add_client_form.error_title',
+                    id: "add_client_form.error_title",
                 });
 
-                openNotificationWithIcon('error', errorTitle, description);
+                openNotificationWithIcon("error", errorTitle, description);
                 this.props.handleError(componentError.id);
             });
         }
 
         return (
-            <Form layout='vertical'>
-                { searchQuery && (
+            <Form layout="vertical">
+                {searchQuery && (
                     <div>
                         <h2>
-                            <FormattedMessage id='add_client_form.search_query' />
-                            : { searchQuery }
+                            <FormattedMessage id="add_client_form.search_query" />
+                            : {searchQuery}
                         </h2>
                     </div>
-                ) }
+                )}
                 <br />
 
-                <Row gutter={ 8 } type='flex' align='bottom'>
-                    <Col span={ 3 }>
-                        { years && (
+                <Row gutter={8} type="flex" align="bottom">
+                    <Col span={3}>
+                        {years && (
                             <DecoratedSelect
-                                field={ 'vehicle.year' }
+                                field={"vehicle.year"}
                                 showSearch
                                 formItem
                                 hasFeedback
                                 label={
-                                    <FormattedMessage id='add_client_form.year' />
+                                    <FormattedMessage id="add_client_form.year" />
                                 }
-                                getFieldDecorator={ getFieldDecorator }
-                                rules={ [
+                                getFieldDecorator={getFieldDecorator}
+                                rules={[
                                     {
                                         required: true,
-                                        message:  this.props.intl.formatMessage({
-                                            id: 'required_field',
+                                        message: this.props.intl.formatMessage({
+                                            id: "required_field",
                                         }),
                                     },
-                                ] }
+                                ]}
                                 placeholder={
-                                    <FormattedMessage id='add_client_form.year_placeholder' />
+                                    <FormattedMessage id="add_client_form.year_placeholder" />
                                 }
-                                onSelect={ value => {
+                                onSelect={value => {
                                     const filters = { year: value };
                                     this.props.fetchVehiclesInfo(
                                         YEAR_VEHICLES_INFO_FILTER_TYPE,
                                         filters,
                                     );
-                                } }
-                                optionFilterProp='children'
-                                getPopupContainer={ trigger =>
+                                }}
+                                optionFilterProp="children"
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
                             >
-                                { years.sort((a, b) => b - a).map(year => (
-                                    <Option value={ year } key={ v4() }>
-                                        { String(year) }
-                                    </Option>
-                                )) }
+                                {years
+                                    .sort((a, b) => b - a)
+                                    .map(year => (
+                                        <Option value={year} key={v4()}>
+                                            {String(year)}
+                                        </Option>
+                                    ))}
                             </DecoratedSelect>
-                        ) }
+                        )}
                     </Col>
-                    <Col span={ 3 }>
-                        { years && (
+                    <Col span={3}>
+                        {years && (
                             <DecoratedSelect
-                                field='vehicle.makeId'
+                                field="vehicle.makeId"
                                 showSearch
                                 label={
-                                    <FormattedMessage id='add_client_form.make' />
+                                    <FormattedMessage id="add_client_form.make" />
                                 }
                                 hasFeedback
                                 formItem
-                                getFieldDecorator={ getFieldDecorator }
-                                rules={ [
+                                getFieldDecorator={getFieldDecorator}
+                                rules={[
                                     {
                                         required: true,
-                                        message:  this.props.intl.formatMessage({
-                                            id: 'required_field',
+                                        message: this.props.intl.formatMessage({
+                                            id: "required_field",
                                         }),
                                     },
-                                ] }
+                                ]}
                                 placeholder={
-                                    <FormattedMessage id='add_client_form.make_placeholder' />
+                                    <FormattedMessage id="add_client_form.make_placeholder" />
                                 }
                                 disabled={
-                                    ![ YEAR_VEHICLES_INFO_FILTER_TYPE, MAKE_VEHICLES_INFO_FILTER_TYPE, MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(lastFilterAction)
+                                    ![
+                                        YEAR_VEHICLES_INFO_FILTER_TYPE,
+                                        MAKE_VEHICLES_INFO_FILTER_TYPE,
+                                        MODEL_VEHICLES_INFO_FILTER_TYPE,
+                                    ].includes(lastFilterAction)
                                 }
-                                onSelect={ value => {
+                                onSelect={value => {
                                     const filters = _.pick(
                                         { ...vehicle, makeId: value },
-                                        [ 'year', 'makeId' ],
+                                        ["year", "makeId"],
                                     );
                                     this.props.fetchVehiclesInfo(
                                         MAKE_VEHICLES_INFO_FILTER_TYPE,
                                         filters,
                                     );
-                                } }
-                                getPopupContainer={ trigger =>
+                                }}
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
                             >
-                                { makes.map(({ id, name }) => (
-                                    <Option value={ id } key={ v4() }>
-                                        { name }
+                                {makes.map(({ id, name }) => (
+                                    <Option value={id} key={v4()}>
+                                        {name}
                                     </Option>
-                                )) }
+                                ))}
                             </DecoratedSelect>
-                        ) }
+                        )}
                     </Col>
-                    <Col span={ 4 }>
-                        { years && (
+                    <Col span={4}>
+                        {years && (
                             <DecoratedSelect
-                                field='vehicle.modelId'
+                                field="vehicle.modelId"
                                 showSearch
                                 hasFeedback
                                 formItem
                                 label={
-                                    <FormattedMessage id='add_client_form.model' />
+                                    <FormattedMessage id="add_client_form.model" />
                                 }
-                                getFieldDecorator={ getFieldDecorator }
-                                rules={ [
+                                getFieldDecorator={getFieldDecorator}
+                                rules={[
                                     {
                                         required: true,
-                                        message:  this.props.intl.formatMessage({
-                                            id: 'required_field',
+                                        message: this.props.intl.formatMessage({
+                                            id: "required_field",
                                         }),
                                     },
-                                ] }
+                                ]}
                                 placeholder={
-                                    <FormattedMessage id='add_client_form.model_placeholder' />
+                                    <FormattedMessage id="add_client_form.model_placeholder" />
                                 }
                                 disabled={
-                                    ![ MAKE_VEHICLES_INFO_FILTER_TYPE, MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(lastFilterAction)
+                                    ![
+                                        MAKE_VEHICLES_INFO_FILTER_TYPE,
+                                        MODEL_VEHICLES_INFO_FILTER_TYPE,
+                                    ].includes(lastFilterAction)
                                 }
-                                onSelect={ value => {
+                                onSelect={value => {
                                     const filters = _.pick(
                                         { ...vehicle, modelId: value },
-                                        [ 'modelId', 'year', 'makeId' ],
+                                        ["modelId", "year", "makeId"],
                                     );
                                     this.props.fetchVehiclesInfo(
                                         MODEL_VEHICLES_INFO_FILTER_TYPE,
                                         filters,
                                     );
-                                } }
-                                getPopupContainer={ trigger =>
+                                }}
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
                             >
-                                { models.map(({ id, name }) => (
-                                    <Option value={ id } key={ v4() }>
-                                        { name }
+                                {models.map(({ id, name }) => (
+                                    <Option value={id} key={v4()}>
+                                        {name}
                                     </Option>
-                                )) }
+                                ))}
                             </DecoratedSelect>
-                        ) }
+                        )}
                     </Col>
-                    <Col span={ 4 }>
-                        { years && (
+                    <Col span={4}>
+                        {years && (
                             <DecoratedSelect
-                                field={ 'vehicle.modificationId' }
+                                field={"vehicle.modificationId"}
                                 showSearch
                                 formItem
                                 hasFeedback
                                 label={
-                                    <FormattedMessage id='add_client_form.modification' />
+                                    <FormattedMessage id="add_client_form.modification" />
                                 }
-                                getFieldDecorator={ getFieldDecorator }
+                                getFieldDecorator={getFieldDecorator}
                                 placeholder={
-                                    <FormattedMessage id='add_client_form.modification_placeholder' />
+                                    <FormattedMessage id="add_client_form.modification_placeholder" />
                                 }
                                 disabled={
-                                    ![ MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(
+                                    ![MODEL_VEHICLES_INFO_FILTER_TYPE].includes(
                                         lastFilterAction,
                                     )
                                 }
-                                getPopupContainer={ trigger =>
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
                             >
-                                { modifications.map(({ id, name }) => (
-                                    <Option value={ id } key={ v4() }>
-                                        { name }
+                                {modifications.map(({ id, name }) => (
+                                    <Option value={id} key={v4()}>
+                                        {name}
                                     </Option>
-                                )) }
+                                ))}
                             </DecoratedSelect>
-                        ) }
+                        )}
                     </Col>
-                    <Col span={ 3 }>
+                    <Col span={3}>
                         <DecoratedInput
                             hasFeedback
                             formItem
-                            rules={ [
+                            rules={[
                                 {
                                     required: true,
-                                    message:  this.props.intl.formatMessage({
-                                        id: 'required_field',
+                                    message: this.props.intl.formatMessage({
+                                        id: "required_field",
                                     }),
                                 },
-                            ] }
+                            ]}
                             label={
-                                <FormattedMessage id='add_client_form.number' />
+                                <FormattedMessage id="add_client_form.number" />
                             }
-                            getFieldDecorator={ getFieldDecorator }
-                            field='vehicle.number'
+                            getFieldDecorator={getFieldDecorator}
+                            field="vehicle.number"
                         />
                     </Col>
-                    <Col span={ 3 }>
+                    <Col span={3}>
                         <DecoratedInput
                             hasFeedback
                             formItem
                             label={
-                                <FormattedMessage id='add_client_form.vin' />
+                                <FormattedMessage id="add_client_form.vin" />
                             }
-                            getFieldDecorator={ getFieldDecorator }
-                            field='vehicle.vin'
+                            getFieldDecorator={getFieldDecorator}
+                            field="vehicle.vin"
                         />
                     </Col>
-                    <Col span={ 4 }>
-                        <Row type='flex' justify='end'>
+                    <Col span={4}>
+                        <Row type="flex" justify="end">
                             <FormItem>
                                 <Button
-                                    onClick={ () => {
+                                    onClick={() => {
                                         validateFields(
-                                            [ 'vehicle.modelId', 'vehicle.makeId', 'vehicle.year', 'vehicle.vin', 'vehicle.number', 'vehicle.modificationId' ],
+                                            [
+                                                "vehicle.modelId",
+                                                "vehicle.makeId",
+                                                "vehicle.year",
+                                                "vehicle.vin",
+                                                "vehicle.number",
+                                                "vehicle.modificationId",
+                                            ],
                                             (err, values) => {
                                                 if (!err) {
                                                     const { vehicle } = values;
@@ -308,17 +328,17 @@ export class AddClientForm extends Component {
                                                         findLabel(
                                                             makes,
                                                             vehicle.makeId,
-                                                            'makeName',
+                                                            "makeName",
                                                         ),
                                                         findLabel(
                                                             models,
                                                             vehicle.modelId,
-                                                            'modelName',
+                                                            "modelName",
                                                         ),
                                                         findLabel(
                                                             modifications,
                                                             vehicle.modificationId,
-                                                            'modificationName',
+                                                            "modificationName",
                                                         ),
                                                     ])
                                                         .fromPairs()
@@ -333,211 +353,211 @@ export class AddClientForm extends Component {
                                                 }
                                             },
                                         );
-                                    } }
+                                    }}
                                 >
-                                    <FormattedMessage id='add_client_form.add_vehicle' />
+                                    <FormattedMessage id="add_client_form.add_vehicle" />
                                 </Button>
                             </FormItem>
                         </Row>
                     </Col>
                 </Row>
-                <Row gutter={ 8 }>
-                    <Col span={ 5 }>
+                <Row gutter={8}>
+                    <Col span={5}>
                         <DecoratedInput
-                            field={ 'name' }
+                            field={"name"}
                             label={
-                                <FormattedMessage id='add_client_form.name' />
+                                <FormattedMessage id="add_client_form.name" />
                             }
                             formItem
                             hasFeedback
-                            getPopupContainer={ trigger => trigger.parentNode }
+                            getPopupContainer={trigger => trigger.parentNode}
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
-                            rules={ [
+                            rules={[
                                 {
                                     required: true,
-                                    message:  this.props.intl.formatMessage({
-                                        id: 'required_field',
+                                    message: this.props.intl.formatMessage({
+                                        id: "required_field",
                                     }),
                                 },
-                            ] }
+                            ]}
                         />
                     </Col>
-                    <Col span={ 5 }>
+                    <Col span={5}>
                         <DecoratedInput
-                            field='patronymic'
+                            field="patronymic"
                             label={
-                                <FormattedMessage id='add_client_form.patronymic' />
+                                <FormattedMessage id="add_client_form.patronymic" />
                             }
                             formItem
-                            getPopupContainer={ trigger => trigger.parentNode }
+                            getPopupContainer={trigger => trigger.parentNode}
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
                         />
                     </Col>
-                    <Col span={ 5 }>
+                    <Col span={5}>
                         <DecoratedInput
-                            field='surname'
+                            field="surname"
                             label={
-                                <FormattedMessage id='add_client_form.surname' />
+                                <FormattedMessage id="add_client_form.surname" />
                             }
                             formItem
-                            getPopupContainer={ trigger => trigger.parentNode }
+                            getPopupContainer={trigger => trigger.parentNode}
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
                         />
                     </Col>
-                    <Col span={ 9 }>
-                        <Row gutter={ 8 } type='flex' justify='end'>
-                            <Col span={ 7 }>
+                    <Col span={9}>
+                        <Row gutter={8} type="flex" justify="end">
+                            <Col span={7}>
                                 <DecoratedSelect
-                                    field='sex'
+                                    field="sex"
                                     formItem
                                     hasFeedback
-                                    getFieldDecorator={ getFieldDecorator }
-                                    getPopupContainer={ trigger =>
+                                    getFieldDecorator={getFieldDecorator}
+                                    getPopupContainer={trigger =>
                                         trigger.parentNode
                                     }
                                     label={
-                                        <FormattedMessage id='add_client_form.sex' />
+                                        <FormattedMessage id="add_client_form.sex" />
                                     }
-                                    options={ [
+                                    options={[
                                         {
-                                            id:    'male',
+                                            id: "male",
                                             title: this.props.intl.formatMessage(
                                                 {
-                                                    id: 'add_client_form.male',
+                                                    id: "add_client_form.male",
                                                 },
                                             ),
                                         },
                                         {
-                                            id:    'femail',
+                                            id: "femail",
                                             title: this.props.intl.formatMessage(
                                                 {
                                                     id:
-                                                        'add_client_form.female',
+                                                        "add_client_form.female",
                                                 },
                                             ),
                                         },
-                                    ] }
-                                    optionValue='id'
-                                    optionLabel='title'
+                                    ]}
+                                    optionValue="id"
+                                    optionLabel="title"
                                 />
                             </Col>
-                            <Col span={ 7 }>
+                            <Col span={7}>
                                 <DecoratedSelect
-                                    field='status'
+                                    field="status"
                                     formItem
                                     hasFeedback
-                                    getFieldDecorator={ getFieldDecorator }
-                                    getPopupContainer={ trigger =>
+                                    getFieldDecorator={getFieldDecorator}
+                                    getPopupContainer={trigger =>
                                         trigger.parentNode
                                     }
                                     label={
-                                        <FormattedMessage id='add_client_form.status' />
+                                        <FormattedMessage id="add_client_form.status" />
                                     }
-                                    options={ [
+                                    options={[
                                         {
-                                            id:    'permanent',
+                                            id: "permanent",
                                             title: this.props.intl.formatMessage(
                                                 {
                                                     id:
-                                                        'add_client_form.permanent',
+                                                        "add_client_form.permanent",
                                                 },
                                             ),
                                         },
                                         {
-                                            id:    'premium',
+                                            id: "premium",
                                             title: this.props.intl.formatMessage(
                                                 {
                                                     id:
-                                                        'add_client_form.premium',
+                                                        "add_client_form.premium",
                                                 },
                                             ),
                                         },
-                                    ] }
-                                    optionValue='id'
-                                    optionLabel='title'
+                                    ]}
+                                    optionValue="id"
+                                    optionLabel="title"
                                 />
                             </Col>
-                            <Col span={ 7 }>
+                            <Col span={7}>
                                 <DecoratedDatePicker
-                                    field='birthday'
+                                    field="birthday"
                                     label={
-                                        <FormattedMessage id='add_client_form.birthday' />
+                                        <FormattedMessage id="add_client_form.birthday" />
                                     }
                                     formItem
                                     formatMessage={
                                         this.props.intl.formatMessage
                                     }
-                                    getFieldDecorator={ getFieldDecorator }
-                                    value={ null }
-                                    getCalendarContainer={ trigger =>
+                                    getFieldDecorator={getFieldDecorator}
+                                    value={null}
+                                    getCalendarContainer={trigger =>
                                         trigger.parentNode
                                     }
-                                    format='YYYY-MM-DD'
+                                    format="YYYY-MM-DD"
                                 />
                             </Col>
                         </Row>
                     </Col>
                 </Row>
-                <Row gutter={ 8 }>
-                    <Col span={ 6 }>
+                <Row gutter={8}>
+                    <Col span={6}>
                         <ArrayInput
-                            optional={ false }
-                            form={ this.props.form }
+                            optional={false}
+                            form={this.props.form}
                             phone
-                            rules={ [
+                            rules={[
                                 {
                                     required: true,
-                                    message:  this.props.intl.formatMessage({
-                                        id: 'required_field',
+                                    message: this.props.intl.formatMessage({
+                                        id: "required_field",
                                     }),
                                 },
                                 {
-                                    pattern:   /^[\d]{9}$/,
+                                    pattern: /^[\d]{9}$/,
                                     transform: value => String(value),
-                                    message:   this.props.intl.formatMessage({
+                                    message: this.props.intl.formatMessage({
                                         id:
-                                            'add_client_form.invalid_phone_format',
+                                            "add_client_form.invalid_phone_format",
                                     }),
                                 },
-                            ] }
-                            fieldName='phones'
+                            ]}
+                            fieldName="phones"
                             fieldTitle={
-                                <FormattedMessage id='add_client_form.phones' />
+                                <FormattedMessage id="add_client_form.phones" />
                             }
                             buttonText={
-                                <FormattedMessage id='add_client_form.add_phone' />
+                                <FormattedMessage id="add_client_form.add_phone" />
                             }
                         />
                     </Col>
-                    <Col span={ 6 }>
+                    <Col span={6}>
                         <ArrayInput
                             optional
-                            rules={ [
+                            rules={[
                                 {
-                                    type: 'email',
+                                    type: "email",
                                 },
-                            ] }
-                            form={ this.props.form }
-                            fieldName='emails'
+                            ]}
+                            form={this.props.form}
+                            fieldName="emails"
                             fieldTitle={
-                                <FormattedMessage id='add_client_form.emails' />
+                                <FormattedMessage id="add_client_form.emails" />
                             }
                             buttonText={
-                                <FormattedMessage id='add_client_form.add_email' />
+                                <FormattedMessage id="add_client_form.add_email" />
                             }
                         />
                     </Col>
                 </Row>
                 <div>
                     <ClientsVehiclesTable
-                        removeClientVehicle={ this.props.removeClientVehicle }
-                        vehicles={ vehicles }
+                        removeClientVehicle={this.props.removeClientVehicle}
+                        vehicles={vehicles}
                     />
                 </div>
             </Form>

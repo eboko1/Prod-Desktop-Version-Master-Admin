@@ -146,8 +146,14 @@ export default class OrderFormTabs extends React.PureComponent {
         const areCommentsForbidden = isForbidden(user, ACCESS_ORDER_COMMENTS);
         const areServicesForbidden = isForbidden(user, ACCESS_ORDER_SERVICES);
         const areDetailsForbidden = isForbidden(user, ACCESS_ORDER_DETAILS);
-        const areDiagnosticForbidden = isForbidden(user, ACCESS_ORDER_DIAGNOSTICS);
-        const clodedEditing = (this.props.orderStatus == 'success' || this.props.orderStatus == 'cancel') && isForbidden(user, UPDATE_SUCCESS_ORDER)
+        const areDiagnosticForbidden = isForbidden(
+            user,
+            ACCESS_ORDER_DIAGNOSTICS,
+        );
+        const clodedEditing =
+            (this.props.orderStatus == "success" ||
+                this.props.orderStatus == "cancel") &&
+            isForbidden(user, UPDATE_SUCCESS_ORDER);
 
         const viewTasks = !isForbidden(user, GET_TASKS);
         const viewAllTasks = !isForbidden(user, GET_ALL_TASKS);
@@ -180,15 +186,16 @@ export default class OrderFormTabs extends React.PureComponent {
                     <TabPane
                         forceRender
                         disabled={areDiagnosticForbidden}
-                        tab={
-                            formatMessage({
-                                id: "order_form_table.diagnostic",
-                            })
-                        }
+                        tab={formatMessage({
+                            id: "order_form_table.diagnostic",
+                        })}
                         key="1"
                     >
                         <DiagnosticTable
-                            disabled={this.props.orderStatus == 'success' || this.props.orderStatus == 'cancel'}
+                            disabled={
+                                this.props.orderStatus == "success" ||
+                                this.props.orderStatus == "cancel"
+                            }
                             defaultEmployeeId={this.props.defaultEmployeeId}
                             user={user}
                             forbidden={areDiagnosticForbidden}
@@ -201,7 +208,9 @@ export default class OrderFormTabs extends React.PureComponent {
                             orderDetails={orderDetails}
                             labors={labors}
                             details={details}
-                            reloadOrderPageComponents={this.props.reloadOrderPageComponents}
+                            reloadOrderPageComponents={
+                                this.props.reloadOrderPageComponents
+                            }
                         />
                     </TabPane>
                 )}
@@ -231,10 +240,17 @@ export default class OrderFormTabs extends React.PureComponent {
                             orderServices={orderServices}
                             user={user}
                             fetchedOrder={fetchedOrder}
-                            agreementCompleted={_.get(fetchedOrder, "order.agreementCompleted")}
+                            agreementCompleted={_.get(
+                                fetchedOrder,
+                                "order.agreementCompleted",
+                            )}
                             selectedClient={selectedClient}
                             fetchTecdocSuggestions={fetchTecdocSuggestions}
-                            completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}
+                            completedDiagnostic={
+                                orderDiagnostic
+                                    ? orderDiagnostic.completed
+                                    : null
+                            }
                             reloadOrderForm={this.props.reloadOrderForm}
                         />
                         <DiscountPanel
@@ -280,7 +296,9 @@ export default class OrderFormTabs extends React.PureComponent {
                             }
                             clearTecdocSuggestions={clearTecdocSuggestions}
                             suggestions={suggestions}
-                            detailsSuggestionsFetching={detailsSuggestionsFetching}
+                            detailsSuggestionsFetching={
+                                detailsSuggestionsFetching
+                            }
                             suggestionsFetching={suggestionsFetching}
                             user={user}
                             setStoreProductsSearchQuery={
@@ -291,10 +309,19 @@ export default class OrderFormTabs extends React.PureComponent {
                             recommendedPriceLoading={
                                 this.props.recommendedPriceLoading
                             }
-                            fetchRecommendedPrice={this.props.fetchRecommendedPrice}
+                            fetchRecommendedPrice={
+                                this.props.fetchRecommendedPrice
+                            }
                             setModal={setModal}
-                            completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}
-                            agreementCompleted={_.get(fetchedOrder, "order.agreementCompleted")}
+                            completedDiagnostic={
+                                orderDiagnostic
+                                    ? orderDiagnostic.completed
+                                    : null
+                            }
+                            agreementCompleted={_.get(
+                                fetchedOrder,
+                                "order.agreementCompleted",
+                            )}
                             reloadOrderForm={this.props.reloadOrderForm}
                         />
                         <DiscountPanel

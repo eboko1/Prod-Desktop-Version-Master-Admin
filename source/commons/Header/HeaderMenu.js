@@ -33,10 +33,7 @@ const mapDispatch = {
     setModal,
 };
 
-@connect(
-    mapStateToProps,
-    mapDispatch,
-)
+@connect(mapStateToProps, mapDispatch)
 export default class HeaderMenu extends Component {
     render() {
         const { isMobile } = this.props;
@@ -84,9 +81,9 @@ export default class HeaderMenu extends Component {
                 >
                     <Link className={Styles.user} to={book.profile}>
                         <Avatar className={Styles.avatar} icon="user" />
-                            <span className={Styles.userName}>
-                                {user.name} {user.surname}
-                            </span>
+                        <span className={Styles.userName}>
+                            {user.name} {user.surname}
+                        </span>
                     </Link>
                 </Tooltip>
                 {!isMobile && (

@@ -183,7 +183,6 @@ export default props => {
         dataIndex: 'quantity',
         width:     '7.5%',
         render:    (quantity, data) => {
-
             return (
                 <>
                     { getMinus(

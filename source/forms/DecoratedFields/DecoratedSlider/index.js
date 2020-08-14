@@ -33,9 +33,7 @@ export class DecoratedSlider extends React.PureComponent {
         } = this.props;
 
         const slider = getFieldDecorator(field, {
-            ...initialValue
-                ? { initialValue }
-                : { initialValue: void 0 },
+            ...initialValue ? { initialValue } : { initialValue: void 0 },
             rules,
         })(
             <Slider

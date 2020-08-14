@@ -17,9 +17,21 @@ export const chartMode = Object.freeze({
 });
 
 export const chartList = Object.freeze({
-    kpi:        [ chartMode.SALES, chartMode.AVERAGE_SALES, chartMode.LOAD, chartMode.APPOINTMENT_PROGRESS, chartMode.PERM_CLIENTS, chartMode.REVIEWS ],
-    calls:      [ chartMode.CALLS_REACTION, chartMode.STACK_CALLS ],
-    load:       [ chartMode.APPOINTMENTS, chartMode.APPOINTMENT, chartMode.APPROVE, chartMode.PROGRESS ],
+    kpi: [
+        chartMode.SALES,
+        chartMode.AVERAGE_SALES,
+        chartMode.LOAD,
+        chartMode.APPOINTMENT_PROGRESS,
+        chartMode.PERM_CLIENTS,
+        chartMode.REVIEWS,
+    ],
+    calls: [ chartMode.CALLS_REACTION, chartMode.STACK_CALLS ],
+    load:  [
+        chartMode.APPOINTMENTS,
+        chartMode.APPOINTMENT,
+        chartMode.APPROVE,
+        chartMode.PROGRESS,
+    ],
     conversion: [ chartMode.APPOINTMENT_APPROVE, chartMode.APPROVE_PROGRESS, chartMode.INVITE_APPROVE ],
 });
 

@@ -15,7 +15,9 @@ export function* updateClientSaga() {
             payload: { clientId, client },
         } = yield take(UPDATE_CLIENT);
 
-        yield call(fetchAPI, 'PUT', `clients/${clientId}`, null, client, { handleErrorInternally: true });
+        yield call(fetchAPI, 'PUT', `clients/${clientId}`, null, client, {
+            handleErrorInternally: true,
+        });
         yield put(fetchClient(clientId));
         yield put(updateClientSuccess());
     }

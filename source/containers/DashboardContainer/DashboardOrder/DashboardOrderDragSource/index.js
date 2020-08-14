@@ -1,21 +1,21 @@
 // vendor
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { withRouter } from 'react-router';
-import { DragSource } from 'react-dnd';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { withRouter } from "react-router";
+import { DragSource } from "react-dnd";
 
 // proj
-import book from 'routes/book';
-import { permissions, isForbidden } from 'utils';
+import book from "routes/book";
+import { permissions, isForbidden } from "utils";
 
 // own
-import DashboardOrderDropTarget from '../DashboardOrderDropTarget';
-import DashboardTooltip from '../../DashboardTooltip';
-import { DragItemTypes, ordersStatus } from '../../dashboardConfig';
-import handleHover from '../../dashboardCore/handleHover';
-import getBeginDatetime from '../../dashboardCore/getBeginDatetime';
-import { prop } from 'ramda';
+import DashboardOrderDropTarget from "../DashboardOrderDropTarget";
+import DashboardTooltip from "../../DashboardTooltip";
+import { DragItemTypes, ordersStatus } from "../../dashboardConfig";
+import handleHover from "../../dashboardCore/handleHover";
+import getBeginDatetime from "../../dashboardCore/getBeginDatetime";
+import { prop } from "ramda";
 
 const orderSource = {
     canDrag(props) {
@@ -23,15 +23,15 @@ const orderSource = {
             !isForbidden(props.user, permissions.EDIT_DASHBOARD_ORDER) &&
             !isForbidden(props.user, permissions.ACCESS_ORDER_BODY);
 
-        return canUpdate && props.status !== 'success';
+        return canUpdate && props.status !== "success";
     },
 
     beginDrag(props) {
         return {
             stationLoadId: props.options.stationLoadId,
-            orderId:       props.options.orderId,
-            station:       props.options.stationNum,
-            employeeId:    props.options.employeeId,
+            orderId: props.options.orderId,
+            station: props.options.stationNum,
+            employeeId: props.options.employeeId,
         };
     },
     // keep station and stationNum separate naming here
@@ -44,9 +44,14 @@ const orderSource = {
         if (didDrop) {
             const { dropOrder, schedule, mode } = props;
             const orderId = props.options.orderId;
-            const { day, time, stationNum, employeeId } = monitor.getDropResult();
+            const {
+                day,
+                time,
+                stationNum,
+                employeeId,
+            } = monitor.getDropResult();
 
-            if (mode === 'calendar') {
+            if (mode === "calendar") {
                 dropOrder({
                     beginDatetime: getBeginDatetime(
                         day,
@@ -56,7 +61,7 @@ const orderSource = {
                     stationNum,
                     stationLoadId,
                 });
-            } else if(mode === 'stations'){
+            } else if (mode === "stations") {
                 dropOrder({
                     beginDatetime: getBeginDatetime(
                         day,
@@ -66,7 +71,7 @@ const orderSource = {
                     stationNum,
                     stationLoadId,
                 });
-            } else if(mode === 'employees') {
+            } else if (mode === "employees") {
                 dropOrder({
                     beginDatetime: getBeginDatetime(
                         day,
@@ -87,18 +92,18 @@ const orderSource = {
 };
 
 const collectSource = (connect, monitor) => ({
-    connectDragSource:  connect.dragSource(),
+    connectDragSource: connect.dragSource(),
     connectDragPreview: connect.dragPreview(),
-    isDragging:         monitor.isDragging(),
+    isDragging: monitor.isDragging(),
 });
 
 @withRouter
 @DragSource(DragItemTypes.ORDER, orderSource, collectSource)
 export default class DashboardOrderDragSource extends Component {
     static propTypes = {
-        connectDragSource:  PropTypes.func,
+        connectDragSource: PropTypes.func,
         connectDragPreview: PropTypes.func,
-        isDragging:         PropTypes.bool,
+        isDragging: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -107,7 +112,7 @@ export default class DashboardOrderDragSource extends Component {
 
     state = {
         tooltipPosition: null,
-        resizePosition:  null,
+        resizePosition: null,
     };
 
     _getOrderRef = order => {
@@ -149,44 +154,51 @@ export default class DashboardOrderDragSource extends Component {
 
         return (
             <StyledDashboardOrder
-                isdragging={ isDragging ? 1 : 0 }
-                status={ status }
-                x={ x }
-                y={ y }
-                columns={ columns }
-                rows={ rows }
-                { ...(canOpenOrder ? { onClick: openOrder } : {}) }
-                onMouseEnter={ ev =>
+                isdragging={isDragging ? 1 : 0}
+                status={status}
+                x={x}
+                y={y}
+                columns={columns}
+                rows={rows}
+                {...(canOpenOrder ? { onClick: openOrder } : {})}
+                onMouseEnter={ev =>
                     this._showDashboardTooltip(
                         ev,
                         this.orderRef.getBoundingClientRect(),
                         dashboardRef,
                     )
                 }
-                onMouseDown={ this._hideDashboardTooltip }
-                onMouseLeave={ this._hideDashboardTooltip }
-                ref={ order => this._getOrderRef(order) }
+                onMouseDown={this._hideDashboardTooltip}
+                onMouseLeave={this._hideDashboardTooltip}
+                ref={order => this._getOrderRef(order)}
             >
                 <StyledDashboardOrderBox>
-                    { [ ...Array(rows).keys() ].map((_, index) =>
-                        this._renderDashboardOrderDropTarget(index)) }
+                    {[...Array(rows).keys()].map((_, index) =>
+                        this._renderDashboardOrderDropTarget(index),
+                    )}
                 </StyledDashboardOrderBox>
-                <DashboardTooltip position={ tooltipPosition } { ...options } />
+                <DashboardTooltip position={tooltipPosition} {...options} />
             </StyledDashboardOrder>
         );
     }
 
     _renderDashboardOrderDropTarget = index => {
-        const { day, stationNum, globalPosition, label, employeeId } = this.props;
+        const {
+            day,
+            stationNum,
+            globalPosition,
+            label,
+            employeeId,
+        } = this.props;
 
         return (
             <DashboardOrderDropTarget
-                key={ index }
-                day={ day }
-                stationNum={ stationNum }
-                globalPosition={ globalPosition + index }
-                employeeId={ employeeId }
-                label={ index === 0 ? label : null }
+                key={index}
+                day={day}
+                stationNum={stationNum}
+                globalPosition={globalPosition + index}
+                employeeId={employeeId}
+                label={index === 0 ? label : null}
             />
         );
     };
@@ -197,15 +209,15 @@ const StyledDashboardOrder = styled.div`
     background: ${props => ordersStatus(props.status)};
     color: black;
     font-size: 12px;
-    cursor: ${props => props.status === 'success' ? 'pointer' : 'move'};
-    opacity: ${props => props.isdragging ? 0.5 : 1};
+    cursor: ${props => (props.status === "success" ? "pointer" : "move")};
+    opacity: ${props => (props.isdragging ? 0.5 : 1)};
     ${
-    '' /* grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
+        "" /* grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
     grid-column: ${props => `${props.y + 1} / span ${props.columns}`}; */
-}
+    }
     ${
-    '' /* https://stackoverflow.com/questions/43311943/prevent-content-from-expanding-grid-items */
-} ${'' /* min-width: 0; */};
+        "" /* https://stackoverflow.com/questions/43311943/prevent-content-from-expanding-grid-items */
+    } ${"" /* min-width: 0; */};
 `;
 
 const StyledDashboardOrderBox = styled.div`

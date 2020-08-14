@@ -61,7 +61,7 @@ export const setSearchQuery = query => ({
     payload: { query },
 });
 
-export const setBusiness = (businessId) => ({
+export const setBusiness = businessId => ({
     type:    SET_BUSINESS,
     payload: businessId,
 });
