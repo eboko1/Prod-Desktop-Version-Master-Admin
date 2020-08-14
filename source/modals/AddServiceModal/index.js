@@ -617,7 +617,7 @@ class AddServiceModal extends React.Component{
                 >
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
-                            <div style={{display: 'block'}}>Работа</div>
+                            <div style={{display: 'block'}}><FormattedMessage id='services_table.labor'/></div>
                         </div>
                         <Table
                             dataSource={this.state.mainTableSource}
