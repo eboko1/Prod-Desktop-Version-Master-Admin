@@ -33,10 +33,7 @@ const mapDispatchToProps = {
 };
 
 @withRouter
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 class FunelContainer extends Component {
     setStatus = status => {
         if (
@@ -59,9 +56,7 @@ class FunelContainer extends Component {
                 <div
                     className={ Styles.funel__turn }
                     style={ {
-                        backgroundImage: `url('${
-                            images.funelArrowCurvedLeft
-                        }')`,
+                        backgroundImage:  `url('${images.funelArrowCurvedLeft}')`,
                         backgroundRepeat: 'no-repeat',
                     } }
                 />
@@ -201,9 +196,7 @@ class FunelContainer extends Component {
                 <div
                     className={ Styles[ 'funel__turn--arrow' ] }
                     style={ {
-                        backgroundImage: `url('${
-                            images.funelArrowCurvedRight
-                        }')`,
+                        backgroundImage:  `url('${images.funelArrowCurvedRight}')`,
                         backgroundRepeat: 'no-repeat',
                     } }
                 />
@@ -230,17 +223,13 @@ class FunelContainer extends Component {
                         </span>
                     </NavLink>
                     <div
-                        className={ `${Styles[ 'funel__tabs__link--reverse' ]} ${
-                            Styles[ 'funel__tabs__link--bottom' ]
-                        } ` }
+                        className={ `${Styles[ 'funel__tabs__link--reverse' ]} ${Styles[ 'funel__tabs__link--bottom' ]} ` }
                     />
                 </div>
                 <div
                     className={ Styles[ 'funel__turn--arrow' ] }
                     style={ {
-                        backgroundImage: `url('${
-                            images.funelArrowCurvedRight
-                        }')`,
+                        backgroundImage:  `url('${images.funelArrowCurvedRight}')`,
                         backgroundRepeat: 'no-repeat',
                     } }
                 />

@@ -1,21 +1,21 @@
 // vendor
-import React, { Component } from 'react';
-import { Icon, Select, Table } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import _ from 'lodash';
-import moment from 'moment';
+import React, { Component } from "react";
+import { Icon, Select, Table } from "antd";
+import { FormattedMessage, injectIntl } from "react-intl";
+import _ from "lodash";
+import moment from "moment";
 
 // proj
-import { Catcher } from 'commons';
+import { Catcher } from "commons";
 import {
     DecoratedInputNumber,
     DecoratedInput,
     DecoratedSelect,
-} from 'forms/DecoratedFields';
+} from "forms/DecoratedFields";
 
 // own
-import { columnsConfig } from './config.js';
-import Styles from './styles.m.css';
+import { columnsConfig } from "./config.js";
+import Styles from "./styles.m.css";
 const Option = Select.Option;
 
 @injectIntl
@@ -27,7 +27,7 @@ export default class ArrayServiceInput extends Component {
         this.uuid = _.isArray(initialService) ? initialService.length : 0;
         const keys = _.isArray(initialService) ? _.keys(initialService) : [];
 
-        this.state = { keys: [ ...keys, this.uuid++ ] };
+        this.state = { keys: [...keys, this.uuid++] };
     }
 
     componentDidUpdate(prevProps) {
@@ -40,13 +40,13 @@ export default class ArrayServiceInput extends Component {
                 ? _.keys(initialService)
                 : [];
 
-            this.setState({ keys: [ ...keys, this.uuid++ ] });
+            this.setState({ keys: [...keys, this.uuid++] });
         }
     }
 
     _getServiceData = (key, callback) => {
         const { form } = this.props;
-        form.validateFields([ `service[${key}]` ], err => {
+        form.validateFields([`service[${key}]`], err => {
             if (err) {
                 return; // eslint-disable-line
             }
@@ -69,15 +69,15 @@ export default class ArrayServiceInput extends Component {
 
     _add = () => {
         const keys = this.state.keys;
-        this.setState({ keys: [ ...keys, this.uuid++ ] });
+        this.setState({ keys: [...keys, this.uuid++] });
     };
 
     _handleAdd = key => {
         const { keys } = this.state;
-        const services = this.props.form.getFieldValue('services');
+        const services = this.props.form.getFieldValue("services");
 
-        if (_.last(keys) === key && !services[ key ].service) {
-            this.setState({ keys: [ ...keys, this.uuid++ ] });
+        if (_.last(keys) === key && !services[key].service) {
+            this.setState({ keys: [...keys, this.uuid++] });
         }
     };
 
@@ -99,27 +99,30 @@ export default class ArrayServiceInput extends Component {
         return (
             <Catcher>
                 <Table
-                    style={ { marginBottom: 24 } }
-                    loading={ loading }
-                    rowClassName={ ({ key }) => {
-                        const wasEdited = _.get(this.props.fields, [ 'service', key ]);
-                        const exists = _.get(initialService, [ key ]);
+                    style={{ marginBottom: 24 }}
+                    loading={loading}
+                    rowClassName={({ key }) => {
+                        const wasEdited = _.get(this.props.fields, [
+                            "service",
+                            key,
+                        ]);
+                        const exists = _.get(initialService, [key]);
 
                         if (!exists) {
                             return Styles.newServiceRow;
                         } else if (wasEdited) {
                             return Styles.editedServiceRow;
                         }
-                    } }
-                    dataSource={ keys.map(key => ({ key })) }
-                    columns={ columns }
-                    size='small'
-                    scroll={ { x: 1000 } }
-                    pagination={ false }
+                    }}
+                    dataSource={keys.map(key => ({ key }))}
+                    columns={columns}
+                    size="small"
+                    scroll={{ x: 1000 }}
+                    pagination={false}
                     defaultExpandAllRows
-                    locale={ {
-                        emptyText: <FormattedMessage id='no_data' />,
-                    } }
+                    locale={{
+                        emptyText: <FormattedMessage id="no_data" />,
+                    }}
                 />
             </Catcher>
         );

@@ -34,7 +34,7 @@ export default function reducer(state = ReducerState, action) {
  **/
 
 export const fetchStorage = type => ({
-    type: FETCH_STORAGE,
+    type:    FETCH_STORAGE,
     payload: type,
 });
 

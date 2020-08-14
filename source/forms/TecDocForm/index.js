@@ -1,9 +1,9 @@
 //vendor
-import React, { Component } from 'react';
-import { Tree, Table, Button, Modal, List } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { v4 } from 'uuid';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { Tree, Table, Button, Modal, List } from "antd";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { v4 } from "uuid";
+import _ from "lodash";
 
 // proj
 import {
@@ -13,19 +13,19 @@ import {
     fetchCrosses,
     fetchAttributes,
     clearAttributes,
-} from 'core/forms/tecDocForm/duck';
-import { AddClientVehicleForm } from 'forms';
+} from "core/forms/tecDocForm/duck";
+import { AddClientVehicleForm } from "forms";
 
-import { withReduxForm2 } from 'utils';
+import { withReduxForm2 } from "utils";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 
 const TreeNode = Tree.TreeNode;
 
 @injectIntl
 @withReduxForm2({
-    name:    'tecDoc',
+    name: "tecDoc",
     actions: {
         change: onChangeTecDocForm,
         fetchSections,
@@ -41,29 +41,29 @@ export class TecDocForm extends Component {
         this.state = { vehicle: null };
         this.columns = [
             {
-                title:     <FormattedMessage id='tecdoc.supplierName' />,
-                dataIndex: 'supplierName',
-                width:     '15%',
+                title: <FormattedMessage id="tecdoc.supplierName" />,
+                dataIndex: "supplierName",
+                width: "15%",
             },
             {
-                title:     <FormattedMessage id='tecdoc.partNumber' />,
-                dataIndex: 'partNumber',
-                width:     '15%',
+                title: <FormattedMessage id="tecdoc.partNumber" />,
+                dataIndex: "partNumber",
+                width: "15%",
             },
             {
-                title:     <FormattedMessage id='tecdoc.description' />,
-                dataIndex: 'description',
-                width:     '20%',
+                title: <FormattedMessage id="tecdoc.description" />,
+                dataIndex: "description",
+                width: "20%",
             },
             {
-                title:  <FormattedMessage id='tecdoc.attributes' />,
-                key:    'attributes',
-                width:  '20%',
+                title: <FormattedMessage id="tecdoc.attributes" />,
+                key: "attributes",
+                width: "20%",
                 render: ({ supplierId, partNumber }) => (
                     <Button
-                        onClick={ () => {
+                        onClick={() => {
                             this.props.fetchAttributes(partNumber, supplierId);
-                        } }
+                        }}
                     >
                         Attributes
                     </Button>
@@ -114,30 +114,30 @@ export class TecDocForm extends Component {
                 description,
                 hasChildren,
                 id,
-                children = [{ description: '...', id: v4() }],
+                children = [{ description: "...", id: v4() }],
             } = section;
             const isLoaded = Boolean(section.children);
 
             if (hasChildren) {
                 return (
                     <TreeNode
-                        isLoaded={ isLoaded }
-                        title={ description }
-                        key={ `${tecdocId}-${id}` }
-                        selectable={ false }
-                        dataRef={ section }
+                        isLoaded={isLoaded}
+                        title={description}
+                        key={`${tecdocId}-${id}`}
+                        selectable={false}
+                        dataRef={section}
                     >
-                        { this.renderTreeNodes(children) }
+                        {this.renderTreeNodes(children)}
                     </TreeNode>
                 );
             }
 
             return (
                 <TreeNode
-                    onClick={ () => this.fetchParts(id) }
-                    title={ description }
-                    key={ `${tecdocId}-${id}` }
-                    dataRef={ section }
+                    onClick={() => this.fetchParts(id)}
+                    title={description}
+                    key={`${tecdocId}-${id}`}
+                    dataRef={section}
                 />
             );
         });
@@ -156,42 +156,42 @@ export class TecDocForm extends Component {
                 <AddClientVehicleForm
                     onlyVehicles
                     tecdoc
-                    addClientVehicle={ vehicle => {
+                    addClientVehicle={vehicle => {
                         if (vehicle.tecdocId) {
                             this.setState({ vehicle });
                             this.props.fetchSections(0, vehicle.tecdocId);
                         }
-                    } }
+                    }}
                 />
                 {this.state.vehicle && (
                     <div>
                         <Table
-                            onExpand={ this.onCrossesExpand }
-                            size='small'
-                            dataSource={ parts }
-                            columns={ this.columns }
+                            onExpand={this.onCrossesExpand}
+                            size="small"
+                            dataSource={parts}
+                            columns={this.columns}
                         />
-                        <Tree onExpand={ this.onExpand } onSelect={ this.onSelect }>
-                            { this.renderTreeNodes(sections) }
+                        <Tree onExpand={this.onExpand} onSelect={this.onSelect}>
+                            {this.renderTreeNodes(sections)}
                         </Tree>
                     </div>
                 )}
                 {this.props.attributes && (
                     <Modal
-                        title='TecDoc'
-                        cancelText={ <FormattedMessage id='cancel' /> }
-                        visible={ this.props.attributes }
-                        onOk={ () => this.props.clearAttributes() }
-                        onCancel={ () => this.props.clearAttributes() }
+                        title="TecDoc"
+                        cancelText={<FormattedMessage id="cancel" />}
+                        visible={this.props.attributes}
+                        onOk={() => this.props.clearAttributes()}
+                        onCancel={() => this.props.clearAttributes()}
                     >
                         <List
                             bordered
-                            dataSource={ this.props.attributes }
-                            renderItem={ item => (
+                            dataSource={this.props.attributes}
+                            renderItem={item => (
                                 <List.Item>
-                                    { item.description + ': ' + item.value }
+                                    {item.description + ": " + item.value}
                                 </List.Item>
-                            ) }
+                            )}
                         />
                     </Modal>
                 )}

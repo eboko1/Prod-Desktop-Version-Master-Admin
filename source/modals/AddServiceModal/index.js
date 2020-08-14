@@ -89,7 +89,7 @@ class AddServiceModal extends React.Component{
                             style={{maxWidth: 180, minWidth: 100}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.laborsTreeData}
+                            treeData={this.props.laborsTreeData}
                             filterTreeNode={(input, node) => {
                                 return (
                                     node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -509,7 +509,6 @@ class AddServiceModal extends React.Component{
         this.masterLabors = this.props.masterLabors;
         this.labors = this.props.labors;
         this.storeGroups = this.props.details;
-        this.buildLaborsTree();
         this.buildStoreGroupsTree();
         this.getOptions();
     }
@@ -562,45 +561,6 @@ class AddServiceModal extends React.Component{
             }
         }
         this.storeGroupsTreeData = treeData;
-    }
-
-    buildLaborsTree() {
-        var treeData = [];
-        for(let i = 0; i < this.masterLabors.length; i++) {
-            const parentGroup = this.masterLabors[i];
-            treeData.push({
-                title: `${parentGroup.defaultMasterLaborName} (#${parentGroup.masterLaborId})`,
-                name: parentGroup.defaultMasterLaborName,
-                value: parentGroup.masterLaborId,
-                className: Styles.groupTreeOption,
-                key: `${i}`,
-                selectable: false,
-                children: [],
-            })
-            for(let j = 0; j < parentGroup.childGroups.length; j++) {
-                const childGroup = parentGroup.childGroups[j];
-                treeData[i].children.push({
-                    title: `${childGroup.defaultMasterLaborName} (#${childGroup.masterLaborId})`,
-                    name: childGroup.defaultMasterLaborName,
-                    value: childGroup.masterLaborId,
-                    className: Styles.groupTreeOption,
-                    key: `${i}-${j}`,
-                    selectable: false,
-                    children: [],
-                })
-                for(let k = 0; k < childGroup.childGroups.length; k++) {
-                    const lastNode = childGroup.childGroups[k];
-                    treeData[i].children[j].children.push({
-                        title: `${lastNode.defaultMasterLaborName} (#${lastNode.masterLaborId})`,
-                        name: lastNode.defaultMasterLaborName,
-                        value: lastNode.masterLaborId,
-                        className: Styles.groupTreeOption,
-                        key: `${i}-${j}-${k}`,
-                    })
-                }
-            }
-        }
-        this.laborsTreeData = treeData;
     }
 
     getOptions() {
@@ -657,7 +617,7 @@ class AddServiceModal extends React.Component{
                 >
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
-                            <div style={{display: 'block'}}>Работа</div>
+                            <div style={{display: 'block'}}><FormattedMessage id='services_table.labor'/></div>
                         </div>
                         <Table
                             dataSource={this.state.mainTableSource}

@@ -23,28 +23,29 @@ const fetchStorage = (type, action) => {
     url += params;
 
     fetch(url, {
-        method: 'GET',
+        method:  'GET',
         headers: {
-            'Authorization': token,
-        }
+            Authorization: token,
+        },
     })
-    .then(function (response) {
-        if (response.status !== 200) {
-        return Promise.reject(new Error(response.statusText))
-        }
-        return Promise.resolve(response)
-    })
-    .then(function (response) {
-        return response.json()
-    })
-    .then(function (data) {
-        console.log('data', data);
-        action(data);
-    })
-    .catch(function (error) {
-        console.log('error', error)
-    })
-}
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log('data', data);
+            action(data);
+        })
+        .catch(function(error) {
+            console.log('error', error);
+        });
+};
 
 const mapDispatchToProps = {
     fetchStorage,
@@ -52,19 +53,16 @@ const mapDispatchToProps = {
 
 @withRouter
 @injectIntl
-@connect(
-    null,
-    mapDispatchToProps,
-)
+@connect(null, mapDispatchToProps)
 class StorageDocumentsContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
             storageDocumentsList: [],
             filtredDocumentsList: [],
-            documentFilters: {
-                querySearch: "",
-                documentTypeFilter: null,
+            documentFilters:      {
+                querySearch:          '',
+                documentTypeFilter:   null,
                 documentStatusFilter: null,
             },
             dateRange: [],
@@ -78,39 +76,46 @@ class StorageDocumentsContainer extends Component {
     }
 
     componentDidMount() {
-        const thisYear = new Date("1/1/" + (new Date()).getFullYear());
-        const dateRange = [moment(thisYear, dateFormat), moment(new Date(), dateFormat)];
+        const thisYear = new Date('1/1/' + new Date().getFullYear());
+        const dateRange = [ moment(thisYear, dateFormat), moment(new Date(), dateFormat) ];
 
-        fetchStorage(this.props.listType, (data)=>{
-            data.list.map((elem, i)=>{
+        fetchStorage(this.props.listType, data => {
+            data.list.map((elem, i) => {
                 elem.key = i;
-            })
-            const resutList = data.list.filter((elem)=>moment(elem.createdDatetime).isBetween(dateRange[0], dateRange[1]));
+            });
+            const resutList = data.list.filter(elem =>
+                moment(elem.createdDatetime).isBetween(
+                    dateRange[ 0 ],
+                    dateRange[ 1 ],
+                ));
             this.setState({
-                dateRange: dateRange,
+                dateRange:            dateRange,
                 storageDocumentsList: resutList,
                 filtredDocumentsList: resutList,
-            })
+            });
         });
-        
     }
 
     onDateChange(dateRange) {
-        if(!dateRange.length) {
-            const thisYear = new Date("1/1/" + (new Date()).getFullYear());
-            const defaultDateRange = [moment(thisYear, dateFormat), moment(new Date(), dateFormat)];
+        if (!dateRange.length) {
+            const thisYear = new Date('1/1/' + new Date().getFullYear());
+            const defaultDateRange = [ moment(thisYear, dateFormat), moment(new Date(), dateFormat) ];
             dateRange = defaultDateRange;
         }
-        fetchStorage(this.props.listType, (data)=>{
-            data.list.map((elem, i)=>{
+        fetchStorage(this.props.listType, data => {
+            data.list.map((elem, i) => {
                 elem.key = i;
-            })
-            const resutList = data.list.filter((elem)=>moment(elem.createdDatetime).isBetween(dateRange[0], dateRange[1]));
+            });
+            const resutList = data.list.filter(elem =>
+                moment(elem.createdDatetime).isBetween(
+                    dateRange[ 0 ],
+                    dateRange[ 1 ],
+                ));
             this.setState({
-                dateRange: dateRange,
+                dateRange:            dateRange,
                 storageDocumentsList: resutList,
                 filtredDocumentsList: resutList,
-            })
+            });
         });
     }
 
@@ -140,45 +145,53 @@ class StorageDocumentsContainer extends Component {
 
     filterDocumentList() {
         const { storageDocumentsList, documentFilters } = this.state;
-        const { querySearch, documentTypeFilter, documentStatusFilter } = documentFilters;
-        const isFiltred = querySearch || documentTypeFilter || documentStatusFilter;
-       
-        if(!isFiltred) {
+        const {
+            querySearch,
+            documentTypeFilter,
+            documentStatusFilter,
+        } = documentFilters;
+        const isFiltred =
+            querySearch || documentTypeFilter || documentStatusFilter;
+
+        if (!isFiltred) {
             this.setState({
                 documentFilters: {
-                    querySearch: querySearch,
-                    documentTypeFilter: documentTypeFilter,
+                    querySearch:          querySearch,
+                    documentTypeFilter:   documentTypeFilter,
                     documentStatusFilter: documentStatusFilter,
                 },
-                isFiltred: isFiltred,
+                isFiltred:            isFiltred,
                 filtredDocumentsList: storageDocumentsList,
-            })
-        }
-        else {
-            var resultList = [...storageDocumentsList];
+            });
+        } else {
+            var resultList = [ ...storageDocumentsList ];
 
-            if(querySearch) {
-                resultList = resultList.filter((elem)=>
-                    Object.values(elem).find((objValue)=>
-                        String(objValue).toLowerCase().includes(querySearch.toLowerCase())
-                    )
+            if (querySearch) {
+                resultList = resultList.filter(elem =>
+                    Object.values(elem).find(objValue =>
+                        String(objValue)
+                            .toLowerCase()
+                            .includes(querySearch.toLowerCase())));
+            }
+            if (documentTypeFilter) {
+                resultList = resultList.filter(
+                    elem => elem.type == documentTypeFilter,
                 );
             }
-            if(documentTypeFilter) {
-                resultList = resultList.filter((elem)=>elem.type == documentTypeFilter);
-            }
-            if(documentStatusFilter) {
-                resultList = resultList.filter((elem)=>elem.status == documentStatusFilter);
+            if (documentStatusFilter) {
+                resultList = resultList.filter(
+                    elem => elem.status == documentStatusFilter,
+                );
             }
             this.setState({
                 documentFilters: {
-                    querySearch: querySearch,
-                    documentTypeFilter: documentTypeFilter,
+                    querySearch:          querySearch,
+                    documentTypeFilter:   documentTypeFilter,
                     documentStatusFilter: documentStatusFilter,
                 },
-                isFiltred: isFiltred,
+                isFiltred:            isFiltred,
                 filtredDocumentsList: resultList,
-            })
+            });
         }
     }
 
@@ -190,26 +203,26 @@ class StorageDocumentsContainer extends Component {
                 title={ <FormattedMessage id='navigation.incomes' /> }
                 controls={
                     <>
-                    <StorageDocumentsFilters 
-                        dateRange={dateRange}
-                        dateFormat={dateFormat}
-                        onDateChange={this.onDateChange}
-                        documentTypeFilter={this.documentTypeFilter}
-                        documentStatusFilter={this.documentStatusFilter}
-                    />
-                    <Link to={ book.storageDocument }>
-                        <Button type='primary'>
-                            <FormattedMessage id='add' />
-                        </Button>
-                    </Link>
+                        <StorageDocumentsFilters
+                            dateRange={ dateRange }
+                            dateFormat={ dateFormat }
+                            onDateChange={ this.onDateChange }
+                            documentTypeFilter={ this.documentTypeFilter }
+                            documentStatusFilter={ this.documentStatusFilter }
+                        />
+                        <Link to={ book.storageDocument }>
+                            <Button type='primary'>
+                                <FormattedMessage id='add' />
+                            </Button>
+                        </Link>
                     </>
                 }
                 paper={ false }
             >
                 <StorageTable
-                    documentsList={filtredDocumentsList}
-                    listType={this.props.listType}
-                    onSearch={this.querySearchFilter}
+                    documentsList={ filtredDocumentsList }
+                    listType={ this.props.listType }
+                    onSearch={ this.querySearchFilter }
                 />
             </Layout>
         );

@@ -1,16 +1,16 @@
 // vendor
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import { DropTarget } from 'react-dnd';
+import React, { Component } from "react";
+import styled from "styled-components";
+import { DropTarget } from "react-dnd";
 
 // own
-import { DragItemTypes, ROW_HEIGHT } from '../../dashboardConfig';
+import { DragItemTypes, ROW_HEIGHT } from "../../dashboardConfig";
 
 const orderTarget = {
     drop(props) {
         return {
-            time:       props.globalPosition,
-            day:        props.day,
+            time: props.globalPosition,
+            day: props.day,
             stationNum: props.stationNum,
             employeeId: props.employeeId,
         };
@@ -19,8 +19,8 @@ const orderTarget = {
 
 const collectTarget = (connect, monitor) => ({
     connectDropTarget: connect.dropTarget(),
-    isOver:            monitor.isOver(),
-    canDrop:           monitor.canDrop(),
+    isOver: monitor.isOver(),
+    canDrop: monitor.canDrop(),
 });
 
 @DropTarget(DragItemTypes.ORDER, orderTarget, collectTarget)
@@ -35,24 +35,24 @@ export default class DashboardOrderDropTarget extends Component {
 
         return (
             <StyledDashboardOrderDropTarget
-                ref={ dropTarget => this._getOrderDropTargetRef(dropTarget) }
-                overlayDrop={ isOver && canDrop }
+                ref={dropTarget => this._getOrderDropTargetRef(dropTarget)}
+                overlayDrop={isOver && canDrop}
             >
-                { label && 
+                {label && (
                     <>
                         <StyledDashboardOrderDropTargetLabel>
-                            { label.vehicleNumber }
+                            {label.vehicleNumber}
                         </StyledDashboardOrderDropTargetLabel>
                         <StyledDashboardOrderDropTargetLabel>
-                            { label.vehicleMakeName } { label.vehicleModelName }
+                            {label.vehicleMakeName} {label.vehicleModelName}
                         </StyledDashboardOrderDropTargetLabel>
                         {!label.vehicleNumber && (
                             <StyledDashboardOrderDropTargetLabel>
-                                { label.clientName }
+                                {label.clientName}
                             </StyledDashboardOrderDropTargetLabel>
                         )}
                     </>
-                }
+                )}
             </StyledDashboardOrderDropTarget>
         );
     }
@@ -63,7 +63,7 @@ const StyledDashboardOrderDropTarget = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    background-color: ${props => props.overlayDrop && 'var(--primary)'};
+    background-color: ${props => props.overlayDrop && "var(--primary)"};
 `;
 
 const StyledDashboardOrderDropTargetLabel = styled.div`

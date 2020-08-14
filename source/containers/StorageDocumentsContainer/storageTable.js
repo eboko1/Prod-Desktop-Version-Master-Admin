@@ -17,9 +17,7 @@ const mapState = state => ({
     user: state.auth,
 });
 
-@connect(
-    mapState,
-)
+@connect(mapState)
 @withRouter
 @injectIntl
 class StorageTable extends Component {
@@ -38,8 +36,8 @@ class StorageTable extends Component {
             location.pathname,
             listType,
             formatMessage,
-            ()=>{
-                alert('...')
+            () => {
+                alert('...');
             },
         );
 
@@ -47,21 +45,21 @@ class StorageTable extends Component {
             <Catcher>
                 <div className={ Styles.filterWrap }>
                     <Input
-                        placeholder={formatMessage({ id: "orders.search.placeholder" })}
-                        onChange={(event)=>{
+                        placeholder={ formatMessage({
+                            id: 'orders.search.placeholder',
+                        }) }
+                        onChange={ event => {
                             onSearch(event.target.value);
-                        }}
+                        } }
                         allowClear
                     />
-                    <Button
-                        disabled={listType == 'INCOME'}
-                    >
-                        <FormattedMessage id='storage_document.storage_expenses' />,
+                    <Button disabled={ listType == 'INCOME' }>
+                        <FormattedMessage id='storage_document.storage_expenses' />
+                        ,
                     </Button>
-                    <Button
-                        disabled={listType == 'EXPENSE'}
-                    >
-                        <FormattedMessage id='storage_document.storage_income' />,
+                    <Button disabled={ listType == 'EXPENSE' }>
+                        <FormattedMessage id='storage_document.storage_income' />
+                        ,
                     </Button>
                 </div>
                 <div className={ Styles.paper }>

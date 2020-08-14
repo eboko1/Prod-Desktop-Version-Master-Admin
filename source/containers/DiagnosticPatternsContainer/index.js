@@ -17,14 +17,10 @@ const mapStateToProps = state => ({
     user: state.auth,
 });
 
-const mapDispatchToProps = {
-};
+const mapDispatchToProps = {};
 
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class DiagnosticPatternsContainer extends Component {
     constructor(props) {
         super(props);
@@ -33,10 +29,10 @@ export default class DiagnosticPatternsContainer extends Component {
         };
     }
 
-    render() {  
+    render() {
         return (
             <Catcher>
-               <div>dd</div>
+                <div>dd</div>
             </Catcher>
         );
     }

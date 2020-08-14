@@ -12,9 +12,14 @@ import Styles from './styles.m.css';
 
 export default class MiniPie extends Component {
     static defaultProps = {
-        height:  90,
-        width:   90,
-        margin:  [ 0, 0, 0, 0 ],
+        height: 90,
+        width:  90,
+        margin: [
+            0,
+            0,
+            0,
+            0, 
+        ],
         inner:   0.5,
         tooltip: false,
         color:   'rgb(81, 205, 102)',

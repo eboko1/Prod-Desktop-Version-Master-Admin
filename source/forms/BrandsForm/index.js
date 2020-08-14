@@ -104,7 +104,6 @@ export class BrandsForm extends Component {
     };
 
     render() {
-    
         const {
             form: { getFieldDecorator, validateFields },
             errors,

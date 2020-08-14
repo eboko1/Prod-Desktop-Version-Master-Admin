@@ -29,7 +29,7 @@ export class EditableTable extends Component {
                 cell: EditableCell,
             },
         };
-        
+
         const pagination = {
             pageSize:         25,
             size:             'large',

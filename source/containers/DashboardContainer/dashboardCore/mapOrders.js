@@ -4,7 +4,7 @@ import moment from 'moment';
 const mapOrders = (beginHour, maxRows, orders) =>
     _(orders)
         .filter('beginDatetime')
-        .map((order) => {
+        .map(order => {
             const { duration, beginDatetime } = order;
             const numberOfHalfHours = Math.ceil((duration || 0.5) * 2);
 

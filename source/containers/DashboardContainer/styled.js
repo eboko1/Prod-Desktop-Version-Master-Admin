@@ -32,7 +32,6 @@ export const Dashboard = styled.div`
 `;
 
 export const DashboardGrid = styled.div`
-    
     position: relative;
     width: 100%;
     overflow-x: scroll;
@@ -98,22 +97,23 @@ export const DashboardColumn = styled.div`
         min-width: 24%;
         margin: 0 1%;
     }
-    ${''
-        /*@media screen and (max-width: 1199px) {
+    ${''}
+    /*@media screen and (max-width: 1199px) {
             position: ${props =>
-                `${(props.currentDay &&
-                    props.currentDay === props.day || props.isMobile) &&
+        `${(props.currentDay && props.currentDay === props.day ||
+                    props.isMobile) &&
                     'absolute'}`};
             z-index: ${props =>
-                `${(props.currentDay &&
-                    props.currentDay === props.day || props.isMobile) &&
+        `${(props.currentDay && props.currentDay === props.day ||
+                    props.isMobile) &&
                     '100'}`};
         }*/
-    }
-    ${'' /* display: grid;
+    ${
+    '' /* display: grid;
     grid-template-rows: ${props =>
         `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
-    grid-template-columns: ${props => `repeat(${props.column}, 1fr)`}; */};
+    grid-template-columns: ${props => `repeat(${props.column}, 1fr)`}; */
+};
 `;
 
 export const DashboardBody = styled.div`
@@ -157,7 +157,7 @@ export const DashboardAddOrderColumn = styled.div`
 
             return 'white';
         }
-        if(mode === 'stations') {
+        if (mode === 'stations') {
             if (stationsWithConflicts.includes(stationNum)) {
                 return globalPosition % 2
                     ? 'rgba(var(--warningRGB), 0.3)'
@@ -166,7 +166,7 @@ export const DashboardAddOrderColumn = styled.div`
 
             return 'white';
         }
-        if(mode === 'employees') {
+        if (mode === 'employees') {
             if (employeesWithConflicts.includes(employeeId)) {
                 return globalPosition % 2
                     ? 'rgba(var(--warningRGB), 0.3)'
@@ -199,7 +199,7 @@ export const DashboardAddOrderColumn = styled.div`
 
             return 'var(--snow)';
         }
-        if(mode === 'stations') {
+        if (mode === 'stations') {
             if (stationsWithConflicts.includes(stationNum)) {
                 return globalPosition % 2
                     ? 'rgba(var(--warningRGB), 0.3)'
@@ -208,13 +208,13 @@ export const DashboardAddOrderColumn = styled.div`
 
             return 'var(--snow)';
         }
-        if(mode === 'employees') {
+        if (mode === 'employees') {
             if (employeesWithConflicts.includes(employeeId)) {
                 return globalPosition % 2
                     ? 'rgba(var(--warningRGB), 0.3)'
                     : 'rgba(var(--warningRGB), 0.4)';
             }
-            
+
             return 'var(--snow)';
         }
 

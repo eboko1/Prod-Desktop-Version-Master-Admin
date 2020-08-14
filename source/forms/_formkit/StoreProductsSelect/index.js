@@ -17,10 +17,7 @@ const mapStateToProps = state => ({
 });
 
 const StoreProductsSelect = injectIntl(
-    connect(
-        mapStateToProps,
-        { setStoreProductsSearchQuery },
-    )(props => {
+    connect(mapStateToProps, { setStoreProductsSearchQuery })(props => {
         const handleSearch = value => props.setStoreProductsSearchQuery(value);
 
         const handleSelect = productId =>

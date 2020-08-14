@@ -23,26 +23,25 @@ export function columnsConfig(
     formatMessage,
     deleteAction,
 ) {
+    var documentTag;
 
-    var documentTag; 
-    
     switch (listType) {
         case 'ORDER':
             documentTag = 'ORD';
             break;
-    
+
         case 'INCOME':
             documentTag = 'INS';
             break;
-    
+
         case 'EXPENSE':
             documentTag = 'OUT';
             break;
-    
+
         case 'TRANSFER':
             documentTag = 'TSF';
             break;
-    
+
         default:
             break;
     }
@@ -57,7 +56,7 @@ export function columnsConfig(
         width:     20,
         dataIndex: 'key',
         key:       'key',
-        render: (key)=>key+1,
+        render:    key => key + 1,
         // fixed:     'left',
     };
 
@@ -69,19 +68,17 @@ export function columnsConfig(
         // fixed:     'left',
         render:    (_, document) => (
             <>
-            {document.orderId && listType == 'EXPENSE' ? 
-            <Link
-                to={ `/order/${document.orderId}` }
-            >
-                {documentTag + document.orderNum.slice(3)}
-            </Link> :
-            <Link
-                to={ `/storage-document/${document.id}` }
-            >
-                {`${documentTag}-${document.businessId}-${(document.supplierDocNumber || "").padStart(7, '0')}`}
-            </Link>
-            }
-                
+                { document.orderId && listType == 'EXPENSE' ? (
+                    <Link to={ `/order/${document.orderId}` }>
+                        { documentTag + document.orderNum.slice(3) }
+                    </Link>
+                ) : (
+                    <Link to={ `/storage-document/${document.id}` }>
+                        { `${documentTag}-${document.businessId}-${(
+                            document.supplierDocNumber || ''
+                        ).padStart(7, '0')}` }
+                    </Link>
+                ) }
             </>
         ),
     };
@@ -90,18 +87,25 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.creation_date' />,
         dataIndex: 'createdDatetime',
         key:       'createdDatetime',
-        sorter:    (a, b) => moment(a.createdDatetime).isAfter(b.createdDatetime) ? 1 : (moment(b.createdDatetime).isAfter(a.createdDatetime) ? -1 : 0),
-        width:     80,
-        render:    (_, document) => (
+        sorter:    (a, b) =>
+            moment(a.createdDatetime).isAfter(b.createdDatetime)
+                ? 1
+                : moment(b.createdDatetime).isAfter(a.createdDatetime)
+                    ? -1
+                    : 0,
+        width:  80,
+        render: (_, document) => (
             <div>
-                {document.createdDatetime ?
-                moment(document.createdDatetime).format('DD.MM.YYYY HH:mm') :
-                listType == 'EXPENSE' ?
-                moment(document.orderDatetime).format('DD.MM.YYYY HH:mm') :
-                <FormattedMessage id='long_dash'/>}
+                { document.createdDatetime ? 
+                    moment(document.createdDatetime).format('DD.MM.YYYY HH:mm')
+                    : listType == 'EXPENSE' ? 
+                        moment(document.orderDatetime).format('DD.MM.YYYY HH:mm')
+                        : (
+                            <FormattedMessage id='long_dash' />
+                        ) }
             </div>
         ),
-    };;
+    };
 
     const counterpartyCol = {
         title:     <FormattedMessage id='storage_document.counterparty' />,
@@ -110,10 +114,11 @@ export function columnsConfig(
         width:     80,
         render:    (_, document) => (
             <div>
-                {document.businessSupplier ?
-                document.businessSupplier.name :
-                document.clientName ||
-                <FormattedMessage id='long_dash'/>}
+                { document.businessSupplier
+                    ? document.businessSupplier.name
+                    : document.clientName || (
+                        <FormattedMessage id='long_dash' />
+                    ) }
             </div>
         ),
     };
@@ -125,11 +130,17 @@ export function columnsConfig(
         width:     80,
         render:    (_, document) => (
             <div>
-                {document.counterpartBusinessSupplierId ? <FormattedMessage id='storage_document.supplier'/> :
-                document.counterpartClientId || document.clientId ? <FormattedMessage id='storage_document.client'/> :
-                document.counterpartEmployeeId ? <FormattedMessage id='storage_document.own_consumption'/> :
-                document.warehouseId && document.type == 'EXPENSE' ? <FormattedMessage id='storage_document.inventory'/> :
-                <FormattedMessage id='long_dash'/>}
+                { document.counterpartBusinessSupplierId ? (
+                    <FormattedMessage id='storage_document.supplier' />
+                ) : document.counterpartClientId || document.clientId ? (
+                    <FormattedMessage id='storage_document.client' />
+                ) : document.counterpartEmployeeId ? (
+                    <FormattedMessage id='storage_document.own_consumption' />
+                ) : document.warehouseId && document.type == 'EXPENSE' ? (
+                    <FormattedMessage id='storage_document.inventory' />
+                ) : (
+                    <FormattedMessage id='long_dash' />
+                ) }
             </div>
         ),
     };
@@ -145,9 +156,9 @@ export function columnsConfig(
                 // TODO
                 currency={ formatMessage({ id: 'currency' }) }
                 nullText='0'
-                mask ='0,0.00'
+                mask='0,0.00'
             >
-                { document.sum  }
+                { document.sum }
             </Numeral>
         ),
     };
@@ -159,11 +170,13 @@ export function columnsConfig(
         width:     80,
         render:    (_, document) => (
             <div>
-                {document.type == 'INCOME' ? 
-                <FormattedMessage id='storage_document.income'/> : 
-                document.type == 'EXPENSE' ?
-                <FormattedMessage id='storage_document.return'/> : 
-                <FormattedMessage id='long_dash'/>}
+                { document.type == 'INCOME' ? (
+                    <FormattedMessage id='storage_document.income' />
+                ) : document.type == 'EXPENSE' ? (
+                    <FormattedMessage id='storage_document.return' />
+                ) : (
+                    <FormattedMessage id='long_dash' />
+                ) }
             </div>
         ),
     };
@@ -175,9 +188,25 @@ export function columnsConfig(
         width:     80,
         render:    (_, document) => (
             <div>
-                {document.status == 'DONE' ?
-                <><FormattedMessage id='storage_document.status_confirmed'/> <Icon type='check-circle' theme='filled' style={{color: 'var(--green)'}}/></>:
-                <><FormattedMessage id='storage_document.status_created'/> <Icon type='clock-circle' theme='filled' style={{color: 'var(--orange)'}}/></>}
+                { document.status == 'DONE' ? (
+                    <>
+                        <FormattedMessage id='storage_document.status_confirmed' />{ ' ' }
+                        <Icon
+                            type='check-circle'
+                            theme='filled'
+                            style={ { color: 'var(--green)' } }
+                        />
+                    </>
+                ) : (
+                    <>
+                        <FormattedMessage id='storage_document.status_created' />{ ' ' }
+                        <Icon
+                            type='clock-circle'
+                            theme='filled'
+                            style={ { color: 'var(--orange)' } }
+                        />
+                    </>
+                ) }
             </div>
         ),
     };
@@ -189,7 +218,10 @@ export function columnsConfig(
         width:     80,
         render:    (_, document) => (
             <div>
-                {listType == 'EXPENSE' && ( document.warehouseName || <FormattedMessage id='long_dash'/> )}
+                { listType == 'EXPENSE' &&
+                    (document.warehouseName || (
+                        <FormattedMessage id='long_dash' />
+                    )) }
             </div>
         ),
     };
@@ -201,27 +233,35 @@ export function columnsConfig(
         width:     80,
         render:    (_, document) => (
             <div>
-                {listType == 'INCOME' && ( document.warehouseName || <FormattedMessage id='long_dash'/> )}
+                { listType == 'INCOME' &&
+                    (document.warehouseName || (
+                        <FormattedMessage id='long_dash' />
+                    )) }
             </div>
         ),
     };
 
     const deleteActionCol = {
-        key:       'delete',
-        width:     20,
-        render:    (_, document) => (
+        key:    'delete',
+        width:  20,
+        render: (_, document) => (
             <div>
                 <Popconfirm
                     type='danger'
-                    title={formatMessage({ id: 'add_order_form.delete_confirm' })}
-                    onConfirm={()=>{
+                    title={ formatMessage({
+                        id: 'add_order_form.delete_confirm',
+                    }) }
+                    onConfirm={ () => {
                         deleteAction();
-                    }}
+                    } }
                 >
                     <Icon
-                        className={document.status == 'DONE' ? Styles.disabledDeleteDocumentIcon : Styles.deleteDocumentIcon}
+                        className={
+                            document.status == 'DONE'
+                                ? Styles.disabledDeleteDocumentIcon
+                                : Styles.deleteDocumentIcon
+                        }
                         type='delete'
-
                     />
                 </Popconfirm>
             </div>
@@ -287,7 +327,6 @@ export function columnsConfig(
                 deleteActionCol,
             ];
 
-        
         default:
             return [
                 indexCol,

@@ -1,6 +1,6 @@
 // vendor
-import React, { Component } from 'react';
-import { injectIntl } from 'react-intl';
+import React, { Component } from "react";
+import { injectIntl } from "react-intl";
 
 // proj
 import {
@@ -11,13 +11,13 @@ import {
     deleteSalary,
     onChangeSettingSalaryForm,
     resetFields,
-} from 'core/forms/settingSalaryForm/duck';
+} from "core/forms/settingSalaryForm/duck";
 
-import { Catcher } from 'commons';
-import { SettingSalaryTable } from 'components';
-import { SalaryReportForm } from 'forms';
-import { withReduxForm2 } from 'utils';
-import { permissions, isForbidden } from 'utils';
+import { Catcher } from "commons";
+import { SettingSalaryTable } from "components";
+import { SalaryReportForm } from "forms";
+import { withReduxForm2 } from "utils";
+import { permissions, isForbidden } from "utils";
 
 const mapStateToProps = state => ({
     user: state.auth,
@@ -25,7 +25,7 @@ const mapStateToProps = state => ({
 
 @injectIntl
 @withReduxForm2({
-    name:    'settingSalary',
+    name: "settingSalary",
     actions: {
         change: onChangeSettingSalaryForm,
         resetFields,
@@ -67,19 +67,19 @@ export default class SettingSalaryForm extends Component {
 
         return (
             <Catcher>
-                { !isForbidden(user, permissions.EMPLOYEES_SALARIES) && (
-                    <SalaryReportForm employeesIds={ [ employeeId ] } />
-                ) }
+                {!isForbidden(user, permissions.EMPLOYEES_SALARIES) && (
+                    <SalaryReportForm employeesIds={[employeeId]} />
+                )}
                 <SettingSalaryTable
-                    loading={ loading }
-                    fields={ fields }
-                    form={ form }
-                    user={ user }
-                    initialSettingSalaries={ salaries }
-                    createSalary={ createSalary.bind(this, employeeId) }
-                    updateSalary={ updateSalary.bind(this, employeeId) }
-                    deleteSalary={ deleteSalary.bind(this, employeeId) }
-                    resetFields={ resetFields }
+                    loading={loading}
+                    fields={fields}
+                    form={form}
+                    user={user}
+                    initialSettingSalaries={salaries}
+                    createSalary={createSalary.bind(this, employeeId)}
+                    updateSalary={updateSalary.bind(this, employeeId)}
+                    deleteSalary={deleteSalary.bind(this, employeeId)}
+                    resetFields={resetFields}
                 />
             </Catcher>
         );

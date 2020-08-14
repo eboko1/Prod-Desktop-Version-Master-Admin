@@ -113,8 +113,5 @@ const mapDispatchToProps = {
 };
 
 export const PriceGroupsTable = injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(Form.create()(PriceGroups)),
+    connect(mapStateToProps, mapDispatchToProps)(Form.create()(PriceGroups)),
 );

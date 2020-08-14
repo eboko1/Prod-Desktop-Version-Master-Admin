@@ -23,10 +23,9 @@ const mapStateToProps = state => ({
     filters:   selectStoreBalanceFilters(state),
 });
 
-export const StorageBalanceTotals = connect(
-    mapStateToProps,
-    { setStoreBalanceFilters },
-)(props => {
+export const StorageBalanceTotals = connect(mapStateToProps, {
+    setStoreBalanceFilters,
+})(props => {
     // const total = _.get(props, 'balance.total[0]');
     const { filters, total, collapsed } = props;
     const onPickDate = date => props.setStoreBalanceFilters({ date });

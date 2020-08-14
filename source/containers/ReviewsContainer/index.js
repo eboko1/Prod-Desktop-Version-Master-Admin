@@ -1,17 +1,17 @@
 // vendor
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
 // proj
-import { fetchReviews, setReviewsPageFilter } from 'core/reviews/duck';
+import { fetchReviews, setReviewsPageFilter } from "core/reviews/duck";
 
-import { Catcher, Paper } from 'commons';
-import { ReviewsStats, ReviewsTable } from 'components';
+import { Catcher, Paper } from "commons";
+import { ReviewsStats, ReviewsTable } from "components";
 
 const mapStateToProps = state => ({
     reviews: state.reviews.reviews,
-    filter:  state.reviews.filter,
-    stats:   state.reviews.stats,
+    filter: state.reviews.filter,
+    stats: state.reviews.stats,
 });
 
 const mapDispatchToProps = {
@@ -20,10 +20,7 @@ const mapDispatchToProps = {
 };
 
 // @withRouter
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class ReviewsContainer extends Component {
     render() {
         const {
@@ -37,15 +34,15 @@ export default class ReviewsContainer extends Component {
         return (
             <Catcher>
                 <Paper>
-                    <ReviewsStats stats={ stats } />
+                    <ReviewsStats stats={stats} />
                 </Paper>
                 <Paper>
                     <ReviewsTable
-                        reviews={ reviews }
-                        filter={ filter }
-                        stats={ stats }
-                        setReviewsPageFilter={ setReviewsPageFilter }
-                        fetchReviews={ fetchReviews }
+                        reviews={reviews}
+                        filter={filter}
+                        stats={stats}
+                        setReviewsPageFilter={setReviewsPageFilter}
+                        fetchReviews={fetchReviews}
                     />
                 </Paper>
             </Catcher>
