@@ -34,13 +34,13 @@ export default class AvailabilityIndicator extends React.Component {
                 `${formatMessage({
                     id: "availabilities-page.avail_x",
                 })}: ${inX} ${formatMessage({ id: "pc" })}\n`;
-            if (in0) {
+            if (in0 != 0) {
                 color = "var(--green)";
-            } else if (in1) {
+            } else if (in1 != 0) {
                 color = "yellow";
-            } else if (in2) {
+            } else if (in2 != 0) {
                 color = "orange";
-            } else if (inX) {
+            } else if (inX != 0) {
                 color = "red";
             }
         } else {
