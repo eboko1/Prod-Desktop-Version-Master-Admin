@@ -6,3 +6,9 @@
     background: white;
     padding: 24px;
 }
+
+@media screen and (max-width: 1199px) {
+    .loginForm {
+        width: 90%;
+    }
+}
