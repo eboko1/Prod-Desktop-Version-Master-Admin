@@ -84,6 +84,7 @@ export class OrderForm extends React.PureComponent {
             labors: [],
             details: [],
         };
+        this._isMounted = false;
         this.orderDetails = [...this.props.orderDetails];
         this.orderServices = [...this.props.orderServices];
         this._reloadOrderForm = this._reloadOrderForm.bind(this);
@@ -281,10 +282,15 @@ export class OrderForm extends React.PureComponent {
 
     componentDidMount() {
         // TODO in order to fix late getFieldDecorator invoke for services
-        if(!this.labors || !this.details) {
+        this._isMounted = true;
+        if(!this.labors || !this.details && this._isMounted) {
             this._fetchLaborsAndDetails();
         }
         this.setState({ initialized: true });
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     componentDidUpdate() {

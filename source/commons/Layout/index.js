@@ -90,6 +90,7 @@ export class LayoutComponent extends Component {
                         collapsed={collapsed}
                         isMobile={isMobile}
                         user={user}
+                        logout={this._logout}
                     />
                     <Layout className={Styles.layout}>
                         {!isMobile && (
