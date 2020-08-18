@@ -44,6 +44,7 @@ import {
     StorageBalancePage,
     StorageMovementPage,
     IncomeDocPage,
+    StorageDocumentPage,
     DiagnosticPatternsPage,
     AvailabilitiesPage,
     StorageOrdersPage,
@@ -191,13 +192,13 @@ export default class Private extends Component {
                 <Route
                     exact
                     path={ book.storageDocument }
-                    render={ props => <IncomeDocPage { ...props } /> }
+                    render={ props => <StorageDocumentPage { ...props } /> }
                 />
                 <Route
                     exact
                     path={ book.storageDocumentId }
                     render={ props => (
-                        <IncomeDocPage key={ props.match.params.id } { ...props } />
+                        <StorageDocumentPage id={ props.match.params.id } { ...props } />
                     ) }
                 />
                 <Route
