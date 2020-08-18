@@ -56,7 +56,7 @@
         "storage_document.status_created": "Створений",
         "storage_document.status_confirmed": "Врахований",
         "storage_document.storage_income": "Склад дохід",
-        "storage_document.storage_expenses": "Склад витрати",
+        "storage_document.storage_expenses": "Склад витрат",
         "storage_document.all": "Усі"
     }
   }
