@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Button, Input, Table, Select } from 'antd';
+import { Form, Button, Input, Table, Select, Icon } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -91,23 +91,39 @@ class StorageDocumentForm extends Component {
                     }}
                 >
                     <Form.Item
-                        label={<FormattedMessage id='storage_document.supplier'/>}
-                        name="username"
-                        rules={[{ required: true, message: 'Please input your username!' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
                         label="№"
                         name="username"
                         rules={[{ required: true, message: 'Please input your username!' }]}
                     >
                         <Input />
                     </Form.Item>
+                    <Form.Item
+                        label={<FormattedMessage id='storage_document.document_type'/>}
+                        name="username"
+                        rules={[{ required: true, message: 'Please input your username!' }]}
+                    >
+                        <Select />
+                    </Form.Item>
+                    <Form.Item
+                        label={<FormattedMessage id='storage_document.supplier'/>}
+                        name="username"
+                        rules={[{ required: true, message: 'Please input your username!' }]}
+                    >
+                        <Input />
+                        <Icon
+                            type='edit'
+                            style={{
+                                position: 'absolute',
+                                right: '-25px',
+                                top: '10px',
+                                cursor: 'pointer'
+                            }}
+                        />
+                    </Form.Item>
                 </div>
                 <div
                     style={{
-                        width: "20%"
+                        width: "30%"
                     }}
                 >
                 <Form.Item
@@ -127,7 +143,7 @@ class StorageDocumentForm extends Component {
                 </div>
                 <div
                     style={{
-                        width: "35%"
+                        width: "25%"
                     }}
                 >
                     <Form.Item className={Styles.sumBlock}>
@@ -145,7 +161,13 @@ class StorageDocumentForm extends Component {
                                     0
                                 </Numeral>
                             </span>
-                            <span className={Styles.sumWrapper}>
+                            <span
+                                className={Styles.sumWrapper}
+                                style={{
+                                    background: 'var(--static)',
+                                    fontSize: 16
+                                }}
+                            >
                                 <FormattedMessage id="paid" />
                                 <Numeral
                                     mask={mask}

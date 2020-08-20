@@ -55,11 +55,9 @@ class StorageTable extends Component {
                     />
                     <Button disabled={ listType == 'INCOME' }>
                         <FormattedMessage id='storage_document.storage_expenses' />
-                        ,
                     </Button>
                     <Button disabled={ listType == 'EXPENSE' }>
                         <FormattedMessage id='storage_document.storage_income' />
-                        ,
                     </Button>
                 </div>
                 <div className={ Styles.paper }>
