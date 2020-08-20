@@ -21,9 +21,16 @@ class StorageDocumentPage extends Component {
 
 
     render() {
+        const dateTime = new Date();
         return (
             <Layout
                 title={ <FormattedMessage id='navigation.incomes' /> }
+                description={
+                    <>
+                        <FormattedMessage id='order-page.creation_date'/>
+                        { `: ${moment(dateTime).format('DD MMMM YYYY, HH:mm')}` }
+                    </>
+                }
                 controls={
                     <>
                         <ChangeStatusDropdown/>

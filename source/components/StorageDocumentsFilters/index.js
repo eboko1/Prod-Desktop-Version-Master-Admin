@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { DatePicker, Icon, Radio } from 'antd';
+import { DatePicker, Icon, Radio, Button, Dropdown, Menu } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -106,6 +106,123 @@ class StorageDocumentsFilters extends Component {
                             onDateChange(newDate);
                         } }
                     />
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between'
+                        }}
+                    >
+                        <Dropdown
+                            overlay={
+                                <Menu>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                        }}
+                                    >
+                                        <FormattedMessage id='Сьогодні' />
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                        }}
+                                    >
+                                        <FormattedMessage id='Вчора' />
+                                    </Menu.Item>
+                                </Menu>
+                            }
+                        >
+                            <Button>
+                                <FormattedMessage id="День"/>
+                            </Button>
+                        </Dropdown>
+                        <Dropdown
+                            overlay={
+                                <Menu>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                        }}
+                                    >
+                                        <FormattedMessage id='Поточний' />
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                        }}
+                                    >
+                                        <FormattedMessage id='Попередній' />
+                                    </Menu.Item>
+                                </Menu>
+                            }
+                        >
+                            <Button>
+                                <FormattedMessage id="Тиждень"/>
+                            </Button>
+                        </Dropdown>
+                        <Dropdown
+                            overlay={
+                                <Menu>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                        }}
+                                    >
+                                        <FormattedMessage id='Поточний' />
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                        }}
+                                    >
+                                        <FormattedMessage id='Попередній' />
+                                    </Menu.Item>
+                                </Menu>
+                            }
+                        >
+                            <Button>
+                                <FormattedMessage id="Місяць"/>
+                            </Button>
+                        </Dropdown>
+                        <Dropdown
+                            overlay={
+                                <Menu>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                        }}
+                                    >
+                                        <FormattedMessage id='Поточний' />
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                        }}
+                                    >
+                                        <FormattedMessage id='Попередній' />
+                                    </Menu.Item>
+                                </Menu>
+                            }
+                        >
+                            <Button>
+                                <FormattedMessage id="Квартал"/>
+                            </Button>
+                        </Dropdown>
+                        <Dropdown
+                            overlay={
+                                <Menu>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                        }}
+                                    >
+                                        <FormattedMessage id='Поточний' />
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                        }}
+                                    >
+                                        <FormattedMessage id='Попередній' />
+                                    </Menu.Item>
+                                </Menu>
+                            }
+                        >
+                            <Button>
+                                <FormattedMessage id="Рік"/>
+                            </Button>
+                        </Dropdown>
+                    </div>
                 </div>
             </div>
         );
