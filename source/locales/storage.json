@@ -1,9 +1,11 @@
 {
   "en": {
     "storage": "Storage",
+    "storage.new_document": "New document",
     "storage.product_group": "Product Group",
     "storage.system_wide": "System wide",
     "storage.add_root_product_group": "Add root product group",
+    "storage.type": "Type",
     "storage.name": "Name",
     "storage.product_name": "Product name",
     "storage.product_code": "Product code",
@@ -81,9 +83,11 @@
   },
   "ru": {
     "storage": "Склад",
+    "storage.new_document": "Новый документ",
     "storage.product_group": "Группа товаров",
     "storage.system_wide": "Системная",
     "storage.add_root_product_group": "Добавить родительскую группу",
+    "storage.type": "Тип",
     "storage.name": "Наименование",
     "storage.product_name": "Наименование товара",
     "storage.product_code": "Код товара",
@@ -162,9 +166,11 @@
   },
   "uk": {
     "storage": "Склад",
+    "storage.new_document": "Новий документ",
     "storage.product_group": "Група товару",
     "storage.system_wide": "Системна",
     "storage.add_root_product_group": "Додати батьківську категорію",
+    "storage.type": "Тип",
     "storage.name": "Найменування",
     "storage.product_name": "Найменування товару",
     "storage.product_code": "Код товару",

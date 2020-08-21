@@ -15,7 +15,7 @@ import { StorageDocumentsFilters } from 'components';
 import book from 'routes/book';
 
 // own
-const dateFormat = 'YYYY-MM-DD';
+const dateFormat = 'DD.MM.YYYY';
 const fetchStorage = (type, action) => {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = __API_URL__;
@@ -210,7 +210,12 @@ class StorageDocumentsContainer extends Component {
                             documentTypeFilter={ this.documentTypeFilter }
                             documentStatusFilter={ this.documentStatusFilter }
                         />
-                        <Link to={ book.storageDocument }>
+                        <Link
+                            to={{
+                                pathname: book.storageDocument,
+                                type: this.props.listType
+                            }}
+                        >
                             <Button type='primary'>
                                 <FormattedMessage id='add' />
                             </Button>

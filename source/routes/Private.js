@@ -50,6 +50,7 @@ import {
     StorageOrdersPage,
     StorageTransferPage,
     AgreementPage,
+    WarehousesPage,
 } from 'pages';
 import book from './book';
 
@@ -120,6 +121,11 @@ export default class Private extends Component {
                     exact
                     component={ LaborsPage }
                     path={ book.laborsPage }
+                />
+                <Route
+                    exact
+                    component={ WarehousesPage }
+                    path={ book.warehouses }
                 />
                 <Route 
                     exact
