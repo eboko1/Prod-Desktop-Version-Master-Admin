@@ -7,6 +7,7 @@
         "datepicker.range.start_date": "Start date",
         "datepicker.range.end_date": "End date",
         "datepicker.today": "Today",
+        "datepicker.yesterday": "Yesterday",
         "datepicker.now": "Now",
         "datepicker.back_to_today": "Back To Today",
         "datepicker.ok": "Ok",
@@ -25,7 +26,11 @@
         "datepicker.prev_quarter": "Previous quarter",
         "datepicker.next_quarter": "Next quarter",
         "datepicker.prev_year": "Previous Year",
-        "datepicker.next_year": "Next Year"
+        "datepicker.next_year": "Next Year",
+        "datepicker.current": "Current",
+        "datepicker.previous": "Previous",
+        "datepicker.month_before": "month before",
+        "datepicker.quarters_before": "quarters before"
     },
     "ru": {
         "date": "Дата",
@@ -35,6 +40,7 @@
         "datepicker.range.start_date": "Начальная дата",
         "datepicker.range.end_date": "Конечная дата",
         "datepicker.today": "Сегодня",
+        "datepicker.yesterday": "Вчера",
         "datepicker.now": "Сейчас",
         "datepicker.back_to_today": "Назад к сегодняшнему дню",
         "datepicker.ok": "Ок",
@@ -53,7 +59,11 @@
         "datepicker.prev_quarter": "Предыдущий квартал",
         "datepicker.next_quarter": "Следующий квартал",
         "datepicker.prev_year": "Предыдущий год",
-        "datepicker.next_year": "Следующий год"
+        "datepicker.next_year": "Следующий год",
+        "datepicker.current": "Текущий",
+        "datepicker.previous": "Преведущий",
+        "datepicker.month_before": "месяца тому",
+        "datepicker.quarters_before": "квартала тому"
     },
     "uk": {
         "date": "Дата",
@@ -63,6 +73,7 @@
         "datepicker.range.start_date": "Початкова дата",
         "datepicker.range.end_date": "Кінцева дата",
         "datepicker.today": "Сьогодні",
+        "datepicker.yesterday": "Вчора",
         "datepicker.now": "Зараз",
         "datepicker.back_to_today": "Повернутися на поточний день",
         "datepicker.ok": "Ок",
@@ -81,6 +92,10 @@
         "datepicker.prev_quarter": "Минулий квартал",
         "datepicker.next_quarter": "Наступний квартал",
         "datepicker.prev_year": "Минулий Рік",
-        "datepicker.next_year": "Наступний Рік"
+        "datepicker.next_year": "Наступний Рік",
+        "datepicker.current": "Поточний",
+        "datepicker.previous": "Попередній",
+        "datepicker.month_before": "місяці тому",
+        "datepicker.quarters_before": "квартали тому"
     }
 }

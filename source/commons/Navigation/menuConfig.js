@@ -56,7 +56,7 @@ export default {
                     key:      '/warehouses',
                     link:     book.warehouses,
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE) || true,
+                        isForbidden(user, permissions.VIEW_STORE),
                     name: 'navigation.warehouses',
                 },
                 {

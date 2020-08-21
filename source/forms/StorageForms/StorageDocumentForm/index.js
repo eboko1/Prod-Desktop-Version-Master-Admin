@@ -11,14 +11,23 @@ import moment from 'moment';
 // proj
 import { Catcher } from 'commons';
 import { Numeral } from "commons";
+import { withReduxForm, isForbidden, permissions } from "utils";
 // own
 import Styles from './styles.m.css';
 const formItemLayout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 14 },
 };
+const formItemStyle = {
+    style: {
+        marginBottom: 0,
+    }
+};
 const mask = "0,0.00";
 
+@withReduxForm({
+    name: "storageDocumentForm",
+})
 @injectIntl
 class StorageDocumentForm extends Component {
     constructor(props) {
@@ -74,12 +83,14 @@ class StorageDocumentForm extends Component {
 
 
     render() {
+        console.log(this);
         return (
             <>
             <Form
                 {...formItemLayout}
                 style={{
-                    marginTop: 15,
+                    margin: "15px 0",
+                    padding: "0 0 15px 0",
                     display: "flex",
                     justifyContent: "space-between",
                     borderBottom: "1px solid gray"
@@ -91,13 +102,15 @@ class StorageDocumentForm extends Component {
                     }}
                 >
                     <Form.Item
-                        label="№"
+                        {...formItemStyle}
+                        label={<FormattedMessage id='storage.type'/>}
                         name="username"
                         rules={[{ required: true, message: 'Please input your username!' }]}
                     >
-                        <Input />
+                        <Select />
                     </Form.Item>
                     <Form.Item
+                        {...formItemStyle}
                         label={<FormattedMessage id='storage_document.document_type'/>}
                         name="username"
                         rules={[{ required: true, message: 'Please input your username!' }]}
@@ -105,6 +118,7 @@ class StorageDocumentForm extends Component {
                         <Select />
                     </Form.Item>
                     <Form.Item
+                        {...formItemStyle}
                         label={<FormattedMessage id='storage_document.supplier'/>}
                         name="username"
                         rules={[{ required: true, message: 'Please input your username!' }]}
@@ -120,13 +134,22 @@ class StorageDocumentForm extends Component {
                             }}
                         />
                     </Form.Item>
+                    <Form.Item
+                        {...formItemStyle}
+                        label={<FormattedMessage id='storage.document_num'/>}
+                        name="username"
+                        rules={[{ required: true, message: 'Please input your username!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
                 </div>
                 <div
                     style={{
                         width: "30%"
                     }}
                 >
-                <Form.Item
+                    <Form.Item
+                        {...formItemStyle}
                         label={<FormattedMessage id='storage_document.storage_expenses'/>}
                         name="username"
                         rules={[{ required: true, message: 'Please input your username!' }]}
@@ -134,6 +157,7 @@ class StorageDocumentForm extends Component {
                         <Select />
                     </Form.Item>
                     <Form.Item
+                        {...formItemStyle}
                         label={<FormattedMessage id='storage_document.storage_income'/>}
                         name="username"
                         rules={[{ required: true, message: 'Please input your username!' }]}
@@ -146,7 +170,7 @@ class StorageDocumentForm extends Component {
                         width: "25%"
                     }}
                 >
-                    <Form.Item className={Styles.sumBlock}>
+                    <Form.Item className={Styles.sumBlock} {...formItemStyle}>
                         <div className={Styles.sum}>
                             <span className={Styles.sumWrapper}>
                                 <FormattedMessage id="sum" />

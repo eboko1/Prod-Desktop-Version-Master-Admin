@@ -14,17 +14,104 @@ import { StorageDocumentForm } from 'forms';
 
 // own
 
+
+const mapStateToProps = state => {
+    console.log(state);
+    return {
+        user: state.auth,
+    };
+};
+
+const INCOME = 'INCOME',
+      EXPENSE = 'EXPENSE',
+      SUPPLIER = 'SUPPLIER',
+      CLIENT = 'CLIENT',
+      INVENTORY = 'INVENTORY',
+      OWN_CONSUMPTY = 'OWN_CONSUMPTY',
+      TRANSFER = 'TRANSFER',
+      ADJUSTMENT = 'ADJUSTMENT';
+
+const typeToDocumentType = {
+    income: {
+        type: [INCOME],
+        documentType: [SUPPLIER, CLIENT, INVENTORY],
+    },
+    expense: {
+        type: [EXPENSE],
+        documentType: [SUPPLIER, CLIENT, INVENTORY, OWN_CONSUMPTY],
+    },
+    transfer: {
+        type: [EXPENSE],
+        documentType: [TRANSFER],
+    },
+    reserve: {
+        type: [EXPENSE],
+        documentType: [TRANSFER],
+    },
+    order: {
+        type: [INCOME, EXPENSE],
+        documentType: [SUPPLIER, ADJUSTMENT],
+    }, 
+}
+
+@connect(
+    mapStateToProps,
+    null,
+)
 class StorageDocumentPage extends Component {
     constructor(props) {
         super(props);
+        this.state={
+            warehouses: [],
+        }
     }
 
+    saveFormRef = formRef => {
+        this.formRef = formRef;
+    };
+
+    getWarehouses() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + '/warehouses';
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+            that.setState({
+                warehouses: data,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    componentDidMount() {
+        this.getWarehouses()
+    }
 
     render() {
+        console.log(this);
+        const { warehouses } = this.state;
+        const { id } = this.props;
         const dateTime = new Date();
         return (
             <Layout
-                title={ <FormattedMessage id='navigation.incomes' /> }
+                title={ <FormattedMessage id='storage.new_document' /> }
                 description={
                     <>
                         <FormattedMessage id='order-page.creation_date'/>
@@ -33,8 +120,12 @@ class StorageDocumentPage extends Component {
                 }
                 controls={
                     <>
-                        <ChangeStatusDropdown/>
-                        <ReportsDropdown/>
+                        {id ? 
+                        <>
+                            <ChangeStatusDropdown/>
+                            <ReportsDropdown/>
+                        </>
+                        : null}
                         <Icon
                             type='save'
                             style={ {
@@ -46,6 +137,7 @@ class StorageDocumentPage extends Component {
 
                             }}
                         />
+                        {id &&
                         <Icon
                             type='delete'
                             style={ {
@@ -56,7 +148,7 @@ class StorageDocumentPage extends Component {
                             onClick={()=>{
 
                             }}
-                        />
+                        />}
                         <Icon
                             type='close'
                             style={ {
@@ -64,13 +156,15 @@ class StorageDocumentPage extends Component {
                                 cursor:   'pointer',
                             } }
                             onClick={()=>{
-
+                                this.props.history.goBack();
                             }}
                         />
                     </>
                 }
             >
                 <StorageDocumentForm
+                    wrappedComponentRef={ this.saveFormRef }
+                    warehouses={warehouses}
                 />
             </Layout>
         );

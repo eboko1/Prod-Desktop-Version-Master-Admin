@@ -24,17 +24,6 @@ class StorageDocumentsFilters extends Component {
         };
     }
 
-    verifyDate(dateRange) {
-        if (dateRange.length != 2) {
-            const thisYear = new Date('1/1/' + new Date().getFullYear());
-            const defaultDateRange = [ moment(thisYear, this.props.dateFormat), moment(new Date(), this.props.dateFormat) ];
-
-            return defaultDateRange;
-        }
-
-        return dateRange;
-    }
-
     render() {
         const {
             dateRange,
@@ -97,7 +86,53 @@ class StorageDocumentsFilters extends Component {
                         </Radio.Button>
                     </Radio.Group>
                 </div>
-                <div className={ Styles.filterDatePicker }>
+                <StorageDateFilter
+                    dateRange={dateRange}
+                    dateFormat={dateFormat}
+                    onDateChange={onDateChange}
+                />
+                
+            </div>
+        );
+    }
+}
+
+export default StorageDocumentsFilters;
+
+
+
+class StorageDateFilter extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    verifyDate(dateRange) {
+        if (dateRange.length != 2) {
+            const thisYear = moment().startOf('year');
+            const defaultDateRange = [ moment(thisYear, this.props.dateFormat), moment(new Date(), this.props.dateFormat) ];
+
+            return defaultDateRange;
+        }
+
+        return dateRange;
+    }
+
+    render() {
+        const {
+            dateRange,
+            dateFormat,
+            onDateChange,
+        } = this.props;
+
+        const currentYear = new Date().getFullYear();
+        const yearOptions = [];
+
+        for(let year = currentYear-1; year > currentYear - 4; year--) {
+            yearOptions.push(year);
+        }
+
+        return (
+            <div className={ Styles.filterDatePicker }>
                     <RangePicker
                         allowClear={ false }
                         value={ this.verifyDate(dateRange) }
@@ -117,21 +152,29 @@ class StorageDocumentsFilters extends Component {
                                 <Menu>
                                     <Menu.Item
                                         onClick={()=>{
+                                            onDateChange([
+                                                moment(new Date(), dateFormat),
+                                                moment(new Date(), dateFormat)
+                                            ]);
                                         }}
                                     >
-                                        <FormattedMessage id='Сьогодні' />
+                                        <FormattedMessage id='datepicker.today' />
                                     </Menu.Item>
                                     <Menu.Item
                                         onClick={()=>{
+                                            onDateChange([
+                                                moment().add(-1, 'day'),
+                                                moment().add(-1, 'day'),
+                                            ]);
                                         }}
                                     >
-                                        <FormattedMessage id='Вчора' />
+                                        <FormattedMessage id='datepicker.yesterday' />
                                     </Menu.Item>
                                 </Menu>
                             }
                         >
                             <Button>
-                                <FormattedMessage id="День"/>
+                                <FormattedMessage id="datepicker.day"/>
                             </Button>
                         </Dropdown>
                         <Dropdown
@@ -139,21 +182,29 @@ class StorageDocumentsFilters extends Component {
                                 <Menu>
                                     <Menu.Item
                                         onClick={()=>{
+                                            onDateChange([
+                                                moment().startOf('week'),
+                                                moment(new Date(), dateFormat)
+                                            ]);
                                         }}
                                     >
-                                        <FormattedMessage id='Поточний' />
+                                        <FormattedMessage id='datepicker.current' />
                                     </Menu.Item>
                                     <Menu.Item
                                         onClick={()=>{
+                                            onDateChange([
+                                                moment().startOf('week').add(-1, 'week'),
+                                                moment().endOf('week').add(-1, 'week')
+                                            ]);
                                         }}
                                     >
-                                        <FormattedMessage id='Попередній' />
+                                        <FormattedMessage id='datepicker.previous' />
                                     </Menu.Item>
                                 </Menu>
                             }
                         >
                             <Button>
-                                <FormattedMessage id="Тиждень"/>
+                                <FormattedMessage id="datepicker.week"/>
                             </Button>
                         </Dropdown>
                         <Dropdown
@@ -161,21 +212,49 @@ class StorageDocumentsFilters extends Component {
                                 <Menu>
                                     <Menu.Item
                                         onClick={()=>{
+                                            onDateChange([
+                                                moment().startOf('month'),
+                                                moment(new Date(), dateFormat)
+                                            ]);
                                         }}
                                     >
-                                        <FormattedMessage id='Поточний' />
+                                        <FormattedMessage id='datepicker.current' />
                                     </Menu.Item>
                                     <Menu.Item
                                         onClick={()=>{
+                                            onDateChange([
+                                                moment().startOf('month').add(-1, 'month'),
+                                                moment().endOf('month').add(-1, 'month')
+                                            ]);
                                         }}
                                     >
-                                        <FormattedMessage id='Попередній' />
+                                        <FormattedMessage id='datepicker.previous' />
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                            onDateChange([
+                                                moment().startOf('month').add(-2, 'month'),
+                                                moment().endOf('month').add(-2, 'month')
+                                            ]);
+                                        }}
+                                    >
+                                        2 <FormattedMessage id='datepicker.month_before' />
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                            onDateChange([
+                                                moment().startOf('month').add(-3, 'month'),
+                                                moment().endOf('month').add(-3, 'month')
+                                            ]);
+                                        }}
+                                    >
+                                        3 <FormattedMessage id='datepicker.month_before' />
                                     </Menu.Item>
                                 </Menu>
                             }
                         >
                             <Button>
-                                <FormattedMessage id="Місяць"/>
+                                <FormattedMessage id="datepicker.month"/>
                             </Button>
                         </Dropdown>
                         <Dropdown
@@ -183,21 +262,49 @@ class StorageDocumentsFilters extends Component {
                                 <Menu>
                                     <Menu.Item
                                         onClick={()=>{
+                                            onDateChange([
+                                                moment().startOf('quarter'),
+                                                moment(new Date(), dateFormat)
+                                            ]);
                                         }}
                                     >
-                                        <FormattedMessage id='Поточний' />
+                                        <FormattedMessage id='datepicker.current' />
                                     </Menu.Item>
                                     <Menu.Item
                                         onClick={()=>{
+                                            onDateChange([
+                                                moment().startOf('quarter').add(-1, 'quarter'),
+                                                moment().endOf('quarter').add(-1, 'quarter')
+                                            ]);
                                         }}
                                     >
-                                        <FormattedMessage id='Попередній' />
+                                        <FormattedMessage id='datepicker.previous' />
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                            onDateChange([
+                                                moment().startOf('quarter').add(-2, 'quarter'),
+                                                moment().endOf('quarter').add(-2, 'quarter')
+                                            ]);
+                                        }}
+                                    >
+                                        2 <FormattedMessage id='datepicker.quarters_before' />
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                            onDateChange([
+                                                moment().startOf('quarter').add(-3, 'quarter'),
+                                                moment().endOf('quarter').add(-3, 'quarter')
+                                            ]);
+                                        }}
+                                    >
+                                        3 <FormattedMessage id='datepicker.quarters_before' />
                                     </Menu.Item>
                                 </Menu>
                             }
                         >
                             <Button>
-                                <FormattedMessage id="Квартал"/>
+                                <FormattedMessage id="datepicker.quarter"/>
                             </Button>
                         </Dropdown>
                         <Dropdown
@@ -205,28 +312,41 @@ class StorageDocumentsFilters extends Component {
                                 <Menu>
                                     <Menu.Item
                                         onClick={()=>{
+                                            onDateChange([
+                                                moment().startOf('year'),
+                                                moment(new Date(), dateFormat)
+                                            ]);
                                         }}
                                     >
-                                        <FormattedMessage id='Поточний' />
+                                        <FormattedMessage id='datepicker.current' />
                                     </Menu.Item>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                        }}
-                                    >
-                                        <FormattedMessage id='Попередній' />
-                                    </Menu.Item>
+                                    {yearOptions.map((year, key)=>{
+                                        return (
+                                            <Menu.Item
+                                                style={{
+                                                    textDecoration: 'lowercase'
+                                                }}
+                                                key={key}
+                                                onClick={()=>{
+                                                    onDateChange([
+                                                        moment(new Date('1/1/' + year), dateFormat),
+                                                        moment(new Date('1/1/' + year), dateFormat).endOf('year')
+                                                    ]);
+                                                }}
+                                            >
+                                                {year} <FormattedMessage id='datepicker.year' />
+                                            </Menu.Item>
+                                        )
+                                    })}
                                 </Menu>
                             }
                         >
                             <Button>
-                                <FormattedMessage id="Рік"/>
+                                <FormattedMessage id="datepicker.year"/>
                             </Button>
                         </Dropdown>
                     </div>
                 </div>
-            </div>
         );
     }
 }
-
-export default StorageDocumentsFilters;
