@@ -14,6 +14,7 @@ import { Numeral } from "commons";
 import { withReduxForm, isForbidden, permissions } from "utils";
 // own
 import Styles from './styles.m.css';
+const Option = Select.Option;
 const formItemLayout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 14 },
@@ -45,14 +46,14 @@ class StorageDocumentForm extends Component {
             {
                 title:     <FormattedMessage id='order_form_table.detail_code' />,
                 width:     '20%',
-                key:       'code',
-                dataIndex: 'detailCode',
+                key:       'producrId',
+                dataIndex: 'producrId',
             },
             {
                 title:     <FormattedMessage id='order_form_table.brand' />,
                 width:     '20%',
-                key:       'brand',
-                dataIndex: 'brandName',
+                key:       'brandId',
+                dataIndex: 'brandId',
             },
             {
                 title:     <FormattedMessage id='order_form_table.detail_name' />,
@@ -62,14 +63,14 @@ class StorageDocumentForm extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.purchasePrice' />,
-                key:       'purchasePrice',
-                dataIndex: 'purchasePrice',
+                key:       'stockPrice',
+                dataIndex: 'stockPrice',
                 width:     '10%',
             },
             {
                 title:     <FormattedMessage id='order_form_table.count' />,
-                key:       'count',
-                dataIndex: 'count',
+                key:       'quantity',
+                dataIndex: 'quantity',
                 width:     '10%',
             },
             {
@@ -83,7 +84,18 @@ class StorageDocumentForm extends Component {
 
 
     render() {
-        console.log(this);
+        const { formData, updateFormData, typeToDocumentType, warehouses, counterpartSupplier } = this.props;
+        const { type, documentType, supplierDocNumber, counterpartId, docProducts } = this.props.formData;
+        const tableData = [...docProducts];
+        if(formData.status != 'DONE' && (!tableData.length || !tableData[tableData.length - 1].brandId)) {
+            tableData.push({
+                key: tableData.length,
+                brandId: undefined,
+                producrId: undefined,
+                quantity: 1,
+                stockPrice: 0,
+            })
+        }
         return (
             <>
             <Form
@@ -101,29 +113,73 @@ class StorageDocumentForm extends Component {
                         width: "35%"
                     }}
                 >
-                    <Form.Item
-                        {...formItemStyle}
-                        label={<FormattedMessage id='storage.type'/>}
-                        name="type"
-                        rules={[{ required: true}]}
-                    >
-                        <Select />
-                    </Form.Item>
-                    <Form.Item
-                        {...formItemStyle}
-                        label={<FormattedMessage id='storage_document.document_type'/>}
-                        name="username"
-                        rules={[{ required: true}]}
-                    >
-                        <Select />
-                    </Form.Item>
-                    <Form.Item
-                        {...formItemStyle}
-                        label={<FormattedMessage id='storage_document.supplier'/>}
-                        name="username"
-                        rules={[{ required: true}]}
-                    >
-                        <Input />
+                    <div>
+                        <FormattedMessage id='storage.type'/>
+                        <Select
+                            value={type}
+                            onChange={(value)=>{
+                                updateFormData({
+                                    type: value,
+                                    documentType: undefined,
+                                })
+                            }}
+                        >
+                            <Option
+                                value='INCOME'
+                            >
+                                <FormattedMessage id='storage.INCOME'/>
+                            </Option>
+                            <Option
+                                value='EXPENSE'
+                            >
+                                <FormattedMessage id='storage.EXPENSE'/>
+                            </Option>
+                        </Select>
+                    </div>
+                    <div>
+                        <FormattedMessage id='storage_document.document_type'/>
+                        <Select
+                            disabled={!type}
+                            value={documentType}
+                            onChange={(value)=>{
+                                updateFormData({
+                                    documentType: value,
+                                })
+                            }}
+                        >
+                            {type && typeToDocumentType[type.toLowerCase()].documentType.map((docType, i)=>{
+                                return (
+                                    <Option
+                                        key={i}
+                                        value={docType}
+                                    >
+                                        <FormattedMessage id={`storage_document.${String(docType).toLowerCase()}`}/>
+                                    </Option>
+                                )
+                            })}
+                        </Select>
+                    </div>
+                    <div>
+                        <FormattedMessage id='storage_document.supplier'/>
+                        <Select
+                            value={counterpartId}
+                            onChange={(value)=>{
+                                updateFormData({
+                                    counterpartId: value,
+                                })
+                            }}
+                        >
+                            {counterpartSupplier.map((elem, i)=>{
+                                return (
+                                    <Option
+                                        key={i}
+                                        value={elem.id}
+                                    >
+                                        {elem.name}
+                                    </Option>
+                                )
+                            })}
+                        </Select>
                         <Icon
                             type='edit'
                             style={{
@@ -133,41 +189,68 @@ class StorageDocumentForm extends Component {
                                 cursor: 'pointer'
                             }}
                         />
-                    </Form.Item>
+                    </div>
                 </div>
                 <div
                     style={{
                         width: "30%"
                     }}
                 >
-                    <Form.Item
-                        {...formItemStyle}
-                        label={<FormattedMessage id='storage_document.storage_expenses'/>}
-                        name="username"
-                    >
-                        <Select />
-                    </Form.Item>
-                    <Form.Item
-                        {...formItemStyle}
-                        label={<FormattedMessage id='storage_document.storage_income'/>}
-                        name="username"
-                    >
-                        <Select />
-                    </Form.Item>
-                    <Form.Item
-                        {...formItemStyle}
-                        label={<FormattedMessage id='storage.document_num'/>}
-                        name="username"
-                    >
-                        <Input />
-                    </Form.Item>
+                    <div>
+                        <FormattedMessage id='storage_document.storage_expenses'/>
+                        <Select
+                            disabled={type!='EXPENSE'}
+                        >
+                            {warehouses.map((elem, i)=>{
+                                return (
+                                    <Option
+                                        key={i}
+                                        value={elem.id}
+                                    >
+                                        {elem.name}
+                                    </Option>
+                                )
+                            })}
+                        </Select>
+                    </div>
+                    <div>
+                        <FormattedMessage id='storage_document.storage_income'/>
+                        <Select
+                            disabled={type!='INCOME'}
+                        >
+                            {warehouses.map((elem, i)=>{
+                                return (
+                                    <Option
+                                        key={i}
+                                        value={elem.id}
+                                    >
+                                        {elem.name}
+                                    </Option>
+                                )
+                            })}
+                        </Select>
+                    </div>
+                    <div>
+                        <FormattedMessage id='storage.document_num'/>
+                        <Input
+                            value={supplierDocNumber}
+                            onChange={(event)=>{
+                                updateFormData({
+                                    supplierDocNumber: event.target.value,
+                                })
+                                this.setState({
+                                    update: true,
+                                })
+                            }}
+                        />
+                    </div>
                 </div>
                 <div
                     style={{
-                        width: "25%"
+                        width: "30%"
                     }}
                 >
-                    <Form.Item className={Styles.sumBlock} {...formItemStyle}>
+                    <div>
                         <div className={Styles.sum}>
                             <span className={Styles.sumWrapper}>
                                 <FormattedMessage id="sum" />
@@ -179,7 +262,7 @@ class StorageDocumentForm extends Component {
                                         id: "currency",
                                     })}
                                 >
-                                    0
+                                    {formData.sum || 0}
                                 </Numeral>
                             </span>
                             <span
@@ -198,7 +281,7 @@ class StorageDocumentForm extends Component {
                                         id: "currency",
                                     })}
                                 >
-                                    0
+                                    {formData.sum || 0}
                                 </Numeral>
                             </span>
                         </div>
@@ -213,17 +296,15 @@ class StorageDocumentForm extends Component {
                                     })}
                                     nullText="0"
                                 >
-                                    0
+                                    {0}
                                 </Numeral>
                             </span>
-                            <span style={{
-                                minWidth: '125px',
-                            }}>
+                            <span className={Styles.sumWrapper}>
                                 <FormattedMessage id="header.until" />: 
                                 {` ${moment().format('DD MMMM YYYY')}`}
                             </span>
                         </div>
-                    </Form.Item>
+                    </div>
                 </div>
             </Form>
             <div style={{
@@ -231,6 +312,7 @@ class StorageDocumentForm extends Component {
             }}>
                 <Table
                     columns={this.columns}
+                    dataSource={tableData}
                 />
             </div>
             </>
