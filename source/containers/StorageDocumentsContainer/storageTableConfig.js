@@ -73,7 +73,7 @@ export function columnsConfig(
                         { documentTag + document.orderNum.slice(3) }
                     </Link>
                 ) : (
-                    <Link to={ `/storage-document/${document.id}` }>
+                    <Link to={ `/document-storage/${document.id}` }>
                         { `${documentTag}-${document.businessId}-${(
                             document.supplierDocNumber || ''
                         ).padStart(7, '0')}` }

@@ -16,7 +16,6 @@ import { StorageDocumentForm } from 'forms';
 
 
 const mapStateToProps = state => {
-    console.log(state);
     return {
         user: state.auth,
     };
@@ -63,12 +62,61 @@ class StorageDocumentPage extends Component {
         super(props);
         this.state={
             warehouses: [],
+            counterpartSupplier: [],
+            formData: {
+                type: undefined,
+                documentType: undefined,
+                docProducts: [],
+            },
         }
+
+        this.updateFormData = this.updateFormData.bind(this);
+    }
+
+    updateFormData(formData) {
+        console.log(formData)
+        Object.entries(formData).map((field)=>{
+            this.state.formData[field[0]] = field[1];
+        })
+        this.setState({
+            update: true,
+        })
     }
 
     saveFormRef = formRef => {
         this.formRef = formRef;
     };
+
+    createDocument() {
+        const { formData } = this.state
+        console.log(formData);
+
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + '/store_docs';
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': token,
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
 
     getWarehouses() {
         var that = this;
@@ -90,7 +138,6 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.setState({
                 warehouses: data,
             })
@@ -100,15 +147,80 @@ class StorageDocumentPage extends Component {
         });
     }
 
+    getCounterpartSupplier() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + '/business_suppliers';
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.setState({
+                counterpartSupplier: data,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    getStorageDocument() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_docs/${this.props.id}`;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+            data.counterpartId = data.businessSupplierId;
+
+            that.setState({
+                formData: data,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
     componentDidMount() {
-        this.getWarehouses()
+        const { id } = this.props;
+        this.getWarehouses();
+        this.getCounterpartSupplier();
+        if(id) {
+            this.getStorageDocument();
+        }
     }
 
     render() {
-        console.log(this);
-        const { warehouses } = this.state;
+        const { warehouses, counterpartSupplier, formData } = this.state;
         const { id } = this.props;
-        const dateTime = new Date();
+        const dateTime = formData.createdDatetime || new Date();
         return (
             <Layout
                 title={ <FormattedMessage id='storage.new_document' /> }
@@ -122,10 +234,11 @@ class StorageDocumentPage extends Component {
                     <>
                         {id ? 
                         <>
-                            <ChangeStatusDropdown/>
+                            {formData.status != 'DONE' && <ChangeStatusDropdown/>}
                             <ReportsDropdown/>
                         </>
                         : null}
+                        {formData.status != 'DONE' &&
                         <Icon
                             type='save'
                             style={ {
@@ -134,10 +247,15 @@ class StorageDocumentPage extends Component {
                                 margin:   '0 10px',
                             } }
                             onClick={()=>{
-
+                                if(id) {
+                                    this.saveDocument();
+                                } 
+                                else {
+                                    this.createDocument();
+                                }
                             }}
-                        />
-                        {id &&
+                        />}
+                        {id && formData.status != 'DONE' &&
                         <Icon
                             type='delete'
                             style={ {
@@ -165,6 +283,10 @@ class StorageDocumentPage extends Component {
                 <StorageDocumentForm
                     wrappedComponentRef={ this.saveFormRef }
                     warehouses={warehouses}
+                    counterpartSupplier={counterpartSupplier}
+                    typeToDocumentType={typeToDocumentType}
+                    updateFormData={this.updateFormData}
+                    formData={formData}
                 />
             </Layout>
         );
@@ -186,13 +308,7 @@ class ChangeStatusDropdown extends React.Component {
                     onClick={()=>{
                     }}
                 >
-                    <FormattedMessage id='diagnosticAct' />
-                </Menu.Item>
-                <Menu.Item
-                    onClick={()=>{
-                    }}
-                >
-                    <FormattedMessage id='diagnosticResult' />
+                    <FormattedMessage id='DONE' />
                 </Menu.Item>
             </Menu>
         );
