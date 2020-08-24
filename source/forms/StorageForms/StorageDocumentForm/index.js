@@ -104,8 +104,8 @@ class StorageDocumentForm extends Component {
                     <Form.Item
                         {...formItemStyle}
                         label={<FormattedMessage id='storage.type'/>}
-                        name="username"
-                        rules={[{ required: true, message: 'Please input your username!' }]}
+                        name="type"
+                        rules={[{ required: true}]}
                     >
                         <Select />
                     </Form.Item>
@@ -113,7 +113,7 @@ class StorageDocumentForm extends Component {
                         {...formItemStyle}
                         label={<FormattedMessage id='storage_document.document_type'/>}
                         name="username"
-                        rules={[{ required: true, message: 'Please input your username!' }]}
+                        rules={[{ required: true}]}
                     >
                         <Select />
                     </Form.Item>
@@ -121,7 +121,7 @@ class StorageDocumentForm extends Component {
                         {...formItemStyle}
                         label={<FormattedMessage id='storage_document.supplier'/>}
                         name="username"
-                        rules={[{ required: true, message: 'Please input your username!' }]}
+                        rules={[{ required: true}]}
                     >
                         <Input />
                         <Icon
@@ -134,14 +134,6 @@ class StorageDocumentForm extends Component {
                             }}
                         />
                     </Form.Item>
-                    <Form.Item
-                        {...formItemStyle}
-                        label={<FormattedMessage id='storage.document_num'/>}
-                        name="username"
-                        rules={[{ required: true, message: 'Please input your username!' }]}
-                    >
-                        <Input />
-                    </Form.Item>
                 </div>
                 <div
                     style={{
@@ -152,7 +144,6 @@ class StorageDocumentForm extends Component {
                         {...formItemStyle}
                         label={<FormattedMessage id='storage_document.storage_expenses'/>}
                         name="username"
-                        rules={[{ required: true, message: 'Please input your username!' }]}
                     >
                         <Select />
                     </Form.Item>
@@ -160,9 +151,15 @@ class StorageDocumentForm extends Component {
                         {...formItemStyle}
                         label={<FormattedMessage id='storage_document.storage_income'/>}
                         name="username"
-                        rules={[{ required: true, message: 'Please input your username!' }]}
                     >
                         <Select />
+                    </Form.Item>
+                    <Form.Item
+                        {...formItemStyle}
+                        label={<FormattedMessage id='storage.document_num'/>}
+                        name="username"
+                    >
+                        <Input />
                     </Form.Item>
                 </div>
                 <div
@@ -219,17 +216,11 @@ class StorageDocumentForm extends Component {
                                     0
                                 </Numeral>
                             </span>
-                            <span className={Styles.sumWrapper}>
-                                <FormattedMessage id="header.until" />
-                                <Numeral
-                                    mask={mask}
-                                    currency={this.props.intl.formatMessage({
-                                        id: "currency",
-                                    })}
-                                    nullText="0"
-                                >
-                                    0
-                                </Numeral>
+                            <span style={{
+                                minWidth: '125px',
+                            }}>
+                                <FormattedMessage id="header.until" />: 
+                                {` ${moment().format('DD MMMM YYYY')}`}
                             </span>
                         </div>
                     </Form.Item>
