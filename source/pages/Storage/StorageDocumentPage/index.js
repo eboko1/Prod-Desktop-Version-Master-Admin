@@ -173,7 +173,7 @@ class StorageDocumentPage extends Component {
     getCounterpartSupplier() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + '/business_suppliers';
+        let url = __API_URL__ + '/business_suppliers?super=true';
         fetch(url, {
             method: 'GET',
             headers: {
@@ -190,6 +190,7 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
+            console.log(data)
             that.setState({
                 counterpartSupplier: data,
             })

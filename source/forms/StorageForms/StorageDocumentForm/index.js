@@ -290,6 +290,7 @@ class DocProductsTable extends React.Component {
         this.state={
             brandSearchValue: "",
             brands: [],
+            detailOptions: [],
         }
         this.columns = [
             {
@@ -370,12 +371,43 @@ class DocProductsTable extends React.Component {
                     ) : (
                         <Select
                             showSearch
-                            onSearch={(input)=>{
-                                this.getOptions(elem.brandId, input);
+                            onSelect={(value, option)=>{
+                                elem.producrId = value;
+                                elem.detailName = option.props.detail_name;
+                                elem.stockPrice = option.props.price;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onFocus={()=>{
+                                alert(2)
+                                this.getOptions(elem.brandId);
+                            }}
+                            onBlur={()=>{
+                                this.setState({
+                                    detailOptions: [],
+                                })
                             }}
                         >
                             {
-
+                                this.state.detailOptions.map((elem, key)=>{
+                                    return (
+                                        <Option
+                                            key={key}
+                                            value={elem.id}
+                                            detail_name={elem.itemName}
+                                            price={elem.purchasePrice}
+                                        >
+                                            {elem.supplierPartNumber}
+                                        </Option>
+                                    )
+                                })
                             }
                         </Select>
                     )
@@ -469,7 +501,6 @@ class DocProductsTable extends React.Component {
         if(this.props.businessSupplierId) url += `?businessSupplierId=${this.props.businessSupplierId}`;
         if(brandId) url += `&brandId=${brandId}`;
         if(searchValue) url += `&partNumberSearch=${searchValue}`;
-        console.log(url)
         fetch(url, {
             method: 'GET',
             headers: {
@@ -487,6 +518,12 @@ class DocProductsTable extends React.Component {
         })
         .then(function (data) {
             console.log(data);
+            data.map((elem,i)=>{
+                elem.key = i;
+            })
+            that.setState({
+                detailOptions: data,
+            })
         })
         .catch(function (error) {
             console.log('error', error)
@@ -513,10 +550,6 @@ class DocProductsTable extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data)
-            data.map((elem, index) => {
-                elem.key = index;
-            });
             that.setState({
                 brands: data,
             });
