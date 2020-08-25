@@ -101,28 +101,28 @@ export class OrderForm extends React.PureComponent {
                 Authorization: token,
             },
         })
-            .then(function(response) {
-                if (response.status !== 200) {
-                    return Promise.reject(new Error(response.statusText));
-                }
-                return Promise.resolve(response);
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                data.labors.map((elem, index) => {
-                    elem.key = index;
-                    elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
-                });
-                that.labors = data.labors;
-                that.setState({
-                    labors: data.labors,
-                });
-            })
-            .catch(function(error) {
-                console.log("error", error);
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            data.labors.map((elem, index) => {
+                elem.key = index;
+                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
             });
+            that.labors = data.labors;
+            that.setState({
+                labors: data.labors,
+            });
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
 
         url = __API_URL__ + `/store_groups`;
         fetch(url, {
@@ -131,29 +131,27 @@ export class OrderForm extends React.PureComponent {
                 Authorization: token,
             },
         })
-            .then(function(response) {
-                if (response.status !== 200) {
-                    return Promise.reject(new Error(response.statusText));
-                }
-                return Promise.resolve(response);
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                data.map((elem, index) => {
-                    elem.key = index;
-                });
-                that.details = data;
-                that.setState({
-                    details: data,
-                });
-            })
-            .catch(function(error) {
-                console.log("error", error);
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            data.map((elem, index) => {
+                elem.key = index;
             });
-
-        this;
+            that.details = data;
+            that.setState({
+                details: data,
+            });
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
     };
 
     _reloadOrderForm() {

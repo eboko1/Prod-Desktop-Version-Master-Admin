@@ -271,7 +271,7 @@ class StorageDocumentForm extends Component {
             }}>
                 <DocProductsTable
                     docProducts={docProducts}
-                    disabled={disabled}
+                    disabled={disabled || !counterpartId}
                     updateFormData={updateFormData}
                     updateDocProducts={updateDocProducts}
                     businessSupplierId={counterpartId}
@@ -288,7 +288,9 @@ class DocProductsTable extends React.Component {
     constructor(props) {
         super(props);
         this.state={
-            tableData: this.props.docProducts
+            brandSearchValue: "",
+            brands: [],
+            detailOptions: [],
         }
         this.columns = [
             {
@@ -311,8 +313,49 @@ class DocProductsTable extends React.Component {
                     return this.props.disabled && elem.product ?  (
                         elem.product.brandName
                     ) : (
-                        <Select>
-
+                        <Select
+                            disabled={this.props.disabled}
+                            showSearch
+                            value={data ? data : undefined}
+                            style={{maxWidth: 180, minWidth: 100}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                elem.brandId = value;
+                                elem.brandName = option.props.children;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                            onSearch={(input)=>{
+                                this.setState({
+                                    brandSearchValue: input,
+                                })
+                            }}
+                            onBlur={()=>{
+                                this.setState({
+                                    brandSearchValue: "",
+                                })
+                            }}
+                        >
+                            {
+                                this.state.brandSearchValue.length > 1 ? 
+                                    this.state.brands.map((elem, index)=>(
+                                        <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
+                                            {elem.brandName}
+                                        </Option>
+                                    )) :
+                                    elem.brandId ? 
+                                    <Option key={0} value={elem.brandId}>
+                                        {elem.brandName}
+                                    </Option> : 
+                                    []
+                            }
                         </Select>
                     )
                 }
@@ -326,9 +369,47 @@ class DocProductsTable extends React.Component {
                     return this.props.disabled && elem.product ?  (
                         elem.product.code
                     ) : (
-                        <AutoComplete>
-
-                        </AutoComplete>
+                        <Select
+                            showSearch
+                            onSelect={(value, option)=>{
+                                elem.producrId = value;
+                                elem.detailName = option.props.detail_name;
+                                elem.stockPrice = option.props.price;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onFocus={()=>{
+                                alert(2)
+                                this.getOptions(elem.brandId);
+                            }}
+                            onBlur={()=>{
+                                this.setState({
+                                    detailOptions: [],
+                                })
+                            }}
+                        >
+                            {
+                                this.state.detailOptions.map((elem, key)=>{
+                                    return (
+                                        <Option
+                                            key={key}
+                                            value={elem.id}
+                                            detail_name={elem.itemName}
+                                            price={elem.purchasePrice}
+                                        >
+                                            {elem.supplierPartNumber}
+                                        </Option>
+                                    )
+                                })
+                            }
+                        </Select>
                     )
                 }
             },
@@ -355,6 +436,7 @@ class DocProductsTable extends React.Component {
                         elem.purchasePrice
                     ) : (
                         <InputNumber
+                            disabled={this.props.disabled}
                             value={data}
                             min={0}
                             onChange={(value)=>{
@@ -377,6 +459,7 @@ class DocProductsTable extends React.Component {
                         elem.quantity
                     ) : (
                         <InputNumber
+                            disabled={this.props.disabled}
                             value={data}
                             min={0}
                             onChange={(value)=>{
@@ -411,12 +494,13 @@ class DocProductsTable extends React.Component {
         ];
     }
 
-    getOptions() {
+    getOptions(brandId, searchValue) {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/business_suppliers/pricelists`;
         if(this.props.businessSupplierId) url += `?businessSupplierId=${this.props.businessSupplierId}`;
-        console.log(url)
+        if(brandId) url += `&brandId=${brandId}`;
+        if(searchValue) url += `&partNumberSearch=${searchValue}`;
         fetch(url, {
             method: 'GET',
             headers: {
@@ -434,9 +518,44 @@ class DocProductsTable extends React.Component {
         })
         .then(function (data) {
             console.log(data);
+            data.map((elem,i)=>{
+                elem.key = i;
+            })
+            that.setState({
+                detailOptions: data,
+            })
         })
         .catch(function (error) {
             console.log('error', error)
+        });
+    }
+
+    getBrands() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/brands`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            that.setState({
+                brands: data,
+            });
+        })
+        .catch(function(error) {
+            console.log("error", error);
         });
     }
 
@@ -447,6 +566,7 @@ class DocProductsTable extends React.Component {
     }
 
     componentDidMount() {
+        this.getBrands();
     }
 
     render() {
