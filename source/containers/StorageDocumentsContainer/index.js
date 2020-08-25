@@ -200,7 +200,7 @@ class StorageDocumentsContainer extends Component {
 
         return (
             <Layout
-                title={ <FormattedMessage id='navigation.incomes' /> }
+                title={ <FormattedMessage id={`navigation.${this.props.listType.toLowerCase()}s`} /> }
                 controls={
                     <>
                         <StorageDocumentsFilters

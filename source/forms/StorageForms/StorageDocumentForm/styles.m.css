@@ -20,9 +20,10 @@
 
 .sumWrapper {
     font-weight: bold;
-    margin-right: 15px;
     height: 40px;
     padding: 0px 5px;
+    display: flex;
+    align-items: center;
 }
 
 .sumNumeral {
@@ -39,5 +40,11 @@
     width: 100%;
 }
 
-.sum {
+.formItemWrap {
+    display: flex;
+    align-items: center;
+}
+
+.formItemWrap > div {
+    margin-left: 10px;
 }

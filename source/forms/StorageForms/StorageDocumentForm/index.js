@@ -40,7 +40,7 @@ class StorageDocumentForm extends Component {
 
     render() {
         const { formData, updateFormData, typeToDocumentType, warehouses, counterpartSupplier, updateDocProducts } = this.props;
-        const { type, documentType, supplierDocNumber, counterpartId, docProducts, doneDatetime, status, sum } = this.props.formData;
+        const { type, documentType, supplierDocNumber, counterpartId, docProducts, status, sum, payUntilDatetime } = this.props.formData;
         const dateFormat = 'DD.MM.YYYY';
         const disabled = status == 'DONE';
         
@@ -50,7 +50,7 @@ class StorageDocumentForm extends Component {
                 {...formItemLayout}
                 style={{
                     margin: "15px 0",
-                    padding: "0 0 15px 0",
+                    padding: "0 10px 15px 10px",
                     display: "flex",
                     justifyContent: "space-between",
                     borderBottom: "1px solid gray"
@@ -86,7 +86,7 @@ class StorageDocumentForm extends Component {
                         </Select>
                     </div>
                     <div>
-                        <FormattedMessage id='storage_document.document_type'/>
+                        <FormattedMessage id='storage_document.counterparty_type'/>
                         <Select
                             disabled={!type || disabled}
                             value={documentType}
@@ -108,8 +108,8 @@ class StorageDocumentForm extends Component {
                             })}
                         </Select>
                     </div>
-                    <div>
-                        <FormattedMessage id='storage_document.supplier'/>
+                    <div style={{position: 'relative'}}>
+                        <FormattedMessage id='storage_document.counterparty'/>
                         <Select
                             disabled={disabled}
                             value={counterpartId}
@@ -130,15 +130,6 @@ class StorageDocumentForm extends Component {
                                 )
                             })}
                         </Select>
-                        <Icon
-                            type='edit'
-                            style={{
-                                position: 'absolute',
-                                right: '-25px',
-                                top: '10px',
-                                cursor: 'pointer'
-                            }}
-                        />
                     </div>
                 </div>
                 <div
@@ -150,6 +141,11 @@ class StorageDocumentForm extends Component {
                         <FormattedMessage id='storage_document.storage_expenses'/>
                         <Select
                             disabled={type!='EXPENSE' || disabled}
+                            onSelect={(value)=>{
+                                updateFormData({
+                                    warehouseId: value,
+                                })
+                            }}
                         >
                             {warehouses.map((elem, i)=>{
                                 return (
@@ -167,6 +163,11 @@ class StorageDocumentForm extends Component {
                         <FormattedMessage id='storage_document.storage_income'/>
                         <Select
                             disabled={type!='INCOME' || disabled}
+                            onSelect={(value)=>{
+                                updateFormData({
+                                    warehouseId: value,
+                                })
+                            }}
                         >
                             {warehouses.map((elem, i)=>{
                                 return (
@@ -198,12 +199,20 @@ class StorageDocumentForm extends Component {
                 </div>
                 <div
                     style={{
-                        width: "30%"
+                        width: "30%",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between"
                     }}
                 >
-                    <div>
-                        <div className={Styles.sum}>
-                            <span className={Styles.sumWrapper}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between'
+                        }}
+                    >
+                        <div>
+                            <div className={Styles.sumWrapper}>
                                 <FormattedMessage id="sum" />
                                 <Numeral
                                     mask={mask}
@@ -215,29 +224,8 @@ class StorageDocumentForm extends Component {
                                 >
                                     {sum || 0}
                                 </Numeral>
-                            </span>
-                            <span
-                                className={Styles.sumWrapper}
-                                style={{
-                                    background: 'var(--static)',
-                                    fontSize: 16
-                                }}
-                            >
-                                <FormattedMessage id="paid" />
-                                <Numeral
-                                    mask={mask}
-                                    className={Styles.sumNumeral}
-                                    nullText="0"
-                                    currency={this.props.intl.formatMessage({
-                                        id: "currency",
-                                    })}
-                                >
-                                    {sum || 0}
-                                </Numeral>
-                            </span>
-                        </div>
-                        <div className={Styles.sum}>
-                            <span className={Styles.sumWrapper}>
+                            </div>
+                            <div className={Styles.sumWrapper}>
                                 <FormattedMessage id="remain" />
                                 <Numeral
                                     mask={mask}
@@ -249,20 +237,46 @@ class StorageDocumentForm extends Component {
                                 >
                                     {sum - sum}
                                 </Numeral>
-                            </span>
-                            <span className={Styles.sumWrapper}>
-                                <FormattedMessage id="header.until" />: 
-                                <DatePicker
-                                    disabled={disabled}
-                                    format={dateFormat}
-                                    onChange={()=>{
-                                        updateFormData({
-                                            payUntileDatetime: event.target.value,
-                                        })
-                                    }}
-                                />
-                            </span>
+                            </div>
                         </div>
+                        <div
+                            className={Styles.sumWrapper}
+                            style={{
+                                background: 'var(--static)',
+                                fontSize: 16,
+                                height: 'auto',
+                                width: '50%',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <FormattedMessage id="paid" />
+                            <Numeral
+                                mask={mask}
+                                className={Styles.sumNumeral}
+                                nullText="0"
+                                currency={this.props.intl.formatMessage({
+                                    id: "currency",
+                                })}
+                            >
+                                {sum || 0}
+                            </Numeral>
+                        </div>
+                    </div>
+                    <div>
+                        <FormattedMessage id="header.until" />
+                        <DatePicker
+                            style={{
+                                width: '100%'
+                            }}
+                            defaultValue={payUntilDatetime}
+                            disabled={disabled}
+                            format={dateFormat}
+                            onChange={(date, stringDate)=>{
+                                updateFormData({
+                                    payUntilDatetime: date,
+                                })
+                            }}
+                        />
                     </div>
                 </div>
             </Form>
@@ -273,7 +287,6 @@ class StorageDocumentForm extends Component {
                     docProducts={docProducts}
                     disabled={disabled || !counterpartId}
                     updateFormData={updateFormData}
-                    updateDocProducts={updateDocProducts}
                     businessSupplierId={counterpartId}
                 />
             </div>
@@ -363,8 +376,8 @@ class DocProductsTable extends React.Component {
             {
                 title:     <FormattedMessage id='order_form_table.detail_code' />,
                 width:     '20%',
-                key:       'producrId',
-                dataIndex: 'producrId',
+                key:       'productId',
+                dataIndex: 'productId',
                 render:     (data, elem)=>{
                     return this.props.disabled && elem.product ?  (
                         elem.product.code
@@ -372,7 +385,7 @@ class DocProductsTable extends React.Component {
                         <Select
                             showSearch
                             onSelect={(value, option)=>{
-                                elem.producrId = value;
+                                elem.productId = value;
                                 elem.detailName = option.props.detail_name;
                                 elem.stockPrice = option.props.price;
                                 this.setState({
@@ -559,12 +572,6 @@ class DocProductsTable extends React.Component {
         });
     }
 
-    componentDidUpdate(prevProps) {
-        if(prevProps.businessSupplierId != this.props.businessSupplierId) {
-            this.getOptions()
-        }
-    }
-
     componentDidMount() {
         this.getBrands();
     }
@@ -572,11 +579,11 @@ class DocProductsTable extends React.Component {
     render() {
         const { disabled, docProducts } = this.props;
         const tableData = docProducts;
-        if(!disabled && (!tableData.length || tableData[tableData.length - 1].producrId)) {
+        if(!disabled && (!tableData.length || tableData[tableData.length - 1].productId)) {
             tableData.push({
                 key: tableData.length,
                 brandId: undefined,
-                producrId: undefined,
+                productId: undefined,
                 quantity: 1,
                 stockPrice: 0,
             })
