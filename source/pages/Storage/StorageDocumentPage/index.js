@@ -71,6 +71,7 @@ class StorageDocumentPage extends Component {
         }
 
         this.updateFormData = this.updateFormData.bind(this);
+        this.updateDocProducts = this.updateDocProducts.bind(this);
     }
 
     updateFormData(formData) {
@@ -78,6 +79,28 @@ class StorageDocumentPage extends Component {
         Object.entries(formData).map((field)=>{
             this.state.formData[field[0]] = field[1];
         })
+        this.setState({
+            update: true,
+        })
+    }
+
+    updateDocProducts(key, productData) {
+        console.log(productData)
+        const { brandId, productId, quantity, stockProce } = productData;
+        if(key > this.state.formData.docProducts.length - 1) {
+            this.state.formData.docProducts.push({
+                brandId: brandId,
+                productId: productId,
+                quantity: quantity,
+                stockProce: stockProce,
+            })
+        }
+        else {
+            this.state.formData.docProducts[key].brandId = brandId;
+            this.state.formData.docProducts[key].productId = productId;
+            this.state.formData.docProducts[key].quantity = quantity;
+            this.state.formData.docProducts[key].stockProce = stockProce;
+        }
         this.setState({
             update: true,
         })
@@ -198,7 +221,9 @@ class StorageDocumentPage extends Component {
         .then(function (data) {
             console.log(data);
             data.counterpartId = data.businessSupplierId;
-
+            data.docProducts.map((elem, key)=>{
+                elem.key = key;
+            })
             that.setState({
                 formData: data,
             })
@@ -280,14 +305,17 @@ class StorageDocumentPage extends Component {
                     </>
                 }
             >
+                <div>
                 <StorageDocumentForm
                     wrappedComponentRef={ this.saveFormRef }
                     warehouses={warehouses}
                     counterpartSupplier={counterpartSupplier}
                     typeToDocumentType={typeToDocumentType}
                     updateFormData={this.updateFormData}
+                    updateDocProducts={this.updateDocProducts}
                     formData={formData}
                 />
+                </div>
             </Layout>
         );
     }

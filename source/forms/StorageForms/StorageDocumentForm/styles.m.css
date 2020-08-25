@@ -39,11 +39,5 @@
     width: 100%;
 }
 
-.sumBlock :global(.ant-form-item-children) {
-    flex-wrap: wrap;
-}
-
 .sum {
-    flex: 1 1 auto;
-    flex-wrap: nowrap;
 }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Button, Input, Table, Select, Icon } from 'antd';
+import { Form, Button, Input, Table, Select, Icon, DatePicker, AutoComplete, InputNumber } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -35,67 +35,15 @@ class StorageDocumentForm extends Component {
         super(props);
         this.state = {
         };
-
-        this.columns = [
-            {
-                title:     "№",
-                width:     '5%',
-                key:       'key',
-                dataIndex: 'key',
-            },
-            {
-                title:     <FormattedMessage id='order_form_table.detail_code' />,
-                width:     '20%',
-                key:       'producrId',
-                dataIndex: 'producrId',
-            },
-            {
-                title:     <FormattedMessage id='order_form_table.brand' />,
-                width:     '20%',
-                key:       'brandId',
-                dataIndex: 'brandId',
-            },
-            {
-                title:     <FormattedMessage id='order_form_table.detail_name' />,
-                key:       'detailName',
-                dataIndex: 'detailName',
-                width:     '20%',
-            },
-            {
-                title:     <FormattedMessage id='order_form_table.purchasePrice' />,
-                key:       'stockPrice',
-                dataIndex: 'stockPrice',
-                width:     '10%',
-            },
-            {
-                title:     <FormattedMessage id='order_form_table.count' />,
-                key:       'quantity',
-                dataIndex: 'quantity',
-                width:     '10%',
-            },
-            {
-                title:     <FormattedMessage id='order_form_table.sum' />,
-                key:       'sum',
-                dataIndex: 'sum',
-                width:     '10%',
-            },
-        ];
     }
 
 
     render() {
-        const { formData, updateFormData, typeToDocumentType, warehouses, counterpartSupplier } = this.props;
-        const { type, documentType, supplierDocNumber, counterpartId, docProducts } = this.props.formData;
-        const tableData = [...docProducts];
-        if(formData.status != 'DONE' && (!tableData.length || !tableData[tableData.length - 1].brandId)) {
-            tableData.push({
-                key: tableData.length,
-                brandId: undefined,
-                producrId: undefined,
-                quantity: 1,
-                stockPrice: 0,
-            })
-        }
+        const { formData, updateFormData, typeToDocumentType, warehouses, counterpartSupplier, updateDocProducts } = this.props;
+        const { type, documentType, supplierDocNumber, counterpartId, docProducts, doneDatetime, status, sum } = this.props.formData;
+        const dateFormat = 'DD.MM.YYYY';
+        const disabled = status == 'DONE';
+        
         return (
             <>
             <Form
@@ -116,6 +64,7 @@ class StorageDocumentForm extends Component {
                     <div>
                         <FormattedMessage id='storage.type'/>
                         <Select
+                            disabled={disabled}
                             value={type}
                             onChange={(value)=>{
                                 updateFormData({
@@ -139,7 +88,7 @@ class StorageDocumentForm extends Component {
                     <div>
                         <FormattedMessage id='storage_document.document_type'/>
                         <Select
-                            disabled={!type}
+                            disabled={!type || disabled}
                             value={documentType}
                             onChange={(value)=>{
                                 updateFormData({
@@ -162,6 +111,7 @@ class StorageDocumentForm extends Component {
                     <div>
                         <FormattedMessage id='storage_document.supplier'/>
                         <Select
+                            disabled={disabled}
                             value={counterpartId}
                             onChange={(value)=>{
                                 updateFormData({
@@ -199,7 +149,7 @@ class StorageDocumentForm extends Component {
                     <div>
                         <FormattedMessage id='storage_document.storage_expenses'/>
                         <Select
-                            disabled={type!='EXPENSE'}
+                            disabled={type!='EXPENSE' || disabled}
                         >
                             {warehouses.map((elem, i)=>{
                                 return (
@@ -216,7 +166,7 @@ class StorageDocumentForm extends Component {
                     <div>
                         <FormattedMessage id='storage_document.storage_income'/>
                         <Select
-                            disabled={type!='INCOME'}
+                            disabled={type!='INCOME' || disabled}
                         >
                             {warehouses.map((elem, i)=>{
                                 return (
@@ -233,6 +183,7 @@ class StorageDocumentForm extends Component {
                     <div>
                         <FormattedMessage id='storage.document_num'/>
                         <Input
+                            disabled={disabled}
                             value={supplierDocNumber}
                             onChange={(event)=>{
                                 updateFormData({
@@ -262,7 +213,7 @@ class StorageDocumentForm extends Component {
                                         id: "currency",
                                     })}
                                 >
-                                    {formData.sum || 0}
+                                    {sum || 0}
                                 </Numeral>
                             </span>
                             <span
@@ -281,7 +232,7 @@ class StorageDocumentForm extends Component {
                                         id: "currency",
                                     })}
                                 >
-                                    {formData.sum || 0}
+                                    {sum || 0}
                                 </Numeral>
                             </span>
                         </div>
@@ -296,12 +247,20 @@ class StorageDocumentForm extends Component {
                                     })}
                                     nullText="0"
                                 >
-                                    {0}
+                                    {sum - sum}
                                 </Numeral>
                             </span>
                             <span className={Styles.sumWrapper}>
                                 <FormattedMessage id="header.until" />: 
-                                {` ${moment().format('DD MMMM YYYY')}`}
+                                <DatePicker
+                                    disabled={disabled}
+                                    format={dateFormat}
+                                    onChange={()=>{
+                                        updateFormData({
+                                            payUntileDatetime: event.target.value,
+                                        })
+                                    }}
+                                />
                             </span>
                         </div>
                     </div>
@@ -310,9 +269,12 @@ class StorageDocumentForm extends Component {
             <div style={{
                 margin: "24px",
             }}>
-                <Table
-                    columns={this.columns}
-                    dataSource={tableData}
+                <DocProductsTable
+                    docProducts={docProducts}
+                    disabled={disabled}
+                    updateFormData={updateFormData}
+                    updateDocProducts={updateDocProducts}
+                    businessSupplierId={counterpartId}
                 />
             </div>
             </>
@@ -321,3 +283,189 @@ class StorageDocumentForm extends Component {
 }
 
 export default StorageDocumentForm;
+
+class DocProductsTable extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state={
+            tableData: this.props.docProducts
+        }
+        this.columns = [
+            {
+                title:     "№",
+                width:     '5%',
+                key:       'key',
+                dataIndex: 'key',
+                render:     (data, elem)=>{
+                    return (
+                        data+1
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.brand' />,
+                width:     '20%',
+                key:       'brandId',
+                dataIndex: 'brandId',
+                render:     (data, elem)=>{
+                    return this.props.disabled && elem.product ?  (
+                        elem.product.brandName
+                    ) : (
+                        <Select>
+
+                        </Select>
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.detail_code' />,
+                width:     '20%',
+                key:       'producrId',
+                dataIndex: 'producrId',
+                render:     (data, elem)=>{
+                    return this.props.disabled && elem.product ?  (
+                        elem.product.code
+                    ) : (
+                        <AutoComplete>
+
+                        </AutoComplete>
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.detail_name' />,
+                key:       'detailName',
+                dataIndex: 'detailName',
+                width:     '20%',
+                render:     (data, elem)=>{
+                    return this.props.disabled && elem.product ?  (
+                        elem.product.name
+                    ) : (
+                        data
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.purchasePrice' />,
+                key:       'stockPrice',
+                dataIndex: 'stockPrice',
+                width:     '10%',
+                render:     (data, elem)=>{
+                    return this.props.disabled ?  (
+                        elem.purchasePrice
+                    ) : (
+                        <InputNumber
+                            value={data}
+                            min={0}
+                            onChange={(value)=>{
+                                elem.stockPrice = value;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.count' />,
+                key:       'quantity',
+                dataIndex: 'quantity',
+                width:     '10%',
+                render:     (data, elem)=>{
+                    return this.props.disabled ?  (
+                        elem.quantity
+                    ) : (
+                        <InputNumber
+                            value={data}
+                            min={0}
+                            onChange={(value)=>{
+                                elem.quantity = value;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.sum' />,
+                key:       'sum',
+                dataIndex: 'sum',
+                width:     '10%',
+                render:     (data, elem)=>{
+                    return this.props.disabled ?  (
+                        elem.purchaseSum
+                    ) : (
+                        <InputNumber
+                            disabled
+                            style={{
+                                color: 'black'
+                            }}
+                            value={elem.quantity*elem.stockPrice}
+                        />
+                    )
+                }
+            },
+        ];
+    }
+
+    getOptions() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/business_suppliers/pricelists`;
+        if(this.props.businessSupplierId) url += `?businessSupplierId=${this.props.businessSupplierId}`;
+        console.log(url)
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    componentDidUpdate(prevProps) {
+        if(prevProps.businessSupplierId != this.props.businessSupplierId) {
+            this.getOptions()
+        }
+    }
+
+    componentDidMount() {
+    }
+
+    render() {
+        const { disabled, docProducts } = this.props;
+        const tableData = docProducts;
+        if(!disabled && (!tableData.length || tableData[tableData.length - 1].producrId)) {
+            tableData.push({
+                key: tableData.length,
+                brandId: undefined,
+                producrId: undefined,
+                quantity: 1,
+                stockPrice: 0,
+            })
+        }
+        return (
+            <Table
+                columns={this.columns}
+                dataSource={tableData}
+            />
+        );
+    }
+}
