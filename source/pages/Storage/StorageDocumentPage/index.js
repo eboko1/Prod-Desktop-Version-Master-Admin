@@ -64,14 +64,13 @@ class StorageDocumentPage extends Component {
             warehouses: [],
             counterpartSupplier: [],
             formData: {
-                type: undefined,
+                type: this.props.location.type,
                 documentType: undefined,
                 docProducts: [],
             },
         }
 
         this.updateFormData = this.updateFormData.bind(this);
-        this.updateDocProducts = this.updateDocProducts.bind(this);
     }
 
     updateFormData(formData) {
@@ -84,36 +83,34 @@ class StorageDocumentPage extends Component {
         })
     }
 
-    updateDocProducts(key, productData) {
-        console.log(productData)
-        const { brandId, productId, quantity, stockProce } = productData;
-        if(key > this.state.formData.docProducts.length - 1) {
-            this.state.formData.docProducts.push({
-                brandId: brandId,
-                productId: productId,
-                quantity: quantity,
-                stockProce: stockProce,
-            })
-        }
-        else {
-            this.state.formData.docProducts[key].brandId = brandId;
-            this.state.formData.docProducts[key].productId = productId;
-            this.state.formData.docProducts[key].quantity = quantity;
-            this.state.formData.docProducts[key].stockProce = stockProce;
-        }
-        this.setState({
-            update: true,
-        })
-    }
-
     saveFormRef = formRef => {
         this.formRef = formRef;
     };
 
     createDocument() {
         const { formData } = this.state
-        console.log(formData);
-
+        
+        const createData = {
+            status: 'NEW',
+            warehouseId: formData.warehouseId || null,
+            type: formData.type,
+            documentType: formData.documentType,
+            supplierDocNumber: formData.supplierDocNumber || null,
+            counterpartBusinessSupplierId: formData.counterpartId || null,
+            payUntilDatetime: formData.payUntilDatetime ? formData.payUntilDatetime.toISOString() : null,
+            docProducts: [],
+        }
+        formData.docProducts.map((elem)=>{
+            if(elem.productId) {
+                createData.docProducts.push({
+                    brandId: elem.brandId,
+                    productId: elem.productId,
+                    quantity: elem.quantity,
+                    stockPrice: elem.stockPrice,
+                })
+            }
+        })
+        console.log(formData, createData);
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + '/store_docs';
@@ -122,7 +119,7 @@ class StorageDocumentPage extends Component {
             headers: {
                 'Authorization': token,
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify(createData)
         })
         .then(function (response) {
             if (response.status !== 200) {
@@ -244,6 +241,7 @@ class StorageDocumentPage extends Component {
     }
 
     render() {
+        console.log(this)
         const { warehouses, counterpartSupplier, formData } = this.state;
         const { id } = this.props;
         const dateTime = formData.createdDatetime || new Date();
@@ -313,7 +311,6 @@ class StorageDocumentPage extends Component {
                     counterpartSupplier={counterpartSupplier}
                     typeToDocumentType={typeToDocumentType}
                     updateFormData={this.updateFormData}
-                    updateDocProducts={this.updateDocProducts}
                     formData={formData}
                 />
                 </div>
