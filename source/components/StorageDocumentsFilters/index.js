@@ -223,8 +223,8 @@ class StorageDateFilter extends React.Component {
                                     <Menu.Item
                                         onClick={()=>{
                                             onDateChange([
-                                                moment().startOf('month').add(-1, 'month'),
-                                                moment().endOf('month').add(-1, 'month')
+                                                moment().add(-1, 'month').startOf('month'),
+                                                moment().add(-1, 'month').endOf('month')
                                             ]);
                                         }}
                                     >
@@ -233,8 +233,8 @@ class StorageDateFilter extends React.Component {
                                     <Menu.Item
                                         onClick={()=>{
                                             onDateChange([
-                                                moment().startOf('month').add(-2, 'month'),
-                                                moment().endOf('month').add(-2, 'month')
+                                                moment().add(-2, 'month').startOf('month'),
+                                                moment().add(-2, 'month').endOf('month')
                                             ]);
                                         }}
                                     >
@@ -243,8 +243,8 @@ class StorageDateFilter extends React.Component {
                                     <Menu.Item
                                         onClick={()=>{
                                             onDateChange([
-                                                moment().startOf('month').add(-3, 'month'),
-                                                moment().endOf('month').add(-3, 'month')
+                                                moment().add(-3, 'month').startOf('month'),
+                                                moment().add(-3, 'month').endOf('month')
                                             ]);
                                         }}
                                     >
@@ -273,8 +273,8 @@ class StorageDateFilter extends React.Component {
                                     <Menu.Item
                                         onClick={()=>{
                                             onDateChange([
-                                                moment().startOf('quarter').add(-1, 'quarter'),
-                                                moment().endOf('quarter').add(-1, 'quarter')
+                                                moment().add(-1, 'quarter').startOf('quarter'),
+                                                moment().add(-1, 'quarter').endOf('quarter')
                                             ]);
                                         }}
                                     >
@@ -283,8 +283,8 @@ class StorageDateFilter extends React.Component {
                                     <Menu.Item
                                         onClick={()=>{
                                             onDateChange([
-                                                moment().startOf('quarter').add(-2, 'quarter'),
-                                                moment().endOf('quarter').add(-2, 'quarter')
+                                                moment().add(-2, 'quarter').startOf('quarter'),
+                                                moment().add(-2, 'quarter').endOf('quarter')
                                             ]);
                                         }}
                                     >
@@ -293,8 +293,8 @@ class StorageDateFilter extends React.Component {
                                     <Menu.Item
                                         onClick={()=>{
                                             onDateChange([
-                                                moment().startOf('quarter').add(-3, 'quarter'),
-                                                moment().endOf('quarter').add(-3, 'quarter')
+                                                moment().add(-3, 'quarter').startOf('quarter'),
+                                                moment().add(-3, 'quarter').endOf('quarter')
                                             ]);
                                         }}
                                     >
