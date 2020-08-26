@@ -73,7 +73,7 @@ export function columnsConfig(
                         { documentTag + document.orderNum.slice(3) }
                     </Link>
                 ) : (
-                    <Link to={ `/document-storage/${document.id}` }>
+                    <Link to={ `${book.storageDocument}/${document.id}` }>
                         { `${documentTag}-${document.businessId}-${(
                             document.supplierDocNumber || ''
                         ).padStart(7, '0')}` }
@@ -114,8 +114,8 @@ export function columnsConfig(
         width:     80,
         render:    (_, document) => (
             <div>
-                { document.businessSupplier
-                    ? document.businessSupplier.name
+                { document.counterpartBusinessSupplierId
+                    ? document.counterpartBusinessSupplierName
                     : document.clientName || (
                         <FormattedMessage id='long_dash' />
                     ) }
@@ -135,7 +135,7 @@ export function columnsConfig(
                 ) : document.counterpartClientId || document.clientId ? (
                     <FormattedMessage id='storage_document.client' />
                 ) : document.counterpartEmployeeId ? (
-                    <FormattedMessage id='storage_document.own_consumption' />
+                    <FormattedMessage id='storage_document.own_consumpty' />
                 ) : document.warehouseId && document.type == 'EXPENSE' ? (
                     <FormattedMessage id='storage_document.inventory' />
                 ) : (

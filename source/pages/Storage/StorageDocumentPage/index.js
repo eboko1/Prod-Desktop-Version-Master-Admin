@@ -11,7 +11,7 @@ import moment from 'moment';
 // proj
 import { Layout } from 'commons';
 import { StorageDocumentForm } from 'forms';
-
+import book from 'routes/book';
 // own
 
 
@@ -62,15 +62,19 @@ class StorageDocumentPage extends Component {
         super(props);
         this.state={
             warehouses: [],
+            brands: [],
             counterpartSupplier: [],
             formData: {
                 type: this.props.location.type,
                 documentType: undefined,
+                sum: 0,
                 docProducts: [],
             },
         }
 
         this.updateFormData = this.updateFormData.bind(this);
+        this.updateDocument = this.updateDocument.bind(this);
+        this.addDocProduct = this.addDocProduct.bind(this);
     }
 
     updateFormData(formData) {
@@ -81,6 +85,18 @@ class StorageDocumentPage extends Component {
         this.setState({
             update: true,
         })
+    }
+
+    addDocProduct(docProduct) {
+        this.state.formData.docProducts.push({
+            key: this.state.formData.docProducts.length,
+            ...docProduct
+        });
+        this.state.formData.sum += docProduct.sum,
+        this.setState({
+            update: true,
+        })
+        console.log(this.state.formData)
     }
 
     saveFormRef = formRef => {
@@ -103,8 +119,18 @@ class StorageDocumentPage extends Component {
         formData.docProducts.map((elem)=>{
             if(elem.productId) {
                 createData.docProducts.push({
-                    brandId: elem.brandId,
                     productId: elem.productId,
+                    quantity: elem.quantity,
+                    stockPrice: elem.stockPrice,
+                })
+            }
+            else {
+                createData.docProducts.push({
+                    addToStore: true,
+                    code: elem.detailCode,
+                    name: elem.detailName,
+                    brandId: elem.brandId,
+                    groupId: elem.groupId,
                     quantity: elem.quantity,
                     stockPrice: elem.stockPrice,
                 })
@@ -131,7 +157,66 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
+            that.props.history.push(`${book.storageDocument}/${data.id}`)
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    updateDocument(status) {
+        const { formData } = this.state
+        
+        const createData = {
+            status: status,
+            warehouseId: formData.warehouseId || null,
+            supplierDocNumber: formData.supplierDocNumber || null,
+            counterpartBusinessSupplierId: formData.counterpartId || null,
+            payUntilDatetime: formData.payUntilDatetime ? formData.payUntilDatetime.toISOString() : null,
+            docProducts: [],
+        }
+        formData.docProducts.map((elem)=>{
+            if(elem.productId) {
+                createData.docProducts.push({
+                    productId: elem.productId,
+                    quantity: elem.quantity,
+                    stockPrice: elem.stockPrice,
+                })
+            }
+            else {
+                createData.docProducts.push({
+                    addToStore: true,
+                    code: elem.detailCode,
+                    name: elem.detailName,
+                    brandId: elem.brandId,
+                    groupId: elem.groupId,
+                    quantity: elem.quantity,
+                    stockPrice: elem.stockPrice,
+                })
+            }
+        })
+        console.log(formData, createData);
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_docs/${this.props.id}`;
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Authorization': token,
+            },
+            body: JSON.stringify(createData)
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            window.location.reload();
         })
         .catch(function (error) {
             console.log('error', error)
@@ -187,13 +272,41 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data)
             that.setState({
                 counterpartSupplier: data,
             })
         })
         .catch(function (error) {
             console.log('error', error)
+        });
+    }
+
+    getBrands() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/brands`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            that.setState({
+                brands: data,
+            });
+        })
+        .catch(function(error) {
+            console.log("error", error);
         });
     }
 
@@ -218,8 +331,15 @@ class StorageDocumentPage extends Component {
         })
         .then(function (data) {
             console.log(data);
-            data.counterpartId = data.businessSupplierId;
+            data.counterpartId = data.counterpartBusinessSupplierId;
+            data.payUntilDatetime = moment(data.payUntilDatetime);
             data.docProducts.map((elem, key)=>{
+                elem.brandId = elem.product.brandId,
+                elem.brandName = elem.product.brandName,
+                elem.detailCode = elem.product.code,
+                elem.detailName = elem.product.name,
+                elem.groupId = elem.product.groupId,
+                elem.sum = elem.stockPrice * elem.quantity,
                 elem.key = key;
             })
             that.setState({
@@ -234,6 +354,7 @@ class StorageDocumentPage extends Component {
     componentDidMount() {
         const { id } = this.props;
         this.getWarehouses();
+        this.getBrands()
         this.getCounterpartSupplier();
         if(id) {
             this.getStorageDocument();
@@ -241,8 +362,7 @@ class StorageDocumentPage extends Component {
     }
 
     render() {
-        console.log(this)
-        const { warehouses, counterpartSupplier, formData } = this.state;
+        const { warehouses, counterpartSupplier, formData, brands } = this.state;
         const { id } = this.props;
         const dateTime = formData.createdDatetime || new Date();
         return (
@@ -258,7 +378,10 @@ class StorageDocumentPage extends Component {
                     <>
                         {id ? 
                         <>
-                            {formData.status != 'DONE' && <ChangeStatusDropdown/>}
+                            {formData.status != 'DONE' && 
+                            <ChangeStatusDropdown
+                                updateDocument={this.updateDocument}
+                            />}
                             <ReportsDropdown/>
                         </>
                         : null}
@@ -312,6 +435,8 @@ class StorageDocumentPage extends Component {
                     typeToDocumentType={typeToDocumentType}
                     updateFormData={this.updateFormData}
                     formData={formData}
+                    brands={brands}
+                    addDocProduct={this.addDocProduct}
                 />
                 </div>
             </Layout>
@@ -332,9 +457,10 @@ class ChangeStatusDropdown extends React.Component {
             <Menu>
                 <Menu.Item
                     onClick={()=>{
+                        this.props.updateDocument('DONE')
                     }}
                 >
-                    <FormattedMessage id='DONE' />
+                    <FormattedMessage id='storage_document.status_confirmed' />
                 </Menu.Item>
             </Menu>
         );
