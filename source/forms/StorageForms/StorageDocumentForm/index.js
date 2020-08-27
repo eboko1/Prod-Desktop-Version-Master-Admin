@@ -35,8 +35,17 @@ class StorageDocumentForm extends Component {
         super(props);
         this.state = {
             modalVisible: false,
+            editKey: undefined,
         };
         this.hideModal = this.hideModal.bind(this);
+        this.editProduct = this.editProduct.bind(this);
+    }
+
+    editProduct(key) {
+        this.setState({
+            editKey: key,
+            modalVisible: true,
+        })
     }
 
     showModal() {
@@ -48,11 +57,13 @@ class StorageDocumentForm extends Component {
     hideModal() {
         this.setState({
             modalVisible: false,
+            editKey: undefined,
         })
     }
 
     render() {
-        const { addDocProduct, updateFormData, typeToDocumentType, warehouses, counterpartSupplier, brands } = this.props;
+        const { editKey, modalVisible } = this.state;
+        const { addDocProduct, updateFormData, typeToDocumentType, warehouses, counterpartSupplier, brands, deleteDocProduct, editDocProduct } = this.props;
         const { type, documentType, supplierDocNumber, counterpartId, docProducts, status, sum, payUntilDatetime, warehouseId } = this.props.formData;
         const dateFormat = 'DD.MM.YYYY';
         const disabled = status == 'DONE';
@@ -322,6 +333,8 @@ class StorageDocumentForm extends Component {
                     disabled={disabled}
                     updateFormData={updateFormData}
                     businessSupplierId={counterpartId}
+                    deleteDocProduct={deleteDocProduct}
+                    editProduct={this.editProduct}
                 />
                 <Button
                     style={{
@@ -334,10 +347,12 @@ class StorageDocumentForm extends Component {
                     <Icon type='plus'/>
                 </Button>
                 <AddProductModal
-                    visible={this.state.modalVisible}
+                    visible={modalVisible}
                     hideModal={this.hideModal}
                     brands={brands}
                     addDocProduct={addDocProduct}
+                    product={editKey !== undefined ? docProducts[editKey] : undefined}
+                    editDocProduct={editDocProduct}
                 />
             </div>
             </>
@@ -364,7 +379,7 @@ class DocProductsTable extends React.Component {
                         <Button
                             disabled={this.props.disabled}
                             onClick={()=>{
-
+                                this.props.editProduct(elem.key);
                             }}
                         >
                             <Icon type='edit' />
@@ -458,7 +473,10 @@ class DocProductsTable extends React.Component {
                             disabled={this.props.disabled}
                             type={'danger'}
                             onClick={()=>{
-
+                                this.props.deleteDocProduct(elem.key)
+                                this.setState({
+                                    update: true,
+                                })
                             }}
                         >
                             <Icon type='delete' />
@@ -485,6 +503,7 @@ class AddProductModal extends React.Component {
     constructor(props) {
         super(props);
         this.state={
+            editMode: false,
             alertModalVisible: false,
             detailOptions: [],
             storeGroupsTree: [],
@@ -656,7 +675,7 @@ class AddProductModal extends React.Component {
                 productId: storageProduct.id,
                 detailName: storageProduct.name,
                 brandId: storageProduct.brandId,
-                brandName: storageProduct.brandName,
+                brandName: storageProduct.brand.name,
             })
             return true;
         }
@@ -713,6 +732,7 @@ class AddProductModal extends React.Component {
 
     handleOk() {
         const { 
+            editMode,
             brandId,
             brandName,
             detailCode,
@@ -723,26 +743,46 @@ class AddProductModal extends React.Component {
             quantity, 
             productId,
         } = this.state;
-
-        if(!this.getProductId(detailCode)) {
-            this.setState({
-                alertModalVisible: true,
-            })
+        if(editMode) {
+            this.getProductId(detailCode);
+            this.props.editDocProduct(
+                this.props.product.key,
+                {
+                    productId: productId,
+                    detailCode: detailCode,
+                    brandName: brandName,
+                    brandId: brandId,
+                    supplierPartNumber: supplierPartNumber,
+                    detailName: detailName,
+                    stockPrice: stockPrice,
+                    quantity: quantity,
+                    groupId: groupId,
+                    sum: quantity*stockPrice,
+                }
+            );
+            this.handleCancel();
         }
         else {
-            this.props.addDocProduct({
-                productId: productId,
-                detailCode: detailCode,
-                brandName: brandName,
-                brandId: brandId,
-                supplierPartNumber: supplierPartNumber,
-                detailName: detailName,
-                stockPrice: stockPrice,
-                quantity: quantity,
-                groupId: groupId,
-                sum: quantity*stockPrice,
-            });
-            this.handleCancel();
+            if(!this.getProductId(detailCode)) {
+                this.setState({
+                    alertModalVisible: true,
+                })
+            }
+            else {
+                this.props.addDocProduct({
+                    productId: productId,
+                    detailCode: detailCode,
+                    brandName: brandName,
+                    brandId: brandId,
+                    supplierPartNumber: supplierPartNumber,
+                    detailName: detailName,
+                    stockPrice: stockPrice,
+                    quantity: quantity,
+                    groupId: groupId,
+                    sum: quantity*stockPrice,
+                });
+                this.handleCancel();
+            }
         }
     }
 
@@ -760,6 +800,27 @@ class AddProductModal extends React.Component {
             quantity: 1,
         });
         this.props.hideModal();
+    }
+
+    componentDidUpdate(prevProps) {
+        if(!prevProps.visible && this.props.visible) {
+            const { product } = this.props;
+            console.log(this)
+            if(product) {
+                this.setState({
+                    editMode: true,
+                    brandId: product.brandId,
+                    brandName: product.brandName,
+                    detailCode: product.detailCode,
+                    supplierPartNumber: product.detailCode,
+                    groupId: product.groupId,
+                    detailName: product.detailName,
+                    stockPrice: product.stockPrice,
+                    quantity: product.quantity,
+                    productId: product.productId,
+                })
+            }
+        }
     }
 
     render() {

@@ -75,10 +75,11 @@ class StorageDocumentPage extends Component {
         this.updateFormData = this.updateFormData.bind(this);
         this.updateDocument = this.updateDocument.bind(this);
         this.addDocProduct = this.addDocProduct.bind(this);
+        this.deleteDocProduct = this.deleteDocProduct.bind(this);
+        this.editDocProduct = this.editDocProduct.bind(this);
     }
 
     updateFormData(formData) {
-        console.log(formData)
         Object.entries(formData).map((field)=>{
             this.state.formData[field[0]] = field[1];
         })
@@ -96,12 +97,32 @@ class StorageDocumentPage extends Component {
         this.setState({
             update: true,
         })
-        console.log(this.state.formData)
     }
 
-    saveFormRef = formRef => {
-        this.formRef = formRef;
-    };
+    deleteDocProduct(key) {
+        const {formData } = this.state;
+        formData.sum -= formData.docProducts[key].sum;
+        const tmpProducts = [...formData.docProducts.filter((elem)=>elem.key != key)];
+        tmpProducts.map((elem, i)=>{elem.key = i});
+        this.updateFormData({docProducts: tmpProducts});
+        this.forceUpdate()
+    } 
+
+    editDocProduct(key, docProduct) {
+        console.log(key, docProduct);
+        const {formData } = this.state;
+        formData.docProducts[key] = {
+            key: key,
+            ...docProduct
+        };
+        this.setState({
+            update: true,
+        })
+    }
+
+    //saveFormRef = formRef => {
+    //    this.formRef = formRef;
+    //};
 
     createDocument() {
         const { formData } = this.state
@@ -164,7 +185,7 @@ class StorageDocumentPage extends Component {
         });
     }
 
-    updateDocument(status) {
+    updateDocument(status='NEW') {
         const { formData } = this.state
         
         const createData = {
@@ -335,7 +356,7 @@ class StorageDocumentPage extends Component {
             data.payUntilDatetime = moment(data.payUntilDatetime);
             data.docProducts.map((elem, key)=>{
                 elem.brandId = elem.product.brandId,
-                elem.brandName = elem.product.brandName,
+                elem.brandName = elem.product.brand.name,
                 elem.detailCode = elem.product.code,
                 elem.detailName = elem.product.name,
                 elem.groupId = elem.product.groupId,
@@ -395,7 +416,7 @@ class StorageDocumentPage extends Component {
                             } }
                             onClick={()=>{
                                 if(id) {
-                                    this.saveDocument();
+                                    this.updateDocument();
                                 } 
                                 else {
                                     this.createDocument();
@@ -437,6 +458,8 @@ class StorageDocumentPage extends Component {
                     formData={formData}
                     brands={brands}
                     addDocProduct={this.addDocProduct}
+                    deleteDocProduct={this.deleteDocProduct}
+                    editDocProduct={this.editDocProduct}
                 />
                 </div>
             </Layout>
