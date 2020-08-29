@@ -53,12 +53,35 @@ class StorageTable extends Component {
                         } }
                         allowClear
                     />
-                    <Button disabled={ listType == 'INCOME' }>
-                        <FormattedMessage id='storage_document.storage_expenses' />
-                    </Button>
-                    <Button disabled={ listType == 'EXPENSE' }>
-                        <FormattedMessage id='storage_document.storage_income' />
-                    </Button>
+                    <Input
+                        allowClear
+                        style={{
+                            width: '30%'
+                        }}
+                        disabled={ listType == 'INCOME' }
+                        placeholder={formatMessage({id:'storage_document.storage_expenses'})}
+                        onChange={(event)=>{
+                            this.props.documentWarehouseFilter([
+                                event.target.value,
+                                ""
+                            ]);
+                        }}
+                    />
+                    <Input
+                        allowClear
+                        style={{
+                            width: '30%'
+                        }}
+                        disabled={ listType == 'EXPENSE' }
+                        placeholder={formatMessage({id:'storage_document.storage_income'})}
+                        onChange={(event)=>{
+                            this.props.documentWarehouseFilter([
+                                "",
+                                event.target.value
+                            ]);
+                        }}
+                    />
+                        
                 </div>
                 <div className={ Styles.paper }>
                     <Table

@@ -25,6 +25,7 @@ class ExpensesPage extends Component {
         return (
             <StorageDocumentsContainer
                 listType = 'EXPENSE'
+                newDocType = 'EXPENSE'
             />
         );
     }

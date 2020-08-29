@@ -14,7 +14,44 @@ import { Catcher } from 'commons';
 // own
 import Styles from './styles.m.css';
 const { RangePicker } = DatePicker;
+var isOrder, isTransfer;
+const INCOME = 'INCOME',
+      EXPENSE = 'EXPENSE',
+      RESERVE = 'RESERVE',
+      SUPPLIER = 'SUPPLIER',
+      CLIENT = 'CLIENT',
+      INVENTORY = 'INVENTORY',
+      OWN_CONSUMPTY = 'OWN_CONSUMPTY',
+      TRANSFER = 'TRANSFER',
+      ADJUSTMENT = 'ADJUSTMENT',
+      ORDER = 'ORDER',
+      NEW = 'NEW',
+      DONE = 'DONE';
 
+const typeToDocumentType = {
+        income: {
+            type: INCOME,
+            documentType: [SUPPLIER, CLIENT, INVENTORY],
+        },
+        expense: {
+            type: EXPENSE,
+            documentType: [CLIENT, SUPPLIER, INVENTORY, OWN_CONSUMPTY],
+        },
+        transfer: {
+            type: EXPENSE,
+            documentType: [TRANSFER],
+        },
+        reserve: {
+            type: EXPENSE,
+            documentType: [TRANSFER],
+        },
+        order: {
+            type: ORDER,
+            documentType: [SUPPLIER, ADJUSTMENT],
+        }, 
+    }
+
+@withRouter
 @injectIntl
 class StorageDocumentsFilters extends Component {
     constructor(props) {
@@ -22,6 +59,10 @@ class StorageDocumentsFilters extends Component {
         this.state = {
             searchQuery: undefined,
         };
+
+        const { pathname } = props.history.location;
+        isOrder = pathname == '/storage-orders';
+        isTransfer = pathname == '/storage-transfers';
     }
 
     render() {
@@ -31,11 +72,13 @@ class StorageDocumentsFilters extends Component {
             onDateChange,
             documentTypeFilter,
             documentStatusFilter,
+            type,
         } = this.props;
 
         return (
             <div className={ Styles.filtersWrap }>
-                <div className={ Styles.filterRadioButtonGroup }>
+               {!isTransfer && 
+               <div className={ Styles.filterRadioButtonGroup }>
                     <Radio.Group
                         //buttonStyle="solid"
                         onChange={ event => {
@@ -46,17 +89,15 @@ class StorageDocumentsFilters extends Component {
                         <Radio.Button value={ null }>
                             <FormattedMessage id='storage_document.all' />
                         </Radio.Button>
-                        <Radio.Button value='INCOME'>
-                            <FormattedMessage id='storage_document.income' />
-                        </Radio.Button>
-                        <Radio.Button value='RETURN'>
-                            <FormattedMessage id='storage_document.return' />
-                        </Radio.Button>
-                        <Radio.Button value='EXCESS'>
-                            <FormattedMessage id='storage_document.excess' />
-                        </Radio.Button>
+                        {typeToDocumentType[type.toLowerCase()].documentType.map((counterpart, i)=>{
+                            return (
+                            <Radio.Button value={ counterpart } key={ i }>
+                                <FormattedMessage id={`storage_document.docType.${type}.${counterpart}`}/>
+                            </Radio.Button>
+                            )
+                        })}
                     </Radio.Group>
-                </div>
+                </div>}
                 <div className={ Styles.filterRadioButtonGroup }>
                     <Radio.Group
                         //buttonStyle="solid"
