@@ -993,7 +993,6 @@ class AddProductModal extends React.Component {
         return (
             <Modal
                 visible={this.props.visible}
-                width={'80%'}
                 onOk={()=>{
                     this.handleOk();
                 }}
