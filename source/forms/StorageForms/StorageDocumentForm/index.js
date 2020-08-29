@@ -1264,7 +1264,7 @@ class AlertModal extends React.Component {
             max,
         } = this.state;
 
-        if(!brandId || !detailCode || groupId || detailName) {
+        if(!brandId || !detailCode || !groupId || !detailName) {
             notification.error({
                 message: 'Заполните все необходимые поля',
             });
