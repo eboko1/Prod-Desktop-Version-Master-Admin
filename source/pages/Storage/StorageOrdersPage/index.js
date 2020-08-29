@@ -25,6 +25,7 @@ class StorageOrdersPage extends Component {
         return (
             <StorageDocumentsContainer
                 listType = 'ORDER'
+                newDocType = 'ORDER'
             />
         );
     }

@@ -139,7 +139,7 @@ export default {
                     disabled: user =>
                         isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageOrders,
-                    name: 'navigation.storage_orders',
+                    name: 'navigation.orders',
                 },
                 {
                     key:      '/storage-incomes',

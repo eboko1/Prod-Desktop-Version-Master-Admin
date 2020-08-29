@@ -12,12 +12,24 @@
         "storage_document.income": "Income",
         "storage_document.return": "Return",
         "storage_document.excess": "Excess",
+        "storage_document.inventorization" : "Inventorization",
         "storage_document.document_status": "Document status",
         "storage_document.status_created": "Created",
         "storage_document.status_confirmed": "Confirmed",
         "storage_document.storage_income": "Storage income",
         "storage_document.storage_expenses": "Storage expenses",
-        "storage_document.all": "All"
+        "storage_document.all": "All",
+
+        "storage_document.docType.INCOME.SUPPLIER": "Income",
+        "storage_document.docType.INCOME.CLIENT": "Refund",
+        "storage_document.docType.INCOME.INVENTORY": "Surplus",
+        "storage_document.docType.EXPENSE.CLIENT": "Consumption",
+        "storage_document.docType.EXPENSE.SUPPLIER": "Return",
+        "storage_document.docType.EXPENSE.INVENTORY": "Shortfall",
+        "storage_document.docType.EXPENSE.OWN_CONSUMPTY": "Write-off",
+        "storage_document.docType.ORDER.SUPPLIER": "Order",
+        "storage_document.docType.ORDER.ADJUSTMENT": "Correction",
+        "storage_document.docType.EXPENSE.TRANSFER": "Transfer"
     },
     "ru": {
         "storage_document.document": "Документ",
@@ -32,12 +44,24 @@
         "storage_document.income": "Приход",
         "storage_document.return": "Возврат",
         "storage_document.excess": "Излишки",
+        "storage_document.inventorization" : "Инвентаризация",
         "storage_document.document_status": "Статус документа",
         "storage_document.status_created": "Нов.",
         "storage_document.status_confirmed": "Учтен",
         "storage_document.storage_income": "Склад приход",
         "storage_document.storage_expenses": "Склад расход",
-        "storage_document.all": "Все"
+        "storage_document.all": "Все",
+
+        "storage_document.docType.INCOME.SUPPLIER": "Приход",
+        "storage_document.docType.INCOME.CLIENT": "Возврат",
+        "storage_document.docType.INCOME.INVENTORY": "Излишки",
+        "storage_document.docType.EXPENSE.CLIENT": "Расход",
+        "storage_document.docType.EXPENSE.SUPPLIER": "Возврат",
+        "storage_document.docType.EXPENSE.INVENTORY": "Недостача",
+        "storage_document.docType.EXPENSE.OWN_CONSUMPTY": "Списание",
+        "storage_document.docType.ORDER.SUPPLIER": "Заказ",
+        "storage_document.docType.ORDER.ADJUSTMENT": "Корректировка",
+        "storage_document.docType.EXPENSE.TRANSFER": "Перемещение"
     },
     "uk": {
         "storage_document.document": "Документ",
@@ -52,12 +76,24 @@
         "storage_document.income": "Прихід",
         "storage_document.return": "Поверн.",
         "storage_document.excess": "Надлишок",
+        "storage_document.inventorization" : "Інвентаризація",
         "storage_document.document_status": "Статус документа",
         "storage_document.status_created": "Нов.",
         "storage_document.status_confirmed": "Врах.",
         "storage_document.storage_income": "Склад приходу",
         "storage_document.storage_expenses": "Склад витрат",
-        "storage_document.all": "Усі"
+        "storage_document.all": "Усі",
+
+        "storage_document.docType.INCOME.SUPPLIER": "Прихід",
+        "storage_document.docType.INCOME.CLIENT": "Повернення",
+        "storage_document.docType.INCOME.INVENTORY": "Надлишок",
+        "storage_document.docType.EXPENSE.CLIENT": "Витрати",
+        "storage_document.docType.EXPENSE.SUPPLIER": "Повернення",
+        "storage_document.docType.EXPENSE.INVENTORY": "Недостача",
+        "storage_document.docType.EXPENSE.OWN_CONSUMPTY": "Списання",
+        "storage_document.docType.ORDER.SUPPLIER": "Замовлення",
+        "storage_document.docType.ORDER.ADJUSTMENT": "Корегування",
+        "storage_document.docType.EXPENSE.TRANSFER": "Переміщення"
     }
   }
   

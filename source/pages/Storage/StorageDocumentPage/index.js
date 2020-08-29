@@ -4,14 +4,15 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Dropdown, Button, Icon, Menu } from 'antd';
+import { Dropdown, Button, Icon, Menu, notification } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
 // proj
-import { Layout } from 'commons';
+import { Layout, Spinner } from 'commons';
 import { StorageDocumentForm } from 'forms';
 import book from 'routes/book';
+import { type } from 'ramda';
 // own
 
 
@@ -24,31 +25,35 @@ const mapStateToProps = state => {
 const INCOME = 'INCOME',
       EXPENSE = 'EXPENSE',
       SUPPLIER = 'SUPPLIER',
+      RESERVE = 'RESERVE',
       CLIENT = 'CLIENT',
       INVENTORY = 'INVENTORY',
       OWN_CONSUMPTY = 'OWN_CONSUMPTY',
       TRANSFER = 'TRANSFER',
-      ADJUSTMENT = 'ADJUSTMENT';
+      ADJUSTMENT = 'ADJUSTMENT',
+      ORDER = 'ORDER',
+      NEW = 'NEW',
+      DONE = 'DONE';
 
 const typeToDocumentType = {
     income: {
-        type: [INCOME],
+        type: INCOME,
         documentType: [SUPPLIER, CLIENT, INVENTORY],
     },
     expense: {
-        type: [EXPENSE],
-        documentType: [SUPPLIER, CLIENT, INVENTORY, OWN_CONSUMPTY],
+        type: EXPENSE,
+        documentType: [CLIENT, SUPPLIER, INVENTORY, OWN_CONSUMPTY],
     },
     transfer: {
-        type: [EXPENSE],
+        type: EXPENSE,
         documentType: [TRANSFER],
     },
     reserve: {
-        type: [EXPENSE],
+        type: EXPENSE,
         documentType: [TRANSFER],
     },
     order: {
-        type: [INCOME, EXPENSE],
+        type: ORDER,
         documentType: [SUPPLIER, ADJUSTMENT],
     }, 
 }
@@ -58,18 +63,22 @@ const typeToDocumentType = {
     null,
 )
 class StorageDocumentPage extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state={
             warehouses: [],
             brands: [],
             counterpartSupplier: [],
+            clientList: [],
             formData: {
-                type: this.props.location.type,
-                documentType: undefined,
+                type: INCOME,
+                documentType: SUPPLIER,
                 sum: 0,
                 docProducts: [],
             },
+            fetched: false,
         }
 
         this.updateFormData = this.updateFormData.bind(this);
@@ -111,10 +120,15 @@ class StorageDocumentPage extends Component {
     editDocProduct(key, docProduct) {
         console.log(key, docProduct);
         const {formData } = this.state;
+        
         formData.docProducts[key] = {
             key: key,
             ...docProduct
         };
+        formData.sum = 0;
+        formData.docProducts.map((elem)=>{
+            formData.sum += elem.quantity * elem.stockPrice;
+        })
         this.setState({
             update: true,
         })
@@ -124,34 +138,102 @@ class StorageDocumentPage extends Component {
     //    this.formRef = formRef;
     //};
 
-    createDocument() {
-        const { formData } = this.state
+    verifyFields() {
+        const { formData } = this.state;
+        const showError = () => {
+            notification.error({
+                message: 'Заполните все необходимые поля',
+            });
+        }
+
+        if(!formData.type || !formData.docProducts.length) {
+            showError();
+            return false;
+        }
+
+        switch(formData.type) {
+            case INCOME:
+            case EXPENSE:
+                if((!formData.incomeWarehouseId && !formData.expenseWarehouseId) || !formData.counterpartId) {
+                    showError();
+                    return false;
+                }
+                break;
+            case TRANSFER:
+            case RESERVE:
+                if(!formData.incomeWarehouseId || !formData.expenseWarehouseId) {
+                    showError();
+                    return false;
+                }
+                break;
+            case ORDER:
+                if(!formData.counterpartId) {
+                    showError();
+                    return false;
+                }
+                break;
+        }
+
         
+        return true;
+    }
+
+    createDocument() {
+        if(!this.verifyFields()) {
+            return;
+        }
+        
+        const { formData } = this.state
+
         const createData = {
-            status: 'NEW',
-            warehouseId: formData.warehouseId || null,
+            status: NEW,
             type: formData.type,
             documentType: formData.documentType,
-            supplierDocNumber: formData.supplierDocNumber || null,
-            counterpartBusinessSupplierId: formData.counterpartId || null,
             payUntilDatetime: formData.payUntilDatetime ? formData.payUntilDatetime.toISOString() : null,
             docProducts: [],
         }
+
+        if(formData.supplierDocNumber) {
+            createData.supplierDocNumber = formData.supplierDocNumber;
+        }
+
+        switch(formData.type) {
+            case INCOME:
+            case EXPENSE:
+                createData.warehouseId = formData.incomeWarehouseId || formData.expenseWarehouseId;
+                if(formData.documentType == SUPPLIER) {
+                    createData.counterpartBusinessSupplierId = formData.counterpartId;
+                }
+                else if(formData.documentType == CLIENT) {
+                    createData.counterpartClientId = formData.counterpartId;
+                }
+                break;
+            case TRANSFER:
+            case RESERVE:
+                createData.type = EXPENSE;
+                createData.documentType = TRANSFER;
+                createData.warehouseId = formData.expenseWarehouseId;
+                createData.counterpartWarehouseId = formData.incomeWarehouseId;
+                delete createData.supplierDocNumber;
+                delete createData.payUntilDatetime;
+                break;
+            case ORDER:
+                if(formData.documentType == SUPPLIER) {
+                    createData.type = INCOME;
+                }
+                else if(formData.documentType == ADJUSTMENT) {
+                    createData.type = EXPENSE;
+                }
+                createData.counterpartBusinessSupplierId = formData.counterpartId;
+                createData.context = ORDER;
+                delete createData.warehouseId;
+                break;
+        }
+
         formData.docProducts.map((elem)=>{
             if(elem.productId) {
                 createData.docProducts.push({
                     productId: elem.productId,
-                    quantity: elem.quantity,
-                    stockPrice: elem.stockPrice,
-                })
-            }
-            else {
-                createData.docProducts.push({
-                    addToStore: true,
-                    code: elem.detailCode,
-                    name: elem.detailName,
-                    brandId: elem.brandId,
-                    groupId: elem.groupId,
                     quantity: elem.quantity,
                     stockPrice: elem.stockPrice,
                 })
@@ -178,24 +260,49 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            that.props.history.push(`${book.storageDocument}/${data.id}`)
+            that.props.history.push(`${book.storageDocument}/${data.id}`);
+            window.location.reload();
         })
         .catch(function (error) {
             console.log('error', error)
         });
     }
 
-    updateDocument(status='NEW') {
+    updateDocument(status=NEW) {
+        if(!this.verifyFields()) {
+            return;
+        }
+
         const { formData } = this.state
         
         const createData = {
             status: status,
-            warehouseId: formData.warehouseId || null,
             supplierDocNumber: formData.supplierDocNumber || null,
-            counterpartBusinessSupplierId: formData.counterpartId || null,
             payUntilDatetime: formData.payUntilDatetime ? formData.payUntilDatetime.toISOString() : null,
             docProducts: [],
         }
+
+        switch(formData.type) {
+            case INCOME:
+            case EXPENSE:
+                createData.warehouseId = formData.incomeWarehouseId || formData.expenseWarehouseId;
+                if(formData.documentType == SUPPLIER) {
+                    createData.counterpartBusinessSupplierId = formData.counterpartId;
+                }
+                else if(formData.documentType == CLIENT) {
+                    createData.counterpartClientId = formData.counterpartId;
+                }
+                break;
+            case TRANSFER:
+            case RESERVE:
+                createData.warehouseId = formData.expenseWarehouseId;
+                createData.counterpartWarehouseId = formData.incomeWarehouseId;
+                break;
+            case ORDER:
+                createData.counterpartBusinessSupplierId = formData.counterpartId;
+                break;
+        }
+
         formData.docProducts.map((elem)=>{
             if(elem.productId) {
                 createData.docProducts.push({
@@ -204,19 +311,8 @@ class StorageDocumentPage extends Component {
                     stockPrice: elem.stockPrice,
                 })
             }
-            else {
-                createData.docProducts.push({
-                    addToStore: true,
-                    code: elem.detailCode,
-                    name: elem.detailName,
-                    brandId: elem.brandId,
-                    groupId: elem.groupId,
-                    quantity: elem.quantity,
-                    stockPrice: elem.stockPrice,
-                })
-            }
         })
-        console.log(formData, createData);
+        console.log('upd', formData, createData);
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/store_docs/${this.props.id}`;
@@ -263,9 +359,34 @@ class StorageDocumentPage extends Component {
         .then(function (response) {
             return response.json()
         })
-        .then(function (data) {
+        .then(function (warehouses) {
+            const type = that.props.location.type;
+            if(type && warehouses.length) {
+                that.state.formData.type = type;
+                var { incomeWarehouseId, expenseWarehouseId } = that.state.formData;
+                switch(type) {
+                    case INCOME:
+                        incomeWarehouseId = warehouses[0].id;
+                        break
+                    case EXPENSE:
+                        expenseWarehouseId = warehouses[0].id;
+                        break;
+                    case TRANSFER:
+                    case RESERVE:
+                        incomeWarehouseId = warehouses[0].id;
+                        incomeWarehouseId = warehouses[1].id;
+                        break;
+                    case ORDER:
+                        incomeWarehouseId = warehouses[0].id;
+                        break;
+                }
+                that.state.formData.documentType = typeToDocumentType[type.toLowerCase()].documentType[0];
+                that.state.formData.incomeWarehouseId = incomeWarehouseId;
+                that.state.formData.expenseWarehouseId = expenseWarehouseId;
+            }
             that.setState({
-                warehouses: data,
+                warehouses: warehouses,
+                fetched: true,
             })
         })
         .catch(function (error) {
@@ -331,6 +452,36 @@ class StorageDocumentPage extends Component {
         });
     }
 
+    getClientList() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/clients`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+            that.setState({
+                clientList: data.clients,
+            });
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    }
+
     getStorageDocument() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
@@ -350,19 +501,70 @@ class StorageDocumentPage extends Component {
         .then(function (response) {
             return response.json()
         })
-        .then(function (data) {
-            console.log(data);
+        .then(function (data) { console.log(data)
+            const INC = 'INC',
+                  CRT = 'CRT',
+                  STP = 'STP',
+                  OUT = 'OUT',
+                  SRT = 'SRT',
+                  CST = 'CST',
+                  STM = 'STM',
+                  TSF = 'TSF',
+                  RES = 'RES',
+                  ORD = 'ORD',
+                  BOR = 'BOR';
+
             data.counterpartId = data.counterpartBusinessSupplierId;
-            data.payUntilDatetime = moment(data.payUntilDatetime);
+            data.payUntilDatetime = data.payUntilDatetime && moment(data.payUntilDatetime);
             data.docProducts.map((elem, key)=>{
                 elem.brandId = elem.product.brandId,
                 elem.brandName = elem.product.brand.name,
                 elem.detailCode = elem.product.code,
                 elem.detailName = elem.product.name,
                 elem.groupId = elem.product.groupId,
+                elem.tradeCode = elem.product.tradeCode,
                 elem.sum = elem.stockPrice * elem.quantity,
                 elem.key = key;
             })
+            switch (data.operationCode) {
+                case INC:
+                case CRT:
+                case STP:
+                    data.type = INCOME;
+                    break;
+                case OUT:
+                case SRT:
+                case CST:
+                case STM:
+                    data.type = EXPENSE;
+                    break;
+                case TSF:
+                    data.type = TRANSFER;
+                    break;
+                case RES:
+                    data.type = RESERVE;
+                    break;
+                case ORD:
+                case BOR:
+                    data.type = ORDER;
+                    break;
+                
+            }
+
+            switch (data.type) {
+                case INCOME:
+                    data.incomeWarehouseId= data.warehouseId;
+                    break;
+                case EXPENSE:
+                    data.expenseWarehouseId= data.warehouseId;
+                    break;
+                case TRANSFER:
+                case RESERVE:
+                    data.incomeWarehouseId = data.counterpartWarehouseId;
+                    data.expenseWarehouseId= data.warehouseId;
+                    break;
+            }
+
             that.setState({
                 formData: data,
             })
@@ -373,22 +575,34 @@ class StorageDocumentPage extends Component {
     }
 
     componentDidMount() {
-        const { id } = this.props;
-        this.getWarehouses();
-        this.getBrands()
+        this._isMounted = true;
+        const { id, location: { type } } = this.props;
+        this.getBrands();
+        this.getClientList();
         this.getCounterpartSupplier();
+        if(this._isMounted) this.getWarehouses();
         if(id) {
             this.getStorageDocument();
         }
+        
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
-        const { warehouses, counterpartSupplier, formData, brands } = this.state;
+        const { warehouses, counterpartSupplier, formData, brands, clientList, fetched } = this.state;
         const { id } = this.props;
         const dateTime = formData.createdDatetime || new Date();
-        return (
+        return !fetched ? (
+            <Spinner spin={true}/>
+            ) : (
             <Layout
-                title={ <FormattedMessage id='storage.new_document' /> }
+                title={ id ? 
+                <span>{formData.documentNumber}</span> :
+                <FormattedMessage id='storage.new_document' /> 
+                }
                 description={
                     <>
                         <FormattedMessage id='order-page.creation_date'/>
@@ -399,14 +613,14 @@ class StorageDocumentPage extends Component {
                     <>
                         {id ? 
                         <>
-                            {formData.status != 'DONE' && 
+                            {formData.status != DONE && 
                             <ChangeStatusDropdown
                                 updateDocument={this.updateDocument}
                             />}
                             <ReportsDropdown/>
                         </>
                         : null}
-                        {formData.status != 'DONE' &&
+                        {formData.status != DONE &&
                         <Icon
                             type='save'
                             style={ {
@@ -423,7 +637,7 @@ class StorageDocumentPage extends Component {
                                 }
                             }}
                         />}
-                        {id && formData.status != 'DONE' &&
+                        {id && formData.status != DONE &&
                         <Icon
                             type='delete'
                             style={ {
@@ -450,6 +664,7 @@ class StorageDocumentPage extends Component {
             >
                 <div>
                 <StorageDocumentForm
+                    clientList={clientList}
                     wrappedComponentRef={ this.saveFormRef }
                     warehouses={warehouses}
                     counterpartSupplier={counterpartSupplier}
@@ -480,7 +695,7 @@ class ChangeStatusDropdown extends React.Component {
             <Menu>
                 <Menu.Item
                     onClick={()=>{
-                        this.props.updateDocument('DONE')
+                        this.props.updateDocument(String(DONE))
                     }}
                 >
                     <FormattedMessage id='storage_document.status_confirmed' />
@@ -524,13 +739,7 @@ class ReportsDropdown extends React.Component {
                     onClick={()=>{
                     }}
                 >
-                    <FormattedMessage id='diagnosticAct' />
-                </Menu.Item>
-                <Menu.Item
-                    onClick={()=>{
-                    }}
-                >
-                    <FormattedMessage id='diagnosticResult' />
+                    <FormattedMessage id='storage_document.document' />
                 </Menu.Item>
             </Menu>
         );

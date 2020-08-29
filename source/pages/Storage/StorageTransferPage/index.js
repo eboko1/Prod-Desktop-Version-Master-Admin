@@ -24,7 +24,9 @@ class StorageTransferPage extends Component {
     render() {
         return (
             <StorageDocumentsContainer
-                listType = 'TRANSFER'
+                listType = 'EXPENSE'
+                docType = 'TRANSFER'
+                newDocType = 'TRANSFER'
             />
         );
     }

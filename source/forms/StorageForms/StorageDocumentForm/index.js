@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Button, Input, Table, Select, Icon, DatePicker, AutoComplete, InputNumber, Modal, TreeSelect } from 'antd';
+import { Form, Button, Input, Table, Select, Icon, DatePicker, AutoComplete, InputNumber, Modal, TreeSelect, notification } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -25,6 +25,18 @@ const formItemStyle = {
     }
 };
 const mask = "0,0.00";
+const INCOME = 'INCOME',
+      EXPENSE = 'EXPENSE',
+      RESERVE = 'RESERVE',
+      SUPPLIER = 'SUPPLIER',
+      CLIENT = 'CLIENT',
+      INVENTORY = 'INVENTORY',
+      OWN_CONSUMPTY = 'OWN_CONSUMPTY',
+      TRANSFER = 'TRANSFER',
+      ADJUSTMENT = 'ADJUSTMENT',
+      ORDER = 'ORDER',
+      NEW = 'NEW',
+      DONE = 'DONE';
 
 @withReduxForm({
     name: "storageDocumentForm",
@@ -36,6 +48,11 @@ class StorageDocumentForm extends Component {
         this.state = {
             modalVisible: false,
             editKey: undefined,
+            clientSearchValue: "",
+            counterpartOptionInfo: {
+                value: undefined,
+                children: "",
+            }
         };
         this.hideModal = this.hideModal.bind(this);
         this.editProduct = this.editProduct.bind(this);
@@ -62,11 +79,34 @@ class StorageDocumentForm extends Component {
     }
 
     render() {
-        const { editKey, modalVisible } = this.state;
-        const { addDocProduct, updateFormData, typeToDocumentType, warehouses, counterpartSupplier, brands, deleteDocProduct, editDocProduct } = this.props;
-        const { type, documentType, supplierDocNumber, counterpartId, docProducts, status, sum, payUntilDatetime, warehouseId } = this.props.formData;
+        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo } = this.state;
+
+        const {
+            addDocProduct,
+            updateFormData,
+            typeToDocumentType,
+            warehouses,
+            counterpartSupplier,
+            brands,
+            deleteDocProduct,
+            editDocProduct,
+            clientList
+        } = this.props;
+
+        const {
+            type,
+            documentType,
+            supplierDocNumber,
+            counterpartId,
+            docProducts,
+            status,
+            sum,
+            payUntilDatetime,
+            incomeWarehouseId,
+            expenseWarehouseId,
+        } = this.props.formData;
         const dateFormat = 'DD.MM.YYYY';
-        const disabled = status == 'DONE';
+        const disabled = status == DONE;
         
         return (
             <>
@@ -86,49 +126,68 @@ class StorageDocumentForm extends Component {
                     }}
                 >
                     <div>
-                        <FormattedMessage id='storage.type'/>
+                        <FormattedMessage id='storage.type'/>{requiredField()}
                         <Select
-                            disabled={disabled || status=='NEW'}
+                            disabled={disabled || status==NEW}
                             value={type}
                             onChange={(value)=>{
+                                if(value == INCOME || value == ORDER) {
+                                    updateFormData({
+                                        incomeWarehouseId: warehouses[0].id,
+                                        expenseWarehouseId: undefined,
+                                    })
+                                }
+                                else if(value == EXPENSE) {
+                                    updateFormData({
+                                        incomeWarehouseId: undefined,
+                                        expenseWarehouseId: warehouses[0].id,
+                                    })
+                                }
+                                else if(value == TRANSFER || value == RESERVE) {
+                                    updateFormData({
+                                        incomeWarehouseId: warehouses[1].id,
+                                        expenseWarehouseId: warehouses[0].id,
+                                    })
+                                }
+
                                 updateFormData({
                                     type: value,
-                                    documentType: undefined,
+                                    documentType: typeToDocumentType[value.toLowerCase()].documentType[0],
                                 })
                             }}
                         >
                             <Option
-                                value='INCOME'
+                                value={INCOME}
                             >
                                 <FormattedMessage id='storage.INCOME'/>
                             </Option>
                             <Option
-                                value='EXPENSE'
+                                value={EXPENSE}
                             >
                                 <FormattedMessage id='storage.EXPENSE'/>
                             </Option>
                             <Option
-                                value='TRANSFER'
+                                value={TRANSFER}
                             >
                                 <FormattedMessage id='storage.TRANSFER'/>
                             </Option>
                             <Option
-                                value='RESERVE'
+                                value={RESERVE}
                             >
                                 <FormattedMessage id='storage.RESERVE'/>
                             </Option>
                             <Option
-                                value='ORDER'
+                                value={ORDER}
                             >
                                 <FormattedMessage id='storage.ORDER'/>
                             </Option>
                         </Select>
                     </div>
-                    {(type == 'INCOME' || type == 'EXPENSE') && 
+                    {(type == ORDER || type== EXPENSE || type== INCOME) &&
                     <div>
-                        <FormattedMessage id='storage_document.counterparty_type'/>
+                        <FormattedMessage id='storage_document.document_type'/>{requiredField()}
                         <Select
-                            disabled={disabled || status=='NEW'}
+                            disabled={disabled || status==NEW}
                             value={documentType}
                             onChange={(value)=>{
                                 updateFormData({
@@ -136,31 +195,53 @@ class StorageDocumentForm extends Component {
                                 })
                             }}
                         >
-                            {type && typeToDocumentType[type.toLowerCase()].documentType.map((docType, i)=>{
-                                return (
-                                    <Option
-                                        key={i}
-                                        value={docType}
-                                    >
-                                        <FormattedMessage id={`storage_document.${String(docType).toLowerCase()}`}/>
-                                    </Option>
-                                )
-                            })}
+                            {type && 
+                                typeToDocumentType[type.toLowerCase()].documentType.map((counterpart, i)=>{
+                                    return (
+                                        <Option
+                                            value={counterpart}
+                                            key={i}
+                                        >
+                                            <FormattedMessage id={`storage_document.docType.${type}.${counterpart}`}/>
+                                        </Option>
+                                    )
+                                })
+                            }
                         </Select>
                     </div>}
-                    {(type == 'INCOME' || type == 'EXPENSE' || type == 'ORDER') && 
+                    {(type == INCOME || type == EXPENSE || type == ORDER) &&
+                    (documentType == CLIENT || documentType == SUPPLIER || documentType == ADJUSTMENT) && 
                     <div style={{position: 'relative'}}>
-                        <FormattedMessage id='storage_document.counterparty'/>
+                        <FormattedMessage id={`storage.${documentType != ADJUSTMENT ? documentType.toLowerCase() : 'supplier'}`}/>{requiredField()}
                         <Select
+                            showSearch
                             disabled={disabled}
                             value={counterpartId}
-                            onChange={(value)=>{
+                            onChange={(value, option)=>{
                                 updateFormData({
                                     counterpartId: value,
+                                });
+                                this.setState({
+                                    counterpartOptionInfo: {
+                                        value: value,
+                                        children: String(option.props.children),
+                                    }
+                                })
+                            }}
+                            optionFilterProp={'children'}
+                            onSearch={(input)=>{
+                                this.setState({
+                                    clientSearchValue: input
+                                })
+                            }}
+                            onBlur={()=>{
+                                this.setState({
+                                    clientSearchValue: ""
                                 })
                             }}
                         >
-                            {counterpartSupplier.map((elem, i)=>{
+                            {(documentType == SUPPLIER || documentType == ADJUSTMENT) &&
+                            counterpartSupplier.map((elem, i)=>{
                                 return (
                                     <Option
                                         key={i}
@@ -170,6 +251,24 @@ class StorageDocumentForm extends Component {
                                     </Option>
                                 )
                             })}
+                            {documentType == CLIENT ?
+                            clientSearchValue.length > 2 ?
+                            clientList.map((client, key)=>{
+                                return (
+                                    <Option
+                                        key={key}
+                                        value={client.clientId}
+                                    >
+                                        {`${client.surname || ""} ${client.name} ${client.middleName || ""} ${client.phones[0]}`}
+                                    </Option>
+                                )
+                            }) :
+                            counterpartOptionInfo.value && counterpartOptionInfo.children ?
+                            <Option
+                                value={counterpartOptionInfo.value}
+                            >
+                                {counterpartOptionInfo.children}
+                            </Option> : null: null}
                         </Select>
                     </div>}
                 </div>
@@ -179,13 +278,13 @@ class StorageDocumentForm extends Component {
                     }}
                 >
                     <div>
-                        <FormattedMessage id='storage_document.storage_expenses'/>
+                        <FormattedMessage id='storage_document.storage_expenses'/>{(type == EXPENSE || type == TRANSFER || type == RESERVE) && requiredField()}
                         <Select
-                            disabled={type == 'INCOME' || type == 'ORDER' || disabled}
-                            value={!(type == 'INCOME' || type == 'ORDER') ? warehouseId : undefined}
+                            disabled={type == INCOME || type == ORDER || disabled}
+                            value={expenseWarehouseId}
                             onSelect={(value)=>{
                                 updateFormData({
-                                    warehouseId: value,
+                                    expenseWarehouseId: value,
                                 })
                             }}
                         >
@@ -202,13 +301,13 @@ class StorageDocumentForm extends Component {
                         </Select>
                     </div>
                     <div>
-                        <FormattedMessage id='storage_document.storage_income'/>
+                        <FormattedMessage id='storage_document.storage_income'/>{(type == INCOME || type == TRANSFER || type == RESERVE) && requiredField()}
                         <Select
-                            disabled={type == 'EXPENSE' || type == 'ORDER' || disabled}
-                            value={!(type == 'EXPENSE' || type == 'ORDER') ? warehouseId : undefined}
+                            disabled={type == EXPENSE || type == ORDER || type == RESERVE || disabled}
+                            value={incomeWarehouseId}
                             onSelect={(value)=>{
                                 updateFormData({
-                                    warehouseId: value,
+                                    incomeWarehouseId: value,
                                 })
                             }}
                         >
@@ -224,7 +323,7 @@ class StorageDocumentForm extends Component {
                             })}
                         </Select>
                     </div>
-                    {(type == 'INCOME' || type == 'EXPENSE' || type == 'ORDER') && 
+                    {(type == INCOME || type == EXPENSE || type == ORDER) && 
                     <div>
                         <FormattedMessage id='storage.document_num'/>
                         <Input
@@ -279,7 +378,7 @@ class StorageDocumentForm extends Component {
                                     })}
                                     nullText="0"
                                 >
-                                    {sum - sum}
+                                    {!disabled ? sum : 0}
                                 </Numeral>
                             </div>
                         </div>
@@ -293,20 +392,27 @@ class StorageDocumentForm extends Component {
                                 justifyContent: 'center'
                             }}
                         >
-                            <FormattedMessage id="paid" />
-                            <Numeral
-                                mask={mask}
-                                className={Styles.sumNumeral}
-                                nullText="0"
-                                currency={this.props.intl.formatMessage({
-                                    id: "currency",
-                                })}
+                            <p
+                                style={{
+                                    wordBreak: 'break-word',
+                                    textAlign: 'center',
+                                }}
                             >
-                                {disabled ? sum : 0}
-                            </Numeral>
+                                <FormattedMessage id="paid" />
+                                <Numeral
+                                    mask={mask}
+                                    className={Styles.sumNumeral}
+                                    nullText="0"
+                                    currency={this.props.intl.formatMessage({
+                                        id: "currency",
+                                    })}
+                                >
+                                    {disabled ? sum : 0}
+                                </Numeral>
+                            </p>
                         </div>
                     </div>
-                   {(type == 'INCOME' || type == 'EXPENSE' || type == 'ORDER') && 
+                   {(type == INCOME || type == EXPENSE || type == ORDER) && 
                    <div>
                         <FormattedMessage id="header.until" />
                         <DatePicker
@@ -336,24 +442,35 @@ class StorageDocumentForm extends Component {
                     deleteDocProduct={deleteDocProduct}
                     editProduct={this.editProduct}
                 />
-                <Button
-                    style={{
-                        marginTop: 10
-                    }}
-                    onClick={()=>{
-                        this.showModal();
-                    }}
-                >
-                    <Icon type='plus'/>
-                </Button>
-                <AddProductModal
-                    visible={modalVisible}
-                    hideModal={this.hideModal}
-                    brands={brands}
-                    addDocProduct={addDocProduct}
-                    product={editKey !== undefined ? docProducts[editKey] : undefined}
-                    editDocProduct={editDocProduct}
-                />
+                { !disabled ? 
+                <>
+                    <div
+                        style={{
+                            paddingLeft: 4,
+                            marginTop: 4
+                        }}
+                    >
+                        <Button
+                            disabled={disabled}
+                            type='primary'
+                            onClick={()=>{
+                                this.showModal();
+                            }}
+                        >
+                            <Icon type='plus'/>
+                        </Button>
+                    </div>
+                    <AddProductModal
+                        visible={modalVisible}
+                        hideModal={this.hideModal}
+                        businessSupplierId={(type == ORDER || type == INCOME) && counterpartId}
+                        brands={brands}
+                        addDocProduct={addDocProduct}
+                        product={editKey !== undefined ? docProducts[editKey] : undefined}
+                        editDocProduct={editDocProduct}
+                        isIncome={type == INCOME}
+                    /> 
+                </>: null}
             </div>
             </>
         );
@@ -370,12 +487,13 @@ class DocProductsTable extends React.Component {
             brands: [],
             detailOptions: [],
         }
+        const actionColWidth = !this.props.disabled ? '3%' : '0';
         this.columns = [
             {
-                width:     '3%',
+                width:     actionColWidth,
                 key:       'edit',
                 render:     (elem)=>{
-                    return (
+                    return this.props.disabled ? null : (
                         <Button
                             disabled={this.props.disabled}
                             onClick={()=>{
@@ -389,7 +507,7 @@ class DocProductsTable extends React.Component {
             },
             {
                 title:     "№",
-                width:     '5%',
+                width:     '3%',
                 key:       'key',
                 dataIndex: 'key',
                 render:     (data, elem)=>{
@@ -400,7 +518,7 @@ class DocProductsTable extends React.Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.brand' />,
-                width:     '20%',
+                width:     '10%',
                 key:       'brandName',
                 dataIndex: 'brandName',
                 render:     (data, elem)=>{
@@ -411,9 +529,20 @@ class DocProductsTable extends React.Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.detail_code' />,
-                width:     '20%',
+                width:     '15%',
                 key:       'detailCode',
                 dataIndex: 'detailCode',
+                render:     (data, elem)=>{
+                    return (
+                        data
+                    )
+                }
+            },
+            {
+                title:      <><FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)</>,
+                width:     '10%',
+                key:       'tradeCode',
+                dataIndex: 'tradeCode',
                 render:     (data, elem)=>{
                     return (
                         data
@@ -424,10 +553,21 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='order_form_table.detail_name' />,
                 key:       'detailName',
                 dataIndex: 'detailName',
-                width:     '20%',
+                width:     '15%',
                 render:     (data, elem)=>{
                     return (
                         data
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='orders.source' />,
+                key:       'source',
+                dataIndex: 'source',
+                width:     '15%',
+                render:     (data, elem)=>{
+                    return (
+                        data ? data : <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -465,10 +605,10 @@ class DocProductsTable extends React.Component {
                 }
             },
             {
-                width:     '3%',
+                width:     actionColWidth,
                 key:       'delete',
                 render:     (elem)=>{
-                    return (
+                    return this.props.disabled ? null : (
                         <Button
                             disabled={this.props.disabled}
                             type={'danger'}
@@ -494,6 +634,7 @@ class DocProductsTable extends React.Component {
             <Table
                 columns={this.columns}
                 dataSource={tableData}
+                pagination={false}
             />
         );
     }
@@ -514,10 +655,11 @@ class AddProductModal extends React.Component {
             brandName: undefined,
             detailCode: undefined,
             groupId: undefined,
-            supplierPartNumber: undefined,
+            tradeCode: undefined,
             detailName: undefined,
             stockPrice: 0,
             quantity: 1,
+            detailCodeSearch: '',
         }
 
         this.confirmAlertModal = this.confirmAlertModal.bind(this);
@@ -529,6 +671,7 @@ class AddProductModal extends React.Component {
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/business_suppliers/pricelists`;
         if(brandId) url += `?brandId=${brandId}`;
+        if(this.props.businessSupplierId) url += `&businessSupplierId=${this.props.businessSupplierId}`
         fetch(url, {
             method: 'GET',
             headers: {
@@ -545,6 +688,7 @@ class AddProductModal extends React.Component {
             return response.json()
         })
         .then(function (data) {
+            console.log(data);
             that.setState({
                 detailOptions: data,
             })
@@ -675,7 +819,7 @@ class AddProductModal extends React.Component {
                 productId: storageProduct.id,
                 detailName: storageProduct.name,
                 brandId: storageProduct.brandId,
-                brandName: storageProduct.brand.name,
+                brandName: storageProduct.brand && storageProduct.brand.name,
             })
             return true;
         }
@@ -692,36 +836,37 @@ class AddProductModal extends React.Component {
         this.getStorageProducts();
     }
 
-    confirmAlertModal() {
+    confirmAlertModal(productData) {
         const { 
+            stockPrice,
+            quantity, 
+        } = this.state;
+
+        const {
             brandId,
             brandName,
             detailCode,
-            supplierPartNumber,
-            groupId,
             detailName,
-            stockPrice,
-            quantity, 
             productId,
-        } = this.state;
+            tradeCode
+        } = productData;
 
         this.props.addDocProduct({
-            addToStore: true,
             productId: productId,
             detailCode: detailCode,
             brandName: brandName,
             brandId: brandId,
-            supplierPartNumber: supplierPartNumber,
+            tradeCode: tradeCode,
             detailName: detailName,
             stockPrice: stockPrice,
             quantity: quantity,
-            groupId: groupId,
             sum: quantity*stockPrice,
         });
         this.setState({
             alertModalVisible: false,
         });
         this.handleCancel();
+        this.getStorageProducts();
     }
 
     cancelAlertModal() {
@@ -736,37 +881,44 @@ class AddProductModal extends React.Component {
             brandId,
             brandName,
             detailCode,
-            supplierPartNumber,
+            tradeCode,
             groupId,
             detailName,
             stockPrice,
             quantity, 
             productId,
         } = this.state;
-        if(editMode) {
-            this.getProductId(detailCode);
-            this.props.editDocProduct(
-                this.props.product.key,
-                {
-                    productId: productId,
-                    detailCode: detailCode,
-                    brandName: brandName,
-                    brandId: brandId,
-                    supplierPartNumber: supplierPartNumber,
-                    detailName: detailName,
-                    stockPrice: stockPrice,
-                    quantity: quantity,
-                    groupId: groupId,
-                    sum: quantity*stockPrice,
-                }
-            );
-            this.handleCancel();
+
+        if(!brandId || !detailCode) {
+            notification.error({
+                message: 'Заполните все необходимые поля',
+            });
+            return;
+        }
+
+        if(!this.getProductId(detailCode)) {
+            this.setState({
+                alertModalVisible: true,
+            })
         }
         else {
-            if(!this.getProductId(detailCode)) {
-                this.setState({
-                    alertModalVisible: true,
-                })
+            if(editMode) {
+                this.props.editDocProduct(
+                    this.props.product.key,
+                    {
+                        productId: productId,
+                        detailCode: detailCode,
+                        brandName: brandName,
+                        brandId: brandId,
+                        tradeCode: tradeCode,
+                        detailName: detailName,
+                        stockPrice: stockPrice,
+                        quantity: quantity,
+                        groupId: groupId,
+                        sum: quantity*stockPrice,
+                    }
+                );
+                this.handleCancel();
             }
             else {
                 this.props.addDocProduct({
@@ -774,7 +926,7 @@ class AddProductModal extends React.Component {
                     detailCode: detailCode,
                     brandName: brandName,
                     brandId: brandId,
-                    supplierPartNumber: supplierPartNumber,
+                    tradeCode: tradeCode,
                     detailName: detailName,
                     stockPrice: stockPrice,
                     quantity: quantity,
@@ -794,7 +946,7 @@ class AddProductModal extends React.Component {
             brandName: undefined,
             detailCode: undefined,
             groupId: undefined,
-            supplierPartNumber: undefined,
+            tradeCode: undefined,
             detailName: undefined,
             stockPrice: 0,
             quantity: 1,
@@ -812,7 +964,7 @@ class AddProductModal extends React.Component {
                     brandId: product.brandId,
                     brandName: product.brandName,
                     detailCode: product.detailCode,
-                    supplierPartNumber: product.detailCode,
+                    tradeCode: product.tradeCode,
                     groupId: product.groupId,
                     detailName: product.detailName,
                     stockPrice: product.stockPrice,
@@ -825,21 +977,23 @@ class AddProductModal extends React.Component {
 
     render() {
         const {
+            storageProducts,
             alertModalVisible,
             detailOptions,
             storeGroupsTree,
             brandId,
             brandName,
             detailCode,
-            supplierPartNumber,
-            groupId,
+            tradeCode,
             detailName,
             stockPrice,
             quantity,
+            detailCodeSearch,
         } = this.state;
         return (
             <Modal
                 visible={this.props.visible}
+                width={'80%'}
                 onOk={()=>{
                     this.handleOk();
                 }}
@@ -849,7 +1003,7 @@ class AddProductModal extends React.Component {
             >
                 <div>
                     <div className={Styles.addProductItemWrap}>
-                        <FormattedMessage id='order_form_table.brand' />
+                        <FormattedMessage id='order_form_table.brand' />{requiredField()}
                         <Select
                             showSearch
                             value={brandId}
@@ -894,14 +1048,15 @@ class AddProductModal extends React.Component {
                         </Select>
                     </div>
                     <div className={Styles.addProductItemWrap}>
-                        <FormattedMessage id='order_form_table.detail_code' />
+                        <FormattedMessage id='order_form_table.detail_code' />{requiredField()}
                         <AutoComplete
                             value={detailCode}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             onChange={(value)=>{
                                 this.setState({
                                     detailCode: value,
-                                    supplierPartNumber: value,
+                                    tradeCode: value,
+                                    detailCodeSearch: value,
                                 });
                                 this.getProductId(value);
                             }}
@@ -909,10 +1064,16 @@ class AddProductModal extends React.Component {
                                 this.setState({
                                     detailCode: value,
                                     detailName: option.props.detail_name,
-                                    supplierPartNumber: option.props.supplier_number,
+                                    tradeCode: option.props.supplier_number,
                                     stockPrice: option.props.price,
+                                    detailCodeSearch: "",
                                 });
                                 this.getProductId(value);
+                            }}
+                            onBlur={()=>{
+                                this.setState({
+                                    detailCodeSearch: "",
+                                })
                             }}
                             filterOption={(input, option) => {
                                 return (
@@ -921,55 +1082,57 @@ class AddProductModal extends React.Component {
                             }}
                         >
                             {
-                                detailOptions.map((elem, key)=>{
+                                storageProducts.map((elem)=>{
                                     return (
                                         <Option
-                                            key={key}
-                                            value={elem.partNumber}
-                                            detail_name={elem.itemName}
-                                            price={elem.purchasePrice}
-                                            supplier_number={elem.supplierPartNumber}
+                                            key={elem.id}
+                                            value={elem.code}
+                                            detail_name={elem.name}
+                                            price={0}
+                                            trade_code={elem.tradeCode}
                                         >
-                                            {elem.partNumber}
+                                            {elem.code}
                                         </Option>
                                     )
                                 })
                             }
+                            {
+                                detailCodeSearch.length > 3 ? 
+                                detailOptions.map((elem)=>{
+                                    return (
+                                        <Option
+                                            key={elem.id}
+                                            value={elem.partNumber}
+                                            detail_name={elem.itemName}
+                                            price={elem.purchasePrice}
+                                            trade_code={elem.supplierPartNumber}
+                                        >
+                                            {elem.partNumber}
+                                        </Option>
+                                    )
+                                }) :
+                                []
+                            }
                         </AutoComplete>
                     </div>
+                   {this.props.isIncome &&
                     <div className={Styles.addProductItemWrap}>
                         <FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)
                         <Input
-                            value={supplierPartNumber}
+                            value={tradeCode}
                             disabled
                             style={{
                                 color: 'black'
                             }}
                         />
-                    </div>
-                    <div className={Styles.addProductItemWrap}>
-                        <FormattedMessage id='order_form_table.store_group'/>
-                        <TreeSelect
-                            showSearch
-                            value={groupId}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={storeGroupsTree}
-                            filterTreeNode={(input, node) => {
-                                return (
-                                    node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                    String(node.props.value).indexOf(input.toLowerCase()) >= 0
-                                )
-                            }}
-                            onSelect={(value, option)=>{
-                                this.setState({
-                                    groupId: value
-                                })
-                            }}
-                        />
-                    </div>
+                    </div>}
                     <div className={Styles.addProductItemWrap}>
                         <FormattedMessage id='order_form_table.detail_name' />
                         <Input
+                            disabled
+                            style={{
+                                color: 'black'
+                            }}
                             value={detailName}
                             onChange={(event)=>{
                                 this.setState({
@@ -1021,9 +1184,11 @@ class AddProductModal extends React.Component {
                     </div>
                 </div>
                 <AlertModal
-                    visible={alertModalVisible}
+                    alertVisible={alertModalVisible}
                     confirmAlertModal={this.confirmAlertModal}
                     cancelAlertModal={this.cancelAlertModal}
+                    storeGroupsTree={storeGroupsTree}
+                    {...this.state}
                 >
                     Даного товара нет в справочнике товаров. Добавить?
                 </AlertModal>
@@ -1032,21 +1197,417 @@ class AddProductModal extends React.Component {
     }
 }
 
+const measureUnitsOptions = Object.freeze({
+    PIECE: 'PIECE',
+    LITER: 'LITER',
+});
 
+@injectIntl
 class AlertModal extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state={
+            visible: false,
+            detailCodeSearch: "",
+            brandSearchValue: "",
+            measureUnit: measureUnitsOptions.PIECE,
+            tradeCode: undefined,
+            certificate: undefined,
+            priceGroupNumber: undefined,
+            priceGroups: [],
+            min: 0,
+            max: 0,
+        }
+    }
+
+    getPriceGroups() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/price_groups`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            that.setState({
+                priceGroups: data,
+            })
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    }
+
+    postStoreProduct() {
+        const {
+            brandId,
+            detailCode,
+            groupId,
+            detailName,
+            measureUnit,
+            priceGroupNumber,
+            tradeCode,
+            brandName,
+            certificate,
+            min,
+            max,
+        } = this.state;
+
+        if(!brandId || !detailCode || groupId || detailName) {
+            notification.error({
+                message: 'Заполните все необходимые поля',
+            });
+            return;
+        }
+
+        const postData = {
+            name: detailName,
+            groupId: groupId,
+            code: detailCode,
+            brandId: brandId,
+            measureUnit: measureUnit,
+            tradeCode: tradeCode,
+            certificate: certificate,
+            priceGroupNumber: priceGroupNumber,
+            min: min,
+            max: max,
+        }
+
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_products`;
+        fetch(url, {
+            method: "POST",
+            headers: {
+                Authorization: token,
+            },
+            body: JSON.stringify(postData)
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+            that.setState({visible: false});
+            that.props.confirmAlertModal({
+                brandId: brandId,
+                brandName: brandName,
+                detailName: detailName,
+                detailCode: detailCode,
+                tradeCode: tradeCode,
+                productId: data.id,
+            });
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    }
+
+    componentDidUpdate(prevProps) {
+        if(!prevProps.alertVisible && this.props.alertVisible) {
+            this.setState({
+                ...this.props
+            })
+        }
+    }
+
+    componentDidMount() {
+        this.getPriceGroups();
     }
 
     render() {
+        const { storeGroupsTree, alertVisible, cancelAlertModal, intl: { formatMessage } } = this.props;
+        const {
+            visible,
+            detailOptions,
+            priceGroups,
+            brandId,
+            brandName,
+            detailCode,
+            groupId,
+            detailName,
+            detailCodeSearch,
+            brandSearchValue,
+            measureUnit,
+            priceGroupNumber,
+            tradeCode,
+            certificate,
+            min,
+            max,
+        } = this.state;
         return (
-            <Modal
-                visible={this.props.visible}
-                onOk={this.props.confirmAlertModal}
-                onCancel={this.props.cancelAlertModal}
-            >
-                {this.props.children}
-            </Modal>
+            <>
+                <Modal
+                    visible={alertVisible}
+                    onOk={()=>{
+                        this.setState({
+                            visible: true,
+                        })
+                        cancelAlertModal();
+                    }}
+                    onCancel={cancelAlertModal}
+                >
+                    {this.props.children}
+                </Modal>
+                <Modal
+                    visible={visible}
+                    onOk={()=>{
+                        this.postStoreProduct();
+                    }}
+                    onCancel={()=>{
+                        this.setState({visible: false});
+                    }}
+                >
+                    <div className={Styles.addProductItemWrap}>
+                        <FormattedMessage id='order_form_table.detail_code' />{requiredField()}
+                        <AutoComplete
+                            value={detailCode}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            onChange={(value)=>{
+                                this.setState({
+                                    detailCode: value,
+                                    tradeCode: value,
+                                    detailCodeSearch: value,
+                                });
+                                this.getProductId(value);
+                            }}
+                            onSelect={(value, option)=>{
+                                this.setState({
+                                    detailCode: value,
+                                    detailName: option.props.detail_name,
+                                    tradeCode: option.props.trade_code,
+                                    stockPrice: option.props.price,
+                                    detailCodeSearch: "",
+                                });
+                                this.getProductId(value);
+                            }}
+                            onBlur={()=>{
+                                this.setState({
+                                    detailCodeSearch: "",
+                                })
+                            }}
+                            filterOption={(input, option) => {
+                                return (
+                                    String(option.props.value).toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                        >
+                            {
+                                detailCodeSearch.length > 3 ? 
+                                detailOptions.map((elem, key)=>{
+                                    return (
+                                        <Option
+                                            key={key}
+                                            value={elem.partNumber}
+                                            detail_name={elem.itemName}
+                                            price={elem.purchasePrice}
+                                            trade_code={elem.supplierPartNumber}
+                                        >
+                                            {elem.partNumber}
+                                        </Option>
+                                    )
+                                }) :
+                                []
+                            }
+                        </AutoComplete>
+                    </div>
+                    <div className={Styles.addProductItemWrap}>
+                        <FormattedMessage id='order_form_table.store_group'/>{requiredField()}
+                        <TreeSelect
+                            showSearch
+                            value={groupId}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            treeData={storeGroupsTree}
+                            filterTreeNode={(input, node) => {
+                                return (
+                                    node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(node.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.setState({
+                                    groupId: value
+                                })
+                            }}
+                        />
+                    </div>
+                    <div className={Styles.addProductItemWrap}>
+                        <FormattedMessage id='order_form_table.detail_name' />{requiredField()}
+                        <Input
+                            value={detailName}
+                            onChange={(event)=>{
+                                this.setState({
+                                    detailName: event.target.value,
+                                })
+                            }}
+                        />
+                    </div>
+                    <div className={Styles.addProductItemWrap}>
+                        <FormattedMessage id='order_form_table.brand' />{requiredField()}
+                        <Select
+                            showSearch
+                            value={brandId}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.getOptions(value)
+                                this.setState({
+                                    brandId: value,
+                                    brandName: option.props.name,
+                                })
+                            }}
+                            onSearch={(input)=>{
+                                this.setState({
+                                    brandSearchValue: input,
+                                })
+                            }}
+                            onBlur={()=>{
+                                this.setState({
+                                    brandSearchValue: "",
+                                })
+                            }}
+                        >
+                            {
+                                brandSearchValue.length > 1 ? 
+                                    this.props.brands.map((elem, index)=>(
+                                        <Option key={index} value={elem.brandId} supplier_id={elem.supplierId} name={elem.brandName}>
+                                            {elem.brandName}
+                                        </Option>
+                                    )) :
+                                    brandId ? 
+                                    <Option key={0} value={brandId}>
+                                        {brandName}
+                                    </Option> : 
+                                    []
+                            }
+                        </Select>
+                    </div>
+                    <div className={Styles.addProductItemWrap}>
+                        <FormattedMessage id='storage.measure_units' />
+                        <Select
+                            value={measureUnit}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            onChange={(value)=>{
+                                this.setState({
+                                    measureUnit: value,
+                                })
+                            }}
+                        >
+                            <Option value={ measureUnitsOptions.PIECE } key={ 'piece' }>
+                                { formatMessage({ id: 'storage.measure.piece' }) }
+                            </Option>
+                            <Option value={ measureUnitsOptions.LITER } key={ 'liter' }>
+                                { formatMessage({ id: 'storage.measure.liter' }) }
+                            </Option>
+                        </Select>
+                    </div>
+                    <div className={Styles.addProductItemWrap}>
+                        <FormattedMessage id='storage.trade_code' />
+                        <Input
+                            value={tradeCode}
+                            onChange={(event)=>{
+                                this.setState({
+                                    tradeCode: event.target.value,
+                                })
+                            }}
+                        />
+                    </div>
+                    <div className={Styles.addProductItemWrap}>
+                        <FormattedMessage id='storage.price_group' />
+                        <Select
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            value={priceGroupNumber}
+                            onChange={(value, option)=>{
+                                this.setState({
+                                    priceGroupNumber: value,
+                                })
+                            }}
+                        >
+                            { priceGroups && 
+                            priceGroups.map(({ number, multiplier }) => (
+                                <Option value={ number } key={ number } multiplier={ multiplier }>
+                                    <span>
+                                        { formatMessage({ id: 'storage.price_group' }) } -{ ' ' }
+                                        { number }{ ' ' }
+                                    </span>
+                                    <span>
+                                        ({ formatMessage({ id: 'storage.markup' }) } -{ ' ' }
+                                        { multiplier })
+                                    </span>
+                                </Option>
+                            )) }
+                        </Select>
+                        
+                    </div>
+                    <div className={Styles.addProductItemWrap}>
+                        <FormattedMessage id='storage.certificate' />
+                        <Input
+                            value={certificate}
+                            onChange={(event)=>{
+                                this.setState({
+                                    certificate: event.target.value,
+                                })
+                            }}
+                        />
+                    </div>
+                    <div className={Styles.addProductItemWrap} style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <div>
+                            <span style={{marginRight: 8}}>Min.</span>
+                            <InputNumber
+                                value={min}
+                                step={1}
+                                min={0}
+                                onChange={(value)=>{
+                                    this.setState({
+                                        min: value,
+                                    })
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <span style={{marginRight: 8}}>Max.</span>
+                            <InputNumber
+                                
+                                value={max}
+                                step={1}
+                                min={min}
+                                onChange={(value)=>{
+                                    this.setState({
+                                        max: value,
+                                    })
+                                }}
+                            />
+                        </div>
+                    </div>
+                </Modal>
+            </>
         );
     }
 }
+
+function requiredField() {
+    return <b style={{color: 'var(--required)'}}> *</b>;
+  }
