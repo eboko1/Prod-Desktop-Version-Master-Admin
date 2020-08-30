@@ -146,7 +146,7 @@ class StorageDocumentPage extends Component {
             });
         }
 
-        if(!formData.type || !formData.docProducts.length) {
+        if(!formData.type) {
             showError();
             return false;
         }
