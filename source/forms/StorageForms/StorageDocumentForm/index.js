@@ -55,6 +55,7 @@ class StorageDocumentForm extends Component {
             }
         };
         this.hideModal = this.hideModal.bind(this);
+        this.showModal = this.showModal.bind(this);
         this.editProduct = this.editProduct.bind(this);
     }
 
@@ -441,25 +442,10 @@ class StorageDocumentForm extends Component {
                     businessSupplierId={counterpartId}
                     deleteDocProduct={deleteDocProduct}
                     editProduct={this.editProduct}
+                    showModal={this.showModal}
                 />
                 { !disabled ? 
                 <>
-                    <div
-                        style={{
-                            paddingLeft: 4,
-                            marginTop: 4
-                        }}
-                    >
-                        <Button
-                            disabled={disabled}
-                            type='primary'
-                            onClick={()=>{
-                                this.showModal();
-                            }}
-                        >
-                            <Icon type='plus'/>
-                        </Button>
-                    </div>
                     <AddProductModal
                         visible={modalVisible}
                         hideModal={this.hideModal}
@@ -493,16 +479,24 @@ class DocProductsTable extends React.Component {
                 width:     actionColWidth,
                 key:       'edit',
                 render:     (elem)=>{
-                    return this.props.disabled ? null : (
-                        <Button
-                            disabled={this.props.disabled}
-                            onClick={()=>{
-                                this.props.editProduct(elem.key);
-                            }}
-                        >
-                            <Icon type='edit' />
-                        </Button>
-                    )
+                    return this.props.disabled ? null :
+                        elem.productId ?
+                            <Button
+                                disabled={this.props.disabled}
+                                onClick={()=>{
+                                    this.props.editProduct(elem.key);
+                                }}
+                            >
+                                <Icon type='edit' />
+                            </Button> : 
+                            <Button
+                                type='primary'
+                                onClick={()=>{
+                                    this.props.showModal();
+                                }}
+                            >
+                                <Icon type='plus'/>
+                            </Button>
                 }
             },
             {
@@ -512,7 +506,7 @@ class DocProductsTable extends React.Component {
                 dataIndex: 'key',
                 render:     (data, elem)=>{
                     return (
-                        data+1
+                        data+1 || <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -523,7 +517,7 @@ class DocProductsTable extends React.Component {
                 dataIndex: 'brandName',
                 render:     (data, elem)=>{
                     return (
-                        data
+                        data || <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -534,7 +528,7 @@ class DocProductsTable extends React.Component {
                 dataIndex: 'detailCode',
                 render:     (data, elem)=>{
                     return (
-                        data
+                        data || <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -545,7 +539,7 @@ class DocProductsTable extends React.Component {
                 dataIndex: 'tradeCode',
                 render:     (data, elem)=>{
                     return (
-                        data
+                        data || <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -556,7 +550,7 @@ class DocProductsTable extends React.Component {
                 width:     '15%',
                 render:     (data, elem)=>{
                     return (
-                        data
+                        data || <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -567,7 +561,7 @@ class DocProductsTable extends React.Component {
                 width:     '15%',
                 render:     (data, elem)=>{
                     return (
-                        data ? data : <FormattedMessage id='long_dash' />
+                        data || <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -578,7 +572,7 @@ class DocProductsTable extends React.Component {
                 width:     '10%',
                 render:     (data, elem)=>{
                     return (
-                        data
+                        data || <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -589,7 +583,7 @@ class DocProductsTable extends React.Component {
                 width:     '10%',
                 render:     (data, elem)=>{
                     return (
-                        data
+                        data || <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -600,7 +594,7 @@ class DocProductsTable extends React.Component {
                 width:     '10%',
                 render:     (data, elem)=>{
                     return (
-                        data
+                        data || <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -629,7 +623,14 @@ class DocProductsTable extends React.Component {
 
     render() {
         const { disabled, docProducts } = this.props;
-        const tableData = docProducts;
+        var tableData = docProducts;
+        tableData = tableData.filter((elem)=>elem.productId)
+        if(!disabled && (!tableData.length || tableData[tableData.length-1].productId)) {
+            tableData.push({
+                key: tableData.length,
+                productId: undefined,
+            })
+        }
         return (
             <Table
                 columns={this.columns}
@@ -820,6 +821,7 @@ class AddProductModal extends React.Component {
                 detailName: storageProduct.name,
                 brandId: storageProduct.brandId,
                 brandName: storageProduct.brand && storageProduct.brand.name,
+                tradeCode: storageProduct.tradeCode,
             })
             return true;
         }
@@ -993,6 +995,7 @@ class AddProductModal extends React.Component {
         return (
             <Modal
                 visible={this.props.visible}
+                width='80%'
                 onOk={()=>{
                     this.handleOk();
                 }}
@@ -1000,8 +1003,12 @@ class AddProductModal extends React.Component {
                     this.handleCancel();
                 }}
             >
-                <div>
-                    <div className={Styles.addProductItemWrap}>
+                <div
+                    style={{
+                        display: 'flex'
+                    }}
+                >
+                    <div className={Styles.addProductItemWrap} style={{minWidth: 130}}>
                         <FormattedMessage id='order_form_table.brand' />{requiredField()}
                         <Select
                             showSearch
@@ -1141,11 +1148,11 @@ class AddProductModal extends React.Component {
                         />
                     </div>
                     <div className={Styles.addProductItemWrap}>
-                        <FormattedMessage id='order_form_table.purchasePrice' />:
+                        <FormattedMessage id='order_form_table.purchasePrice' />
                         <InputNumber
                             value={stockPrice}
                             style={{
-                                marginLeft: 10,
+                                //marginLeft: 10,
                             }}
                             min={0}
                             onChange={(value)=>{
@@ -1156,11 +1163,11 @@ class AddProductModal extends React.Component {
                         />
                     </div>
                     <div className={Styles.addProductItemWrap}>
-                        <FormattedMessage id='order_form_table.count' />:
+                        <FormattedMessage id='order_form_table.count' />
                         <InputNumber
                             value={quantity}
                             style={{
-                                marginLeft: 10,
+                                //marginLeft: 10,
                             }}
                             min={0}
                             onChange={(value)=>{
@@ -1171,7 +1178,7 @@ class AddProductModal extends React.Component {
                         />
                     </div>
                     <div className={Styles.addProductItemWrap}>
-                        <FormattedMessage id='order_form_table.sum' />:
+                        <FormattedMessage id='order_form_table.sum' />
                         <InputNumber
                             disabled
                             style={{
@@ -1367,6 +1374,7 @@ class AlertModal extends React.Component {
                     {this.props.children}
                 </Modal>
                 <Modal
+                    width={'50%'}
                     visible={visible}
                     onOk={()=>{
                         this.postStoreProduct();
