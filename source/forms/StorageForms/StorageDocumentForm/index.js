@@ -1367,6 +1367,7 @@ class AlertModal extends React.Component {
                     {this.props.children}
                 </Modal>
                 <Modal
+                    width={'50%'}
                     visible={visible}
                     onOk={()=>{
                         this.postStoreProduct();
