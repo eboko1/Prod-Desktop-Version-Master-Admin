@@ -62,6 +62,7 @@ const typeToDocumentType = {
     mapStateToProps,
     null,
 )
+@injectIntl
 class StorageDocumentPage extends Component {
     _isMounted = false;
 
@@ -106,6 +107,7 @@ class StorageDocumentPage extends Component {
         this.setState({
             update: true,
         })
+        if(this.props.id) this.updateDocument(this.state.formData.status);
     }
 
     deleteDocProduct(key) {
@@ -154,7 +156,8 @@ class StorageDocumentPage extends Component {
         switch(formData.type) {
             case INCOME:
             case EXPENSE:
-                if((!formData.incomeWarehouseId && !formData.expenseWarehouseId) || !formData.counterpartId) {
+                if((!formData.incomeWarehouseId && !formData.expenseWarehouseId) || 
+                ((formData.documentType != INVENTORY && formData.docProducts != OWN_CONSUMPTY) && !formData.counterpartId)) {
                     showError();
                     return false;
                 }
@@ -264,7 +267,10 @@ class StorageDocumentPage extends Component {
             window.location.reload();
         })
         .catch(function (error) {
-            console.log('error', error)
+            console.log('error', error);
+            notification.error({
+                message: 'Ошибка склада',
+            });
         });
     }
 
@@ -336,7 +342,10 @@ class StorageDocumentPage extends Component {
             window.location.reload();
         })
         .catch(function (error) {
-            console.log('error', error)
+            console.log('error', error);
+            notification.error({
+                message: 'Ошибка склада. Проверьте количество товаров',
+            });
         });
     }
 
@@ -593,14 +602,21 @@ class StorageDocumentPage extends Component {
 
     render() {
         const { warehouses, counterpartSupplier, formData, brands, clientList, fetched } = this.state;
-        const { id } = this.props;
+        const { id, intl: {formatMessage} } = this.props;
         const dateTime = formData.createdDatetime || new Date();
+        const titleType = " " + formatMessage({id: `storage_document.docType.${formData.type}.${formData.documentType}`}).toLowerCase();
         return !fetched ? (
             <Spinner spin={true}/>
             ) : (
             <Layout
                 title={ id ? 
-                <span>{formData.documentNumber}</span> :
+                <span>
+                    {formData.status == 'NEW' ? 
+                        <FormattedMessage id='storage_document.status_created' />  :
+                        <FormattedMessage id='storage_document.status_confirmed' />
+                    }
+                    {titleType} {formData.documentNumber}
+                </span> :
                 <FormattedMessage id='storage.new_document' /> 
                 }
                 description={
