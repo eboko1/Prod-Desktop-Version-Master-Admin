@@ -108,6 +108,7 @@ class StorageDocumentForm extends Component {
         } = this.props.formData;
         const dateFormat = 'DD.MM.YYYY';
         const disabled = status == DONE;
+        const onlySum = type == TRANSFER || type == RESERVE || type == ORDER || documentType == OWN_CONSUMPTY || documentType == INVENTORY;
         
         return (
             <>
@@ -229,7 +230,10 @@ class StorageDocumentForm extends Component {
                                     }
                                 })
                             }}
-                            optionFilterProp={'children'}
+                            //optionFilterProp={'children'}
+                            filterOption={(input, option) => {
+                                return option.props.children.toLowerCase().replace(/[^a-zA_Z0-9]/gim,'').indexOf(input.toLowerCase()) >= 0;
+                            }}
                             onSearch={(input)=>{
                                 this.setState({
                                     clientSearchValue: input
@@ -259,6 +263,7 @@ class StorageDocumentForm extends Component {
                                     <Option
                                         key={key}
                                         value={client.clientId}
+                                        phones={client.phones}
                                     >
                                         {`${client.surname || ""} ${client.name} ${client.middleName || ""} ${client.phones[0]}`}
                                     </Option>
@@ -369,7 +374,7 @@ class StorageDocumentForm extends Component {
                                     {sum || 0}
                                 </Numeral>
                             </div>
-                            <div className={Styles.sumWrapper}>
+                            <div className={Styles.sumWrapper} style={{color: onlySum ? 'var(--text2)' : null}}>
                                 <FormattedMessage id="remain" />
                                 <Numeral
                                     mask={mask}
@@ -379,7 +384,7 @@ class StorageDocumentForm extends Component {
                                     })}
                                     nullText="0"
                                 >
-                                    {!disabled ? sum : 0}
+                                    {disabled || onlySum ? 0 : sum}
                                 </Numeral>
                             </div>
                         </div>
@@ -397,6 +402,7 @@ class StorageDocumentForm extends Component {
                                 style={{
                                     wordBreak: 'break-word',
                                     textAlign: 'center',
+                                    color: onlySum ? 'var(--text2)' : null
                                 }}
                             >
                                 <FormattedMessage id="paid" />
@@ -408,20 +414,20 @@ class StorageDocumentForm extends Component {
                                         id: "currency",
                                     })}
                                 >
-                                    {disabled ? sum : 0}
+                                    {!disabled || onlySum ? 0 : sum}
                                 </Numeral>
                             </p>
                         </div>
                     </div>
                    {(type == INCOME || type == EXPENSE || type == ORDER) && 
                    <div>
-                        <FormattedMessage id="header.until" />
+                        <FormattedMessage id="storage_document.pay_until" />
                         <DatePicker
                             style={{
                                 width: '100%'
                             }}
                             defaultValue={payUntilDatetime}
-                            disabled={disabled}
+                            disabled={disabled || onlySum}
                             format={dateFormat}
                             onChange={(date, stringDate)=>{
                                 updateFormData({
@@ -455,6 +461,7 @@ class StorageDocumentForm extends Component {
                         product={editKey !== undefined ? docProducts[editKey] : undefined}
                         editDocProduct={editDocProduct}
                         isIncome={type == INCOME}
+                        priceDisabled={type == TRANSFER || type == RESERVE || documentType == OWN_CONSUMPTY}
                     /> 
                 </>: null}
             </div>
@@ -566,7 +573,7 @@ class DocProductsTable extends React.Component {
                 }
             },
             {
-                title:     <FormattedMessage id='order_form_table.purchasePrice' />,
+                title:     <FormattedMessage id='order_form_table.price' />,
                 key:       'stockPrice',
                 dataIndex: 'stockPrice',
                 width:     '10%',
@@ -1005,7 +1012,8 @@ class AddProductModal extends React.Component {
             >
                 <div
                     style={{
-                        display: 'flex'
+                        display: 'flex',
+                        justifyContent: 'space-around'
                     }}
                 >
                     <div className={Styles.addProductItemWrap} style={{minWidth: 130}}>
@@ -1061,7 +1069,6 @@ class AddProductModal extends React.Component {
                             onChange={(value)=>{
                                 this.setState({
                                     detailCode: value,
-                                    tradeCode: value,
                                     detailCodeSearch: value,
                                 });
                                 this.getProductId(value);
@@ -1070,7 +1077,6 @@ class AddProductModal extends React.Component {
                                 this.setState({
                                     detailCode: value,
                                     detailName: option.props.detail_name,
-                                    tradeCode: option.props.supplier_number,
                                     stockPrice: option.props.price,
                                     detailCodeSearch: "",
                                 });
@@ -1148,8 +1154,9 @@ class AddProductModal extends React.Component {
                         />
                     </div>
                     <div className={Styles.addProductItemWrap}>
-                        <FormattedMessage id='order_form_table.purchasePrice' />
+                        <div><FormattedMessage id='order_form_table.price' /></div>
                         <InputNumber
+                            disabled={this.props.priceDisabled}
                             value={stockPrice}
                             style={{
                                 //marginLeft: 10,
@@ -1163,7 +1170,7 @@ class AddProductModal extends React.Component {
                         />
                     </div>
                     <div className={Styles.addProductItemWrap}>
-                        <FormattedMessage id='order_form_table.count' />
+                        <div><FormattedMessage id='order_form_table.count' /></div>
                         <InputNumber
                             value={quantity}
                             style={{
@@ -1178,12 +1185,12 @@ class AddProductModal extends React.Component {
                         />
                     </div>
                     <div className={Styles.addProductItemWrap}>
-                        <FormattedMessage id='order_form_table.sum' />
+                        <div><FormattedMessage id='order_form_table.sum' /></div>
                         <InputNumber
                             disabled
                             style={{
                                 color: 'black',
-                                marginLeft: 10,
+                                //marginLeft: 10,
                             }}
                             value={quantity*stockPrice}
                         />
@@ -1191,6 +1198,7 @@ class AddProductModal extends React.Component {
                 </div>
                 <AlertModal
                     alertVisible={alertModalVisible}
+                    brands={this.props.brands}
                     confirmAlertModal={this.confirmAlertModal}
                     cancelAlertModal={this.cancelAlertModal}
                     storeGroupsTree={storeGroupsTree}
@@ -1391,7 +1399,6 @@ class AlertModal extends React.Component {
                             onChange={(value)=>{
                                 this.setState({
                                     detailCode: value,
-                                    tradeCode: value,
                                     detailCodeSearch: value,
                                 });
                                 this.getProductId(value);
@@ -1451,7 +1458,8 @@ class AlertModal extends React.Component {
                             }}
                             onSelect={(value, option)=>{
                                 this.setState({
-                                    groupId: value
+                                    groupId: value,
+                                    detailName: detailName ? detailName : option.props.name,
                                 })
                             }}
                         />
@@ -1480,7 +1488,6 @@ class AlertModal extends React.Component {
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                this.getOptions(value)
                                 this.setState({
                                     brandId: value,
                                     brandName: option.props.name,

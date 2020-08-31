@@ -19,6 +19,7 @@
         "storage_document.storage_income": "Storage income",
         "storage_document.storage_expenses": "Storage expenses",
         "storage_document.all": "All",
+        "storage_document.pay_until": "Pay until",
 
         "storage_document.docType.INCOME.SUPPLIER": "Income",
         "storage_document.docType.INCOME.CLIENT": "Refund",
@@ -29,7 +30,8 @@
         "storage_document.docType.EXPENSE.OWN_CONSUMPTY": "Write-off",
         "storage_document.docType.ORDER.SUPPLIER": "Order",
         "storage_document.docType.ORDER.ADJUSTMENT": "Correction",
-        "storage_document.docType.EXPENSE.TRANSFER": "Transfer"
+        "storage_document.docType.EXPENSE.TRANSFER": "Transfer",
+        "storage_document.docType.TRANSFER.TRANSFER": "Transfer"
     },
     "ru": {
         "storage_document.document": "Документ",
@@ -47,10 +49,11 @@
         "storage_document.inventorization" : "Инвентаризация",
         "storage_document.document_status": "Статус документа",
         "storage_document.status_created": "Нов.",
-        "storage_document.status_confirmed": "Учтен",
+        "storage_document.status_confirmed": "Учтен.",
         "storage_document.storage_income": "Склад приход",
         "storage_document.storage_expenses": "Склад расход",
         "storage_document.all": "Все",
+        "storage_document.pay_until": "Оплатить до",
 
         "storage_document.docType.INCOME.SUPPLIER": "Приход",
         "storage_document.docType.INCOME.CLIENT": "Возврат",
@@ -61,7 +64,8 @@
         "storage_document.docType.EXPENSE.OWN_CONSUMPTY": "Списание",
         "storage_document.docType.ORDER.SUPPLIER": "Заказ",
         "storage_document.docType.ORDER.ADJUSTMENT": "Корректировка",
-        "storage_document.docType.EXPENSE.TRANSFER": "Перемещение"
+        "storage_document.docType.EXPENSE.TRANSFER": "Перемещение",
+        "storage_document.docType.TRANSFER.TRANSFER": "Перемещение"
     },
     "uk": {
         "storage_document.document": "Документ",
@@ -83,6 +87,7 @@
         "storage_document.storage_income": "Склад приходу",
         "storage_document.storage_expenses": "Склад витрат",
         "storage_document.all": "Усі",
+        "storage_document.pay_until": "Сплатити до",
 
         "storage_document.docType.INCOME.SUPPLIER": "Прихід",
         "storage_document.docType.INCOME.CLIENT": "Повернення",
@@ -93,7 +98,8 @@
         "storage_document.docType.EXPENSE.OWN_CONSUMPTY": "Списання",
         "storage_document.docType.ORDER.SUPPLIER": "Замовлення",
         "storage_document.docType.ORDER.ADJUSTMENT": "Корегування",
-        "storage_document.docType.EXPENSE.TRANSFER": "Переміщення"
+        "storage_document.docType.EXPENSE.TRANSFER": "Переміщення",
+        "storage_document.docType.TRANSFER.TRANSFER": "Переміщення"
     }
   }
   

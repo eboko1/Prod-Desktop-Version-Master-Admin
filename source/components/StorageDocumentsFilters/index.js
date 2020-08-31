@@ -142,13 +142,13 @@ export default StorageDocumentsFilters;
 
 
 
-class StorageDateFilter extends React.Component {
+export class StorageDateFilter extends React.Component {
     constructor(props) {
         super(props);
     }
 
     verifyDate(dateRange) {
-        if (dateRange.length != 2) {
+        if (dateRange && dateRange.length != 2) {
             const thisYear = moment().startOf('year');
             const defaultDateRange = [ moment(thisYear, this.props.dateFormat), moment(new Date(), this.props.dateFormat) ];
 
@@ -161,10 +161,10 @@ class StorageDateFilter extends React.Component {
     render() {
         const {
             dateRange,
-            dateFormat,
             onDateChange,
         } = this.props;
 
+        const dateFormat = this.props.dateFormat || 'DD.MM.YYYY';
         const currentYear = new Date().getFullYear();
         const yearOptions = [];
 
