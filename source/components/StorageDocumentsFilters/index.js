@@ -21,7 +21,7 @@ const INCOME = 'INCOME',
       SUPPLIER = 'SUPPLIER',
       CLIENT = 'CLIENT',
       INVENTORY = 'INVENTORY',
-      OWN_CONSUMPTY = 'OWN_CONSUMPTY',
+      OWN_CONSUMPTION = 'OWN_CONSUMPTION',
       TRANSFER = 'TRANSFER',
       ADJUSTMENT = 'ADJUSTMENT',
       ORDER = 'ORDER',
@@ -35,7 +35,7 @@ const typeToDocumentType = {
         },
         expense: {
             type: EXPENSE,
-            documentType: [CLIENT, SUPPLIER, INVENTORY, OWN_CONSUMPTY],
+            documentType: [CLIENT, SUPPLIER, INVENTORY, OWN_CONSUMPTION],
         },
         transfer: {
             type: EXPENSE,

@@ -28,7 +28,7 @@ const INCOME = 'INCOME',
       RESERVE = 'RESERVE',
       CLIENT = 'CLIENT',
       INVENTORY = 'INVENTORY',
-      OWN_CONSUMPTY = 'OWN_CONSUMPTY',
+      OWN_CONSUMPTION = 'OWN_CONSUMPTION',
       TRANSFER = 'TRANSFER',
       ADJUSTMENT = 'ADJUSTMENT',
       ORDER = 'ORDER',
@@ -42,7 +42,7 @@ const typeToDocumentType = {
     },
     expense: {
         type: EXPENSE,
-        documentType: [CLIENT, SUPPLIER, INVENTORY, OWN_CONSUMPTY],
+        documentType: [CLIENT, SUPPLIER, INVENTORY, OWN_CONSUMPTION],
     },
     transfer: {
         type: EXPENSE,
@@ -120,7 +120,6 @@ class StorageDocumentPage extends Component {
     } 
 
     editDocProduct(key, docProduct) {
-        console.log(key, docProduct);
         const {formData } = this.state;
         
         formData.docProducts[key] = {
@@ -142,6 +141,7 @@ class StorageDocumentPage extends Component {
 
     verifyFields() {
         const { formData } = this.state;
+        console.log(formData);
         const showError = () => {
             notification.error({
                 message: 'Заполните все необходимые поля',
@@ -156,8 +156,7 @@ class StorageDocumentPage extends Component {
         switch(formData.type) {
             case INCOME:
             case EXPENSE:
-                if((!formData.incomeWarehouseId && !formData.expenseWarehouseId) || 
-                ((formData.documentType != INVENTORY && formData.docProducts != OWN_CONSUMPTY) && !formData.counterpartId)) {
+                if(!formData.incomeWarehouseId && !formData.expenseWarehouseId){
                     showError();
                     return false;
                 }
@@ -242,7 +241,7 @@ class StorageDocumentPage extends Component {
                 })
             }
         })
-        console.log(formData, createData);
+        console.log(createData);
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + '/store_docs';
@@ -318,7 +317,6 @@ class StorageDocumentPage extends Component {
                 })
             }
         })
-        console.log('upd', formData, createData);
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/store_docs/${this.props.id}`;
@@ -481,7 +479,6 @@ class StorageDocumentPage extends Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             that.setState({
                 clientList: data.clients,
             });
@@ -510,7 +507,8 @@ class StorageDocumentPage extends Component {
         .then(function (response) {
             return response.json()
         })
-        .then(function (data) { console.log(data)
+        .then(function (data) {
+            console.log(data)
             const INC = 'INC',
                   CRT = 'CRT',
                   STP = 'STP',

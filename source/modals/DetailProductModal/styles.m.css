@@ -57,3 +57,62 @@
     width: 30%;
     margin-bottom: 5px;
 }
+
+/*VIN Code Modal Styles*/
+.vinModal {
+    display: flex;
+    position: relative;
+}
+
+.imgWrap {
+    margin: 10px 5px;
+    width: 60%;
+    overflow: scroll;
+    max-height: 500px;
+}
+
+.zoomBlock {
+    position: relative;
+}
+
+.zoomBlockItem {
+    position: absolute;
+    cursor: pointer;
+    font-Size: 18px;
+    font-Weight: 500px;
+    border: solid var(--text2) 1px;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    background: white;
+}
+
+.zoomBlock img {
+    height: 100%;
+}
+
+.listWrap {
+    margin: 10px 5px;
+    width: 40%;
+}
+
+.listTableRow > td{
+    vertical-align: middle;
+}
+
+.hoveredItem {
+    border: solid var(--text) 1px;
+    color: var(--text);
+}
+.tableRowHovered {
+    background: var(--db_reserve);
+}
+
+.checkedItem, .checkedRow {
+    background: cadetblue;
+}
+
+.hoveredItem.checkedItem, .tableRowHovered.checkedRow > td {
+    background: #6fa7a9 !important;
+}
+/*VIN Code Modal Styles End*/
