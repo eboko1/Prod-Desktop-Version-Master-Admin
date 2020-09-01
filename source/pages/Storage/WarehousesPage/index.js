@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Select, Button, Icon, Modal, Input, Checkbox } from 'antd';
+import { Select, Button, Icon, Modal, Input, Checkbox, Table, notification } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -26,6 +26,89 @@ class WarehousesPage extends Component {
         }
 
         this.getWarehouses = this.getWarehouses.bind(this);
+
+        this.columns = [
+            {
+                title:     '№',
+                key:       'key',
+                dataIndex: 'key',
+                width:     '5%',
+                render:     (data, elem)=>{
+                    return (
+                        data+1
+                    )
+                }
+            },
+            {
+                title:      <FormattedMessage id='storage'/>,
+                key:       'name',
+                dataIndex: 'name',
+                width:     'auto',
+                render:     (data, elem)=>{
+                    return (
+                        data
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='storage.attribute'/>,
+                key:       'attribute',
+                dataIndex: 'attribute',
+                width:     'auto',
+                render:     (data, elem)=>{
+                    return (
+                        data || <FormattedMessage id='long_dash' />
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='storage.consider_quantity'/>,
+                key:       'considerQuantity',
+                dataIndex: 'considerQuantity',
+                //sorter:    (a, b) => a.considerQuantity ? 1 : b.considerQuantity ? -1 : 0,
+                width:     'auto',
+                render:     (data, elem)=>{
+                    return (
+                        data ? 
+                        <Icon type='check' style={{color: 'var(--green)'}}/> :
+                        <Icon type='cross' style={{color: 'var(--warning)'}}/>
+                    )
+                }
+            },
+            {
+                key:       'edit',
+                width:     '5%',
+                render:     (elem)=>{
+                    return (
+                        <Icon
+                            type='edit'
+                            style={{fontSize: 18}}
+                            onClick={()=>{
+                                this.setState({
+                                    editMode: true,
+                                    warehouse: elem,
+                                })
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                key:       'delete',
+                width:     '5%',
+                render:     (elem)=>{
+                    return (
+                        <Icon
+                            type='delete'
+                            style={{fontSize: 18}}
+                            onClick={()=>{
+                                this.deleteWarehouse(elem.id)
+                            }}
+                        />
+                    )
+                }
+            },
+        ]
     }
 
     getWarehouses() {
@@ -51,7 +134,8 @@ class WarehousesPage extends Component {
             console.log(data);
             var isMain = false,
                 isReserve = false;
-            data.map((warehouse)=>{
+            data.map((warehouse, i)=>{
+                warehouse.key = i;
                 if(warehouse.attribute == MAIN) {
                     isMain = true;
                 }
@@ -94,6 +178,9 @@ class WarehousesPage extends Component {
         })
         .catch(function (error) {
             console.log('error', error);
+            notification.error({
+                message: 'Этот склад нельзя удалить',
+            });
         });
     }
 
@@ -124,57 +211,11 @@ class WarehousesPage extends Component {
                     />
                 }
             >
-                {warehouses.map((warehouse, key)=>{
-                    return(
-                        <div
-                            key={key}
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                width: 300,
-                            }}
-                        >
-                            <span
-                                style={{width: 400}}
-                            >
-                                {`${warehouse.name}${warehouse.attribute ? `(${warehouse.attribute})` : ""}`}
-                                
-                            </span>
-                            <span
-                                style={{width: 70}}
-                            >
-                                {
-                                    warehouse.considerQuantity ? 
-                                    <Icon type='check'/> :
-                                    <Icon type='cross'/>
-                                }
-                            </span>
-                            <span
-                                style={{width: 70}}
-                            >
-                                <Icon
-                                    type='edit'
-                                    onClick={()=>{
-                                        this.setState({
-                                            editMode: true,
-                                            warehouse: warehouse,
-                                        })
-                                    }}
-                                />
-                            </span>
-                            <span
-                                style={{width: 70}}
-                            >
-                                <Icon
-                                    type='delete'
-                                    onClick={()=>{
-                                        this.deleteWarehouse(warehouse.id)
-                                    }}
-                                />
-                            </span>
-                        </div>
-                    )
-                })}
+                <Table
+                    columns={this.columns}
+                    dataSource={warehouses}
+                    pagination={false}
+                />
             </Layout>
         );
     }
@@ -182,13 +223,14 @@ class WarehousesPage extends Component {
 
 export default WarehousesPage;
 
+@injectIntl
 class AddWarehousesModal extends Component {
     constructor(props) {
         super(props);
         this.state={
             visible: false,
             name: undefined,
-            attribute: undefined,
+            attribute: null,
             considerQuantity: true,
         }
     }
@@ -229,16 +271,21 @@ class AddWarehousesModal extends Component {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/warehouses/${this.props.warehouse.id}`;
+        const editData = {
+            name: this.state.name,
+            attribute: this.state.attribute,
+            considerQuantity: this.state.considerQuantity,
+        };
+
+        if(!this.state.attribute) delete editData.attribute;
+
+
         fetch(url, {
             method: 'PUT',
             headers: {
                 'Authorization': token,
             },
-            body: JSON.stringify({
-                name: this.state.name,
-                attribute: this.state.attribute || null,
-                considerQuantity: this.state.considerQuantity,
-            })
+            body: JSON.stringify(editData)
         })
         .then(function (response) {
             if (response.status !== 200) {
@@ -271,14 +318,13 @@ class AddWarehousesModal extends Component {
         this.setState({
             name: undefined,
             visible: false,
-            attribute: undefined,
+            attribute: null,
             considerQuantity: true,
         });
         this.props.finishEdit();
     }
 
     componentDidUpdate(prevProps) {
-        console.log(prevProps.editMode, this.props.editMode)
         if(!prevProps.editMode && this.props.editMode) {
             const { warehouse } = this.props;
             this.setState({
@@ -292,7 +338,7 @@ class AddWarehousesModal extends Component {
 
 
     render() {
-        const { isMain, isReserve } = this.props;
+        const { isMain, isReserve, editMode, intl: {formatMessage} } = this.props;
         return (
             <>
             <Button
@@ -307,7 +353,7 @@ class AddWarehousesModal extends Component {
             </Button>
             <Modal
                 visible={this.state.visible}
-                title={<FormattedMessage id='storage.add_warehouse'/>}
+                title={`${formatMessage({id: editMode ? 'edit' : 'add'})} ${formatMessage({id: 'storage'}).toLowerCase()}`}
                 onCancel={this.handleCancel}
                 onOk={this.handleOk}
             >
@@ -343,6 +389,7 @@ class AddWarehousesModal extends Component {
                             width: '100%',
                         }}
                         value={this.state.attribute}
+                        defaultActiveFirstOption
                         dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                         onChange={(value)=>{
                             this.setState({
@@ -351,16 +398,22 @@ class AddWarehousesModal extends Component {
                         }}
                     >
                         <Option
-                            value={MAIN}
-                            disabled={isMain}
+                            value={null}
+                            disabled={this.state.attribute == MAIN || this.state.attribute == RESERVE}
                         >
-                            MAIN
+                            <FormattedMessage id='long_dash' />
+                        </Option>
+                        <Option
+                            value={MAIN}
+                            disabled={isMain && this.state.attribute != MAIN}
+                        >
+                            {MAIN}
                         </Option>
                         <Option
                             value={RESERVE}
-                            disabled={isReserve}
+                            disabled={isReserve && this.state.attribute != RESERVE}
                         >
-                            RESERVE
+                            {RESERVE}
                         </Option>
                     </Select>
                 </div>
@@ -371,7 +424,7 @@ class AddWarehousesModal extends Component {
                         marginTop: 16,
                     }}
                 >
-                    <FormattedMessage id='storage.considerQuantity'/>: 
+                    <FormattedMessage id='storage.consider_quantity'/>: 
                     <Checkbox
                         style={{marginLeft: 8}}
                         checked={this.state.considerQuantity}

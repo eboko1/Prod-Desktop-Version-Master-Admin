@@ -236,6 +236,9 @@ class DetailProductModal extends React.Component{
                                 brandId={elem.brandId}
                                 defaultBrandName={this.state.defaultBrandName}
                             />
+                            <VinCodeModal
+                                disabled={!elem.storeGroupId}
+                            />
                         </div>
                     )
                 }
@@ -744,7 +747,9 @@ class DetailProductModal extends React.Component{
                     </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
-                            <div style={{display: 'block'}}><FormattedMessage id="order_form_table.diagnostic.detail"/></div>
+                            <div style={{display: 'block'}}>
+                                <FormattedMessage id="order_form_table.diagnostic.detail"/>
+                            </div>
                         </div>
                         <Table
                             dataSource={this.state.mainTableSource}
@@ -1013,5 +1018,254 @@ class CommentaryButton extends React.Component{
                 </Modal>
             </div>
         );
+    }
+}
+
+const zoomMultiplier = 1.4;
+class VinCodeModal extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            visible: false,
+            zoomed: false,
+            itemsInfo: [
+                {key: 0, code: 111, name: "00111", top: 130, left: 65},
+                {key: 1, code: 222, name: "00222", top: 80, left: 200},
+                {key: 2, code: 333, name: "00333", top: 240, left: 120},
+                {key: 3, code: 444, name: "00444", top: 100, left: 30},
+                {key: 4, code: 555, name: "00555", top: 70, left: 175},
+            ],
+            hoverIndex: undefined,
+            checkedIndexes: [],
+            infoModalVisible: false,
+            infoItem: undefined,
+        };
+        this.showInfoModal = this.showInfoModal.bind(this);
+
+        this.columns = [
+            {
+                title:     '№',
+                key:       'key',
+                dataIndex: 'key',
+                width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        data+1
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id="order_form_table.detail_code" />,
+                key:       'code',
+                dataIndex: 'code',
+                width:     '30%',
+                render: (data, elem)=>{
+                    return (
+                        data+1
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id="order_form_table.detail_name" />,
+                key:       'name',
+                dataIndex: 'name',
+                width:     '50%',
+                render: (data, elem)=>{
+                    return (
+                        data+1
+                    )
+                }
+            },
+            {
+                key:       'action',
+                width:     '10%',
+                render: (elem)=>{
+                    return (
+                        <Icon
+                            title='INFO'
+                            type="question-circle"
+                            style={{
+                                fontSize: 18,
+                            }}
+                            onClick={()=>this.showInfoModal(elem.key)}
+                        />
+                    )
+                }
+            },
+        ]
+    }
+
+    showInfoModal(index) {
+        const isChecked = this.state.checkedIndexes.indexOf(index) >= 0;
+        if(!isChecked) {
+            this.state.checkedIndexes.push(index);
+        }
+        else {
+            this.state.checkedIndexes = this.state.checkedIndexes.filter((indexChecked)=>indexChecked!=index);
+        }
+        this.setState({
+            infoItem: this.state.itemsInfo[index],
+            infoModalVisible: true,
+        })
+    }
+
+    handleOk = () => {
+        this.handleCancel();
+    }
+
+    handleCancel = () => {
+        this.setState({
+            visible: false,
+            zoomed: false,
+        })
+    }
+
+    render() {
+        const { disabled } = this.props;
+        const { visible, zoomed, positions, itemsInfo, hoverIndex, checkedIndexes, infoItem, infoModalVisible } = this.state;
+        return (
+            <>
+                <Button
+                    type='primary'
+                    disabled={disabled}
+                    onClick={()=>{
+                        this.setState({
+                            visible: true,
+                        })
+                    }}
+                >
+                    <Icon type="font-size" />
+                </Button>
+                <Modal
+                    width='65%'
+                    visible={visible}
+                    title='VIN'
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                >
+                    <div className={Styles.vinModal}>
+                        <div className={Styles.imgWrap}>
+                            <Icon
+                                type={zoomed ? 'zoom-out' : 'zoom-in'}
+                                style={{
+                                    fontSize: 24,
+                                    position: 'absolute',
+                                    top: 5,
+                                    left: 5,
+                                    zIndex: 9999,
+                                }}
+                                onClick={()=>{
+                                    this.setState({
+                                        zoomed: !zoomed,
+                                    })
+                                }}
+                            />
+                            <div
+                                className={Styles.zoomBlock}
+                                style={{
+                                    height: zoomed ? `${zoomMultiplier*100}%` : '100%',
+                                }}
+                            >
+                                {itemsInfo.map((item, key)=>{
+                                    const isHovered =  hoverIndex == key;
+                                    const isChecked = checkedIndexes.indexOf(key) >= 0;
+                                    return (
+                                        <div
+                                            className={`${Styles.zoomBlockItem} ${isHovered && Styles.hoveredItem} ${isChecked && Styles.checkedItem}`}
+                                            key={key}
+                                            style={{
+                                                top: item.top * (zoomed ? zoomMultiplier : 1),
+                                                left: item.left * (zoomed ? zoomMultiplier : 1),
+                                            }}
+                                            onMouseEnter={(event)=>{
+                                                this.setState({
+                                                    hoverIndex: key
+                                                })
+                                            }}
+                                            onMouseLeave={(event)=>{
+                                                this.setState({
+                                                    hoverIndex: undefined,
+                                                })
+                                            }}
+                                            onClick={()=>{
+                                                if(!isChecked) {
+                                                    checkedIndexes.push(key);
+                                                    this.setState({
+                                                        update: true,
+                                                    })
+                                                }
+                                                else {
+                                                    this.setState({
+                                                        checkedIndexes: checkedIndexes.filter((index)=>index!=key),
+                                                    })
+                                                }
+                                            }}
+                                        >
+                                            {key+1}
+                                        </div>
+                                    )
+                                })}
+                                <img src='https://lh3.googleusercontent.com/proxy/DzHyIVJ23kYdC2qdGfR1yL5Hzs31cl7CTiDTJ18ApMALTVIYcCUzvfF_4nZM0i9ZzY6vLWgdepfDIOAm7pcBNATACUE'/>
+                            </div>
+                        </div>
+                        <div className={Styles.listWrap}>
+                            <Table
+                                columns={this.columns}
+                                dataSource={itemsInfo}
+                                rowClassName={(record, rowIndex)=>{
+                                    const isHovered = hoverIndex == rowIndex;
+                                    const isChecked = checkedIndexes.indexOf(rowIndex) >= 0;
+                                    return `${Styles.listTableRow} ${isHovered && Styles.tableRowHovered} ${isChecked && Styles.checkedRow}`
+                                }}
+                                onRow={(record, rowIndex) => {
+                                    return {
+                                      onClick: event => {
+                                        const isChecked = checkedIndexes.indexOf(rowIndex) >= 0;
+                                        if(!isChecked) {
+                                            checkedIndexes.push(rowIndex);
+                                            this.setState({
+                                                update: true,
+                                            })
+                                        }
+                                        else {
+                                            this.setState({
+                                                checkedIndexes: checkedIndexes.filter((index)=>index!=rowIndex),
+                                            })
+                                        }
+                                      },
+                                      onMouseEnter: event => {
+                                        this.setState({
+                                            hoverIndex: rowIndex,
+                                        })
+                                      },
+                                      onMouseLeave: event => {
+                                        this.setState({
+                                            hoverIndex: undefined,
+                                        })
+                                      },
+                                    };
+                                }}
+                                pagination={false}
+                            >
+
+                            </Table>
+                            <Modal
+                                visible={infoModalVisible}
+                                title={infoItem && infoItem.name}
+                                footer={[]}
+                                onCancel={()=>{
+                                    this.setState({
+                                        infoModalVisible: false,
+                                    })
+                                }}
+                            >
+                                {infoItem ? 
+                                `${infoItem.name} ${infoItem.code}` : null}   
+                            </Modal>
+                        </div>
+                    </div>
+                </Modal>
+            </>
+        )
     }
 }

@@ -31,7 +31,7 @@ const INCOME = 'INCOME',
       SUPPLIER = 'SUPPLIER',
       CLIENT = 'CLIENT',
       INVENTORY = 'INVENTORY',
-      OWN_CONSUMPTY = 'OWN_CONSUMPTY',
+      OWN_CONSUMPTION = 'OWN_CONSUMPTION',
       TRANSFER = 'TRANSFER',
       ADJUSTMENT = 'ADJUSTMENT',
       ORDER = 'ORDER',
@@ -108,7 +108,7 @@ class StorageDocumentForm extends Component {
         } = this.props.formData;
         const dateFormat = 'DD.MM.YYYY';
         const disabled = status == DONE;
-        const onlySum = type == TRANSFER || type == RESERVE || type == ORDER || documentType == OWN_CONSUMPTY || documentType == INVENTORY;
+        const onlySum = type == TRANSFER || type == RESERVE || type == ORDER || documentType == OWN_CONSUMPTION || documentType == INVENTORY;
         
         return (
             <>
@@ -461,7 +461,7 @@ class StorageDocumentForm extends Component {
                         product={editKey !== undefined ? docProducts[editKey] : undefined}
                         editDocProduct={editDocProduct}
                         isIncome={type == INCOME}
-                        priceDisabled={type == TRANSFER || type == RESERVE || documentType == OWN_CONSUMPTY}
+                        priceDisabled={type == TRANSFER || type == RESERVE || documentType == OWN_CONSUMPTION}
                     /> 
                 </>: null}
             </div>
@@ -966,7 +966,6 @@ class AddProductModal extends React.Component {
     componentDidUpdate(prevProps) {
         if(!prevProps.visible && this.props.visible) {
             const { product } = this.props;
-            console.log(this)
             if(product) {
                 this.setState({
                     editMode: true,
@@ -1319,7 +1318,6 @@ class AlertModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             that.setState({visible: false});
             that.props.confirmAlertModal({
                 brandId: brandId,
