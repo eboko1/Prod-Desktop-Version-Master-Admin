@@ -323,6 +323,7 @@ export default class OrderFormTabs extends React.PureComponent {
                                 "order.agreementCompleted",
                             )}
                             reloadOrderForm={this.props.reloadOrderForm}
+                            clientVehicleVin={this.props.clientVehicleVin}
                         />
                         <DiscountPanel
                             orderDetails={orderDetails}
