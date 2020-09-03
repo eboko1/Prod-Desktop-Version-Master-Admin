@@ -1,12 +1,13 @@
 // vendor
 import React, { Component } from 'react';
-import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox, Spin } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { DetailStorageModal, DetailSupplierModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
 // own
 import Styles from './styles.m.css';
+const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
 
@@ -238,6 +239,8 @@ class DetailProductModal extends React.Component{
                             />
                             <VinCodeModal
                                 disabled={!elem.storeGroupId}
+                                storeGroupId={elem.storeGroupId}
+                                vin={this.props.clientVehicleVin}
                             />
                         </div>
                     )
@@ -1026,21 +1029,23 @@ class VinCodeModal extends Component{
     constructor(props) {
         super(props);
         this.state = {
+            categoryMode: false,
+            categories: [],
             visible: false,
+            loading: false,
             zoomed: false,
-            itemsInfo: [
-                {key: 0, code: 111, name: "00111", top: 130, left: 65},
-                {key: 1, code: 222, name: "00222", top: 80, left: 200},
-                {key: 2, code: 333, name: "00333", top: 240, left: 120},
-                {key: 3, code: 444, name: "00444", top: 100, left: 30},
-                {key: 4, code: 555, name: "00555", top: 70, left: 175},
-            ],
-            hoverIndex: undefined,
-            checkedIndexes: [],
+            itemsInfo: [],
+            blockPositions: [],
+            tableHoverCode: undefined,
+            imgHoverCode: undefined,
+            imgHoverIndex: undefined,
+            checkedCodes: [],
             infoModalVisible: false,
             infoItem: undefined,
+            image: undefined,
         };
         this.showInfoModal = this.showInfoModal.bind(this);
+        this.onImgLoad = this.onImgLoad.bind(this);
 
         this.columns = [
             {
@@ -1050,14 +1055,14 @@ class VinCodeModal extends Component{
                 width:     '10%',
                 render: (data, elem)=>{
                     return (
-                        data+1
+                        Number(elem.codeonimage) || data + 1
                     )
                 }
             },
             {
                 title:     <FormattedMessage id="order_form_table.detail_code" />,
-                key:       'code',
-                dataIndex: 'code',
+                key:       'oem',
+                dataIndex: 'oem',
                 width:     '30%',
                 render: (data, elem)=>{
                     return (
@@ -1079,15 +1084,23 @@ class VinCodeModal extends Component{
             {
                 key:       'action',
                 width:     '10%',
+                className: Styles.infoActionButtonCol,
                 render: (elem)=>{
+                    var title = '';
+                    if(elem.attributes && elem.attributes.length) {
+                        elem.attributes.map((attr)=>{
+                            title += `${attr.name}: ${attr.value}\n`
+                        })
+                    }
                     return (
                         <Icon
-                            title='INFO'
+                            title={title}
                             type="question-circle"
                             style={{
                                 fontSize: 18,
+                                pointerEvents: 'all',
                             }}
-                            onClick={()=>this.showInfoModal(elem.key)}
+                            onClick={()=>this.showInfoModal(elem.name, elem.attributes, elem.codeonimage)}
                         />
                     )
                 }
@@ -1095,19 +1108,33 @@ class VinCodeModal extends Component{
         ]
     }
 
-    showInfoModal(index) {
-        const isChecked = this.state.checkedIndexes.indexOf(index) >= 0;
-        if(!isChecked) {
-            this.state.checkedIndexes.push(index);
-        }
-        else {
-            this.state.checkedIndexes = this.state.checkedIndexes.filter((indexChecked)=>indexChecked!=index);
-        }
+    showInfoModal(name, attributes, code = -1) {
         this.setState({
-            infoItem: this.state.itemsInfo[index],
+            infoItem: {
+                name: name,
+                body: attributes.map((attr, i)=>
+                    <p
+                        key={i}
+                    >
+                        <b>{attr.name}:</b> {attr.value}
+                    </p>
+                )
+            },
             infoModalVisible: true,
         })
     }
+
+    onImgLoad({target:img}) {
+        console.log(img.naturalHeight, img.naturalWidth)
+        this.setState({
+            image:{
+                ...this.state.image,
+                height: img.naturalHeight,
+                width: img.naturalWidth
+            }
+        });
+    }
+
 
     handleOk = () => {
         this.handleCancel();
@@ -1117,12 +1144,149 @@ class VinCodeModal extends Component{
         this.setState({
             visible: false,
             zoomed: false,
+            loading: false,
+            categoryMode: false,
         })
+    }
+
+    fetchData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url =  __API_URL__ + `/vin/list_quick_detail?vin=${this.props.vin}&storeGroupId=${this.props.storeGroupId}`;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function ({data}) {
+            console.log(data);
+            if(data) {
+                const { catalog, ssd } = data.response.FindVehicle.response.FindVehicle[0].row[0].$;
+                const categoriesArray = data.response.ListQuickDetail[0].Category;
+                const normalizedCategories = [];
+
+                if(categoriesArray.length) {
+                    categoriesArray.map((elem)=>{
+                        normalizedCategories.push({
+                            catalog: catalog,
+                            ...elem.$,
+                            unit: {...elem.Unit[0].$},
+                            detail: {
+                                ...elem.Unit[0].Detail[0].$,
+                                attribute: elem.Unit[0].Detail[0].attribute.map((attr)=>attr.$),
+                            }
+                        });
+                    })
+                }
+
+                console.log(normalizedCategories);
+                that.setState({
+                    loading: false,
+                    categoryMode: normalizedCategories.length > 1,
+                    categories: normalizedCategories,
+                })
+                
+            }
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        })
+    }
+
+    fetchItemsList(ssd, unitId, catalog) {
+        this.setState({
+            loading: true,
+        })
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url =  __API_URL__ +`/vin/list_detail_by_unit_id?ssd=${ssd}`+
+                                `&unitId=${unitId}&catalog=${catalog}`;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function ({data}) {
+            console.log(data.response);
+            const itemsInfo = [];
+            const blockPositions = [];
+            const image = data.response.GetUnitInfo[0].row[0].$;
+            data.response.ListDetailsByUnit[0].row.map(({$: item, attribute}, key)=>{
+                itemsInfo.push({
+                    key: key,
+                    ...item,
+                    attributes: attribute.map((attr)=>attr.$),
+                })
+            });
+            data.response.ListImageMapByUnit[0].row.map(({$: position}, key)=>{
+                blockPositions.push({
+                    ...position,
+                    key: key,
+                });
+            })
+            console.log(itemsInfo, blockPositions, image);
+            that.setState({
+                loading: false,
+                itemsInfo: itemsInfo,
+                blockPositions: blockPositions,
+                image: image,
+                categoryMode: false,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(!prevState.visible && this.state.visible) {
+            this.setState({
+                loading: true,
+            })
+            this.fetchData()
+        }
     }
 
     render() {
         const { disabled } = this.props;
-        const { visible, zoomed, positions, itemsInfo, hoverIndex, checkedIndexes, infoItem, infoModalVisible } = this.state;
+        const {
+            visible,
+            zoomed,
+            positions,
+            itemsInfo,
+            blockPositions,
+            tableHoverCode,
+            imgHoverCode,
+            imgHoverIndex,
+            checkedCodes,
+            infoItem,
+            infoModalVisible,
+            loading,
+            categories,
+            categoryMode,
+            image,
+        } = this.state;
+
         return (
             <>
                 <Button
@@ -1137,12 +1301,81 @@ class VinCodeModal extends Component{
                     <Icon type="font-size" />
                 </Button>
                 <Modal
-                    width='65%'
+                    width='fit-content'
+                    style={{
+                        maxWidth: '85%',
+                    }}
                     visible={visible}
                     title='VIN'
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                 >
+                    {loading ? <Spin indicator={spinIcon} /> :
+                    categoryMode ? 
+                        (categories.map((category, key)=>{
+                            const detail = category.detail;
+                            return (<>
+                                <div
+                                    className={Styles.categoryTitle}
+                                    key={`category-title-${key}`}
+                                >
+                                    <a
+                                        onClick={()=>{
+                                            this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog)
+                                        }}
+                                    >
+                                        {category.name}
+                                    </a>
+                                </div>
+                                <div
+                                    className={Styles.vinModal}
+                                    key={`category-body-${key}`}
+                                    style={{
+                                        marginBottom: 15
+                                    }}
+                                >
+                                    <div className={Styles.imgWrap}>
+                                        <div
+                                            className={Styles.zoomBlock}
+                                            style={{
+                                                height: '100%',
+                                            }}
+                                        >
+                                            <img
+                                                src={category.unit.imageurl.replace('%size%', 'source')}
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    width: '100%'
+                                                }}
+                                                onClick={()=>{
+                                                    this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog)
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className={Styles.listWrap}>
+                                        <Table
+                                            columns={this.columns}
+                                            dataSource={[
+                                                {
+                                                    key: 0,
+                                                    oem: detail.oem,
+                                                    name: detail.name,
+                                                    attributes: detail.attribute,
+                                                }
+                                            ]}
+                                            pagination={false}
+                                        />
+                                    </div>
+                                </div>
+                            </>)
+                        })
+                    ): <>
+                    <div
+                        className={Styles.categoryTitle}
+                    >
+                        {image && image.name}
+                    </div>
                     <div className={Styles.vinModal}>
                         <div className={Styles.imgWrap}>
                             <Icon
@@ -1163,107 +1396,132 @@ class VinCodeModal extends Component{
                             <div
                                 className={Styles.zoomBlock}
                                 style={{
-                                    height: zoomed ? `${zoomMultiplier*100}%` : '100%',
+                                    
                                 }}
                             >
-                                {itemsInfo.map((item, key)=>{
-                                    const isHovered =  hoverIndex == key;
-                                    const isChecked = checkedIndexes.indexOf(key) >= 0;
+                                {blockPositions.map((item, key)=>{
+                                    const code = Number(item.code);
+                                    const isHovered =  imgHoverCode == code || imgHoverIndex == key;
+                                    const isChecked = checkedCodes.indexOf(code) >= 0;
                                     return (
                                         <div
                                             className={`${Styles.zoomBlockItem} ${isHovered && Styles.hoveredItem} ${isChecked && Styles.checkedItem}`}
                                             key={key}
                                             style={{
-                                                top: item.top * (zoomed ? zoomMultiplier : 1),
-                                                left: item.left * (zoomed ? zoomMultiplier : 1),
+                                                left: `${(item.x1 / image.width)*100}%`,
+                                                top: `${(item.y1 / image.height)*100}%`,
+                                                transform: 'translate(-50%, -50%)'
                                             }}
                                             onMouseEnter={(event)=>{
                                                 this.setState({
-                                                    hoverIndex: key
+                                                    tableHoverCode: code,
+                                                    imgHoverIndex: key,
                                                 })
                                             }}
                                             onMouseLeave={(event)=>{
                                                 this.setState({
-                                                    hoverIndex: undefined,
+                                                    tableHoverCode: undefined,
+                                                    imgHoverIndex: undefined,
                                                 })
                                             }}
                                             onClick={()=>{
                                                 if(!isChecked) {
-                                                    checkedIndexes.push(key);
+                                                    checkedCodes.push(code);
                                                     this.setState({
                                                         update: true,
                                                     })
                                                 }
                                                 else {
                                                     this.setState({
-                                                        checkedIndexes: checkedIndexes.filter((index)=>index!=key),
+                                                        checkedCodes: checkedCodes.filter((index)=>index!=code),
                                                     })
                                                 }
                                             }}
                                         >
-                                            {key+1}
+                                            {code}
                                         </div>
                                     )
                                 })}
-                                <img src='https://lh3.googleusercontent.com/proxy/DzHyIVJ23kYdC2qdGfR1yL5Hzs31cl7CTiDTJ18ApMALTVIYcCUzvfF_4nZM0i9ZzY6vLWgdepfDIOAm7pcBNATACUE'/>
+                                <img
+                                    width='100%'
+                                    src={`${image && image.imageurl.replace('%size%', 'source')}`}
+                                    onLoad={this.onImgLoad}
+                                />
+                                <Modal
+                                    visible={zoomed}
+                                    title={image && image.name}
+                                    footer={[]}
+                                    width={'fit-content'}
+                                    onCancel={()=>{
+                                        this.setState({
+                                            zoomed: false,
+                                        })
+                                    }}
+                                >
+                                    <img
+                                        src={`${image && image.imageurl.replace('%size%', 'source')}`}
+                                    />
+                                </Modal>
                             </div>
                         </div>
                         <div className={Styles.listWrap}>
                             <Table
+                                loading={loading}
                                 columns={this.columns}
                                 dataSource={itemsInfo}
                                 rowClassName={(record, rowIndex)=>{
-                                    const isHovered = hoverIndex == rowIndex;
-                                    const isChecked = checkedIndexes.indexOf(rowIndex) >= 0;
+                                    const code = Number(record.codeonimage)
+                                    const isHovered = tableHoverCode == code;
+                                    const isChecked = checkedCodes.indexOf(code) >= 0;
                                     return `${Styles.listTableRow} ${isHovered && Styles.tableRowHovered} ${isChecked && Styles.checkedRow}`
                                 }}
                                 onRow={(record, rowIndex) => {
+                                    const code = Number(record.codeonimage);
                                     return {
                                       onClick: event => {
-                                        const isChecked = checkedIndexes.indexOf(rowIndex) >= 0;
-                                        if(!isChecked) {
-                                            checkedIndexes.push(rowIndex);
-                                            this.setState({
-                                                update: true,
-                                            })
-                                        }
-                                        else {
-                                            this.setState({
-                                                checkedIndexes: checkedIndexes.filter((index)=>index!=rowIndex),
-                                            })
+                                        if(event.ctrlKey) {
+                                            const isChecked = checkedCodes.indexOf(code) >= 0;
+                                            if(!isChecked) {
+                                                checkedCodes.push(code);
+                                                this.setState({
+                                                    update: true,
+                                                })
+                                            }
+                                            else {
+                                                this.setState({
+                                                    checkedCodes: checkedCodes.filter((index)=>index!=code),
+                                                })
+                                            }
                                         }
                                       },
                                       onMouseEnter: event => {
                                         this.setState({
-                                            hoverIndex: rowIndex,
+                                            imgHoverCode: code,
                                         })
                                       },
                                       onMouseLeave: event => {
                                         this.setState({
-                                            hoverIndex: undefined,
+                                            imgHoverCode: undefined,
                                         })
                                       },
                                     };
                                 }}
                                 pagination={false}
-                            >
-
-                            </Table>
-                            <Modal
-                                visible={infoModalVisible}
-                                title={infoItem && infoItem.name}
-                                footer={[]}
-                                onCancel={()=>{
-                                    this.setState({
-                                        infoModalVisible: false,
-                                    })
-                                }}
-                            >
-                                {infoItem ? 
-                                `${infoItem.name} ${infoItem.code}` : null}   
-                            </Modal>
+                            />
                         </div>
-                    </div>
+                    </div></>}
+                    <Modal
+                        visible={infoModalVisible}
+                        title={infoItem && infoItem.name}
+                        footer={[]}
+                        onCancel={()=>{
+                            this.setState({
+                                infoModalVisible: false,
+                            })
+                        }}
+                    >
+                        {infoItem && infoItem.body}
+                    </Modal>
                 </Modal>
             </>
         )

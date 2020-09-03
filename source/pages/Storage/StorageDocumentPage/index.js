@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Dropdown, Button, Icon, Menu, notification } from 'antd';
+import { Dropdown, Button, Icon, Menu, notification, Modal, Table, InputNumber } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -21,6 +21,12 @@ const mapStateToProps = state => {
         user: state.auth,
     };
 };
+
+const headerIconStyle = {
+    fontSize: 24,
+    cursor:   'pointer',
+    margin:   '0 0 0 18px',
+}
 
 const INCOME = 'INCOME',
       EXPENSE = 'EXPENSE',
@@ -634,14 +640,11 @@ class StorageDocumentPage extends Component {
                             <ReportsDropdown/>
                         </>
                         : null}
-                        {formData.status != DONE &&
+                        {formData.status != DONE && (<>
+                        <AutomaticOrderCreationModal/>
                         <Icon
                             type='save'
-                            style={ {
-                                fontSize: 24,
-                                cursor:   'pointer',
-                                margin:   '0 10px',
-                            } }
+                            style={headerIconStyle}
                             onClick={()=>{
                                 if(id) {
                                     this.updateDocument();
@@ -650,25 +653,18 @@ class StorageDocumentPage extends Component {
                                     this.createDocument();
                                 }
                             }}
-                        />}
+                        /></>)}
                         {id && formData.status != DONE &&
                         <Icon
                             type='delete'
-                            style={ {
-                                fontSize: 24,
-                                cursor:   'pointer',
-                                margin:   '0 10px',
-                            } }
+                            style={headerIconStyle}
                             onClick={()=>{
 
                             }}
                         />}
                         <Icon
                             type='close'
-                            style={ {
-                                fontSize: 24,
-                                cursor:   'pointer',
-                            } }
+                            style={headerIconStyle}
                             onClick={()=>{
                                 this.props.history.goBack();
                             }}
@@ -722,16 +718,15 @@ class ChangeStatusDropdown extends React.Component {
                 <div 
                     style={ {
                         cursor:   'pointer',
-                        margin:   '0 10px',
+                        marginRight: 5,
                     } }
                 >
                     <Icon
                         type='swap'
-                        style={ {
-                            fontSize: 24,
-                            cursor:   'pointer',
-                            margin:   '0 10px',
-                        } }
+                        style={{
+                            marginRight: 5,
+                            fontSize: 18
+                        }}
                     />
                     <FormattedMessage id='change_status_dropdown.change_status' />
                 </div>
@@ -762,13 +757,326 @@ class ReportsDropdown extends React.Component {
             <Dropdown overlay={ menu }>
                 <Icon
                     type='printer'
-                    style={ {
-                        fontSize: 24,
-                        cursor:   'pointer',
-                        margin:   '0 10px',
-                    } }
+                    style={headerIconStyle}
                 />
             </Dropdown>
         );
     }
+}
+
+@injectIntl
+class AutomaticOrderCreationModal extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: [
+                {
+                    key: 0,
+                    brandName: 'SACHS',
+                    detailCode: '100 786',
+                    tradeCode: '123456',
+                    detailName: 'Амортизатор подвески',
+                    stockPrice: 980,
+                    quantity: 2,
+                    sum: 1960,
+                    reserve: 2,
+                    min: 0,
+                    max: 3,
+                    ordered: 6,
+                    deficit: -2,
+                    toOrder: 2,
+                    inOrders: 5,
+                    inStock: 10,
+                }
+            ],
+            visible: false,
+        };
+
+        const { formatMessage } = props.intl;
+
+        this.columns = [
+            {
+                title:     "№",
+                width:     '3%',
+                key:       'key',
+                dataIndex: 'key',
+                render:     (data)=>{
+                    return (
+                        data+1
+                    )
+                }
+            },
+            {
+                title:     textToColumn(
+                                formatMessage({id: 'order_form_table.detail_code'}),
+                                formatMessage({id: 'order_form_table.brand'}),
+                            ),
+                width:     'auto',
+                key:       'codeAndBrand',
+                render:     (elem)=>{
+                    return (
+                        textToColumn(
+                            elem.detailCode,
+                            elem.brandName
+                        )
+                    )
+                }
+            },
+            {
+                title:     textToColumn(
+                                `${formatMessage({id: 'order_form_table.detail_code'})} (${formatMessage({id: 'storage.supplier'})})`,
+                                formatMessage({id: 'order_form_table.detail_name'}),
+                            ),
+                width:     'auto',
+                key:       'SupplierCodeAndName',
+                render:     (elem)=>{
+                    return (
+                        textToColumn(
+                            elem.tradeCode,
+                            elem.detailName
+                        )
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.price' />,
+                key:       'stockPrice',
+                dataIndex: 'stockPrice',
+                width:     'auto',
+                render:     (data, elem)=>{
+                    return (
+                        <InputNumber
+                            value={data}
+                            min={0}
+                            onChange={(value)=>{
+                                elem.stockPrice = value;
+                                this.setState({update: true});
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='storage.in_orders' />,
+                key:       'inOrders',
+                dataIndex: 'inOrders',
+                width:     'auto',
+                render:     (data, elem)=>{
+                    return (
+                        <InputNumber
+                            disabled
+                            style={{
+                                color: 'black',
+                            }}
+                            value={data}
+                        />
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='storage.in_stock' />,
+                key:       'inStock',
+                dataIndex: 'inStock',
+                width:     'auto',
+                render:     (data, elem)=>{
+                    return (
+                        <InputNumber
+                            disabled
+                            style={{
+                                color: 'black',
+                            }}
+                            value={data}
+                        />
+                    )
+                }
+            },
+            {
+                title:     textToColumn(
+                                formatMessage({id: 'storage.reserve'}),
+                                formatMessage({id: 'storage.min'}),
+                            ),
+                width:     'auto',
+                key:       'storageBalanceReserveAndMin',
+                render:     (elem)=>{
+                    return (
+                        <>
+                            <div>
+                                <InputNumber
+                                    disabled
+                                    style={{
+                                        color: 'black',
+                                    }}
+                                    value={elem.reserve}
+                                />
+                            </div>
+                            <div>
+                                <InputNumber
+                                    disabled
+                                    style={{
+                                        color: 'black',
+                                    }}
+                                    value={elem.min}
+                                />
+                            </div>
+                        </>
+                    )
+                }
+            },
+            {
+                title:     textToColumn(
+                                formatMessage({id: 'storage.ordered'}),
+                                formatMessage({id: 'storage.max'}),
+                            ),
+                width:     'auto',
+                key:       'storageBalanceOrderedAndMax',
+                render:     (elem)=>{
+                    return (
+                        <>
+                            <div>
+                                <InputNumber
+                                    disabled
+                                    style={{
+                                        color: 'black',
+                                    }}
+                                    value={elem.ordered}
+                                />
+                            </div>
+                            <div>
+                                <InputNumber
+                                    disabled
+                                    style={{
+                                        color: 'black',
+                                    }}
+                                    value={elem.max}
+                                />
+                            </div>
+                        </>
+                    )
+                }
+            },
+            {
+                title:     textToColumn(
+                                formatMessage({id: 'storage.deficit'}),
+                                formatMessage({id: 'storage.to_order'}),
+                            ),
+                width:     'auto',
+                key:       'storageBalanceDeficitAndToOrder',
+                render:     (elem)=>{
+                    return (
+                        <>
+                            <div>
+                                <InputNumber
+                                    disabled
+                                    style={{
+                                        color: 'black',
+                                    }}
+                                    value={elem.deficit}
+                                />
+                            </div>
+                            <div>
+                                <InputNumber
+                                    disabled
+                                    style={{
+                                        color: 'black',
+                                    }}
+                                    value={elem.toOrder}
+                                />
+                            </div>
+                        </>
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.count' />,
+                key:       'quantity',
+                dataIndex: 'quantity',
+                width:     'auto',
+                render:     (data)=>{
+                    return (
+                        <InputNumber
+                            value={data}
+                            min={0}
+                            onChange={(value)=>{
+                                elem.quantity = value;
+                                this.setState({update: true});
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.sum' />,
+                key:       'sum',
+                width:     'auto',
+                render:     (elem)=>{
+                    return (
+                        <InputNumber
+                            disabled
+                            style={{
+                                color: 'black',
+                            }}
+                            value={elem.quantity * elem.stockPrice}
+                        />
+                    )
+                }
+            },
+        ]
+    }
+
+    handleOk() {
+        this.handleCancel();
+    }
+
+    handleCancel() {
+        this.setState({
+            dataSource: [],
+            visible: false,
+        });
+    }
+
+    render() {
+        const { visible, dataSource } = this.state;
+        return (
+            <>
+            <Icon
+                type="carry-out"
+                style={headerIconStyle}
+                onClick={()=>{
+                    this.setState({
+                        visible: true,
+                    })
+                }}
+            />
+            <Modal
+                visible={visible}
+                width={'fit-content'}
+                onOk={()=>{
+                    this.handleOk();
+                }}
+                onCancel={()=>{
+                    this.handleCancel();
+                }}
+            >
+                <Table
+                    columns={this.columns}
+                    dataSource={dataSource}
+                    pagination={false}
+                />
+            </Modal>
+            </>
+        );
+    }
+}
+
+function textToColumn(textFirst, textSecond) {
+    return ( 
+        <div>
+            <p>
+                {textFirst}
+            </p>
+            <p>
+                {textSecond}
+            </p>
+        </div>
+    )
 }

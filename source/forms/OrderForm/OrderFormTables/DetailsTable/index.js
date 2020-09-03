@@ -681,6 +681,7 @@ class DetailsTable extends Component {
                     tableKey={ this.state.productModalKey }
                     updateDetail={ this.updateDetail }
                     updateDataSource={ this.updateDataSource }
+                    clientVehicleVin={this.props.clientVehicleVin}
                 />
             </Catcher>
         );

@@ -280,7 +280,7 @@ export class OrderForm extends React.PureComponent {
     componentDidMount() {
         // TODO in order to fix late getFieldDecorator invoke for services
         this._isMounted = true;
-        if (!this.labors || (!this.details && this._isMounted)) {
+        if ((!this.labors || !this.details) && this._isMounted) {
             this._fetchLaborsAndDetails();
         }
         this.setState({ initialized: true });
@@ -776,6 +776,7 @@ export class OrderForm extends React.PureComponent {
                 fetchRecommendedPrice={this.props.fetchRecommendedPrice}
                 reloadOrderPageComponents={this.props.reloadOrderPageComponents}
                 reloadOrderForm={this._reloadOrderForm}
+                clientVehicleVin={this.props.order.clientVehicleVin}
             />
         );
     };

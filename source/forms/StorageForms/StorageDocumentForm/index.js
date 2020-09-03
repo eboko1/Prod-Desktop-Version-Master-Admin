@@ -456,6 +456,7 @@ class StorageDocumentForm extends Component {
                         visible={modalVisible}
                         hideModal={this.hideModal}
                         businessSupplierId={(type == ORDER || type == INCOME) && counterpartId}
+                        type={type}
                         brands={brands}
                         addDocProduct={addDocProduct}
                         product={editKey !== undefined ? docProducts[editKey] : undefined}
@@ -648,6 +649,7 @@ class DocProductsTable extends React.Component {
     }
 }
 
+@injectIntl
 class AddProductModal extends React.Component {
     constructor(props) {
         super(props);
@@ -668,6 +670,16 @@ class AddProductModal extends React.Component {
             stockPrice: 0,
             quantity: 1,
             detailCodeSearch: '',
+            storageBalance: [
+                {messageId: 'storage.in_stock', count: 1},
+                {messageId: 'storage.reserve', count: 2},
+                {messageId: 'storage.in_orders', count: 3},
+                {messageId: 'storage.ordered', count: 4},
+                {messageId: 'storage.deficit', count: 5},
+                {messageId: 'min', count: 6},
+                {messageId: 'max', count: 7},
+                {messageId: 'storage.to_order', count: 8},
+            ]
         }
 
         this.confirmAlertModal = this.confirmAlertModal.bind(this);
@@ -997,11 +1009,12 @@ class AddProductModal extends React.Component {
             stockPrice,
             quantity,
             detailCodeSearch,
+            storageBalance,
         } = this.state;
         return (
             <Modal
                 visible={this.props.visible}
-                width='80%'
+                width={'fit-content'}
                 onOk={()=>{
                     this.handleOk();
                 }}
@@ -1012,10 +1025,10 @@ class AddProductModal extends React.Component {
                 <div
                     style={{
                         display: 'flex',
-                        justifyContent: 'space-around'
+                        justifyContent: 'space-between'
                     }}
                 >
-                    <div className={Styles.addProductItemWrap} style={{minWidth: 130}}>
+                    <div className={Styles.addProductItemWrap} style={{minWidth: 140}}>
                         <FormattedMessage id='order_form_table.brand' />{requiredField()}
                         <Select
                             showSearch
@@ -1126,7 +1139,7 @@ class AddProductModal extends React.Component {
                             }
                         </AutoComplete>
                     </div>
-                   {this.props.isIncome &&
+                   {(this.props.isIncome && !this.props.priceDisabled) &&
                     <div className={Styles.addProductItemWrap}>
                         <FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)
                         <Input
@@ -1152,6 +1165,7 @@ class AddProductModal extends React.Component {
                             }}
                         />
                     </div>
+                    {!this.props.priceDisabled &&
                     <div className={Styles.addProductItemWrap}>
                         <div><FormattedMessage id='order_form_table.price' /></div>
                         <InputNumber
@@ -1167,7 +1181,7 @@ class AddProductModal extends React.Component {
                                 })
                             }}
                         />
-                    </div>
+                    </div>}
                     <div className={Styles.addProductItemWrap}>
                         <div><FormattedMessage id='order_form_table.count' /></div>
                         <InputNumber
@@ -1183,6 +1197,7 @@ class AddProductModal extends React.Component {
                             }}
                         />
                     </div>
+                    {!this.props.priceDisabled &&
                     <div className={Styles.addProductItemWrap}>
                         <div><FormattedMessage id='order_form_table.sum' /></div>
                         <InputNumber
@@ -1193,7 +1208,7 @@ class AddProductModal extends React.Component {
                             }}
                             value={quantity*stockPrice}
                         />
-                    </div>
+                    </div>}
                 </div>
                 <AlertModal
                     alertVisible={alertModalVisible}
@@ -1205,6 +1220,29 @@ class AddProductModal extends React.Component {
                 >
                     Даного товара нет в справочнике товаров. Добавить?
                 </AlertModal>
+                {this.props.type == ORDER && 
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                    }}
+                >
+                    {storageBalance.map((elem, key)=>{
+                        const message = this.props.intl.formatMessage({id: elem.messageId}) || elem.messageId;
+                        return (
+                            <div className={Styles.addProductItemWrap} key={key} style={{padding: '0 5px'}}>
+                                <div>{message}</div>
+                                <InputNumber
+                                    disabled
+                                    style={{
+                                        color: 'black',
+                                    }}
+                                    value={elem.count}
+                                />
+                            </div>
+                        )
+                    })}
+                </div>}
             </Modal>
         );
     }
@@ -1587,7 +1625,7 @@ class AlertModal extends React.Component {
                     </div>
                     <div className={Styles.addProductItemWrap} style={{display: 'flex', justifyContent: 'space-between'}}>
                         <div>
-                            <span style={{marginRight: 8}}>Min.</span>
+                            <span style={{marginRight: 8}}><FormattedMessage id='storage.min'/></span>
                             <InputNumber
                                 value={min}
                                 step={1}
@@ -1600,7 +1638,7 @@ class AlertModal extends React.Component {
                             />
                         </div>
                         <div>
-                            <span style={{marginRight: 8}}>Max.</span>
+                            <span style={{marginRight: 8}}><FormattedMessage id='storage.max'/></span>
                             <InputNumber
                                 
                                 value={max}
@@ -1622,4 +1660,4 @@ class AlertModal extends React.Component {
 
 function requiredField() {
     return <b style={{color: 'var(--required)'}}> *</b>;
-  }
+}

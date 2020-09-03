@@ -1299,7 +1299,6 @@ class DiagnosticTable extends Component {
     render() {
         const disabled = this.props.disabled;
         const columns = this.columns;
-        console.log(this);
         return (
             <Catcher>
                 <DiagnosticTableHeader
