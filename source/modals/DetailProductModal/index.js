@@ -1043,6 +1043,7 @@ class VinCodeModal extends Component{
             infoModalVisible: false,
             infoItem: undefined,
             image: undefined,
+            itemsListEmpty: false,
         };
         this.showInfoModal = this.showInfoModal.bind(this);
         this.onImgLoad = this.onImgLoad.bind(this);
@@ -1054,8 +1055,18 @@ class VinCodeModal extends Component{
                 dataIndex: 'key',
                 width:     '10%',
                 render: (data, elem)=>{
-                    return (
+                    const isVariant = this.state.itemsInfo.findIndex((item)=>item.key == elem.key || item.codeonimage == elem.codeonimage) != elem.key;
+                    return !isVariant || !elem.codeonimage ? (
                         Number(elem.codeonimage) || data + 1
+                    ) : (
+                        <span
+                            style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                            }}
+                        >
+                            {'Var.'}
+                        </span>
                     )
                 }
             },
@@ -1195,11 +1206,20 @@ class VinCodeModal extends Component{
                     categoryMode: normalizedCategories.length > 1,
                     categories: normalizedCategories,
                 })
-                
+            }
+            else {
+                that.setState({
+                    loading: false,
+                    itemsListEmpty: true,
+                })
             }
         })
         .catch(function (error) {
-            console.log('error', error)
+            console.log('error', error);
+            that.setState({
+                loading: false,
+                itemsListEmpty: true,
+            })
         })
     }
 
@@ -1285,6 +1305,7 @@ class VinCodeModal extends Component{
             categories,
             categoryMode,
             image,
+            itemsListEmpty,
         } = this.state;
 
         return (
@@ -1298,23 +1319,30 @@ class VinCodeModal extends Component{
                         })
                     }}
                 >
-                    <Icon type="font-size" />
+                    <Icon
+                        type="car"
+                        style={{
+                            fontSize: 18
+                        }}
+                    />
                 </Button>
                 <Modal
                     width='fit-content'
                     style={{
-                        maxWidth: '85%',
+                        maxWidth: '90%',
+                        minWidth: '40%'
                     }}
                     visible={visible}
-                    title='VIN'
+                    title={<FormattedMessage id='add_order_form.vin'/>}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                 >
                     {loading ? <Spin indicator={spinIcon} /> :
-                    categoryMode ? 
+                    categoryMode && !itemsListEmpty ? 
                         (categories.map((category, key)=>{
                             const detail = category.detail;
-                            return (<>
+                            return (
+                            <div key={key}>
                                 <div
                                     className={Styles.categoryTitle}
                                     key={`category-title-${key}`}
@@ -1339,6 +1367,7 @@ class VinCodeModal extends Component{
                                             className={Styles.zoomBlock}
                                             style={{
                                                 height: '100%',
+                                                overflow: 'scroll',
                                             }}
                                         >
                                             <img
@@ -1352,9 +1381,13 @@ class VinCodeModal extends Component{
                                                 }}
                                             />
                                         </div>
+                                        <div className={Styles.imageName}>
+                                            <a>{category.unit.name}</a>
+                                        </div>
                                     </div>
                                     <div className={Styles.listWrap}>
                                         <Table
+                                            bordered
                                             columns={this.columns}
                                             dataSource={[
                                                 {
@@ -1368,9 +1401,10 @@ class VinCodeModal extends Component{
                                         />
                                     </div>
                                 </div>
-                            </>)
+                            </div>)
                         })
-                    ): <>
+                    ) : 
+                    !itemsListEmpty ? <>
                     <div
                         className={Styles.categoryTitle}
                     >
@@ -1424,18 +1458,26 @@ class VinCodeModal extends Component{
                                                     imgHoverIndex: undefined,
                                                 })
                                             }}
-                                            onClick={()=>{
-                                                if(!isChecked) {
-                                                    checkedCodes.push(code);
-                                                    this.setState({
-                                                        update: true,
-                                                    })
+                                            onClick={(event)=>{
+                                                if(event.ctrlKey) {
+                                                    if(!isChecked) {
+                                                        checkedCodes.push(code);
+                                                        this.setState({
+                                                            update: true,
+                                                        })
+                                                    }
+                                                    else {
+                                                        this.setState({
+                                                            checkedCodes: checkedCodes.filter((index)=>index!=code),
+                                                        })
+                                                    }
                                                 }
                                                 else {
                                                     this.setState({
-                                                        checkedCodes: checkedCodes.filter((index)=>index!=code),
+                                                        checkedCodes: [code],
                                                     })
                                                 }
+                                                
                                             }}
                                         >
                                             {code}
@@ -1449,7 +1491,7 @@ class VinCodeModal extends Component{
                                 />
                                 <Modal
                                     visible={zoomed}
-                                    title={image && image.name}
+                                    title={image && image.name.toUpperCase()}
                                     footer={[]}
                                     width={'fit-content'}
                                     onCancel={()=>{
@@ -1466,6 +1508,7 @@ class VinCodeModal extends Component{
                         </div>
                         <div className={Styles.listWrap}>
                             <Table
+                                bordered
                                 loading={loading}
                                 columns={this.columns}
                                 dataSource={itemsInfo}
@@ -1509,10 +1552,21 @@ class VinCodeModal extends Component{
                                 pagination={false}
                             />
                         </div>
-                    </div></>}
+                    </div>
+                    <div
+                        style={{
+                            textAlign: 'end',
+                            fontSize: 12,
+                            color: 'var(--text2)',
+                        }}
+                    >
+                        <i style={{color: 'var(--required)'}}>* </i>Ctrl + click to select multiple item
+                    </div>
+                    </> :
+                    <FormattedMessage id='no_data' />}
                     <Modal
                         visible={infoModalVisible}
-                        title={infoItem && infoItem.name}
+                        title={infoItem && infoItem.name.toUpperCase()}
                         footer={[]}
                         onCancel={()=>{
                             this.setState({
