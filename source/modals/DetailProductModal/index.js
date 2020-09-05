@@ -37,6 +37,7 @@ class DetailProductModal extends React.Component{
         this.setCode = this.setCode.bind(this);
         this.setSupplier = this.setSupplier.bind(this);
         this.setComment = this.setComment.bind(this);
+        this.setVinDetail = this.setVinDetail.bind(this);
 
         this.mainTableColumns = [
             {
@@ -238,6 +239,7 @@ class DetailProductModal extends React.Component{
                                 defaultBrandName={this.state.defaultBrandName}
                             />
                             <VinCodeModal
+                                setVinDetail={this.setVinDetail}
                                 disabled={!elem.storeGroupId}
                                 storeGroupId={elem.storeGroupId}
                                 vin={this.props.clientVehicleVin}
@@ -613,6 +615,14 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].purchasePrice = purchasePrice;
         this.state.mainTableSource[key].price = price;
         this.state.mainTableSource[key].store = store;
+        this.setState({
+            update: true
+        })
+    }
+
+    setVinDetail(code, name) {
+        this.state.mainTableSource[0].detailName = name;
+        this.state.mainTableSource[0].detailCode = code;
         this.setState({
             update: true
         })
@@ -1053,7 +1063,7 @@ class VinCodeModal extends Component{
                 title:     '№',
                 key:       'key',
                 dataIndex: 'key',
-                width:     '10%',
+                width:     'auto',
                 render: (data, elem)=>{
                     const isVariant = this.state.itemsInfo.findIndex((item)=>item.key == elem.key || item.codeonimage == elem.codeonimage) != elem.key;
                     return !isVariant || !elem.codeonimage ? (
@@ -1074,7 +1084,7 @@ class VinCodeModal extends Component{
                 title:     <FormattedMessage id="order_form_table.detail_code" />,
                 key:       'oem',
                 dataIndex: 'oem',
-                width:     '30%',
+                width:     'auto',
                 render: (data, elem)=>{
                     return (
                         data+1
@@ -1085,7 +1095,7 @@ class VinCodeModal extends Component{
                 title:     <FormattedMessage id="order_form_table.detail_name" />,
                 key:       'name',
                 dataIndex: 'name',
-                width:     '50%',
+                width:     'auto',
                 render: (data, elem)=>{
                     return (
                         data+1
@@ -1094,7 +1104,7 @@ class VinCodeModal extends Component{
             },
             {
                 key:       'action',
-                width:     '10%',
+                width:     'auto',
                 className: Styles.infoActionButtonCol,
                 render: (elem)=>{
                     var title = '';
@@ -1148,6 +1158,10 @@ class VinCodeModal extends Component{
 
 
     handleOk = () => {
+        const { itemsInfo, checkedCodes } = this.state;
+        const selectedItem = itemsInfo.find((item)=>item.codeonimage == checkedCodes[0]);
+        console.log(selectedItem);
+        if(selectedItem) this.props.setVinDetail(selectedItem.oem, selectedItem.name);
         this.handleCancel();
     }
 
@@ -1205,18 +1219,28 @@ class VinCodeModal extends Component{
                         });
                     })
                 }
-                for (var i = 0; i < normalizedCategories.length % 3; i++) {
-                    normalizedCategories.push({
-                        emptyElement: true,
+                if(normalizedCategories.length == 1) {
+                    that.setState({
+                        loading: false,
+                        categoryMode: false,
+                        categories: normalizedCategories,
+                    })
+                    that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
+                }
+                else {
+                    for (var i = 0; i < normalizedCategories.length % 3; i++) {
+                        normalizedCategories.push({
+                            emptyElement: true,
+                        })
+                    }
+
+                    console.log(normalizedCategories);
+                    that.setState({
+                        loading: false,
+                        categoryMode: normalizedCategories.length,
+                        categories: normalizedCategories,
                     })
                 }
-
-                console.log(normalizedCategories);
-                that.setState({
-                    loading: false,
-                    categoryMode: normalizedCategories.length,
-                    categories: normalizedCategories,
-                })
             }
             else {
                 that.setState({
@@ -1286,7 +1310,13 @@ class VinCodeModal extends Component{
             })
         })
         .catch(function (error) {
-            console.log('error', error)
+            console.log('error', error);
+            that.setState({
+                loading: false,
+                itemsInfo: [],
+                blockPositions: [],
+                categoryMode: false,
+            })
         })
     }
 
@@ -1341,8 +1371,8 @@ class VinCodeModal extends Component{
                 <Modal
                     width='fit-content'
                     style={{
-                        maxWidth: categoryMode && categories.length == 1 ? '60%' : '90%',
-                        minWidth: categoryMode ? '20%' : '40%'
+                        maxWidth: '90%',
+                        minWidth: '70%'
                     }}
                     visible={visible}
                     title={<FormattedMessage id='add_order_form.vin'/>}
@@ -1428,7 +1458,8 @@ class VinCodeModal extends Component{
                                             style={{
                                                 left: `${(item.x1 / image.width)*100}%`,
                                                 top: `${(item.y1 / image.height)*100}%`,
-                                                transform: 'translate(-50%, -50%)'
+                                                width: `${((item.x2-item.x1) / image.width)*100}%`,
+                                                height: `${((item.y2-item.y1) / image.height)*100}%`,
                                             }}
                                             onMouseEnter={(event)=>{
                                                 this.setState({
@@ -1464,7 +1495,6 @@ class VinCodeModal extends Component{
                                                 
                                             }}
                                         >
-                                            {code}
                                         </div>
                                     )
                                 })}
@@ -1520,6 +1550,11 @@ class VinCodeModal extends Component{
                                                     checkedCodes: checkedCodes.filter((index)=>index!=code),
                                                 })
                                             }
+                                        }
+                                        else {
+                                            this.setState({
+                                                checkedCodes: [code],
+                                            })
                                         }
                                       },
                                       onMouseEnter: event => {

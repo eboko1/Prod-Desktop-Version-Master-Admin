@@ -118,11 +118,13 @@
     font-Weight: 500px;
     border: solid var(--text2) 1px;
     text-align: center;
-    width: 40px;
-    height: 40px;
-    background: white;
+   
     z-index: 100;
-    padding: 5px 0;
+
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Likely future */   
 }
 
 .imageName {
@@ -160,22 +162,28 @@
 }
 
 .hoveredItem {
-    border: solid var(--text) 1px;
-    color: var(--text);
-    font-weight: 700;
-    background: var(--not_complete);
+    border: solid var(--db_reserve) 3px;
     z-index: 200;
 }
+
 .tableRowHovered {
-    background: var(--not_complete);
+    background: var(--db_reserve);
 }
 
-.checkedItem, .checkedRow {
-    background: cadetblue;
+.checkedItem{
+    border: double var(--primary) 5px;
+}
+
+.checkedRow {
+    background: var(--primary);
     z-index: 150;
 }
 
-.hoveredItem.checkedItem, .tableRowHovered.checkedRow > td {
-    background: #6fa7a9 !important;
+.hoveredItem.checkedItem {
+
+}
+
+.tableRowHovered.checkedRow > td {
+    background: var(--db_reserve) !important;
 }
 /*VIN Code Modal Styles End*/
