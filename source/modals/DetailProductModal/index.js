@@ -1057,7 +1057,7 @@ class VinCodeModal extends Component{
                 render: (data, elem)=>{
                     const isVariant = this.state.itemsInfo.findIndex((item)=>item.key == elem.key || item.codeonimage == elem.codeonimage) != elem.key;
                     return !isVariant || !elem.codeonimage ? (
-                        Number(elem.codeonimage) || data + 1
+                        elem.codeonimage || data + 1
                     ) : (
                         <span
                             style={{
@@ -1160,6 +1160,12 @@ class VinCodeModal extends Component{
         })
     }
 
+    handleBack = () => {
+        this.setState({
+            categoryMode: true,
+        })
+    }
+
     fetchData() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
@@ -1199,11 +1205,16 @@ class VinCodeModal extends Component{
                         });
                     })
                 }
+                for (var i = 0; i < normalizedCategories.length % 3; i++) {
+                    normalizedCategories.push({
+                        emptyElement: true,
+                    })
+                }
 
                 console.log(normalizedCategories);
                 that.setState({
                     loading: false,
-                    categoryMode: normalizedCategories.length > 1,
+                    categoryMode: normalizedCategories.length,
                     categories: normalizedCategories,
                 })
             }
@@ -1264,6 +1275,7 @@ class VinCodeModal extends Component{
                     key: key,
                 });
             })
+
             console.log(itemsInfo, blockPositions, image);
             that.setState({
                 loading: false,
@@ -1329,81 +1341,53 @@ class VinCodeModal extends Component{
                 <Modal
                     width='fit-content'
                     style={{
-                        maxWidth: '90%',
-                        minWidth: '40%'
+                        maxWidth: categoryMode && categories.length == 1 ? '60%' : '90%',
+                        minWidth: categoryMode ? '20%' : '40%'
                     }}
                     visible={visible}
                     title={<FormattedMessage id='add_order_form.vin'/>}
+                    footer={!categoryMode ? 
+                    [
+                        <Button key="back" onClick={this.handleBack}>
+                            <FormattedMessage id='back'/>
+                        </Button>,
+                        <Button key="submit" type="primary" onClick={this.handleOk}>
+                            <FormattedMessage id='select'/>
+                        </Button>,
+                    ] : null}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                 >
                     {loading ? <Spin indicator={spinIcon} /> :
                     categoryMode && !itemsListEmpty ? 
-                        (categories.map((category, key)=>{
+                    <div className={Styles.categoryList}>
+                        {categories.map((category, key)=>{
                             const detail = category.detail;
-                            return (
-                            <div key={key}>
-                                <div
-                                    className={Styles.categoryTitle}
-                                    key={`category-title-${key}`}
-                                >
-                                    <a
-                                        onClick={()=>{
-                                            this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog)
-                                        }}
-                                    >
-                                        {category.name}
-                                    </a>
-                                </div>
-                                <div
-                                    className={Styles.vinModal}
-                                    key={`category-body-${key}`}
+                            return category.emptyElement ? <div className={Styles.categoryItem} style={{pointerEvents: 'none'}}></div> : (
+                            <div
+                                className={Styles.categoryItem}
+                                key={key}
+                                onClick={()=>{
+                                    this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog)
+                                }}
+                            >
+                                <img
+                                    title={category.unit.name}
+                                    src={category.unit.imageurl.replace('%size%', 'source')}
                                     style={{
-                                        marginBottom: 15
+                                        cursor: 'pointer',
+                                        width: '100%'
                                     }}
-                                >
-                                    <div className={Styles.imgWrap}>
-                                        <div
-                                            className={Styles.zoomBlock}
-                                            style={{
-                                                height: '100%',
-                                                overflow: 'scroll',
-                                            }}
-                                        >
-                                            <img
-                                                src={category.unit.imageurl.replace('%size%', 'source')}
-                                                style={{
-                                                    cursor: 'pointer',
-                                                    width: '100%'
-                                                }}
-                                                onClick={()=>{
-                                                    this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog)
-                                                }}
-                                            />
-                                        </div>
-                                        <div className={Styles.imageName}>
-                                            <a>{category.unit.name}</a>
-                                        </div>
-                                    </div>
-                                    <div className={Styles.listWrap}>
-                                        <Table
-                                            bordered
-                                            columns={this.columns}
-                                            dataSource={[
-                                                {
-                                                    key: 0,
-                                                    oem: detail.oem,
-                                                    name: detail.name,
-                                                    attributes: detail.attribute,
-                                                }
-                                            ]}
-                                            pagination={false}
-                                        />
-                                    </div>
+                                    onClick={()=>{
+                                        this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog)
+                                    }}
+                                />
+                                <div className={Styles.categoryName}>
+                                    <a>{category.name}</a>
                                 </div>
-                            </div>)
-                        })
-                    ) : 
+                            </div>)})
+                        }
+                    </div> : 
                     !itemsListEmpty ? <>
                     <div
                         className={Styles.categoryTitle}
@@ -1434,7 +1418,7 @@ class VinCodeModal extends Component{
                                 }}
                             >
                                 {blockPositions.map((item, key)=>{
-                                    const code = Number(item.code);
+                                    const code = item.code;
                                     const isHovered =  imgHoverCode == code || imgHoverIndex == key;
                                     const isChecked = checkedCodes.indexOf(code) >= 0;
                                     return (
@@ -1493,7 +1477,7 @@ class VinCodeModal extends Component{
                                     visible={zoomed}
                                     title={image && image.name.toUpperCase()}
                                     footer={[]}
-                                    width={'fit-content'}
+                                    width={'85%'}
                                     onCancel={()=>{
                                         this.setState({
                                             zoomed: false,
@@ -1501,6 +1485,7 @@ class VinCodeModal extends Component{
                                     }}
                                 >
                                     <img
+                                        width='100%'
                                         src={`${image && image.imageurl.replace('%size%', 'source')}`}
                                     />
                                 </Modal>
@@ -1513,13 +1498,13 @@ class VinCodeModal extends Component{
                                 columns={this.columns}
                                 dataSource={itemsInfo}
                                 rowClassName={(record, rowIndex)=>{
-                                    const code = Number(record.codeonimage)
+                                    const code = record.codeonimage;
                                     const isHovered = tableHoverCode == code;
                                     const isChecked = checkedCodes.indexOf(code) >= 0;
                                     return `${Styles.listTableRow} ${isHovered && Styles.tableRowHovered} ${isChecked && Styles.checkedRow}`
                                 }}
                                 onRow={(record, rowIndex) => {
-                                    const code = Number(record.codeonimage);
+                                    const code = record.codeonimage;
                                     return {
                                       onClick: event => {
                                         if(event.ctrlKey) {

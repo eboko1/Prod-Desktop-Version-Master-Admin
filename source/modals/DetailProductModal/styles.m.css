@@ -59,6 +59,11 @@
 }
 
 /*VIN Code Modal Styles*/
+.vinModal {
+    display: flex;
+    position: relative;
+}
+
 .categoryTitle {
     font-size: 20px;
     font-weight: 500;
@@ -67,9 +72,27 @@
     text-transform: uppercase;
 }
 
-.vinModal {
+.categoryList {
     display: flex;
-    position: relative;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.categoryItem {
+    width: 31%;
+    min-width: 280px;
+    margin-bottom: 2%;
+
+    &:hover {
+        /*border: 1px solid var(--text2);*/
+        box-shadow: 0 0 1px 0px black;
+    }
+}
+
+.categoryName {
+    font-size: 18;
+    text-transform: uppercase;
+    text-align: center;
 }
 
 .imgWrap {
@@ -78,6 +101,7 @@
     position: relative;
     border-left: 1px solid rgb(232 232 232);
     border-bottom: 1px solid rgb(232 232 232); 
+    overflow: scroll;
     &:hover {
         
     }
@@ -97,13 +121,13 @@
     width: 40px;
     height: 40px;
     background: white;
-    z-index: 9999;
+    z-index: 100;
     padding: 5px 0;
 }
 
 .imageName {
     position: absolute;
-    z-index: 9999;
+    z-index: 100;
     bottom: 0;
     left: 50%;
     transform: translate(-50%, 0);
@@ -140,6 +164,7 @@
     color: var(--text);
     font-weight: 700;
     background: var(--not_complete);
+    z-index: 200;
 }
 .tableRowHovered {
     background: var(--not_complete);
@@ -147,6 +172,7 @@
 
 .checkedItem, .checkedRow {
     background: cadetblue;
+    z-index: 150;
 }
 
 .hoveredItem.checkedItem, .tableRowHovered.checkedRow > td {
