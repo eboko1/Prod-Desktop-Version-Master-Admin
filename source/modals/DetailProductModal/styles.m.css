@@ -98,7 +98,6 @@
 .imgWrap {
     width: 60%;
     max-height: 480px;
-    position: relative;
     border-left: 1px solid rgb(232 232 232);
     border-bottom: 1px solid rgb(232 232 232); 
     overflow: scroll;
@@ -139,6 +138,15 @@
     text-align: center;
 }
 
+.zoomActionBlock {
+    display: flex;
+    margin: 10px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 999;
+}
+
 .zoomBlock img {
 
 }
@@ -171,7 +179,7 @@
 }
 
 .checkedItem{
-    border: double var(--primary) 5px;
+    border: solid var(--primary) 5px;
 }
 
 .checkedRow {
