@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox, Spin } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox, Spin, Slider } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { DetailStorageModal, DetailSupplierModal } from 'modals';
@@ -76,7 +76,20 @@ class DetailProductModal extends React.Component{
                         />
                     )
                 }
-                
+            },
+            {
+                width: 'auto',
+                key: 'vin',
+                render: (elem)=>{
+                    return (
+                        <VinCodeModal
+                            setVinDetail={this.setVinDetail}
+                            disabled={false}
+                            storeGroupId={elem.storeGroupId}
+                            vin={this.props.clientVehicleVin}
+                        />
+                    )
+                }
             },
             {
                 title:  <FormattedMessage id="order_form_table.detail_name" />,
@@ -237,12 +250,6 @@ class DetailProductModal extends React.Component{
                                 codeFilter={elem.detailCode}
                                 brandId={elem.brandId}
                                 defaultBrandName={this.state.defaultBrandName}
-                            />
-                            <VinCodeModal
-                                setVinDetail={this.setVinDetail}
-                                disabled={!elem.storeGroupId}
-                                storeGroupId={elem.storeGroupId}
-                                vin={this.props.clientVehicleVin}
                             />
                         </div>
                     )
@@ -623,6 +630,10 @@ class DetailProductModal extends React.Component{
     setVinDetail(code, name) {
         this.state.mainTableSource[0].detailName = name;
         this.state.mainTableSource[0].detailCode = code;
+        this.state.mainTableSource[0].brandName = undefined;
+        this.state.mainTableSource[0].brandId = undefined;
+        this.state.radioValue = 3;
+
         this.setState({
             update: true
         })
@@ -1034,7 +1045,6 @@ class CommentaryButton extends React.Component{
     }
 }
 
-const zoomMultiplier = 1.4;
 class VinCodeModal extends Component{
     constructor(props) {
         super(props);
@@ -1054,6 +1064,7 @@ class VinCodeModal extends Component{
             infoItem: undefined,
             image: undefined,
             itemsListEmpty: false,
+            zoomMultiplier: 1,
         };
         this.showInfoModal = this.showInfoModal.bind(this);
         this.onImgLoad = this.onImgLoad.bind(this);
@@ -1171,6 +1182,7 @@ class VinCodeModal extends Component{
             zoomed: false,
             loading: false,
             categoryMode: false,
+            zoomMultiplier: 1,
         })
     }
 
@@ -1348,6 +1360,7 @@ class VinCodeModal extends Component{
             categoryMode,
             image,
             itemsListEmpty,
+            zoomMultiplier,
         } = this.state;
 
         return (
@@ -1361,12 +1374,7 @@ class VinCodeModal extends Component{
                         })
                     }}
                 >
-                    <Icon
-                        type="car"
-                        style={{
-                            fontSize: 18
-                        }}
-                    />
+                    VIN
                 </Button>
                 <Modal
                     width='fit-content'
@@ -1426,25 +1434,37 @@ class VinCodeModal extends Component{
                     </div>
                     <div className={Styles.vinModal}>
                         <div className={Styles.imgWrap}>
-                            <Icon
-                                type={zoomed ? 'zoom-out' : 'zoom-in'}
-                                style={{
-                                    fontSize: 24,
-                                    position: 'absolute',
-                                    top: 5,
-                                    left: 5,
-                                    zIndex: 9999,
-                                }}
-                                onClick={()=>{
-                                    this.setState({
-                                        zoomed: !zoomed,
-                                    })
-                                }}
-                            />
+                            <div className={Styles.zoomActionBlock}>
+                                <Icon
+                                    type={zoomed ? 'zoom-out' : 'zoom-in'}
+                                    style={{
+                                        fontSize: 24,
+                                        zIndex: 9999,
+                                    }}
+                                    onClick={()=>{
+                                        this.setState({
+                                            zoomed: !zoomed,
+                                        })
+                                    }}
+                                />
+                                <Slider
+                                    value={zoomMultiplier}
+                                    step={0.1}
+                                    min={1}
+                                    max={2}
+                                    style={{
+                                        marginLeft: 15,
+                                        minWidth: 200,
+                                    }}
+                                    onChange={(value)=>{
+                                        this.setState({zoomMultiplier: value})
+                                    }}
+                                />
+                            </div>
                             <div
                                 className={Styles.zoomBlock}
                                 style={{
-                                    
+                                    width: `${100*zoomMultiplier}%`
                                 }}
                             >
                                 {blockPositions.map((item, key)=>{
@@ -1499,7 +1519,7 @@ class VinCodeModal extends Component{
                                     )
                                 })}
                                 <img
-                                    width='100%'
+                                    width={`${100}%`}
                                     src={`${image && image.imageurl.replace('%size%', 'source')}`}
                                     onLoad={this.onImgLoad}
                                 />
