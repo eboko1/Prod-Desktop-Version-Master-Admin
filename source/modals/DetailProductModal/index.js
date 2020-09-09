@@ -1195,79 +1195,156 @@ class VinCodeModal extends Component{
     fetchData() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url =  __API_URL__ + `/vin/list_quick_detail?vin=${this.props.vin}&storeGroupId=${this.props.storeGroupId}`;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function ({data}) {
-            console.log(data);
-            if(data) {
-                const { catalog, ssd } = data.response.FindVehicle.response.FindVehicle[0].row[0].$;
-                const categoriesArray = data.response.ListQuickDetail[0].Category;
-                const normalizedCategories = [];
+        if(this.props.storeGroupId) {
+            let url =  __API_URL__ + `/vin/list_quick_detail?vin=${this.props.vin}&storeGroupId=${this.props.storeGroupId}`;
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                }
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText))
+                }
+                return Promise.resolve(response)
+            })
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function ({data}) {
+                console.log(data);
+                if(data) {
+                    const { catalog, ssd, vehicleid } = data[0].response.FindVehicle.response.FindVehicle[0].row[0].$;
+                    const categoriesArray = data[0].response.ListQuickDetail[0].Category;
+                    const normalizedCategories = [];
 
-                if(categoriesArray.length) {
-                    categoriesArray.map((elem)=>{
-                        normalizedCategories.push({
-                            catalog: catalog,
-                            ...elem.$,
-                            unit: {...elem.Unit[0].$},
-                            detail: {
-                                ...elem.Unit[0].Detail[0].$,
-                                attribute: elem.Unit[0].Detail[0].attribute.map((attr)=>attr.$),
-                            }
-                        });
-                    })
-                }
-                if(normalizedCategories.length == 1) {
-                    that.setState({
-                        loading: false,
-                        categoryMode: false,
-                        categories: normalizedCategories,
-                    })
-                    that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
-                }
-                else {
-                    for (var i = 0; i < normalizedCategories.length % 3; i++) {
-                        normalizedCategories.push({
-                            emptyElement: true,
+                    if(categoriesArray.length) {
+                        categoriesArray.map((elem)=>{
+                            normalizedCategories.push({
+                                catalog: catalog,
+                                vehicleId: vehicleid,
+                                ...elem.$,
+                                unit: {...elem.Unit[0].$},
+                                detail: {
+                                    ...elem.Unit[0].Detail[0].$,
+                                    attribute: elem.Unit[0].Detail[0].attribute.map((attr)=>attr.$),
+                                }
+                            });
                         })
                     }
+                    console.log(normalizedCategories)
+                    if(normalizedCategories.length == 1) {
+                        that.setState({
+                            loading: false,
+                            categoryMode: false,
+                            categories: normalizedCategories,
+                        })
+                        that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
+                    }
+                    else {
+                        for (var i = 0; i < normalizedCategories.length % 3; i++) {
+                            normalizedCategories.push({
+                                emptyElement: true,
+                            })
+                        }
 
-                    console.log(normalizedCategories);
+                        console.log(normalizedCategories);
+                        that.setState({
+                            loading: false,
+                            categoryMode: normalizedCategories.length,
+                            categories: normalizedCategories,
+                        })
+                    }
+                }
+                else {
                     that.setState({
                         loading: false,
-                        categoryMode: normalizedCategories.length,
-                        categories: normalizedCategories,
+                        itemsListEmpty: true,
                     })
                 }
-            }
-            else {
+            })
+            .catch(function (error) {
+                console.log('error', error);
                 that.setState({
                     loading: false,
                     itemsListEmpty: true,
                 })
-            }
-        })
-        .catch(function (error) {
-            console.log('error', error);
-            that.setState({
-                loading: false,
-                itemsListEmpty: true,
             })
-        })
+        }
+        else {
+            let url =  __API_URL__ + `/vin/categories?vin=${this.props.vin}`;
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                }
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText))
+                }
+                return Promise.resolve(response)
+            })
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function ({data}) {
+                console.log(data);
+                if(data) {
+                    const { catalog, ssd, vehicleid } = data.response.FindVehicle.response.FindVehicle[0].row[0].$;
+                    const categoriesArray = data.response.ListCategories[0].row;
+                    const normalizedCategories = [];
+
+                    if(categoriesArray.length) {
+                        categoriesArray.map((elem)=>{
+                            normalizedCategories.push({
+                                catalog: catalog,
+                                vehicleId: vehicleid,
+                                ...elem.$,
+                                unit: {...elem.$},
+                            });
+                        })
+                    }
+                    console.log(normalizedCategories)
+                    if(normalizedCategories.length == 1) {
+                        that.setState({
+                            loading: false,
+                            categoryMode: false,
+                            categories: normalizedCategories,
+                        })
+                        that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
+                    }
+                    else {
+                        for (var i = 0; i < normalizedCategories.length % 3; i++) {
+                            normalizedCategories.push({
+                                emptyElement: true,
+                            })
+                        }
+
+                        console.log(normalizedCategories);
+                        that.setState({
+                            loading: false,
+                            categoryMode: normalizedCategories.length,
+                            categories: normalizedCategories,
+                        })
+                    }
+                }
+                else {
+                    that.setState({
+                        loading: false,
+                        itemsListEmpty: true,
+                    })
+                }
+            })
+            .catch(function (error) {
+                console.log('error', error);
+                that.setState({
+                    loading: false,
+                    itemsListEmpty: true,
+                })
+            })
+        }
     }
 
     fetchItemsList(ssd, unitId, catalog) {
@@ -1328,6 +1405,87 @@ class VinCodeModal extends Component{
                 itemsInfo: [],
                 blockPositions: [],
                 categoryMode: false,
+            })
+        })
+    }
+
+    fetchCategoryItemsList(ssd, catalog, categoryid, vehicleId) {
+        this.setState({
+            loading: true,
+        })
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url =  __API_URL__ + `/vin/list_units?catalog=${catalog}&vehicleid=${vehicleId}&categoryId=${categoryid}&ssd=${ssd}`
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function ({data}) {
+
+            console.log(data);
+            if(data) {
+                const categoriesArray = data.response.ListUnits[0].row;
+                const normalizedCategories = [];
+
+                if(categoriesArray.length) {
+                    categoriesArray.map((elem)=>{
+                        normalizedCategories.push({
+                            catalog: catalog,
+                            vehicleId: vehicleId,
+                            ...elem.$,
+                            unit: {...elem.$},
+                        });
+                    })
+                }
+                console.log(normalizedCategories)
+                if(normalizedCategories.length == 1) {
+                    that.setState({
+                        loading: false,
+                        categoryMode: false,
+                        categories: normalizedCategories,
+                    })
+                    that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
+                }
+                else {
+                    for (var i = 0; i < normalizedCategories.length % 3; i++) {
+                        normalizedCategories.push({
+                            emptyElement: true,
+                        })
+                    }
+
+                    console.log(normalizedCategories);
+                    that.setState({
+                        loading: false,
+                        categoryMode: normalizedCategories.length,
+                        categories: normalizedCategories,
+                    })
+                }
+            }
+            else {
+                that.setState({
+                    loading: false,
+                    itemsListEmpty: true,
+                })
+            }
+        })
+        .catch(function (error) {
+            console.log('error', error);
+            that.setState({
+                loading: false,
+                itemsInfo: [],
+                blockPositions: [],
+                categoryMode: true,
             })
         })
     }
@@ -1406,9 +1564,13 @@ class VinCodeModal extends Component{
                                 className={Styles.categoryItem}
                                 key={key}
                                 onClick={()=>{
-                                    this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog)
+                                    if(category.unit.imageurl)
+                                        this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog);
+                                    else 
+                                        this.fetchCategoryItemsList(category.ssd, category.catalog, category.categoryid, category.vehicleId)
                                 }}
                             >
+                            {category.unit.imageurl &&
                                 <img
                                     title={category.unit.name}
                                     src={category.unit.imageurl.replace('%size%', 'source')}
@@ -1419,8 +1581,10 @@ class VinCodeModal extends Component{
                                     onClick={()=>{
                                         this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog)
                                     }}
-                                />
-                                <div className={Styles.categoryName}>
+                                />}
+                                <div
+                                    className={Styles.categoryName}
+                                >
                                     <a>{category.name}</a>
                                 </div>
                             </div>)})
