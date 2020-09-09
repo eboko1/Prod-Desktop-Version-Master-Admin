@@ -56,7 +56,7 @@ export default {
                     key:      '/warehouses',
                     link:     book.warehouses,
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE) || true,
+                        isForbidden(user, permissions.VIEW_STORE),
                     name: 'navigation.warehouses',
                 },
                 {
@@ -137,49 +137,49 @@ export default {
                 {
                     key:      '/storage-orders',
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE) || true,
+                        isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageOrders,
-                    name: 'navigation.storage_orders',
+                    name: 'navigation.orders',
                 },
                 {
                     key:      '/storage-incomes',
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE) || true,
+                        isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageIncomes,
                     name: 'navigation.incomes',
                 },
                 {
                     key:      '/storage-expenses',
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE) || true,
+                        isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageExpenses,
                     name: 'navigation.expenses',
                 },
                 {
                     key:      '/storage-transfers',
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE) || true,
+                        isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageTransfers,
                     name: 'navigation.transfers',
                 },
                 {
                     key:      '/storage-balance',
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE) || true,
+                        isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageBalance,
                     name: 'navigation.storage_balance',
                 },
                 {
                     key:      '/storage-movement',
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE) || true,
+                        isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageMovement,
                     name: 'navigation.storage_movement',
                 },
                 {
                     key:      '/storage-inventory',
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE) || true,
+                        isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageInventory,
                     name: 'navigation.inventory',
                 },

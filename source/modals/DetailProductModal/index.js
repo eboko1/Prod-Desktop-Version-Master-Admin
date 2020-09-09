@@ -1,12 +1,13 @@
 // vendor
 import React, { Component } from 'react';
-import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox, Spin, Slider } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { DetailStorageModal, DetailSupplierModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
 // own
 import Styles from './styles.m.css';
+const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
 
@@ -36,6 +37,7 @@ class DetailProductModal extends React.Component{
         this.setCode = this.setCode.bind(this);
         this.setSupplier = this.setSupplier.bind(this);
         this.setComment = this.setComment.bind(this);
+        this.setVinDetail = this.setVinDetail.bind(this);
 
         this.mainTableColumns = [
             {
@@ -74,7 +76,20 @@ class DetailProductModal extends React.Component{
                         />
                     )
                 }
-                
+            },
+            {
+                width: 'auto',
+                key: 'vin',
+                render: (elem)=>{
+                    return (
+                        <VinCodeModal
+                            setVinDetail={this.setVinDetail}
+                            disabled={false}
+                            storeGroupId={elem.storeGroupId}
+                            vin={this.props.clientVehicleVin}
+                        />
+                    )
+                }
             },
             {
                 title:  <FormattedMessage id="order_form_table.detail_name" />,
@@ -612,6 +627,18 @@ class DetailProductModal extends React.Component{
         })
     }
 
+    setVinDetail(code, name) {
+        this.state.mainTableSource[0].detailName = name;
+        this.state.mainTableSource[0].detailCode = code;
+        this.state.mainTableSource[0].brandName = undefined;
+        this.state.mainTableSource[0].brandId = undefined;
+        this.state.radioValue = 3;
+
+        this.setState({
+            update: true
+        })
+    }
+
     async addDetailsAndLabors(data) {
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__;
@@ -744,7 +771,9 @@ class DetailProductModal extends React.Component{
                     </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
-                            <div style={{display: 'block'}}><FormattedMessage id="order_form_table.diagnostic.detail"/></div>
+                            <div style={{display: 'block'}}>
+                                <FormattedMessage id="order_form_table.diagnostic.detail"/>
+                            </div>
                         </div>
                         <Table
                             dataSource={this.state.mainTableSource}
@@ -1013,5 +1042,746 @@ class CommentaryButton extends React.Component{
                 </Modal>
             </div>
         );
+    }
+}
+
+class VinCodeModal extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            categoryMode: false,
+            categories: [],
+            visible: false,
+            loading: false,
+            zoomed: false,
+            itemsInfo: [],
+            blockPositions: [],
+            tableHoverCode: undefined,
+            imgHoverCode: undefined,
+            imgHoverIndex: undefined,
+            checkedCodes: [],
+            infoModalVisible: false,
+            infoItem: undefined,
+            image: undefined,
+            itemsListEmpty: false,
+            zoomMultiplier: 1,
+        };
+        this.showInfoModal = this.showInfoModal.bind(this);
+        this.onImgLoad = this.onImgLoad.bind(this);
+
+        this.columns = [
+            {
+                title:     '№',
+                key:       'key',
+                dataIndex: 'key',
+                width:     'auto',
+                render: (data, elem)=>{
+                    const isVariant = this.state.itemsInfo.findIndex((item)=>item.key == elem.key || item.codeonimage == elem.codeonimage) != elem.key;
+                    return !isVariant || !elem.codeonimage ? (
+                        elem.codeonimage || data + 1
+                    ) : (
+                        <span
+                            style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                            }}
+                        >
+                            {'Var.'}
+                        </span>
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id="order_form_table.detail_code" />,
+                key:       'oem',
+                dataIndex: 'oem',
+                width:     'auto',
+                render: (data, elem)=>{
+                    return (
+                        data+1
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id="order_form_table.detail_name" />,
+                key:       'name',
+                dataIndex: 'name',
+                width:     'auto',
+                render: (data, elem)=>{
+                    return (
+                        data+1
+                    )
+                }
+            },
+            {
+                key:       'action',
+                width:     'auto',
+                className: Styles.infoActionButtonCol,
+                render: (elem)=>{
+                    var title = '';
+                    if(elem.attributes && elem.attributes.length) {
+                        elem.attributes.map((attr)=>{
+                            title += `${attr.name}: ${attr.value}\n`
+                        })
+                    }
+                    return (
+                        <Icon
+                            title={title}
+                            type="question-circle"
+                            style={{
+                                fontSize: 18,
+                                pointerEvents: 'all',
+                            }}
+                            onClick={()=>this.showInfoModal(elem.name, elem.attributes, elem.codeonimage)}
+                        />
+                    )
+                }
+            },
+        ]
+    }
+
+    showInfoModal(name, attributes, code = -1) {
+        this.setState({
+            infoItem: {
+                name: name,
+                body: attributes.map((attr, i)=>
+                    <p
+                        key={i}
+                    >
+                        <b>{attr.name}:</b> {attr.value}
+                    </p>
+                )
+            },
+            infoModalVisible: true,
+        })
+    }
+
+    onImgLoad({target:img}) {
+        console.log(img.naturalHeight, img.naturalWidth)
+        this.setState({
+            image:{
+                ...this.state.image,
+                height: img.naturalHeight,
+                width: img.naturalWidth
+            }
+        });
+    }
+
+
+    handleOk = () => {
+        const { itemsInfo, checkedCodes } = this.state;
+        const selectedItem = itemsInfo.find((item)=>item.codeonimage == checkedCodes[0]);
+        console.log(selectedItem);
+        if(selectedItem) this.props.setVinDetail(selectedItem.oem, selectedItem.name);
+        this.handleCancel();
+    }
+
+    handleCancel = () => {
+        this.setState({
+            visible: false,
+            zoomed: false,
+            loading: false,
+            categoryMode: false,
+            zoomMultiplier: 1,
+        })
+    }
+
+    handleBack = () => {
+        this.setState({
+            categoryMode: true,
+        })
+    }
+
+    fetchData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        if(this.props.storeGroupId) {
+            let url =  __API_URL__ + `/vin/list_quick_detail?vin=${this.props.vin}&storeGroupId=${this.props.storeGroupId}`;
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                }
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText))
+                }
+                return Promise.resolve(response)
+            })
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function ({data}) {
+                console.log(data);
+                if(data) {
+                    const { catalog, ssd, vehicleid } = data[0].response.FindVehicle.response.FindVehicle[0].row[0].$;
+                    const categoriesArray = data[0].response.ListQuickDetail[0].Category;
+                    const normalizedCategories = [];
+
+                    if(categoriesArray.length) {
+                        categoriesArray.map((elem)=>{
+                            normalizedCategories.push({
+                                catalog: catalog,
+                                vehicleId: vehicleid,
+                                ...elem.$,
+                                unit: {...elem.Unit[0].$},
+                                detail: {
+                                    ...elem.Unit[0].Detail[0].$,
+                                    attribute: elem.Unit[0].Detail[0].attribute.map((attr)=>attr.$),
+                                }
+                            });
+                        })
+                    }
+                    console.log(normalizedCategories)
+                    if(normalizedCategories.length == 1) {
+                        that.setState({
+                            loading: false,
+                            categoryMode: false,
+                            categories: normalizedCategories,
+                        })
+                        that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
+                    }
+                    else {
+                        for (var i = 0; i < normalizedCategories.length % 3; i++) {
+                            normalizedCategories.push({
+                                emptyElement: true,
+                            })
+                        }
+
+                        console.log(normalizedCategories);
+                        that.setState({
+                            loading: false,
+                            categoryMode: normalizedCategories.length,
+                            categories: normalizedCategories,
+                        })
+                    }
+                }
+                else {
+                    that.setState({
+                        loading: false,
+                        itemsListEmpty: true,
+                    })
+                }
+            })
+            .catch(function (error) {
+                console.log('error', error);
+                that.setState({
+                    loading: false,
+                    itemsListEmpty: true,
+                })
+            })
+        }
+        else {
+            let url =  __API_URL__ + `/vin/categories?vin=${this.props.vin}`;
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                }
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText))
+                }
+                return Promise.resolve(response)
+            })
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function ({data}) {
+                console.log(data);
+                if(data) {
+                    const { catalog, ssd, vehicleid } = data.response.FindVehicle.response.FindVehicle[0].row[0].$;
+                    const categoriesArray = data.response.ListCategories[0].row;
+                    const normalizedCategories = [];
+
+                    if(categoriesArray.length) {
+                        categoriesArray.map((elem)=>{
+                            normalizedCategories.push({
+                                catalog: catalog,
+                                vehicleId: vehicleid,
+                                ...elem.$,
+                                unit: {...elem.$},
+                            });
+                        })
+                    }
+                    console.log(normalizedCategories)
+                    if(normalizedCategories.length == 1) {
+                        that.setState({
+                            loading: false,
+                            categoryMode: false,
+                            categories: normalizedCategories,
+                        })
+                        that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
+                    }
+                    else {
+                        for (var i = 0; i < normalizedCategories.length % 3; i++) {
+                            normalizedCategories.push({
+                                emptyElement: true,
+                            })
+                        }
+
+                        console.log(normalizedCategories);
+                        that.setState({
+                            loading: false,
+                            categoryMode: normalizedCategories.length,
+                            categories: normalizedCategories,
+                        })
+                    }
+                }
+                else {
+                    that.setState({
+                        loading: false,
+                        itemsListEmpty: true,
+                    })
+                }
+            })
+            .catch(function (error) {
+                console.log('error', error);
+                that.setState({
+                    loading: false,
+                    itemsListEmpty: true,
+                })
+            })
+        }
+    }
+
+    fetchItemsList(ssd, unitId, catalog) {
+        this.setState({
+            loading: true,
+        })
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url =  __API_URL__ +`/vin/list_detail_by_unit_id?ssd=${ssd}`+
+                                `&unitId=${unitId}&catalog=${catalog}`;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function ({data}) {
+            console.log(data.response);
+            const itemsInfo = [];
+            const blockPositions = [];
+            const image = data.response.GetUnitInfo[0].row[0].$;
+            data.response.ListDetailsByUnit[0].row.map(({$: item, attribute}, key)=>{
+                itemsInfo.push({
+                    key: key,
+                    ...item,
+                    attributes: attribute.map((attr)=>attr.$),
+                })
+            });
+            data.response.ListImageMapByUnit[0].row.map(({$: position}, key)=>{
+                blockPositions.push({
+                    ...position,
+                    key: key,
+                });
+            })
+
+            console.log(itemsInfo, blockPositions, image);
+            that.setState({
+                loading: false,
+                itemsInfo: itemsInfo,
+                blockPositions: blockPositions,
+                image: image,
+                categoryMode: false,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error);
+            that.setState({
+                loading: false,
+                itemsInfo: [],
+                blockPositions: [],
+                categoryMode: false,
+            })
+        })
+    }
+
+    fetchCategoryItemsList(ssd, catalog, categoryid, vehicleId) {
+        this.setState({
+            loading: true,
+        })
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url =  __API_URL__ + `/vin/list_units?catalog=${catalog}&vehicleid=${vehicleId}&categoryId=${categoryid}&ssd=${ssd}`
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function ({data}) {
+
+            console.log(data);
+            if(data) {
+                const categoriesArray = data.response.ListUnits[0].row;
+                const normalizedCategories = [];
+
+                if(categoriesArray.length) {
+                    categoriesArray.map((elem)=>{
+                        normalizedCategories.push({
+                            catalog: catalog,
+                            vehicleId: vehicleId,
+                            ...elem.$,
+                            unit: {...elem.$},
+                        });
+                    })
+                }
+                console.log(normalizedCategories)
+                if(normalizedCategories.length == 1) {
+                    that.setState({
+                        loading: false,
+                        categoryMode: false,
+                        categories: normalizedCategories,
+                    })
+                    that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
+                }
+                else {
+                    for (var i = 0; i < normalizedCategories.length % 3; i++) {
+                        normalizedCategories.push({
+                            emptyElement: true,
+                        })
+                    }
+
+                    console.log(normalizedCategories);
+                    that.setState({
+                        loading: false,
+                        categoryMode: normalizedCategories.length,
+                        categories: normalizedCategories,
+                    })
+                }
+            }
+            else {
+                that.setState({
+                    loading: false,
+                    itemsListEmpty: true,
+                })
+            }
+        })
+        .catch(function (error) {
+            console.log('error', error);
+            that.setState({
+                loading: false,
+                itemsInfo: [],
+                blockPositions: [],
+                categoryMode: true,
+            })
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(!prevState.visible && this.state.visible) {
+            this.setState({
+                loading: true,
+            })
+            this.fetchData()
+        }
+    }
+
+    render() {
+        const { disabled } = this.props;
+        const {
+            visible,
+            zoomed,
+            positions,
+            itemsInfo,
+            blockPositions,
+            tableHoverCode,
+            imgHoverCode,
+            imgHoverIndex,
+            checkedCodes,
+            infoItem,
+            infoModalVisible,
+            loading,
+            categories,
+            categoryMode,
+            image,
+            itemsListEmpty,
+            zoomMultiplier,
+        } = this.state;
+
+        return (
+            <>
+                <Button
+                    type='primary'
+                    disabled={disabled}
+                    onClick={()=>{
+                        this.setState({
+                            visible: true,
+                        })
+                    }}
+                >
+                    VIN
+                </Button>
+                <Modal
+                    width='fit-content'
+                    style={{
+                        maxWidth: '90%',
+                        minWidth: '70%'
+                    }}
+                    visible={visible}
+                    title={<FormattedMessage id='add_order_form.vin'/>}
+                    footer={!categoryMode ? 
+                    [
+                        <Button key="back" onClick={this.handleBack}>
+                            <FormattedMessage id='back'/>
+                        </Button>,
+                        <Button key="submit" type="primary" onClick={this.handleOk}>
+                            <FormattedMessage id='select'/>
+                        </Button>,
+                    ] : null}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                >
+                    {loading ? <Spin indicator={spinIcon} /> :
+                    categoryMode && !itemsListEmpty ? 
+                    <div className={Styles.categoryList}>
+                        {categories.map((category, key)=>{
+                            const detail = category.detail;
+                            return category.emptyElement ? <div className={Styles.categoryItem} style={{pointerEvents: 'none'}}></div> : (
+                            <div
+                                className={Styles.categoryItem}
+                                key={key}
+                                onClick={()=>{
+                                    if(category.unit.imageurl)
+                                        this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog);
+                                    else 
+                                        this.fetchCategoryItemsList(category.ssd, category.catalog, category.categoryid, category.vehicleId)
+                                }}
+                            >
+                            {category.unit.imageurl &&
+                                <img
+                                    title={category.unit.name}
+                                    src={category.unit.imageurl.replace('%size%', 'source')}
+                                    style={{
+                                        cursor: 'pointer',
+                                        width: '100%'
+                                    }}
+                                    onClick={()=>{
+                                        this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog)
+                                    }}
+                                />}
+                                <div
+                                    className={Styles.categoryName}
+                                >
+                                    <a>{category.name}</a>
+                                </div>
+                            </div>)})
+                        }
+                    </div> : 
+                    !itemsListEmpty ? <>
+                    <div
+                        className={Styles.categoryTitle}
+                    >
+                        {image && image.name}
+                    </div>
+                    <div className={Styles.vinModal}>
+                        <div className={Styles.imgWrap}>
+                            <div className={Styles.zoomActionBlock}>
+                                <Icon
+                                    type={zoomed ? 'zoom-out' : 'zoom-in'}
+                                    style={{
+                                        fontSize: 24,
+                                        zIndex: 9999,
+                                    }}
+                                    onClick={()=>{
+                                        this.setState({
+                                            zoomed: !zoomed,
+                                        })
+                                    }}
+                                />
+                                <Slider
+                                    value={zoomMultiplier}
+                                    step={0.1}
+                                    min={1}
+                                    max={2}
+                                    style={{
+                                        marginLeft: 15,
+                                        minWidth: 200,
+                                    }}
+                                    onChange={(value)=>{
+                                        this.setState({zoomMultiplier: value})
+                                    }}
+                                />
+                            </div>
+                            <div
+                                className={Styles.zoomBlock}
+                                style={{
+                                    width: `${100*zoomMultiplier}%`
+                                }}
+                            >
+                                {blockPositions.map((item, key)=>{
+                                    const code = item.code;
+                                    const isHovered =  imgHoverCode == code || imgHoverIndex == key;
+                                    const isChecked = checkedCodes.indexOf(code) >= 0;
+                                    return (
+                                        <div
+                                            className={`${Styles.zoomBlockItem} ${isHovered && Styles.hoveredItem} ${isChecked && Styles.checkedItem}`}
+                                            key={key}
+                                            style={{
+                                                left: `${(item.x1 / image.width)*100}%`,
+                                                top: `${(item.y1 / image.height)*100}%`,
+                                                width: `${((item.x2-item.x1) / image.width)*100}%`,
+                                                height: `${((item.y2-item.y1) / image.height)*100}%`,
+                                            }}
+                                            onMouseEnter={(event)=>{
+                                                this.setState({
+                                                    tableHoverCode: code,
+                                                    imgHoverIndex: key,
+                                                })
+                                            }}
+                                            onMouseLeave={(event)=>{
+                                                this.setState({
+                                                    tableHoverCode: undefined,
+                                                    imgHoverIndex: undefined,
+                                                })
+                                            }}
+                                            onClick={(event)=>{
+                                                if(event.ctrlKey) {
+                                                    if(!isChecked) {
+                                                        checkedCodes.push(code);
+                                                        this.setState({
+                                                            update: true,
+                                                        })
+                                                    }
+                                                    else {
+                                                        this.setState({
+                                                            checkedCodes: checkedCodes.filter((index)=>index!=code),
+                                                        })
+                                                    }
+                                                }
+                                                else {
+                                                    this.setState({
+                                                        checkedCodes: [code],
+                                                    })
+                                                }
+                                                
+                                            }}
+                                        >
+                                        </div>
+                                    )
+                                })}
+                                <img
+                                    width={`${100}%`}
+                                    src={`${image && image.imageurl.replace('%size%', 'source')}`}
+                                    onLoad={this.onImgLoad}
+                                />
+                                <Modal
+                                    visible={zoomed}
+                                    title={image && image.name.toUpperCase()}
+                                    footer={[]}
+                                    width={'85%'}
+                                    onCancel={()=>{
+                                        this.setState({
+                                            zoomed: false,
+                                        })
+                                    }}
+                                >
+                                    <img
+                                        width='100%'
+                                        src={`${image && image.imageurl.replace('%size%', 'source')}`}
+                                    />
+                                </Modal>
+                            </div>
+                        </div>
+                        <div className={Styles.listWrap}>
+                            <Table
+                                bordered
+                                loading={loading}
+                                columns={this.columns}
+                                dataSource={itemsInfo}
+                                rowClassName={(record, rowIndex)=>{
+                                    const code = record.codeonimage;
+                                    const isHovered = tableHoverCode == code;
+                                    const isChecked = checkedCodes.indexOf(code) >= 0;
+                                    return `${Styles.listTableRow} ${isHovered && Styles.tableRowHovered} ${isChecked && Styles.checkedRow}`
+                                }}
+                                onRow={(record, rowIndex) => {
+                                    const code = record.codeonimage;
+                                    return {
+                                      onClick: event => {
+                                        if(event.ctrlKey) {
+                                            const isChecked = checkedCodes.indexOf(code) >= 0;
+                                            if(!isChecked) {
+                                                checkedCodes.push(code);
+                                                this.setState({
+                                                    update: true,
+                                                })
+                                            }
+                                            else {
+                                                this.setState({
+                                                    checkedCodes: checkedCodes.filter((index)=>index!=code),
+                                                })
+                                            }
+                                        }
+                                        else {
+                                            this.setState({
+                                                checkedCodes: [code],
+                                            })
+                                        }
+                                      },
+                                      onMouseEnter: event => {
+                                        this.setState({
+                                            imgHoverCode: code,
+                                        })
+                                      },
+                                      onMouseLeave: event => {
+                                        this.setState({
+                                            imgHoverCode: undefined,
+                                        })
+                                      },
+                                    };
+                                }}
+                                pagination={false}
+                            />
+                        </div>
+                    </div>
+                    <div
+                        style={{
+                            textAlign: 'end',
+                            fontSize: 12,
+                            color: 'var(--text2)',
+                        }}
+                    >
+                        <i style={{color: 'var(--required)'}}>* </i>Ctrl + click to select multiple item
+                    </div>
+                    </> :
+                    <FormattedMessage id='no_data' />}
+                    <Modal
+                        visible={infoModalVisible}
+                        title={infoItem && infoItem.name.toUpperCase()}
+                        footer={[]}
+                        onCancel={()=>{
+                            this.setState({
+                                infoModalVisible: false,
+                            })
+                        }}
+                    >
+                        {infoItem && infoItem.body}
+                    </Modal>
+                </Modal>
+            </>
+        )
     }
 }

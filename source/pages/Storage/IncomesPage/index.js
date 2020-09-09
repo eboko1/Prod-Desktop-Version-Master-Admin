@@ -25,6 +25,7 @@ class IncomesPage extends Component {
         return (
             <StorageDocumentsContainer
                 listType = 'INCOME'
+                newDocType = 'INCOME'
             />
         );
     }

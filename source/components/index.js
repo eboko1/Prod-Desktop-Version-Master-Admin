@@ -42,7 +42,7 @@ import { ExcelReader } from './ExcelReader';
 import { StorageBalanceTotals } from './StorageBalanceTotals';
 import { StorageMovementTotals } from './StorageMovementTotals';
 import { StorageFilters } from './StorageFilters';
-import StorageDocumentsFilters from './StorageDocumentsFilters';
+import StorageDocumentsFilters, { StorageDateFilter } from './StorageDocumentsFilters';
 import AvailabilityIndicator from './AvailabilityIndicator';
 
 // re-exports (*) must be before ES6 other (default) exports
@@ -97,4 +97,5 @@ export {
     StorageFilters,
     StorageDocumentsFilters,
     AvailabilityIndicator,
+    StorageDateFilter,
 };
