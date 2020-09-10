@@ -99,7 +99,7 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <Input
-                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
+                            disabled={elem.storeGroupId == null && (this.state.radioValue != 2 && this.state.radioValue != 3)}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                             style={{minWidth: 150}}
                             value={data}
@@ -1064,7 +1064,7 @@ class VinCodeModal extends Component{
             infoItem: undefined,
             image: undefined,
             itemsListEmpty: false,
-            zoomMultiplier: 1,
+            zoomMultiplier: 0.75,
         };
         this.showInfoModal = this.showInfoModal.bind(this);
         this.onImgLoad = this.onImgLoad.bind(this);
@@ -1098,7 +1098,7 @@ class VinCodeModal extends Component{
                 width:     'auto',
                 render: (data, elem)=>{
                     return (
-                        data+1
+                        data
                     )
                 }
             },
@@ -1109,7 +1109,7 @@ class VinCodeModal extends Component{
                 width:     'auto',
                 render: (data, elem)=>{
                     return (
-                        data+1
+                        data
                     )
                 }
             },
@@ -1182,7 +1182,7 @@ class VinCodeModal extends Component{
             zoomed: false,
             loading: false,
             categoryMode: false,
-            zoomMultiplier: 1,
+            zoomMultiplier: 0.75,
         })
     }
 
@@ -1611,19 +1611,25 @@ class VinCodeModal extends Component{
                                         })
                                     }}
                                 />
+                                <Icon
+                                    type='minus'
+                                    style={{
+                                        marginLeft: 15,
+                                    }}
+                                />
                                 <Slider
                                     value={zoomMultiplier}
                                     step={0.1}
-                                    min={1}
+                                    min={0.5}
                                     max={2}
                                     style={{
-                                        marginLeft: 15,
                                         minWidth: 200,
                                     }}
                                     onChange={(value)=>{
                                         this.setState({zoomMultiplier: value})
                                     }}
                                 />
+                                <Icon type='plus'/>
                             </div>
                             <div
                                 className={Styles.zoomBlock}

@@ -403,6 +403,7 @@ class DetailStorageModal extends React.Component{
             if(this.props.storeGroupId) params += `&storeGroupId=${this.props.storeGroupId}`
             if(this.props.brandId) params += `&brandIds=[${this.props.brandId}]`
             url += params;
+            console.log(url)
             fetch(url, {
                 method: 'GET',
                 headers: {
