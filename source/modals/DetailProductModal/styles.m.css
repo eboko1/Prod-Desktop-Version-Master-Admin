@@ -139,8 +139,10 @@
 }
 
 .zoomActionBlock {
+    color: black;
     display: flex;
     margin: 10px;
+    align-items: center;
     position: absolute;
     top: 0px;
     left: 0px;
