@@ -400,7 +400,7 @@ class DetailStorageModal extends React.Component{
             let token = localStorage.getItem('_my.carbook.pro_token');
             let url = API_URL;
             let params = `/tecdoc/replacements?query=${this.props.codeFilter}`;
-            if(this.props.storeGroupId) params += `&storeGroupId=${this.props.storeGroupId}`
+            //if(this.props.storeGroupId) params += `&storeGroupId=${this.props.storeGroupId}`
             if(this.props.brandId) params += `&brandIds=[${this.props.brandId}]`
             url += params;
             console.log(url)

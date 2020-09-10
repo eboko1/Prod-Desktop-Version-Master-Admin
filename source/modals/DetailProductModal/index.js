@@ -1618,6 +1618,7 @@ class VinCodeModal extends Component{
                                     }}
                                 />
                                 <Slider
+                                    dots
                                     value={zoomMultiplier}
                                     step={0.1}
                                     min={0.5}
