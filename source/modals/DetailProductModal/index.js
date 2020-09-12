@@ -1065,6 +1065,7 @@ class VinCodeModal extends Component{
             image: undefined,
             itemsListEmpty: false,
             zoomMultiplier: 0.75,
+            allCategories: [],
         };
         this.showInfoModal = this.showInfoModal.bind(this);
         this.onImgLoad = this.onImgLoad.bind(this);
@@ -1187,9 +1188,17 @@ class VinCodeModal extends Component{
     }
 
     handleBack = () => {
-        this.setState({
-            categoryMode: true,
-        })
+        if(this.state.categoryMode && !this.props.storeGroupId) {
+            this.setState({
+                categories: this.state.allCategories,
+                categoryMode: true,
+            })
+        }
+        else {
+            this.setState({
+                categoryMode: true,
+            })
+        }
     }
 
     fetchData() {
@@ -1327,6 +1336,7 @@ class VinCodeModal extends Component{
                             loading: false,
                             categoryMode: normalizedCategories.length,
                             categories: normalizedCategories,
+                            allCategories: normalizedCategories,
                         })
                     }
                 }
@@ -1519,6 +1529,7 @@ class VinCodeModal extends Component{
             image,
             itemsListEmpty,
             zoomMultiplier,
+            allCategories,
         } = this.state;
 
         return (
@@ -1542,7 +1553,7 @@ class VinCodeModal extends Component{
                     }}
                     visible={visible}
                     title={<FormattedMessage id='add_order_form.vin'/>}
-                    footer={!categoryMode ? 
+                    footer={!categoryMode || !this.props.storeGroupId && allCategories && allCategories != categories ? 
                     [
                         <Button key="back" onClick={this.handleBack}>
                             <FormattedMessage id='back'/>
@@ -1621,7 +1632,7 @@ class VinCodeModal extends Component{
                                     dots
                                     value={zoomMultiplier}
                                     step={0.1}
-                                    min={0.5}
+                                    min={0.25}
                                     max={2}
                                     style={{
                                         minWidth: 200,
@@ -1640,6 +1651,7 @@ class VinCodeModal extends Component{
                             >
                                 {blockPositions.map((item, key)=>{
                                     const code = item.code;
+                                    const title = itemsInfo.find((elem)=>elem.codeonimage == code) ? itemsInfo.find((elem)=>elem.codeonimage == code).name : "";
                                     const isHovered =  imgHoverCode == code || imgHoverIndex == key;
                                     const isChecked = checkedCodes.indexOf(code) >= 0;
                                     return (
@@ -1652,6 +1664,7 @@ class VinCodeModal extends Component{
                                                 width: `${((item.x2-item.x1) / image.width)*100}%`,
                                                 height: `${((item.y2-item.y1) / image.height)*100}%`,
                                             }}
+                                            title={title}
                                             onMouseEnter={(event)=>{
                                                 this.setState({
                                                     tableHoverCode: code,
