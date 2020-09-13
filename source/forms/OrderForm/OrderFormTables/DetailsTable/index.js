@@ -553,6 +553,7 @@ class DetailsTable extends Component {
     }
 
     async updateDetail(key, detail) {
+        console.log(detail);
         this.state.dataSource[ key ] = detail;
         const data = {
             updateMode: true,
@@ -567,6 +568,7 @@ class DetailsTable extends Component {
                         ? detail.supplierBrandId
                         : null,
                     brandName:     detail.brandName ? detail.brandName : null,
+                    supplierOriginalCode: detail.supplierOriginalCode,
                     purchasePrice:
                         Math.round(detail.purchasePrice * 10) / 10 || 0,
                     count:   detail.count,

@@ -406,10 +406,12 @@ class FavouriteDetailsModal extends React.Component{
             supplierBrandId: this.state.dataSource[index].supplierBrandId,
             brandName: this.state.dataSource[index].brandName,
             purchasePrice: this.state.dataSource[index].purchasePrice || 0,
+            supplierOriginalCode: this.state.dataSource[index].supplierOriginalCode,
             count: this.state.dataSource[index].count ? this.state.dataSource[index].count : 1,
             price: this.state.dataSource[index].price || 1,
             comment: this.state.dataSource[index].comment,
         })
+        console.log(data);
         this.addDetailsAndLabors(data);
         this.setState({
             visible: false,
@@ -425,10 +427,11 @@ class FavouriteDetailsModal extends React.Component{
     };
 
 
-    setCode(code, brandId, storeId, key) {
+    setCode(code, brandId, storeId, key, storeGroupId, storeGroupName, supplierOriginalCode) {
         this.state.dataSource[key].detailCode = code;
         this.state.dataSource[key].brandId = brandId;
         this.state.dataSource[key].storeId = storeId;
+        this.state.dataSource[key].supplierOriginalCode = supplierOriginalCode;
         this.setState({
             update: true
         })
@@ -445,13 +448,14 @@ class FavouriteDetailsModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, key) {
-        this.state.dataSource[key].supplierId = supplierId;
-        this.state.dataSource[key].supplierName = supplierName;
-        this.state.dataSource[key].supplierBrandId = supplierBrandId;
-        this.state.dataSource[key].purchasePrice = purchasePrice;
-        this.state.dataSource[key].price = price;
-        this.state.dataSource[key].store = store;
+    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, key) {
+        this.state.mainTableSource[key].supplierId = supplierId;
+        this.state.mainTableSource[key].supplierName = supplierName;
+        this.state.mainTableSource[key].supplierBrandId = supplierBrandId;
+        this.state.mainTableSource[key].purchasePrice = purchasePrice;
+        this.state.mainTableSource[key].price = price;
+        this.state.mainTableSource[key].store = store;
+        this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
         this.setState({
             update: true
         })
@@ -519,6 +523,7 @@ class FavouriteDetailsModal extends React.Component{
                     elem.supplierBrandId = elem.pricelist[0].supplierBrandId;
                     elem.price = elem.purchasePrice * elem.markup;
                     elem.sum = elem.price;
+                    elem.supplierOriginalCode = elem.pricelist[0].supplierOriginalCode;
                 }
                 else {
                     elem.supplierName = undefined;
