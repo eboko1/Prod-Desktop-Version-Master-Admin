@@ -310,13 +310,14 @@ class DetailStorageModal extends React.Component{
                     var supplierBrandId = elem.supplierBrandId ? elem.supplierBrandId : (elem.price ? elem.price.supplierBrandId : undefined);
                     var brandId = elem.brandId ? elem.brandId : (elem.price ? elem.price.brandId : undefined);
                     var name = elem.storeGroupId == 1000000 ? elem.description : elem.storeGroupName;
+                    var supplierOriginalCode = elem.price ? elem.price.supplierOriginalCode : undefined;
                     console.log(elem)
                     return (
                         <Button
                             type="primary"
                             onClick={()=>{
-                                this.props.onSelect(elem.partNumber, brandId, elem.storeId, this.props.tableKey, elem.storeGroupId, name);
-                                this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, this.props.tableKey);
+                                this.props.onSelect(elem.partNumber, brandId, elem.storeId, this.props.tableKey, elem.storeGroupId, name, supplierOriginalCode);
+                                this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, supplierOriginalCode, this.props.tableKey);
                                 this.handleCancel();
                             }}
                         >
@@ -367,13 +368,14 @@ class DetailStorageModal extends React.Component{
         return data;
     }
 
-    setSupplier(supplierId, businessSupplierName, supplierBrandId, purchasePrice, price, store, key) {
+    setSupplier(supplierId, businessSupplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, key) {
         this.state.dataSource[key].businessSupplierId = supplierId;
         this.state.dataSource[key].businessSupplierName = businessSupplierName;
         this.state.dataSource[key].purchasePrice = purchasePrice;
         this.state.dataSource[key].supplierBrandId = supplierBrandId;
         this.state.dataSource[key].salePrice = price;
         this.state.dataSource[key].store = store;
+        this.state.dataSource[key].price.supplierOriginalCode = supplierOriginalCode;
         this.setState({
             update: true
         })
