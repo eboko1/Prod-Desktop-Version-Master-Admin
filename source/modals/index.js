@@ -23,6 +23,7 @@ import FavouriteServicesModal from './FavouriteServicesModal';
 import AddServiceModal from './AddServiceModal';
 import TecDocInfoModal from './TecDocInfoModal';
 import LaborsNormHourModal from './LaborsNormHourModal';
+import OilModal from './OilModal';
 
 export {
     UniversalFiltersModal,
@@ -50,4 +51,5 @@ export {
     AddServiceModal,
     TecDocInfoModal,
     LaborsNormHourModal,
+    OilModal,
 };
