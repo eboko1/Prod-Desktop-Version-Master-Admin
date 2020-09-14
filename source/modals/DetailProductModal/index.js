@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox, Spin, Slider } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
-import { DetailStorageModal, DetailSupplierModal } from 'modals';
+import { DetailStorageModal, DetailSupplierModal, OilModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
 // own
 import Styles from './styles.m.css';
@@ -233,6 +233,7 @@ class DetailProductModal extends React.Component{
                                     })
                                 }}
                             />
+                            {this.state.radioValue != 4 ?
                             <DetailStorageModal
                                 user={this.props.user}
                                 tableKey={0}
@@ -250,7 +251,19 @@ class DetailProductModal extends React.Component{
                                 codeFilter={elem.detailCode}
                                 brandId={elem.brandId}
                                 defaultBrandName={this.state.defaultBrandName}
-                            />
+                            /> :
+                            <OilModal
+                                user={this.props.user}
+                                tableKey={0}
+                                onSelect={this.setCode}
+                                disabled={
+                                    elem.storeGroupId == null && this.state.radioValue != 3 
+                                    || this.state.radioValue == 2 
+                                    || this.state.radioValue == 3 && (data || '').length < 3}
+                                tecdocId={this.props.tecdocId}
+                                storeGroupId={this.state.mainTableSource[0].storeGroupId}
+                                setSupplier={this.setSupplier}
+                            />}
                         </div>
                     )
                 }
@@ -771,7 +784,7 @@ class DetailProductModal extends React.Component{
                         <Radio value={1}><FormattedMessage id="details_table.selection_by_car"/></Radio>
                         <Radio value={2}><FormattedMessage id="details_table.direct_editing"/></Radio>
                         <Radio value={3}><FormattedMessage id="details_table.selection_by_product_code"/></Radio>
-                        <Radio value={4} disabled><FormattedMessage id="details_table.oils_and_liquids"/></Radio>
+                        <Radio value={4}><FormattedMessage id="details_table.oils_and_liquids"/></Radio>
                     </Radio.Group>
                     </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
