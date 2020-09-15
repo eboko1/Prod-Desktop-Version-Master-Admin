@@ -157,9 +157,7 @@ class DetailStorageModal extends React.Component{
                 render: (data, elem)=>{
                     //<div>{getSupplier(elem.suplierId, elem.partNumber)}</div>
                     return (
-                        <>
-                            <div>{data}</div>
-                        </>
+                       <div>{data}</div>
                     )
                 }
             },

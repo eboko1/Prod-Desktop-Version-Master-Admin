@@ -99,7 +99,7 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <Input
-                            disabled={elem.storeGroupId == null && (this.state.radioValue != 2 && this.state.radioValue != 3)}
+                            disabled={elem.storeGroupId == null && this.state.radioValue == 1}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                             style={{minWidth: 150}}
                             value={data}
@@ -125,7 +125,7 @@ class DetailProductModal extends React.Component{
                     }
                     return (
                         <CommentaryButton
-                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
+                            disabled={elem.storeGroupId == null && (this.state.radioValue != 2 || this.state.radioValue != 4)}
                             commentary={
                                 data || 
                                 {
@@ -158,7 +158,7 @@ class DetailProductModal extends React.Component{
                     return (
                         <Select
                             showSearch
-                            disabled={elem.storeGroupId == null && this.state.radioValue != 2 && this.state.radioValue != 3}
+                            disabled={elem.storeGroupId == null && this.state.radioValue == 1}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
                             value={data ? data : undefined}
                             style={{maxWidth: 180, minWidth: 100}}
@@ -225,7 +225,7 @@ class DetailProductModal extends React.Component{
                                 style={{minWidth: 80, color: 'black'}}
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={data}
-                                disabled={elem.storeGroupId == null && this.state.radioValue != 2 && this.state.radioValue != 3}
+                                disabled={elem.storeGroupId == null && this.state.radioValue == 1}
                                 onChange={(event)=>{
                                     this.state.mainTableSource[0].detailCode = event.target.value;
                                     this.setState({
@@ -253,16 +253,14 @@ class DetailProductModal extends React.Component{
                                 defaultBrandName={this.state.defaultBrandName}
                             /> :
                             <OilModal
+                                brands={this.props.brands}
                                 user={this.props.user}
                                 tableKey={0}
                                 onSelect={this.setCode}
-                                disabled={
-                                    elem.storeGroupId == null && this.state.radioValue != 3 
-                                    || this.state.radioValue == 2 
-                                    || this.state.radioValue == 3 && (data || '').length < 3}
                                 tecdocId={this.props.tecdocId}
                                 storeGroupId={this.state.mainTableSource[0].storeGroupId}
                                 setSupplier={this.setSupplier}
+                                codeFilter={elem.detailCode}
                             />}
                         </div>
                     )
