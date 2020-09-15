@@ -441,15 +441,18 @@ class OilModal extends React.Component{
             },
             {
                 key:       'select',
-                width:     'auto',
+                width:     '5%',
                 render: (elem)=>{
                     var supplierBrandId = elem.supplierBrandId ? elem.supplierBrandId : (elem.price ? elem.price.supplierBrandId : undefined);
+                    var brandId = elem.brandId ? elem.brandId : (elem.price ? elem.price.brandId : undefined);
+                    var name = elem.storeGroupId == 1000000 ? elem.productName : elem.storeGroupName;
                     var supplierOriginalCode = elem.price ? elem.price.supplierOriginalCode : undefined;
+                    console.log(elem)
                     return (
                         <Button
                             type="primary"
                             onClick={()=>{
-                                this.props.onSelect(elem.partNumber, elem.brandId, elem.storeId, this.props.tableKey, elem.storeGroupId, elem.productName, supplierOriginalCode);
+                                this.props.onSelect(elem.partNumber, brandId, elem.storeId, this.props.tableKey, elem.storeGroupId, name, supplierOriginalCode);
                                 this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, supplierOriginalCode, this.props.tableKey);
                                 this.handleCancel();
                             }}
@@ -509,6 +512,14 @@ class OilModal extends React.Component{
                     codeOptions = [];
                 data.parts.map((elem, i)=>{
                     elem.key = i;
+                    if(elem.price) {
+                        elem.storeId = elem.price.id;
+                        elem.store = elem.price.store;
+                        elem.purchasePrice = elem.price.purchasePrice;
+                        elem.businessSupplierId = elem.price.businessSupplierId;
+                        elem.businessSupplierName = elem.price.businessSupplierName;
+                        elem.salePrice = elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
+                    }
                     if(brandOptions.findIndex((brand)=>brand.id == elem.brandId) < 0) {
                         brandOptions.push({
                             id: elem.brandId,
