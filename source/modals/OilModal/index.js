@@ -87,60 +87,53 @@ class OilModal extends React.Component{
                                 )}
                             </AutoComplete>
                         </div>
-                        <div
+                        <Select
+                            allowClear
+                            showSearch
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
                             style={{
-                                display: 'flex',
-                                justifyContent: 'space-between'
+                                minWidth: 100
+                            }}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onChange={(value)=>{
+                                this.setState({
+                                    brandFilter: value
+                                })
                             }}
                         >
-                            <Select
-                                allowClear
-                                showSearch
-                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
-                                style={{
-                                    width: '49%'
-                                }}
-                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                                filterOption={(input, option) => {
-                                    return (
-                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                        String(option.props.value).indexOf(input.toLowerCase()) >= 0
-                                    )
-                                }}
-                                onChange={(value)=>{
-                                    this.setState({
-                                        brandFilter: value
-                                    })
-                                }}
-                            >
-                                {this.state.brandOptions.map((brand,i)=>(
-                                    <Option key={i} value={brand.id}>
-                                        {brand.name}
-                                    </Option>
-                                ))}
-                            </Select>
-                            <Select
-                                mode="multiple"
-                                allowClear
-                                showSearch
-                                placeholder='Линейка'
-                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                                style={{
-                                    width: '49%'
-                                }}
-                                onChange={(value)=>{
-                                    this.setState({
-                                        productNameFilter: value
-                                    })
-                                }}
-                            >
-                                {this.state.productNameOptions.map((product,i)=>(
-                                    <Option key={i} value={product}>
-                                        {product}
-                                    </Option>
-                                ))}
-                            </Select>
-                        </div>
+                            {this.state.brandOptions.map((brand,i)=>(
+                                <Option key={i} value={brand.id}>
+                                    {brand.name}
+                                </Option>
+                            ))}
+                        </Select>
+                        <Select
+                            mode="multiple"
+                            allowClear
+                            showSearch
+                            placeholder='Линейка'
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            style={{
+                                minWidth: 100
+                            }}
+                            onChange={(value)=>{
+                                this.setState({
+                                    productNameFilter: value
+                                })
+                            }}
+                        >
+                            {this.state.productNameOptions.map((product,i)=>(
+                                <Option key={i} value={product}>
+                                    {product}
+                                </Option>
+                            ))}
+                        </Select>
                     </div>
                 ),
                 key:       'code',
