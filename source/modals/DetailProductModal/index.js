@@ -610,7 +610,7 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].brandName = brand.brandName;
         this.state.mainTableSource[key].storeId = storeId;
         this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
-        if(this.state.radioValue == 3) {
+        if(this.state.radioValue == 3 || this.state.radioValue == 4) {
             this.state.mainTableSource[key].storeGroupId = storeGroupId;
             this.state.mainTableSource[key].detailName = storeGroupName;
         }
