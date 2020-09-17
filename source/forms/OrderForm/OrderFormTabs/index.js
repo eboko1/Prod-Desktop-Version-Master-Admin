@@ -41,6 +41,9 @@ export default class OrderFormTabs extends React.PureComponent {
 
     constructor(props) {
         super(props);
+        this.state = {
+            activeKey: '1',
+        }
         this._localizationMap = {};
         this.commentsRules = [
             {
@@ -62,6 +65,14 @@ export default class OrderFormTabs extends React.PureComponent {
         }
 
         return this._localizationMap[key];
+    }
+
+    componentDidUpdate(prevProps) {
+        if(!prevProps.showOilModal && this.props.showOilModal) {
+            this.setState({
+                activeKey: '3',
+            })
+        }
     }
 
     render() {
@@ -127,6 +138,10 @@ export default class OrderFormTabs extends React.PureComponent {
             errors,
 
             normHourPrice,
+
+            showOilModal,
+            oilModalData,
+            clearOilData,
         } = this.props;
 
         const {
@@ -181,7 +196,16 @@ export default class OrderFormTabs extends React.PureComponent {
         ]);
 
         return (
-            <Tabs type="card" className={Styles.orderFormsTabs}>
+            <Tabs
+                type="card"
+                className={Styles.orderFormsTabs}
+                activeKey={this.state.activeKey}
+                onTabClick={(key)=>{
+                    this.setState({
+                        activeKey: key,
+                    })
+                }}
+            >
                 {!addOrderForm && (
                     <TabPane
                         forceRender
@@ -269,6 +293,7 @@ export default class OrderFormTabs extends React.PureComponent {
                 {!addOrderForm && (
                     <TabPane
                         forceRender
+
                         tab={`${formatMessage({
                             id: "add_order_form.details",
                             defaultMessage: "Details",
@@ -324,6 +349,9 @@ export default class OrderFormTabs extends React.PureComponent {
                             )}
                             reloadOrderForm={this.props.reloadOrderForm}
                             clientVehicleVin={this.props.clientVehicleVin}
+                            showOilModal= { showOilModal }
+                            oilModalData = { oilModalData }
+                            clearOilData = { clearOilData }
                         />
                         <DiscountPanel
                             orderDetails={orderDetails}
