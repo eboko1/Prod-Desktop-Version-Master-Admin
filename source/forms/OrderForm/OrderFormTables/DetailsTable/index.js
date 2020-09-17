@@ -628,6 +628,14 @@ class DetailsTable extends Component {
         });
     }
 
+    componentDidUpdate(prevProps) {
+        if(!prevProps.showOilModal && this.props.showOilModal) {
+            this.setState({
+                productModalVisible: true,
+            })
+        }
+    }
+
     render() {
         const columns = this.columns;
         if (
@@ -683,7 +691,10 @@ class DetailsTable extends Component {
                     tableKey={ this.state.productModalKey }
                     updateDetail={ this.updateDetail }
                     updateDataSource={ this.updateDataSource }
-                    clientVehicleVin={this.props.clientVehicleVin}
+                    clientVehicleVin={ this.props.clientVehicleVin }
+                    showOilModal={ this.props.showOilModal }
+                    oilModalData={ this.props.oilModalData }
+                    clearOilData={ this.props.clearOilData }
                 />
             </Catcher>
         );

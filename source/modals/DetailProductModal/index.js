@@ -261,6 +261,9 @@ class DetailProductModal extends React.Component{
                                 storeGroupId={this.state.mainTableSource[0].storeGroupId}
                                 setSupplier={this.setSupplier}
                                 codeFilter={elem.detailCode}
+                                showOilModal={ this.props.showOilModal }
+                                oilModalData={ this.props.oilModalData }
+                                clearOilData={ this.props.clearOilData }
                             />}
                         </div>
                     )
@@ -748,14 +751,19 @@ class DetailProductModal extends React.Component{
         this.fetchData();
     }
 
-    componentDidUpdate(prevState) {
-        if(prevState.visible == false && this.props.visible) {
+    componentDidUpdate(prevProps) {
+        if(prevProps.visible == false && this.props.visible) {
             const editing = Boolean(this.props.detail.storeGroupId);
             this.setState({
                 editing: editing,
                 mainTableSource: [{...this.props.detail}],
             })
             this.getDefaultValues(this.props.detail.storeGroupId);
+        }
+        if(!prevProps.showOilModal && this.props.showOilModal) {
+            this.setState({
+                radioValue: 4,
+            })
         }
     }
 

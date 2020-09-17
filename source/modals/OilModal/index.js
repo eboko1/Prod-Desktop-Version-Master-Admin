@@ -291,6 +291,7 @@ class OilModal extends React.Component{
                             showSearch
                             placeholder='OE'
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            defaultValue={this.props.oilModalData && this.props.oilModalData.oem ? this.props.oilModalData.oem : undefined}
                             style={{
                                 minWidth: 100
                             }}
@@ -311,6 +312,7 @@ class OilModal extends React.Component{
                             allowClear
                             showSearch
                             placeholder='Допуск'
+                            defaultValue={this.props.oilModalData && this.props.oilModalData.oeCode ? [this.props.oilModalData.oeCode] : undefined}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             style={{
                                 minWidth: 100
@@ -478,6 +480,19 @@ class OilModal extends React.Component{
             dataSource: [],
         })
     };
+
+    componentDidUpdate(prevProps) {
+        if(!this.state.fetched) {
+            this.fetchData();
+        }
+        if(this.state.fetched && this.props.showOilModal) {
+            this.setState({
+                visible: true,
+            });
+            console.log(this.props.oilModalData)
+            this.props.clearOilData();
+        }
+    }
 
     fetchData() {
         var that = this;
