@@ -630,8 +630,10 @@ class DetailsTable extends Component {
 
     componentDidUpdate(prevProps) {
         if(!prevProps.showOilModal && this.props.showOilModal) {
+            console.log(this.state.dataSource.length ? this.state.dataSource.length-1 : 0)
             this.setState({
                 productModalVisible: true,
+                productModalKey: this.state.dataSource.length ? this.state.dataSource.length-1 : 0,
             })
         }
     }

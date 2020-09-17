@@ -312,7 +312,7 @@ class OilModal extends React.Component{
                             allowClear
                             showSearch
                             placeholder='Допуск'
-                            defaultValue={this.props.oilModalData && this.props.oilModalData.oeCode ? [this.props.oilModalData.oeCode] : undefined}
+                            defaultValue={this.props.oilModalData.oeCode ? [this.props.oilModalData.oeCode] : undefined}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             style={{
                                 minWidth: 100
@@ -482,9 +482,6 @@ class OilModal extends React.Component{
     };
 
     componentDidUpdate(prevProps) {
-        if(!this.state.fetched) {
-            this.fetchData();
-        }
         if(this.state.fetched && this.props.showOilModal) {
             this.setState({
                 visible: true,
@@ -565,6 +562,9 @@ class OilModal extends React.Component{
 
     componentDidMount() {
         this._isMounted = true;
+        if(!this.state.fetched) {
+            this.fetchData();
+        }
     }
 
     componentWillUnmount() {
@@ -603,7 +603,6 @@ class OilModal extends React.Component{
                     type='primary'
                     disabled={disabled}
                     onClick={()=>{
-                        this.fetchData();
                         this.setState({
                             visible: true,
                         })
