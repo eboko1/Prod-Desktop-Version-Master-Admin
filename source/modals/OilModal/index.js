@@ -484,6 +484,8 @@ class OilModal extends React.Component{
     componentDidUpdate(prevProps) {
         if(this.state.fetched && this.props.showOilModal) {
             this.setState({
+                oemFilter: this.props.oilModalData.oem,
+                oeCodeFilter: [this.props.oilModalData.oeCode],
                 visible: true,
             });
             console.log(this.props.oilModalData)

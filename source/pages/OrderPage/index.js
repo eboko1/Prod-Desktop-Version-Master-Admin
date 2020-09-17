@@ -196,7 +196,6 @@ class OrderPage extends Component {
     }
 
     _clearOilData = () => {
-        console.log(this);
         this.setState({
             showOilModal: false,
         })
