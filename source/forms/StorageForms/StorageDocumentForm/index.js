@@ -676,8 +676,8 @@ class AddProductModal extends React.Component {
                 {messageId: 'storage.in_orders', count: 3},
                 {messageId: 'storage.ordered', count: 4},
                 {messageId: 'storage.deficit', count: 5},
-                {messageId: 'min', count: 6},
-                {messageId: 'max', count: 7},
+                {messageId: 'storage.min', count: 6},
+                {messageId: 'storage.max', count: 7},
                 {messageId: 'storage.to_order', count: 8},
             ]
         }

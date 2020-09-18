@@ -104,15 +104,23 @@ class StorageDocumentPage extends Component {
         })
     }
 
-    addDocProduct(docProduct) {
-        this.state.formData.docProducts.push({
-            key: this.state.formData.docProducts.length,
-            ...docProduct
-        });
-        this.state.formData.sum += docProduct.sum,
-        this.setState({
-            update: true,
-        })
+    addDocProduct(docProduct, arrayMode = false) {
+        if(arrayMode) {
+            this.state.formData.docProducts = this.state.formData.docProducts.concat(docProduct);
+            this.setState({
+                forceUpdate: true,
+            })
+        }
+        else {
+            this.state.formData.docProducts.push({
+                key: this.state.formData.docProducts.length,
+                ...docProduct
+            });
+            this.state.formData.sum += docProduct.sum;
+            this.setState({
+                update: true,
+            })
+        }
         if(this.props.id) this.updateDocument(this.state.formData.status);
     }
 
@@ -604,8 +612,16 @@ class StorageDocumentPage extends Component {
         this._isMounted = false;
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if(this.state.forceUpdate) {
+            this.setState({
+                forceUpdate: false,
+            })
+        }
+    }
+
     render() {
-        const { warehouses, counterpartSupplier, formData, brands, clientList, fetched } = this.state;
+        const { warehouses, counterpartSupplier, formData, brands, clientList, fetched, forceUpdate } = this.state;
         const { id, intl: {formatMessage} } = this.props;
         const dateTime = formData.createdDatetime || new Date();
         const titleType = " " + formatMessage({id: `storage_document.docType.${formData.type}.${formData.documentType}`}).toLowerCase();
@@ -641,7 +657,10 @@ class StorageDocumentPage extends Component {
                         </>
                         : null}
                         {formData.status != DONE && (<>
-                        <AutomaticOrderCreationModal/>
+                        <AutomaticOrderCreationModal
+                            supplierId={formData.counterpartId}
+                            addDocProduct={this.addDocProduct}
+                        />
                         <Icon
                             type='save'
                             style={headerIconStyle}
@@ -672,8 +691,8 @@ class StorageDocumentPage extends Component {
                     </>
                 }
             >
-                <div>
                 <StorageDocumentForm
+                    forceUpdate={forceUpdate}
                     clientList={clientList}
                     wrappedComponentRef={ this.saveFormRef }
                     warehouses={warehouses}
@@ -686,7 +705,6 @@ class StorageDocumentPage extends Component {
                     deleteDocProduct={this.deleteDocProduct}
                     editDocProduct={this.editDocProduct}
                 />
-                </div>
             </Layout>
         );
     }
@@ -770,7 +788,7 @@ class AutomaticOrderCreationModal extends React.Component {
         super(props);
         this.state = {
             dataSource: [
-                {
+                /*{
                     key: 0,
                     brandName: 'SACHS',
                     detailCode: '100 786',
@@ -787,7 +805,7 @@ class AutomaticOrderCreationModal extends React.Component {
                     toOrder: 2,
                     inOrders: 5,
                     inStock: 10,
-                }
+                }*/
             ],
             visible: false,
         };
@@ -850,6 +868,7 @@ class AutomaticOrderCreationModal extends React.Component {
                             min={0}
                             onChange={(value)=>{
                                 elem.stockPrice = value;
+                                elem.sum = elem.quantity * value;
                                 this.setState({update: true});
                             }}
                         />
@@ -991,13 +1010,14 @@ class AutomaticOrderCreationModal extends React.Component {
                 key:       'quantity',
                 dataIndex: 'quantity',
                 width:     'auto',
-                render:     (data)=>{
+                render:     (data, elem)=>{
                     return (
                         <InputNumber
                             value={data}
                             min={0}
                             onChange={(value)=>{
                                 elem.quantity = value;
+                                elem.sum = value * elem.stockPrice;
                                 this.setState({update: true});
                             }}
                         />
@@ -1015,7 +1035,7 @@ class AutomaticOrderCreationModal extends React.Component {
                             style={{
                                 color: 'black',
                             }}
-                            value={elem.quantity * elem.stockPrice}
+                            value={elem.sum}
                         />
                     )
                 }
@@ -1024,6 +1044,7 @@ class AutomaticOrderCreationModal extends React.Component {
     }
 
     handleOk() {
+        this.props.addDocProduct(this.state.dataSource, true);
         this.handleCancel();
     }
 
@@ -1034,6 +1055,43 @@ class AutomaticOrderCreationModal extends React.Component {
         });
     }
 
+    fetchData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_orders/recommended_products?businessSupplierId=${this.props.supplierId}`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+            data.map((elem, i)=>{
+                elem.key = i;
+                elem.detailName = elem.name;
+                elem.detailCode = elem.code;
+                elem.sum = elem.quantity * elem.stockPrice;
+            })
+            that.setState({
+                dataSource: data,
+            })
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    }
+
+
     render() {
         const { visible, dataSource } = this.state;
         return (
@@ -1042,6 +1100,7 @@ class AutomaticOrderCreationModal extends React.Component {
                 type="carry-out"
                 style={headerIconStyle}
                 onClick={()=>{
+                    this.fetchData();
                     this.setState({
                         visible: true,
                     })
@@ -1060,7 +1119,7 @@ class AutomaticOrderCreationModal extends React.Component {
                 <Table
                     columns={this.columns}
                     dataSource={dataSource}
-                    pagination={false}
+                    pagination={{pageSize: 6}}
                 />
             </Modal>
             </>
