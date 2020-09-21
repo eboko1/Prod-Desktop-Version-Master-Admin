@@ -79,9 +79,23 @@ class StorageDocumentForm extends Component {
         })
     }
 
+    componentDidUpdate() {
+        if(this.props.formData.documentType == CLIENT && this.props.formData.counterpartId && !this.state.counterpartOptionInfo.value) {
+            const client = this.props.clientList.find((client)=>client.clientId==this.props.formData.counterpartId)
+            if(client) {
+                this.setState({
+                    counterpartOptionInfo: {
+                        value: this.props.formData.counterpartId,
+                        children: `${client.surname || ""} ${client.name} ${client.middleName || ""} ${client.phones[0]}`
+                    }
+                })
+            }
+        }
+    }
+ 
     render() {
         const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo } = this.state;
-
+        console.log(this.props.formData)
         const {
             addDocProduct,
             updateFormData,
