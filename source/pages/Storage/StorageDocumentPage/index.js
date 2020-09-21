@@ -535,7 +535,7 @@ class StorageDocumentPage extends Component {
                   ORD = 'ORD',
                   BOR = 'BOR';
 
-            data.counterpartId = data.counterpartBusinessSupplierId;
+            data.counterpartId = data.counterpartBusinessSupplierId || data.counterpartClientId;
             data.payUntilDatetime = data.payUntilDatetime && moment(data.payUntilDatetime);
             data.docProducts.map((elem, key)=>{
                 elem.brandId = elem.product.brandId,
