@@ -408,6 +408,7 @@ class FavouriteDetailsModal extends React.Component{
             purchasePrice: this.state.dataSource[index].purchasePrice || 0,
             supplierOriginalCode: this.state.dataSource[index].supplierOriginalCode,
             count: this.state.dataSource[index].count ? this.state.dataSource[index].count : 1,
+            reservedFromWarehouseId: this.state.dataSource[index].defaultWarehouseId || null,
             price: this.state.dataSource[index].price || 1,
             comment: this.state.dataSource[index].comment,
         })
@@ -448,7 +449,7 @@ class FavouriteDetailsModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, key) {
+    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, key, isFromStock, defaultWarehouseId) {
         this.state.mainTableSource[key].supplierId = supplierId;
         this.state.mainTableSource[key].supplierName = supplierName;
         this.state.mainTableSource[key].supplierBrandId = supplierBrandId;
@@ -456,6 +457,8 @@ class FavouriteDetailsModal extends React.Component{
         this.state.mainTableSource[key].price = price;
         this.state.mainTableSource[key].store = store;
         this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
+        this.state.mainTableSource[key].isFromStock = isFromStock;
+        this.state.mainTableSource[key].defaultWarehouseId = defaultWarehouseId;
         this.setState({
             update: true
         })
