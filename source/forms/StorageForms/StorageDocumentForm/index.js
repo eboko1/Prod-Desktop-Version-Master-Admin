@@ -125,7 +125,7 @@ class StorageDocumentForm extends Component {
         const onlySum = type == TRANSFER || type == RESERVE || type == ORDER || documentType == OWN_CONSUMPTION || documentType == INVENTORY;
         
         return (
-            <>
+            <div>
             <Form
                 {...formItemLayout}
                 style={{
@@ -465,7 +465,6 @@ class StorageDocumentForm extends Component {
                     showModal={this.showModal}
                 />
                 { !disabled ? 
-                <>
                     <AddProductModal
                         visible={modalVisible}
                         hideModal={this.hideModal}
@@ -477,10 +476,11 @@ class StorageDocumentForm extends Component {
                         editDocProduct={editDocProduct}
                         isIncome={type == INCOME}
                         priceDisabled={type == TRANSFER || type == RESERVE || documentType == OWN_CONSUMPTION}
+                        warehouses={warehouses}
                     /> 
-                </>: null}
+                : null}
             </div>
-            </>
+            </div>
         );
     }
 }
@@ -1230,6 +1230,7 @@ class AddProductModal extends React.Component {
                     confirmAlertModal={this.confirmAlertModal}
                     cancelAlertModal={this.cancelAlertModal}
                     storeGroupsTree={storeGroupsTree}
+                    warehouses={this.props.warehouses}
                     {...this.state}
                 >
                     Даного товара нет в справочнике товаров. Добавить?
@@ -1281,6 +1282,7 @@ class AlertModal extends React.Component {
             certificate: undefined,
             priceGroupNumber: undefined,
             priceGroups: [],
+            defaultWarehouseId: undefined,
             min: 0,
             max: 0,
         }
@@ -1326,6 +1328,7 @@ class AlertModal extends React.Component {
             tradeCode,
             brandName,
             certificate,
+            defaultWarehouseId,
             min,
             max,
         } = this.state;
@@ -1346,6 +1349,7 @@ class AlertModal extends React.Component {
             tradeCode: tradeCode,
             certificate: certificate,
             priceGroupNumber: priceGroupNumber,
+            defaultWarehouseId: defaultWarehouseId,
             min: min,
             max: max,
         }
@@ -1412,6 +1416,7 @@ class AlertModal extends React.Component {
             brandSearchValue,
             measureUnit,
             priceGroupNumber,
+            defaultWarehouseId,
             tradeCode,
             certificate,
             min,
@@ -1624,7 +1629,29 @@ class AlertModal extends React.Component {
                                 </Option>
                             )) }
                         </Select>
-                        
+                    </div>
+                    <div className={Styles.addProductItemWrap}>
+                        <FormattedMessage id='navigation.warehouses' />
+                        <Select
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            value={defaultWarehouseId}
+                            onSelect={(value)=>{
+                                this.setState({
+                                    defaultWarehouseId: value,
+                                })
+                            }}
+                        >
+                            {this.props.warehouses.map((elem, i)=>{
+                                return (
+                                    <Option
+                                        key={i}
+                                        value={elem.id}
+                                    >
+                                        {elem.name}
+                                    </Option>
+                                )
+                            })}
+                        </Select>
                     </div>
                     <div className={Styles.addProductItemWrap}>
                         <FormattedMessage id='storage.certificate' />

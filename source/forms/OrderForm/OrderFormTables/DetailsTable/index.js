@@ -9,6 +9,7 @@ import {
     Button,
     Input,
     Modal,
+    notification,
 } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
@@ -34,6 +35,7 @@ class DetailsTable extends Component {
             productModalVisible: false,
             productModalKey:     0,
             dataSource:          [],
+            reserveId:           undefined,
         };
 
         this.storeGroups = [];
@@ -69,7 +71,8 @@ class DetailsTable extends Component {
                                 type='primary'
                                 disabled={
                                     confirmed != 'undefined' ||
-                                    this.props.disabled
+                                    this.props.disabled ||
+                                    elem.reserved
                                 }
                                 onClick={ () => {
                                     this.showDetailProductModal(data);
@@ -84,7 +87,8 @@ class DetailsTable extends Component {
                                         height:          18,
                                         backgroundColor:
                                             confirmed != 'undefined' ||
-                                            this.props.disabled
+                                            this.props.disabled ||
+                                            elem.reserved
                                                 ? 'black'
                                                 : 'white',
                                         mask:       `url(${images.pistonIcon}) no-repeat center / contain`,
@@ -95,7 +99,7 @@ class DetailsTable extends Component {
                             { !elem.detailName ? (
                                 <FavouriteDetailsModal
                                     treeData={ this.treeData }
-                                    disabled={ this.props.disabled }
+                                    disabled={ this.props.disabled || elem.reserved }
                                     user={ this.props.user }
                                     tecdocId={ this.props.tecdocId }
                                     orderId={ this.props.orderId }
@@ -112,7 +116,7 @@ class DetailsTable extends Component {
                                     treeData={ this.treeData }
                                     brands={ this.props.allDetails.brands }
                                     disabled={
-                                        !elem.detailName || this.props.disabled
+                                        !elem.detailName || this.props.disabled || elem.reserved
                                     }
                                     confirmed={ confirmed != 'undefined' }
                                     detail={ elem }
@@ -252,6 +256,85 @@ class DetailsTable extends Component {
                                 : 0 }{ ' ' }
                             <FormattedMessage id='pc' />
                         </span>
+                    );
+                },
+            },
+            {
+                title: (
+                    <div className={ Styles.numberColumn }>
+                        <FormattedMessage id='storage.RESERVE' />
+                    </div>
+                ),
+                className: Styles.numberColumn,
+                width:     'auto',
+                key:       'reserve',
+                render:    elem => {
+                    return (
+                        <Button
+                            style={elem.reservedFromWarehouseId && {
+                                color: elem.reserved ? 'rgb(255, 126, 126)' : 'var(--green)',
+                            }}
+                            disabled={!elem.reservedFromWarehouseId}
+                            onClick={()=>{
+                                console.log(elem)
+                                const data = {
+                                    status: "DONE",
+                                    documentType: "TRANSFER",
+                                    type: "EXPENSE",
+                                    supplierDocNumber: this.props.orderId,
+                                    payUntilDatetime: null,
+                                    docProducts:[
+                                        {
+                                            productId: elem.productId,
+                                            quantity: elem.count,
+                                            stockPrice: elem.purchasePrice,
+                                        }
+                                    ],
+                                    warehouseId: !elem.reserved ? elem.reservedFromWarehouseId : this.state.reserveId,
+                                    counterpartWarehouseId: !elem.reserved ? this.state.reserveId : elem.reservedFromWarehouseId,
+                                    orderId: this.props.orderId,
+                                };
+                                console.log(data);
+                                var that = this;
+                                let token = localStorage.getItem('_my.carbook.pro_token');
+                                let url = __API_URL__ + `/store_docs`;
+                                fetch(url, {
+                                    method:  'POST',
+                                    headers: {
+                                        Authorization: token,
+                                    },
+                                    body: JSON.stringify(data),
+                                })
+                                .then(function(response) {
+                                    if (response.status !== 200) {
+                                        return Promise.reject(new Error(response.statusText));
+                                    }
+                                    return Promise.resolve(response);
+                                })
+                                .then(function(response) {
+                                    return response.json();
+                                })
+                                .then(function(data) {
+                                    console.log(data);
+                                    if(data.created) {
+                                        elem.reservedCount = elem.reserved ? 0 : elem.count;
+                                        elem.reserved = !elem.reserved;
+                                        that.updateDetail(elem.key, elem);
+                                    }
+                                    else {
+                                        const availableCount = data.notAvailableProducts[0].available;
+                                        notification.error({
+                                            message: `Доступное количество на складе ${elem.reservedFromWarehouseName} - ${availableCount}`,
+                                        });
+                                    }
+                                })
+                                .catch(function(error) {
+                                    console.log('error', error);
+                                });
+                            }}
+                        > 
+                            <FormattedMessage id='storage.RESERVE'/>
+                        </Button>
                     );
                 },
             },
@@ -399,7 +482,7 @@ class DetailsTable extends Component {
                 render: elem => {
                     const confirmed = elem.agreement.toLowerCase();
                     const disabled =
-                        confirmed != 'undefined' || this.props.disabled;
+                        confirmed != 'undefined' || this.props.disabled || elem.reserved;
 
                     return (
                         <Popconfirm
@@ -413,7 +496,7 @@ class DetailsTable extends Component {
                                     '_my.carbook.pro_token',
                                 );
                                 let url = API_URL;
-                                let params = `/orders/${this.props.orderId}/details?ids=[${elem.id}] `;
+                                let params = `/orders/${this.props.orderId}/details?ids=[${elem.id}]`;
                                 url += params;
                                 try {
                                     const response = await fetch(url, {
@@ -462,6 +545,32 @@ class DetailsTable extends Component {
     }
 
     fetchData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/warehouses?attribute=RESERVE`;
+        fetch(url, {
+            method:  'GET',
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            that.setState({
+                reserveId: data[0].id,
+            })
+        })
+        .catch(function(error) {
+            console.log('error', error);
+        });
         this.storeGroups = this.props.details;
         this.buildStoreGroupsTree();
     }
@@ -555,29 +664,49 @@ class DetailsTable extends Component {
     async updateDetail(key, detail) {
         console.log(detail);
         this.state.dataSource[ key ] = detail;
+        const newDetail = detail.storeId || detail.productId ? 
+        {
+            id: detail.id,
+            storeGroupId: detail.storeGroupId,
+            name: detail.detailName,
+            productId: detail.storeId || detail.productId,
+            productCode: detail.detailCode,
+            purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
+            count: detail.count ? detail.count : 1,
+            price: detail.price ? Math.round(detail.price*10)/10  : 1,
+            reservedFromWarehouseId: detail.reservedFromWarehouseId || null,
+            reserved: detail.reserved,
+            reservedCount: detail.reservedCount,
+            comment: detail.comment || {
+                comment: undefined,
+                positions: [],
+            },
+        } : 
+        {
+            id:              detail.id,
+            storeGroupId:    detail.storeGroupId,
+            name:            detail.detailName,
+            productCode:     detail.detailCode ? detail.detailCode : null,
+            supplierId:      detail.supplierId ? detail.supplierId : null,
+            supplierBrandId: detail.supplierBrandId
+                ? detail.supplierBrandId
+                : null,
+            brandName:     detail.brandName ? detail.brandName : null,
+            supplierOriginalCode: detail.supplierOriginalCode,
+            reservedFromWarehouseId: detail.reservedFromWarehouseId || null,
+            purchasePrice:
+                Math.round(detail.purchasePrice * 10) / 10 || 0,
+            count:   detail.count,
+            price:   Math.round(detail.price * 10) / 10,
+            comment: detail.comment || {
+                comment:   undefined,
+                positions: [],
+            },
+        }
         const data = {
             updateMode: true,
             details:    [
-                {
-                    id:              detail.id,
-                    storeGroupId:    detail.storeGroupId,
-                    name:            detail.detailName,
-                    productCode:     detail.detailCode ? detail.detailCode : null,
-                    supplierId:      detail.supplierId ? detail.supplierId : null,
-                    supplierBrandId: detail.supplierBrandId
-                        ? detail.supplierBrandId
-                        : null,
-                    brandName:     detail.brandName ? detail.brandName : null,
-                    supplierOriginalCode: detail.supplierOriginalCode,
-                    purchasePrice:
-                        Math.round(detail.purchasePrice * 10) / 10 || 0,
-                    count:   detail.count,
-                    price:   Math.round(detail.price * 10) / 10,
-                    comment: detail.comment || {
-                        comment:   undefined,
-                        positions: [],
-                    },
-                },
+                newDetail,
             ],
         };
         if (

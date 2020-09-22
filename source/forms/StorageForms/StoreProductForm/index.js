@@ -24,6 +24,7 @@ import {
     DecoratedInput,
     DecoratedAutoComplete,
     DecoratedTreeSelect,
+    DecoratedSelect,
 } from 'forms/DecoratedFields';
 import { MeasureUnitSelect, PriceGroupSelect } from 'forms/_formkit';
 
@@ -51,6 +52,31 @@ const formItemLayout = {
     labelCol:   { span: 7 },
     wrapperCol: { span: 15 },
 };
+
+var warehouses = [];
+let token = localStorage.getItem('_my.carbook.pro_token');
+let url = __API_URL__ + '/warehouses';
+fetch(url, {
+    method: 'GET',
+    headers: {
+        'Authorization': token,
+    }
+})
+.then(function (response) {
+    if (response.status !== 200) {
+    return Promise.reject(new Error(response.statusText))
+    }
+    return Promise.resolve(response)
+})
+.then(function (response) {
+    return response.json()
+})
+.then(function (data) {
+    warehouses = data;
+})
+.catch(function (error) {
+    console.log('error', error)
+});
 
 const ProductForm = props => {
     const {
@@ -276,6 +302,22 @@ const ProductForm = props => {
                 formatMessage={ formatMessage }
                 initialValue={ _.get(props, 'product.priceGroupNumber') }
             />
+            <DecoratedSelect
+                field={ 'defaultWarehouseId' }
+                label={ formatMessage({ id: 'navigation.warehouses' }) }
+                formItem
+                formItemLayout={ formItemLayout }
+                getFieldDecorator={ form.getFieldDecorator }
+                getPopupContainer={ trigger => trigger.parentNode }
+                formatMessage={ formatMessage }
+                initialValue={ _.get(props, 'product.defaultWarehouseId') }
+            >
+                {warehouses.map((elem, i)=>
+                    <Option key={i} value={elem.id}>
+                        {elem.name}
+                    </Option>
+                )}
+            </DecoratedSelect>
             <DecoratedInput
                 formItem
                 formItemLayout={ formItemLayout }

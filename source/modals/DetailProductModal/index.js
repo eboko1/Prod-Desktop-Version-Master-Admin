@@ -509,6 +509,7 @@ class DetailProductModal extends React.Component{
                         supplierBrandId: element.supplierBrandId,
                         brandName: element.brandName,
                         supplierOriginalCode: element.supplierOriginalCode,
+                        reservedFromWarehouseId: element.reservedFromWarehouseId || null,
                         purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                         count: element.count ? element.count : 1,
                         price: element.price ? Math.round(element.price*10)/10 : 1,
@@ -527,6 +528,7 @@ class DetailProductModal extends React.Component{
                         purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                         count: element.count ? element.count : 1,
                         price: element.price ? Math.round(element.price*10)/10  : 1,
+                        reservedFromWarehouseId: element.reservedFromWarehouseId || null,
                         comment: element.comment || {
                             comment: undefined,
                             positions: [],
@@ -596,6 +598,8 @@ class DetailProductModal extends React.Component{
                     that.state.mainTableSource[0].price = purchasePrice * markup;
                     that.state.mainTableSource[0].count = 1;
                     that.state.mainTableSource[0].supplierOriginalCode = result.price ? result.price.supplierOriginalCode : undefined;
+                    that.state.mainTableSource[0].isFromStock = result.price ? result.price.isFromStock : undefined;
+                    that.state.mainTableSource[0].reservedFromWarehouseId = result.price ? result.price.defaultWarehouseId : undefined;
                 }
                 that.setState({
                     update: true,
@@ -633,7 +637,7 @@ class DetailProductModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, key) {
+    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, key, isFromStock, defaultWarehouseId, storeId) {
         this.state.mainTableSource[key].supplierId = supplierId;
         this.state.mainTableSource[key].supplierName = supplierName;
         this.state.mainTableSource[key].supplierBrandId = supplierBrandId;
@@ -641,6 +645,9 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].price = price;
         this.state.mainTableSource[key].store = store;
         this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
+        this.state.mainTableSource[key].isFromStock = isFromStock;
+        this.state.mainTableSource[key].reservedFromWarehouseId = defaultWarehouseId;
+        this.state.mainTableSource[key].storeId = storeId;
         this.setState({
             update: true
         })
