@@ -277,7 +277,6 @@ class DetailsTable extends Component {
                             }}
                             disabled={!elem.reservedFromWarehouseId}
                             onClick={()=>{
-                                
                                 const data = {
                                     status: "DONE",
                                     documentType: "TRANSFER",
@@ -295,6 +294,7 @@ class DetailsTable extends Component {
                                     counterpartWarehouseId: !elem.reserved ? this.state.reserveId : elem.reservedFromWarehouseId,
                                     orderId: this.props.orderId,
                                 };
+                                console.log(data);
                                 var that = this;
                                 let token = localStorage.getItem('_my.carbook.pro_token');
                                 let url = __API_URL__ + `/store_docs`;
