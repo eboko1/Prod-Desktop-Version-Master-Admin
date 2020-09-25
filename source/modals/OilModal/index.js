@@ -216,9 +216,15 @@ class OilModal extends React.Component{
                 dataIndex: 'sae',
                 width:     'auto',
                 render: (data, elem)=>{
+                    var saeCode;
+                    elem.sae.map((code)=>{
+                        if(this.state.saeFilter.indexOf(code) >= 0) {
+                            saeCode = code;
+                        }
+                    })
                     return(
                         <div>
-                            <div>{data}</div>
+                            <div>{this.state.saeFilter.length ? saeCode : elem.sae && elem.sae.length ? elem.sae[0] : <FormattedMessage id="long_dash"/>}</div>
                         </div>
                     )
                 }
@@ -274,10 +280,22 @@ class OilModal extends React.Component{
                 key:       'acea',
                 width:     'auto',
                 render: (elem)=>{
+                    var aceaCode;
+                    elem.acea.map((code)=>{
+                        if(this.state.aceaFilter.indexOf(code) >= 0) {
+                            aceaCode = code;
+                        }
+                    })
+                    var apiCode;
+                    elem.api.map((code)=>{
+                        if(this.state.apiFilter.indexOf(code) >= 0) {
+                            apiCode = code;
+                        }
+                    })
                     return(
                         <div>
-                            <div>{elem.acea}</div>
-                            <div>{elem.api}</div>
+                            <div>{this.state.aceaFilter.length ? aceaCode : elem.acea && elem.acea.length ? elem.acea[0] : <FormattedMessage id="long_dash"/>}</div>
+                            <div>{this.state.apiFilter.length ? apiCode : elem.api && elem.api.length ? elem.api[0] : <FormattedMessage id="long_dash"/>}</div>
                         </div>
                     )
                 }
@@ -312,7 +330,7 @@ class OilModal extends React.Component{
                             allowClear
                             showSearch
                             placeholder='Допуск'
-                            defaultValue={this.props.oilModalData.oeCode ? [this.props.oilModalData.oeCode] : undefined}
+                            defaultValue={this.props.oilModalData && this.props.oilModalData.oeCode ? this.state.oeCodeFilter : undefined}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             style={{
                                 minWidth: 100
@@ -342,8 +360,8 @@ class OilModal extends React.Component{
                     })
                     return (
                         <div>
-                            <div>{this.state.oemFilter ? this.state.oemFilter : elem.oem ? elem.oem[0] : null}</div>
-                            <div>{this.state.oeCodeFilter.length ? oeCode : elem.oeCode ? elem.oeCode[0] : null}</div>
+                            <div>{this.state.oemFilter ? this.state.oemFilter : elem.oem && elem.oem.length ? elem.oem[0] : null}</div>
+                            <div>{this.state.oeCodeFilter.length ? oeCode : elem.oeCode && elem.oeCode.length ? elem.oeCode[0] : null}</div>
                         </div>
                     )
                 }
@@ -483,12 +501,17 @@ class OilModal extends React.Component{
 
     componentDidUpdate(prevProps) {
         if(this.state.fetched && this.props.showOilModal) {
+            const oeCodeTmp = [];
+            this.props.oilModalData.oeCode.map((code)=>{
+                if(this.state.filters.oeCode.findIndex((elem)=>elem==code) >= 0) {
+                    oeCodeTmp.push(code);
+                }
+            })
             this.setState({
                 oemFilter: this.props.oilModalData.oem,
-                oeCodeFilter: [this.props.oilModalData.oeCode],
+                oeCodeFilter: oeCodeTmp,
                 visible: true,
             });
-            console.log(this.props.oilModalData)
             this.props.clearOilData();
         }
     }
@@ -519,6 +542,11 @@ class OilModal extends React.Component{
                     codeOptions = [];
                 data.parts.map((elem, i)=>{
                     elem.key = i;
+                    if(!elem.acea) elem.acea = [];
+                    if(!elem.api) elem.api = [];
+                    if(!elem.sae) elem.sae = [];
+                    if(!elem.oem) elem.oem = [];
+                    if(!elem.oeCode) elem.oeCode = [];
                     if(elem.price) {
                         elem.storeId = elem.price.id;
                         elem.store = elem.price.store;
@@ -574,6 +602,7 @@ class OilModal extends React.Component{
     }
 
     render() {
+
         const { dataSource, productNameFilter, brandFilter, codeFilter, typeFilter, saeFilter, aceaFilter, apiFilter, oemFilter, oeCodeFilter, inStock } = this.state;
         const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
 
@@ -583,9 +612,36 @@ class OilModal extends React.Component{
         if(brandFilter) tblData = tblData.filter((elem)=>elem.brandId == brandFilter);
         if(codeFilter) tblData = tblData.filter((elem)=>elem.partNumber.toLowerCase().indexOf(codeFilter.toLowerCase()) >= 0 );
         if(typeFilter) tblData = tblData.filter((elem)=>elem.type == typeFilter);
-        if(saeFilter.length) tblData = tblData.filter((elem)=>saeFilter.indexOf(elem.sae) >= 0);
-        if(aceaFilter.length) tblData = tblData.filter((elem)=>aceaFilter.indexOf(elem.acea) >= 0);
-        if(apiFilter.length) tblData = tblData.filter((elem)=>apiFilter.indexOf(elem.api) >= 0);
+        if(saeFilter.length) tblData = tblData.filter((elem)=>{
+            var inArray = false;
+            elem.sae.map((code)=>{
+                if(this.state.saeFilter.indexOf(code) >= 0) {
+                    inArray = true;
+                    return;
+                }
+            })
+            return inArray;
+        });
+        if(aceaFilter.length) tblData = tblData.filter((elem)=>{
+            var inArray = false;
+            elem.acea.map((code)=>{
+                if(this.state.aceaFilter.indexOf(code) >= 0) {
+                    inArray = true;
+                    return;
+                }
+            })
+            return inArray;
+        });
+        if(apiFilter.length) tblData = tblData.filter((elem)=>{
+            var inArray = false;
+            elem.api.map((code)=>{
+                if(this.state.apiFilter.indexOf(code) >= 0) {
+                    inArray = true;
+                    return;
+                }
+            })
+            return inArray;
+        });
         if(oemFilter) tblData = tblData.filter((elem)=>elem.oem.indexOf(oemFilter) >= 0);
         if(oeCodeFilter.length) tblData = tblData.filter((elem)=>{
             var inArray = false;
@@ -598,7 +654,6 @@ class OilModal extends React.Component{
             return inArray;
         });
         if(inStock) tblData = tblData.filter((elem)=>elem.store);
-
         return (
             <div>
                 <Button

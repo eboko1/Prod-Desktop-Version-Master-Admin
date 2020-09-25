@@ -273,7 +273,7 @@ class DetailsTable extends Component {
                     return (
                         <Button
                             style={elem.reservedFromWarehouseId && {
-                                color: elem.reserved ? 'rgb(255, 126, 126)' : 'var(--green)',
+                                color: elem.reserved ? 'var(--green)' : null,
                             }}
                             disabled={!elem.reservedFromWarehouseId}
                             onClick={()=>{

@@ -803,8 +803,8 @@ class AutomaticOrderCreationModal extends React.Component {
                     ordered: 6,
                     deficit: -2,
                     toOrder: 2,
-                    inOrders: 5,
-                    inStock: 10,
+                    countInOrders: 5,
+                    countInWarehouses: 10,
                 }*/
             ],
             visible: false,
@@ -877,8 +877,8 @@ class AutomaticOrderCreationModal extends React.Component {
             },
             {
                 title:     <FormattedMessage id='storage.in_orders' />,
-                key:       'inOrders',
-                dataIndex: 'inOrders',
+                key:       'countInOrders',
+                dataIndex: 'countInOrders',
                 width:     'auto',
                 render:     (data, elem)=>{
                     return (
@@ -894,8 +894,8 @@ class AutomaticOrderCreationModal extends React.Component {
             },
             {
                 title:     <FormattedMessage id='storage.in_stock' />,
-                key:       'inStock',
-                dataIndex: 'inStock',
+                key:       'countInWarehouses',
+                dataIndex: 'countInWarehouses',
                 width:     'auto',
                 render:     (data, elem)=>{
                     return (
@@ -925,7 +925,7 @@ class AutomaticOrderCreationModal extends React.Component {
                                     style={{
                                         color: 'black',
                                     }}
-                                    value={elem.reserve}
+                                    value={elem.reservedCount}
                                 />
                             </div>
                             <div>
@@ -957,7 +957,7 @@ class AutomaticOrderCreationModal extends React.Component {
                                     style={{
                                         color: 'black',
                                     }}
-                                    value={elem.ordered}
+                                    value={elem.countInStoreOrders}
                                 />
                             </div>
                             <div>
@@ -989,7 +989,7 @@ class AutomaticOrderCreationModal extends React.Component {
                                     style={{
                                         color: 'black',
                                     }}
-                                    value={elem.deficit}
+                                    value={elem.lack}
                                 />
                             </div>
                             <div>
@@ -1077,6 +1077,7 @@ class AutomaticOrderCreationModal extends React.Component {
         .then(function(data) {
             console.log(data);
             data.map((elem, i)=>{
+                elem.toOrder = elem.quantity;
                 elem.key = i;
                 elem.detailName = elem.name;
                 elem.detailCode = elem.code;

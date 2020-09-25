@@ -847,6 +847,7 @@ class AddProductModal extends React.Component {
     getProductId(detailCode) {
         const { storageProducts } = this.state;
         const storageProduct = storageProducts.find((elem)=>elem.code==detailCode);
+        console.log(storageProduct)
         if(storageProduct) {
             this.setState({
                 groupId: storageProduct.groupId,
