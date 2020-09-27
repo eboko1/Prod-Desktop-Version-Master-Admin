@@ -1094,18 +1094,16 @@ class AutomaticOrderCreationModal extends React.Component {
                 children: [
                     {
                         title:     <FormattedMessage id='order_form_table.price' />,
-                        key:       'stockPrice',
-                        dataIndex: 'stockPrice',
+                        key:       'orderedStockPrice',
+                        dataIndex: 'orderedStockPrice',
                         width:     'auto',
                         render:     (data, elem)=>{
                             return (
                                 <InputNumber
+                                    disabled
                                     value={data}
-                                    min={0}
-                                    onChange={(value)=>{
-                                        elem.stockPrice = value;
-                                        elem.sum = value * elem.quantity;
-                                        this.setState({update: true});
+                                    style={{
+                                        color: 'black',
                                     }}
                                 />
                             )
@@ -1113,18 +1111,16 @@ class AutomaticOrderCreationModal extends React.Component {
                     },
                     {
                         title:     <FormattedMessage id='order_form_table.count' />,
-                        key:       'quantity',
-                        dataIndex: 'quantity',
+                        key:       'orderedQuantity',
+                        dataIndex: 'orderedQuantity',
                         width:     'auto',
                         render:     (data, elem)=>{
                             return (
                                 <InputNumber
+                                    disabled
                                     value={data}
-                                    min={0}
-                                    onChange={(value)=>{
-                                        elem.quantity = value;
-                                        elem.sum = value * elem.stockPrice;
-                                        this.setState({update: true});
+                                    style={{
+                                        color: 'black',
                                     }}
                                 />
                             )
@@ -1132,7 +1128,7 @@ class AutomaticOrderCreationModal extends React.Component {
                     },
                     {
                         title:     <FormattedMessage id='order_form_table.sum' />,
-                        key:       'sum',
+                        key:       'orderedSum',
                         width:     'auto',
                         render:     (elem)=>{
                             return (
@@ -1141,7 +1137,7 @@ class AutomaticOrderCreationModal extends React.Component {
                                     style={{
                                         color: 'black',
                                     }}
-                                    value={elem.sum}
+                                    value={elem.orderedSum || 0}
                                 />
                             )
                         }
@@ -1149,7 +1145,7 @@ class AutomaticOrderCreationModal extends React.Component {
                 ],
             },
             {
-                title:     <FormattedMessage id='storage.ordered' />,
+                title:     'Пришло',
                 key:       'ordered',
                 width:     'auto',
                 children: [
@@ -1202,7 +1198,7 @@ class AutomaticOrderCreationModal extends React.Component {
                                     style={{
                                         color: 'black',
                                     }}
-                                    value={elem.sum}
+                                    value={elem.sum || 0}
                                 />
                             )
                         }
@@ -1226,8 +1222,20 @@ class AutomaticOrderCreationModal extends React.Component {
     }
 
     handleOk() {
-        this.props.addDocProduct(this.state.dataSource, true);
+        if(this.props.docType == ORDER) {
+            this.props.addDocProduct(this.state.dataSource, true);
+        }
+        else if(this.props.docType == INCOME) {
+            const result = [];
+            this.state.dataSource.map((elem)=>{
+                if(elem.checked) {
+                    result.push(elem);
+                }
+            })
+            this.props.addDocProduct(result, true);
+        }
         this.handleCancel();
+
     }
 
     handleCancel() {
@@ -1294,6 +1302,9 @@ class AutomaticOrderCreationModal extends React.Component {
             .then(function(data) {
                 console.log(data);
                 data.map((elem, i)=>{
+                    elem.orderedSum = elem.sum;
+                    elem.orderedStockPrice = elem.stockPrice;
+                    elem.orderedQuantity = elem.quantity;
                     elem.productId = elem.id;
                     elem.toOrder = elem.quantity;
                     elem.brandName = elem.brand.name;
