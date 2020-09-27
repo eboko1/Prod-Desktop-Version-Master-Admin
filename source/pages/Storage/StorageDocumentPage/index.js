@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Dropdown, Button, Icon, Menu, notification, Modal, Table, InputNumber } from 'antd';
+import { Dropdown, Button, Icon, Menu, notification, Modal, Table, InputNumber, Checkbox } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -660,6 +660,7 @@ class StorageDocumentPage extends Component {
                         <AutomaticOrderCreationModal
                             supplierId={formData.counterpartId}
                             addDocProduct={this.addDocProduct}
+                            docType={formData.type}
                         />
                         <Icon
                             type='save'
@@ -812,7 +813,7 @@ class AutomaticOrderCreationModal extends React.Component {
 
         const { formatMessage } = props.intl;
 
-        this.columns = [
+        this.orderColumns = [
             {
                 title:     "№",
                 width:     '3%',
@@ -1040,6 +1041,187 @@ class AutomaticOrderCreationModal extends React.Component {
                     )
                 }
             },
+        ];
+
+        this.incomeColumns = [
+            {
+                title:     "№",
+                width:     '3%',
+                key:       'key',
+                dataIndex: 'key',
+                render:     (data)=>{
+                    return (
+                        data+1
+                    )
+                }
+            },
+            {
+                title:     textToColumn(
+                                formatMessage({id: 'order_form_table.detail_code'}),
+                                formatMessage({id: 'order_form_table.brand'}),
+                            ),
+                width:     'auto',
+                key:       'codeAndBrand',
+                render:     (elem)=>{
+                    return (
+                        textToColumn(
+                            elem.detailCode,
+                            elem.brandName
+                        )
+                    )
+                }
+            },
+            {
+                title:     textToColumn(
+                                `${formatMessage({id: 'order_form_table.detail_code'})} (${formatMessage({id: 'storage.supplier'})})`,
+                                formatMessage({id: 'order_form_table.detail_name'}),
+                            ),
+                width:     'auto',
+                key:       'SupplierCodeAndName',
+                render:     (elem)=>{
+                    return (
+                        textToColumn(
+                            elem.tradeCode,
+                            elem.detailName
+                        )
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='storage.ordered' />,
+                key:       'ordered',
+                width:     'auto',
+                children: [
+                    {
+                        title:     <FormattedMessage id='order_form_table.price' />,
+                        key:       'stockPrice',
+                        dataIndex: 'stockPrice',
+                        width:     'auto',
+                        render:     (data, elem)=>{
+                            return (
+                                <InputNumber
+                                    value={data}
+                                    min={0}
+                                    onChange={(value)=>{
+                                        elem.stockPrice = value;
+                                        elem.sum = value * elem.quantity;
+                                        this.setState({update: true});
+                                    }}
+                                />
+                            )
+                        }
+                    },
+                    {
+                        title:     <FormattedMessage id='order_form_table.count' />,
+                        key:       'quantity',
+                        dataIndex: 'quantity',
+                        width:     'auto',
+                        render:     (data, elem)=>{
+                            return (
+                                <InputNumber
+                                    value={data}
+                                    min={0}
+                                    onChange={(value)=>{
+                                        elem.quantity = value;
+                                        elem.sum = value * elem.stockPrice;
+                                        this.setState({update: true});
+                                    }}
+                                />
+                            )
+                        }
+                    },
+                    {
+                        title:     <FormattedMessage id='order_form_table.sum' />,
+                        key:       'sum',
+                        width:     'auto',
+                        render:     (elem)=>{
+                            return (
+                                <InputNumber
+                                    disabled
+                                    style={{
+                                        color: 'black',
+                                    }}
+                                    value={elem.sum}
+                                />
+                            )
+                        }
+                    },
+                ],
+            },
+            {
+                title:     <FormattedMessage id='storage.ordered' />,
+                key:       'ordered',
+                width:     'auto',
+                children: [
+                    {
+                        title:     <FormattedMessage id='order_form_table.price' />,
+                        key:       'stockPrice',
+                        dataIndex: 'stockPrice',
+                        width:     'auto',
+                        render:     (data, elem)=>{
+                            return (
+                                <InputNumber
+                                    value={data}
+                                    min={0}
+                                    onChange={(value)=>{
+                                        elem.stockPrice = value;
+                                        elem.sum = value * elem.quantity;
+                                        this.setState({update: true});
+                                    }}
+                                />
+                            )
+                        }
+                    },
+                    {
+                        title:     <FormattedMessage id='order_form_table.count' />,
+                        key:       'quantity',
+                        dataIndex: 'quantity',
+                        width:     'auto',
+                        render:     (data, elem)=>{
+                            return (
+                                <InputNumber
+                                    value={data}
+                                    min={0}
+                                    onChange={(value)=>{
+                                        elem.quantity = value;
+                                        elem.sum = value * elem.stockPrice;
+                                        this.setState({update: true});
+                                    }}
+                                />
+                            )
+                        }
+                    },
+                    {
+                        title:     <FormattedMessage id='order_form_table.sum' />,
+                        key:       'sum',
+                        width:     'auto',
+                        render:     (elem)=>{
+                            return (
+                                <InputNumber
+                                    disabled
+                                    style={{
+                                        color: 'black',
+                                    }}
+                                    value={elem.sum}
+                                />
+                            )
+                        }
+                    },
+                ],
+            },
+            {
+                key:       'switch',
+                width:     'auto',
+                render:     (elem)=>{
+                    return (
+                        <Checkbox
+                            onChange={(value)=>{
+                                elem.checked = value;
+                            }}
+                        />
+                    )
+                }
+            }
         ]
     }
 
@@ -1058,38 +1240,76 @@ class AutomaticOrderCreationModal extends React.Component {
     fetchData() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/store_orders/recommended_products?businessSupplierId=${this.props.supplierId}`;
-        fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: token,
-            },
-        })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            console.log(data);
-            data.map((elem, i)=>{
-                elem.toOrder = elem.quantity;
-                elem.key = i;
-                elem.detailName = elem.name;
-                elem.detailCode = elem.code;
-                elem.sum = elem.quantity * elem.stockPrice;
+        if(this.props.docType == ORDER) {
+            let url = __API_URL__ + `/store_orders/recommended_products?businessSupplierId=${this.props.supplierId}`;
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                },
             })
-            that.setState({
-                dataSource: data,
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
             })
-        })
-        .catch(function(error) {
-            console.log("error", error);
-        });
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log(data);
+                data.map((elem, i)=>{
+                    elem.toOrder = elem.quantity;
+                    elem.key = i;
+                    elem.detailName = elem.name;
+                    elem.detailCode = elem.code;
+                    elem.sum = elem.quantity * elem.stockPrice;
+                })
+                that.setState({
+                    dataSource: data,
+                })
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
+        }
+        else if(this.props.docType == INCOME) {
+            let url = __API_URL__ + `/store_orders/ordered_products?businessSupplierId=${this.props.supplierId}`;
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                },
+            })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log(data);
+                data.map((elem, i)=>{
+                    elem.productId = elem.id;
+                    elem.toOrder = elem.quantity;
+                    elem.brandName = elem.brand.name;
+                    elem.key = i;
+                    elem.detailName = elem.name;
+                    elem.detailCode = elem.code;
+                    elem.sum = elem.quantity * elem.stockPrice;
+                })
+                that.setState({
+                    dataSource: data,
+                })
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
+        }
     }
 
 
@@ -1118,7 +1338,7 @@ class AutomaticOrderCreationModal extends React.Component {
                 }}
             >
                 <Table
-                    columns={this.columns}
+                    columns={this.props.docType == ORDER ? this.orderColumns : this.incomeColumns}
                     dataSource={dataSource}
                     pagination={{pageSize: 6}}
                 />
