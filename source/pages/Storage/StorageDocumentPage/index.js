@@ -7,6 +7,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { Dropdown, Button, Icon, Menu, notification, Modal, Table, InputNumber, Checkbox } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
+import { saveAs } from 'file-saver';
 
 // proj
 import { Layout, Spinner } from 'commons';
@@ -37,6 +38,7 @@ const INCOME = 'INCOME',
       OWN_CONSUMPTION = 'OWN_CONSUMPTION',
       TRANSFER = 'TRANSFER',
       ADJUSTMENT = 'ADJUSTMENT',
+      ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
       DONE = 'DONE';
@@ -60,7 +62,7 @@ const typeToDocumentType = {
     },
     order: {
         type: ORDER,
-        documentType: [SUPPLIER, ADJUSTMENT],
+        documentType: [SUPPLIER, ADJUSTMENT, ORDERINCOME],
     }, 
 }
 
@@ -239,6 +241,10 @@ class StorageDocumentPage extends Component {
                 }
                 else if(formData.documentType == ADJUSTMENT) {
                     createData.type = EXPENSE;
+                }
+                else if(formData.documentType == ORDERINCOME) {
+                    createData.type = EXPENSE;
+                    createData.documentType = SUPPLIER;
                 }
                 createData.counterpartBusinessSupplierId = formData.counterpartId;
                 createData.context = ORDER;
@@ -533,7 +539,8 @@ class StorageDocumentPage extends Component {
                   TSF = 'TSF',
                   RES = 'RES',
                   ORD = 'ORD',
-                  BOR = 'BOR';
+                  BOR = 'BOR',
+                  COM = 'COM';
 
             data.counterpartId = data.counterpartBusinessSupplierId || data.counterpartClientId;
             data.payUntilDatetime = data.payUntilDatetime && moment(data.payUntilDatetime);
@@ -568,6 +575,10 @@ class StorageDocumentPage extends Component {
                 case ORD:
                 case BOR:
                     data.type = ORDER;
+                    break;
+                case COM:
+                    data.type = ORDER;
+                    data.documentType = ORDERINCOME;
                     break;
                 
             }
@@ -640,48 +651,66 @@ class StorageDocumentPage extends Component {
                 <FormattedMessage id='storage.new_document' /> 
                 }
                 description={
-                    <>
+                    <div>
                         <FormattedMessage id='order-page.creation_date'/>
                         { `: ${moment(dateTime).format('DD MMMM YYYY, HH:mm')}` }
-                    </>
+                    </div>
                 }
                 controls={
-                    <>
+                    <div style={{display: 'flex'}}>
                         {id ? 
-                        <>
+                        <div style={{display: 'flex'}}>
                             {formData.status != DONE && 
-                            <ChangeStatusDropdown
-                                updateDocument={this.updateDocument}
-                            />}
-                            <ReportsDropdown/>
-                        </>
+                                <ChangeStatusDropdown
+                                    updateDocument={this.updateDocument}
+                                />
+                            }
+                            <ReportsDropdown
+                                id={id}
+                            />
+                        </div>
                         : null}
-                        {formData.status != DONE && (<>
-                        <AutomaticOrderCreationModal
-                            supplierId={formData.counterpartId}
-                            addDocProduct={this.addDocProduct}
-                            docType={formData.type}
-                        />
-                        <Icon
-                            type='save'
-                            style={headerIconStyle}
-                            onClick={()=>{
-                                if(id) {
-                                    this.updateDocument();
-                                } 
-                                else {
-                                    this.createDocument();
+                        {formData.status != DONE && (
+                            <div style={{display: 'flex'}}>
+                                {formData.type == ORDER && (formData.documentType == SUPPLIER || formData.documentType == ORDERINCOME) &&
+                                    <AutomaticOrderCreationModal
+                                        supplierId={formData.counterpartId}
+                                        addDocProduct={this.addDocProduct}
+                                        type={formData.type}
+                                        documentType={formData.documentType}
+                                    />
                                 }
-                            }}
-                        /></>)}
+                                {((formData.type == INCOME && formData.documentType == CLIENT) || (formData.type == EXPENSE && formData.documentType == SUPPLIER)) &&
+                                    <ReturnModal
+                                        counterpartId={formData.counterpartId}
+                                        addDocProduct={this.addDocProduct}
+                                        type={formData.type}
+                                        documentType={formData.documentType}
+                                    />
+                                }
+                                <Icon
+                                    type='save'
+                                    style={headerIconStyle}
+                                    onClick={()=>{
+                                        if(id) {
+                                            this.updateDocument();
+                                        } 
+                                        else {
+                                            this.createDocument();
+                                        }
+                                    }}
+                                />
+                            </div>
+                        )}
                         {id && formData.status != DONE &&
-                        <Icon
-                            type='delete'
-                            style={headerIconStyle}
-                            onClick={()=>{
+                            <Icon
+                                type='delete'
+                                style={headerIconStyle}
+                                onClick={()=>{
 
-                            }}
-                        />}
+                                }}
+                            />
+                        }
                         <Icon
                             type='close'
                             style={headerIconStyle}
@@ -689,10 +718,11 @@ class StorageDocumentPage extends Component {
                                 this.props.history.goBack();
                             }}
                         />
-                    </>
+                    </div>
                 }
             >
                 <StorageDocumentForm
+                    id={id}
                     forceUpdate={forceUpdate}
                     clientList={clientList}
                     wrappedComponentRef={ this.saveFormRef }
@@ -764,7 +794,28 @@ class ReportsDropdown extends React.Component {
         const menu = (
             <Menu>
                 <Menu.Item
-                    onClick={()=>{
+                    onClick={async ()=>{
+                        let token = localStorage.getItem('_my.carbook.pro_token');
+                        let url = __API_URL__ + `/orders/reports/${this.props.id}`;
+                        try {
+                            const response = await fetch(url, {
+                                method:  'GET',
+                                headers: {
+                                    Authorization: token,
+                                },
+                            });
+                            const reportFile = await response.blob();
+
+                            const contentDispositionHeader = response.headers.get(
+                                'content-disposition',
+                            );
+                            const fileName = contentDispositionHeader.match(
+                                /^attachment; filename="(.*)"/,
+                            )[ 1 ];
+                            await saveAs(reportFile, fileName);
+                        } catch (error) {
+                            console.error('ERROR:', error);
+                        }
                     }}
                 >
                     <FormattedMessage id='storage_document.document' />
@@ -784,30 +835,106 @@ class ReportsDropdown extends React.Component {
 }
 
 @injectIntl
+class ReturnModal extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: [],
+            visible: false,
+        }
+    }
+
+    handleOk() {
+        this.handleCancel();
+
+    }
+
+    handleCancel() {
+        this.setState({
+            dataSource: [],
+            visible: false,
+        });
+    }
+
+    getStorageProducts() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_products`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data.list)
+            that.setState({
+                storageProducts: data.list
+            })
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    }
+
+    fetchData() {
+
+    }
+
+    render() {
+        const { visible, dataSource } = this.state;
+        return (
+            <div>
+                <Icon
+                    type="rollback"
+                    style={headerIconStyle}
+                    onClick={()=>{
+                        this.fetchData();
+                        this.setState({
+                            visible: true,
+                        })
+                    }}
+                />
+                <Modal
+                    visible={visible}
+                    width={'fit-content'}
+                    onOk={()=>{
+                        this.handleOk();
+                    }}
+                    onCancel={()=>{
+                        this.handleCancel();
+                    }}
+                >
+                    <Table
+                        columns={
+                            this.props.type == ORDER && this.props.documentType == SUPPLIER ? 
+                            this.orderColumns : 
+                            this.incomeColumns
+                        }
+                        dataSource={dataSource}
+                        pagination={{pageSize: 6}}
+                    />
+                </Modal>
+            </div>
+        );
+    }
+}
+
+@injectIntl
 class AutomaticOrderCreationModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataSource: [
-                /*{
-                    key: 0,
-                    brandName: 'SACHS',
-                    detailCode: '100 786',
-                    tradeCode: '123456',
-                    detailName: 'Амортизатор подвески',
-                    stockPrice: 980,
-                    quantity: 2,
-                    sum: 1960,
-                    reserve: 2,
-                    min: 0,
-                    max: 3,
-                    ordered: 6,
-                    deficit: -2,
-                    toOrder: 2,
-                    countInOrders: 5,
-                    countInWarehouses: 10,
-                }*/
-            ],
+            dataSource: [],
             visible: false,
         };
 
@@ -1146,7 +1273,7 @@ class AutomaticOrderCreationModal extends React.Component {
             },
             {
                 title:     'Пришло',
-                key:       'ordered',
+                key:       'income',
                 width:     'auto',
                 children: [
                     {
@@ -1222,10 +1349,10 @@ class AutomaticOrderCreationModal extends React.Component {
     }
 
     handleOk() {
-        if(this.props.docType == ORDER) {
+        if(this.props.type == ORDER && this.props.documentType == SUPPLIER) {
             this.props.addDocProduct(this.state.dataSource, true);
         }
-        else if(this.props.docType == INCOME) {
+        else if(this.props.type == ORDER && this.props.documentType == ORDERINCOME) {
             const result = [];
             this.state.dataSource.map((elem)=>{
                 if(elem.checked) {
@@ -1248,7 +1375,7 @@ class AutomaticOrderCreationModal extends React.Component {
     fetchData() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        if(this.props.docType == ORDER) {
+        if(this.props.type == ORDER && this.props.documentType == SUPPLIER) {
             let url = __API_URL__ + `/store_orders/recommended_products?businessSupplierId=${this.props.supplierId}`;
             fetch(url, {
                 method: "GET",
@@ -1282,7 +1409,7 @@ class AutomaticOrderCreationModal extends React.Component {
                 console.log("error", error);
             });
         }
-        else if(this.props.docType == INCOME) {
+        else if(this.props.type == ORDER && this.props.documentType == ORDERINCOME) {
             let url = __API_URL__ + `/store_orders/ordered_products?businessSupplierId=${this.props.supplierId}`;
             fetch(url, {
                 method: "GET",
@@ -1312,6 +1439,7 @@ class AutomaticOrderCreationModal extends React.Component {
                     elem.detailName = elem.name;
                     elem.detailCode = elem.code;
                     elem.sum = elem.quantity * elem.stockPrice;
+                    elem.orderedSum = elem.sum;
                 })
                 that.setState({
                     dataSource: data,
@@ -1327,37 +1455,43 @@ class AutomaticOrderCreationModal extends React.Component {
     render() {
         const { visible, dataSource } = this.state;
         return (
-            <>
-            <Icon
-                type="carry-out"
-                style={headerIconStyle}
-                onClick={()=>{
-                    this.fetchData();
-                    this.setState({
-                        visible: true,
-                    })
-                }}
-            />
-            <Modal
-                visible={visible}
-                width={'fit-content'}
-                onOk={()=>{
-                    this.handleOk();
-                }}
-                onCancel={()=>{
-                    this.handleCancel();
-                }}
-            >
-                <Table
-                    columns={this.props.docType == ORDER ? this.orderColumns : this.incomeColumns}
-                    dataSource={dataSource}
-                    pagination={{pageSize: 6}}
+            <div>
+                <Icon
+                    type="check-circle"
+                    style={headerIconStyle}
+                    onClick={()=>{
+                        this.fetchData();
+                        this.setState({
+                            visible: true,
+                        })
+                    }}
                 />
-            </Modal>
-            </>
+                <Modal
+                    visible={visible}
+                    width={'fit-content'}
+                    onOk={()=>{
+                        this.handleOk();
+                    }}
+                    onCancel={()=>{
+                        this.handleCancel();
+                    }}
+                >
+                    <Table
+                        columns={
+                            this.props.type == ORDER && this.props.documentType == SUPPLIER ? 
+                            this.orderColumns : 
+                            this.incomeColumns
+                        }
+                        dataSource={dataSource}
+                        pagination={{pageSize: 6}}
+                    />
+                </Modal>
+            </div>
         );
     }
 }
+
+
 
 function textToColumn(textFirst, textSecond) {
     return ( 
