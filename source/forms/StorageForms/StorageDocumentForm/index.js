@@ -34,6 +34,7 @@ const INCOME = 'INCOME',
       OWN_CONSUMPTION = 'OWN_CONSUMPTION',
       TRANSFER = 'TRANSFER',
       ADJUSTMENT = 'ADJUSTMENT',
+      ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
       DONE = 'DONE';
@@ -95,8 +96,8 @@ class StorageDocumentForm extends Component {
  
     render() {
         const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo } = this.state;
-        console.log(this.props.formData)
         const {
+            id,
             addDocProduct,
             updateFormData,
             typeToDocumentType,
@@ -169,6 +170,7 @@ class StorageDocumentForm extends Component {
                                 updateFormData({
                                     type: value,
                                     documentType: typeToDocumentType[value.toLowerCase()].documentType[0],
+                                    counterpartId: undefined,
                                 })
                             }}
                         >
@@ -208,6 +210,7 @@ class StorageDocumentForm extends Component {
                             onChange={(value)=>{
                                 updateFormData({
                                     documentType: value,
+                                    counterpartId: undefined,
                                 })
                             }}
                         >
@@ -226,12 +229,12 @@ class StorageDocumentForm extends Component {
                         </Select>
                     </div>}
                     {(type == INCOME || type == EXPENSE || type == ORDER) &&
-                    (documentType == CLIENT || documentType == SUPPLIER || documentType == ADJUSTMENT) && 
+                    (documentType == CLIENT || documentType == SUPPLIER || documentType == ADJUSTMENT || documentType == ORDERINCOME) && 
                     <div style={{position: 'relative'}}>
-                        <FormattedMessage id={`storage.${documentType != ADJUSTMENT ? documentType.toLowerCase() : 'supplier'}`}/>{requiredField()}
+                        <FormattedMessage id={`storage.${documentType != ADJUSTMENT && documentType != ORDERINCOME ? documentType.toLowerCase() : 'supplier'}`}/>{requiredField()}
                         <Select
                             showSearch
-                            disabled={disabled}
+                            disabled={disabled || status==NEW}
                             value={counterpartId}
                             onChange={(value, option)=>{
                                 updateFormData({
@@ -259,7 +262,7 @@ class StorageDocumentForm extends Component {
                                 })
                             }}
                         >
-                            {(documentType == SUPPLIER || documentType == ADJUSTMENT) &&
+                            {(documentType == SUPPLIER || documentType == ADJUSTMENT || documentType == ORDERINCOME) &&
                             counterpartSupplier.map((elem, i)=>{
                                 return (
                                     <Option
@@ -685,14 +688,14 @@ class AddProductModal extends React.Component {
             quantity: 1,
             detailCodeSearch: '',
             storageBalance: [
-                {messageId: 'storage.in_stock', count: 1},
-                {messageId: 'storage.reserve', count: 2},
-                {messageId: 'storage.in_orders', count: 3},
-                {messageId: 'storage.ordered', count: 4},
-                {messageId: 'storage.deficit', count: 5},
-                {messageId: 'storage.min', count: 6},
-                {messageId: 'storage.max', count: 7},
-                {messageId: 'storage.to_order', count: 8},
+                {messageId: 'storage.in_stock', count: 0},
+                {messageId: 'storage.reserve', count: 0},
+                {messageId: 'storage.in_orders', count: 0},
+                {messageId: 'storage.ordered', count: 0},
+                {messageId: 'storage.deficit', count: 0},
+                {messageId: 'storage.min', count: 0},
+                {messageId: 'storage.max', count: 0},
+                {messageId: 'storage.to_order', count: 0},
             ]
         }
 
@@ -845,10 +848,18 @@ class AddProductModal extends React.Component {
     }
 
     getProductId(detailCode) {
-        const { storageProducts } = this.state;
+        const { storageProducts, storageBalance } = this.state;
         const storageProduct = storageProducts.find((elem)=>elem.code==detailCode);
         console.log(storageProduct)
         if(storageProduct) {
+            storageBalance[0].count = storageProduct.countInWarehouses;
+            storageBalance[1].count = storageProduct.reservedCount;
+            storageBalance[2].count = storageProduct.countInOrders;
+            storageBalance[3].count = storageProduct.countInStoreOrders;
+            storageBalance[4].count = storageProduct.lack;
+            storageBalance[5].count = storageProduct.min;
+            storageBalance[6].count = storageProduct.max;
+            storageBalance[7].count = storageProduct.quantity;
             this.setState({
                 groupId: storageProduct.groupId,
                 productId: storageProduct.id,
@@ -856,6 +867,7 @@ class AddProductModal extends React.Component {
                 brandId: storageProduct.brandId,
                 brandName: storageProduct.brand && storageProduct.brand.name,
                 tradeCode: storageProduct.tradeCode,
+                quantity: storageProduct.quantity,
             })
             return true;
         }

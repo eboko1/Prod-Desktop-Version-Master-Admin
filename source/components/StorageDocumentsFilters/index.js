@@ -24,6 +24,7 @@ const INCOME = 'INCOME',
       OWN_CONSUMPTION = 'OWN_CONSUMPTION',
       TRANSFER = 'TRANSFER',
       ADJUSTMENT = 'ADJUSTMENT',
+      ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
       DONE = 'DONE';
@@ -47,7 +48,7 @@ const typeToDocumentType = {
         },
         order: {
             type: ORDER,
-            documentType: [SUPPLIER, ADJUSTMENT],
+            documentType: [SUPPLIER, ADJUSTMENT, ORDERINCOME],
         }, 
     }
 

@@ -30,7 +30,9 @@
         "storage_document.docType.EXPENSE.OWN_CONSUMPTION": "Write-off",
         "storage_document.docType.ORDER.SUPPLIER": "Order",
         "storage_document.docType.ORDER.ADJUSTMENT": "Correction",
+        "storage_document.docType.ORDER.ORDERINCOME": "Income",
         "storage_document.docType.EXPENSE.TRANSFER": "Transfer",
+        "storage_document.docType.RESERVE.TRANSFER": "Reserve",
         "storage_document.docType.TRANSFER.TRANSFER": "Transfer"
     },
     "ru": {
@@ -64,7 +66,9 @@
         "storage_document.docType.EXPENSE.OWN_CONSUMPTION": "Списание",
         "storage_document.docType.ORDER.SUPPLIER": "Заказ",
         "storage_document.docType.ORDER.ADJUSTMENT": "Корректировка",
+        "storage_document.docType.ORDER.ORDERINCOME": "Приход",
         "storage_document.docType.EXPENSE.TRANSFER": "Перемещение",
+        "storage_document.docType.RESERVE.TRANSFER": "Резерв",
         "storage_document.docType.TRANSFER.TRANSFER": "Перемещение"
     },
     "uk": {
@@ -98,7 +102,9 @@
         "storage_document.docType.EXPENSE.OWN_CONSUMPTION": "Списання",
         "storage_document.docType.ORDER.SUPPLIER": "Замовлення",
         "storage_document.docType.ORDER.ADJUSTMENT": "Корегування",
+        "storage_document.docType.ORDER.ORDERINCOME": "Прихід",
         "storage_document.docType.EXPENSE.TRANSFER": "Переміщення",
+        "storage_document.docType.RESERVE.TRANSFER": "Резерв",
         "storage_document.docType.TRANSFER.TRANSFER": "Переміщення"
     }
   }
