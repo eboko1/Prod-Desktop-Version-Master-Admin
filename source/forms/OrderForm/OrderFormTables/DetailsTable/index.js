@@ -704,9 +704,8 @@ class DetailsTable extends Component {
     }
 
     async updateDetail(key, detail) {
-        console.log(detail);
         this.state.dataSource[ key ] = detail;
-        const newDetail = detail.storeId || detail.productId ? 
+        const newDetail = detail.isFromStock ? 
         {
             id: detail.id,
             storeGroupId: detail.storeGroupId,
@@ -745,6 +744,7 @@ class DetailsTable extends Component {
                 positions: [],
             },
         }
+        console.log(detail, newDetail);
         const data = {
             updateMode: true,
             details:    [
