@@ -20,6 +20,8 @@
         "storage_document.storage_expenses": "Storage expenses",
         "storage_document.all": "All",
         "storage_document.pay_until": "Pay until",
+        "storage_document.store_in_warehouse": "Store in a warehouse",
+        "storage_document.multiplicity": "Multiplicity",
 
         "storage_document.docType.INCOME.SUPPLIER": "Income",
         "storage_document.docType.INCOME.CLIENT": "Refund",
@@ -33,7 +35,10 @@
         "storage_document.docType.ORDER.ORDERINCOME": "Income",
         "storage_document.docType.EXPENSE.TRANSFER": "Transfer",
         "storage_document.docType.RESERVE.TRANSFER": "Reserve",
-        "storage_document.docType.TRANSFER.TRANSFER": "Transfer"
+        "storage_document.docType.TRANSFER.TRANSFER": "Transfer",
+
+        "storage_document.error.product_not_found": "This product is not in the product directory. Add?",
+        "storage_document.error.required_fields": "Fill all required fields"
     },
     "ru": {
         "storage_document.document": "Документ",
@@ -56,6 +61,8 @@
         "storage_document.storage_expenses": "Склад расход",
         "storage_document.all": "Все",
         "storage_document.pay_until": "Оплатить до",
+        "storage_document.store_in_warehouse": "Хранить на складе",
+        "storage_document.multiplicity": "Кратность",
 
         "storage_document.docType.INCOME.SUPPLIER": "Приход",
         "storage_document.docType.INCOME.CLIENT": "Возврат",
@@ -69,7 +76,10 @@
         "storage_document.docType.ORDER.ORDERINCOME": "Приход",
         "storage_document.docType.EXPENSE.TRANSFER": "Перемещение",
         "storage_document.docType.RESERVE.TRANSFER": "Резерв",
-        "storage_document.docType.TRANSFER.TRANSFER": "Перемещение"
+        "storage_document.docType.TRANSFER.TRANSFER": "Перемещение",
+
+        "storage_document.error.product_not_found": "Данного товара нет в справочнике товаров. Добавить?",
+        "storage_document.error.required_fields": "Заполните все необходимые поля"
     },
     "uk": {
         "storage_document.document": "Документ",
@@ -92,6 +102,8 @@
         "storage_document.storage_expenses": "Склад витрат",
         "storage_document.all": "Усі",
         "storage_document.pay_until": "Сплатити до",
+        "storage_document.store_in_warehouse": "Зберігати на складі",
+        "storage_document.multiplicity": "Кратність",
 
         "storage_document.docType.INCOME.SUPPLIER": "Прихід",
         "storage_document.docType.INCOME.CLIENT": "Повернення",
@@ -105,7 +117,10 @@
         "storage_document.docType.ORDER.ORDERINCOME": "Прихід",
         "storage_document.docType.EXPENSE.TRANSFER": "Переміщення",
         "storage_document.docType.RESERVE.TRANSFER": "Резерв",
-        "storage_document.docType.TRANSFER.TRANSFER": "Переміщення"
+        "storage_document.docType.TRANSFER.TRANSFER": "Переміщення",
+
+        "storage_document.error.product_not_found": "Даного товару немає в довіднику товарів. Додати?",
+        "storage_document.error.required_fields": "Заповніть всі необхідні поля"
     }
   }
   

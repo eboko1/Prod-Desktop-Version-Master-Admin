@@ -282,15 +282,6 @@ const ProductForm = props => {
                 getPopupContainer={ trigger => trigger.parentNode }
                 initialValue={ _.get(props, 'product.measureUnit') }
             />
-            <DecoratedInput
-                formItem
-                formItemLayout={ formItemLayout }
-                label={ formatMessage({ id: 'storage.trade_code' }) }
-                fields={ {} }
-                field='tradeCode'
-                getFieldDecorator={ form.getFieldDecorator }
-                initialValue={ _.get(props, 'product.tradeCode') }
-            />
             <PriceGroupSelect
                 field={ 'priceGroupNumber' }
                 label={ formatMessage({ id: 'storage.price_group' }) }
@@ -304,7 +295,7 @@ const ProductForm = props => {
             />
             <DecoratedSelect
                 field={ 'defaultWarehouseId' }
-                label={ formatMessage({ id: 'navigation.warehouses' }) }
+                label={ formatMessage({ id: 'storage.default_warehouse' }) }
                 formItem
                 formItemLayout={ formItemLayout }
                 getFieldDecorator={ form.getFieldDecorator }
@@ -318,6 +309,15 @@ const ProductForm = props => {
                     </Option>
                 )}
             </DecoratedSelect>
+            <DecoratedInput
+                formItem
+                formItemLayout={ formItemLayout }
+                label={ formatMessage({ id: 'storage.trade_code' }) }
+                fields={ {} }
+                field='tradeCode'
+                getFieldDecorator={ form.getFieldDecorator }
+                initialValue={ _.get(props, 'product.tradeCode') }
+            />
             <DecoratedInput
                 formItem
                 formItemLayout={ formItemLayout }

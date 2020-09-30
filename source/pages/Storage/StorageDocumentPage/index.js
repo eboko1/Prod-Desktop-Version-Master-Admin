@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Dropdown, Button, Icon, Menu, notification, Modal, Table, InputNumber, Checkbox } from 'antd';
+import { Dropdown, Button, Icon, Menu, notification, Modal, Table, InputNumber, Checkbox, Select, AutoComplete } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import { saveAs } from 'file-saver';
@@ -15,7 +15,7 @@ import { StorageDocumentForm } from 'forms';
 import book from 'routes/book';
 import { type } from 'ramda';
 // own
-
+const Option = Select.Option;
 
 const mapStateToProps = state => {
     return {
@@ -108,12 +108,16 @@ class StorageDocumentPage extends Component {
 
     addDocProduct(docProduct, arrayMode = false) {
         if(arrayMode) {
+            docProduct.map((product)=>{
+                product.sum = Math.round(product.sum*10)/10;
+            })
             this.state.formData.docProducts = this.state.formData.docProducts.concat(docProduct);
             this.setState({
                 forceUpdate: true,
             })
         }
         else {
+            docProduct.sum = Math.round(docProduct.sum*10)/10;
             this.state.formData.docProducts.push({
                 key: this.state.formData.docProducts.length,
                 ...docProduct
@@ -156,11 +160,12 @@ class StorageDocumentPage extends Component {
     //};
 
     verifyFields() {
+        const { intl: {formatMessage} } = this.props;
         const { formData } = this.state;
         console.log(formData);
         const showError = () => {
             notification.error({
-                message: 'Заполните все необходимые поля',
+                message: formatMessage({id: 'storage_document.error.required_fields'}),
             });
         }
 
@@ -686,6 +691,7 @@ class StorageDocumentPage extends Component {
                                         addDocProduct={this.addDocProduct}
                                         type={formData.type}
                                         documentType={formData.documentType}
+                                        brands={brands}
                                     />
                                 }
                                 <Icon
@@ -839,8 +845,13 @@ class ReturnModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataSource: [],
             visible: false,
+            brandSearchValue: "",
+            brandId: undefined,
+            brandName: undefined,
+            storageProducts: [],
+            detailCode: undefined,
+            detailName: undefined,
         }
     }
 
@@ -887,11 +898,19 @@ class ReturnModal extends React.Component {
     }
 
     fetchData() {
-
+        this.getStorageProducts();
     }
 
     render() {
-        const { visible, dataSource } = this.state;
+        const {
+            visible,
+            brandSearchValue,
+            brandId,
+            brandName,
+            storageProducts,
+            detailCode,
+            detailName,
+        } = this.state;
         return (
             <div>
                 <Icon
@@ -914,15 +933,98 @@ class ReturnModal extends React.Component {
                         this.handleCancel();
                     }}
                 >
-                    <Table
-                        columns={
-                            this.props.type == ORDER && this.props.documentType == SUPPLIER ? 
-                            this.orderColumns : 
-                            this.incomeColumns
-                        }
-                        dataSource={dataSource}
-                        pagination={{pageSize: 6}}
-                    />
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between'
+                        }}
+                    >
+                        <div style={{minWidth: 140}}>
+                            <FormattedMessage id='order_form_table.brand' />
+                            <Select
+                                showSearch
+                                value={brandId}
+                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                                filterOption={(input, option) => {
+                                    return (
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                        String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                    )
+                                }}
+                                onSelect={(value, option)=>{
+                                    this.getOptions(value)
+                                    this.setState({
+                                        brandId: value,
+                                        brandName: option.props.children,
+                                    })
+                                }}
+                                onSearch={(input)=>{
+                                    this.setState({
+                                        brandSearchValue: input,
+                                    })
+                                }}
+                                onBlur={()=>{
+                                    this.setState({
+                                        brandSearchValue: "",
+                                    })
+                                }}
+                            >
+                                {
+                                    this.state.brandSearchValue.length > 1 ? 
+                                        this.props.brands.map((elem, index)=>(
+                                            <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
+                                                {elem.brandName}
+                                            </Option>
+                                        )) :
+                                        brandId ? 
+                                        <Option key={0} value={brandId}>
+                                            {brandName}
+                                        </Option> : 
+                                        []
+                                }
+                            </Select>
+                        </div>
+                        <div>
+                            <FormattedMessage id='order_form_table.detail_code' />
+                            <AutoComplete
+                                value={detailCode}
+                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                                onChange={(value)=>{
+                                    this.setState({
+                                        detailCode: value,
+                                    });
+                                }}
+                                onSelect={(value, option)=>{
+                                    this.setState({
+                                        detailCode: value,
+                                        detailName: option.props.detail_name,
+                                        stockPrice: option.props.price,
+                                    });
+                                }}
+                                filterOption={(input, option) => {
+                                    return (
+                                        String(option.props.value).toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    )
+                                }}
+                            >
+                                {
+                                    storageProducts.map((elem)=>{
+                                        return (
+                                            <Option
+                                                key={elem.id}
+                                                value={elem.code}
+                                                detail_name={elem.name}
+                                                price={0}
+                                                trade_code={elem.tradeCode}
+                                            >
+                                                {elem.code}
+                                            </Option>
+                                        )
+                                    })
+                                }
+                            </AutoComplete>
+                        </div>
+                    </div>
                 </Modal>
             </div>
         );

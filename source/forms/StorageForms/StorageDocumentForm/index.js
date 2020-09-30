@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Button, Input, Table, Select, Icon, DatePicker, AutoComplete, InputNumber, Modal, TreeSelect, notification } from 'antd';
+import { Form, Button, Input, Table, Select, Icon, DatePicker, AutoComplete, InputNumber, Modal, TreeSelect, notification, Checkbox } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -371,14 +371,23 @@ class StorageDocumentForm extends Component {
                         justifyContent: "space-between"
                     }}
                 >
-                    <div
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'space-between'
-                        }}
-                    >
-                        <div>
-                            <div className={Styles.sumWrapper}>
+                    {onlySum ? 
+                        <div
+                            className={Styles.sumWrapper}
+                            style={{
+                                background: 'var(--static)',
+                                fontSize: 16,
+                                height: '100%',
+                                margin: 15,
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <p
+                                style={{
+                                    wordBreak: 'break-word',
+                                    textAlign: 'center',
+                                }}
+                            >
                                 <FormattedMessage id="sum" />
                                 <Numeral
                                     mask={mask}
@@ -388,54 +397,76 @@ class StorageDocumentForm extends Component {
                                         id: "currency",
                                     })}
                                 >
-                                    {sum || 0}
-                                </Numeral>
-                            </div>
-                            <div className={Styles.sumWrapper} style={{color: onlySum ? 'var(--text2)' : null}}>
-                                <FormattedMessage id="remain" />
-                                <Numeral
-                                    mask={mask}
-                                    className={Styles.totalSum}
-                                    currency={this.props.intl.formatMessage({
-                                        id: "currency",
-                                    })}
-                                    nullText="0"
-                                >
-                                    {disabled || onlySum ? 0 : sum}
-                                </Numeral>
-                            </div>
-                        </div>
-                        <div
-                            className={Styles.sumWrapper}
-                            style={{
-                                background: 'var(--static)',
-                                fontSize: 16,
-                                height: 'auto',
-                                width: '50%',
-                                justifyContent: 'center'
-                            }}
-                        >
-                            <p
-                                style={{
-                                    wordBreak: 'break-word',
-                                    textAlign: 'center',
-                                    color: onlySum ? 'var(--text2)' : null
-                                }}
-                            >
-                                <FormattedMessage id="paid" />
-                                <Numeral
-                                    mask={mask}
-                                    className={Styles.sumNumeral}
-                                    nullText="0"
-                                    currency={this.props.intl.formatMessage({
-                                        id: "currency",
-                                    })}
-                                >
-                                    {!disabled || onlySum ? 0 : sum}
+                                    {sum}
                                 </Numeral>
                             </p>
+                        </div> :
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div>
+                                <div className={Styles.sumWrapper}>
+                                    <FormattedMessage id="sum" />
+                                    <Numeral
+                                        mask={mask}
+                                        className={Styles.sumNumeral}
+                                        nullText="0"
+                                        currency={this.props.intl.formatMessage({
+                                            id: "currency",
+                                        })}
+                                    >
+                                        {sum || 0}
+                                    </Numeral>
+                                </div>
+                                <div className={Styles.sumWrapper} style={{color: onlySum ? 'var(--text2)' : null}}>
+                                    <FormattedMessage id="paid" />
+                                    <Numeral
+                                        mask={mask}
+                                        className={Styles.totalSum}
+                                        currency={this.props.intl.formatMessage({
+                                            id: "currency",
+                                        })}
+                                        nullText="0"
+                                    >
+                                        {disabled ? 0 : sum}
+                                    </Numeral>
+                                </div>
+                            </div>
+                            <div
+                                className={Styles.sumWrapper}
+                                style={{
+                                    background: 'var(--static)',
+                                    fontSize: 16,
+                                    height: 'auto',
+                                    width: '50%',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <p
+                                    style={{
+                                        wordBreak: 'break-word',
+                                        textAlign: 'center',
+                                        color: null
+                                    }}
+                                >
+                                    <FormattedMessage id="remain" />
+                                    <Numeral
+                                        mask={mask}
+                                        className={Styles.sumNumeral}
+                                        nullText="0"
+                                        currency={this.props.intl.formatMessage({
+                                            id: "currency",
+                                        })}
+                                    >
+                                        {!disabled ? 0 : sum}
+                                    </Numeral>
+                                </p>
+                            </div>
                         </div>
-                    </div>
+                    }
                    {(type == INCOME || type == EXPENSE || type == ORDER) && 
                    <div>
                         <FormattedMessage id="storage_document.pay_until" />
@@ -480,6 +511,7 @@ class StorageDocumentForm extends Component {
                         isIncome={type == INCOME}
                         priceDisabled={type == TRANSFER || type == RESERVE || documentType == OWN_CONSUMPTION}
                         warehouses={warehouses}
+                        warehouseId={incomeWarehouseId || expenseWarehouseId}
                     /> 
                 : null}
             </div>
@@ -619,7 +651,7 @@ class DocProductsTable extends React.Component {
                 width:     '10%',
                 render:     (data, elem)=>{
                     return (
-                        data || <FormattedMessage id='long_dash' />
+                        data ? Math.round(data*10)/10 : <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -826,6 +858,7 @@ class AddProductModal extends React.Component {
                         name:      lastNode.name,
                         value:     lastNode.id,
                         className: Styles.groupTreeOption,
+                        priceGroup: lastNode.priceGroupNumber,
                         key:       `${i}-${j}-${k}`,
                         children:  [],
                     });
@@ -836,6 +869,7 @@ class AddProductModal extends React.Component {
                             name:      elem.name,
                             value:     elem.id,
                             className: Styles.groupTreeOption,
+                            priceGroup: elem.priceGroupNumber,
                             key:       `${i}-${j}-${k}-${l}`,
                         });
                     }
@@ -872,8 +906,20 @@ class AddProductModal extends React.Component {
             return true;
         }
         else {
+            storageBalance[0].count = 0;
+            storageBalance[1].count = 0;
+            storageBalance[2].count = 0;
+            storageBalance[3].count = 0;
+            storageBalance[4].count = 0;
+            storageBalance[5].count = 0;
+            storageBalance[6].count = 0;
+            storageBalance[7].count = 0;
             this.setState({
+                groupId: undefined,
                 productId: undefined,
+                detailName: undefined,
+                tradeCode: undefined,
+                quantity: 1,
             })
             return false;
         }
@@ -924,6 +970,7 @@ class AddProductModal extends React.Component {
     }
 
     handleOk() {
+        const { intl: {formatMessage} } = this.props;
         const { 
             editMode,
             brandId,
@@ -939,7 +986,7 @@ class AddProductModal extends React.Component {
 
         if(!brandId || !detailCode) {
             notification.error({
-                message: 'Заполните все необходимые поля',
+                message: formatMessage({id: 'storage_document.error.required_fields'}),
             });
             return;
         }
@@ -1233,7 +1280,7 @@ class AddProductModal extends React.Component {
                                 color: 'black',
                                 //marginLeft: 10,
                             }}
-                            value={quantity*stockPrice}
+                            value={Math.round(quantity*stockPrice*10)/10}
                         />
                     </div>}
                 </div>
@@ -1244,9 +1291,10 @@ class AddProductModal extends React.Component {
                     cancelAlertModal={this.cancelAlertModal}
                     storeGroupsTree={storeGroupsTree}
                     warehouses={this.props.warehouses}
+                    warehouseId={this.props.warehouseId}
                     {...this.state}
                 >
-                    Даного товара нет в справочнике товаров. Добавить?
+                    <FormattedMessage id='storage_document.error.product_not_found'/>
                 </AlertModal>
                 {this.props.type == ORDER && 
                 <div
@@ -1296,8 +1344,10 @@ class AlertModal extends React.Component {
             priceGroupNumber: undefined,
             priceGroups: [],
             defaultWarehouseId: undefined,
-            min: 0,
-            max: 0,
+            storeInWarehouse: false,
+            multiplicity: 1,
+            min: 1,
+            max: 1,
         }
     }
 
@@ -1331,6 +1381,7 @@ class AlertModal extends React.Component {
     }
 
     postStoreProduct() {
+        const { intl: {formatMessage} } = this.props;
         const {
             brandId,
             detailCode,
@@ -1342,13 +1393,14 @@ class AlertModal extends React.Component {
             brandName,
             certificate,
             defaultWarehouseId,
+            multiplicity,
             min,
             max,
         } = this.state;
 
         if(!brandId || !detailCode || !groupId || !detailName) {
             notification.error({
-                message: 'Заполните все необходимые поля',
+                message: formatMessage({id: 'storage_document.error.required_fields'}), 
             });
             return;
         }
@@ -1405,7 +1457,8 @@ class AlertModal extends React.Component {
     componentDidUpdate(prevProps) {
         if(!prevProps.alertVisible && this.props.alertVisible) {
             this.setState({
-                ...this.props
+                ...this.props,
+                defaultWarehouseId: this.props.warehouseId
             })
         }
     }
@@ -1432,6 +1485,8 @@ class AlertModal extends React.Component {
             defaultWarehouseId,
             tradeCode,
             certificate,
+            storeInWarehouse,
+            multiplicity,
             min,
             max,
         } = this.state;
@@ -1525,9 +1580,11 @@ class AlertModal extends React.Component {
                                 )
                             }}
                             onSelect={(value, option)=>{
+                                console.log(option)
                                 this.setState({
                                     groupId: value,
                                     detailName: detailName ? detailName : option.props.name,
+                                    priceGroupNumber: option.props.priceGroup,
                                 })
                             }}
                         />
@@ -1607,17 +1664,6 @@ class AlertModal extends React.Component {
                         </Select>
                     </div>
                     <div className={Styles.addProductItemWrap}>
-                        <FormattedMessage id='storage.trade_code' />
-                        <Input
-                            value={tradeCode}
-                            onChange={(event)=>{
-                                this.setState({
-                                    tradeCode: event.target.value,
-                                })
-                            }}
-                        />
-                    </div>
-                    <div className={Styles.addProductItemWrap}>
                         <FormattedMessage id='storage.price_group' />
                         <Select
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
@@ -1644,7 +1690,7 @@ class AlertModal extends React.Component {
                         </Select>
                     </div>
                     <div className={Styles.addProductItemWrap}>
-                        <FormattedMessage id='navigation.warehouses' />
+                        <FormattedMessage id='storage.default_warehouse' />
                         <Select
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             value={defaultWarehouseId}
@@ -1667,6 +1713,17 @@ class AlertModal extends React.Component {
                         </Select>
                     </div>
                     <div className={Styles.addProductItemWrap}>
+                        <FormattedMessage id='storage.trade_code' />
+                        <Input
+                            value={tradeCode}
+                            onChange={(event)=>{
+                                this.setState({
+                                    tradeCode: event.target.value,
+                                })
+                            }}
+                        />
+                    </div>
+                    <div className={Styles.addProductItemWrap}>
                         <FormattedMessage id='storage.certificate' />
                         <Input
                             value={certificate}
@@ -1677,35 +1734,60 @@ class AlertModal extends React.Component {
                             }}
                         />
                     </div>
-                    <div className={Styles.addProductItemWrap} style={{display: 'flex', justifyContent: 'space-between'}}>
-                        <div>
-                            <span style={{marginRight: 8}}><FormattedMessage id='storage.min'/></span>
-                            <InputNumber
-                                value={min}
-                                step={1}
-                                min={0}
-                                onChange={(value)=>{
-                                    this.setState({
-                                        min: value,
-                                    })
-                                }}
-                            />
-                        </div>
-                        <div>
-                            <span style={{marginRight: 8}}><FormattedMessage id='storage.max'/></span>
-                            <InputNumber
-                                
-                                value={max}
-                                step={1}
-                                min={min}
-                                onChange={(value)=>{
-                                    this.setState({
-                                        max: value,
-                                    })
-                                }}
-                            />
-                        </div>
+                    <div className={Styles.addProductItemWrap}>
+                        <FormattedMessage id='storage_document.store_in_warehouse' />
+                        <Checkbox
+                            style={{marginLeft: 5}}
+                            onChange={()=>{
+                                this.setState({
+                                    storeInWarehouse: !storeInWarehouse,
+                                })
+                            }}
+                        />
                     </div>
+                    {storeInWarehouse &&
+                        <div className={Styles.addProductItemWrap} style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <div>
+                                <span style={{marginRight: 8}}><FormattedMessage id='storage_document.multiplicity'/></span>
+                                <InputNumber
+                                    value={multiplicity}
+                                    step={1}
+                                    min={1}
+                                    onChange={(value)=>{
+                                        this.setState({
+                                            multiplicity: value,
+                                        })
+                                    }}
+                                />
+                            </div>
+                            <div>
+                                <span style={{marginRight: 8}}><FormattedMessage id='storage.min'/></span>
+                                <InputNumber
+                                    value={min*multiplicity}
+                                    step={multiplicity}
+                                    min={0}
+                                    onChange={(value)=>{
+                                        this.setState({
+                                            min: Math.floor(value/multiplicity),
+                                        })
+                                    }}
+                                />
+                            </div>
+                            <div>
+                                <span style={{marginRight: 8}}><FormattedMessage id='storage.max'/></span>
+                                <InputNumber
+                                    value={max*multiplicity}
+                                    step={1}
+                                    min={min}
+                                    onChange={(value)=>{
+                                        this.setState({
+                                            max: Math.floor(value/multiplicity),
+                                        })
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    }
                 </Modal>
             </>
         );
