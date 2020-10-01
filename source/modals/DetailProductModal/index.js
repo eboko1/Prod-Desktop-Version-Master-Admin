@@ -181,6 +181,7 @@ class DetailProductModal extends React.Component{
                                 this.state.mainTableSource[0].sum = undefined;
                                 this.state.mainTableSource[0].brandId = value;
                                 this.state.mainTableSource[0].brandName = option.props.children;
+                                this.state.mainTableSource[0].isFromStock = false;
                                 this.setState({
                                     update: true
                                 })
@@ -228,6 +229,7 @@ class DetailProductModal extends React.Component{
                                 disabled={elem.storeGroupId == null && this.state.radioValue == 1}
                                 onChange={(event)=>{
                                     this.state.mainTableSource[0].detailCode = event.target.value;
+                                    this.state.mainTableSource[0].isFromStock = false;
                                     this.setState({
                                         update: true
                                     })
