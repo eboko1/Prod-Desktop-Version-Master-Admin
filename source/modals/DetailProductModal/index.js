@@ -1258,7 +1258,15 @@ class VinCodeModal extends Component{
                 console.log(data);
                 if(data) {
                     const { catalog, ssd, vehicleid } = data[0].response.FindVehicle.response.FindVehicle[0].row[0].$;
-                    const categoriesArray = data[0].response.ListQuickDetail[0].Category;
+                    const categoriesArray = [];
+                    data.map((elem)=>{
+                        //categoriesArray = categoriesArray.concat(elem.response.ListQuickDetail[0].Category);
+                        elem.response.ListQuickDetail[0].Category.map((cat)=>{
+                            if(categoriesArray.findIndex((currCat)=>currCat.$.categoryid == cat.$.categoryid) < 0) {
+                                categoriesArray.push(cat);
+                            }
+                        })
+                    })
                     const normalizedCategories = [];
 
                     if(categoriesArray.length) {
