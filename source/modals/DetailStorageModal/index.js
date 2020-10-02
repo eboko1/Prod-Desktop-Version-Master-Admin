@@ -310,14 +310,15 @@ class DetailStorageModal extends React.Component{
                     var brandId = elem.brandId ? elem.brandId : (elem.price ? elem.price.brandId : undefined);
                     var name = elem.storeGroupId == 1000000 ? elem.description : elem.storeGroupName;
                     var supplierOriginalCode = elem.price ? elem.price.supplierOriginalCode : undefined;
+                    var supplierProductNumber = elem.price ? elem.price.supplierProductNumber : undefined;
                     var isFromStock = elem.price ? elem.price.isFromStock : undefined;
                     var defaultWarehouseId = elem.price ? elem.price.defaultWarehouseId : undefined;
                     return (
                         <Button
                             type="primary"
                             onClick={()=>{
-                                this.props.onSelect(elem.partNumber, brandId, elem.storeId, this.props.tableKey, elem.storeGroupId, name, supplierOriginalCode);
-                                this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, supplierOriginalCode, this.props.tableKey, isFromStock, defaultWarehouseId, elem.storeId);
+                                this.props.onSelect(elem.partNumber, brandId, elem.storeId, this.props.tableKey, elem.storeGroupId, name, supplierOriginalCode, supplierProductNumber);
+                                this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, supplierOriginalCode, supplierProductNumber, this.props.tableKey, isFromStock, defaultWarehouseId, elem.storeId);
                                 this.handleCancel();
                             }}
                         >
@@ -368,7 +369,7 @@ class DetailStorageModal extends React.Component{
         return data;
     }
 
-    setSupplier(supplierId, businessSupplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, key, isFromStock, defaultWarehouseId, productId) {
+    setSupplier(supplierId, businessSupplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId, productId) {
         this.state.dataSource[key].businessSupplierId = supplierId;
         this.state.dataSource[key].businessSupplierName = businessSupplierName;
         this.state.dataSource[key].purchasePrice = purchasePrice;
@@ -376,6 +377,7 @@ class DetailStorageModal extends React.Component{
         this.state.dataSource[key].salePrice = price;
         this.state.dataSource[key].store = store;
         this.state.dataSource[key].price.supplierOriginalCode = supplierOriginalCode;
+        this.state.dataSource[key].price.supplierProductNumber = supplierProductNumber;
         this.state.dataSource[key].price.isFromStock = isFromStock;
         this.state.dataSource[key].price.defaultWarehouseId = defaultWarehouseId;
         this.state.dataSource[key].storeId = productId;

@@ -511,6 +511,7 @@ class DetailProductModal extends React.Component{
                         supplierBrandId: element.supplierBrandId,
                         brandName: element.brandName,
                         supplierOriginalCode: element.supplierOriginalCode,
+                        supplierProductNumber: element.supplierProductNumber,
                         reservedFromWarehouseId: element.reservedFromWarehouseId || null,
                         purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                         count: element.count ? element.count : 1,
@@ -600,6 +601,7 @@ class DetailProductModal extends React.Component{
                     that.state.mainTableSource[0].price = purchasePrice * markup;
                     that.state.mainTableSource[0].count = 1;
                     that.state.mainTableSource[0].supplierOriginalCode = result.price ? result.price.supplierOriginalCode : undefined;
+                    that.state.mainTableSource[0].supplierProductNumber = result.price ? result.price.supplierProductNumber : undefined;
                     that.state.mainTableSource[0].isFromStock = result.price ? result.price.isFromStock : undefined;
                     that.state.mainTableSource[0].reservedFromWarehouseId = result.price ? result.price.defaultWarehouseId : undefined;
                 }
@@ -612,13 +614,14 @@ class DetailProductModal extends React.Component{
         }
     }
 
-    setCode(code, brandId, storeId, key, storeGroupId, storeGroupName, supplierOriginalCode) {
+    setCode(code, brandId, storeId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber) {
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         this.state.mainTableSource[key].detailCode = code;
         this.state.mainTableSource[key].brandId = brandId;
         this.state.mainTableSource[key].brandName = brand.brandName;
         this.state.mainTableSource[key].storeId = storeId;
         this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
+        this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
         if(this.state.radioValue == 3 || this.state.radioValue == 4) {
             this.state.mainTableSource[key].storeGroupId = storeGroupId;
             this.state.mainTableSource[key].detailName = storeGroupName;
@@ -639,7 +642,7 @@ class DetailProductModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, key, isFromStock, defaultWarehouseId, storeId) {
+    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId, storeId) {
         this.state.mainTableSource[key].supplierId = supplierId;
         this.state.mainTableSource[key].supplierName = supplierName;
         this.state.mainTableSource[key].supplierBrandId = supplierBrandId;
@@ -647,6 +650,7 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].price = price;
         this.state.mainTableSource[key].store = store;
         this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
+        this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
         this.state.mainTableSource[key].isFromStock = isFromStock;
         this.state.mainTableSource[key].reservedFromWarehouseId = defaultWarehouseId;
         this.state.mainTableSource[key].storeId = storeId;
@@ -661,6 +665,17 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[0].brandName = undefined;
         this.state.mainTableSource[0].brandId = undefined;
         this.state.radioValue = 3;
+
+        this.state.mainTableSource[0].supplierId = undefined;
+        this.state.mainTableSource[0].supplierName = undefined;
+        this.state.mainTableSource[0].supplierBrandId = undefined;
+        this.state.mainTableSource[0].purchasePrice = undefined;
+        this.state.mainTableSource[0].price = 0;
+        this.state.mainTableSource[0].count = 1;
+        this.state.mainTableSource[0].store = undefined;
+        this.state.mainTableSource[0].supplierOriginalCode = undefined;
+        this.state.mainTableSource[0].supplierProductNumber = undefined;
+        this.state.mainTableSource[key].reservedFromWarehouseId = undefined;
 
         this.setState({
             update: true
@@ -1594,24 +1609,32 @@ class VinCodeModal extends Component{
                     }}
                     visible={visible}
                     title={<FormattedMessage id='add_order_form.vin'/>}
-                    footer={!categoryMode || !this.props.storeGroupId && allCategories && allCategories != categories ? 
-                    [
-                        <Button key="back" onClick={this.handleBack}>
-                            <FormattedMessage id='back'/>
-                        </Button>,
-                        <Button key="submit" type="primary" onClick={this.handleOk}>
-                            <FormattedMessage id='select'/>
-                        </Button>,
-                    ] : null}
+                    footer={null}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                 >
+                    {!loading && (!categoryMode || !this.props.storeGroupId && allCategories && allCategories != categories) &&
+                        <div 
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'flex-end',
+                                margin: '-16px 0 8px 0'
+                            }}
+                        >
+                            <Button key="back" onClick={this.handleBack}>
+                                <FormattedMessage id='step_back'/>
+                            </Button>
+                            <Button key="submit" type="primary" onClick={this.handleOk} style={{marginLeft: 10}}>
+                                <FormattedMessage id='select'/>
+                            </Button>
+                        </div>
+                    }
                     {loading ? <Spin indicator={spinIcon} /> :
                     categoryMode && !itemsListEmpty ? 
                     <div className={Styles.categoryList}>
                         {categories.map((category, key)=>{
                             const detail = category.detail;
-                            return category.emptyElement ? <div className={Styles.categoryItem} style={{pointerEvents: 'none'}}></div> : (
+                            return category.emptyElement ? <div className={Styles.emptyItem} style={{pointerEvents: 'none'}}></div> : (
                             <div
                                 className={Styles.categoryItem}
                                 key={key}
@@ -1637,7 +1660,7 @@ class VinCodeModal extends Component{
                                 <div
                                     className={Styles.categoryName}
                                 >
-                                    <a>{category.name}</a>
+                                    {category.name}
                                 </div>
                             </div>)})
                         }
@@ -1820,13 +1843,14 @@ class VinCodeModal extends Component{
                     </div>
                     <div
                         style={{
+                            display: 'none',
                             textAlign: 'end',
                             fontSize: 12,
                             color: 'var(--text2)',
                         }}
                     >
                         <i style={{color: 'var(--required)'}}>* </i>Ctrl + click to select multiple item
-                    </div>
+                    </div>*/
                     </> :
                     <FormattedMessage id='no_data' />}
                     <Modal

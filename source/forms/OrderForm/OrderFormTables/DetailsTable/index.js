@@ -734,6 +734,7 @@ class DetailsTable extends Component {
                 : null,
             brandName:     detail.brandName ? detail.brandName : null,
             supplierOriginalCode: detail.supplierOriginalCode,
+            supplierProductNumber: detail.supplierProductNumber,
             reservedFromWarehouseId: null,
             purchasePrice:
                 Math.round(detail.purchasePrice * 10) / 10 || 0,
