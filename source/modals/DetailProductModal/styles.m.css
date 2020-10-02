@@ -78,14 +78,22 @@
     justify-content: space-around;
 }
 
+.emptyItem {
+    width: 31%;
+    min-width: 280px;
+    margin-bottom: 2%;
+}
+
 .categoryItem {
     width: 31%;
     min-width: 280px;
     margin-bottom: 2%;
+    box-shadow: 0 0 1px 0px black;
 
     &:hover {
         /*border: 1px solid var(--text2);*/
-        box-shadow: 0 0 1px 0px black;
+        box-shadow: 0 0 2px 0px var(--primary);
+        color: var(--primary);
     }
 }
 
