@@ -675,7 +675,7 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[0].store = undefined;
         this.state.mainTableSource[0].supplierOriginalCode = undefined;
         this.state.mainTableSource[0].supplierProductNumber = undefined;
-        this.state.mainTableSource[key].reservedFromWarehouseId = undefined;
+        this.state.mainTableSource[0].reservedFromWarehouseId = undefined;
 
         this.setState({
             update: true
