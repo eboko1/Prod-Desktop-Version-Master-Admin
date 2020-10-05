@@ -67,7 +67,7 @@ class ConfirmDiagnosticModal extends React.Component{
             if(element.checked && element.id != null) {
                 data.services.push({
                     serviceName:
-                        element.commentary.positions.length ?
+                        element.commentary && element.commentary.positions.length ?
                         element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
                         element.name,
                     serviceId: element.id,
@@ -76,9 +76,9 @@ class ConfirmDiagnosticModal extends React.Component{
                     employeeId: this.props.defaultEmployeeId,
                     serviceHours: 0,
                     comment: {
-                        comment: element.commentary.comment,
-                        positions: element.commentary.positions,
-                        problems: element.commentary.problems,
+                        comment: element.commentary && element.commentary.comment,
+                        positions: element.commentary && element.commentary.positions,
+                        problems: element.commentary && element.commentary.problems,
                     },
                     isCritical: element.status == 3,
                 })

@@ -1114,6 +1114,7 @@ class VinCodeModal extends Component{
             itemsListEmpty: false,
             zoomMultiplier: 0.75,
             allCategories: [],
+            imgSearch: "",
         };
         this.showInfoModal = this.showInfoModal.bind(this);
         this.onImgLoad = this.onImgLoad.bind(this);
@@ -1556,6 +1557,12 @@ class VinCodeModal extends Component{
         })
     }
 
+    searchImage(code) {
+        this.setState({
+            loading: true,
+        })
+    }
+
     componentDidUpdate(prevProps, prevState) {
         if(!prevState.visible && this.state.visible) {
             this.setState({
@@ -1586,6 +1593,7 @@ class VinCodeModal extends Component{
             itemsListEmpty,
             zoomMultiplier,
             allCategories,
+            imgSearch,
         } = this.state;
 
         return (
@@ -1621,6 +1629,24 @@ class VinCodeModal extends Component{
                                 margin: '-16px 0 8px 0'
                             }}
                         >
+                            <div
+                                style={{display: 'none'}}
+                            >
+                                <Input 
+                                    onChange={(event)=>{
+                                        this.setState({
+                                            imgSearch: event.target.value,
+                                        })
+                                    }}
+                                />
+                                <Button
+                                    onClick={()=>{
+                                        this.searchImage(imgSearch);
+                                    }}
+                                >
+                                    <FormattedMessage id='find' />
+                                </Button>
+                            </div>
                             <Button key="back" onClick={this.handleBack}>
                                 <FormattedMessage id='step_back'/>
                             </Button>
@@ -1850,7 +1876,7 @@ class VinCodeModal extends Component{
                         }}
                     >
                         <i style={{color: 'var(--required)'}}>* </i>Ctrl + click to select multiple item
-                    </div>*/
+                    </div>
                     </> :
                     <FormattedMessage id='no_data' />}
                     <Modal
