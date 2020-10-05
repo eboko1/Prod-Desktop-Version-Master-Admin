@@ -1293,9 +1293,15 @@ class VinCodeModal extends Component{
                     data.map((elem)=>{
                         //categoriesArray = categoriesArray.concat(elem.response.ListQuickDetail[0].Category);
                         elem.response.ListQuickDetail[0].Category.map((cat)=>{
-                            if(categoriesArray.findIndex((currCat)=>currCat.$.categoryid == cat.$.categoryid) < 0) {
-                                categoriesArray.push(cat);
-                            }
+                            cat.Unit.map((unit)=>{
+                                if(categoriesArray.findIndex((currCat)=>currCat.Unit[0].code == unit.$.code) < 0) {
+                                    categoriesArray.push({
+                                        $: cat.$,
+                                        Unit: [unit],
+                                    });
+                                }
+                            })
+                            
                         })
                     })
                     const normalizedCategories = [];
@@ -1683,7 +1689,7 @@ class VinCodeModal extends Component{
                                 className={Styles.categoryItem}
                                 key={key}
                                 onClick={()=>{
-                                    if(category.unit.imageurl && category.units.length == 1)
+                                    if(category.unit.imageurl)
                                         this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog);
                                     else 
                                         this.fetchCategoryItemsList(category.ssd, category.catalog, category.categoryid, category.vehicleId)
