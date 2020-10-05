@@ -512,6 +512,8 @@ class OilModal extends React.Component{
             this.setState({
                 oemFilter: this.props.oilModalData.oem,
                 oeCodeFilter: oeCodeTmp,
+                apiFilter: this.props.oilModalData.api,
+                saeFilter: this.props.oilModalData.sae,
                 visible: true,
             });
             this.props.clearOilData();

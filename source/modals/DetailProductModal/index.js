@@ -1110,6 +1110,7 @@ class VinCodeModal extends Component{
             checkedCodes: [],
             infoModalVisible: false,
             infoItem: undefined,
+            images: [],
             image: undefined,
             itemsListEmpty: false,
             zoomMultiplier: 0.75,
@@ -1126,7 +1127,8 @@ class VinCodeModal extends Component{
                 dataIndex: 'key',
                 width:     'auto',
                 render: (data, elem)=>{
-                    const isVariant = this.state.itemsInfo.findIndex((item)=>item.key == elem.key || item.codeonimage == elem.codeonimage) != elem.key;
+                    const itemsInfo = this.state.itemsInfo.length ? this.state.itemsInfo[this.state.itemsInfo.length-1] : [];
+                    const isVariant = itemsInfo.findIndex((item)=>item.key == elem.key || item.codeonimage == elem.codeonimage) != elem.key;
                     return !isVariant || !elem.codeonimage ? (
                         elem.codeonimage || data + 1
                     ) : (
@@ -1219,7 +1221,8 @@ class VinCodeModal extends Component{
 
 
     handleOk = () => {
-        const { itemsInfo, checkedCodes } = this.state;
+        const { checkedCodes } = this.state;
+        const itemsInfo = this.state.itemsInfo.length ? this.state.itemsInfo[this.state.itemsInfo.length-1] : [];
         const selectedItem = itemsInfo.find((item)=>item.codeonimage == checkedCodes[0]);
         console.log(selectedItem);
         if(selectedItem) this.props.setVinDetail(selectedItem.oem, selectedItem.name);
@@ -1244,9 +1247,21 @@ class VinCodeModal extends Component{
             })
         }
         else {
-            this.setState({
-                categoryMode: true,
-            })
+            if(this.state.itemsInfo.length > 1) {
+                const itemsInfo = this.state.itemsInfo.pop();
+                const blockPositions = this.state.blockPositions.pop();
+                const images = this.state.images.pop();
+                this.setState({
+                    itemsInfo: itemsInfo,
+                    blockPositions: blockPositions,
+                    images: images,
+                })
+            }
+            else {
+                this.setState({
+                    categoryMode: true,
+                })
+            }
         }
     }
 
@@ -1291,6 +1306,7 @@ class VinCodeModal extends Component{
                                 catalog: catalog,
                                 vehicleId: vehicleid,
                                 ...elem.$,
+                                units: elem.Unit,
                                 unit: {...elem.Unit[0].$},
                                 detail: {
                                     ...elem.Unit[0].Detail[0].$,
@@ -1459,9 +1475,9 @@ class VinCodeModal extends Component{
             console.log(itemsInfo, blockPositions, image);
             that.setState({
                 loading: false,
-                itemsInfo: itemsInfo,
-                blockPositions: blockPositions,
-                image: image,
+                images: [image],
+                itemsInfo: [itemsInfo],
+                blockPositions: [blockPositions],
                 categoryMode: false,
             })
         })
@@ -1578,8 +1594,6 @@ class VinCodeModal extends Component{
             visible,
             zoomed,
             positions,
-            itemsInfo,
-            blockPositions,
             tableHoverCode,
             imgHoverCode,
             imgHoverIndex,
@@ -1589,12 +1603,16 @@ class VinCodeModal extends Component{
             loading,
             categories,
             categoryMode,
-            image,
+            images,
             itemsListEmpty,
             zoomMultiplier,
             allCategories,
             imgSearch,
         } = this.state;
+
+        const itemsInfo = this.state.itemsInfo.length ? this.state.itemsInfo[this.state.itemsInfo.length-1] : [];
+        const blockPositions = this.state.blockPositions.length ? this.state.blockPositions[this.state.blockPositions.length-1] : [];
+        const image = this.state.images.length ? this.state.images[this.state.images.length-1] : undefined;
 
         return (
             <>
@@ -1644,7 +1662,7 @@ class VinCodeModal extends Component{
                                         this.searchImage(imgSearch);
                                     }}
                                 >
-                                    <FormattedMessage id='find' />
+                                    <FormattedMessage id='back' />
                                 </Button>
                             </div>
                             <Button key="back" onClick={this.handleBack}>
@@ -1665,7 +1683,7 @@ class VinCodeModal extends Component{
                                 className={Styles.categoryItem}
                                 key={key}
                                 onClick={()=>{
-                                    if(category.unit.imageurl)
+                                    if(category.unit.imageurl && category.units.length == 1)
                                         this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog);
                                     else 
                                         this.fetchCategoryItemsList(category.ssd, category.catalog, category.categoryid, category.vehicleId)

@@ -1265,7 +1265,7 @@ class AutomaticOrderCreationModal extends React.Component {
                             style={{
                                 color: 'black',
                             }}
-                            value={elem.sum}
+                            value={Math.round(elem.sum*10)/10}
                         />
                     )
                 }

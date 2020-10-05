@@ -80,7 +80,7 @@ class TecDocInfoModal extends React.Component{
                             type='primary'
                             onClick={()=>{
                                 console.log(elem);
-                                if(this.props.showOilModal) this.props.showOilModal(elem.oem[0], elem.oeCode);
+                                if(this.props.showOilModal) this.props.showOilModal(elem.oem[0], elem.oeCode, elem.api, elem.sae);
                                 this.handleCancel();
                             }}
                         >
