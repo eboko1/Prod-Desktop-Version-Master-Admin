@@ -185,12 +185,14 @@ class OrderPage extends Component {
         this.props.setModal(MODALS.ADD_CLIENT);
     };
 
-    _showOilModal = (oem, oeCode) => {
+    _showOilModal = (oem, oeCode, api, sae) => {
         this.setState({
             showOilModal: true,
             oilModalData: {
                 oem: oem,
                 oeCode: oeCode,
+                api: api,
+                sae: sae,
             }
         })
     }
