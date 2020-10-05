@@ -1629,7 +1629,9 @@ class VinCodeModal extends Component{
                                 margin: '-16px 0 8px 0'
                             }}
                         >
-                            <div>
+                            <div
+                                style={{display: 'none'}}
+                            >
                                 <Input 
                                     onChange={(event)=>{
                                         this.setState({
@@ -1874,7 +1876,7 @@ class VinCodeModal extends Component{
                         }}
                     >
                         <i style={{color: 'var(--required)'}}>* </i>Ctrl + click to select multiple item
-                    </div>*/
+                    </div>
                     </> :
                     <FormattedMessage id='no_data' />}
                     <Modal
