@@ -1293,13 +1293,29 @@ class VinCodeModal extends Component{
 
                     if(categoriesArray.length) {
                         categoriesArray.map((elem)=>{
-                            normalizedCategories.push({
-                                catalog: catalog,
-                                vehicleId: vehicleid,
-                                ssd: ssd,
-                                ...elem,
-                                unit: {...elem.units[0]},
-                            });
+                            if(elem.units.length == 1) {
+                                elem.name = elem.units[0].name;
+                                normalizedCategories.push({
+                                    catalog: catalog,
+                                    vehicleId: vehicleid,
+                                    ssd: ssd,
+                                    ...elem,
+                                    unit: {...elem.units[0]},
+                                });
+                            }
+                            else {
+                                elem.units.map((unit)=>{
+                                    elem.name = unit.name;
+                                    normalizedCategories.push({
+                                        catalog: catalog,
+                                        vehicleId: vehicleid,
+                                        ssd: ssd,
+                                        ...elem,
+                                        unit: unit,
+                                    });
+                                })
+                            }
+                            
                         })
                     }
                     console.log(normalizedCategories)
