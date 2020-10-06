@@ -432,7 +432,7 @@ class OilModal extends React.Component{
             {
                 title:  ()=>{
                     return (
-                        <div>
+                        <div> 
                             <FormattedMessage id="order_form_table.store" />
                             <div style={{fontWeight: '400', fontSize: 12}}>
                                 В наличии
