@@ -26,6 +26,7 @@ const INCOME = 'INCOME',
       OWN_CONSUMPTION = 'OWN_CONSUMPTION',
       TRANSFER = 'TRANSFER',
       ADJUSTMENT = 'ADJUSTMENT',
+      ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
       DONE = 'DONE';
@@ -40,7 +41,8 @@ const INC = 'INC',
       TSF = 'TSF',
       RES = 'RES',
       ORD = 'ORD',
-      BOR = 'BOR';
+      BOR = 'BOR',
+      COM = 'COM';
 
 
 export function columnsConfig(

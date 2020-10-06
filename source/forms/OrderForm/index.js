@@ -415,6 +415,7 @@ export class OrderForm extends React.PureComponent {
             user,
             location,
             errors,
+
         } = this.props;
 
         const formFieldsValues = form.getFieldsValue();
@@ -680,6 +681,10 @@ export class OrderForm extends React.PureComponent {
             setStoreProductsSearchQuery,
 
             normHourPrice,
+
+            showOilModal,
+            oilModalData,
+            clearOilData,
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
@@ -777,6 +782,9 @@ export class OrderForm extends React.PureComponent {
                 reloadOrderPageComponents={this.props.reloadOrderPageComponents}
                 reloadOrderForm={this._reloadOrderForm}
                 clientVehicleVin={this.props.order.clientVehicleVin}
+                showOilModal= { showOilModal }
+                oilModalData = { oilModalData }
+                clearOilData = { clearOilData }
             />
         );
     };

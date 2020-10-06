@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Dropdown, Button, Icon, Menu, notification, Modal, Table, InputNumber } from 'antd';
+import { Dropdown, Button, Icon, Menu, notification, Modal, Table, InputNumber, Checkbox, Select, AutoComplete } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
+import { saveAs } from 'file-saver';
 
 // proj
 import { Layout, Spinner } from 'commons';
@@ -14,7 +15,7 @@ import { StorageDocumentForm } from 'forms';
 import book from 'routes/book';
 import { type } from 'ramda';
 // own
-
+const Option = Select.Option;
 
 const mapStateToProps = state => {
     return {
@@ -37,6 +38,7 @@ const INCOME = 'INCOME',
       OWN_CONSUMPTION = 'OWN_CONSUMPTION',
       TRANSFER = 'TRANSFER',
       ADJUSTMENT = 'ADJUSTMENT',
+      ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
       DONE = 'DONE';
@@ -60,7 +62,7 @@ const typeToDocumentType = {
     },
     order: {
         type: ORDER,
-        documentType: [SUPPLIER, ADJUSTMENT],
+        documentType: [SUPPLIER, ADJUSTMENT, ORDERINCOME],
     }, 
 }
 
@@ -104,15 +106,27 @@ class StorageDocumentPage extends Component {
         })
     }
 
-    addDocProduct(docProduct) {
-        this.state.formData.docProducts.push({
-            key: this.state.formData.docProducts.length,
-            ...docProduct
-        });
-        this.state.formData.sum += docProduct.sum,
-        this.setState({
-            update: true,
-        })
+    addDocProduct(docProduct, arrayMode = false) {
+        if(arrayMode) {
+            docProduct.map((product)=>{
+                product.sum = Math.round(product.sum*10)/10;
+            })
+            this.state.formData.docProducts = this.state.formData.docProducts.concat(docProduct);
+            this.setState({
+                forceUpdate: true,
+            })
+        }
+        else {
+            docProduct.sum = Math.round(docProduct.sum*10)/10;
+            this.state.formData.docProducts.push({
+                key: this.state.formData.docProducts.length,
+                ...docProduct
+            });
+            this.state.formData.sum += docProduct.sum;
+            this.setState({
+                update: true,
+            })
+        }
         if(this.props.id) this.updateDocument(this.state.formData.status);
     }
 
@@ -146,11 +160,12 @@ class StorageDocumentPage extends Component {
     //};
 
     verifyFields() {
+        const { intl: {formatMessage} } = this.props;
         const { formData } = this.state;
         console.log(formData);
         const showError = () => {
             notification.error({
-                message: 'Заполните все необходимые поля',
+                message: formatMessage({id: 'storage_document.error.required_fields'}),
             });
         }
 
@@ -231,6 +246,10 @@ class StorageDocumentPage extends Component {
                 }
                 else if(formData.documentType == ADJUSTMENT) {
                     createData.type = EXPENSE;
+                }
+                else if(formData.documentType == ORDERINCOME) {
+                    createData.type = EXPENSE;
+                    createData.documentType = SUPPLIER;
                 }
                 createData.counterpartBusinessSupplierId = formData.counterpartId;
                 createData.context = ORDER;
@@ -525,9 +544,10 @@ class StorageDocumentPage extends Component {
                   TSF = 'TSF',
                   RES = 'RES',
                   ORD = 'ORD',
-                  BOR = 'BOR';
+                  BOR = 'BOR',
+                  COM = 'COM';
 
-            data.counterpartId = data.counterpartBusinessSupplierId;
+            data.counterpartId = data.counterpartBusinessSupplierId || data.counterpartClientId;
             data.payUntilDatetime = data.payUntilDatetime && moment(data.payUntilDatetime);
             data.docProducts.map((elem, key)=>{
                 elem.brandId = elem.product.brandId,
@@ -560,6 +580,10 @@ class StorageDocumentPage extends Component {
                 case ORD:
                 case BOR:
                     data.type = ORDER;
+                    break;
+                case COM:
+                    data.type = ORDER;
+                    data.documentType = ORDERINCOME;
                     break;
                 
             }
@@ -604,8 +628,16 @@ class StorageDocumentPage extends Component {
         this._isMounted = false;
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if(this.state.forceUpdate) {
+            this.setState({
+                forceUpdate: false,
+            })
+        }
+    }
+
     render() {
-        const { warehouses, counterpartSupplier, formData, brands, clientList, fetched } = this.state;
+        const { warehouses, counterpartSupplier, formData, brands, clientList, fetched, forceUpdate } = this.state;
         const { id, intl: {formatMessage} } = this.props;
         const dateTime = formData.createdDatetime || new Date();
         const titleType = " " + formatMessage({id: `storage_document.docType.${formData.type}.${formData.documentType}`}).toLowerCase();
@@ -624,44 +656,67 @@ class StorageDocumentPage extends Component {
                 <FormattedMessage id='storage.new_document' /> 
                 }
                 description={
-                    <>
+                    <div>
                         <FormattedMessage id='order-page.creation_date'/>
                         { `: ${moment(dateTime).format('DD MMMM YYYY, HH:mm')}` }
-                    </>
+                    </div>
                 }
                 controls={
-                    <>
+                    <div style={{display: 'flex'}}>
                         {id ? 
-                        <>
+                        <div style={{display: 'flex'}}>
                             {formData.status != DONE && 
-                            <ChangeStatusDropdown
-                                updateDocument={this.updateDocument}
-                            />}
-                            <ReportsDropdown/>
-                        </>
+                                <ChangeStatusDropdown
+                                    updateDocument={this.updateDocument}
+                                />
+                            }
+                            <ReportsDropdown
+                                id={id}
+                            />
+                        </div>
                         : null}
-                        {formData.status != DONE && (<>
-                        <AutomaticOrderCreationModal/>
-                        <Icon
-                            type='save'
-                            style={headerIconStyle}
-                            onClick={()=>{
-                                if(id) {
-                                    this.updateDocument();
-                                } 
-                                else {
-                                    this.createDocument();
+                        {formData.status != DONE && (
+                            <div style={{display: 'flex'}}>
+                                {formData.type == ORDER && (formData.documentType == SUPPLIER || formData.documentType == ORDERINCOME) &&
+                                    <AutomaticOrderCreationModal
+                                        supplierId={formData.counterpartId}
+                                        addDocProduct={this.addDocProduct}
+                                        type={formData.type}
+                                        documentType={formData.documentType}
+                                    />
                                 }
-                            }}
-                        /></>)}
+                                {((formData.type == INCOME && formData.documentType == CLIENT) || (formData.type == EXPENSE && formData.documentType == SUPPLIER)) &&
+                                    <ReturnModal
+                                        counterpartId={formData.counterpartId}
+                                        addDocProduct={this.addDocProduct}
+                                        type={formData.type}
+                                        documentType={formData.documentType}
+                                        brands={brands}
+                                    />
+                                }
+                                <Icon
+                                    type='save'
+                                    style={headerIconStyle}
+                                    onClick={()=>{
+                                        if(id) {
+                                            this.updateDocument();
+                                        } 
+                                        else {
+                                            this.createDocument();
+                                        }
+                                    }}
+                                />
+                            </div>
+                        )}
                         {id && formData.status != DONE &&
-                        <Icon
-                            type='delete'
-                            style={headerIconStyle}
-                            onClick={()=>{
+                            <Icon
+                                type='delete'
+                                style={headerIconStyle}
+                                onClick={()=>{
 
-                            }}
-                        />}
+                                }}
+                            />
+                        }
                         <Icon
                             type='close'
                             style={headerIconStyle}
@@ -669,11 +724,12 @@ class StorageDocumentPage extends Component {
                                 this.props.history.goBack();
                             }}
                         />
-                    </>
+                    </div>
                 }
             >
-                <div>
                 <StorageDocumentForm
+                    id={id}
+                    forceUpdate={forceUpdate}
                     clientList={clientList}
                     wrappedComponentRef={ this.saveFormRef }
                     warehouses={warehouses}
@@ -686,7 +742,6 @@ class StorageDocumentPage extends Component {
                     deleteDocProduct={this.deleteDocProduct}
                     editDocProduct={this.editDocProduct}
                 />
-                </div>
             </Layout>
         );
     }
@@ -745,7 +800,28 @@ class ReportsDropdown extends React.Component {
         const menu = (
             <Menu>
                 <Menu.Item
-                    onClick={()=>{
+                    onClick={async ()=>{
+                        let token = localStorage.getItem('_my.carbook.pro_token');
+                        let url = __API_URL__ + `/orders/reports/${this.props.id}`;
+                        try {
+                            const response = await fetch(url, {
+                                method:  'GET',
+                                headers: {
+                                    Authorization: token,
+                                },
+                            });
+                            const reportFile = await response.blob();
+
+                            const contentDispositionHeader = response.headers.get(
+                                'content-disposition',
+                            );
+                            const fileName = contentDispositionHeader.match(
+                                /^attachment; filename="(.*)"/,
+                            )[ 1 ];
+                            await saveAs(reportFile, fileName);
+                        } catch (error) {
+                            console.error('ERROR:', error);
+                        }
                     }}
                 >
                     <FormattedMessage id='storage_document.document' />
@@ -765,36 +841,208 @@ class ReportsDropdown extends React.Component {
 }
 
 @injectIntl
+class ReturnModal extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            visible: false,
+            brandSearchValue: "",
+            brandId: undefined,
+            brandName: undefined,
+            storageProducts: [],
+            detailCode: undefined,
+            detailName: undefined,
+        }
+    }
+
+    handleOk() {
+        this.handleCancel();
+
+    }
+
+    handleCancel() {
+        this.setState({
+            dataSource: [],
+            visible: false,
+        });
+    }
+
+    getStorageProducts() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_products`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data.list)
+            that.setState({
+                storageProducts: data.list
+            })
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    }
+
+    fetchData() {
+        this.getStorageProducts();
+    }
+
+    render() {
+        const {
+            visible,
+            brandSearchValue,
+            brandId,
+            brandName,
+            storageProducts,
+            detailCode,
+            detailName,
+        } = this.state;
+        return (
+            <div>
+                <Icon
+                    type="rollback"
+                    style={headerIconStyle}
+                    onClick={()=>{
+                        this.fetchData();
+                        this.setState({
+                            visible: true,
+                        })
+                    }}
+                />
+                <Modal
+                    visible={visible}
+                    width={'fit-content'}
+                    onOk={()=>{
+                        this.handleOk();
+                    }}
+                    onCancel={()=>{
+                        this.handleCancel();
+                    }}
+                >
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between'
+                        }}
+                    >
+                        <div style={{minWidth: 140}}>
+                            <FormattedMessage id='order_form_table.brand' />
+                            <Select
+                                showSearch
+                                value={brandId}
+                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                                filterOption={(input, option) => {
+                                    return (
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                        String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                    )
+                                }}
+                                onSelect={(value, option)=>{
+                                    this.getOptions(value)
+                                    this.setState({
+                                        brandId: value,
+                                        brandName: option.props.children,
+                                    })
+                                }}
+                                onSearch={(input)=>{
+                                    this.setState({
+                                        brandSearchValue: input,
+                                    })
+                                }}
+                                onBlur={()=>{
+                                    this.setState({
+                                        brandSearchValue: "",
+                                    })
+                                }}
+                            >
+                                {
+                                    this.state.brandSearchValue.length > 1 ? 
+                                        this.props.brands.map((elem, index)=>(
+                                            <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
+                                                {elem.brandName}
+                                            </Option>
+                                        )) :
+                                        brandId ? 
+                                        <Option key={0} value={brandId}>
+                                            {brandName}
+                                        </Option> : 
+                                        []
+                                }
+                            </Select>
+                        </div>
+                        <div>
+                            <FormattedMessage id='order_form_table.detail_code' />
+                            <AutoComplete
+                                value={detailCode}
+                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                                onChange={(value)=>{
+                                    this.setState({
+                                        detailCode: value,
+                                    });
+                                }}
+                                onSelect={(value, option)=>{
+                                    this.setState({
+                                        detailCode: value,
+                                        detailName: option.props.detail_name,
+                                        stockPrice: option.props.price,
+                                    });
+                                }}
+                                filterOption={(input, option) => {
+                                    return (
+                                        String(option.props.value).toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    )
+                                }}
+                            >
+                                {
+                                    storageProducts.map((elem)=>{
+                                        return (
+                                            <Option
+                                                key={elem.id}
+                                                value={elem.code}
+                                                detail_name={elem.name}
+                                                price={0}
+                                                trade_code={elem.tradeCode}
+                                            >
+                                                {elem.code}
+                                            </Option>
+                                        )
+                                    })
+                                }
+                            </AutoComplete>
+                        </div>
+                    </div>
+                </Modal>
+            </div>
+        );
+    }
+}
+
+@injectIntl
 class AutomaticOrderCreationModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataSource: [
-                {
-                    key: 0,
-                    brandName: 'SACHS',
-                    detailCode: '100 786',
-                    tradeCode: '123456',
-                    detailName: 'Амортизатор подвески',
-                    stockPrice: 980,
-                    quantity: 2,
-                    sum: 1960,
-                    reserve: 2,
-                    min: 0,
-                    max: 3,
-                    ordered: 6,
-                    deficit: -2,
-                    toOrder: 2,
-                    inOrders: 5,
-                    inStock: 10,
-                }
-            ],
+            dataSource: [],
             visible: false,
         };
 
         const { formatMessage } = props.intl;
 
-        this.columns = [
+        this.orderColumns = [
             {
                 title:     "№",
                 width:     '3%',
@@ -850,6 +1098,7 @@ class AutomaticOrderCreationModal extends React.Component {
                             min={0}
                             onChange={(value)=>{
                                 elem.stockPrice = value;
+                                elem.sum = elem.quantity * value;
                                 this.setState({update: true});
                             }}
                         />
@@ -858,8 +1107,8 @@ class AutomaticOrderCreationModal extends React.Component {
             },
             {
                 title:     <FormattedMessage id='storage.in_orders' />,
-                key:       'inOrders',
-                dataIndex: 'inOrders',
+                key:       'countInOrders',
+                dataIndex: 'countInOrders',
                 width:     'auto',
                 render:     (data, elem)=>{
                     return (
@@ -875,8 +1124,8 @@ class AutomaticOrderCreationModal extends React.Component {
             },
             {
                 title:     <FormattedMessage id='storage.in_stock' />,
-                key:       'inStock',
-                dataIndex: 'inStock',
+                key:       'countInWarehouses',
+                dataIndex: 'countInWarehouses',
                 width:     'auto',
                 render:     (data, elem)=>{
                     return (
@@ -906,7 +1155,7 @@ class AutomaticOrderCreationModal extends React.Component {
                                     style={{
                                         color: 'black',
                                     }}
-                                    value={elem.reserve}
+                                    value={elem.reservedCount}
                                 />
                             </div>
                             <div>
@@ -938,7 +1187,7 @@ class AutomaticOrderCreationModal extends React.Component {
                                     style={{
                                         color: 'black',
                                     }}
-                                    value={elem.ordered}
+                                    value={elem.countInStoreOrders}
                                 />
                             </div>
                             <div>
@@ -970,7 +1219,7 @@ class AutomaticOrderCreationModal extends React.Component {
                                     style={{
                                         color: 'black',
                                     }}
-                                    value={elem.deficit}
+                                    value={elem.lack}
                                 />
                             </div>
                             <div>
@@ -991,13 +1240,14 @@ class AutomaticOrderCreationModal extends React.Component {
                 key:       'quantity',
                 dataIndex: 'quantity',
                 width:     'auto',
-                render:     (data)=>{
+                render:     (data, elem)=>{
                     return (
                         <InputNumber
                             value={data}
                             min={0}
                             onChange={(value)=>{
                                 elem.quantity = value;
+                                elem.sum = value * elem.stockPrice;
                                 this.setState({update: true});
                             }}
                         />
@@ -1015,16 +1265,206 @@ class AutomaticOrderCreationModal extends React.Component {
                             style={{
                                 color: 'black',
                             }}
-                            value={elem.quantity * elem.stockPrice}
+                            value={Math.round(elem.sum*10)/10}
                         />
                     )
                 }
             },
+        ];
+
+        this.incomeColumns = [
+            {
+                title:     "№",
+                width:     '3%',
+                key:       'key',
+                dataIndex: 'key',
+                render:     (data)=>{
+                    return (
+                        data+1
+                    )
+                }
+            },
+            {
+                title:     textToColumn(
+                                formatMessage({id: 'order_form_table.detail_code'}),
+                                formatMessage({id: 'order_form_table.brand'}),
+                            ),
+                width:     'auto',
+                key:       'codeAndBrand',
+                render:     (elem)=>{
+                    return (
+                        textToColumn(
+                            elem.detailCode,
+                            elem.brandName
+                        )
+                    )
+                }
+            },
+            {
+                title:     textToColumn(
+                                `${formatMessage({id: 'order_form_table.detail_code'})} (${formatMessage({id: 'storage.supplier'})})`,
+                                formatMessage({id: 'order_form_table.detail_name'}),
+                            ),
+                width:     'auto',
+                key:       'SupplierCodeAndName',
+                render:     (elem)=>{
+                    return (
+                        textToColumn(
+                            elem.tradeCode,
+                            elem.detailName
+                        )
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='storage.ordered' />,
+                key:       'ordered',
+                width:     'auto',
+                children: [
+                    {
+                        title:     <FormattedMessage id='order_form_table.price' />,
+                        key:       'orderedStockPrice',
+                        dataIndex: 'orderedStockPrice',
+                        width:     'auto',
+                        render:     (data, elem)=>{
+                            return (
+                                <InputNumber
+                                    disabled
+                                    value={data}
+                                    style={{
+                                        color: 'black',
+                                    }}
+                                />
+                            )
+                        }
+                    },
+                    {
+                        title:     <FormattedMessage id='order_form_table.count' />,
+                        key:       'orderedQuantity',
+                        dataIndex: 'orderedQuantity',
+                        width:     'auto',
+                        render:     (data, elem)=>{
+                            return (
+                                <InputNumber
+                                    disabled
+                                    value={data}
+                                    style={{
+                                        color: 'black',
+                                    }}
+                                />
+                            )
+                        }
+                    },
+                    {
+                        title:     <FormattedMessage id='order_form_table.sum' />,
+                        key:       'orderedSum',
+                        width:     'auto',
+                        render:     (elem)=>{
+                            return (
+                                <InputNumber
+                                    disabled
+                                    style={{
+                                        color: 'black',
+                                    }}
+                                    value={elem.orderedSum || 0}
+                                />
+                            )
+                        }
+                    },
+                ],
+            },
+            {
+                title:     'Пришло',
+                key:       'income',
+                width:     'auto',
+                children: [
+                    {
+                        title:     <FormattedMessage id='order_form_table.price' />,
+                        key:       'stockPrice',
+                        dataIndex: 'stockPrice',
+                        width:     'auto',
+                        render:     (data, elem)=>{
+                            return (
+                                <InputNumber
+                                    value={data}
+                                    min={0}
+                                    onChange={(value)=>{
+                                        elem.stockPrice = value;
+                                        elem.sum = value * elem.quantity;
+                                        this.setState({update: true});
+                                    }}
+                                />
+                            )
+                        }
+                    },
+                    {
+                        title:     <FormattedMessage id='order_form_table.count' />,
+                        key:       'quantity',
+                        dataIndex: 'quantity',
+                        width:     'auto',
+                        render:     (data, elem)=>{
+                            return (
+                                <InputNumber
+                                    value={data}
+                                    min={0}
+                                    onChange={(value)=>{
+                                        elem.quantity = value;
+                                        elem.sum = value * elem.stockPrice;
+                                        this.setState({update: true});
+                                    }}
+                                />
+                            )
+                        }
+                    },
+                    {
+                        title:     <FormattedMessage id='order_form_table.sum' />,
+                        key:       'sum',
+                        width:     'auto',
+                        render:     (elem)=>{
+                            return (
+                                <InputNumber
+                                    disabled
+                                    style={{
+                                        color: 'black',
+                                    }}
+                                    value={elem.sum || 0}
+                                />
+                            )
+                        }
+                    },
+                ],
+            },
+            {
+                key:       'switch',
+                width:     'auto',
+                render:     (elem)=>{
+                    return (
+                        <Checkbox
+                            onChange={(value)=>{
+                                elem.checked = value;
+                            }}
+                        />
+                    )
+                }
+            }
         ]
     }
 
     handleOk() {
+        if(this.props.type == ORDER && this.props.documentType == SUPPLIER) {
+            this.props.addDocProduct(this.state.dataSource, true);
+        }
+        else if(this.props.type == ORDER && this.props.documentType == ORDERINCOME) {
+            const result = [];
+            this.state.dataSource.map((elem)=>{
+                if(elem.checked) {
+                    result.push(elem);
+                }
+            })
+            this.props.addDocProduct(result, true);
+        }
         this.handleCancel();
+
     }
 
     handleCancel() {
@@ -1034,39 +1474,126 @@ class AutomaticOrderCreationModal extends React.Component {
         });
     }
 
+    fetchData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        if(this.props.type == ORDER && this.props.documentType == SUPPLIER) {
+            let url = __API_URL__ + `/store_orders/recommended_products?businessSupplierId=${this.props.supplierId}`;
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                },
+            })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log(data);
+                data.map((elem, i)=>{
+                    elem.toOrder = elem.quantity;
+                    elem.key = i;
+                    elem.detailName = elem.name;
+                    elem.detailCode = elem.code;
+                    elem.sum = elem.quantity * elem.stockPrice;
+                })
+                that.setState({
+                    dataSource: data,
+                })
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
+        }
+        else if(this.props.type == ORDER && this.props.documentType == ORDERINCOME) {
+            let url = __API_URL__ + `/store_orders/ordered_products?businessSupplierId=${this.props.supplierId}`;
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                },
+            })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log(data);
+                data.map((elem, i)=>{
+                    elem.orderedSum = elem.sum;
+                    elem.orderedStockPrice = elem.stockPrice;
+                    elem.orderedQuantity = elem.quantity;
+                    elem.productId = elem.id;
+                    elem.toOrder = elem.quantity;
+                    elem.brandName = elem.brand.name;
+                    elem.key = i;
+                    elem.detailName = elem.name;
+                    elem.detailCode = elem.code;
+                    elem.sum = elem.quantity * elem.stockPrice;
+                    elem.orderedSum = elem.sum;
+                })
+                that.setState({
+                    dataSource: data,
+                })
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
+        }
+    }
+
+
     render() {
         const { visible, dataSource } = this.state;
         return (
-            <>
-            <Icon
-                type="carry-out"
-                style={headerIconStyle}
-                onClick={()=>{
-                    this.setState({
-                        visible: true,
-                    })
-                }}
-            />
-            <Modal
-                visible={visible}
-                width={'fit-content'}
-                onOk={()=>{
-                    this.handleOk();
-                }}
-                onCancel={()=>{
-                    this.handleCancel();
-                }}
-            >
-                <Table
-                    columns={this.columns}
-                    dataSource={dataSource}
-                    pagination={false}
+            <div>
+                <Icon
+                    type="check-circle"
+                    style={headerIconStyle}
+                    onClick={()=>{
+                        this.fetchData();
+                        this.setState({
+                            visible: true,
+                        })
+                    }}
                 />
-            </Modal>
-            </>
+                <Modal
+                    visible={visible}
+                    width={'fit-content'}
+                    onOk={()=>{
+                        this.handleOk();
+                    }}
+                    onCancel={()=>{
+                        this.handleCancel();
+                    }}
+                >
+                    <Table
+                        columns={
+                            this.props.type == ORDER && this.props.documentType == SUPPLIER ? 
+                            this.orderColumns : 
+                            this.incomeColumns
+                        }
+                        dataSource={dataSource}
+                        pagination={{pageSize: 6}}
+                    />
+                </Modal>
+            </div>
         );
     }
 }
+
+
 
 function textToColumn(textFirst, textSecond) {
     return ( 
