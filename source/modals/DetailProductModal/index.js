@@ -1209,13 +1209,12 @@ class VinCodeModal extends Component{
     }
 
     onImgLoad({target:img}) {
-        console.log(img.naturalHeight, img.naturalWidth)
+        if(this.state.images.length) {
+            this.state.images[this.state.images.length-1].height = img.naturalHeight;
+            this.state.images[this.state.images.length-1].width = img.naturalWidth;
+        }
         this.setState({
-            image:{
-                ...this.state.image,
-                height: img.naturalHeight,
-                width: img.naturalWidth
-            }
+            update: true,
         });
     }
 
@@ -1285,25 +1284,11 @@ class VinCodeModal extends Component{
             .then(function (response) {
                 return response.json()
             })
-            .then(function ({data}) {
+            .then(function (data) {
                 console.log(data);
                 if(data) {
-                    const { catalog, ssd, vehicleid } = data[0].response.FindVehicle.response.FindVehicle[0].row[0].$;
-                    const categoriesArray = [];
-                    data.map((elem)=>{
-                        //categoriesArray = categoriesArray.concat(elem.response.ListQuickDetail[0].Category);
-                        elem.response.ListQuickDetail[0].Category.map((cat)=>{
-                            cat.Unit.map((unit)=>{
-                                if(categoriesArray.findIndex((currCat)=>currCat.Unit[0].code == unit.$.code) < 0) {
-                                    categoriesArray.push({
-                                        $: cat.$,
-                                        Unit: [unit],
-                                    });
-                                }
-                            })
-                            
-                        })
-                    })
+                    const { catalog, ssd, vehicleid } = data.vehicle;
+                    const categoriesArray = data.categories;
                     const normalizedCategories = [];
 
                     if(categoriesArray.length) {
@@ -1311,13 +1296,9 @@ class VinCodeModal extends Component{
                             normalizedCategories.push({
                                 catalog: catalog,
                                 vehicleId: vehicleid,
-                                ...elem.$,
-                                units: elem.Unit,
-                                unit: {...elem.Unit[0].$},
-                                detail: {
-                                    ...elem.Unit[0].Detail[0].$,
-                                    attribute: elem.Unit[0].Detail[0].attribute.map((attr)=>attr.$),
-                                }
+                                ssd: ssd,
+                                ...elem,
+                                unit: {...elem.units[0]},
                             });
                         })
                     }
@@ -1683,7 +1664,6 @@ class VinCodeModal extends Component{
                     categoryMode && !itemsListEmpty ? 
                     <div className={Styles.categoryList}>
                         {categories.map((category, key)=>{
-                            const detail = category.detail;
                             return category.emptyElement ? <div className={Styles.emptyItem} style={{pointerEvents: 'none'}}></div> : (
                             <div
                                 className={Styles.categoryItem}
