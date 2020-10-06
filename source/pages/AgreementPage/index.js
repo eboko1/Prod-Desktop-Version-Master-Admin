@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Switch, Button, Icon, Input, Modal } from 'antd';
+import { getLocale, setLocale } from 'utils';
 
 // proj
 import {Layout, Spinner, MobileView, ResponsiveView, StyledButton} from 'commons';
@@ -120,6 +121,13 @@ class AgreementPage extends Component {
         const urlParams = new URLSearchParams(queryString);
         this.sessionId = urlParams.get('sessionId');
         this.lang = urlParams.get('lang');
+        var localeLang = getLocale();
+        if(localeLang == 'uk') localeLang = 'ua';
+        console.log(localeLang, this.lang);
+        if(localeLang != this.lang) {
+            setLocale(this.lang);
+            window.location.reload();
+        }
         getAgreementData(this.sessionId, this.lang, this.updateData);
     }
 
