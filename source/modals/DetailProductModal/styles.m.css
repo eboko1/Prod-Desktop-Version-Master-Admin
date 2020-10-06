@@ -79,16 +79,18 @@
 }
 
 .emptyItem {
-    width: 31%;
-    min-width: 280px;
+    width: 19%;
     margin-bottom: 2%;
 }
 
 .categoryItem {
-    width: 31%;
-    min-width: 280px;
+    width: 19%;
     margin-bottom: 2%;
     box-shadow: 0 0 1px 0px black;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
 
     &:hover {
         /*border: 1px solid var(--text2);*/
