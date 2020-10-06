@@ -194,6 +194,7 @@ class OilModal extends React.Component{
                             allowClear
                             showSearch
                             placeholder='SAE'
+                            defaultValue={this.props.oilModalData && this.props.oilModalData.sae ? this.props.oilModalData.sae : undefined}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             style={{
                                 minWidth: 100
@@ -238,6 +239,7 @@ class OilModal extends React.Component{
                             allowClear
                             showSearch
                             placeholder='ACEA'
+                            defaultValue={this.props.oilModalData && this.props.oilModalData.acea ? this.props.oilModalData.acea : undefined}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             style={{
                                 minWidth: 100
@@ -259,6 +261,7 @@ class OilModal extends React.Component{
                             allowClear
                             showSearch
                             placeholder='API'
+                            defaultValue={this.props.oilModalData && this.props.oilModalData.api ? this.props.oilModalData.api : undefined}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             style={{
                                 minWidth: 100
@@ -512,6 +515,7 @@ class OilModal extends React.Component{
             this.setState({
                 oemFilter: this.props.oilModalData.oem,
                 oeCodeFilter: oeCodeTmp,
+                aceaFilter: this.props.oilModalData.acea,
                 apiFilter: this.props.oilModalData.api,
                 saeFilter: this.props.oilModalData.sae,
                 visible: true,
