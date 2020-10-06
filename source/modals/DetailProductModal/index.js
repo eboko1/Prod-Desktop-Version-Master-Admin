@@ -1401,7 +1401,7 @@ class VinCodeModal extends Component{
                         that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
                     }
                     else {
-                        for (var i = 0; i < normalizedCategories.length % 3; i++) {
+                        for (var i = 0; i < normalizedCategories.length % 5; i++) {
                             normalizedCategories.push({
                                 emptyElement: true,
                             })
@@ -1544,7 +1544,7 @@ class VinCodeModal extends Component{
                     that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
                 }
                 else {
-                    for (var i = 0; i < normalizedCategories.length % 3; i++) {
+                    for (var i = 0; i < normalizedCategories.length % 5; i++) {
                         normalizedCategories.push({
                             emptyElement: true,
                         })
