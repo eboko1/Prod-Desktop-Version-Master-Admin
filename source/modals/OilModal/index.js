@@ -412,6 +412,16 @@ class OilModal extends React.Component{
                 key:       'salePrice',
                 dataIndex: 'salePrice',
                 width:     '8%',
+                sorter: (a, b) => {
+                    if(!this.state.inStock) {
+                        this.setState({
+                            inStock: true,
+                        })
+                    }
+                    if(!b.salePrice) return -1;
+                    return Number(a.salePrice) - Number(b.salePrice);
+                },
+                sortDirections: ['descend', 'ascend'],
                 render: (data) => {
                     let strVal = String(Math.round(data*10)/10);
                     return (
@@ -422,7 +432,7 @@ class OilModal extends React.Component{
             {
                 title:  ()=>{
                     return (
-                        <div>
+                        <div> 
                             <FormattedMessage id="order_form_table.store" />
                             <div style={{fontWeight: '400', fontSize: 12}}>
                                 В наличии
