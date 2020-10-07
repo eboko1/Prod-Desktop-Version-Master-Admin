@@ -101,28 +101,28 @@ export class OrderForm extends React.PureComponent {
                 Authorization: token,
             },
         })
-            .then(function(response) {
-                if (response.status !== 200) {
-                    return Promise.reject(new Error(response.statusText));
-                }
-                return Promise.resolve(response);
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                data.labors.map((elem, index) => {
-                    elem.key = index;
-                    elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
-                });
-                that.labors = data.labors;
-                that.setState({
-                    labors: data.labors,
-                });
-            })
-            .catch(function(error) {
-                console.log("error", error);
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            data.labors.map((elem, index) => {
+                elem.key = index;
+                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
             });
+            that.labors = data.labors;
+            that.setState({
+                labors: data.labors,
+            });
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
 
         url = __API_URL__ + `/store_groups`;
         fetch(url, {
@@ -131,36 +131,34 @@ export class OrderForm extends React.PureComponent {
                 Authorization: token,
             },
         })
-            .then(function(response) {
-                if (response.status !== 200) {
-                    return Promise.reject(new Error(response.statusText));
-                }
-                return Promise.resolve(response);
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                data.map((elem, index) => {
-                    elem.key = index;
-                });
-                that.details = data;
-                that.setState({
-                    details: data,
-                });
-            })
-            .catch(function(error) {
-                console.log("error", error);
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            data.map((elem, index) => {
+                elem.key = index;
             });
-
-        this;
+            that.details = data;
+            that.setState({
+                details: data,
+            });
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
     };
 
     _reloadOrderForm() {
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
         let url = API_URL;
-        let params = `/orders/${this.props.orderId}/labors`;
+        let params = `/orders/${this.props.orderId}`;
         url += params;
         fetch(url, {
             method: "GET",
@@ -178,37 +176,10 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
-                (that.orderServices = data.labors),
-                    that.setState({
-                        update: true,
-                    });
-            })
-            .catch(function(error) {
-                console.log("error", error);
-            });
-
-        params = `/orders/${this.props.orderId}/details`;
-        url = API_URL + params;
-        fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: token,
-            },
-        })
-            .then(function(response) {
-                if (response.status !== 200) {
-                    return Promise.reject(new Error(response.statusText));
-                }
-                return Promise.resolve(response);
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                (that.orderDetails = data.details),
-                    that.setState({
-                        orderDetails: data.details,
-                    });
+                that.orderServices = data.orderServices;
+                that.orderDetails = data.orderDetails;
+                
+                that.forceUpdate();
             })
             .catch(function(error) {
                 console.log("error", error);
@@ -282,7 +253,7 @@ export class OrderForm extends React.PureComponent {
     componentDidMount() {
         // TODO in order to fix late getFieldDecorator invoke for services
         this._isMounted = true;
-        if (!this.labors || (!this.details && this._isMounted)) {
+        if ((!this.labors || !this.details) && this._isMounted) {
             this._fetchLaborsAndDetails();
         }
         this.setState({ initialized: true });
@@ -417,6 +388,7 @@ export class OrderForm extends React.PureComponent {
             user,
             location,
             errors,
+
         } = this.props;
 
         const formFieldsValues = form.getFieldsValue();
@@ -682,6 +654,10 @@ export class OrderForm extends React.PureComponent {
             setStoreProductsSearchQuery,
 
             normHourPrice,
+
+            showOilModal,
+            oilModalData,
+            clearOilData,
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
@@ -778,6 +754,10 @@ export class OrderForm extends React.PureComponent {
                 fetchRecommendedPrice={this.props.fetchRecommendedPrice}
                 reloadOrderPageComponents={this.props.reloadOrderPageComponents}
                 reloadOrderForm={this._reloadOrderForm}
+                clientVehicleVin={this.props.order.clientVehicleVin}
+                showOilModal= { showOilModal }
+                oilModalData = { oilModalData }
+                clearOilData = { clearOilData }
             />
         );
     };

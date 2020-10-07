@@ -1229,8 +1229,10 @@ class DiagnosticTable extends Component {
                 rowsCount:  key,
             });
         }
-        this.forceUpdate();
-        this.setRowsColor();
+        //this.setRowsColor();
+        this.setState({
+            update: true,
+        })
     }
 
     setPhoto(photo, groupId, partId) {
@@ -1286,12 +1288,8 @@ class DiagnosticTable extends Component {
         if (!this.props.forbidden) {
             this._isMounted = true;
             this.getCurrentDiagnostic();
-            this.setRowsColor();
+            //this.setRowsColor();
         }
-    }
-
-    componentDidUpdate() {
-        //this.setRowsColor();
     }
 
     componentWillUnmount() {
@@ -1301,7 +1299,6 @@ class DiagnosticTable extends Component {
     render() {
         const disabled = this.props.disabled;
         const columns = this.columns;
-
         return (
             <Catcher>
                 <DiagnosticTableHeader
@@ -1332,15 +1329,14 @@ class DiagnosticTable extends Component {
                     details={ this.props.details }
                 />
                 <Table
+                    loading={false}
                     className={
                         !disabled
                             ? Styles.diagnosticTable
                             : Styles.diagnosticTableDisabled
                     }
                     rowClassName={ (elem, i) => {
-                        return elem.disabled
-                            ? Styles.diagnosticTableDisabled
-                            : null;
+                        return `${Styles[`tableRowStatus${elem.status}`]} ${elem.disabled && Styles.diagnosticTableDisabled}`
                     } }
                     dataSource={ this.state.dataSource }
                     columns={ columns }

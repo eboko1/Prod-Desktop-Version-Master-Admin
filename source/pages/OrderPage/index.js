@@ -155,6 +155,7 @@ class OrderPage extends Component {
 
     state = {
         errors: void 0,
+        showOilModal: false,
     };
 
     componentDidMount() {
@@ -183,6 +184,25 @@ class OrderPage extends Component {
         this.props.fetchAddClientForm();
         this.props.setModal(MODALS.ADD_CLIENT);
     };
+
+    _showOilModal = (oem, oeCode, acea, api, sae) => {
+        this.setState({
+            showOilModal: true,
+            oilModalData: {
+                oem: oem,
+                oeCode: oeCode,
+                acea: acea,
+                api: api,
+                sae: sae,
+            }
+        })
+    }
+
+    _clearOilData = () => {
+        this.setState({
+            showOilModal: false,
+        })
+    }
 
     _onStatusChange = (status, redirectStatus, options, redirectTo) => {
         const {allServices, allDetails, selectedClient, history} = this.props;
@@ -454,6 +474,7 @@ class OrderPage extends Component {
 
     /* eslint-disable complexity*/
     render() {
+        const {showOilModal, oilModalData } = this.state;
         const {
             fetchOrderForm,
             fetchOrderTask,
@@ -510,6 +531,7 @@ class OrderPage extends Component {
                         {!isForbidden(user, permissions.ACCESS_TECH_AUTO_DATA_MODAL_WINDOW) ? 
                             <div title={this.props.intl.formatMessage({id: "order-page.tech_info"})}>
                                 <TecDocInfoModal
+                                    showOilModal={this._showOilModal}
                                     isMobile={isMobile}
                                     orderId={ id }
                                     modificationId={this.props.order.clientVehicleTecdocId}
@@ -722,6 +744,9 @@ class OrderPage extends Component {
                         fetchOrderTask={ fetchOrderTask }
                         onStatusChange={ this._onStatusChange }
                         reloadOrderPageComponents = { this.reloadOrderPageComponents }
+                        showOilModal= { showOilModal }
+                        oilModalData = { oilModalData }
+                        clearOilData = { this._clearOilData }
                     />
                 </ResponsiveView>
                 <CancelReasonModal

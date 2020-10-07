@@ -1,12 +1,13 @@
 // vendor
 import React, { Component } from 'react';
-import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox, Spin, Slider } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
-import { DetailStorageModal, DetailSupplierModal } from 'modals';
+import { DetailStorageModal, DetailSupplierModal, OilModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
 // own
 import Styles from './styles.m.css';
+const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
 
@@ -36,6 +37,7 @@ class DetailProductModal extends React.Component{
         this.setCode = this.setCode.bind(this);
         this.setSupplier = this.setSupplier.bind(this);
         this.setComment = this.setComment.bind(this);
+        this.setVinDetail = this.setVinDetail.bind(this);
 
         this.mainTableColumns = [
             {
@@ -74,7 +76,20 @@ class DetailProductModal extends React.Component{
                         />
                     )
                 }
-                
+            },
+            {
+                width: 'auto',
+                key: 'vin',
+                render: (elem)=>{
+                    return (
+                        <VinCodeModal
+                            setVinDetail={this.setVinDetail}
+                            disabled={false}
+                            storeGroupId={elem.storeGroupId}
+                            vin={this.props.clientVehicleVin}
+                        />
+                    )
+                }
             },
             {
                 title:  <FormattedMessage id="order_form_table.detail_name" />,
@@ -84,7 +99,7 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <Input
-                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
+                            disabled={elem.storeGroupId == null && this.state.radioValue == 1}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                             style={{minWidth: 150}}
                             value={data}
@@ -104,13 +119,14 @@ class DetailProductModal extends React.Component{
                 dataIndex: 'comment',
                 width:     '3%',
                 render: (data, elem)=>{
-                    var detail = elem.detailName;
+                    var detail = String(elem.detailName);
+                    console.log(elem)
                     if(detail && detail.indexOf(' - ') > -1) {
                         detail = detail.slice(0, detail.indexOf(' - '));
                     }
                     return (
                         <CommentaryButton
-                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
+                            disabled={elem.storeGroupId == null && (this.state.radioValue != 2 || this.state.radioValue != 4)}
                             commentary={
                                 data || 
                                 {
@@ -143,7 +159,7 @@ class DetailProductModal extends React.Component{
                     return (
                         <Select
                             showSearch
-                            disabled={elem.storeGroupId == null && this.state.radioValue != 2 && this.state.radioValue != 3}
+                            disabled={elem.storeGroupId == null && this.state.radioValue == 1}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
                             value={data ? data : undefined}
                             style={{maxWidth: 180, minWidth: 100}}
@@ -166,6 +182,7 @@ class DetailProductModal extends React.Component{
                                 this.state.mainTableSource[0].sum = undefined;
                                 this.state.mainTableSource[0].brandId = value;
                                 this.state.mainTableSource[0].brandName = option.props.children;
+                                this.state.mainTableSource[0].isFromStock = false;
                                 this.setState({
                                     update: true
                                 })
@@ -210,14 +227,16 @@ class DetailProductModal extends React.Component{
                                 style={{minWidth: 80, color: 'black'}}
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={data}
-                                disabled={elem.storeGroupId == null && this.state.radioValue != 2 && this.state.radioValue != 3}
+                                disabled={elem.storeGroupId == null && this.state.radioValue == 1}
                                 onChange={(event)=>{
                                     this.state.mainTableSource[0].detailCode = event.target.value;
+                                    this.state.mainTableSource[0].isFromStock = false;
                                     this.setState({
                                         update: true
                                     })
                                 }}
                             />
+                            {this.state.radioValue != 4 ?
                             <DetailStorageModal
                                 user={this.props.user}
                                 tableKey={0}
@@ -235,7 +254,20 @@ class DetailProductModal extends React.Component{
                                 codeFilter={elem.detailCode}
                                 brandId={elem.brandId}
                                 defaultBrandName={this.state.defaultBrandName}
-                            />
+                            /> :
+                            <OilModal
+                                brands={this.props.brands}
+                                user={this.props.user}
+                                tableKey={0}
+                                onSelect={this.setCode}
+                                tecdocId={this.props.tecdocId}
+                                storeGroupId={this.state.mainTableSource[0].storeGroupId}
+                                setSupplier={this.setSupplier}
+                                codeFilter={elem.detailCode}
+                                showOilModal={ this.props.showOilModal }
+                                oilModalData={ this.props.oilModalData }
+                                clearOilData={ this.props.clearOilData }
+                            />}
                         </div>
                     )
                 }
@@ -479,6 +511,9 @@ class DetailProductModal extends React.Component{
                         supplierId: element.supplierId,
                         supplierBrandId: element.supplierBrandId,
                         brandName: element.brandName,
+                        supplierOriginalCode: element.supplierOriginalCode,
+                        supplierProductNumber: element.supplierProductNumber,
+                        reservedFromWarehouseId: element.reservedFromWarehouseId || null,
                         purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                         count: element.count ? element.count : 1,
                         price: element.price ? Math.round(element.price*10)/10 : 1,
@@ -497,6 +532,7 @@ class DetailProductModal extends React.Component{
                         purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                         count: element.count ? element.count : 1,
                         price: element.price ? Math.round(element.price*10)/10  : 1,
+                        reservedFromWarehouseId: element.reservedFromWarehouseId || null,
                         comment: element.comment || {
                             comment: undefined,
                             positions: [],
@@ -514,6 +550,7 @@ class DetailProductModal extends React.Component{
                     })
                 }
             });
+            console.log(data)
             this.addDetailsAndLabors(data);
         }
         this.state.radioValue = 1;
@@ -564,6 +601,10 @@ class DetailProductModal extends React.Component{
                     that.state.mainTableSource[0].purchasePrice = purchasePrice;
                     that.state.mainTableSource[0].price = purchasePrice * markup;
                     that.state.mainTableSource[0].count = 1;
+                    that.state.mainTableSource[0].supplierOriginalCode = result.price ? result.price.supplierOriginalCode : undefined;
+                    that.state.mainTableSource[0].supplierProductNumber = result.price ? result.price.supplierProductNumber : undefined;
+                    that.state.mainTableSource[0].isFromStock = result.price ? result.price.isFromStock : undefined;
+                    that.state.mainTableSource[0].reservedFromWarehouseId = result.price ? result.price.defaultWarehouseId : undefined;
                 }
                 that.setState({
                     update: true,
@@ -574,15 +615,17 @@ class DetailProductModal extends React.Component{
         }
     }
 
-    setCode(code, brandId, storeId, key, storeGroupId, storeGroupName) {
+    setCode(code, brandId, storeId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber) {
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         this.state.mainTableSource[key].detailCode = code;
         this.state.mainTableSource[key].brandId = brandId;
         this.state.mainTableSource[key].brandName = brand.brandName;
         this.state.mainTableSource[key].storeId = storeId;
-        if(this.state.radioValue == 3) {
+        this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
+        this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
+        if(this.state.radioValue == 3 || this.state.radioValue == 4) {
             this.state.mainTableSource[key].storeGroupId = storeGroupId;
-            this.state.mainTableSource[key].detailName = storeGroupName;
+            this.state.mainTableSource[key].detailName = String(storeGroupName);
         }
         this.setState({
             update: true
@@ -600,13 +643,41 @@ class DetailProductModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, key) {
+    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId, storeId) {
         this.state.mainTableSource[key].supplierId = supplierId;
         this.state.mainTableSource[key].supplierName = supplierName;
         this.state.mainTableSource[key].supplierBrandId = supplierBrandId;
         this.state.mainTableSource[key].purchasePrice = purchasePrice;
         this.state.mainTableSource[key].price = price;
         this.state.mainTableSource[key].store = store;
+        this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
+        this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
+        this.state.mainTableSource[key].isFromStock = isFromStock;
+        this.state.mainTableSource[key].reservedFromWarehouseId = defaultWarehouseId;
+        this.state.mainTableSource[key].storeId = storeId;
+        this.setState({
+            update: true
+        })
+    }
+
+    setVinDetail(code, name) {
+        this.state.mainTableSource[0].detailName = name;
+        this.state.mainTableSource[0].detailCode = code;
+        this.state.mainTableSource[0].brandName = undefined;
+        this.state.mainTableSource[0].brandId = undefined;
+        this.state.radioValue = 3;
+
+        this.state.mainTableSource[0].supplierId = undefined;
+        this.state.mainTableSource[0].supplierName = undefined;
+        this.state.mainTableSource[0].supplierBrandId = undefined;
+        this.state.mainTableSource[0].purchasePrice = undefined;
+        this.state.mainTableSource[0].price = 0;
+        this.state.mainTableSource[0].count = 1;
+        this.state.mainTableSource[0].store = undefined;
+        this.state.mainTableSource[0].supplierOriginalCode = undefined;
+        this.state.mainTableSource[0].supplierProductNumber = undefined;
+        this.state.mainTableSource[0].reservedFromWarehouseId = undefined;
+
         this.setState({
             update: true
         })
@@ -705,14 +776,19 @@ class DetailProductModal extends React.Component{
         this.fetchData();
     }
 
-    componentDidUpdate(prevState) {
-        if(prevState.visible == false && this.props.visible) {
+    componentDidUpdate(prevProps) {
+        if(prevProps.visible == false && this.props.visible) {
             const editing = Boolean(this.props.detail.storeGroupId);
             this.setState({
                 editing: editing,
                 mainTableSource: [{...this.props.detail}],
             })
             this.getDefaultValues(this.props.detail.storeGroupId);
+        }
+        if(!prevProps.showOilModal && this.props.showOilModal) {
+            this.setState({
+                radioValue: 4,
+            })
         }
     }
 
@@ -739,12 +815,14 @@ class DetailProductModal extends React.Component{
                         <Radio value={1}><FormattedMessage id="details_table.selection_by_car"/></Radio>
                         <Radio value={2}><FormattedMessage id="details_table.direct_editing"/></Radio>
                         <Radio value={3}><FormattedMessage id="details_table.selection_by_product_code"/></Radio>
-                        <Radio value={4} disabled><FormattedMessage id="details_table.oils_and_liquids"/></Radio>
+                        <Radio value={4}><FormattedMessage id="details_table.oils_and_liquids"/></Radio>
                     </Radio.Group>
                     </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
-                            <div style={{display: 'block'}}><FormattedMessage id="order_form_table.diagnostic.detail"/></div>
+                            <div style={{display: 'block'}}>
+                                <FormattedMessage id="order_form_table.diagnostic.detail"/>
+                            </div>
                         </div>
                         <Table
                             dataSource={this.state.mainTableSource}
@@ -1013,5 +1091,829 @@ class CommentaryButton extends React.Component{
                 </Modal>
             </div>
         );
+    }
+}
+
+class VinCodeModal extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            categoryMode: false,
+            categories: [],
+            visible: false,
+            loading: false,
+            zoomed: false,
+            itemsInfo: [],
+            blockPositions: [],
+            tableHoverCode: undefined,
+            imgHoverCode: undefined,
+            imgHoverIndex: undefined,
+            checkedCodes: [],
+            infoModalVisible: false,
+            infoItem: undefined,
+            images: [],
+            image: undefined,
+            itemsListEmpty: false,
+            zoomMultiplier: 0.75,
+            allCategories: [],
+            imgSearch: "",
+        };
+        this.showInfoModal = this.showInfoModal.bind(this);
+        this.onImgLoad = this.onImgLoad.bind(this);
+
+        this.columns = [
+            {
+                title:     '№',
+                key:       'key',
+                dataIndex: 'key',
+                width:     'auto',
+                render: (data, elem)=>{
+                    const itemsInfo = this.state.itemsInfo.length ? this.state.itemsInfo[this.state.itemsInfo.length-1] : [];
+                    const isVariant = itemsInfo.findIndex((item)=>item.key == elem.key || item.codeonimage == elem.codeonimage) != elem.key;
+                    return !isVariant || !elem.codeonimage ? (
+                        elem.codeonimage || data + 1
+                    ) : (
+                        <span
+                            style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                            }}
+                        >
+                            {'Var.'}
+                        </span>
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id="order_form_table.detail_code" />,
+                key:       'oem',
+                dataIndex: 'oem',
+                width:     'auto',
+                render: (data, elem)=>{
+                    return (
+                        data
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id="order_form_table.detail_name" />,
+                key:       'name',
+                dataIndex: 'name',
+                width:     'auto',
+                render: (data, elem)=>{
+                    return (
+                        data
+                    )
+                }
+            },
+            {
+                key:       'action',
+                width:     'auto',
+                className: Styles.infoActionButtonCol,
+                render: (elem)=>{
+                    var title = '';
+                    if(elem.attributes && elem.attributes.length) {
+                        elem.attributes.map((attr)=>{
+                            title += `${attr.name}: ${attr.value}\n`
+                        })
+                    }
+                    return (
+                        <Icon
+                            title={title}
+                            type="question-circle"
+                            style={{
+                                fontSize: 18,
+                                pointerEvents: 'all',
+                            }}
+                            onClick={()=>this.showInfoModal(elem.name, elem.attributes, elem.codeonimage)}
+                        />
+                    )
+                }
+            },
+        ]
+    }
+
+    showInfoModal(name, attributes, code = -1) {
+        this.setState({
+            infoItem: {
+                name: name,
+                body: attributes.map((attr, i)=>
+                    <p
+                        key={i}
+                    >
+                        <b>{attr.name}:</b> {attr.value}
+                    </p>
+                )
+            },
+            infoModalVisible: true,
+        })
+    }
+
+    onImgLoad({target:img}) {
+        if(this.state.images.length) {
+            this.state.images[this.state.images.length-1].height = img.naturalHeight;
+            this.state.images[this.state.images.length-1].width = img.naturalWidth;
+        }
+        this.setState({
+            update: true,
+        });
+    }
+
+
+    handleOk = () => {
+        const { checkedCodes } = this.state;
+        const itemsInfo = this.state.itemsInfo.length ? this.state.itemsInfo[this.state.itemsInfo.length-1] : [];
+        const selectedItem = itemsInfo.find((item)=>item.codeonimage == checkedCodes[0]);
+        console.log(selectedItem);
+        if(selectedItem) this.props.setVinDetail(selectedItem.oem, selectedItem.name);
+        this.handleCancel();
+    }
+
+    handleCancel = () => {
+        this.setState({
+            visible: false,
+            zoomed: false,
+            loading: false,
+            categoryMode: false,
+            zoomMultiplier: 0.75,
+        })
+    }
+
+    handleBack = () => {
+        if(this.state.categoryMode && !this.props.storeGroupId) {
+            this.setState({
+                categories: this.state.allCategories,
+                categoryMode: true,
+            })
+        }
+        else {
+            if(this.state.itemsInfo.length > 1) {
+                const itemsInfo = this.state.itemsInfo.pop();
+                const blockPositions = this.state.blockPositions.pop();
+                const images = this.state.images.pop();
+                this.setState({
+                    itemsInfo: itemsInfo,
+                    blockPositions: blockPositions,
+                    images: images,
+                })
+            }
+            else {
+                this.setState({
+                    categoryMode: true,
+                })
+            }
+        }
+    }
+
+    fetchData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        if(this.props.storeGroupId) {
+            let url =  __API_URL__ + `/vin/list_quick_detail?vin=${this.props.vin}&storeGroupId=${this.props.storeGroupId}`;
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                }
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText))
+                }
+                return Promise.resolve(response)
+            })
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function (data) {
+                console.log(data);
+                if(data) {
+                    const { catalog, ssd, vehicleid } = data.vehicle;
+                    const categoriesArray = data.categories;
+                    const normalizedCategories = [];
+
+                    if(categoriesArray.length) {
+                        categoriesArray.map((elem)=>{
+                            if(elem.units.length == 1) {
+                                elem.name = elem.units[0].name;
+                                normalizedCategories.push({
+                                    catalog: catalog,
+                                    vehicleId: vehicleid,
+                                    ssd: ssd,
+                                    ...elem,
+                                    unit: {...elem.units[0]},
+                                });
+                            }
+                            else {
+                                elem.units.map((unit)=>{
+                                    elem.name = unit.name;
+                                    normalizedCategories.push({
+                                        catalog: catalog,
+                                        vehicleId: vehicleid,
+                                        ssd: ssd,
+                                        ...elem,
+                                        unit: unit,
+                                    });
+                                })
+                            }
+                            
+                        })
+                    }
+                    console.log(normalizedCategories)
+                    if(normalizedCategories.length == 1) {
+                        that.setState({
+                            loading: false,
+                            categoryMode: false,
+                            categories: normalizedCategories,
+                        })
+                        that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
+                    }
+                    else {
+                        for (var i = 0; i < normalizedCategories.length % 3; i++) {
+                            normalizedCategories.push({
+                                emptyElement: true,
+                            })
+                        }
+
+                        console.log(normalizedCategories);
+                        that.setState({
+                            loading: false,
+                            categoryMode: normalizedCategories.length,
+                            categories: normalizedCategories,
+                        })
+                    }
+                }
+                else {
+                    that.setState({
+                        loading: false,
+                        itemsListEmpty: true,
+                    })
+                }
+            })
+            .catch(function (error) {
+                console.log('error', error);
+                that.setState({
+                    loading: false,
+                    itemsListEmpty: true,
+                })
+            })
+        }
+        else {
+            let url =  __API_URL__ + `/vin/categories?vin=${this.props.vin}`;
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                }
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText))
+                }
+                return Promise.resolve(response)
+            })
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function ({data}) {
+                console.log(data);
+                if(data) {
+                    const { catalog, ssd, vehicleid } = data.response.FindVehicle.response.FindVehicle[0].row[0].$;
+                    const categoriesArray = data.response.ListCategories[0].row;
+                    const normalizedCategories = [];
+
+                    if(categoriesArray.length) {
+                        categoriesArray.map((elem)=>{
+                            normalizedCategories.push({
+                                catalog: catalog,
+                                vehicleId: vehicleid,
+                                ...elem.$,
+                                unit: {...elem.$},
+                            });
+                        })
+                    }
+                    console.log(normalizedCategories)
+                    if(normalizedCategories.length == 1) {
+                        that.setState({
+                            loading: false,
+                            categoryMode: false,
+                            categories: normalizedCategories,
+                        })
+                        that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
+                    }
+                    else {
+                        for (var i = 0; i < normalizedCategories.length % 5; i++) {
+                            normalizedCategories.push({
+                                emptyElement: true,
+                            })
+                        }
+
+                        console.log(normalizedCategories);
+                        that.setState({
+                            loading: false,
+                            categoryMode: normalizedCategories.length,
+                            categories: normalizedCategories,
+                            allCategories: normalizedCategories,
+                        })
+                    }
+                }
+                else {
+                    that.setState({
+                        loading: false,
+                        itemsListEmpty: true,
+                    })
+                }
+            })
+            .catch(function (error) {
+                console.log('error', error);
+                that.setState({
+                    loading: false,
+                    itemsListEmpty: true,
+                })
+            })
+        }
+    }
+
+    fetchItemsList(ssd, unitId, catalog) {
+        this.setState({
+            loading: true,
+        })
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url =  __API_URL__ +`/vin/list_detail_by_unit_id?ssd=${ssd}`+
+                                `&unitId=${unitId}&catalog=${catalog}`;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function ({data}) {
+            console.log(data.response);
+            const itemsInfo = [];
+            const blockPositions = [];
+            const image = data.response.GetUnitInfo[0].row[0].$;
+            data.response.ListDetailsByUnit[0].row.map(({$: item, attribute}, key)=>{
+                itemsInfo.push({
+                    key: key,
+                    ...item,
+                    attributes: attribute.map((attr)=>attr.$),
+                })
+            });
+            data.response.ListImageMapByUnit[0].row.map(({$: position}, key)=>{
+                blockPositions.push({
+                    ...position,
+                    key: key,
+                });
+            })
+
+            console.log(itemsInfo, blockPositions, image);
+            that.setState({
+                loading: false,
+                images: [image],
+                itemsInfo: [itemsInfo],
+                blockPositions: [blockPositions],
+                categoryMode: false,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error);
+            that.setState({
+                loading: false,
+                itemsInfo: [],
+                blockPositions: [],
+                categoryMode: false,
+            })
+        })
+    }
+
+    fetchCategoryItemsList(ssd, catalog, categoryid, vehicleId) {
+        this.setState({
+            loading: true,
+        })
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url =  __API_URL__ + `/vin/list_units?catalog=${catalog}&vehicleid=${vehicleId}&categoryId=${categoryid}&ssd=${ssd}`
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function ({data}) {
+
+            console.log(data);
+            if(data) {
+                const categoriesArray = data.response.ListUnits[0].row;
+                const normalizedCategories = [];
+
+                if(categoriesArray.length) {
+                    categoriesArray.map((elem)=>{
+                        normalizedCategories.push({
+                            catalog: catalog,
+                            vehicleId: vehicleId,
+                            ...elem.$,
+                            unit: {...elem.$},
+                        });
+                    })
+                }
+                console.log(normalizedCategories)
+                if(normalizedCategories.length == 1) {
+                    that.setState({
+                        loading: false,
+                        categoryMode: false,
+                        categories: normalizedCategories,
+                    })
+                    that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
+                }
+                else {
+                    for (var i = 0; i < normalizedCategories.length % 5; i++) {
+                        normalizedCategories.push({
+                            emptyElement: true,
+                        })
+                    }
+
+                    console.log(normalizedCategories);
+                    that.setState({
+                        loading: false,
+                        categoryMode: normalizedCategories.length,
+                        categories: normalizedCategories,
+                    })
+                }
+            }
+            else {
+                that.setState({
+                    loading: false,
+                    itemsListEmpty: true,
+                })
+            }
+        })
+        .catch(function (error) {
+            console.log('error', error);
+            that.setState({
+                loading: false,
+                itemsInfo: [],
+                blockPositions: [],
+                categoryMode: true,
+            })
+        })
+    }
+
+    searchImage(code) {
+        this.setState({
+            loading: true,
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(!prevState.visible && this.state.visible) {
+            this.setState({
+                loading: true,
+            })
+            this.fetchData()
+        }
+    }
+
+    render() {
+        const { disabled } = this.props;
+        const {
+            visible,
+            zoomed,
+            positions,
+            tableHoverCode,
+            imgHoverCode,
+            imgHoverIndex,
+            checkedCodes,
+            infoItem,
+            infoModalVisible,
+            loading,
+            categories,
+            categoryMode,
+            images,
+            itemsListEmpty,
+            zoomMultiplier,
+            allCategories,
+            imgSearch,
+        } = this.state;
+
+        const itemsInfo = this.state.itemsInfo.length ? this.state.itemsInfo[this.state.itemsInfo.length-1] : [];
+        const blockPositions = this.state.blockPositions.length ? this.state.blockPositions[this.state.blockPositions.length-1] : [];
+        const image = this.state.images.length ? this.state.images[this.state.images.length-1] : undefined;
+
+        return (
+            <>
+                <Button
+                    type='primary'
+                    disabled={disabled}
+                    onClick={()=>{
+                        this.setState({
+                            visible: true,
+                        })
+                    }}
+                >
+                    VIN
+                </Button>
+                <Modal
+                    width='fit-content'
+                    style={{
+                        maxWidth: '90%',
+                        minWidth: '70%'
+                    }}
+                    visible={visible}
+                    title={<FormattedMessage id='add_order_form.vin'/>}
+                    footer={null}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                >
+                    {!loading && (!categoryMode || !this.props.storeGroupId && allCategories && allCategories != categories) &&
+                        <div 
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'flex-end',
+                                margin: '-16px 0 8px 0'
+                            }}
+                        >
+                            <div
+                                style={{display: 'none'}}
+                            >
+                                <Input 
+                                    onChange={(event)=>{
+                                        this.setState({
+                                            imgSearch: event.target.value,
+                                        })
+                                    }}
+                                />
+                                <Button
+                                    onClick={()=>{
+                                        this.searchImage(imgSearch);
+                                    }}
+                                >
+                                    <FormattedMessage id='back' />
+                                </Button>
+                            </div>
+                            <Button key="back" onClick={this.handleBack}>
+                                <FormattedMessage id='step_back'/>
+                            </Button>
+                            <Button key="submit" type="primary" onClick={this.handleOk} style={{marginLeft: 10}}>
+                                <FormattedMessage id='select'/>
+                            </Button>
+                        </div>
+                    }
+                    {loading ? <Spin indicator={spinIcon} /> :
+                    categoryMode && !itemsListEmpty ? 
+                    <div className={Styles.categoryList}>
+                        {categories.map((category, key)=>{
+                            return category.emptyElement ? <div className={Styles.emptyItem} style={{pointerEvents: 'none'}}></div> : (
+                            <div
+                                className={Styles.categoryItem}
+                                key={key}
+                                onClick={()=>{
+                                    if(category.unit.imageurl)
+                                        this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog);
+                                    else 
+                                        this.fetchCategoryItemsList(category.ssd, category.catalog, category.categoryid, category.vehicleId)
+                                }}
+                            >
+                            {category.unit.imageurl &&
+                                <img
+                                    title={category.unit.name}
+                                    src={category.unit.imageurl.replace('%size%', 'source')}
+                                    style={{
+                                        cursor: 'pointer',
+                                        width: '100%'
+                                    }}
+                                    onClick={()=>{
+                                        this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog)
+                                    }}
+                                />}
+                                <div
+                                    className={Styles.categoryName}
+                                >
+                                    {category.name}
+                                </div>
+                            </div>)})
+                        }
+                    </div> : 
+                    !itemsListEmpty ? <>
+                    <div
+                        className={Styles.categoryTitle}
+                    >
+                        {image && image.name}
+                    </div>
+                    <div className={Styles.vinModal}>
+                        <div className={Styles.imgWrap}>
+                            <div className={Styles.zoomActionBlock}>
+                                <Icon
+                                    type={zoomed ? 'zoom-out' : 'zoom-in'}
+                                    style={{
+                                        fontSize: 24,
+                                        zIndex: 9999,
+                                    }}
+                                    onClick={()=>{
+                                        this.setState({
+                                            zoomed: !zoomed,
+                                        })
+                                    }}
+                                />
+                                <Icon
+                                    type='minus'
+                                    style={{
+                                        marginLeft: 15,
+                                    }}
+                                />
+                                <Slider
+                                    dots
+                                    value={zoomMultiplier}
+                                    step={0.1}
+                                    min={0.25}
+                                    max={2}
+                                    style={{
+                                        minWidth: 200,
+                                    }}
+                                    onChange={(value)=>{
+                                        this.setState({zoomMultiplier: value})
+                                    }}
+                                />
+                                <Icon type='plus'/>
+                            </div>
+                            <div
+                                className={Styles.zoomBlock}
+                                style={{
+                                    width: `${100*zoomMultiplier}%`
+                                }}
+                            >
+                                {blockPositions.map((item, key)=>{
+                                    const code = item.code;
+                                    const title = itemsInfo.find((elem)=>elem.codeonimage == code) ? itemsInfo.find((elem)=>elem.codeonimage == code).name : "";
+                                    const isHovered =  imgHoverCode == code || imgHoverIndex == key;
+                                    const isChecked = checkedCodes.indexOf(code) >= 0;
+                                    return (
+                                        <div
+                                            className={`${Styles.zoomBlockItem} ${isHovered && Styles.hoveredItem} ${isChecked && Styles.checkedItem}`}
+                                            key={key}
+                                            style={{
+                                                left: `${(item.x1 / image.width)*100}%`,
+                                                top: `${(item.y1 / image.height)*100}%`,
+                                                width: `${((item.x2-item.x1) / image.width)*100}%`,
+                                                height: `${((item.y2-item.y1) / image.height)*100}%`,
+                                            }}
+                                            title={title}
+                                            onMouseEnter={(event)=>{
+                                                this.setState({
+                                                    tableHoverCode: code,
+                                                    imgHoverIndex: key,
+                                                })
+                                            }}
+                                            onMouseLeave={(event)=>{
+                                                this.setState({
+                                                    tableHoverCode: undefined,
+                                                    imgHoverIndex: undefined,
+                                                })
+                                            }}
+                                            onClick={(event)=>{
+                                                if(event.ctrlKey) {
+                                                    if(!isChecked) {
+                                                        checkedCodes.push(code);
+                                                        this.setState({
+                                                            update: true,
+                                                        })
+                                                    }
+                                                    else {
+                                                        this.setState({
+                                                            checkedCodes: checkedCodes.filter((index)=>index!=code),
+                                                        })
+                                                    }
+                                                }
+                                                else {
+                                                    this.setState({
+                                                        checkedCodes: [code],
+                                                    })
+                                                }
+                                                
+                                            }}
+                                        >
+                                        </div>
+                                    )
+                                })}
+                                <img
+                                    width={`${100}%`}
+                                    src={`${image && image.imageurl.replace('%size%', 'source')}`}
+                                    onLoad={this.onImgLoad}
+                                />
+                                <Modal
+                                    visible={zoomed}
+                                    title={image && image.name.toUpperCase()}
+                                    footer={[]}
+                                    width={'85%'}
+                                    onCancel={()=>{
+                                        this.setState({
+                                            zoomed: false,
+                                        })
+                                    }}
+                                >
+                                    <img
+                                        width='100%'
+                                        src={`${image && image.imageurl.replace('%size%', 'source')}`}
+                                    />
+                                </Modal>
+                            </div>
+                        </div>
+                        <div className={Styles.listWrap}>
+                            <Table
+                                bordered
+                                loading={loading}
+                                columns={this.columns}
+                                dataSource={itemsInfo}
+                                rowClassName={(record, rowIndex)=>{
+                                    const code = record.codeonimage;
+                                    const isHovered = tableHoverCode == code;
+                                    const isChecked = checkedCodes.indexOf(code) >= 0;
+                                    return `${Styles.listTableRow} ${isHovered && Styles.tableRowHovered} ${isChecked && Styles.checkedRow}`
+                                }}
+                                onRow={(record, rowIndex) => {
+                                    const code = record.codeonimage;
+                                    return {
+                                      onClick: event => {
+                                        if(event.ctrlKey) {
+                                            const isChecked = checkedCodes.indexOf(code) >= 0;
+                                            if(!isChecked) {
+                                                checkedCodes.push(code);
+                                                this.setState({
+                                                    update: true,
+                                                })
+                                            }
+                                            else {
+                                                this.setState({
+                                                    checkedCodes: checkedCodes.filter((index)=>index!=code),
+                                                })
+                                            }
+                                        }
+                                        else {
+                                            this.setState({
+                                                checkedCodes: [code],
+                                            })
+                                        }
+                                      },
+                                      onMouseEnter: event => {
+                                        this.setState({
+                                            imgHoverCode: code,
+                                        })
+                                      },
+                                      onMouseLeave: event => {
+                                        this.setState({
+                                            imgHoverCode: undefined,
+                                        })
+                                      },
+                                    };
+                                }}
+                                pagination={false}
+                            />
+                        </div>
+                    </div>
+                    <div
+                        style={{
+                            display: 'none',
+                            textAlign: 'end',
+                            fontSize: 12,
+                            color: 'var(--text2)',
+                        }}
+                    >
+                        <i style={{color: 'var(--required)'}}>* </i>Ctrl + click to select multiple item
+                    </div>
+                    </> :
+                    <FormattedMessage id='no_data' />}
+                    <Modal
+                        visible={infoModalVisible}
+                        title={infoItem && infoItem.name.toUpperCase()}
+                        footer={[]}
+                        onCancel={()=>{
+                            this.setState({
+                                infoModalVisible: false,
+                            })
+                        }}
+                    >
+                        {infoItem && infoItem.body}
+                    </Modal>
+                </Modal>
+            </>
+        )
     }
 }

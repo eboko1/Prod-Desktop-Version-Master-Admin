@@ -72,37 +72,15 @@ class TecDocInfoModal extends React.Component{
 
         this.columnsTypeA = [...this.columnsTypeB, 
             {
-                title:     <FormattedMessage id="order_form_table.count" />,
-                key:       'count',
-                dataIndex: 'count',
-                width:     '5%',
-                render:    (data, elem)=>{
-                    return (
-                       <InputNumber
-                            disabled
-                            min={0}
-                            step={1}
-                            value={data}
-                            onChange={(value)=>{
-                                elem.count = value;
-                                this.setState({
-                                    update: true,
-                                })
-                            }}
-                       />
-                    )
-                }
-                
-            },
-            {
                 key:       'select',
-                width:     '5%',
-                render:    ()=>{
+                width:     'auto',
+                render:    (elem)=>{
                     return (
                         <Button
-                            disabled
                             type='primary'
                             onClick={()=>{
+                                console.log(elem);
+                                if(this.props.showOilModal) this.props.showOilModal(elem.oem[0], elem.oeCode, elem.acea, elem.api, elem.sae);
                                 this.handleCancel();
                             }}
                         >

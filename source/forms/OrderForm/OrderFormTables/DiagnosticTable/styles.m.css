@@ -23,6 +23,18 @@
 
 /* Diagnostic Table */
 
+.tableRowStatus1 {
+    background-color: rgb(200,225,180);
+}
+
+.tableRowStatus2 {
+    background-color: rgb(255,240,180);
+}
+
+.tableRowStatus3 {
+    background-color: rgb(250,175,175);
+}
+
 .diagnosticTableDisabled td *{
     color: rgba(0, 0, 0, 0.25);
 }

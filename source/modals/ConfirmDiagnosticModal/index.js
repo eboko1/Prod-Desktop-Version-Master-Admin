@@ -67,7 +67,7 @@ class ConfirmDiagnosticModal extends React.Component{
             if(element.checked && element.id != null) {
                 data.services.push({
                     serviceName:
-                        element.commentary.positions.length ?
+                        element.commentary && element.commentary.positions.length ?
                         element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
                         element.name,
                     serviceId: element.id,
@@ -76,9 +76,9 @@ class ConfirmDiagnosticModal extends React.Component{
                     employeeId: this.props.defaultEmployeeId,
                     serviceHours: 0,
                     comment: {
-                        comment: element.commentary.comment,
-                        positions: element.commentary.positions,
-                        problems: element.commentary.problems,
+                        comment: element.commentary && element.commentary.comment,
+                        positions: element.commentary && element.commentary.positions,
+                        problems: element.commentary && element.commentary.problems,
                     },
                     isCritical: element.status == 3,
                 })
@@ -87,14 +87,15 @@ class ConfirmDiagnosticModal extends React.Component{
         this.state.detailsList.map((element)=>{
             if(element.checked && element.id != null) {
                 data.details.push({
-                    name: element.commentary.positions.length ?
+                    name:
+                        element.commentary &&  element.commentary.positions.length ?
                         element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
                         element.name,
                     storeGroupId: element.id,
                     count: element.count,
                     comment: {
-                        comment: element.commentary.comment,
-                        positions: element.commentary.positions,
+                        comment: element.commentary && element.commentary.comment,
+                        positions: element.commentary && element.commentary.positions,
                     },
                     isCritical: element.status == 3,
                 })
@@ -702,7 +703,14 @@ class ConfirmDiagnosticModal extends React.Component{
     addNewDetailsRow() {
         if(this.state.detailsList.length == 0) {
             this.state.detailsList.push(
-                {key:1, id:null, name: null, count: 1, checked: true},
+                {
+                    key:1,
+                    id:null,
+                    name: null,
+                    count: 1,
+                    checked: true,
+                    commentary: {commentary: "", positions: []},
+                },
             );
             this.setState({
                 update: true,
@@ -710,7 +718,14 @@ class ConfirmDiagnosticModal extends React.Component{
         }
         else if(this.state.detailsList[this.state.detailsList.length-1].name != null) {
             this.state.detailsList.push(
-                {key:this.state.detailsList[this.state.detailsList.length-1].key+1, id:null, name: null, count: 1, checked: true},
+                {
+                    key:this.state.detailsList[this.state.detailsList.length-1].key+1, 
+                    id:null, 
+                    name: null, 
+                    count: 1, 
+                    checked: true,
+                    commentary: {commentary: "", positions: []},
+                },
             );
             this.setState({
                 update: true,
@@ -768,8 +783,8 @@ class ConfirmDiagnosticModal extends React.Component{
                         onSelect={(value, option)=>{
                             this.addDetailsByGroupId(value, index);
                         }}
-                        onChange={(inputValue)=>{
-                            data.name = inputValue;
+                        onChange={(inputValue, option)=>{
+                            data.name = option.props.detail_name;
                             this.setState({update: true});
                         }}
                         placeholder={this.props.intl.formatMessage({id: 'order_form_table.service.placeholder'})}

@@ -44,11 +44,13 @@ import {
     StorageBalancePage,
     StorageMovementPage,
     IncomeDocPage,
+    StorageDocumentPage,
     DiagnosticPatternsPage,
     AvailabilitiesPage,
     StorageOrdersPage,
     StorageTransferPage,
     AgreementPage,
+    WarehousesPage,
 } from 'pages';
 import book from './book';
 
@@ -119,6 +121,11 @@ export default class Private extends Component {
                     exact
                     component={ LaborsPage }
                     path={ book.laborsPage }
+                />
+                <Route
+                    exact
+                    component={ WarehousesPage }
+                    path={ book.warehouses }
                 />
                 <Route 
                     exact
@@ -191,13 +198,13 @@ export default class Private extends Component {
                 <Route
                     exact
                     path={ book.storageDocument }
-                    render={ props => <IncomeDocPage { ...props } /> }
+                    render={ props => <StorageDocumentPage { ...props } /> }
                 />
                 <Route
                     exact
                     path={ book.storageDocumentId }
                     render={ props => (
-                        <IncomeDocPage key={ props.match.params.id } { ...props } />
+                        <StorageDocumentPage id={ props.match.params.id } { ...props } />
                     ) }
                 />
                 <Route

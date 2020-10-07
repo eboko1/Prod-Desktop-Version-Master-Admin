@@ -17,32 +17,57 @@ import book from 'routes/book';
 import Styles from './styles.m.css';
 
 /* eslint-disable complexity */
+const INCOME = 'INCOME',
+      EXPENSE = 'EXPENSE',
+      RESERVE = 'RESERVE',
+      SUPPLIER = 'SUPPLIER',
+      CLIENT = 'CLIENT',
+      INVENTORY = 'INVENTORY',
+      OWN_CONSUMPTION = 'OWN_CONSUMPTION',
+      TRANSFER = 'TRANSFER',
+      ADJUSTMENT = 'ADJUSTMENT',
+      ORDERINCOME = 'ORDERINCOME',
+      ORDER = 'ORDER',
+      NEW = 'NEW',
+      DONE = 'DONE';
+
+const INC = 'INC',
+      CRT = 'CRT',
+      STP = 'STP',
+      OUT = 'OUT',
+      SRT = 'SRT',
+      CST = 'CST',
+      STM = 'STM',
+      TSF = 'TSF',
+      RES = 'RES',
+      ORD = 'ORD',
+      BOR = 'BOR',
+      COM = 'COM';
+
+
 export function columnsConfig(
     activeRoute,
     listType,
     formatMessage,
     deleteAction,
 ) {
-    var documentTag;
+    var isOrder = false,
+        isTransfer = false,
+        isIncomes = false,
+        isExpense = false;
 
-    switch (listType) {
-        case 'ORDER':
-            documentTag = 'ORD';
+    switch (activeRoute) {
+        case '/storage-orders':
+            isOrder = true;
+            break
+        case '/storage-incomes':
+            isIncomes = true;
             break;
-
-        case 'INCOME':
-            documentTag = 'INS';
+        case '/storage-expenses':
+            isExpense = true;
             break;
-
-        case 'EXPENSE':
-            documentTag = 'OUT';
-            break;
-
-        case 'TRANSFER':
-            documentTag = 'TSF';
-            break;
-
-        default:
+        case '/storage-transfers':
+            isTransfer = true;
             break;
     }
 
@@ -68,17 +93,9 @@ export function columnsConfig(
         // fixed:     'left',
         render:    (_, document) => (
             <>
-                { document.orderId && listType == 'EXPENSE' ? (
-                    <Link to={ `/order/${document.orderId}` }>
-                        { documentTag + document.orderNum.slice(3) }
-                    </Link>
-                ) : (
-                    <Link to={ `/storage-document/${document.id}` }>
-                        { `${documentTag}-${document.businessId}-${(
-                            document.supplierDocNumber || ''
-                        ).padStart(7, '0')}` }
-                    </Link>
-                ) }
+                <Link to={ `${book.storageDocument}/${document.id}` }>
+                    { document.documentNumber }
+                </Link>
             </>
         ),
     };
@@ -98,11 +115,9 @@ export function columnsConfig(
             <div>
                 { document.createdDatetime ? 
                     moment(document.createdDatetime).format('DD.MM.YYYY HH:mm')
-                    : listType == 'EXPENSE' ? 
-                        moment(document.orderDatetime).format('DD.MM.YYYY HH:mm')
-                        : (
-                            <FormattedMessage id='long_dash' />
-                        ) }
+                    : (
+                        <FormattedMessage id='long_dash' />
+                    ) }
             </div>
         ),
     };
@@ -114,8 +129,8 @@ export function columnsConfig(
         width:     80,
         render:    (_, document) => (
             <div>
-                { document.businessSupplier
-                    ? document.businessSupplier.name
+                { document.counterpartBusinessSupplierId
+                    ? document.counterpartBusinessSupplierName
                     : document.clientName || (
                         <FormattedMessage id='long_dash' />
                     ) }
@@ -135,8 +150,8 @@ export function columnsConfig(
                 ) : document.counterpartClientId || document.clientId ? (
                     <FormattedMessage id='storage_document.client' />
                 ) : document.counterpartEmployeeId ? (
-                    <FormattedMessage id='storage_document.own_consumption' />
-                ) : document.warehouseId && document.type == 'EXPENSE' ? (
+                    <FormattedMessage id='storage_document.own_consumpty' />
+                ) : document.counterpartWarehouseId && document.type == EXPENSE ? (
                     <FormattedMessage id='storage_document.inventory' />
                 ) : (
                     <FormattedMessage id='long_dash' />
@@ -168,17 +183,13 @@ export function columnsConfig(
         dataIndex: 'type',
         key:       'type',
         width:     80,
-        render:    (_, document) => (
-            <div>
-                { document.type == 'INCOME' ? (
-                    <FormattedMessage id='storage_document.income' />
-                ) : document.type == 'EXPENSE' ? (
-                    <FormattedMessage id='storage_document.return' />
-                ) : (
-                    <FormattedMessage id='long_dash' />
-                ) }
-            </div>
-        ),
+        render:    (_, document) => {
+            return (
+                <div>
+                    <FormattedMessage id={`storage_document.docType.${isOrder ? ORDER : document.type}.${document.documentType}`}/>
+                </div>
+            )
+        }
     };
 
     const documentStatusCol = {
@@ -188,7 +199,7 @@ export function columnsConfig(
         width:     80,
         render:    (_, document) => (
             <div>
-                { document.status == 'DONE' ? (
+                { document.status == DONE ? (
                     <>
                         <FormattedMessage id='storage_document.status_confirmed' />{ ' ' }
                         <Icon
@@ -218,10 +229,10 @@ export function columnsConfig(
         width:     80,
         render:    (_, document) => (
             <div>
-                { listType == 'EXPENSE' &&
-                    (document.warehouseName || (
-                        <FormattedMessage id='long_dash' />
-                    )) }
+                { isTransfer || isExpense ?
+                    (document.warehouseName || document.counterpartWarehouseName) :
+                    <FormattedMessage id='long_dash' />
+                }
             </div>
         ),
     };
@@ -233,10 +244,10 @@ export function columnsConfig(
         width:     80,
         render:    (_, document) => (
             <div>
-                { listType == 'INCOME' &&
-                    (document.warehouseName || (
-                        <FormattedMessage id='long_dash' />
-                    )) }
+                { isTransfer || isIncomes ?
+                    (document.counterpartWarehouseName || document.warehouseName) :
+                    <FormattedMessage id='long_dash' />
+                }
             </div>
         ),
     };
@@ -257,7 +268,7 @@ export function columnsConfig(
                 >
                     <Icon
                         className={
-                            document.status == 'DONE'
+                            document.status == DONE
                                 ? Styles.disabledDeleteDocumentIcon
                                 : Styles.deleteDocumentIcon
                         }
@@ -275,12 +286,9 @@ export function columnsConfig(
                 orderCol,
                 datetimeCol,
                 counterpartyCol,
-                counterpartyTypeCol,
                 sumCol,
                 documentTypeCol,
                 documentStatusCol,
-                documentStorageExpensesCol,
-                documentStorageIncomeCol,
                 deleteActionCol,
             ];
 
@@ -320,7 +328,6 @@ export function columnsConfig(
                 orderCol,
                 datetimeCol,
                 sumCol,
-                documentTypeCol,
                 documentStatusCol,
                 documentStorageExpensesCol,
                 documentStorageIncomeCol,
