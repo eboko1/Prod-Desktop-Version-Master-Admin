@@ -119,7 +119,8 @@ class DetailProductModal extends React.Component{
                 dataIndex: 'comment',
                 width:     '3%',
                 render: (data, elem)=>{
-                    var detail = elem.detailName;
+                    var detail = String(elem.detailName);
+                    console.log(elem)
                     if(detail && detail.indexOf(' - ') > -1) {
                         detail = detail.slice(0, detail.indexOf(' - '));
                     }
