@@ -783,8 +783,8 @@ class ConfirmDiagnosticModal extends React.Component{
                         onSelect={(value, option)=>{
                             this.addDetailsByGroupId(value, index);
                         }}
-                        onChange={(inputValue)=>{
-                            data.name = inputValue;
+                        onChange={(inputValue, option)=>{
+                            data.name = option.props.detail_name;
                             this.setState({update: true});
                         }}
                         placeholder={this.props.intl.formatMessage({id: 'order_form_table.service.placeholder'})}
