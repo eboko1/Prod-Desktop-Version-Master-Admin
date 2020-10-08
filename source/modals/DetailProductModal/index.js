@@ -1480,7 +1480,7 @@ class VinCodeModal extends Component{
                 itemsInfo.push({
                     key: key,
                     ...item,
-                    attributes: attribute.map((attr)=>attr.$),
+                    attributes: attribute && attribute.map((attr)=>attr.$),
                 })
             });
             data.response.ListImageMapByUnit[0].row.map(({$: position}, key)=>{
