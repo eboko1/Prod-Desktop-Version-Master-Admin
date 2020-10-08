@@ -1231,11 +1231,25 @@ class VinCodeModal extends Component{
 
     handleCancel = () => {
         this.setState({
-            visible: false,
-            zoomed: false,
-            loading: false,
             categoryMode: false,
+            categories: [],
+            visible: false,
+            loading: false,
+            zoomed: false,
+            itemsInfo: [],
+            blockPositions: [],
+            tableHoverCode: undefined,
+            imgHoverCode: undefined,
+            imgHoverIndex: undefined,
+            checkedCodes: [],
+            infoModalVisible: false,
+            infoItem: undefined,
+            images: [],
+            image: undefined,
+            itemsListEmpty: false,
             zoomMultiplier: 0.75,
+            allCategories: [],
+            imgSearch: "",
         })
     }
 
