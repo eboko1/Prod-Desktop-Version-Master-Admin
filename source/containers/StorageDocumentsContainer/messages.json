@@ -22,6 +22,8 @@
         "storage_document.pay_until": "Pay until",
         "storage_document.store_in_warehouse": "Store in a warehouse",
         "storage_document.multiplicity": "Multiplicity",
+        "storage_document.reserve_all": "Reserve all products in orders",
+        "storage_document.reserve_all_success": "All products in orders were reserved",
 
         "storage_document.docType.INCOME.SUPPLIER": "Income",
         "storage_document.docType.INCOME.CLIENT": "Refund",
@@ -63,6 +65,8 @@
         "storage_document.pay_until": "Оплатить до",
         "storage_document.store_in_warehouse": "Хранить на складе",
         "storage_document.multiplicity": "Кратность",
+        "storage_document.reserve_all": "Зарезервировать все",
+        "storage_document.reserve_all_success": "Все товары в заказах зарезервированы",
 
         "storage_document.docType.INCOME.SUPPLIER": "Приход",
         "storage_document.docType.INCOME.CLIENT": "Возврат",
@@ -104,6 +108,8 @@
         "storage_document.pay_until": "Сплатити до",
         "storage_document.store_in_warehouse": "Зберігати на складі",
         "storage_document.multiplicity": "Кратність",
+        "storage_document.reserve_all": "Зарезервувати всі",
+        "storage_document.reserve_all_success": "Всі товари в замовленнях зарезервовані",
 
         "storage_document.docType.INCOME.SUPPLIER": "Прихід",
         "storage_document.docType.INCOME.CLIENT": "Повернення",
