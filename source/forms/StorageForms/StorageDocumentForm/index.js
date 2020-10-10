@@ -881,10 +881,42 @@ class AddProductModal extends React.Component {
         })
     }
 
+    getCurrentPrice(detailCode, businessSupplierId) {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/business_suppliers/pricelists?partNumber=${detailCode}&businessSupplierId=${businessSupplierId}`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+            if(data.length) {   
+                that.setState({
+                    stockPrice: data[0].purchasePrice,
+                })
+            }
+            
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    }
+
     getProductId(detailCode) {
         const { storageProducts, storageBalance } = this.state;
         const storageProduct = storageProducts.find((elem)=>elem.code==detailCode);
-        console.log(storageProduct)
         if(storageProduct) {
             storageBalance[0].count = storageProduct.countInWarehouses;
             storageBalance[1].count = storageProduct.reservedCount;
@@ -903,6 +935,7 @@ class AddProductModal extends React.Component {
                 tradeCode: storageProduct.tradeCode,
                 quantity: storageProduct.quantity,
             })
+            this.getCurrentPrice(detailCode, this.props.businessSupplierId);
             return true;
         }
         else {

@@ -590,15 +590,18 @@ class StorageDocumentPage extends Component {
 
             switch (data.type) {
                 case INCOME:
-                    data.incomeWarehouseId= data.warehouseId;
+                    data.incomeWarehouseId = data.warehouseId;
                     break;
                 case EXPENSE:
-                    data.expenseWarehouseId= data.warehouseId;
+                    data.expenseWarehouseId = data.warehouseId;
                     break;
                 case TRANSFER:
                 case RESERVE:
                     data.incomeWarehouseId = data.counterpartWarehouseId;
-                    data.expenseWarehouseId= data.warehouseId;
+                    data.expenseWarehouseId = data.warehouseId;
+                    break;
+                case RESERVE:
+                    data.incomeWarehouseId = data.warehouseId;
                     break;
             }
 
