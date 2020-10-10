@@ -35,6 +35,7 @@ const ReducerState = {
     storeBalanceLoading: false,
     filters:             {
         page: 1,
+        inStock: true,
         date: moment(),
     },
 };
@@ -112,6 +113,7 @@ export function* fetchStoreBalanceSaga() {
             yield take([ FETCH_STORE_BALANCE, SET_STORE_BALANCE_FILTERS ]);
             yield put(setStoreBalanceLoading(true));
             const filters = yield select(selectStoreBalanceFilters);
+            console.log(filters)
             const response = yield call(
                 fetchAPI,
                 'GET',

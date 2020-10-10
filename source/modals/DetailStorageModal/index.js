@@ -271,7 +271,7 @@ class DetailStorageModal extends React.Component{
                         <div>
                             <FormattedMessage id="order_form_table.store" />
                             <div style={{fontWeight: '400', fontSize: 12}}>
-                                В наличии
+                                <FormattedMessage id='in_stock' />
                                 <Checkbox
                                     checked={this.state.inStock}
                                     onChange={()=>{
