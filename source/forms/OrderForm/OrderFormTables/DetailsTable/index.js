@@ -275,7 +275,7 @@ class DetailsTable extends Component {
                             style={elem.reservedFromWarehouseId && {
                                 color: elem.reserved ? 'var(--green)' : null,
                             }}
-                            disabled={!elem.reservedFromWarehouseId}
+                            disabled={!elem.productId}
                             onClick={()=>{
                                 const data = {
                                     status: "DONE",
@@ -692,6 +692,7 @@ class DetailsTable extends Component {
             .then(function(data) {
                 data.details.map((elem, index) => {
                     elem.key = index;
+                    elem.isFromStock = Boolean(elem.productId)
                 });
                 that.setState({
                     dataSource: data.details,
@@ -705,7 +706,7 @@ class DetailsTable extends Component {
 
     async updateDetail(key, detail) {
         this.state.dataSource[ key ] = detail;
-        const newDetail = detail.isFromStock ? 
+        const newDetail = detail.productId ? 
         {
             id: detail.id,
             storeGroupId: detail.storeGroupId,
@@ -718,6 +719,7 @@ class DetailsTable extends Component {
             reservedFromWarehouseId: detail.reservedFromWarehouseId || null,
             reserved: detail.reserved,
             reservedCount: detail.reservedCount,
+            supplierId: detail.supplierId,
             comment: detail.comment || {
                 comment: undefined,
                 positions: [],
@@ -735,7 +737,7 @@ class DetailsTable extends Component {
             brandName:     detail.brandName ? detail.brandName : null,
             supplierOriginalCode: detail.supplierOriginalCode,
             supplierProductNumber: detail.supplierProductNumber,
-            reservedFromWarehouseId: null,
+            reservedFromWarehouseId: detail.reservedFromWarehouseId || null,
             purchasePrice:
                 Math.round(detail.purchasePrice * 10) / 10 || 0,
             count:   detail.count,
