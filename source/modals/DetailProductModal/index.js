@@ -184,6 +184,7 @@ class DetailProductModal extends React.Component{
                                 this.state.mainTableSource[0].brandId = value;
                                 this.state.mainTableSource[0].brandName = option.props.children;
                                 this.state.mainTableSource[0].isFromStock = false;
+                                this.state.mainTableSource[0].productId = undefined;
                                 this.setState({
                                     update: true
                                 })
@@ -232,6 +233,7 @@ class DetailProductModal extends React.Component{
                                 onChange={(event)=>{
                                     this.state.mainTableSource[0].detailCode = event.target.value;
                                     this.state.mainTableSource[0].isFromStock = false;
+                                    this.state.mainTableSource[0].productId = undefined;
                                     this.setState({
                                         update: true
                                     })
@@ -252,7 +254,7 @@ class DetailProductModal extends React.Component{
                                 setSupplier={this.setSupplier}
                                 brandFilter={elem.brandName}
                                 supplierId={elem.supplierId}
-                                codeFilter={elem.detailCode}
+                                codeFilter={elem.brandId == 8000 ? undefined : elem.detailCode}
                                 brandId={elem.brandId}
                                 defaultBrandName={this.state.defaultBrandName}
                             /> :
@@ -504,7 +506,7 @@ class DetailProductModal extends React.Component{
                 services: [],
             }
             this.state.mainTableSource.map((element)=>{
-                if(element.supplierId !== 0) {
+                if(!element.productId) {
                     data.details.push({
                         storeGroupId: element.storeGroupId,
                         name: element.detailName,
@@ -528,12 +530,13 @@ class DetailProductModal extends React.Component{
                     data.details.push({
                         storeGroupId: element.storeGroupId,
                         name: element.detailName,
-                        productId: element.storeId,
+                        productId: element.productId,
                         productCode: element.detailCode,
                         purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                         count: element.count ? element.count : 1,
                         price: element.price ? Math.round(element.price*10)/10  : 1,
                         reservedFromWarehouseId: element.reservedFromWarehouseId || null,
+                        supplierId: element.supplierId ? element.supplierId : null,
                         comment: element.comment || {
                             comment: undefined,
                             positions: [],
@@ -597,7 +600,7 @@ class DetailProductModal extends React.Component{
                     that.state.mainTableSource[0].detailCode = result.partNumber;
                     that.state.mainTableSource[0].supplierId = result.price ? result.price.businessSupplierId : undefined;
                     that.state.mainTableSource[0].supplierName = result.price ? result.price.businessSupplierName : undefined;
-                    that.state.mainTableSource[0].storeId = result.price ? result.price.id : undefined;
+                    that.state.mainTableSource[0].productId = result.price ? result.price.id : undefined;
                     that.state.mainTableSource[0].store = result.price ? result.price.store : undefined;
                     that.state.mainTableSource[0].purchasePrice = purchasePrice;
                     that.state.mainTableSource[0].price = purchasePrice * markup;
@@ -616,12 +619,12 @@ class DetailProductModal extends React.Component{
         }
     }
 
-    setCode(code, brandId, storeId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber) {
+    setCode(code, brandId, productId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber) {
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         this.state.mainTableSource[key].detailCode = code;
         this.state.mainTableSource[key].brandId = brandId;
         this.state.mainTableSource[key].brandName = brand.brandName;
-        this.state.mainTableSource[key].storeId = storeId;
+        this.state.mainTableSource[key].productId = productId;
         this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
         this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
         if(this.state.radioValue == 3 || this.state.radioValue == 4) {
@@ -644,7 +647,7 @@ class DetailProductModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId, storeId) {
+    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId, productId) {
         this.state.mainTableSource[key].supplierId = supplierId;
         this.state.mainTableSource[key].supplierName = supplierName;
         this.state.mainTableSource[key].supplierBrandId = supplierBrandId;
@@ -655,7 +658,7 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
         this.state.mainTableSource[key].isFromStock = isFromStock;
         this.state.mainTableSource[key].reservedFromWarehouseId = defaultWarehouseId;
-        this.state.mainTableSource[key].storeId = storeId;
+        this.state.mainTableSource[key].productId = productId;
         this.setState({
             update: true
         })
@@ -665,9 +668,10 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[0].detailName = name;
         this.state.mainTableSource[0].detailCode = code;
         
-        const oeBrand = this.props.brands.find((brand)=>brand.id==8000);
-        this.state.mainTableSource[0].brandName = oeBrand ? oeBrand.id : undefined;
-        this.state.mainTableSource[0].brandId = oeBrand ? oeBrand.id : undefined;
+        const oesBrand = this.props.brands.find((brand)=>brand.brandId==8000);
+        console.log("8000 - OES", oesBrand);
+        this.state.mainTableSource[0].brandName = oesBrand ? oesBrand.brandName : undefined;
+        this.state.mainTableSource[0].brandId = oesBrand ? oesBrand.brandId : undefined;
         this.state.radioValue = 3;
 
         this.state.mainTableSource[0].supplierId = undefined;
