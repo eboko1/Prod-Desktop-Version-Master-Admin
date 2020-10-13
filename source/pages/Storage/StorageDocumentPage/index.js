@@ -97,13 +97,18 @@ class StorageDocumentPage extends Component {
         this.editDocProduct = this.editDocProduct.bind(this);
     }
 
-    updateFormData(formData) {
+    updateFormData(formData, saveMode = false) {
         Object.entries(formData).map((field)=>{
             this.state.formData[field[0]] = field[1];
         })
-        this.setState({
-            update: true,
-        })
+        if(saveMode) {
+            this.updateDocument();
+        }
+        else {
+            this.setState({
+                update: true,
+            })
+        }
     }
 
     addDocProduct(docProduct, arrayMode = false) {
@@ -127,7 +132,7 @@ class StorageDocumentPage extends Component {
                 update: true,
             })
         }
-        if(this.props.id) this.updateDocument(this.state.formData.status);
+        if(this.props.id) this.updateDocument();
     }
 
     deleteDocProduct(key) {
@@ -298,7 +303,7 @@ class StorageDocumentPage extends Component {
         });
     }
 
-    updateDocument(status=NEW) {
+    updateDocument() {
         if(!this.verifyFields()) {
             return;
         }
@@ -306,7 +311,7 @@ class StorageDocumentPage extends Component {
         const { formData } = this.state
         
         const createData = {
-            status: status,
+            status: formData.status,
             supplierDocNumber: formData.supplierDocNumber || null,
             payUntilDatetime: formData.payUntilDatetime ? formData.payUntilDatetime.toISOString() : null,
             docProducts: [],
@@ -342,6 +347,8 @@ class StorageDocumentPage extends Component {
                 })
             }
         })
+
+        console.log(formData, createData)
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/store_docs/${this.props.id}`;
@@ -362,7 +369,7 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            window.location.reload();
+            that.getStorageDocument();
         })
         .catch(function (error) {
             console.log('error', error);
@@ -394,6 +401,7 @@ class StorageDocumentPage extends Component {
         .then(function (warehouses) {
             const type = that.props.location.type;
             if(type && warehouses.length) {
+                console.log(type)
                 that.state.formData.type = type;
                 var { incomeWarehouseId, expenseWarehouseId } = that.state.formData;
                 switch(type) {
@@ -670,7 +678,7 @@ class StorageDocumentPage extends Component {
                         <div style={{display: 'flex'}}>
                             {formData.status != DONE && 
                                 <ChangeStatusDropdown
-                                    updateDocument={this.updateDocument}
+                                    updateDocument={this.updateFormData}
                                 />
                             }
                             <ReportsDropdown
@@ -680,7 +688,7 @@ class StorageDocumentPage extends Component {
                         : null}
                         {formData.status != DONE && (
                             <div style={{display: 'flex'}}>
-                                {formData.type == ORDER && (formData.documentType == SUPPLIER || formData.documentType == ORDERINCOME) &&
+                                {formData.type == ORDER && formData.status == NEW && (formData.documentType == SUPPLIER || formData.documentType == ORDERINCOME) &&
                                     <AutomaticOrderCreationModal
                                         supplierId={formData.counterpartId}
                                         addDocProduct={this.addDocProduct}
@@ -688,7 +696,7 @@ class StorageDocumentPage extends Component {
                                         documentType={formData.documentType}
                                     />
                                 }
-                                {((formData.type == INCOME && formData.documentType == CLIENT) || (formData.type == EXPENSE && formData.documentType == SUPPLIER)) &&
+                                {((formData.type == INCOME && formData.status == NEW && formData.documentType == CLIENT) || (formData.type == EXPENSE && formData.documentType == SUPPLIER)) &&
                                     <ReturnModal
                                         counterpartId={formData.counterpartId}
                                         addDocProduct={this.addDocProduct}
@@ -763,7 +771,7 @@ class ChangeStatusDropdown extends React.Component {
             <Menu>
                 <Menu.Item
                     onClick={()=>{
-                        this.props.updateDocument(String(DONE))
+                        this.props.updateDocument({status: DONE}, true)
                     }}
                 >
                     <FormattedMessage id='storage_document.status_confirmed' />

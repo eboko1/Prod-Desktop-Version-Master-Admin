@@ -317,8 +317,8 @@ class DetailStorageModal extends React.Component{
                         <Button
                             type="primary"
                             onClick={()=>{
-                                this.props.onSelect(elem.partNumber, brandId, elem.storeId, this.props.tableKey, elem.storeGroupId, name, supplierOriginalCode, supplierProductNumber);
-                                this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, supplierOriginalCode, supplierProductNumber, this.props.tableKey, isFromStock, defaultWarehouseId, elem.storeId);
+                                this.props.onSelect(elem.partNumber, brandId, elem.productId, this.props.tableKey, elem.storeGroupId, name, supplierOriginalCode, supplierProductNumber);
+                                this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, supplierOriginalCode, supplierProductNumber, this.props.tableKey, isFromStock, defaultWarehouseId, elem.productId);
                                 this.handleCancel();
                             }}
                         >
@@ -380,7 +380,7 @@ class DetailStorageModal extends React.Component{
         this.state.dataSource[key].price.supplierProductNumber = supplierProductNumber;
         this.state.dataSource[key].price.isFromStock = isFromStock;
         this.state.dataSource[key].price.defaultWarehouseId = defaultWarehouseId;
-        this.state.dataSource[key].storeId = productId;
+        this.state.dataSource[key].productId = productId;
         this.setState({
             update: true
         })
@@ -433,7 +433,7 @@ class DetailStorageModal extends React.Component{
                 data.map((elem, i)=>{
                     elem.key = i;
                     if(elem.price) {
-                        elem.storeId = elem.price.id;
+                        elem.productId = elem.price.id;
                         elem.store = elem.price.store;
                         elem.purchasePrice = elem.price.purchasePrice;
                         elem.businessSupplierId = elem.price.businessSupplierId;
@@ -519,7 +519,7 @@ class DetailStorageModal extends React.Component{
             data.map((elem, i)=>{
                 elem.key = i;
                 if(elem.price) {
-                    elem.storeId = elem.price.id;
+                    elem.productId = elem.price.id;
                     elem.store = elem.price.store;
                     elem.purchasePrice = elem.price.purchasePrice;
                     elem.businessSupplierId = elem.price.businessSupplierId;

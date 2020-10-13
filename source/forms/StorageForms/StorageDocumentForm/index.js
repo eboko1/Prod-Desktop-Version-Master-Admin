@@ -378,7 +378,7 @@ class StorageDocumentForm extends Component {
                                 background: 'var(--static)',
                                 fontSize: 16,
                                 height: '100%',
-                                margin: 15,
+                                margin: '15px 0px',
                                 justifyContent: 'center'
                             }}
                         >
@@ -491,7 +491,7 @@ class StorageDocumentForm extends Component {
             }}>
                 <DocProductsTable
                     docProducts={docProducts}
-                    disabled={disabled}
+                    disabled={disabled || !(status)}
                     updateFormData={updateFormData}
                     businessSupplierId={counterpartId}
                     deleteDocProduct={deleteDocProduct}
@@ -933,7 +933,7 @@ class AddProductModal extends React.Component {
                 brandId: storageProduct.brandId,
                 brandName: storageProduct.brand && storageProduct.brand.name,
                 tradeCode: storageProduct.tradeCode,
-                quantity: storageProduct.quantity,
+                quantity: storageProduct.quantity || 1,
             })
             this.getCurrentPrice(detailCode, this.props.businessSupplierId);
             return true;
@@ -1135,51 +1135,6 @@ class AddProductModal extends React.Component {
                         justifyContent: 'space-between'
                     }}
                 >
-                    <div className={Styles.addProductItemWrap} style={{minWidth: 140}}>
-                        <FormattedMessage id='order_form_table.brand' />{requiredField()}
-                        <Select
-                            showSearch
-                            value={brandId}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                            filterOption={(input, option) => {
-                                return (
-                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
-                                )
-                            }}
-                            onSelect={(value, option)=>{
-                                this.getOptions(value)
-                                this.setState({
-                                    brandId: value,
-                                    brandName: option.props.children,
-                                })
-                            }}
-                            onSearch={(input)=>{
-                                this.setState({
-                                    brandSearchValue: input,
-                                })
-                            }}
-                            onBlur={()=>{
-                                this.setState({
-                                    brandSearchValue: "",
-                                })
-                            }}
-                        >
-                            {
-                                this.state.brandSearchValue.length > 1 ? 
-                                    this.props.brands.map((elem, index)=>(
-                                        <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
-                                            {elem.brandName}
-                                        </Option>
-                                    )) :
-                                    brandId ? 
-                                    <Option key={0} value={brandId}>
-                                        {brandName}
-                                    </Option> : 
-                                    []
-                            }
-                        </Select>
-                    </div>
                     <div className={Styles.addProductItemWrap}>
                         <FormattedMessage id='order_form_table.detail_code' />{requiredField()}
                         <AutoComplete
@@ -1246,6 +1201,51 @@ class AddProductModal extends React.Component {
                             }
                         </AutoComplete>
                     </div>
+                    <div className={Styles.addProductItemWrap} style={{minWidth: 140}}>
+                        <FormattedMessage id='order_form_table.brand' />{requiredField()}
+                        <Select
+                            showSearch
+                            value={brandId}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.getOptions(value)
+                                this.setState({
+                                    brandId: value,
+                                    brandName: option.props.children,
+                                })
+                            }}
+                            onSearch={(input)=>{
+                                this.setState({
+                                    brandSearchValue: input,
+                                })
+                            }}
+                            onBlur={()=>{
+                                this.setState({
+                                    brandSearchValue: "",
+                                })
+                            }}
+                        >
+                            {
+                                this.state.brandSearchValue.length > 1 ? 
+                                    this.props.brands.map((elem, index)=>(
+                                        <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
+                                            {elem.brandName}
+                                        </Option>
+                                    )) :
+                                    brandId ? 
+                                    <Option key={0} value={brandId}>
+                                        {brandName}
+                                    </Option> : 
+                                    []
+                            }
+                        </Select>
+                    </div>
                    {(this.props.isIncome && !this.props.priceDisabled) &&
                     <div className={Styles.addProductItemWrap}>
                         <FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)
@@ -1296,7 +1296,7 @@ class AddProductModal extends React.Component {
                             style={{
                                 //marginLeft: 10,
                             }}
-                            min={0}
+                            min={1}
                             onChange={(value)=>{
                                 this.setState({
                                     quantity: value
