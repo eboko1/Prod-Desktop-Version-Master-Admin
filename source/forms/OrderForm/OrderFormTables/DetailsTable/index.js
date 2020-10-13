@@ -706,7 +706,7 @@ class DetailsTable extends Component {
 
     async updateDetail(key, detail) {
         this.state.dataSource[ key ] = detail;
-        const newDetail = detail.productId ? 
+        const newDetail = detail.productId && detail.supplierId == 0 ? 
         {
             id: detail.id,
             storeGroupId: detail.storeGroupId,
