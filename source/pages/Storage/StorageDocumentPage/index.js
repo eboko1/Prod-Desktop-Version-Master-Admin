@@ -161,7 +161,7 @@ class StorageDocumentPage extends Component {
 
         this.setState({loading: true})
         if(this.state.warnings) {
-            setTimeout(()=> this.forceUpdate(), 200)
+            setTimeout(()=> this.setState({loading: false}), 200)
         } else {
             setTimeout(()=> this.updateDocument(), 200);
         }
@@ -399,6 +399,7 @@ class StorageDocumentPage extends Component {
             notification.error({
                 message: 'Ошибка склада. Проверьте количество товаров',
             });
+            that.getStorageDocument();
         });
     }
 
@@ -445,11 +446,7 @@ class StorageDocumentPage extends Component {
                 that.state.formData.documentType = typeToDocumentType[type.toLowerCase()].documentType[0];
                 that.state.formData.incomeWarehouseId = incomeWarehouseId;
                 that.state.formData.expenseWarehouseId = expenseWarehouseId;
-            } else if(!type && warehouses.length) {
-                if(that.state.formData.type == ORDER) {
-                    that.state.formData.incomeWarehouseId = warehouses[0].id;
-                }
-            }
+            } 
             that.setState({
                 warehouses: warehouses,
                 fetched: true,
@@ -637,6 +634,9 @@ class StorageDocumentPage extends Component {
                 case RESERVE:
                     data.incomeWarehouseId = data.warehouseId;
                     break;
+                case ORDER:
+                    data.incomeWarehouseId = that.state.warehouses.length ? that.state.warehouses[0].id : undefined;
+                    break;
             }
 
             that.setState({
@@ -653,12 +653,11 @@ class StorageDocumentPage extends Component {
     componentDidMount() {
         this._isMounted = true;
         const { id, location: { type } } = this.props;
+        if(this._isMounted) this.getWarehouses();
         this.getBrands();
         this.getClientList();
         this.getCounterpartSupplier();
         if(id) this.getStorageDocument();
-        if(this._isMounted) this.getWarehouses();
-        
     }
 
     componentWillUnmount() {
@@ -721,21 +720,23 @@ class StorageDocumentPage extends Component {
                         : null}
                         {formData.status != DONE && (
                             <div style={{display: 'flex'}}>
-                                {formData.type == ORDER && formData.status == NEW && (formData.documentType == SUPPLIER || formData.documentType == ORDERINCOME) &&
+                                {formData.type == ORDER && (formData.documentType == SUPPLIER || formData.documentType == ORDERINCOME) &&
                                     <AutomaticOrderCreationModal
                                         supplierId={formData.counterpartId}
                                         addDocProduct={this.addDocProduct}
                                         type={formData.type}
                                         documentType={formData.documentType}
+                                        disabled={formData.status != NEW}
                                     />
                                 }
-                                {((formData.type == INCOME && formData.status == NEW && formData.documentType == CLIENT) || (formData.type == EXPENSE && formData.documentType == SUPPLIER)) &&
+                                {((formData.type == INCOME && formData.documentType == CLIENT) || (formData.type == EXPENSE && formData.documentType == SUPPLIER)) &&
                                     <ReturnModal
                                         counterpartId={formData.counterpartId}
                                         addDocProduct={this.addDocProduct}
                                         type={formData.type}
                                         documentType={formData.documentType}
                                         brands={brands}
+                                        disabled={formData.status != NEW}
                                     />
                                 }
                                 <Badge 
@@ -970,7 +971,11 @@ class ReturnModal extends React.Component {
             <div>
                 <Icon
                     type="rollback"
-                    style={headerIconStyle}
+                    style={{
+                        ...headerIconStyle,
+                        color: this.props.disabled ? 'var(--text2)' : null,
+                        pointerEvents: this.props.disabled ? 'none' : 'all',
+                    }}
                     onClick={()=>{
                         this.fetchData();
                         this.setState({
@@ -1617,7 +1622,11 @@ class AutomaticOrderCreationModal extends React.Component {
             <div>
                 <Icon
                     type="check-circle"
-                    style={headerIconStyle}
+                    style={{
+                        ...headerIconStyle,
+                        color: this.props.disabled ? 'var(--text2)' : null,
+                        pointerEvents: this.props.disabled ? 'none' : 'all',
+                    }}
                     onClick={()=>{
                         this.fetchData();
                         this.setState({

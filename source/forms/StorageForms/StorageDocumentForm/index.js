@@ -944,7 +944,7 @@ class AddProductModal extends React.Component {
     }
 
     getProductId(detailCode) {
-        const { storageProducts, storageBalance } = this.state;
+        const { storageProducts, storageBalance, detailName } = this.state;
         const storageProduct = storageProducts.find((elem)=>elem.code==detailCode);
         if(storageProduct) {
             storageBalance[0].count = storageProduct.countInWarehouses;
@@ -979,7 +979,7 @@ class AddProductModal extends React.Component {
             this.setState({
                 groupId: undefined,
                 productId: undefined,
-                detailName: undefined,
+                detailName: this.props.warning ? detailName : undefined,
                 tradeCode: undefined,
                 quantity: 1,
             })

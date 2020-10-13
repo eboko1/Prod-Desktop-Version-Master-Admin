@@ -600,7 +600,7 @@ class DetailProductModal extends React.Component{
                     that.state.mainTableSource[0].detailCode = result.partNumber;
                     that.state.mainTableSource[0].supplierId = result.price ? result.price.businessSupplierId : undefined;
                     that.state.mainTableSource[0].supplierName = result.price ? result.price.businessSupplierName : undefined;
-                    that.state.mainTableSource[0].productId = result.price ? result.price.id : undefined;
+                    that.state.mainTableSource[0].productId = result.price && that.state.mainTableSource[0].supplierId == 0 ? result.price.id : undefined;
                     that.state.mainTableSource[0].store = result.price ? result.price.store : undefined;
                     that.state.mainTableSource[0].purchasePrice = purchasePrice;
                     that.state.mainTableSource[0].price = purchasePrice * markup;
@@ -658,7 +658,7 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
         this.state.mainTableSource[key].isFromStock = isFromStock;
         this.state.mainTableSource[key].reservedFromWarehouseId = defaultWarehouseId;
-        this.state.mainTableSource[key].productId = productId;
+        this.state.mainTableSource[key].productId = supplierId == 0 ? productId : undefined;
         this.setState({
             update: true
         })
