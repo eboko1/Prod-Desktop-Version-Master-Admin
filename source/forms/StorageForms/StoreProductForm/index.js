@@ -1,5 +1,5 @@
 // vendor
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Button } from 'antd';
 import { injectIntl } from 'react-intl';
@@ -53,47 +53,24 @@ const formItemLayout = {
     wrapperCol: { span: 15 },
 };
 
-var warehouses = [];
-let token = localStorage.getItem('_my.carbook.pro_token');
-let url = __API_URL__ + '/warehouses';
-fetch(url, {
-    method: 'GET',
-    headers: {
-        'Authorization': token,
-    }
-})
-.then(function (response) {
-    if (response.status !== 200) {
-    return Promise.reject(new Error(response.statusText))
-    }
-    return Promise.resolve(response)
-})
-.then(function (response) {
-    return response.json()
-})
-.then(function (data) {
-    warehouses = data;
-})
-.catch(function (error) {
-    console.log('error', error)
-});
-
 const ProductForm = props => {
     const {
         form,
         intl: { formatMessage },
     } = props;
 
+    
+
     useEffect(() => {
-        if (_.get(props, 'modalProps.id')) {
-            props.fetchProduct(_.get(props, 'modalProps.id'));
-        }
+        props.fetchProduct(_.get(props, 'modalProps.id'));
     }, [ _.get(props, 'modalProps.id') ]);
 
     useEffect(() => {
         props.fetchStoreGroups();
         props.fetchPriceGroups();
     }, []);
+
+    
 
     const findGroupNameById = (data, groupId) => {
         let groupName = null;
@@ -303,7 +280,7 @@ const ProductForm = props => {
                 formatMessage={ formatMessage }
                 initialValue={ _.get(props, 'product.defaultWarehouseId') }
             >
-                {warehouses.map((elem, i)=>
+                {props.warehouses.map((elem, i)=>
                     <Option key={i} value={elem.id}>
                         {elem.name}
                     </Option>
@@ -328,9 +305,6 @@ const ProductForm = props => {
                 initialValue={ _.get(props, 'product.certificate') }
             />
             <ButtonGroup>
-                <SubmitButton type='primary' htmlType='submit'>
-                    { props.intl.formatMessage({ id: 'submit' }) }
-                </SubmitButton>
                 { props.editing ? (
                     <DeleteButton
                         type='danger'
@@ -339,6 +313,9 @@ const ProductForm = props => {
                         { props.intl.formatMessage({ id: 'delete' }) }
                     </DeleteButton>
                 ) : null }
+                <SubmitButton type='primary' htmlType='submit'>
+                    { props.intl.formatMessage({ id: 'submit' }) }
+                </SubmitButton>
             </ButtonGroup>
         </StyledForm>
     );

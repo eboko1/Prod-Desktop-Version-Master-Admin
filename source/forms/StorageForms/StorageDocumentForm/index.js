@@ -378,7 +378,7 @@ class StorageDocumentForm extends Component {
                                 background: 'var(--static)',
                                 fontSize: 16,
                                 height: '100%',
-                                margin: 15,
+                                margin: '15px 0px',
                                 justifyContent: 'center'
                             }}
                         >

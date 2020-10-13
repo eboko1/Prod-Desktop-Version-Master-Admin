@@ -12,6 +12,37 @@ import { StoreProductForm } from 'forms/StorageForms';
 const StoreProductModal = props => {
     const [ editing, setEditing ] = useState(_.get(props, 'modalProps.editing'));
 
+    const [warehouses, setWarehouses] = useState([]);
+
+    useEffect(() => {
+        if(!warehouses.length) {
+            let token = localStorage.getItem('_my.carbook.pro_token');
+            let url = __API_URL__ + '/warehouses';
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                }
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText))
+                }
+                return Promise.resolve(response)
+            })
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function (data) {
+                console.log(data);
+                setWarehouses(data);
+            })
+            .catch(function (error) {
+                console.log('error', error)
+            });
+        }
+    })
+
     useEffect(() => {
         setEditing(_.get(props, 'modalProps.editing'));
     }, [ _.get(props, 'modalProps.editing') ]);
@@ -40,6 +71,7 @@ const StoreProductModal = props => {
                 editing={ editing }
                 modalProps={ props.modalProps }
                 resetModal={ props.resetModal }
+                warehouses={ warehouses }
             />
         </Modal>
     );

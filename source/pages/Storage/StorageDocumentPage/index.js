@@ -401,6 +401,7 @@ class StorageDocumentPage extends Component {
         .then(function (warehouses) {
             const type = that.props.location.type;
             if(type && warehouses.length) {
+                console.log(type)
                 that.state.formData.type = type;
                 var { incomeWarehouseId, expenseWarehouseId } = that.state.formData;
                 switch(type) {
@@ -687,7 +688,7 @@ class StorageDocumentPage extends Component {
                         : null}
                         {formData.status != DONE && (
                             <div style={{display: 'flex'}}>
-                                {formData.type == ORDER && (formData.documentType == SUPPLIER || formData.documentType == ORDERINCOME) &&
+                                {formData.type == ORDER && formData.status == NEW && (formData.documentType == SUPPLIER || formData.documentType == ORDERINCOME) &&
                                     <AutomaticOrderCreationModal
                                         supplierId={formData.counterpartId}
                                         addDocProduct={this.addDocProduct}
@@ -695,7 +696,7 @@ class StorageDocumentPage extends Component {
                                         documentType={formData.documentType}
                                     />
                                 }
-                                {((formData.type == INCOME && formData.documentType == CLIENT) || (formData.type == EXPENSE && formData.documentType == SUPPLIER)) &&
+                                {((formData.type == INCOME && formData.status == NEW && formData.documentType == CLIENT) || (formData.type == EXPENSE && formData.documentType == SUPPLIER)) &&
                                     <ReturnModal
                                         counterpartId={formData.counterpartId}
                                         addDocProduct={this.addDocProduct}
