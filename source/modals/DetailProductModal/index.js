@@ -288,7 +288,7 @@ class DetailProductModal extends React.Component{
                                     showSearch
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                                     value={elem.supplierId ? elem.supplierId : undefined}
-                                    style={{maxWidth: 200, minWidth: 160}}
+                                    style={{minWidth: 160, maxWidth: 200}}
                                     dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                                     filterOption={(input, option) => {
                                         return (
@@ -307,7 +307,7 @@ class DetailProductModal extends React.Component{
                                 </Select>
                                 :
                                 <Input
-                                    style={{maxWidth: 180, color: 'black'}}
+                                    style={{minWidth: 80, maxWidth: 180, color: 'black'}}
                                     disabled
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                                     value={data}
@@ -536,7 +536,7 @@ class DetailProductModal extends React.Component{
                         count: element.count ? element.count : 1,
                         price: element.price ? Math.round(element.price*10)/10  : 1,
                         reservedFromWarehouseId: element.reservedFromWarehouseId || null,
-                        supplierId: element.supplierId ? element.supplierId : null,
+                        supplierId: element.supplierId,
                         comment: element.comment || {
                             comment: undefined,
                             positions: [],
@@ -823,6 +823,7 @@ class DetailProductModal extends React.Component{
                         <Radio value={2}><FormattedMessage id="details_table.direct_editing"/></Radio>
                         <Radio value={3}><FormattedMessage id="details_table.selection_by_product_code"/></Radio>
                         <Radio value={4}><FormattedMessage id="details_table.oils_and_liquids"/></Radio>
+                        <Radio value={5}><FormattedMessage id="navigation.storage"/></Radio>
                     </Radio.Group>
                     </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>

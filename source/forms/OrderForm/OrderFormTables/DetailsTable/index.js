@@ -270,113 +270,17 @@ class DetailsTable extends Component {
                 width:     'auto',
                 key:       'reserve',
                 render:    elem => {
+                    const confirmed = elem.agreement.toLowerCase();
+                    const disabled =
+                        confirmed != 'undefined' || this.props.disabled || !elem.id;
                     return (
-                        <Button
-                            style={elem.reservedFromWarehouseId && {
-                                color: elem.reserved ? 'var(--green)' : null,
-                            }}
-                            disabled={!elem.productId}
-                            onClick={()=>{
-                                const data = {
-                                    status: "DONE",
-                                    documentType: "TRANSFER",
-                                    type: "EXPENSE",
-                                    supplierDocNumber: this.props.orderId,
-                                    payUntilDatetime: null,
-                                    docProducts:[
-                                        {
-                                            productId: elem.productId,
-                                            quantity: !elem.reserved ? elem.count : elem.reservedCount,
-                                            stockPrice: elem.purchasePrice,
-                                        }
-                                    ],
-                                    warehouseId: !elem.reserved ? elem.reservedFromWarehouseId : this.state.reserveId,
-                                    counterpartWarehouseId: !elem.reserved ? this.state.reserveId : elem.reservedFromWarehouseId,
-                                    orderId: this.props.orderId,
-                                };
-                                console.log(data);
-                                var that = this;
-                                let token = localStorage.getItem('_my.carbook.pro_token');
-                                let url = __API_URL__ + `/store_docs`;
-                                fetch(url, {
-                                    method:  'POST',
-                                    headers: {
-                                        Authorization: token,
-                                    },
-                                    body: JSON.stringify(data),
-                                })
-                                .then(function(response) {
-                                    if (response.status !== 200) {
-                                        return Promise.reject(new Error(response.statusText));
-                                    }
-                                    return Promise.resolve(response);
-                                })
-                                .then(function(response) {
-                                    return response.json();
-                                })
-                                .then(function(response) {
-                                    if(response.created) {
-                                        notification.success({
-                                            message: elem.reserved ? 
-                                                `Отрезервировано ${data.docProducts[0].quantity} товаров` :
-                                                `Зарезервировано ${data.docProducts[0].quantity} товаров со склада ${elem.reservedFromWarehouseName}`,
-                                        });
-                                        elem.reservedCount = elem.reserved ? 0 : elem.count;
-                                        elem.reserved = !elem.reserved;
-                                        that.updateDetail(elem.key, elem);
-                                    }
-                                    else {
-                                        const availableCount = response.notAvailableProducts[0].available;
-                                        confirm({
-                                            title: 'На складе недостаточно свободных товаров, продолжить?',
-                                            content: `Доступное количество товара на складе ${elem.reservedFromWarehouseName} - ${availableCount}`,
-                                            onOk() {
-                                                data.docProducts[0].quantity = availableCount;
-                                                console.log(data)
-                                                fetch(url, {
-                                                    method:  'POST',
-                                                    headers: {
-                                                        Authorization: token,
-                                                    },
-                                                    body: JSON.stringify(data),
-                                                })
-                                                .then(function(response) {
-                                                    if (response.status !== 200) {
-                                                        return Promise.reject(new Error(response.statusText));
-                                                    }
-                                                    return Promise.resolve(response);
-                                                })
-                                                .then(function(response) {
-                                                    return response.json();
-                                                })
-                                                .then(function(response) {
-                                                    console.log(response);
-                                                    if(response.created) {
-                                                        elem.reservedCount = elem.reserved ? 0 : availableCount;
-                                                        elem.reserved = !elem.reserved;
-                                                        that.updateDetail(elem.key, elem);
-                                                        notification.success({
-                                                            message: `Зарезервировано ${data.docProducts[0].quantity} товаров со склада ${elem.reservedFromWarehouseName}`,
-                                                        });
-                                                    }
-                                                })
-                                                .catch(function(error) {
-                                                    console.log('error', error);
-                                                });
-                                            },
-                                            onCancel() {
-                                                console.log('Cancel');
-                                            },
-                                        });
-                                    }
-                                })
-                                .catch(function(error) {
-                                    console.log('error', error);
-                                });
-                            }}
-                        > 
-                            <p>{elem.reservedCount || 0} <FormattedMessage id='pc'/></p>
-                        </Button>
+                        <ReserveButton
+                            detail={elem}
+                            updateDetail={this.updateDetail}
+                            disabled={disabled}
+                            reserveId={this.state.reserveId}
+                            orderId={this.props.orderId}
+                        />
                     );
                 },
             },
@@ -730,7 +634,7 @@ class DetailsTable extends Component {
             storeGroupId:    detail.storeGroupId,
             name:            detail.detailName,
             productCode:     detail.detailCode ? detail.detailCode : null,
-            supplierId:      detail.supplierId ? detail.supplierId : null,
+            supplierId:      detail.supplierId,
             supplierBrandId: detail.supplierBrandId
                 ? detail.supplierBrandId
                 : null,
@@ -1133,7 +1037,7 @@ class QuickEditModal extends React.Component {
         const { detail } = this.props;
 
         return (
-            <>
+            <div>
                 <Button
                     type='primary'
                     disabled={ this.props.disabled }
@@ -1172,7 +1076,141 @@ class QuickEditModal extends React.Component {
                         pagination={ false }
                     />
                 </Modal>
-            </>
+            </div>
         );
+    }
+}
+
+@injectIntl
+class ReserveButton extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            visible:          false,
+            brandId:          undefined,
+            brandSearchValue: '',
+        };
+    }
+
+    render() {
+        const { detail, updateDetail, disabled, reserveId, orderId } = this.props;
+        return (
+            <Button
+                style={detail.reservedFromWarehouseId && {
+                    color: detail.reserved ? 'var(--green)' : null,
+                }}
+                disabled={disabled}
+                onClick={()=>{
+                    if(!detail.productId) {
+                        confirm({
+                            title: this.props.intl.formatMessage({id: 'storage_document.error.product_not_found'}),
+                            onOk() {
+                                
+                            },
+                            onCancel() {
+                            },
+                        });
+                    } else {
+                        const data = {
+                            status: "DONE",
+                            documentType: "TRANSFER",
+                            type: "EXPENSE",
+                            supplierDocNumber: orderId,
+                            payUntilDatetime: null,
+                            docProducts:[
+                                {
+                                    productId: detail.productId,
+                                    quantity: !detail.reserved ? detail.count : detail.reservedCount,
+                                    stockPrice: detail.purchasePrice,
+                                }
+                            ],
+                            warehouseId: !detail.reserved ? detail.reservedFromWarehouseId : reserveId,
+                            counterpartWarehouseId: !detail.reserved ? reserveId : detail.reservedFromWarehouseId,
+                            orderId: this.props.orderId,
+                        };
+                        console.log(data);
+                        var that = this;
+                        let token = localStorage.getItem('_my.carbook.pro_token');
+                        let url = __API_URL__ + `/store_docs`;
+                        fetch(url, {
+                            method:  'POST',
+                            headers: {
+                                Authorization: token,
+                            },
+                            body: JSON.stringify(data),
+                        })
+                        .then(function(response) {
+                            if (response.status !== 200) {
+                                return Promise.reject(new Error(response.statusText));
+                            }
+                            return Promise.resolve(response);
+                        })
+                        .then(function(response) {
+                            return response.json();
+                        })
+                        .then(function(response) {
+                            if(response.created) {
+                                notification.success({
+                                    message: detail.reserved ? 
+                                        `Отрезервировано ${data.docProducts[0].quantity} товаров` :
+                                        `Зарезервировано ${data.docProducts[0].quantity} товаров со склада ${detail.reservedFromWarehouseName}`,
+                                });
+                                detail.reservedCount = detail.reserved ? 0 : detail.count;
+                                detail.reserved = !detail.reserved;
+                                updateDetail(detail.key, detail);
+                            }
+                            else {
+                                const availableCount = response.notAvailableProducts[0].available;
+                                confirm({
+                                    title: 'На складе недостаточно свободных товаров, продолжить?',
+                                    content: `Доступное количество товара на складе ${detail.reservedFromWarehouseName} - ${availableCount}`,
+                                    onOk() {
+                                        data.docProducts[0].quantity = availableCount;
+                                        console.log(data)
+                                        fetch(url, {
+                                            method:  'POST',
+                                            headers: {
+                                                Authorization: token,
+                                            },
+                                            body: JSON.stringify(data),
+                                        })
+                                        .then(function(response) {
+                                            if (response.status !== 200) {
+                                                return Promise.reject(new Error(response.statusText));
+                                            }
+                                            return Promise.resolve(response);
+                                        })
+                                        .then(function(response) {
+                                            return response.json();
+                                        })
+                                        .then(function(response) {
+                                            console.log(response);
+                                            if(response.created) {
+                                                detail.reservedCount = detail.reserved ? 0 : availableCount;
+                                                detail.reserved = !detail.reserved;
+                                                updateDetail(detail.key, detail);
+                                                notification.success({
+                                                    message: `Зарезервировано ${data.docProducts[0].quantity} товаров со склада ${detail.reservedFromWarehouseName}`,
+                                                });
+                                            }
+                                        })
+                                        .catch(function(error) {
+                                            console.log('error', error);
+                                        });
+                                    },
+                                    onCancel() {
+                                    },
+                                });
+                            }
+                        })
+                        .catch(function(error) {
+                            console.log('error', error);
+                        });
+                    }}
+                }
+            > 
+                <p>{detail.reservedCount || 0} <FormattedMessage id='pc'/></p>
+            </Button>
+        )
     }
 }
