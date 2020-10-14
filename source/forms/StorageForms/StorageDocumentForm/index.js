@@ -1476,6 +1476,7 @@ class AlertModal extends React.Component {
             multiplicity,
             min,
             max,
+            storeInWarehouse,
         } = this.state;
 
         if(!brandId || !detailCode || !groupId || !detailName) {
@@ -1495,8 +1496,11 @@ class AlertModal extends React.Component {
             certificate: certificate,
             priceGroupNumber: priceGroupNumber,
             defaultWarehouseId: defaultWarehouseId,
-            min: min,
-            max: max,
+        }
+
+        if(storeInWarehouse) {
+            postData.min = min;
+            postData.max = max;
         }
 
         var that = this;
