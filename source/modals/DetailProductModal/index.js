@@ -238,9 +238,10 @@ class DetailProductModal extends React.Component{
                                 tableKey={0}
                                 onSelect={this.setCode}
                                 disabled={
-                                    elem.storeGroupId == null && this.state.radioValue != 3 
+                                    elem.storeGroupId == null && this.state.radioValue != 3 && this.state.radioValue != 5 
                                     || this.state.radioValue == 2 
-                                    || this.state.radioValue == 3 && (data || '').length < 3}
+                                    || this.state.radioValue == 3 && (data || '').length < 3
+                                }
                                 codeSearch={this.state.radioValue == 3}
                                 tecdocId={this.props.tecdocId}
                                 storeGroupId={this.state.mainTableSource[0].storeGroupId}
@@ -501,6 +502,7 @@ class DetailProductModal extends React.Component{
                 details: [],
                 services: [],
             }
+            console.log(this.state.mainTableSource)
             this.state.mainTableSource.map((element)=>{
                 if(!element.productId) {
                     data.details.push({
@@ -623,7 +625,7 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].productId = productId;
         this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
         this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
-        if(this.state.radioValue == 3 || this.state.radioValue == 4) {
+        if(this.state.radioValue == 3 || this.state.radioValue == 4 || this.state.radioValue == 5) {
             this.state.mainTableSource[key].storeGroupId = storeGroupId;
             this.state.mainTableSource[key].detailName = String(storeGroupName);
         }
@@ -661,15 +663,20 @@ class DetailProductModal extends React.Component{
     }
 
     unsetSupplier(key = 0) {
-        this.state.mainTableSource[key].productId = undefined;
-        this.state.mainTableSource[key].isFromStock = false;
-        this.state.mainTableSource[key].supplierId = null;
-        this.state.mainTableSource[key].supplierName = undefined;
-        this.state.mainTableSource[key].supplierBrandId = undefined;
-        this.state.mainTableSource[key].supplierOriginalCode = undefined;
-        this.state.mainTableSource[key].supplierProductNumber = undefined;
-        this.state.mainTableSource[key].store = undefined;
-        this.state.mainTableSource[key].reservedFromWarehouseId = undefined;
+        if(this.state.radioValue == 5) {
+            this.state.mainTableSource[0].supplierId = 0;
+            this.state.mainTableSource[0].supplierName = this.props.intl.formatMessage({id: 'navigation.storage'});
+        } else {
+            this.state.mainTableSource[key].productId = undefined;
+            this.state.mainTableSource[key].isFromStock = false;
+            this.state.mainTableSource[key].supplierId = null;
+            this.state.mainTableSource[key].supplierName = undefined;
+            this.state.mainTableSource[key].supplierBrandId = undefined;
+            this.state.mainTableSource[key].supplierOriginalCode = undefined;
+            this.state.mainTableSource[key].supplierProductNumber = undefined;
+            this.state.mainTableSource[key].store = undefined;
+            this.state.mainTableSource[key].reservedFromWarehouseId = undefined;
+        }
         this.setState({
             update: true
         })

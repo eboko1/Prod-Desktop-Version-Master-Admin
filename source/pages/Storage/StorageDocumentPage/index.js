@@ -1562,6 +1562,7 @@ class AutomaticOrderCreationModal extends React.Component {
                 return response.json();
             })
             .then(function(data) {
+                console.log(data);
                 data.map((elem, i)=>{
                     elem.quantity = elem.quantity || 1;
                     elem.toOrder = elem.quantity;
@@ -1569,6 +1570,7 @@ class AutomaticOrderCreationModal extends React.Component {
                     elem.detailName = elem.name;
                     elem.detailCode = elem.code;
                     elem.sum = elem.quantity * elem.stockPrice;
+                    elem.groupId = elem.storeGroupId;
                 })
                 that.setState({
                     dataSource: data,
@@ -1597,6 +1599,7 @@ class AutomaticOrderCreationModal extends React.Component {
                 return response.json();
             })
             .then(function(data) {
+                console.log(data);
                 data.map((elem, i)=>{
                     elem.quantity = elem.quantity || 1;
                     elem.orderedSum = elem.sum;
@@ -1610,6 +1613,7 @@ class AutomaticOrderCreationModal extends React.Component {
                     elem.detailCode = elem.code;
                     elem.sum = elem.quantity * elem.stockPrice;
                     elem.orderedSum = elem.sum;
+                    elem.groupId = elem.storeGroupId;
                 })
                 that.setState({
                     dataSource: data,

@@ -1129,6 +1129,7 @@ class AddProductModal extends React.Component {
     componentDidUpdate(prevProps) {
         if(!prevProps.visible && this.props.visible) {
             const { product } = this.props;
+            console.log(product);
             if(product) {
                 this.setState({
                     editMode: true,
@@ -1141,6 +1142,8 @@ class AddProductModal extends React.Component {
                     stockPrice: product.stockPrice,
                     quantity: product.quantity,
                     productId: product.productId,
+                    ordersAppurtenancies: product.ordersAppurtenancies,
+                    groupId: product.groupId,
                 })
             }
         }
@@ -1162,6 +1165,7 @@ class AddProductModal extends React.Component {
             detailCodeSearch,
             storageBalance,
         } = this.state;
+
         return (
             <Modal
                 visible={this.props.visible}
@@ -1457,6 +1461,41 @@ class AlertModal extends React.Component {
         });
     }
 
+    ordersAppurtenancies(orderIds = [], productId) {
+        const postData = [
+            {
+                ordersAppurtenancies: [...orderIds],
+                productId: productId
+            }
+        ];
+
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/orders/update_orders_appurtenancies_from_stock`;
+        fetch(url, {
+            method: "PUT",
+            headers: {
+                Authorization: token,
+            },
+            body: JSON.stringify(postData)
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    }
+
     postStoreProduct() {
         const { intl: {formatMessage} } = this.props;
         const {
@@ -1474,6 +1513,7 @@ class AlertModal extends React.Component {
             min,
             max,
             storeInWarehouse,
+            ordersAppurtenancies,
         } = this.state;
 
         if(!brandId || !detailCode || !groupId || !detailName) {
@@ -1520,7 +1560,9 @@ class AlertModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
+            console.log(data);
             that.setState({visible: false});
+            that.ordersAppurtenancies(ordersAppurtenancies, data.id)
             that.props.confirmAlertModal({
                 brandId: brandId,
                 brandName: brandName,
