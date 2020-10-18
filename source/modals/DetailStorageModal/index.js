@@ -220,6 +220,7 @@ class DetailStorageModal extends React.Component{
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                             />
                             <DetailSupplierModal
+                                disabled={this.props.stockMode}
                                 user={this.props.user}
                                 setStoreSupplier={this.setSupplier}
                                 keyValue={elem.key}
@@ -293,8 +294,12 @@ class DetailStorageModal extends React.Component{
                     return Number(aStore) - Number(bStore);
                 },
                 sortDirections: ['descend', 'ascend'],
-                render: (store) => {
-                    return (
+                render: (store, elem) => {
+                    return this.props.stockMode ? 
+                    (
+                        elem.countInWarehouses
+                    ) :
+                    (
                         <AvailabilityIndicator
                             indexArray={store}
                         />
@@ -402,6 +407,58 @@ class DetailStorageModal extends React.Component{
     };
 
     fetchData() {
+        if(this.props.stockMode) {
+            var that = this;
+            let token = localStorage.getItem('_my.carbook.pro_token');
+            let url = __API_URL__ + `/store_products`;
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                },
+            })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log(data);
+                data.list.map((elem, key)=>{
+                    elem.key = key;
+                    elem.productId = elem.id;
+                    elem.images = [];
+                    elem.attributes = [];
+                    elem.supplierId = elem.brand && elem.brand.id;
+                    elem.supplierName = elem.brand && elem.brand.name;
+                    elem.businessSupplierId = 0;
+                    elem.businessSupplierName = that.props.intl.formatMessage({id: 'navigation.storage'});
+                    elem.purchasePrice = elem.stockPrice;
+                    elem.salePrice = elem.stockPrice * (elem.priceGroup ? elem.priceGroup.multiplier : 1.4);
+                    elem.partNumber = elem.code;
+                    elem.description = elem.name;
+                    elem.storeGroupId = elem.groupId;
+                    elem.storeGroupName = elem.name;
+                    elem.price = {
+                        isFromStock: true,
+                        defaultWarehouseId: elem.defaultWarehouseId,
+                    };
+                    elem.store = [elem.countInWarehouses, 0, 0, 0]
+                })
+                that.setState({
+                    fetched: true,
+                    dataSource: data.list,
+                })
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
+            return;
+        }
         if(this.props.codeSearch) {
             var that = this;
             let token = localStorage.getItem('_my.carbook.pro_token');
