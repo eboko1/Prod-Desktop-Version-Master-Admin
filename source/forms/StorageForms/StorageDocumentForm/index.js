@@ -553,7 +553,7 @@ class DocProductsTable extends React.Component {
                     return this.props.disabled ? null :
                         !elem.detailCode ?
                             <Button
-                                type='primary'
+                                
                                 onClick={()=>{
                                     this.props.showModal();
                                 }}
@@ -563,6 +563,7 @@ class DocProductsTable extends React.Component {
                             elem.productId ? 
                                 <Button
                                     disabled={this.props.disabled}
+                                    type='primary'
                                     onClick={()=>{
                                         this.props.editProduct(elem.key);
                                     }}
@@ -689,7 +690,7 @@ class DocProductsTable extends React.Component {
                 render:     (elem)=>{
                     return this.props.disabled ? null : (
                         <Button
-                            disabled={this.props.disabled}
+                            disabled={this.props.disabled || !elem.detailCode}
                             type={'danger'}
                             onClick={()=>{
                                 this.props.deleteDocProduct(elem.key)
@@ -786,7 +787,6 @@ class AddProductModal extends React.Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.setState({
                 detailOptions: data,
             })
@@ -846,7 +846,6 @@ class AddProductModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data.list)
             that.setState({
                 storageProducts: data.list
             })
@@ -930,7 +929,6 @@ class AddProductModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             if(data.length) {   
                 that.setState({
                     stockPrice: data[0].purchasePrice,
@@ -944,7 +942,7 @@ class AddProductModal extends React.Component {
     }
 
     getProductId(detailCode) {
-        const { storageProducts, storageBalance, detailName } = this.state;
+        const { storageProducts, storageBalance, detailName, quantity } = this.state;
         const storageProduct = storageProducts.find((elem)=>elem.code==detailCode);
         if(storageProduct) {
             storageBalance[0].count = storageProduct.countInWarehouses;
@@ -981,7 +979,7 @@ class AddProductModal extends React.Component {
                 productId: undefined,
                 detailName: this.props.warning ? detailName : undefined,
                 tradeCode: undefined,
-                quantity: 1,
+                quantity: quantity || 1,
             })
             return false;
         }
@@ -1076,7 +1074,6 @@ class AddProductModal extends React.Component {
             })
         }
         else {
-            console.log(this)
             if(editMode) {
                 this.props.editDocProduct(
                     this.props.product.key,
@@ -1476,6 +1473,7 @@ class AlertModal extends React.Component {
             multiplicity,
             min,
             max,
+            storeInWarehouse,
         } = this.state;
 
         if(!brandId || !detailCode || !groupId || !detailName) {
@@ -1495,8 +1493,11 @@ class AlertModal extends React.Component {
             certificate: certificate,
             priceGroupNumber: priceGroupNumber,
             defaultWarehouseId: defaultWarehouseId,
-            min: min,
-            max: max,
+        }
+
+        if(storeInWarehouse) {
+            postData.min = min;
+            postData.max = max;
         }
 
         var that = this;
@@ -1660,7 +1661,6 @@ class AlertModal extends React.Component {
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                console.log(option)
                                 this.setState({
                                     groupId: value,
                                     detailName: detailName ? detailName : option.props.name,

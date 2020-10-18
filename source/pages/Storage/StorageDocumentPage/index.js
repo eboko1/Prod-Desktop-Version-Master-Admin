@@ -190,7 +190,6 @@ class StorageDocumentPage extends Component {
     verifyFields() {
         const { intl: {formatMessage} } = this.props;
         const { formData } = this.state;
-        console.log(formData);
         const showError = () => {
             notification.error({
                 message: formatMessage({id: 'storage_document.error.required_fields'}),
@@ -305,7 +304,7 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            that.props.history.push(`${book.storageDocument}/${data.id}`);
+            that.props.history.replace(`${book.storageDocument}/${data.id}`);
             window.location.reload();
         })
         .catch(function (error) {
@@ -316,7 +315,7 @@ class StorageDocumentPage extends Component {
         });
     }
 
-    updateDocument() {
+    updateDocument(saveMode = false) {
         if(!this.verifyFields()) {
             return;
         }
@@ -359,18 +358,28 @@ class StorageDocumentPage extends Component {
                     quantity: elem.quantity,
                     stockPrice: elem.stockPrice,
                 })
-            } else {
+            } else if(!saveMode) {
                 notification.warning({
                     message: this.props.intl.formatMessage({id: 'error'}),
                 });
                 productsError = true;
                 return;
+            } else if(elem.code && elem.brandId) {
+                createData.docProducts.push({
+                    addToStore: true,
+                    groupId: elem.groupId,
+                    code: elem.detailCode,
+                    name: elem.detailName || elem.detailCode,
+                    brandId: elem.brandId,
+
+                    quantity: elem.quantity,
+                    stockPrice: elem.stockPrice,
+                })
             }
         })
 
         if(productsError) return;
         this.setState({loading: true});
-        console.log(formData, createData)
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/store_docs/${this.props.id}`;
@@ -746,14 +755,11 @@ class StorageDocumentPage extends Component {
                                     <Icon
                                         type='save'
                                         style={{
-                                            ...headerIconStyle,
-                                            color: this.state.warnings ? 'var(--text2)' : null,
-                                            pointerEvents: this.state.warnings ? 'none' : 'all',
-                                        }}
+                                            ...headerIconStyle,                                        }}
                                         onClick={()=>{
                                             if(id) {
                                                 this.setState({loading: true});
-                                                setTimeout(()=> this.updateDocument(), 500);
+                                                setTimeout(()=> this.updateDocument(true), 500);
                                             } 
                                             else {
                                                 this.createDocument();
@@ -943,7 +949,6 @@ class ReturnModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data.list)
             that.setState({
                 storageProducts: data.list
             })
@@ -1098,6 +1103,7 @@ class AutomaticOrderCreationModal extends React.Component {
         this.state = {
             dataSource: [],
             visible: false,
+            loading: true,
         };
 
         const { formatMessage } = props.intl;
@@ -1531,6 +1537,7 @@ class AutomaticOrderCreationModal extends React.Component {
         this.setState({
             dataSource: [],
             visible: false,
+            loading: true,
         });
     }
 
@@ -1555,7 +1562,6 @@ class AutomaticOrderCreationModal extends React.Component {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 data.map((elem, i)=>{
                     elem.quantity = elem.quantity || 1;
                     elem.toOrder = elem.quantity;
@@ -1566,6 +1572,7 @@ class AutomaticOrderCreationModal extends React.Component {
                 })
                 that.setState({
                     dataSource: data,
+                    loading: false,
                 })
             })
             .catch(function(error) {
@@ -1590,7 +1597,6 @@ class AutomaticOrderCreationModal extends React.Component {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 data.map((elem, i)=>{
                     elem.quantity = elem.quantity || 1;
                     elem.orderedSum = elem.sum;
@@ -1607,6 +1613,7 @@ class AutomaticOrderCreationModal extends React.Component {
                 })
                 that.setState({
                     dataSource: data,
+                    loading: false,
                 })
             })
             .catch(function(error) {
@@ -1617,7 +1624,7 @@ class AutomaticOrderCreationModal extends React.Component {
 
 
     render() {
-        const { visible, dataSource } = this.state;
+        const { visible, dataSource, loading } = this.state;
         return (
             <div>
                 <Icon
@@ -1652,6 +1659,7 @@ class AutomaticOrderCreationModal extends React.Component {
                         }
                         dataSource={dataSource}
                         pagination={{pageSize: 6}}
+                        loading={loading}
                     />
                 </Modal>
             </div>
