@@ -1706,7 +1706,7 @@ class AlertModal extends React.Component {
                                 this.setState({
                                     groupId: value,
                                     detailName: detailName ? detailName : option.props.name,
-                                    priceGroupNumber: option.props.priceGroup,
+                                    priceGroupNumber: option.props.priceGroup || undefined,
                                 })
                             }}
                         />

@@ -591,7 +591,7 @@ class StorageDocumentPage extends Component {
             data.payUntilDatetime = data.payUntilDatetime && moment(data.payUntilDatetime);
             data.docProducts.map((elem, key)=>{
                 elem.brandId = elem.product.brandId,
-                elem.brandName = elem.product.brand.name,
+                elem.brandName = elem.product.brand && elem.product.brand.name,
                 elem.detailCode = elem.product.code,
                 elem.detailName = elem.product.name,
                 elem.groupId = elem.product.groupId,
@@ -1607,7 +1607,7 @@ class AutomaticOrderCreationModal extends React.Component {
                     elem.orderedQuantity = elem.quantity;
                     elem.productId = elem.id;
                     elem.toOrder = elem.quantity;
-                    elem.brandName = elem.brand.name;
+                    elem.brandName = elem.brand && elem.brand.name;
                     elem.key = i;
                     elem.detailName = elem.name;
                     elem.detailCode = elem.code;
