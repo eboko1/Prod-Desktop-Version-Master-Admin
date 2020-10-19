@@ -385,15 +385,20 @@ export function* fetchProductSaga() {
         try {
             const { payload } = yield take(FETCH_PRODUCT);
             yield put(setProductLoading(true));
-            const response = yield call(
-                fetchAPI,
-                'GET',
-                `/store_products/${payload}`,
-            );
-
-            yield put(fetchProductSuccess(response));
+            if(payload) {
+                const response = yield call(
+                    fetchAPI,
+                    'GET',
+                    `/store_products/${payload}`,
+                );
+                yield put(fetchProductSuccess(response));
+            } else {
+                yield put(fetchProductSuccess({}));
+            }
+            
         } catch (error) {
             yield put(setErrorMessage(error));
+            put(fetchProductSuccess({}))
         } finally {
             yield put(setProductLoading(false));
         }

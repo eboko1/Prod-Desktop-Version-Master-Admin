@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Button, Input, Table, Select, Icon, DatePicker, AutoComplete, InputNumber, Modal, TreeSelect, notification, Checkbox } from 'antd';
+import { Form, Button, Input, Table, Select, Icon, DatePicker, AutoComplete, InputNumber, Modal, TreeSelect, notification, Checkbox, Badge } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -24,6 +24,7 @@ const formItemStyle = {
         marginBottom: 0,
     }
 };
+const disabledSelectText = {color: 'var(--text)'};
 const mask = "0,0.00";
 const INCOME = 'INCOME',
       EXPENSE = 'EXPENSE',
@@ -53,16 +54,18 @@ class StorageDocumentForm extends Component {
             counterpartOptionInfo: {
                 value: undefined,
                 children: "",
-            }
+            },
+            warning: false,
         };
         this.hideModal = this.hideModal.bind(this);
         this.showModal = this.showModal.bind(this);
         this.editProduct = this.editProduct.bind(this);
     }
 
-    editProduct(key) {
+    editProduct(key, warning=false) {
         this.setState({
             editKey: key,
+            warning: warning,
             modalVisible: true,
         })
     }
@@ -76,6 +79,7 @@ class StorageDocumentForm extends Component {
     hideModal() {
         this.setState({
             modalVisible: false,
+            warning: false,
             editKey: undefined,
         })
     }
@@ -95,7 +99,7 @@ class StorageDocumentForm extends Component {
     }
  
     render() {
-        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo } = this.state;
+        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo, warning } = this.state;
         const {
             id,
             addDocProduct,
@@ -106,7 +110,8 @@ class StorageDocumentForm extends Component {
             brands,
             deleteDocProduct,
             editDocProduct,
-            clientList
+            clientList,
+            loading,
         } = this.props;
 
         const {
@@ -147,6 +152,7 @@ class StorageDocumentForm extends Component {
                         <Select
                             disabled={disabled || status==NEW}
                             value={type}
+                            style={disabledSelectText}
                             onChange={(value)=>{
                                 if(value == INCOME || value == ORDER) {
                                     updateFormData({
@@ -207,6 +213,7 @@ class StorageDocumentForm extends Component {
                         <Select
                             disabled={disabled || status==NEW}
                             value={documentType}
+                            style={disabledSelectText}
                             onChange={(value)=>{
                                 updateFormData({
                                     documentType: value,
@@ -236,6 +243,7 @@ class StorageDocumentForm extends Component {
                             showSearch
                             disabled={disabled || status==NEW}
                             value={counterpartId}
+                            style={disabledSelectText}
                             onChange={(value, option)=>{
                                 updateFormData({
                                     counterpartId: value,
@@ -305,6 +313,7 @@ class StorageDocumentForm extends Component {
                         <Select
                             disabled={type == INCOME || type == ORDER || disabled}
                             value={expenseWarehouseId}
+                            style={disabledSelectText}
                             onSelect={(value)=>{
                                 updateFormData({
                                     expenseWarehouseId: value,
@@ -328,6 +337,7 @@ class StorageDocumentForm extends Component {
                         <Select
                             disabled={type == EXPENSE || type == ORDER || type == RESERVE || disabled}
                             value={incomeWarehouseId}
+                            style={disabledSelectText}
                             onSelect={(value)=>{
                                 updateFormData({
                                     incomeWarehouseId: value,
@@ -352,6 +362,7 @@ class StorageDocumentForm extends Component {
                         <Input
                             disabled={disabled}
                             value={supplierDocNumber}
+                            style={{color: 'var(--text3)'}}
                             onChange={(event)=>{
                                 updateFormData({
                                     supplierDocNumber: event.target.value,
@@ -378,7 +389,7 @@ class StorageDocumentForm extends Component {
                                 background: 'var(--static)',
                                 fontSize: 16,
                                 height: '100%',
-                                margin: 15,
+                                margin: '15px 0px',
                                 justifyContent: 'center'
                             }}
                         >
@@ -472,7 +483,7 @@ class StorageDocumentForm extends Component {
                         <FormattedMessage id="storage_document.pay_until" />
                         <DatePicker
                             style={{
-                                width: '100%'
+                                width: '100%',
                             }}
                             defaultValue={payUntilDatetime}
                             disabled={disabled || onlySum}
@@ -490,6 +501,7 @@ class StorageDocumentForm extends Component {
                 margin: "24px",
             }}>
                 <DocProductsTable
+                    loading={loading}
                     docProducts={docProducts}
                     disabled={disabled || !(status)}
                     updateFormData={updateFormData}
@@ -507,11 +519,13 @@ class StorageDocumentForm extends Component {
                         brands={brands}
                         addDocProduct={addDocProduct}
                         product={editKey !== undefined ? docProducts[editKey] : undefined}
+                        editKey={editKey}
                         editDocProduct={editDocProduct}
                         isIncome={type == INCOME}
                         priceDisabled={type == TRANSFER || type == RESERVE || documentType == OWN_CONSUMPTION}
                         warehouses={warehouses}
                         warehouseId={incomeWarehouseId || expenseWarehouseId}
+                        warning={warning}
                     /> 
                 : null}
             </div>
@@ -537,23 +551,38 @@ class DocProductsTable extends React.Component {
                 key:       'edit',
                 render:     (elem)=>{
                     return this.props.disabled ? null :
-                        elem.productId ?
+                        !elem.detailCode ?
                             <Button
-                                disabled={this.props.disabled}
-                                onClick={()=>{
-                                    this.props.editProduct(elem.key);
-                                }}
-                            >
-                                <Icon type='edit' />
-                            </Button> : 
-                            <Button
-                                type='primary'
+                                
                                 onClick={()=>{
                                     this.props.showModal();
                                 }}
                             >
                                 <Icon type='plus'/>
-                            </Button>
+                            </Button> :
+                            elem.productId ? 
+                                <Button
+                                    disabled={this.props.disabled}
+                                    type='primary'
+                                    onClick={()=>{
+                                        this.props.editProduct(elem.key);
+                                    }}
+                                >
+                                    <Icon type='edit' />
+                                </Button> :
+                                <Button
+                                    disabled={this.props.disabled}
+                                    type='primary'
+                                    style={{
+                                        backgroundColor: 'var(--approve)'
+                                    }}
+                                    onClick={()=>{
+                                        this.props.editProduct(elem.key, true);
+                                    }}
+                                >
+                                    <Icon type='warning'/>
+                                </Button>
+                            
                 }
             },
             {
@@ -661,7 +690,7 @@ class DocProductsTable extends React.Component {
                 render:     (elem)=>{
                     return this.props.disabled ? null : (
                         <Button
-                            disabled={this.props.disabled}
+                            disabled={this.props.disabled || !elem.detailCode}
                             type={'danger'}
                             onClick={()=>{
                                 this.props.deleteDocProduct(elem.key)
@@ -679,10 +708,10 @@ class DocProductsTable extends React.Component {
     }
 
     render() {
-        const { disabled, docProducts } = this.props;
+        const { disabled, docProducts, loading } = this.props;
         var tableData = docProducts;
-        tableData = tableData.filter((elem)=>elem.productId)
-        if(!disabled && (!tableData.length || tableData[tableData.length-1].productId)) {
+        tableData = tableData.filter((elem)=>elem.detailCode);
+        if(!disabled && (!tableData.length || tableData[tableData.length-1].detailCode)) {
             tableData.push({
                 key: tableData.length,
                 productId: undefined,
@@ -693,6 +722,7 @@ class DocProductsTable extends React.Component {
                 columns={this.columns}
                 dataSource={tableData}
                 pagination={false}
+                loading={loading}
             />
         );
     }
@@ -757,7 +787,6 @@ class AddProductModal extends React.Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.setState({
                 detailOptions: data,
             })
@@ -817,7 +846,6 @@ class AddProductModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data.list)
             that.setState({
                 storageProducts: data.list
             })
@@ -901,7 +929,6 @@ class AddProductModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             if(data.length) {   
                 that.setState({
                     stockPrice: data[0].purchasePrice,
@@ -915,7 +942,7 @@ class AddProductModal extends React.Component {
     }
 
     getProductId(detailCode) {
-        const { storageProducts, storageBalance } = this.state;
+        const { storageProducts, storageBalance, detailName, quantity } = this.state;
         const storageProduct = storageProducts.find((elem)=>elem.code==detailCode);
         if(storageProduct) {
             storageBalance[0].count = storageProduct.countInWarehouses;
@@ -950,9 +977,9 @@ class AddProductModal extends React.Component {
             this.setState({
                 groupId: undefined,
                 productId: undefined,
-                detailName: undefined,
+                detailName: this.props.warning ? detailName : undefined,
                 tradeCode: undefined,
-                quantity: 1,
+                quantity: quantity || 1,
             })
             return false;
         }
@@ -978,20 +1005,37 @@ class AddProductModal extends React.Component {
             tradeCode
         } = productData;
 
-        this.props.addDocProduct({
-            productId: productId,
-            detailCode: detailCode,
-            brandName: brandName,
-            brandId: brandId,
-            tradeCode: tradeCode,
-            detailName: detailName,
-            stockPrice: stockPrice,
-            quantity: quantity,
-            sum: quantity*stockPrice,
-        });
-        this.setState({
-            alertModalVisible: false,
-        });
+        if(!this.props.warning) {
+            this.props.addDocProduct({
+                productId: productId,
+                detailCode: detailCode,
+                brandName: brandName,
+                brandId: brandId,
+                tradeCode: tradeCode,
+                detailName: detailName,
+                stockPrice: stockPrice,
+                quantity: quantity,
+                sum: quantity*stockPrice,
+            });
+            this.setState({
+                alertModalVisible: false,
+            });
+        } else {
+            this.props.editDocProduct(
+                this.props.product.key,
+                {
+                    productId: productId,
+                    detailCode: detailCode,
+                    brandName: brandName,
+                    brandId: brandId,
+                    tradeCode: tradeCode,
+                    detailName: detailName,
+                    stockPrice: stockPrice,
+                    quantity: quantity,
+                    sum: quantity*stockPrice,
+                }
+            );
+        }
         this.handleCancel();
         this.getStorageProducts();
     }
@@ -1085,6 +1129,7 @@ class AddProductModal extends React.Component {
     componentDidUpdate(prevProps) {
         if(!prevProps.visible && this.props.visible) {
             const { product } = this.props;
+            console.log(product);
             if(product) {
                 this.setState({
                     editMode: true,
@@ -1097,6 +1142,8 @@ class AddProductModal extends React.Component {
                     stockPrice: product.stockPrice,
                     quantity: product.quantity,
                     productId: product.productId,
+                    ordersAppurtenancies: product.ordersAppurtenancies,
+                    groupId: product.groupId,
                 })
             }
         }
@@ -1118,6 +1165,7 @@ class AddProductModal extends React.Component {
             detailCodeSearch,
             storageBalance,
         } = this.state;
+
         return (
             <Modal
                 visible={this.props.visible}
@@ -1413,6 +1461,41 @@ class AlertModal extends React.Component {
         });
     }
 
+    ordersAppurtenancies(orderIds = [], productId) {
+        const postData = [
+            {
+                ordersAppurtenancies: [...orderIds],
+                productId: productId
+            }
+        ];
+
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/orders/update_orders_appurtenancies_from_stock`;
+        fetch(url, {
+            method: "PUT",
+            headers: {
+                Authorization: token,
+            },
+            body: JSON.stringify(postData)
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    }
+
     postStoreProduct() {
         const { intl: {formatMessage} } = this.props;
         const {
@@ -1429,6 +1512,8 @@ class AlertModal extends React.Component {
             multiplicity,
             min,
             max,
+            storeInWarehouse,
+            ordersAppurtenancies,
         } = this.state;
 
         if(!brandId || !detailCode || !groupId || !detailName) {
@@ -1448,8 +1533,11 @@ class AlertModal extends React.Component {
             certificate: certificate,
             priceGroupNumber: priceGroupNumber,
             defaultWarehouseId: defaultWarehouseId,
-            min: min,
-            max: max,
+        }
+
+        if(storeInWarehouse) {
+            postData.min = min;
+            postData.max = max;
         }
 
         var that = this;
@@ -1472,7 +1560,9 @@ class AlertModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
+            console.log(data);
             that.setState({visible: false});
+            that.ordersAppurtenancies(ordersAppurtenancies, data.id)
             that.props.confirmAlertModal({
                 brandId: brandId,
                 brandName: brandName,
@@ -1613,7 +1703,6 @@ class AlertModal extends React.Component {
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                console.log(option)
                                 this.setState({
                                     groupId: value,
                                     detailName: detailName ? detailName : option.props.name,

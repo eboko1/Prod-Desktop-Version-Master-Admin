@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Dropdown, Button, Icon, Menu, notification, Modal, Table, InputNumber, Checkbox, Select, AutoComplete } from 'antd';
+import { Dropdown, Button, Icon, Menu, notification, Modal, Table, InputNumber, Checkbox, Select, AutoComplete, Badge } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import { saveAs } from 'file-saver';
@@ -88,6 +88,8 @@ class StorageDocumentPage extends Component {
                 docProducts: [],
             },
             fetched: false,
+            warnings: 0,
+            loading: false,
         }
 
         this.updateFormData = this.updateFormData.bind(this);
@@ -113,13 +115,29 @@ class StorageDocumentPage extends Component {
 
     addDocProduct(docProduct, arrayMode = false) {
         if(arrayMode) {
+            const newProducts = [],
+                  warningProducts = [];
+
             docProduct.map((product)=>{
                 product.sum = Math.round(product.sum*10)/10;
+                this.state.formData.sum += product.sum;
+                if(!product.productId) {
+                    warningProducts.push(product);
+                } else {
+                    newProducts.push(product);
+                }
             })
-            this.state.formData.docProducts = this.state.formData.docProducts.concat(docProduct);
-            this.setState({
-                forceUpdate: true,
-            })
+            this.state.formData.docProducts = this.state.formData.docProducts.concat(newProducts);
+            if(warningProducts.length) {
+                this.state.formData.docProducts = warningProducts.concat(this.state.formData.docProducts);
+                this.setState({
+                    forceUpdate: true,
+                })
+            }
+            else {
+                this.updateDocument();
+            }
+            
         }
         else {
             docProduct.sum = Math.round(docProduct.sum*10)/10;
@@ -131,17 +149,23 @@ class StorageDocumentPage extends Component {
             this.setState({
                 update: true,
             })
+            if(this.props.id && !this.state.warnings) this.updateDocument();
         }
-        if(this.props.id) this.updateDocument();
     }
 
     deleteDocProduct(key) {
         const {formData } = this.state;
         formData.sum -= formData.docProducts[key].sum;
-        const tmpProducts = [...formData.docProducts.filter((elem)=>elem.key != key)];
-        tmpProducts.map((elem, i)=>{elem.key = i});
-        this.updateFormData({docProducts: tmpProducts});
-        this.forceUpdate()
+
+        this.state.formData.docProducts = this.state.formData.docProducts.filter((elem)=>elem.key != key)
+
+        this.setState({loading: true})
+        if(this.state.warnings) {
+            setTimeout(()=> this.setState({loading: false}), 200)
+        } else {
+            setTimeout(()=> this.updateDocument(), 200);
+        }
+          
     } 
 
     editDocProduct(key, docProduct) {
@@ -155,9 +179,8 @@ class StorageDocumentPage extends Component {
         formData.docProducts.map((elem)=>{
             formData.sum += elem.quantity * elem.stockPrice;
         })
-        this.setState({
-            update: true,
-        })
+        if(this.props.id && !this.state.warnings) this.updateDocument();
+        else this.setState({update: true});
     }
 
     //saveFormRef = formRef => {
@@ -167,7 +190,6 @@ class StorageDocumentPage extends Component {
     verifyFields() {
         const { intl: {formatMessage} } = this.props;
         const { formData } = this.state;
-        console.log(formData);
         const showError = () => {
             notification.error({
                 message: formatMessage({id: 'storage_document.error.required_fields'}),
@@ -262,16 +284,6 @@ class StorageDocumentPage extends Component {
                 break;
         }
 
-        formData.docProducts.map((elem)=>{
-            if(elem.productId) {
-                createData.docProducts.push({
-                    productId: elem.productId,
-                    quantity: elem.quantity,
-                    stockPrice: elem.stockPrice,
-                })
-            }
-        })
-        console.log(createData);
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + '/store_docs';
@@ -292,7 +304,7 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            that.props.history.push(`${book.storageDocument}/${data.id}`);
+            that.props.history.replace(`${book.storageDocument}/${data.id}`);
             window.location.reload();
         })
         .catch(function (error) {
@@ -303,7 +315,7 @@ class StorageDocumentPage extends Component {
         });
     }
 
-    updateDocument() {
+    updateDocument(saveMode = false) {
         if(!this.verifyFields()) {
             return;
         }
@@ -338,6 +350,7 @@ class StorageDocumentPage extends Component {
                 break;
         }
 
+        var productsError = false;
         formData.docProducts.map((elem)=>{
             if(elem.productId) {
                 createData.docProducts.push({
@@ -345,10 +358,28 @@ class StorageDocumentPage extends Component {
                     quantity: elem.quantity,
                     stockPrice: elem.stockPrice,
                 })
+            } else if(!saveMode) {
+                notification.warning({
+                    message: this.props.intl.formatMessage({id: 'error'}),
+                });
+                productsError = true;
+                return;
+            } else if(elem.code && elem.brandId) {
+                createData.docProducts.push({
+                    addToStore: true,
+                    groupId: elem.groupId,
+                    code: elem.detailCode,
+                    name: elem.detailName || elem.detailCode,
+                    brandId: elem.brandId,
+
+                    quantity: elem.quantity,
+                    stockPrice: elem.stockPrice,
+                })
             }
         })
 
-        console.log(formData, createData)
+        if(productsError) return;
+        this.setState({loading: true});
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/store_docs/${this.props.id}`;
@@ -373,9 +404,11 @@ class StorageDocumentPage extends Component {
         })
         .catch(function (error) {
             console.log('error', error);
+            that.setState({loading: false});
             notification.error({
                 message: 'Ошибка склада. Проверьте количество товаров',
             });
+            that.getStorageDocument();
         });
     }
 
@@ -422,7 +455,7 @@ class StorageDocumentPage extends Component {
                 that.state.formData.documentType = typeToDocumentType[type.toLowerCase()].documentType[0];
                 that.state.formData.incomeWarehouseId = incomeWarehouseId;
                 that.state.formData.expenseWarehouseId = expenseWarehouseId;
-            }
+            } 
             that.setState({
                 warehouses: warehouses,
                 fetched: true,
@@ -610,28 +643,30 @@ class StorageDocumentPage extends Component {
                 case RESERVE:
                     data.incomeWarehouseId = data.warehouseId;
                     break;
+                case ORDER:
+                    data.incomeWarehouseId = that.state.warehouses.length ? that.state.warehouses[0].id : undefined;
+                    break;
             }
 
             that.setState({
                 formData: data,
+                loading: false,
             })
         })
         .catch(function (error) {
-            console.log('error', error)
+            console.log('error', error);
+            that.setState({loading: true});
         });
     }
 
     componentDidMount() {
         this._isMounted = true;
         const { id, location: { type } } = this.props;
+        if(this._isMounted) this.getWarehouses();
         this.getBrands();
         this.getClientList();
         this.getCounterpartSupplier();
-        if(this._isMounted) this.getWarehouses();
-        if(id) {
-            this.getStorageDocument();
-        }
-        
+        if(id) this.getStorageDocument();
     }
 
     componentWillUnmount() {
@@ -647,10 +682,17 @@ class StorageDocumentPage extends Component {
     }
 
     render() {
-        const { warehouses, counterpartSupplier, formData, brands, clientList, fetched, forceUpdate } = this.state;
+        const { warehouses, counterpartSupplier, formData, brands, clientList, fetched, forceUpdate, loading } = this.state;
         const { id, intl: {formatMessage} } = this.props;
         const dateTime = formData.createdDatetime || new Date();
         const titleType = " " + formatMessage({id: `storage_document.docType.${formData.type}.${formData.documentType}`}).toLowerCase();
+
+        this.state.warnings = 0;
+        formData.docProducts.map((elem, i)=>{
+            elem.key = i;
+            if(!elem.productId) this.state.warnings++;
+        })
+
         return !fetched ? (
             <Spinner spin={true}/>
             ) : (
@@ -693,6 +735,7 @@ class StorageDocumentPage extends Component {
                                         addDocProduct={this.addDocProduct}
                                         type={formData.type}
                                         documentType={formData.documentType}
+                                        disabled={formData.status != NEW}
                                     />
                                 }
                                 {((formData.type == INCOME && formData.documentType == CLIENT) || (formData.type == EXPENSE && formData.documentType == SUPPLIER)) &&
@@ -702,20 +745,28 @@ class StorageDocumentPage extends Component {
                                         type={formData.type}
                                         documentType={formData.documentType}
                                         brands={brands}
+                                        disabled={formData.status != NEW}
                                     />
                                 }
-                                <Icon
-                                    type='save'
-                                    style={headerIconStyle}
-                                    onClick={()=>{
-                                        if(id) {
-                                            this.updateDocument();
-                                        } 
-                                        else {
-                                            this.createDocument();
-                                        }
-                                    }}
-                                />
+                                <Badge 
+                                    count={this.state.warnings}
+                                    style={{ backgroundColor: 'var(--approve)' }} 
+                                >
+                                    <Icon
+                                        type='save'
+                                        style={{
+                                            ...headerIconStyle,                                        }}
+                                        onClick={()=>{
+                                            if(id) {
+                                                this.setState({loading: true});
+                                                setTimeout(()=> this.updateDocument(true), 500);
+                                            } 
+                                            else {
+                                                this.createDocument();
+                                            }
+                                        }}
+                                    />
+                                </Badge>
                             </div>
                         )}
                         {id && formData.status != DONE &&
@@ -751,6 +802,7 @@ class StorageDocumentPage extends Component {
                     addDocProduct={this.addDocProduct}
                     deleteDocProduct={this.deleteDocProduct}
                     editDocProduct={this.editDocProduct}
+                    loading={loading}
                 />
             </Layout>
         );
@@ -897,7 +949,6 @@ class ReturnModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data.list)
             that.setState({
                 storageProducts: data.list
             })
@@ -925,7 +976,11 @@ class ReturnModal extends React.Component {
             <div>
                 <Icon
                     type="rollback"
-                    style={headerIconStyle}
+                    style={{
+                        ...headerIconStyle,
+                        color: this.props.disabled ? 'var(--text2)' : null,
+                        pointerEvents: this.props.disabled ? 'none' : 'all',
+                    }}
                     onClick={()=>{
                         this.fetchData();
                         this.setState({
@@ -1048,6 +1103,7 @@ class AutomaticOrderCreationModal extends React.Component {
         this.state = {
             dataSource: [],
             visible: false,
+            loading: true,
         };
 
         const { formatMessage } = props.intl;
@@ -1481,6 +1537,7 @@ class AutomaticOrderCreationModal extends React.Component {
         this.setState({
             dataSource: [],
             visible: false,
+            loading: true,
         });
     }
 
@@ -1507,14 +1564,17 @@ class AutomaticOrderCreationModal extends React.Component {
             .then(function(data) {
                 console.log(data);
                 data.map((elem, i)=>{
+                    elem.quantity = elem.quantity || 1;
                     elem.toOrder = elem.quantity;
                     elem.key = i;
                     elem.detailName = elem.name;
                     elem.detailCode = elem.code;
                     elem.sum = elem.quantity * elem.stockPrice;
+                    elem.groupId = elem.storeGroupId;
                 })
                 that.setState({
                     dataSource: data,
+                    loading: false,
                 })
             })
             .catch(function(error) {
@@ -1541,6 +1601,7 @@ class AutomaticOrderCreationModal extends React.Component {
             .then(function(data) {
                 console.log(data);
                 data.map((elem, i)=>{
+                    elem.quantity = elem.quantity || 1;
                     elem.orderedSum = elem.sum;
                     elem.orderedStockPrice = elem.stockPrice;
                     elem.orderedQuantity = elem.quantity;
@@ -1552,9 +1613,11 @@ class AutomaticOrderCreationModal extends React.Component {
                     elem.detailCode = elem.code;
                     elem.sum = elem.quantity * elem.stockPrice;
                     elem.orderedSum = elem.sum;
+                    elem.groupId = elem.storeGroupId;
                 })
                 that.setState({
                     dataSource: data,
+                    loading: false,
                 })
             })
             .catch(function(error) {
@@ -1565,12 +1628,16 @@ class AutomaticOrderCreationModal extends React.Component {
 
 
     render() {
-        const { visible, dataSource } = this.state;
+        const { visible, dataSource, loading } = this.state;
         return (
             <div>
                 <Icon
                     type="check-circle"
-                    style={headerIconStyle}
+                    style={{
+                        ...headerIconStyle,
+                        color: this.props.disabled ? 'var(--text2)' : null,
+                        pointerEvents: this.props.disabled ? 'none' : 'all',
+                    }}
                     onClick={()=>{
                         this.fetchData();
                         this.setState({
@@ -1596,6 +1663,7 @@ class AutomaticOrderCreationModal extends React.Component {
                         }
                         dataSource={dataSource}
                         pagination={{pageSize: 6}}
+                        loading={loading}
                     />
                 </Modal>
             </div>
