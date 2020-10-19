@@ -151,7 +151,7 @@ class StorageDocumentPage extends Component {
             this.setState({
                 update: true,
             })
-            if(this.props.id && !this.state.warnings) this.updateDocument();
+            this.updateDocument();
         }
     }
 
@@ -159,15 +159,8 @@ class StorageDocumentPage extends Component {
         const {formData } = this.state;
         formData.sum -= formData.docProducts[key].sum;
 
-        this.state.formData.docProducts = this.state.formData.docProducts.filter((elem)=>elem.key != key)
-
-        this.setState({loading: true})
-        if(this.state.warnings) {
-            setTimeout(()=> this.setState({loading: false}), 200)
-        } else {
-            setTimeout(()=> this.updateDocument(), 200);
-        }
-          
+        this.state.formData.docProducts = this.state.formData.docProducts.filter((elem)=>elem.key != key);
+        this.updateDocument();
     } 
 
     editDocProduct(key, docProduct) {
@@ -181,8 +174,7 @@ class StorageDocumentPage extends Component {
         formData.docProducts.map((elem)=>{
             formData.sum += elem.quantity * elem.stockPrice;
         })
-        if(this.props.id && !this.state.warnings) this.updateDocument();
-        else this.setState({update: true});
+        this.updateDocument();
     }
 
     //saveFormRef = formRef => {
@@ -318,6 +310,7 @@ class StorageDocumentPage extends Component {
     }
 
     updateDocument(saveMode = false) {
+        this.setState({loading: true});
         if(!this.verifyFields()) {
             return;
         }
@@ -361,9 +354,9 @@ class StorageDocumentPage extends Component {
                     stockPrice: elem.stockPrice,
                 })
             } else if(!saveMode) {
-                notification.warning({
+                /*notification.warning({
                     message: this.props.intl.formatMessage({id: 'error'}),
-                });
+                });*/
                 productsError = true;
                 return;
             } else if(elem.code && elem.brandId) {
@@ -380,8 +373,11 @@ class StorageDocumentPage extends Component {
             }
         })
 
-        if(productsError) return;
-        this.setState({loading: true});
+        if(productsError) {
+            this.setState({loading: false});
+            return;
+        };
+        
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/store_docs/${this.props.id}`;
@@ -1506,10 +1502,13 @@ class AutomaticOrderCreationModal extends React.Component {
                 key:       'switch',
                 width:     'auto',
                 render:     (elem)=>{
+                    const checked = elem.checked;
                     return (
                         <Checkbox
-                            onChange={(value)=>{
-                                elem.checked = value;
+                            checked={checked}
+                            onChange={(event)=>{
+                                elem.checked = event.target.checked;
+                                this.setState({update: true})
                             }}
                         />
                     )

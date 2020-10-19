@@ -645,7 +645,7 @@ class DetailProductModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId, productId) {
+    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId, productId, brandId) {
         this.state.mainTableSource[key].supplierId = supplierId;
         this.state.mainTableSource[key].supplierName = supplierName;
         this.state.mainTableSource[key].supplierBrandId = supplierBrandId;
@@ -657,6 +657,9 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].isFromStock = isFromStock;
         this.state.mainTableSource[key].reservedFromWarehouseId = defaultWarehouseId;
         this.state.mainTableSource[key].productId = isFromStock ? productId : undefined;
+        const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
+        this.state.mainTableSource[key].brandId = brandId;
+        this.state.mainTableSource[key].brandName = brand.brandName;
         this.setState({
             update: true
         })

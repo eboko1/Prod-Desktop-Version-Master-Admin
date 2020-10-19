@@ -846,6 +846,7 @@ class AddProductModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
+            console.log(data);
             that.setState({
                 storageProducts: data.list
             })
@@ -1536,8 +1537,8 @@ class AlertModal extends React.Component {
         }
 
         if(storeInWarehouse) {
-            postData.min = min;
-            postData.max = max;
+            postData.min = min*multiplicity;
+            postData.max = max*multiplicity;
         }
 
         var that = this;
@@ -1889,8 +1890,10 @@ class AlertModal extends React.Component {
                                     step={multiplicity}
                                     min={0}
                                     onChange={(value)=>{
+                                        const clearValue = Math.floor(value/multiplicity);
                                         this.setState({
                                             min: Math.floor(value/multiplicity),
+                                            //max: max < clearValue ? clearValue : max,
                                         })
                                     }}
                                 />
@@ -1899,8 +1902,8 @@ class AlertModal extends React.Component {
                                 <span style={{marginRight: 8}}><FormattedMessage id='storage.max'/></span>
                                 <InputNumber
                                     value={max*multiplicity}
-                                    step={1}
-                                    min={min}
+                                    step={multiplicity}
+                                    min={min*multiplicity}
                                     onChange={(value)=>{
                                         this.setState({
                                             max: Math.floor(value/multiplicity),
