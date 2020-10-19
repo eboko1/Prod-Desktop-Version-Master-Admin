@@ -121,10 +121,12 @@ class StorageDocumentPage extends Component {
             docProduct.map((product)=>{
                 product.sum = Math.round(product.sum*10)/10;
                 this.state.formData.sum += product.sum;
-                if(!product.productId) {
-                    warningProducts.push(product);
-                } else {
-                    newProducts.push(product);
+                if(product.quantity) {
+                    if(!product.productId) {
+                        warningProducts.push(product);
+                    } else {
+                        newProducts.push(product);
+                    }
                 }
             })
             this.state.formData.docProducts = this.state.formData.docProducts.concat(newProducts);
