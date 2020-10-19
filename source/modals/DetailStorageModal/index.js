@@ -428,13 +428,14 @@ class DetailStorageModal extends React.Component{
             })
             .then(function(data) {
                 console.log(data);
+                const brandOptions = [];
                 data.list.map((elem, key)=>{
                     elem.key = key;
                     elem.productId = elem.id;
                     elem.images = [];
                     elem.attributes = [];
                     elem.supplierId = elem.brand && elem.brand.id;
-                    elem.supplierName = elem.brand && elem.brand.name;
+                    elem.supplierName = (elem.brand && elem.brand.name) || "";
                     elem.businessSupplierId = 0;
                     elem.businessSupplierName = that.props.intl.formatMessage({id: 'navigation.storage'});
                     elem.purchasePrice = elem.stockPrice;
@@ -447,15 +448,33 @@ class DetailStorageModal extends React.Component{
                         isFromStock: true,
                         defaultWarehouseId: elem.defaultWarehouseId,
                     };
-                    elem.store = [elem.countInWarehouses, 0, 0, 0]
+                    elem.store = [elem.countInWarehouses, 0, 0, 0];
+
+                    if(that.state.brandFilter.length == 0 && that.props.brandFilter == elem.supplierName) {
+                        that.state.brandFilter.push(elem.supplierId);
+                    }
+
+                    if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1 && elem.supplierId) {
+                        brandOptions.push({
+                            id: elem.supplierId,
+                            name: elem.supplierName,
+                        })
+                    }
                 })
+
                 that.setState({
                     fetched: true,
                     dataSource: data.list,
+                    brandOptions: brandOptions,
+                    codeFilter: that.props.codeFilter,
                 })
             })
             .catch(function(error) {
                 console.log("error", error);
+                that.setState({
+                    fetched: true,
+                    codeFilter: that.props.codeFilter,
+                })
             });
             return;
         }
@@ -498,7 +517,7 @@ class DetailStorageModal extends React.Component{
                         elem.salePrice = elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
                     }
                     if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1) {
-                        if(that.props.brandFilter == elem.supplierName) {
+                        if(that.state.brandFilter.length == 0 && that.props.brandFilter == elem.supplierName) {
                             that.state.brandFilter.push(elem.supplierId);
                         }
                         brandOptions.push({
@@ -584,7 +603,7 @@ class DetailStorageModal extends React.Component{
                     elem.salePrice = elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
                 }
                 if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1) {
-                    if(that.props.brandFilter == elem.supplierName) {
+                    if(that.state.brandFilter.length == 0 && that.props.brandFilter == elem.supplierName) {
                         that.state.brandFilter.push(elem.supplierId);
                     }
                     brandOptions.push({

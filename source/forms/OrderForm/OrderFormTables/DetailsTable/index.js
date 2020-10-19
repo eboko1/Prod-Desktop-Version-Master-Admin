@@ -274,9 +274,7 @@ class DetailsTable extends Component {
                 width:     'auto',
                 key:       'reserve',
                 render:    elem => {
-                    const confirmed = elem.agreement.toLowerCase();
-                    const disabled =
-                        confirmed != 'undefined' || this.props.disabled || !elem.id;
+                    const disabled = this.props.disabled || !elem.id;
                     return (
                         <ReserveButton
                             detail={elem}
@@ -1151,6 +1149,9 @@ class ReserveButton extends React.Component {
                         `Зарезервировано ${data.docProducts[0].quantity} товаров со склада ${detail.reservedFromWarehouseName}`,
                 });
                 detail.reservedCount = detail.reserved ? 0 : detail.count;
+                if(!detail.reserved) {
+                    detail.supplierId = 0;
+                }
                 detail.reserved = !detail.reserved;
                 updateDetail(detail.key, detail);
             }
