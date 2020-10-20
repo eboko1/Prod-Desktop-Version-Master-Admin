@@ -53,6 +53,40 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
         ),
     };
 
+    const currentDebt = {
+        title:     <FormattedMessage id='clients-table.debt' />,
+        width:     100,
+        dataIndex: 'currentDebt',
+        key:       'currentDebt',
+        render:    (_, client) => {
+            
+            const debt = client.totalDebt ? client.totalDebt : 0;
+
+            return !isForbidden(user, permissions.GET_CLIENTS_BASIC_INFORMATION) ? (
+                
+                <Link
+                    className={ Styles.client }
+                    to={{
+                        pathname: `${book.client}/${client.clientId}`,
+                        state:{
+                            specificTab: 'clientDebt'
+                        },
+                    }}
+                >
+                    <Numeral className={ Styles.orders }>
+                        {debt}
+                    </Numeral>
+                </Link>
+            ) : 
+                <>
+                    <Numeral className={ Styles.orders }>
+                        {debt}
+                    </Numeral>
+                </>
+        },
+    };
+
+
     const vehicles = {
         title:     <FormattedMessage id='clients-table.vehicles' />,
         width:     400,
@@ -170,6 +204,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
     return [
         client,
         phone,
+        currentDebt,
         vehicles,
         lastOrder,
         orders,

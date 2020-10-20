@@ -28,7 +28,8 @@ export default class ClientPage extends Component {
     }
 
     render() {
-        const { isFetching, clientEntity, match } = this.props;
+        const { isFetching, clientEntity, match, location } = this.props;
+        const specificTab = (location && location.state) ? location.state.specificTab : undefined;
 
         return isFetching ? (
             <Spinner spin={ isFetching } />
@@ -37,6 +38,7 @@ export default class ClientPage extends Component {
                 <ClientContainer
                     clientId={ match.params.id }
                     clientEntity={ clientEntity }
+                    specificTab={specificTab}
                 />
             </Layout>
         );

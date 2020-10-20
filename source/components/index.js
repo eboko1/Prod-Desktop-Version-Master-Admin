@@ -13,6 +13,7 @@ import SettingSalaryTable from './SettingSalaryTable';
 import EmployeesTable from './EmployeesTable';
 import ClientFeedbackTab from './ClientFeedbackTab';
 import ClientOrdersTab from './ClientOrdersTab';
+import ClientMRDsTab from './ClientMRDsTab';
 import FormattedDatetime from './FormattedDatetime';
 import Rating from './Rating';
 import { Like } from './Like';
@@ -66,6 +67,7 @@ export {
     ArrayBreakScheduleInput,
     ClientFeedbackTab,
     ClientOrdersTab,
+    ClientMRDsTab,
     FormattedDatetime,
     Rating,
     Like,
