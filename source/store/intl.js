@@ -110,6 +110,7 @@ import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages
 import ChangeStatusDropdown from 'components/ChangeStatusDropdown/messages';
 import ClientFeedbackTab from 'components/ClientFeedbackTab/messages';
 import ClientOrdersTab from 'components/ClientOrdersTab/messages';
+import ClientMRDsTab from 'components/ClientMRDsTab/messages';
 import EmployeeFeedback from 'components/EmployeeFeedback/messages';
 import EmployeeStatistics from 'components/EmployeeStatistics/messages';
 import ReviewsTable from 'components/ReviewsTable/messages';
@@ -222,6 +223,7 @@ const messages = merge.all([
     ChangeStatusDropdown,
     ClientFeedbackTab,
     ClientOrdersTab,
+    ClientMRDsTab,
     EmployeeFeedback,
     EmployeeStatistics,
     ReviewsTable,

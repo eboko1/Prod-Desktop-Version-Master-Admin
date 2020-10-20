@@ -19,7 +19,7 @@ import {
     EditClientVehicleForm,
     EditClientForm,
 } from 'forms';
-import { ClientFeedbackTab, ClientOrdersTab } from 'components';
+import { ClientFeedbackTab, ClientOrdersTab, ClientMRDsTab } from 'components';
 
 // own
 const { TabPane } = Tabs;
@@ -41,7 +41,7 @@ const mapDispatchToProps = {
 )
 export default class ClientContainer extends Component {
     render() {
-        const { clientEntity, clientId, user } = this.props;
+        const { clientEntity, clientId, user, specificTab } = this.props;
         const {
             CREATE_EDIT_DELETE_CLIENTS,
             GET_CLIENTS_ADDITIONAL_INFORMATION,
@@ -50,7 +50,7 @@ export default class ClientContainer extends Component {
         return (
             <Catcher>
                 <Tabs
-                    defaultActiveKey='generalInfo'
+                    defaultActiveKey= {specificTab ? specificTab :'generalInfo'}
                     tabPosition='right'
                     type='card'
                 >
@@ -120,6 +120,13 @@ export default class ClientContainer extends Component {
                             requisites={ clientEntity.requisites }
                             clientId={ clientEntity.clientId }
                         />
+                    </TabPane>
+                    <TabPane
+                        disabled={ isForbidden(user, GET_CLIENTS_ADDITIONAL_INFORMATION) }
+                        tab={<FormattedMessage id={ 'client_container.debt'}/>}
+                        key='clientDebt'
+                    >
+                        <ClientMRDsTab clientId={clientId}/>
                     </TabPane>
                 </Tabs>
             </Catcher>
