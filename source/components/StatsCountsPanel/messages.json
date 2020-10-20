@@ -23,11 +23,11 @@
   },
   "uk": {
     "stats_counts_panel.countOrders": "Кіл-ть ремонтів",
-    "stats_counts_panel.countClients": "Клі-ть клієнтів",
+    "stats_counts_panel.countClients": "Кіл-ть клієнтів",
     "stats_counts_panel.countVehicles": "Кіл-ть авто",
     "stats_counts_panel.servicesSum": "Сума робіт",
     "stats_counts_panel.detailsSum": "Сума деталей",
-    "stats_counts_panel.totalSum": "Сума заказів",
+    "stats_counts_panel.totalSum": "Сума замовлень",
     "stats_counts_panel.increase": "Сума прибутку",
     "stats_counts_panel.decrease": "Сума витрат",
     "stats_counts_panel.balance": "Всього"

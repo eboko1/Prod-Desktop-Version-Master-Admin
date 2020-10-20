@@ -47,8 +47,7 @@ export default function reducer(state = ReducerState, action) {
     }
 }
 
-
-export const fetchClientOrders = ({ clientId, filter}) => ({
+export const fetchClientOrders = ({ clientId, filter }) => ({
     type:    FETCH_CLIENT_ORDERS,
     payload: { clientId, filter },
 });

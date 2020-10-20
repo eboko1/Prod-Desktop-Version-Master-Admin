@@ -63,7 +63,6 @@ export default function reducer(state = ReducerState, action) {
 
 export const stateSelector = state => state.forms[ moduleName ];
 
-
 /**
  * Action Creators
  * */

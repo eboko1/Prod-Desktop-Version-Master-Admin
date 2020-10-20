@@ -1,17 +1,10 @@
 // vendor
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import { Button, Modal, Icon, Select, Input, InputNumber, Spin, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
-import {
-    API_URL,
-    confirmDiagnostic,
-    createAgreement,
-    lockDiagnostic,
-} from 'core/forms/orderDiagnosticForm/saga';
-import { images } from 'utils';
 import { DetailStorageModal, DetailSupplierModal } from 'modals'
+import { AvailabilityIndicator } from 'components';
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
@@ -263,37 +256,12 @@ class FavouriteDetailsModal extends React.Component{
                         </div>,
                 key:       'AI',
                 width:     '3%',
-                render: (elem)=>{
-                    let color = 'brown',
-                        title = 'Поставщик не выбран!';
-                    if(elem.store){
-                        title=  `Сегодня: ${elem.store[0]} шт.\n` +
-                                `Завтра: ${elem.store[1]} шт.\n` +
-                                `Послезавтра: ${elem.store[2]} шт.\n` +
-                                `Позже: ${elem.store[3]} шт.`;
-                        if(elem.store[0] != '0') {
-                            color = 'rgb(81, 205, 102)';
-                        }
-                        else if(elem.store[1] != 0) {
-                            color = 'yellow';
-                        }
-                        else if(elem.store[2] != 0) {
-                            color = 'orange';
-                        }
-                        else if(elem.store[3] != 0) {
-                            color = 'red';
-                        }
-                    }
-                    else {
-                        color = 'grey';
-                        
-                    }
-                    
+                dataIndex: 'store',
+                render: (store)=>{
                     return (
-                        <div
-                            style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: color}}
-                            title={title}
-                        ></div>
+                        <AvailabilityIndicator
+                            indexArray={store}
+                        />
                     )
                 }
             },
@@ -438,10 +406,14 @@ class FavouriteDetailsModal extends React.Component{
             supplierBrandId: this.state.dataSource[index].supplierBrandId,
             brandName: this.state.dataSource[index].brandName,
             purchasePrice: this.state.dataSource[index].purchasePrice || 0,
+            supplierOriginalCode: this.state.dataSource[index].supplierOriginalCode,
+            supplierProductNumber: this.state.dataSource[index].supplierProductNumber,
             count: this.state.dataSource[index].count ? this.state.dataSource[index].count : 1,
+            reservedFromWarehouseId: this.state.dataSource[index].defaultWarehouseId || null,
             price: this.state.dataSource[index].price || 1,
             comment: this.state.dataSource[index].comment,
         })
+        console.log(data);
         this.addDetailsAndLabors(data);
         this.setState({
             visible: false,
@@ -457,10 +429,12 @@ class FavouriteDetailsModal extends React.Component{
     };
 
 
-    setCode(code, brandId, storeId, key) {
+    setCode(code, brandId, storeId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber) {
         this.state.dataSource[key].detailCode = code;
         this.state.dataSource[key].brandId = brandId;
         this.state.dataSource[key].storeId = storeId;
+        this.state.dataSource[key].supplierOriginalCode = supplierOriginalCode;
+        this.state.dataSource[key].supplierProductNumber = supplierProductNumber;
         this.setState({
             update: true
         })
@@ -477,13 +451,17 @@ class FavouriteDetailsModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, key) {
-        this.state.dataSource[key].supplierId = supplierId;
-        this.state.dataSource[key].supplierName = supplierName;
-        this.state.dataSource[key].supplierBrandId = supplierBrandId;
-        this.state.dataSource[key].purchasePrice = purchasePrice;
-        this.state.dataSource[key].price = price;
-        this.state.dataSource[key].store = store;
+    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId) {
+        this.state.mainTableSource[key].supplierId = supplierId;
+        this.state.mainTableSource[key].supplierName = supplierName;
+        this.state.mainTableSource[key].supplierBrandId = supplierBrandId;
+        this.state.mainTableSource[key].purchasePrice = purchasePrice;
+        this.state.mainTableSource[key].price = price;
+        this.state.mainTableSource[key].store = store;
+        this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
+        this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
+        this.state.mainTableSource[key].isFromStock = isFromStock;
+        this.state.mainTableSource[key].defaultWarehouseId = defaultWarehouseId;
         this.setState({
             update: true
         })
@@ -491,7 +469,7 @@ class FavouriteDetailsModal extends React.Component{
 
     async addDetailsAndLabors(data) {
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/orders/${this.props.orderId}`;
         url += params;
         try {
@@ -519,7 +497,7 @@ class FavouriteDetailsModal extends React.Component{
         if(!(this.props.tecdocId) || this.state.fetched) return;
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/orders/frequent/details?modificationId=${this.props.tecdocId}`;
         url += params;
         fetch(url, {
@@ -551,6 +529,8 @@ class FavouriteDetailsModal extends React.Component{
                     elem.supplierBrandId = elem.pricelist[0].supplierBrandId;
                     elem.price = elem.purchasePrice * elem.markup;
                     elem.sum = elem.price;
+                    elem.supplierOriginalCode = elem.pricelist[0].supplierOriginalCode;
+                    elem.supplierProductNumber = elem.pricelist[0].supplierProductNumber;
                 }
                 else {
                     elem.supplierName = undefined;
@@ -606,7 +586,7 @@ class FavouriteDetailsModal extends React.Component{
                 >
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
-                            <div style={{display: 'block'}}>Узел/деталь</div>
+                            <div style={{display: 'block'}}><FormattedMessage id="order_form_table.diagnostic.detail"/></div>
                         </div>
                         {this.state.fetched ? 
                             <Table

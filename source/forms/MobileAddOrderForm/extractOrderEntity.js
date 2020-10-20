@@ -38,18 +38,18 @@ export function convertFieldsValuesToDbEntity(
             const serviceType = !serviceConfig
                 ? { type: 'custom', serviceName: name }
                 : { type: name.split('|')[ 0 ], serviceId: name.split('|')[ 1 ] };
-            
+
             var result = {};
 
-            if(name) result.serviceName = name;
-            if(laborId) result.serviceId = laborId;
-            if(price) result.servicePrice = price;
-            if(employeeId) result.employeeId = employeeId;
-            if(hours) result.serviceHours = hours;
-            if(agreement) result.agreement = agreement;
-            if(comment) result.comment = {comment:comment};
+            if (name) { result.serviceName = name; }
+            if (laborId) { result.serviceId = laborId; }
+            if (price) { result.servicePrice = price; }
+            if (employeeId) { result.employeeId = employeeId; }
+            if (hours) { result.serviceHours = hours; }
+            if (agreement) { result.agreement = agreement; }
+            if (comment) { result.comment = { comment: comment }; }
 
-            return result
+            return result;
         })
         .value();
     const details = _(orderFields.details)
@@ -86,8 +86,15 @@ export function convertFieldsValuesToDbEntity(
             const brandConfig = allDetails.brands.find(
                 ({ brandId: id }) => String(id) === brandId,
             );
-            
-            const baseDetail = { storeGroupId, code, productCode, price, count, purchasePrice };
+
+            const baseDetail = {
+                storeGroupId,
+                code,
+                productCode,
+                price,
+                count,
+                purchasePrice,
+            };
 
             let brandCustom = {};
             if (!brandConfig) {
@@ -99,10 +106,10 @@ export function convertFieldsValuesToDbEntity(
             }
 
             return {
-                storeGroupId: storeGroupId ? storeGroupId : null,
-                agreement: agreement,
-                price: price,
-                count: count,
+                storeGroupId:  storeGroupId ? storeGroupId : null,
+                agreement:     agreement,
+                price:         price,
+                count:         count,
                 purchasePrice: purchasePrice,
                 /* Marian details table fix / save button fix
                 ...baseDetail,
@@ -161,8 +168,7 @@ export function convertFieldsValuesToDbEntity(
 
     const stationLoadsEntity = _.get(orderFields, 'stationLoads')
         .filter(
-            ({ beginDate, beginTime }) =>
-                ![ beginDate, beginTime ].some(_.isNil),
+            ({ beginDate, beginTime }) => ![ beginDate, beginTime ].some(_.isNil),
         )
         .map(obj => {
             const dayPart =
@@ -220,7 +226,7 @@ export function convertFieldsValuesToDbEntity(
         vehicleCondition: _.get(orderFields, 'vehicleCondition'),
         businessComment:  _.get(orderFields, 'businessComment'),
         comment:          _.get(orderFields, 'comment'),
-        insertMode: true,
+        insertMode:       true,
     };
 
     const orderClearedFields = _.mapValues(order, value =>
@@ -285,7 +291,7 @@ export const requiredFieldsOnStatuses = values => {
             'clientPhone',
             'manager',
             'services',
-            'details',
+            'details', 
         ],
         not_complete: [ 'manager', 'services', 'details' ],
         required:     [ 'manager', 'services', 'details' ],

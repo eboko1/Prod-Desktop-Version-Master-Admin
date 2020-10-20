@@ -82,6 +82,7 @@
     "field_should_be_below_2000_chars": "Field should be below 2000 characters",
     "error": "Error",
     "or": "or",
+    "step_back": "Step back",
     "roles.access_order_body": "Access order body",
     "roles.access_order_calls": "Access order calls",
     "roles.access_order_comments": "Access order comments",
@@ -176,7 +177,9 @@
     "count": "Count",
     "hours": "Hours",
     "description": "Name",
-    "long_dash" : "—"
+    "long_dash" : "—",
+    "message_sent": "Message sent to recipient",
+    "update_price": "Update price"
   },
   "ru": {
     "currency": "грн.",
@@ -261,6 +264,7 @@
     "field_should_be_below_2000_chars": "Поле должно иметь менее 2000 символов",
     "error": "Ошибка",
     "or": "или",
+    "step_back": "Шаг назад",
     "roles.access_order_body": "Доступ к заголовку обращения",
     "roles.access_order_calls": "Доступ к звонкам обращения",
     "roles.access_order_comments": "Доступ к комментариям",
@@ -355,7 +359,9 @@
     "count": "Кол-во",
     "hours": "Часы",
     "description": "Наименование",
-    "long_dash" : "—"
+    "long_dash" : "—",
+    "message_sent": "Сообщение отправлено",
+    "update_price": "Обновить цену"
   },
   "uk": {
     "currency": "грн.",
@@ -425,9 +431,9 @@
     "monday": "Понеділок",
     "tuesday": "Вівторок",
     "wednesday": "Середа",
-    "thursday": "Четверг",
+    "thursday": "Четвер",
     "friday": "П'ятниця",
-    "saturday": "Суббота",
+    "saturday": "Субота",
     "sunday": "Неділя",
     "enter": "Увійти",
     "comment": "Коментар",
@@ -440,6 +446,7 @@
     "field_should_be_below_2000_chars": "Поле повинно мати менше 2000 символів",
     "error": "Помилка",
     "or": "або",
+    "step_back": "Крок назад",
     "roles.access_order_body": "Доступ до заголовку замовлення",
     "roles.access_order_calls": "Доступ до дзвінків замовлення",
     "roles.access_order_comments": "Доступ до коментарів",
@@ -534,6 +541,8 @@
     "count": "К-сть",
     "hours": "Години",
     "description": "Найменування",
-    "long_dash" : "—"
+    "long_dash" : "—",
+    "message_sent": "Повідомлення відправлено",
+    "update_price": "Оновити вартість"
   }
 }

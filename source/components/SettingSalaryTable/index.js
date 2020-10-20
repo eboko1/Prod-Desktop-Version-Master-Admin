@@ -1,15 +1,15 @@
 // vendor
-import React, { Component } from 'react';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import { Table } from 'antd';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { injectIntl, FormattedMessage } from "react-intl";
+import { Table } from "antd";
+import _ from "lodash";
 
 // proj
-import { Catcher } from 'commons';
+import { Catcher } from "commons";
 
 // own
-import { columnsConfig } from './settingSalaryTableConfig';
-import Styles from './styles.m.css';
+import { columnsConfig } from "./settingSalaryTableConfig";
+import Styles from "./styles.m.css";
 
 @injectIntl
 export default class SettingSalaryTable extends Component {
@@ -24,7 +24,7 @@ export default class SettingSalaryTable extends Component {
             ? _.keys(initialSettingSalaries)
             : [];
 
-        this.state = { keys: [ ...keys, this.uuid++ ] };
+        this.state = { keys: [...keys, this.uuid++] };
     }
 
     componentDidUpdate(prevProps) {
@@ -42,7 +42,7 @@ export default class SettingSalaryTable extends Component {
                 ? _.keys(initialSettingSalaries)
                 : [];
 
-            this.setState({ keys: [ ...keys, this.uuid++ ] });
+            this.setState({ keys: [...keys, this.uuid++] });
         }
     }
 
@@ -53,7 +53,7 @@ export default class SettingSalaryTable extends Component {
 
     add = () => {
         const keys = this.state.keys;
-        this.setState({ keys: [ ...keys, this.uuid++ ] });
+        this.setState({ keys: [...keys, this.uuid++] });
     };
 
     render() {
@@ -82,26 +82,29 @@ export default class SettingSalaryTable extends Component {
         return (
             <Catcher>
                 <Table
-                    loading={ loading }
-                    rowClassName={ ({ key }) => {
-                        const wasEdited = _.get(this.props.fields, [ 'settingSalaries', key ]);
-                        const exists = _.get(initialSettingSalaries, [ key ]);
+                    loading={loading}
+                    rowClassName={({ key }) => {
+                        const wasEdited = _.get(this.props.fields, [
+                            "settingSalaries",
+                            key,
+                        ]);
+                        const exists = _.get(initialSettingSalaries, [key]);
 
                         if (!exists) {
                             return Styles.newSalaryRow;
                         } else if (wasEdited) {
                             return Styles.editedSalaryRow;
                         }
-                    } }
-                    className={ Styles.settingSalaryTable }
-                    dataSource={ keys.map(key => ({ key })) }
-                    columns={ columns }
-                    size='small'
-                    scroll={ { x: 1000 } }
-                    pagination={ false }
-                    locale={ {
-                        emptyText: <FormattedMessage id='no_data' />,
-                    } }
+                    }}
+                    className={Styles.settingSalaryTable}
+                    dataSource={keys.map(key => ({ key }))}
+                    columns={columns}
+                    size="small"
+                    scroll={{ x: 1000 }}
+                    pagination={false}
+                    locale={{
+                        emptyText: <FormattedMessage id="no_data" />,
+                    }}
                 />
             </Catcher>
         );

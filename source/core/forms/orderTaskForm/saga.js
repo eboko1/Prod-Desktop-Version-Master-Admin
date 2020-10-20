@@ -71,6 +71,5 @@ export function* saga() {
 }
 
 export function test() {
-    fetch("https://api.example.com/items")
-      .then(res => res.json());
+    fetch('https://api.example.com/items').then(res => res.json());
 }

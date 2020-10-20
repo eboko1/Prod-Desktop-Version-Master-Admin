@@ -1,49 +1,49 @@
 // vendor
-import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { FormattedMessage, injectIntl } from "react-intl";
+import _ from "lodash";
 
 // proj
 import {
     onChangeUniversalFiltersForm,
     fetchUniversalFiltersForm,
-} from 'core/forms/universalFiltersForm/duck';
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
+} from "core/forms/universalFiltersForm/duck";
+import { setModal, resetModal, MODALS } from "core/modals/duck";
 
-import { Catcher, StyledButton } from 'commons';
-import { UniversalFiltersModal } from 'modals';
-import { UniversalFiltersTags } from 'components';
-import { withReduxForm2 } from 'utils';
+import { Catcher, StyledButton } from "commons";
+import { UniversalFiltersModal } from "modals";
+import { UniversalFiltersTags } from "components";
+import { withReduxForm2 } from "utils";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 
 const universalLinkedFields = Object.freeze({
-    notVisitRange: [ 'notVisit', 'notVisitDays' ],
+    notVisitRange: ["notVisit", "notVisitDays"],
 });
 
 /* eslint-disable array-element-newline */
 const tagFields = Object.freeze([
-    'createDate',
-    'beginDate',
-    'ordersGreater',
-    'ordersLower',
-    'managers',
-    'employee',
-    'service',
-    'models',
-    'make',
-    'creationReasons',
-    'cancelReasons',
-    'year',
-    'odometerLower',
-    'odometerGreater',
+    "createDate",
+    "beginDate",
+    "ordersGreater",
+    "ordersLower",
+    "managers",
+    "employee",
+    "service",
+    "models",
+    "make",
+    "creationReasons",
+    "cancelReasons",
+    "year",
+    "odometerLower",
+    "odometerGreater",
 ]);
 /* eslint-enable array-element-newline */
 
 @injectIntl
 @withReduxForm2({
-    name:    'universalFiltersForm',
+    name: "universalFiltersForm",
     actions: {
         change: onChangeUniversalFiltersForm,
         fetchUniversalFiltersForm,
@@ -52,7 +52,7 @@ const tagFields = Object.freeze([
     },
     mapStateToProps: state => ({
         universalFiltersModal: state.modals.modal,
-        user:                  state.auth,
+        user: state.auth,
     }),
 })
 export default class UniversalFilters extends Component {
@@ -84,29 +84,29 @@ export default class UniversalFilters extends Component {
 
         return (
             <Catcher>
-                <section className={ Styles.filters }>
+                <section className={Styles.filters}>
                     <StyledButton
-                        type='secondary'
-                        disabled={ areFiltersDisabled }
-                        onClick={ this._showUniversalFiltersModal }
+                        type="secondary"
+                        disabled={areFiltersDisabled}
+                        onClick={this._showUniversalFiltersModal}
                     >
-                        <FormattedMessage id='universal-filters-container.filter' />
+                        <FormattedMessage id="universal-filters-container.filter" />
                     </StyledButton>
                     <UniversalFiltersTags
-                        universalLinkedFields={ universalLinkedFields }
-                        tagFields={ tagFields }
-                        filter={ formFilters }
-                        clearUniversalFilters={ this.clearFilters }
+                        universalLinkedFields={universalLinkedFields}
+                        tagFields={tagFields}
+                        filter={formFilters}
+                        clearUniversalFilters={this.clearFilters}
                     />
                 </section>
                 <UniversalFiltersModal
-                    { ...filters }
-                    setUniversalFilter={ setUniversalFilter }
-                    form={ form }
-                    stats={ stats }
-                    visible={ universalFiltersModal }
-                    hideModal={ () => resetModal() }
-                    resetModal={ () => {
+                    {...filters}
+                    setUniversalFilter={setUniversalFilter}
+                    form={form}
+                    stats={stats}
+                    visible={universalFiltersModal}
+                    hideModal={() => resetModal()}
+                    resetModal={() => {
                         if (_.isEqual(this.props.universalFilter, {})) {
                             this.props.form.resetFields();
                         } else {
@@ -115,7 +115,7 @@ export default class UniversalFilters extends Component {
                             );
                         }
                         resetModal();
-                    } }
+                    }}
                 />
             </Catcher>
         );

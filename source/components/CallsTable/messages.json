@@ -30,7 +30,7 @@
   "uk": {
     "calls-table.date": "Дата",
     "calls-table.status": "Статус",
-    "calls-table.order": "Заказ",
+    "calls-table.order": "Замовлення",
     "calls-table.caller": "Номер телефонуючого",
     "calls-table.recipient": "Куди дзвонили",
     "calls-table.waiting": "Час очікування",

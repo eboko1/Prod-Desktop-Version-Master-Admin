@@ -20,9 +20,11 @@ import DetailStorageModal from './DetailStorageModal';
 import DetailSupplierModal from './DetailSupplierModal';
 import FavouriteDetailsModal from './FavouriteDetailsModal';
 import FavouriteServicesModal from './FavouriteServicesModal';
-import AddServiceModal from './AddServiceModal'
-import TecDocInfoModal from './TecDocInfoModal'
-import LaborsNormHourModal from './LaborsNormHourModal'
+import AddServiceModal from './AddServiceModal';
+import TecDocInfoModal from './TecDocInfoModal';
+import LaborsNormHourModal from './LaborsNormHourModal';
+import OilModal from './OilModal';
+
 export {
     UniversalFiltersModal,
     AddClientModal,
@@ -49,4 +51,5 @@ export {
     AddServiceModal,
     TecDocInfoModal,
     LaborsNormHourModal,
+    OilModal,
 };

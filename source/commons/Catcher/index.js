@@ -24,7 +24,7 @@ export default class Catcher extends Component {
         if (error) {
             return (
                 <section className={ Styles.catcher }>
-                    <FormattedMessage id='error'/>!
+                    <FormattedMessage id='error' />!
                     <Icon className={ Styles.catcherIcon } type='frown-o' />
                 </section>
             );

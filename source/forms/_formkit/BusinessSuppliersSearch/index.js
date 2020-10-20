@@ -25,10 +25,7 @@ const mapDispatchToProps = {
 };
 
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class BusinessSuppliersSearch extends Component {
     render() {
         const { onSelect, setBusinessSuppliersSearchQuery } = this.props;

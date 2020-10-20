@@ -1,21 +1,21 @@
 //vendor
-import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, Button, Select } from 'antd';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { Form, Button, Select } from "antd";
+import _ from "lodash";
 
 // proj
-import { onChangeManagerRoleForm } from 'core/forms/managerRoleForm/duck';
+import { onChangeManagerRoleForm } from "core/forms/managerRoleForm/duck";
 
-import { DecoratedSelect } from 'forms/DecoratedFields';
-import { withReduxForm } from 'utils';
+import { DecoratedSelect } from "forms/DecoratedFields";
+import { withReduxForm } from "utils";
 
 // own
 const Option = Select.Option;
 
 @injectIntl
 @withReduxForm({
-    name:    'managerRoleForm',
+    name: "managerRoleForm",
     actions: {
         change: onChangeManagerRoleForm,
     },
@@ -30,26 +30,26 @@ export class ManagerRoleForm extends Component {
         return (
             <Form>
                 <DecoratedSelect
-                    field={ 'roleIds' }
-                    initialValue={ _.map(roles, 'roleId') }
+                    field={"roleIds"}
+                    initialValue={_.map(roles, "roleId")}
                     formItem
-                    getPopupContainer={ trigger => trigger.parentNode }
+                    getPopupContainer={trigger => trigger.parentNode}
                     hasFeedback
                     label={
-                        <FormattedMessage id='manager-role-form.roles_field' />
+                        <FormattedMessage id="manager-role-form.roles_field" />
                     }
-                    mode={ 'multiple' }
-                    getFieldDecorator={ getFieldDecorator }
+                    mode={"multiple"}
+                    getFieldDecorator={getFieldDecorator}
                 >
-                    { availableRoles.map(({ roleId, roleName }) => (
-                        <Option value={ roleId } key={ roleId }>
-                            { roleName }
+                    {availableRoles.map(({ roleId, roleName }) => (
+                        <Option value={roleId} key={roleId}>
+                            {roleName}
                         </Option>
-                    )) }
+                    ))}
                 </DecoratedSelect>
                 <Button
-                    style={ { width: '100%' } }
-                    onClick={ () =>
+                    style={{ width: "100%" }}
+                    onClick={() =>
                         validateFields(
                             (err, values) =>
                                 !err &&
@@ -61,7 +61,7 @@ export class ManagerRoleForm extends Component {
                         )
                     }
                 >
-                    <FormattedMessage id='manager-role-form.edit' />
+                    <FormattedMessage id="manager-role-form.edit" />
                 </Button>
             </Form>
         );

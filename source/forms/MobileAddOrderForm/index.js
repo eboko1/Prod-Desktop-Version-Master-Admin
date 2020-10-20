@@ -6,7 +6,7 @@ import _ from "lodash";
 import moment from "moment";
 
 //proj
-import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
+import { API_URL } from "core/forms/orderDiagnosticForm/saga";
 import {
     onChangeOrderForm,
     setClientSelection,
@@ -87,61 +87,61 @@ export class MobileAddOrderForm extends React.PureComponent {
 
     async reloadOrderForm() {
         var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
+        let token = localStorage.getItem("_my.carbook.pro_token");
         let url = API_URL;
         let params = `/orders/${this.props.orderId}/labors`;
         url += params;
         fetch(url, {
-            method: 'GET',
+            method: "GET",
             headers: {
-                'Authorization': token,
-            }
+                Authorization: token,
+            },
         })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.orderServices = data.labors,
-            that.setState({
-                update: true,
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
             })
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                (that.orderServices = data.labors),
+                    that.setState({
+                        update: true,
+                    });
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
 
         params = `/orders/${this.props.orderId}/details`;
         url = API_URL + params;
         fetch(url, {
-            method: 'GET',
+            method: "GET",
             headers: {
-                'Authorization': token,
-            }
+                Authorization: token,
+            },
         })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.orderDetails = data.details,
-            that.setState({
-                orderDetails: data.details,
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
             })
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                (that.orderDetails = data.details),
+                    that.setState({
+                        orderDetails: data.details,
+                    });
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
     }
 
     _openNotification = ({ make, model }) => {
@@ -298,7 +298,7 @@ export class MobileAddOrderForm extends React.PureComponent {
             location,
             errors,
         } = this.props;
-        
+
         const formFieldsValues = form.getFieldsValue();
 
         const { totalHours } = servicesStats(
@@ -353,15 +353,15 @@ export class MobileAddOrderForm extends React.PureComponent {
         ]);
 
         let priceDetails = 0;
-        for(let i = 0; i < this.orderDetails.length; i++) {
-            if(this.orderDetails[i].agreement != 'REJECTED') {
+        for (let i = 0; i < this.orderDetails.length; i++) {
+            if (this.orderDetails[i].agreement != "REJECTED") {
                 priceDetails += Math.round(this.orderDetails[i].sum);
             }
         }
 
         let priceServices = 0;
-        for(let i = 0; i < this.orderServices.length; i++) {
-            if(this.orderServices[i].agreement != 'REJECTED') {
+        for (let i = 0; i < this.orderServices.length; i++) {
+            if (this.orderServices[i].agreement != "REJECTED") {
                 priceServices += Math.round(this.orderServices[i].sum);
             }
         }

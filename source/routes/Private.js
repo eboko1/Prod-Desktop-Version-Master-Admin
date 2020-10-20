@@ -44,9 +44,13 @@ import {
     StorageBalancePage,
     StorageMovementPage,
     IncomeDocPage,
+    StorageDocumentPage,
     DiagnosticPatternsPage,
-    AgreementPage,
     AvailabilitiesPage,
+    StorageOrdersPage,
+    StorageTransferPage,
+    AgreementPage,
+    WarehousesPage,
 } from 'pages';
 import book from './book';
 
@@ -113,6 +117,21 @@ export default class Private extends Component {
                     component={ SuppliersPage }
                     path={ book.suppliersPage }
                 />
+                <Route
+                    exact
+                    component={ LaborsPage }
+                    path={ book.laborsPage }
+                />
+                <Route
+                    exact
+                    component={ WarehousesPage }
+                    path={ book.warehouses }
+                />
+                <Route 
+                    exact
+                    component={ DiagnosticPatternsPage }
+                    path={ book.diagnosticPatterns }
+                />
                 { /* Cash */ }
                 <Route
                     exact
@@ -145,20 +164,26 @@ export default class Private extends Component {
                     component={ ProductsPage }
                     path={ book.products }
                 />
+
                 <Route
                     exact
-                    component={ LaborsPage }
-                    path={ book.laborsPage }
+                    component={ StorageOrdersPage }
+                    path={ book.storageOrders }
                 />
-                <Route 
+                <Route
                     exact
-                    component={ DiagnosticPatternsPage }
-                    path={ book.diagnosticPatterns }
+                    component={ IncomesPage }
+                    path={ book.storageIncomes }
                 />
-                <Route 
+                <Route
                     exact
-                    component={ AgreementPage }
-                    path={ book.agreement }
+                    component={ ExpensesPage }
+                    path={ book.storageExpenses }
+                />
+                <Route
+                    exact
+                    component={ StorageTransferPage }
+                    path={ book.storageTransfers }
                 />
                 <Route
                     exact
@@ -172,30 +197,20 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
-                    component={ ProductsTrackingPage }
-                    path={ book.productsTracking }
+                    path={ book.storageDocument }
+                    render={ props => <StorageDocumentPage { ...props } /> }
                 />
                 <Route
                     exact
-                    component={ IncomesPage }
-                    path={ book.storageIncomes }
-                />
-                <Route
-                    exact
-                    path={ book.storageIncomeDocId }
+                    path={ book.storageDocumentId }
                     render={ props => (
-                        <IncomeDocPage key={ props.match.params.id } { ...props } />
+                        <StorageDocumentPage id={ props.match.params.id } { ...props } />
                     ) }
                 />
                 <Route
                     exact
-                    path={ book.storageIncomeDoc }
-                    render={ props => <IncomeDocPage { ...props } /> }
-                />
-                <Route
-                    exact
-                    component={ ExpensesPage }
-                    path={ book.storageExpenses }
+                    component={ ProductsTrackingPage }
+                    path={ book.productsTracking }
                 />
                 { /* Statistics */ }
                 <Route
@@ -285,6 +300,11 @@ export default class Private extends Component {
                 <Route
                     component={ ExceptionPage }
                     path={ book.exceptionStatusCode }
+                />
+                <Route 
+                    exact
+                    component={ AgreementPage }
+                    path={ book.agreement }
                 />
                 <Redirect exact from='/' to={ book.ordersAppointments } />
                 <Redirect to={ `${book.exception}/404` } />

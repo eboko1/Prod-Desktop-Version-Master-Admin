@@ -155,6 +155,7 @@ class OrderPage extends Component {
 
     state = {
         errors: void 0,
+        showOilModal: false,
     };
 
     componentDidMount() {
@@ -184,6 +185,25 @@ class OrderPage extends Component {
         this.props.setModal(MODALS.ADD_CLIENT);
     };
 
+    _showOilModal = (oem, oeCode, acea, api, sae) => {
+        this.setState({
+            showOilModal: true,
+            oilModalData: {
+                oem: oem,
+                oeCode: oeCode,
+                acea: acea,
+                api: api,
+                sae: sae,
+            }
+        })
+    }
+
+    _clearOilData = () => {
+        this.setState({
+            showOilModal: false,
+        })
+    }
+
     _onStatusChange = (status, redirectStatus, options, redirectTo) => {
         const {allServices, allDetails, selectedClient, history} = this.props;
         const form = this.orderFormRef.props.form;
@@ -208,7 +228,6 @@ class OrderPage extends Component {
                     history,
                     'location.state.fromDashboard',
                 );
-
                 this.props.updateOrder({
                     id,
                     order: convertFieldsValuesToDbEntity(
@@ -359,7 +378,7 @@ class OrderPage extends Component {
                         brandName: detail.brandName ? detail.brandName : null,
                         purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
                         count: detail.count ? detail.count : 1,
-                        price: detail.price ? Math.round(detail.price*10)/10 : 1,
+                        price: Math.round(detail.price*10)/10,
                         comment: detail.comment || {
                             comment: undefined,
                             positions: [],
@@ -374,7 +393,7 @@ class OrderPage extends Component {
                         serviceHours: labor.hours ? labor.hours : 0,
                         purchasePrice: labor.purchasePrice ? Math.round(labor.purchasePrice*10)/10 : 0,
                         count: labor.count ? labor.count : 1,
-                        servicePrice: labor.price ? Math.round(labor.price*10)/10 : 1,
+                        servicePrice: Math.round(labor.price*10)/10,
                         comment: labor.comment || {
                             comment: undefined,
                             positions: [],
@@ -455,6 +474,7 @@ class OrderPage extends Component {
 
     /* eslint-disable complexity*/
     render() {
+        const {showOilModal, oilModalData } = this.state;
         const {
             fetchOrderForm,
             fetchOrderTask,
@@ -482,6 +502,7 @@ class OrderPage extends Component {
             forbiddenUpdate,
         } = this.getSecurityConfig();
         const viewTasks = !isForbidden(user, permissions.GET_TASKS);
+        const copyDisabled = isForbidden(user, permissions.CREATE_ORDER);
 
         return spinner ? (
             <Spinner spin={ spinner }/>
@@ -510,6 +531,7 @@ class OrderPage extends Component {
                         {!isForbidden(user, permissions.ACCESS_TECH_AUTO_DATA_MODAL_WINDOW) ? 
                             <div title={this.props.intl.formatMessage({id: "order-page.tech_info"})}>
                                 <TecDocInfoModal
+                                    showOilModal={this._showOilModal}
                                     isMobile={isMobile}
                                     orderId={ id }
                                     modificationId={this.props.order.clientVehicleTecdocId}
@@ -518,11 +540,11 @@ class OrderPage extends Component {
                             :
                             <></>
                         }
-                        {!isForbidden(user, permissions.ACCESS_AGREEMENT) ? 
+                        {!isForbidden(user, permissions.ACCESS_AGREEMENT) && !isMobile ? 
                             <div title={this.props.intl.formatMessage({id: "order-page.send_agreement"})}>
                                 <Popconfirm
                                     title={
-                                        'Отправить сообщение клиенту?'
+                                        `${this.props.intl.formatMessage({id: 'send_message'})}?`
                                     }
                                     onConfirm={async ()=>{
                                         var data = {
@@ -545,12 +567,16 @@ class OrderPage extends Component {
                                         });
                                         const confirmFunc = ()=>{
                                             notification.success({
-                                                message: 'Сообщение отправлено!',
+                                                message: this.props.intl.formatMessage({
+                                                    id: `message_sent`,
+                                                }),
                                             });
                                         };
                                         const errorFunc = ()=>{
                                             notification.error({
-                                                message: 'В заказе нет позиций к согласованию!',
+                                                message: this.props.intl.formatMessage({
+                                                    id: `order-page.no_positions`,
+                                                }),
                                             });
                                         };
                                         await createAgreement(this.props.order.id, this.props.user.language, confirmFunc, errorFunc);
@@ -559,7 +585,7 @@ class OrderPage extends Component {
                                     <Icon
                                         type='file-protect'
                                         style={ {
-                                            fontSize: isMobile ? 12 : 24,
+                                            fontSize: isMobile ? 14 : 24,
                                             cursor:   'pointer',
                                             margin:   '0 10px',
                                         } }
@@ -604,26 +630,8 @@ class OrderPage extends Component {
                                 <FormattedMessage id='order-page.create_invite_order'/>
                             </StyledButton>
                         ) : null }
-                        { status === 'success' ? (
-                            <Button
-                                icon='copy'
-                                type='primary'
-                                disabled={
-                                    !isInviteEnabled ||
-                                    isForbidden(
-                                        user,
-                                        permissions.CREATE_ORDER,
-                                    )
-                                }
-                                onClick={ () => {
-                                    this._getCurrentOrder();
-                                } }
-                                className={ Styles.inviteButton }
-                            >
-                                <FormattedMessage id='order-page.create_copy'/>
-                            </Button>
-                        ) : null }
                         { !isMobile && (
+                            <>
                             <ChangeStatusDropdown
                                 user={ user }
                                 orderStatus={ status }
@@ -632,19 +640,33 @@ class OrderPage extends Component {
                                 modals={ MODALS }
                                 isMobile={ isMobile }
                             />
+                            <ReportsDropdown
+                                user={ this.props.user }
+                                orderId={ id }
+                                orderStatus={ status }
+                                download={ this.props.getReport }
+                                isMobile={ isMobile }
+                            />
+                            </>
                         ) }
-                        <ReportsDropdown
-                            user={ this.props.user }
-                            orderId={ id }
-                            orderStatus={ status }
-                            download={ this.props.getReport }
-                            isMobile={ isMobile }
-                        />
+                        { !copyDisabled ?
+                        <Icon
+                            title={this.props.intl.formatMessage({ id: `order-page.create_copy`})}
+                            type='copy'
+                            onClick={ () => {
+                                this._getCurrentOrder();
+                            } }
+                            style={ {
+                                fontSize: isMobile ? 14 : 24,
+                                cursor:   'pointer',
+                                margin:   '0 10px',
+                            } }
+                        /> : null}
                         { !hideEditButton && (
                             <Icon
                                 type='save'
                                 style={ {
-                                    fontSize: isMobile ? 12 : 24,
+                                    fontSize: isMobile ? 14 : 24,
                                     cursor:   'pointer',
                                     margin:   '0 10px',
                                     ...disabledEditButton
@@ -662,7 +684,7 @@ class OrderPage extends Component {
                             <Icon
                                 type='delete'
                                 style={ {
-                                    fontSize: isMobile ? 12 : 24,
+                                    fontSize: isMobile ? 14 : 24,
                                     cursor:   'pointer',
                                     margin:   '0 10px',
                                 } }
@@ -673,7 +695,7 @@ class OrderPage extends Component {
                         ) }
                         <Icon
                             style={ {
-                                fontSize: isMobile ? 12 : 24,
+                                fontSize: isMobile ? 14 : 24,
                                 cursor:   'pointer',
                             } }
                             type='close'
@@ -722,6 +744,9 @@ class OrderPage extends Component {
                         fetchOrderTask={ fetchOrderTask }
                         onStatusChange={ this._onStatusChange }
                         reloadOrderPageComponents = { this.reloadOrderPageComponents }
+                        showOilModal= { showOilModal }
+                        oilModalData = { oilModalData }
+                        clearOilData = { this._clearOilData }
                     />
                 </ResponsiveView>
                 <CancelReasonModal

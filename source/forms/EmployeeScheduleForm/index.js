@@ -1,8 +1,8 @@
 // vendor
-import React, { Component } from 'react';
-import { Tabs } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { Tabs } from "antd";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { connect } from "react-redux";
 
 // proj
 import {
@@ -13,18 +13,18 @@ import {
     updateEmployeeBreakSchedule,
     deleteEmployeeBreakSchedule,
     fetchEmployeeSchedule,
-} from 'core/employeeSchedule/duck';
-import { ScheduleForm, BreakScheduleForm } from 'forms';
-import { permissions, isForbidden } from 'utils';
+} from "core/employeeSchedule/duck";
+import { ScheduleForm, BreakScheduleForm } from "forms";
+import { permissions, isForbidden } from "utils";
 
 // own
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
-    initialSchedule:      state.employeeSchedule.schedule,
+    initialSchedule: state.employeeSchedule.schedule,
     initialBreakSchedule: state.employeeSchedule.nonWorkingDays,
-    loading:              state.employeeSchedule.loading,
-    user:                 state.auth,
+    loading: state.employeeSchedule.loading,
+    user: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -40,10 +40,7 @@ const mapDispatchToProps = {
 };
 
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export class EmployeeScheduleForm extends Component {
     componentDidMount() {
         const { employeeId } = this.props;
@@ -78,55 +75,55 @@ export class EmployeeScheduleForm extends Component {
 
         return (
             <div>
-                <Tabs defaultActiveKey='1'>
+                <Tabs defaultActiveKey="1">
                     <TabPane
-                        tab={ <FormattedMessage id={ 'working_days' } /> }
-                        key='1'
+                        tab={<FormattedMessage id={"working_days"} />}
+                        key="1"
                     >
                         <ScheduleForm
-                            loading={ loading }
-                            initialSchedule={ initialSchedule }
-                            createSchedule={ createEmployeeSchedule.bind(
+                            loading={loading}
+                            initialSchedule={initialSchedule}
+                            createSchedule={createEmployeeSchedule.bind(
                                 null,
                                 employeeId,
-                            ) }
-                            updateSchedule={ updateEmployeeSchedule.bind(
+                            )}
+                            updateSchedule={updateEmployeeSchedule.bind(
                                 null,
                                 employeeId,
-                            ) }
-                            deleteSchedule={ deleteEmployeeSchedule.bind(
+                            )}
+                            deleteSchedule={deleteEmployeeSchedule.bind(
                                 null,
                                 employeeId,
-                            ) }
-                            forbiddenUpdate={ isForbidden(
+                            )}
+                            forbiddenUpdate={isForbidden(
                                 user,
                                 permissions.CREATE_EDIT_DELETE_EMPLOYEES,
-                            ) }
+                            )}
                         />
                     </TabPane>
                     <TabPane
-                        tab={ <FormattedMessage id={ 'non_working_days' } /> }
-                        key='2'
+                        tab={<FormattedMessage id={"non_working_days"} />}
+                        key="2"
                     >
                         <BreakScheduleForm
-                            loading={ loading }
-                            initialBreakSchedule={ initialBreakSchedule }
-                            createBreakSchedule={ createEmployeeBreakSchedule.bind(
+                            loading={loading}
+                            initialBreakSchedule={initialBreakSchedule}
+                            createBreakSchedule={createEmployeeBreakSchedule.bind(
                                 null,
                                 employeeId,
-                            ) }
-                            updateBreakSchedule={ updateEmployeeBreakSchedule.bind(
+                            )}
+                            updateBreakSchedule={updateEmployeeBreakSchedule.bind(
                                 null,
                                 employeeId,
-                            ) }
-                            deleteBreakSchedule={ deleteEmployeeBreakSchedule.bind(
+                            )}
+                            deleteBreakSchedule={deleteEmployeeBreakSchedule.bind(
                                 null,
                                 employeeId,
-                            ) }
-                            forbiddenUpdate={ isForbidden(
+                            )}
+                            forbiddenUpdate={isForbidden(
                                 user,
                                 permissions.CREATE_EDIT_DELETE_EMPLOYEES,
-                            ) }
+                            )}
                         />
                     </TabPane>
                 </Tabs>

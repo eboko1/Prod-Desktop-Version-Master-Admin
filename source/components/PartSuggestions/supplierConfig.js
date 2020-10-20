@@ -24,7 +24,7 @@ export const getSupplier = (supplierId, partNumber) => {
         case 207:
             return supplierLink(
                 'castrol',
-                `https://www.castrol.com/uk_ua/ukraine/home.html`,
+                'https://www.castrol.com/uk_ua/ukraine/home.html',
             );
         // KYB
         case 85:

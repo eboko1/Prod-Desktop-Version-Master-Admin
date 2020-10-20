@@ -54,10 +54,7 @@ const mapDispatchToProps = {
 };
 
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class StoreProductsContainer extends Component {
     state = {
         expandedKeys: [],
@@ -73,60 +70,60 @@ export default class StoreProductsContainer extends Component {
 
     fetchDetails() {
         let that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
+        let token = localStorage.getItem("_my.carbook.pro_token");
         let url = __API_URL__;
         let params = `/brands`;
         url += params;
-    
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.setState({
-                brands: data
-            })
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        })
-
-        url = __API_URL__ + '/business_suppliers?super=true';
 
         fetch(url, {
-            method: 'GET',
+            method: "GET",
             headers: {
-                'Authorization': token,
-            }
+                Authorization: token,
+            },
         })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.setState({
-                suppliers: data
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
             })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                that.setState({
+                    brands: data,
+                });
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
+
+        url = __API_URL__ + "/business_suppliers?super=true";
+
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
         })
-        .catch(function (error) {
-            console.log('error', error)
-        })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                that.setState({
+                    suppliers: data,
+                });
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
     }
 
     onExpand = expandedKeys => {
@@ -174,11 +171,19 @@ export default class StoreProductsContainer extends Component {
                         <span>
                             {beforeStr}
                             <span style={{ color: "#f50" }}>{searchValue}</span>
-                            {afterStr} (#{item.id}) {item.brandId ? `/ ${item.brandName}` :  ``} {item.priceGroupNumber ? `/ ${item.priceGroupMultiplier}` :  ``} 
+                            {afterStr} (#{item.id}){" "}
+                            {item.brandId ? `/ ${item.brandName}` : ``}{" "}
+                            {item.priceGroupNumber
+                                ? `/ ${item.priceGroupMultiplier}`
+                                : ``}
                         </span>
                     ) : (
                         <span>
-                            {item.name} (#{item.id}) {item.brandId ? `/ ${item.brandName}` :  ``} {item.priceGroupNumber ? `/ ${item.priceGroupMultiplier}` :  ``} 
+                            {item.name} (#{item.id}){" "}
+                            {item.brandId ? `/ ${item.brandName}` : ``}{" "}
+                            {item.priceGroupNumber
+                                ? `/ ${item.priceGroupMultiplier}`
+                                : ``}
                         </span>
                     );
                 if (!_.isEmpty(item.childGroups)) {
@@ -200,7 +205,8 @@ export default class StoreProductsContainer extends Component {
                                                 item.priceGroupNumber,
                                             brandId: item.brandId,
                                             fixedBrand: item.fixedBrand,
-                                            businessSupplierId: item.businessSupplierId,
+                                            businessSupplierId:
+                                                item.businessSupplierId,
                                         }}
                                     />
                                 ) : null
@@ -226,7 +232,8 @@ export default class StoreProductsContainer extends Component {
                                         priceGroupNumber: item.priceGroupNumber,
                                         brandId: item.brandId,
                                         fixedBrand: item.fixedBrand,
-                                        businessSupplierId: item.businessSupplierId,
+                                        businessSupplierId:
+                                            item.businessSupplierId,
                                     }}
                                 />
                             ) : null

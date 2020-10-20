@@ -53,6 +53,13 @@ export default {
                     name: 'navigation.employees',
                 },
                 {
+                    key:      '/warehouses',
+                    link:     book.warehouses,
+                    disabled: user =>
+                        isForbidden(user, permissions.VIEW_STORE),
+                    name: 'navigation.warehouses',
+                },
+                {
                     key:      '/suppliers',
                     link:     book.suppliersPage,
                     disabled: user =>
@@ -81,16 +88,19 @@ export default {
                     name: 'navigation.products',
                 },
                 {
-                    key:     '/labors',
-                    link:    book.laborsPage,
+                    key:      '/labors',
+                    link:     book.laborsPage,
                     disabled: user =>
-                    isForbidden(user, permissions.ACCESS_LABOR_CATALOGUE),
-                    name:    'navigation.labors_page',
+                        isForbidden(user, permissions.ACCESS_LABOR_CATALOGUE),
+                    name: 'navigation.labors_page',
                 },
                 {
                     key:      '/diagnostic-patterns',
                     disabled: user =>
-                        isForbidden(user, permissions.ACCESS_DIAGNOSTIC_CATALOGUE),
+                        isForbidden(
+                            user,
+                            permissions.ACCESS_DIAGNOSTIC_CATALOGUE,
+                        ),
                     link: book.diagnosticPatterns,
                     name: 'navigation.diagnostic_patterns',
                 },
@@ -125,39 +135,53 @@ export default {
             name:     'navigation.storage',
             items:    [
                 {
-                    key:      '/storage-balance',
-                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
-                    link:     book.storageBalance,
-                    name:     'navigation.storage_balance',
-                },
-                {
-                    key:      '/storage-movement',
-                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
-                    link:     book.storageMovement,
-                    name:     'navigation.storage_movement',
-                },
-                {
-                    key:      '/tracking',
-                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
-                    link:     book.productsTracking,
-                    name:     'navigation.products_tracking',
-                },
-                {
-                    key:      '/incomes',
+                    key:      '/storage-orders',
                     disabled: user =>
-                        isForbidden(user, permissions.ACCESS_INCOME_STORE_DOCS),
+                        isForbidden(user, permissions.VIEW_STORE),
+                    link: book.storageOrders,
+                    name: 'navigation.orders',
+                },
+                {
+                    key:      '/storage-incomes',
+                    disabled: user =>
+                        isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageIncomes,
                     name: 'navigation.incomes',
                 },
                 {
-                    key:      '/expenses',
+                    key:      '/storage-expenses',
                     disabled: user =>
-                        isForbidden(
-                            user,
-                            permissions.ACCESS_EXPENSE_STORE_DOCS,
-                        ),
+                        isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageExpenses,
                     name: 'navigation.expenses',
+                },
+                {
+                    key:      '/storage-transfers',
+                    disabled: user =>
+                        isForbidden(user, permissions.VIEW_STORE),
+                    link: book.storageTransfers,
+                    name: 'navigation.transfers',
+                },
+                {
+                    key:      '/storage-balance',
+                    disabled: user =>
+                        isForbidden(user, permissions.VIEW_STORE),
+                    link: book.storageBalance,
+                    name: 'navigation.storage_balance',
+                },
+                {
+                    key:      '/storage-movement',
+                    disabled: user =>
+                        isForbidden(user, permissions.VIEW_STORE),
+                    link: book.storageMovement,
+                    name: 'navigation.storage_movement',
+                },
+                {
+                    key:      '/storage-inventory',
+                    disabled: user =>
+                        isForbidden(user, permissions.VIEW_STORE),
+                    link: book.storageInventory,
+                    name: 'navigation.inventory',
                 },
             ],
         },
@@ -238,6 +262,15 @@ export default {
                         isForbidden(user, permissions.ACCESS_ACCOUNTING),
                     link: book.cashSettingsPage,
                     name: 'navigation.cash_settings',
+                },
+                {
+                    key:      '/storage',
+                    disabled: user =>
+                        !isForbidden(user, permissions.VIEW_STORE) &&
+                            !isAdmin(user) ||
+                        true,
+                    link: book.storage,
+                    name: 'navigation.storage',
                 },
                 {
                     key:      '/requisites',

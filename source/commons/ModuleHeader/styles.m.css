@@ -20,6 +20,12 @@
     width: calc(100% - 80px);
 }
 
+@media screen and (max-width: 1199px) {
+    .headerCollapsed {
+        width: 100%;
+    }
+}
+
 .headerMobile {
     margin-top: 0;
     width: 100%;

@@ -36,7 +36,7 @@ export class LoginForm extends Component {
     componentDidMount() {
         this.setState({
             update: true,
-        })
+        });
     }
 
     render() {
@@ -83,7 +83,7 @@ export class LoginForm extends Component {
                 <Button type="primary" onClick={this._submit}>
                     <FormattedMessage id="enter" />
                 </Button>
-                <div style={{marginTop: 10}}>
+                <div style={{ marginTop: 10 }}>
                     <Link to={book.forgotPassword}>
                         <FormattedMessage id="login_form.forgot_password" />
                     </Link>

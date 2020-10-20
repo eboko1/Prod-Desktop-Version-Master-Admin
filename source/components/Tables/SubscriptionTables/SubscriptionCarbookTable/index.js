@@ -32,10 +32,7 @@ const mapDispatchToProps = {
     setSubscriptionSuggestionsFilters,
 };
 
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export class SubscriptionCarbookTable extends Component {
     constructor(props) {
         super(props);

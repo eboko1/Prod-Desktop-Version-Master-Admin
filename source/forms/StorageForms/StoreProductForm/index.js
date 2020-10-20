@@ -1,5 +1,5 @@
 // vendor
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Button } from 'antd';
 import { injectIntl } from 'react-intl';
@@ -24,6 +24,7 @@ import {
     DecoratedInput,
     DecoratedAutoComplete,
     DecoratedTreeSelect,
+    DecoratedSelect,
 } from 'forms/DecoratedFields';
 import { MeasureUnitSelect, PriceGroupSelect } from 'forms/_formkit';
 
@@ -58,16 +59,18 @@ const ProductForm = props => {
         intl: { formatMessage },
     } = props;
 
+    
+
     useEffect(() => {
-        if (_.get(props, 'modalProps.id')) {
-            props.fetchProduct(_.get(props, 'modalProps.id'));
-        }
+        props.fetchProduct(_.get(props, 'modalProps.id'));
     }, [ _.get(props, 'modalProps.id') ]);
 
     useEffect(() => {
         props.fetchStoreGroups();
         props.fetchPriceGroups();
     }, []);
+
+    
 
     const findGroupNameById = (data, groupId) => {
         let groupName = null;
@@ -256,15 +259,6 @@ const ProductForm = props => {
                 getPopupContainer={ trigger => trigger.parentNode }
                 initialValue={ _.get(props, 'product.measureUnit') }
             />
-            <DecoratedInput
-                formItem
-                formItemLayout={ formItemLayout }
-                label={ formatMessage({ id: 'storage.trade_code' }) }
-                fields={ {} }
-                field='tradeCode'
-                getFieldDecorator={ form.getFieldDecorator }
-                initialValue={ _.get(props, 'product.tradeCode') }
-            />
             <PriceGroupSelect
                 field={ 'priceGroupNumber' }
                 label={ formatMessage({ id: 'storage.price_group' }) }
@@ -276,6 +270,31 @@ const ProductForm = props => {
                 formatMessage={ formatMessage }
                 initialValue={ _.get(props, 'product.priceGroupNumber') }
             />
+            <DecoratedSelect
+                field={ 'defaultWarehouseId' }
+                label={ formatMessage({ id: 'storage.default_warehouse' }) }
+                formItem
+                formItemLayout={ formItemLayout }
+                getFieldDecorator={ form.getFieldDecorator }
+                getPopupContainer={ trigger => trigger.parentNode }
+                formatMessage={ formatMessage }
+                initialValue={ _.get(props, 'product.defaultWarehouseId') }
+            >
+                {props.warehouses.map((elem, i)=>
+                    <Option key={i} value={elem.id}>
+                        {elem.name}
+                    </Option>
+                )}
+            </DecoratedSelect>
+            <DecoratedInput
+                formItem
+                formItemLayout={ formItemLayout }
+                label={ formatMessage({ id: 'storage.trade_code' }) }
+                fields={ {} }
+                field='tradeCode'
+                getFieldDecorator={ form.getFieldDecorator }
+                initialValue={ _.get(props, 'product.tradeCode') }
+            />
             <DecoratedInput
                 formItem
                 formItemLayout={ formItemLayout }
@@ -286,9 +305,6 @@ const ProductForm = props => {
                 initialValue={ _.get(props, 'product.certificate') }
             />
             <ButtonGroup>
-                <SubmitButton type='primary' htmlType='submit'>
-                    { props.intl.formatMessage({ id: 'submit' }) }
-                </SubmitButton>
                 { props.editing ? (
                     <DeleteButton
                         type='danger'
@@ -297,6 +313,9 @@ const ProductForm = props => {
                         { props.intl.formatMessage({ id: 'delete' }) }
                     </DeleteButton>
                 ) : null }
+                <SubmitButton type='primary' htmlType='submit'>
+                    { props.intl.formatMessage({ id: 'submit' }) }
+                </SubmitButton>
             </ButtonGroup>
         </StyledForm>
     );
@@ -322,8 +341,5 @@ const mapDispatchToProps = {
 };
 
 export const StoreProductForm = injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(Form.create()(ProductForm)),
+    connect(mapStateToProps, mapDispatchToProps)(Form.create()(ProductForm)),
 );

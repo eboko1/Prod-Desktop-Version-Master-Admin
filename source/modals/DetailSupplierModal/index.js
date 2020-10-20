@@ -8,6 +8,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
 import { permissions, isForbidden } from "utils";
+import { AvailabilityIndicator } from 'components';
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
@@ -100,36 +101,15 @@ class DetailSupplierModal extends React.Component{
                 sorter: (a, b) => Number(a.availableIn0) - Number(b.availableIn0),
                 sortDirections: ['descend', 'ascend'],
                 render: (elem)=>{
-                    let color = 'brown',
-                    title = 'Поставщик не выбран!';
-                    if(elem){
-                        title=  `Сегодня: ${elem.availableIn0} шт.\n` +
-                                `Завтра: ${elem.availableIn1} шт.\n` +
-                                `Послезавтра: ${elem.availableIn2} шт.\n` +
-                                `Позже: ${elem.availableIn3} шт.`;
-                        if(elem.availableIn0 != '0') {
-                            color = 'rgb(81, 205, 102)';
-                        }
-                        else if(elem.availableIn1 != 0) {
-                            color = 'yellow';
-                        }
-                        else if(elem.availableIn2 != 0) {
-                            color = 'orange';
-                        }
-                        else if(elem.availableIn3 != 0) {
-                            color = 'red';
-                        }
-                    }
-                    else {
-                        color = 'grey';
-                        
-                    }
-                    
                     return (
-                        <div
-                            style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: color}}
-                            title={title}
-                        ></div>
+                        <AvailabilityIndicator
+                            indexArray={[
+                                elem.availableIn0,
+                                elem.availableIn1,
+                                elem.availableIn2,
+                                elem.availableIn3,
+                            ]}
+                        />
                     )
                 }
             },
@@ -145,10 +125,10 @@ class DetailSupplierModal extends React.Component{
                             type="primary"
                             onClick={()=>{
                                 if(this.props.onSelect) {
-                                    this.props.onSelect(elem.businessSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.purchasePrice, price, store, this.props.tableKey);
+                                    this.props.onSelect(elem.businessSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.purchasePrice, price, store, elem.supplierOriginalCode, elem.supplierProductNumber, this.props.tableKey, elem.isFromStock, elem.defaultWarehouseId, elem.id, elem.brandId);
                                 }
                                 else {
-                                    this.props.setStoreSupplier(elem.businessSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.purchasePrice, price, store, this.props.keyValue);
+                                    this.props.setStoreSupplier(elem.businessSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.purchasePrice, price, store, elem.supplierOriginalCode, elem.supplierProductNumber, this.props.keyValue, elem.isFromStock, elem.defaultWarehouseId, elem.id);
                                 }
                                 this.handleCancel();
                             }}
@@ -192,6 +172,7 @@ class DetailSupplierModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
+            console.log(data)
             data.map((elem, i)=>elem.key = i)
             that.setState({
                 fetched: true,

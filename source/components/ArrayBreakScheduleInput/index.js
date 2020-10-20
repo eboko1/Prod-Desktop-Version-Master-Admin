@@ -61,11 +61,8 @@ class ArrayBreakScheduleInput extends Component {
             }
 
             const schedule = this.props.form.getFieldValue(`schedule[${key}]`);
-            const scheduleWithParsedHours = _.mapValues(
-                schedule,
-                value =>
-                    moment.isMoment(value) ? value.format('YYYY-MM-DD') : value,
-            );
+            const scheduleWithParsedHours = _.mapValues(schedule, value =>
+                moment.isMoment(value) ? value.format('YYYY-MM-DD') : value);
 
             callback &&
                 callback({
@@ -148,7 +145,14 @@ class ArrayBreakScheduleInput extends Component {
                     ] }
                     initialValue={ _.get(initialBreakSchedule, [ key, 'type' ]) }
                 >
-                    { [ 'holiday', 'vacation', 'sick_leave', 'legal_holiday', 'absenteeism', 'cant_work' ].map(item => {
+                    { [
+                        'holiday',
+                        'vacation',
+                        'sick_leave',
+                        'legal_holiday',
+                        'absenteeism',
+                        'cant_work',
+                    ].map(item => {
                         return (
                             <Option value={ item } key={ item }>
                                 <FormattedMessage id={ item } />
@@ -170,8 +174,10 @@ class ArrayBreakScheduleInput extends Component {
                             className={ Styles.scheduleBreakIcon }
                             onClick={ () => {
                                 const callback = entity => {
-                                    const initialEntity =
-                                        _.get(initialBreakSchedule, [ key ]);
+                                    const initialEntity = _.get(
+                                        initialBreakSchedule,
+                                        [ key ],
+                                    );
 
                                     if (initialEntity) {
                                         const { id } = initialEntity;
@@ -204,7 +210,12 @@ class ArrayBreakScheduleInput extends Component {
                 ),
         };
 
-        const columns = [ breakType, ...dates, comment, actions ];
+        const columns = [
+            breakType,
+            ...dates,
+            comment,
+            actions,
+        ];
 
         return (
             <Catcher>

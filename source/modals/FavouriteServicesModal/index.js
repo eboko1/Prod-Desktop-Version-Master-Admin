@@ -58,7 +58,7 @@ class FavouriteServicesModal extends React.Component{
                             style={{maxWidth: 220}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.laborsTreeData}
+                            treeData={this.props.laborsTreeData}
                             filterTreeNode={(input, node) => {
                                 return (
                                     node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -448,9 +448,7 @@ class FavouriteServicesModal extends React.Component{
     fetchData() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/orders/frequent/labors`;
-        url += params;
+        let url = __API_URL__ + `/orders/frequent/labors`;
         fetch(url, {
             method: 'GET',
             headers: {
@@ -482,88 +480,10 @@ class FavouriteServicesModal extends React.Component{
         .catch(function (error) {
             console.log('error', error)
         });
-
-        params = `/labors`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            data.labors.map((elem, index)=>{
-                elem.key = index;
-                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
-            })
-            that.labors = data.labors;
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        params = `/labors/master?makeTree=true`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.masterLabors = data.masterLabors;
-            that.buildLaborsTree();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        params = `/store_groups`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.storeGroups = data;
-            that.buildStoreGroupsTree();
-            that.getOptions();
-            that.setState({
-                update: true
-            })
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
+        this.labors = this.props.labors;
+        this.storeGroups = this.props.details;
+        this.buildStoreGroupsTree();
+        this.getOptions();
     }
 
     buildStoreGroupsTree() {
@@ -614,45 +534,8 @@ class FavouriteServicesModal extends React.Component{
         this.storeGroupsTreeData = treeData;
     }
 
-    buildLaborsTree() {
-        var treeData = [];
-        for(let i = 0; i < this.masterLabors.length; i++) {
-            const parentGroup = this.masterLabors[i];
-            treeData.push({
-                title: `${parentGroup.defaultMasterLaborName} (#${parentGroup.masterLaborId})`,
-                name: parentGroup.defaultMasterLaborName,
-                value: parentGroup.masterLaborId,
-                className: Styles.groupTreeOption,
-                key: `${i}`,
-                children: [],
-            })
-            for(let j = 0; j < parentGroup.childGroups.length; j++) {
-                const childGroup = parentGroup.childGroups[j];
-                treeData[i].children.push({
-                    title: `${childGroup.defaultMasterLaborName} (#${childGroup.masterLaborId})`,
-                    name: childGroup.defaultMasterLaborName,
-                    value: childGroup.masterLaborId,
-                    className: Styles.groupTreeOption,
-                    key: `${i}-${j}`,
-                    children: [],
-                })
-                for(let k = 0; k < childGroup.childGroups.length; k++) {
-                    const lastNode = childGroup.childGroups[k];
-                    treeData[i].children[j].children.push({
-                        title: `${lastNode.defaultMasterLaborName} (#${lastNode.masterLaborId})`,
-                        name: lastNode.defaultMasterLaborName,
-                        value: lastNode.masterLaborId,
-                        className: Styles.groupTreeOption,
-                        key: `${i}-${j}-${k}`,
-                    })
-                }
-            }
-        }
-        this.laborsTreeData = treeData;
-    }
-
     getOptions() {
-        this.servicesOptions = this.labors.map((elem, index)=>(
+        this.servicesOptions = this.props.labors.map((elem, index)=>(
             <Option key={index} value={elem.laborId} master_id={elem.masterLaborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
                 {elem.name ? elem.name : elem.defaultName}
             </Option>
@@ -721,7 +604,7 @@ class FavouriteServicesModal extends React.Component{
                 >
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
-                            <div style={{display: 'block'}}>Работа</div>
+                            <div style={{display: 'block'}}><FormattedMessage id='services_table.labor'/></div>
                         </div>
                         <Table
                             dataSource={this.state.dataSource}

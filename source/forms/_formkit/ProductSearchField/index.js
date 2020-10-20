@@ -1,18 +1,18 @@
 // vendor
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Select, Spin } from 'antd';
-import { injectIntl } from 'react-intl';
-import { FormattedMessage } from 'react-intl';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Select, Spin } from "antd";
+import { injectIntl } from "react-intl";
+import { FormattedMessage } from "react-intl";
 
 // proj
-import { setProductSearchQuery } from 'core/search/duck';
+import { setProductSearchQuery } from "core/search/duck";
 
 // own
 const Option = Select.Option;
 
 const mapStateToProps = state => ({
-    products:           state.search.products,
+    products: state.search.products,
     isFetchingProducts: state.search.isFetchingProducts,
 });
 
@@ -21,10 +21,7 @@ const mapDispatchToProps = {
 };
 
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class ProductSearchField extends Component {
     render() {
         const { onSelect, setProductSearchQuery } = this.props;
@@ -32,31 +29,31 @@ export default class ProductSearchField extends Component {
 
         return (
             <Select
-                placeholder={ this.props.intl.formatMessage({
-                    id: 'product_placeholder',
-                }) }
-                style={ this.props.selectStyles }
+                placeholder={this.props.intl.formatMessage({
+                    id: "product_placeholder",
+                })}
+                style={this.props.selectStyles}
                 showSearch
                 allowClear
-                filterOption={ false }
+                filterOption={false}
                 notFoundContent={
                     isFetchingProducts ? (
-                        <Spin size='small' />
+                        <Spin size="small" />
                     ) : (
-                        <FormattedMessage id='not_found' />
+                        <FormattedMessage id="not_found" />
                     )
                 }
-                onSearch={ item => setProductSearchQuery(item) }
-                onChange={ productId => onSelect(productId) }
-                value={ productId }
+                onSearch={item => setProductSearchQuery(item)}
+                onChange={productId => onSelect(productId)}
+                value={productId}
             >
-                { isFetchingProducts
+                {isFetchingProducts
                     ? []
                     : products.map(({ productId, name }) => (
-                        <Option key={ productId } value={ productId }>
-                            { name }
-                        </Option>
-                    )) }
+                          <Option key={productId} value={productId}>
+                              {name}
+                          </Option>
+                      ))}
             </Select>
         );
     }

@@ -1,13 +1,13 @@
 // vendor
-import React, { Component } from 'react';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import React, { Component } from "react";
+import { injectIntl, FormattedMessage } from "react-intl";
 
 // proj
-import { Catcher } from 'commons';
-import { ReviewRating } from 'components';
+import { Catcher } from "commons";
+import { ReviewRating } from "components";
 
 //own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 
 @injectIntl
 export default class ReviewsStats extends Component {
@@ -26,46 +26,46 @@ export default class ReviewsStats extends Component {
 
         return (
             <Catcher>
-                <div className={ Styles.reviewsStats }>
-                    <div className={ Styles.column }>
-                        <span className={ Styles.title }>
-                            <FormattedMessage id='reviews.rating' />
-                            <span className={ Styles.titleData }>
-                                { ` ${totalRating} / 10` }
+                <div className={Styles.reviewsStats}>
+                    <div className={Styles.column}>
+                        <span className={Styles.title}>
+                            <FormattedMessage id="reviews.rating" />
+                            <span className={Styles.titleData}>
+                                {` ${totalRating} / 10`}
                             </span>
                         </span>
                         <ReviewRating
-                            color='var(--primary)'
-                            repairQuality={ repairQualityRating }
-                            repairDuration={ repairDurationRating }
-                            comfort={ comfortRating }
-                            serviceQuality={ serviceQualityRating }
+                            color="var(--primary)"
+                            repairQuality={repairQualityRating}
+                            repairDuration={repairDurationRating}
+                            comfort={comfortRating}
+                            serviceQuality={serviceQualityRating}
                         />
                     </div>
-                    <div className={ Styles.column }>
-                        <span className={ Styles.title }>
-                            <FormattedMessage id='reviews.nps_rating' />
-                            <span className={ Styles.titleData }>
-                                { ` ${npsRating}%` }
+                    <div className={Styles.column}>
+                        <span className={Styles.title}>
+                            <FormattedMessage id="reviews.nps_rating" />
+                            <span className={Styles.titleData}>
+                                {` ${npsRating}%`}
                             </span>
                         </span>
-                        <ul className={ Styles.reviewsList }>
+                        <ul className={Styles.reviewsList}>
                             <li>
-                                <FormattedMessage id='reviews.count_reviews' />
-                                <span className={ Styles.listData }>
-                                    { ` ${total}` }
+                                <FormattedMessage id="reviews.count_reviews" />
+                                <span className={Styles.listData}>
+                                    {` ${total}`}
                                 </span>
                             </li>
                             <li>
-                                <FormattedMessage id='reviews.count_recommended' />
-                                <span className={ Styles.listData }>
-                                    { ` ${recommended}` }
+                                <FormattedMessage id="reviews.count_recommended" />
+                                <span className={Styles.listData}>
+                                    {` ${recommended}`}
                                 </span>
                             </li>
                             <li>
-                                <FormattedMessage id='reviews.count_not_recommended' />
-                                <span className={ Styles.listData }>
-                                    { ` ${notRecommended}` }
+                                <FormattedMessage id="reviews.count_not_recommended" />
+                                <span className={Styles.listData}>
+                                    {` ${notRecommended}`}
                                 </span>
                             </li>
                         </ul>

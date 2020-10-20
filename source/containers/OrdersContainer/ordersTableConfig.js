@@ -195,6 +195,7 @@ export function columnsConfig(
                 // TODO
                 currency={ formatMessage({ id: 'currency' }) }
                 nullText='0'
+                mask='0,0.00'
             >
                 { order.servicesTotalSum + order.detailsTotalSum }
             </Numeral>

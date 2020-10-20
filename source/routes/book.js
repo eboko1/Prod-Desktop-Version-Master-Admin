@@ -45,6 +45,12 @@ const book = Object.freeze({
     // Suppliers
     suppliersPage:            '/suppliers',
     //
+    // Catalogue
+    //
+    laborsPage:               '/labors',
+    diagnosticPatterns:       '/diagnostic-patterns',
+    warehouses:               '/warehouses',
+    //
     //  Cash
     //
     cashFlowPage:             '/cash/flow',
@@ -56,16 +62,19 @@ const book = Object.freeze({
     productsGroups:           '/products-groups',
     priceGroups:              '/price-groups',
     products:                 '/products',
+    storageOrders:            '/storage-orders',
+    storageIncomes:           '/storage-incomes',
+    storageExpenses:          '/storage-expenses',
+    storageTransfers:         '/storage-transfers',
     storageBalance:           '/storage-balance',
     storageMovement:          '/storage-movement',
+    storageInventory:         '/storage-inventory',
+    storageDocument:          '/document-storage',
+    storageDocumentId:        '/document-storage/:id',
     productsTracking:         '/tracking',
-    storageIncomes:           '/incomes',
-    storageExpenses:          '/expenses',
     storageIncomeDoc:         '/income-document',
     storageIncomeDocId:       '/income-document/:id',
-    laborsPage:               '/labors',
-    diagnosticPatterns:       '/diagnostic-patterns',
-    //trt
+    //
     // Statistics
     //
     chart:                    '/chart',
@@ -81,6 +90,7 @@ const book = Object.freeze({
     //
     // Settings
     //
+    storage:                  '/storage',
     packagePage:              '/packages',
     businessPackagePage:      '/businesses/packages',
     managerRolePage:          '/managers/roles',

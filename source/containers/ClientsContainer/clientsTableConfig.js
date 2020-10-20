@@ -34,11 +34,11 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
                 >
                     { client.name } { client.surname }
                 </Link>
-            ) : 
+            ) : (
                 <>
-                    {client.name} {client.surname}
+                    { client.name } { client.surname }
                 </>
-        ,
+            ),
     };
 
     const phone = {
@@ -201,5 +201,14 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
         ),
     };
 
-    return [ client, phone, currentDebt, vehicles, lastOrder, orders, invitation, actions ];
+    return [
+        client,
+        phone,
+        currentDebt,
+        vehicles,
+        lastOrder,
+        orders,
+        invitation,
+        actions,
+    ];
 }

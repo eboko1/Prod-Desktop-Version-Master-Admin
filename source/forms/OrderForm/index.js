@@ -2,11 +2,12 @@
 import React, { Component } from "react";
 import { Form, notification, message } from "antd";
 import { injectIntl } from "react-intl";
+import { Link } from "react-router-dom";
 import _ from "lodash";
 import moment from "moment";
 
 //proj
-import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
+import { API_URL } from "core/forms/orderDiagnosticForm/saga";
 import {
     onChangeOrderForm,
     setClientSelection,
@@ -80,111 +81,150 @@ export class OrderForm extends React.PureComponent {
         super(props);
         this.state = {
             formValues: {},
+            labors: [],
+            details: [],
         };
+        this._isMounted = false;
         this.orderDetails = [...this.props.orderDetails];
         this.orderServices = [...this.props.orderServices];
         this._reloadOrderForm = this._reloadOrderForm.bind(this);
         this._updateDuration = this._updateDuration.bind(this);
     }
 
+    _fetchLaborsAndDetails = async () => {
+        var that = this;
+        let token = localStorage.getItem("_my.carbook.pro_token");
+        let url = __API_URL__ + `/labors`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            data.labors.map((elem, index) => {
+                elem.key = index;
+                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
+            });
+            that.labors = data.labors;
+            that.setState({
+                labors: data.labors,
+            });
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+
+        url = __API_URL__ + `/store_groups`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            data.map((elem, index) => {
+                elem.key = index;
+            });
+            that.details = data;
+            that.setState({
+                details: data,
+            });
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    };
+
     _reloadOrderForm() {
         var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/orders/${this.props.orderId}/labors`;
-        url += params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.orderServices = data.labors,
-            that.setState({
-                update: true,
-            })
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        params = `/orders/${this.props.orderId}/details`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.orderDetails = data.details,
-            that.setState({
-                orderDetails: data.details,
-            })
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-    }
-
-    _updateDuration() {
-        let hours = 0;
-        this.orderServices.map((elem)=>{
-            hours += elem.count;
-        })
-        
-        if(hours > 8) {
-            message.warning('Количество часов превышает 8. ');
-            hours = 8;
-        }
-
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
+        let token = localStorage.getItem("_my.carbook.pro_token");
         let url = API_URL;
         let params = `/orders/${this.props.orderId}`;
         url += params;
         fetch(url, {
-            method: 'PUT',
+            method: "GET",
             headers: {
-                'Authorization': token,
-                'Content-Type': 'application/json',
+                Authorization: token,
             },
-            body: JSON.stringify({duration: hours}),
         })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            window.location.reload();
-        })
-        .catch(function (error) {
-            console.log('error', error)
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                that.orderServices = data.orderServices;
+                that.orderDetails = data.orderDetails;
+                
+                that.forceUpdate();
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
+    }
+
+    _updateDuration() {
+        let hours = 0;
+        this.orderServices.map(elem => {
+            hours += elem.count;
         });
+
+        if (hours > 8) {
+            message.warning("Количество часов превышает 8. ");
+            hours = 8;
+        }
+
+        var that = this;
+        let token = localStorage.getItem("_my.carbook.pro_token");
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}`;
+        url += params;
+        fetch(url, {
+            method: "PUT",
+            headers: {
+                Authorization: token,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ duration: hours }),
+        })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                window.location.reload();
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
     }
 
     _openNotification = ({ make, model }) => {
@@ -212,7 +252,15 @@ export class OrderForm extends React.PureComponent {
 
     componentDidMount() {
         // TODO in order to fix late getFieldDecorator invoke for services
+        this._isMounted = true;
+        if ((!this.labors || !this.details) && this._isMounted) {
+            this._fetchLaborsAndDetails();
+        }
         this.setState({ initialized: true });
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     componentDidUpdate() {
@@ -340,8 +388,9 @@ export class OrderForm extends React.PureComponent {
             user,
             location,
             errors,
+
         } = this.props;
-        
+
         const formFieldsValues = form.getFieldsValue();
 
         const { totalHours } = servicesStats(
@@ -396,20 +445,20 @@ export class OrderForm extends React.PureComponent {
         ]);
 
         let priceDetails = 0;
-        for(let i = 0; i < this.orderDetails.length; i++) {
-            if(this.orderDetails[i].agreement != 'REJECTED') {
+        for (let i = 0; i < this.orderDetails.length; i++) {
+            if (this.orderDetails[i].agreement != "REJECTED") {
                 priceDetails += this.orderDetails[i].sum;
             }
         }
-        priceDetails = Math.round(priceDetails);
+        //priceDetails = Math.round(priceDetails);
 
         let priceServices = 0;
-        for(let i = 0; i < this.orderServices.length; i++) {
-            if(this.orderServices[i].agreement != 'REJECTED') {
+        for (let i = 0; i < this.orderServices.length; i++) {
+            if (this.orderServices[i].agreement != "REJECTED") {
                 priceServices += this.orderServices[i].sum;
             }
         }
-        priceServices = Math.round(priceServices);
+        //priceServices = Math.round(priceServices);
 
         const servicesDiscount = _.get(formFieldsValues, "servicesDiscount", 0);
         const detailsDiscount = _.get(formFieldsValues, "detailsDiscount", 0);
@@ -421,8 +470,8 @@ export class OrderForm extends React.PureComponent {
         const servicesTotalPrice =
             priceServices - priceServices * (servicesDiscount / 100);
 
-        const totalPrice = Math.round(detailsTotalPrice + servicesTotalPrice);
-        const remainPrice = Math.round(totalPrice - cashSum);
+        const totalPrice = detailsTotalPrice + servicesTotalPrice;
+        const remainPrice = totalPrice - cashSum;
 
         return (
             <Form className={Styles.form} layout="horizontal">
@@ -474,9 +523,9 @@ export class OrderForm extends React.PureComponent {
                     order={order}
                     setAddClientModal={setAddClientModal}
                     orderStatus={this.props.order.status}
-                    onStatusChange={ this.props.onStatusChange }
-                    createOrder={ this.props.createOrder }
-                    createStatus= { this.props.createStatus }
+                    onStatusChange={this.props.onStatusChange}
+                    createOrder={this.props.createOrder}
+                    createStatus={this.props.createStatus}
                 />
                 {tabs}
                 <AddClientModal
@@ -500,6 +549,7 @@ export class OrderForm extends React.PureComponent {
     }
 
     _renderTabs = formFieldsValues => {
+        if (!this.labors || !this.details) return;
         const {
             form,
             orderTasks,
@@ -516,11 +566,17 @@ export class OrderForm extends React.PureComponent {
         var countDetails = this.orderDetails.length,
             priceDetails = 0,
             totalDetailsProfit = 0,
-            detailsDiscount = this.props.fields.detailsDiscount ? this.props.fields.detailsDiscount.value : this.props.order.detailsDiscount;
+            detailsDiscount = this.props.fields.detailsDiscount
+                ? this.props.fields.detailsDiscount.value
+                : this.props.order.detailsDiscount;
         for (let i = 0; i < this.orderDetails.length; i++) {
-            if(this.orderDetails[i].agreement != 'REJECTED') {
+            if (this.orderDetails[i].agreement != "REJECTED") {
                 priceDetails += this.orderDetails[i].sum;
-                totalDetailsProfit += this.orderDetails[i].sum - (this.orderDetails[i].sum*detailsDiscount/100) - this.orderDetails[i].purchasePrice*this.orderDetails[i].count;
+                totalDetailsProfit +=
+                    this.orderDetails[i].sum -
+                    (this.orderDetails[i].sum * detailsDiscount) / 100 -
+                    this.orderDetails[i].purchasePrice *
+                        this.orderDetails[i].count;
             }
         }
         priceDetails = Math.round(priceDetails);
@@ -529,16 +585,22 @@ export class OrderForm extends React.PureComponent {
         var countServices = this.orderServices.length,
             priceServices = 0,
             totalServicesProfit = 0,
-            servicesDiscount = this.props.fields.servicesDiscount ? this.props.fields.servicesDiscount.value : this.props.order.servicesDiscount;
+            servicesDiscount = this.props.fields.servicesDiscount
+                ? this.props.fields.servicesDiscount.value
+                : this.props.order.servicesDiscount;
         for (let i = 0; i < this.orderServices.length; i++) {
-            if(this.orderServices[i].agreement != 'REJECTED') {
+            if (this.orderServices[i].agreement != "REJECTED") {
                 priceServices += this.orderServices[i].sum;
-                totalServicesProfit += this.orderServices[i].sum - (this.orderServices[i].sum*servicesDiscount/100) - this.orderServices[i].purchasePrice*this.orderServices[i].count;
+                totalServicesProfit +=
+                    this.orderServices[i].sum -
+                    (this.orderServices[i].sum * servicesDiscount) / 100 -
+                    this.orderServices[i].purchasePrice *
+                        this.orderServices[i].count;
             }
         }
         priceServices = Math.round(priceServices);
         totalServicesProfit = Math.round(totalServicesProfit);
-        
+
         // _.values(value).some(_.isNil) gets only filled rows
         const stationsCount = _.get(formFieldsValues, "stationLoads", [])
             .filter(Boolean)
@@ -592,6 +654,10 @@ export class OrderForm extends React.PureComponent {
             setStoreProductsSearchQuery,
 
             normHourPrice,
+
+            showOilModal,
+            oilModalData,
+            clearOilData,
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
@@ -623,7 +689,6 @@ export class OrderForm extends React.PureComponent {
             (this._bodyUpdateIsForbidden()
                 ? void 0
                 : _.get(location, "state.stationNum"));
-
         return (
             <OrderFormTabs
                 orderStatus={this.props.order.status}
@@ -653,6 +718,8 @@ export class OrderForm extends React.PureComponent {
                 orderDiagnostic={orderDiagnostic}
                 allServices={allServices}
                 allDetails={allDetails}
+                labors={this.labors}
+                details={this.details}
                 employees={employees}
                 selectedClient={selectedClient}
                 detailsSuggestions={detailsSuggestions}
@@ -687,6 +754,10 @@ export class OrderForm extends React.PureComponent {
                 fetchRecommendedPrice={this.props.fetchRecommendedPrice}
                 reloadOrderPageComponents={this.props.reloadOrderPageComponents}
                 reloadOrderForm={this._reloadOrderForm}
+                clientVehicleVin={this.props.order.clientVehicleVin}
+                showOilModal= { showOilModal }
+                oilModalData = { oilModalData }
+                clearOilData = { clearOilData }
             />
         );
     };
