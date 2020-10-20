@@ -1103,6 +1103,44 @@ class ReserveButton extends React.Component {
         };
     }
 
+    getStoreProduct = (detailCode, brandId) => {
+        const { detail, updateDetail } = this.props;
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_products`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+
+            const product = data.list.find((product)=>product.code == detailCode && product.brandId == brandId);
+            if(product) {
+                detail.productId = product.id;
+                detail.defaultWarehouseId = product.defaultWarehouseId;
+                updateDetail(detail.key, detail);
+            }
+        })
+        .catch(function(error) {
+            console.log("error", error);
+            that.setState({
+                fetched: true,
+                codeFilter: that.props.codeFilter,
+            })
+        });
+    }
+
     reserveProduct = () => {
         const { detail, setModal, updateDetail, orderId, reserveWarehouseId } = this.props;
         const data = {
@@ -1204,6 +1242,7 @@ class ReserveButton extends React.Component {
 
     addProduct = () => {
         const { detail, setModal, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, brands } = this.props;
+        var that = this;
         confirm({
             title: this.props.intl.formatMessage({id: 'storage_document.error.product_not_found'}),
             onOk() {
@@ -1218,10 +1257,10 @@ class ReserveButton extends React.Component {
                 if(detail.brandName && !(detail.brandId)) {
                     const defaultBrand = brands.find((brand)=>brand.brandName==detail.brandName);
                     if(defaultBrand) {
+                        detail.brandId = defaultBrand.brandId;
                         postData.brandId = defaultBrand.brandId;
                     }
                 }
-                var that = this;
                 let token = localStorage.getItem('_my.carbook.pro_token');
                 let url = __API_URL__ + `/store_products`;
                 fetch(url, {
@@ -1248,6 +1287,7 @@ class ReserveButton extends React.Component {
                 })
                 .catch(function(error) {
                     console.log("error", error);
+                    that.getStoreProduct(detail.detailCode, detail.brandId);
                 });
             }
         });

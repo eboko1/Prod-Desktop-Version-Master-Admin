@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Dropdown, Button, Icon, Menu, notification, Modal, Table, InputNumber, Checkbox, Select, AutoComplete, Badge } from 'antd';
+import { Dropdown, Button, Icon, Menu, notification, Modal, Table, Input, InputNumber, Checkbox, Select, AutoComplete, Badge } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import { saveAs } from 'file-saver';
@@ -14,6 +14,7 @@ import { Layout, Spinner } from 'commons';
 import { StorageDocumentForm } from 'forms';
 import book from 'routes/book';
 import { type } from 'ramda';
+import { DetailStorageModal } from 'modals';
 // own
 const Option = Select.Option;
 
@@ -681,7 +682,7 @@ class StorageDocumentPage extends Component {
 
     render() {
         const { warehouses, counterpartSupplier, formData, brands, clientList, fetched, forceUpdate, loading } = this.state;
-        const { id, intl: {formatMessage} } = this.props;
+        const { id, intl: {formatMessage}, user } = this.props;
         const dateTime = formData.createdDatetime || new Date();
         const titleType = " " + formatMessage({id: `storage_document.docType.${formData.type}.${formData.documentType}`}).toLowerCase();
 
@@ -744,6 +745,7 @@ class StorageDocumentPage extends Component {
                                         documentType={formData.documentType}
                                         brands={brands}
                                         disabled={formData.status != NEW}
+                                        user={user}
                                     />
                                 }
                                 <Badge 
@@ -801,6 +803,7 @@ class StorageDocumentPage extends Component {
                     deleteDocProduct={this.deleteDocProduct}
                     editDocProduct={this.editDocProduct}
                     loading={loading}
+                    user={user}
                 />
             </Layout>
         );
@@ -907,23 +910,39 @@ class ReturnModal extends React.Component {
         this.state = {
             visible: false,
             brandSearchValue: "",
-            brandId: undefined,
-            brandName: undefined,
             storageProducts: [],
-            detailCode: undefined,
-            detailName: undefined,
+            setStorageModalVisible: false,
+            selectedProduct: {
+                brandId: undefined,
+                brandName: undefined,
+                detailCode: undefined,
+                detailName: undefined,
+                stockPrice: 0,
+                quantity: 0,
+            }
         }
     }
 
     handleOk() {
+        this.props.addDocProduct(this.state.selectedProduct);
         this.handleCancel();
 
     }
 
     handleCancel() {
         this.setState({
-            dataSource: [],
             visible: false,
+            brandSearchValue: "",
+            storageProducts: [],
+            setStorageModalVisible: false,
+            selectedProduct: {
+                brandId: undefined,
+                brandName: undefined,
+                detailCode: undefined,
+                detailName: undefined,
+                stockPrice: 0,
+                quantity: 0,
+            }
         });
     }
 
@@ -960,15 +979,41 @@ class ReturnModal extends React.Component {
         this.getStorageProducts();
     }
 
+    selectProduct = (productId) => {
+        console.log(productId);
+        const product = this.state.storageProducts.find((product)=>product.id == productId);
+        if(product) {
+            this.setState({
+                selectedProduct: {
+                    productId: product.id,
+                    brandId: product.brandId,
+                    brandName: product.brand && product.brand.name,
+                    detailCode: product.code,
+                    detailName: product.name,
+                    tradeCode: product.tradeCode,
+                    stockPrice: product.stockPrice,
+                    quantity: product.quantity || 1,
+                }
+            })
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(this.state.setStorageModalVisible && prevState.setStorageModalVisible) {
+            this.setState({
+                setStorageModalVisible: false,
+            })
+        }
+    }
+
     render() {
+        const {type, documentType, user } = this.props;
         const {
             visible,
             brandSearchValue,
-            brandId,
-            brandName,
             storageProducts,
-            detailCode,
-            detailName,
+            selectedProduct,
+            setStorageModalVisible,
         } = this.state;
         return (
             <div>
@@ -983,7 +1028,8 @@ class ReturnModal extends React.Component {
                         this.fetchData();
                         this.setState({
                             visible: true,
-                        })
+                            setStorageModalVisible: true,
+                        });
                     }}
                 />
                 <Modal
@@ -999,94 +1045,95 @@ class ReturnModal extends React.Component {
                     <div
                         style={{
                             display: 'flex',
-                            justifyContent: 'space-between'
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-end',
+                            margin: '24px 0 0 0',
                         }}
                     >
                         <div style={{minWidth: 140}}>
                             <FormattedMessage id='order_form_table.brand' />
                             <Select
-                                showSearch
-                                value={brandId}
+                                disabled
+                                value={selectedProduct.brandId}
+                                style={{color: 'var(--text)'}}
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                                filterOption={(input, option) => {
-                                    return (
-                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                        String(option.props.value).indexOf(input.toLowerCase()) >= 0
-                                    )
-                                }}
-                                onSelect={(value, option)=>{
-                                    this.getOptions(value)
-                                    this.setState({
-                                        brandId: value,
-                                        brandName: option.props.children,
-                                    })
-                                }}
-                                onSearch={(input)=>{
-                                    this.setState({
-                                        brandSearchValue: input,
-                                    })
-                                }}
-                                onBlur={()=>{
-                                    this.setState({
-                                        brandSearchValue: "",
-                                    })
-                                }}
                             >
-                                {
-                                    this.state.brandSearchValue.length > 1 ? 
-                                        this.props.brands.map((elem, index)=>(
-                                            <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
-                                                {elem.brandName}
-                                            </Option>
-                                        )) :
-                                        brandId ? 
-                                        <Option key={0} value={brandId}>
-                                            {brandName}
-                                        </Option> : 
-                                        []
-                                }
+                                {this.props.brands.map((elem, index)=>(
+                                    <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
+                                        {elem.brandName}
+                                    </Option>
+                                ))}
                             </Select>
                         </div>
                         <div>
                             <FormattedMessage id='order_form_table.detail_code' />
-                            <AutoComplete
-                                value={detailCode}
-                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                                onChange={(value)=>{
-                                    this.setState({
-                                        detailCode: value,
-                                    });
-                                }}
-                                onSelect={(value, option)=>{
-                                    this.setState({
-                                        detailCode: value,
-                                        detailName: option.props.detail_name,
-                                        stockPrice: option.props.price,
-                                    });
-                                }}
-                                filterOption={(input, option) => {
-                                    return (
-                                        String(option.props.value).toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                    )
-                                }}
-                            >
-                                {
-                                    storageProducts.map((elem)=>{
-                                        return (
-                                            <Option
-                                                key={elem.id}
-                                                value={elem.code}
-                                                detail_name={elem.name}
-                                                price={0}
-                                                trade_code={elem.tradeCode}
-                                            >
-                                                {elem.code}
-                                            </Option>
-                                        )
-                                    })
-                                }
-                            </AutoComplete>
+                            <Input
+                                disabled
+                                value={selectedProduct.detailCode}
+                                style={{color: 'var(--text)'}}
+                            />
                         </div>
+                        {documentType == SUPPLIER &&
+                            <div>
+                                <FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)
+                                <Input
+                                    disabled
+                                    value={selectedProduct.tradeCode}
+                                    style={{
+                                        color: 'var(--text)'
+                                    }}
+                                />
+                            </div>
+                        }
+                        <div>
+                            <FormattedMessage id='order_form_table.detail_name' />
+                            <Input
+                                disabled
+                                value={selectedProduct.detailName}
+                                style={{
+                                    color: 'var(--text)'
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <div><FormattedMessage id='order_form_table.price' /></div>
+                            <InputNumber
+                                value={selectedProduct.stockPrice}
+                                min={0}
+                                onChange={(value)=>{
+                                    selectedProduct.stockPrice = value;
+                                    this.setState({})
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <div><FormattedMessage id='order_form_table.count' /></div>
+                            <InputNumber
+                                value={selectedProduct.quantity}
+                                min={1}
+                                onChange={(value)=>{
+                                    selectedProduct.quantity = value;
+                                    this.setState({})
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <div><FormattedMessage id='order_form_table.sum' /></div>
+                            <InputNumber
+                                disabled
+                                value={Math.round(selectedProduct.quantity*selectedProduct.stockPrice*10)/10}
+                                min={1}
+                                style={{
+                                    color: 'var(--text)'
+                                }}
+                            />
+                        </div>
+                        <DetailStorageModal
+                            stockMode={true}
+                            user={user}
+                            selectProduct={this.selectProduct}
+                            setVisible={setStorageModalVisible}
+                        />
                     </div>
                 </Modal>
             </div>
