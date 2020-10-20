@@ -1,0 +1,14 @@
+{
+    "en": {
+        "client_mrds_tab.amoun": "Amount",
+        "client_mrds_tab.due_amount": "Due amount"
+    },
+    "ru": {
+        "client_mrds_tab.amoun": "Сумма",
+        "client_mrds_tab.due_amount": "Неоплачено"
+    },
+    "uk": {
+        "client_mrds_tab.amoun": "Сума",
+        "client_mrds_tab.due_amount": "Неоплачено"
+    }
+}
