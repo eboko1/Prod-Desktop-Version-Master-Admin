@@ -43,6 +43,9 @@ import clientReducer, { moduleName as clientModule } from 'core/client/duck';
 import clientOrdersReducer, {
     moduleName as clientOrdersModule,
 } from 'core/clientOrders/duck';
+import clientMRDsReducer, {
+    moduleName as clientMRDsModule,
+} from 'core/clientMRDs/duck';
 import clientRequisiteReducer, {
     moduleName as clientRequisiteModule,
 } from 'core/clientRequisite/duck';
@@ -98,6 +101,7 @@ const appState = {
     [ chartModule ]:                chartReducer,
     [ clientModule ]:               clientReducer,
     [ clientOrdersModule ]:         clientOrdersReducer,
+    [ clientMRDsModule ]:           clientMRDsReducer,
     [ clientRequisiteModule ]:      clientRequisiteReducer,
     [ clientsModule ]:              clientsReducer,
     [ dashboardModule ]:            dashboardReducer,

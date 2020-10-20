@@ -832,7 +832,7 @@ class AddProductModal extends React.Component {
     getStorageProducts() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/store_products`;
+        let url = __API_URL__ + `/store_products?all=true`;
         fetch(url, {
             method: "GET",
             headers: {
