@@ -57,29 +57,31 @@ class DetailStorageModal extends React.Component{
                     return (
                         <div>
                             <FormattedMessage id="order_form_table.detail_code" />
-                            <Select
-                                showSearch
-                                value={this.state.storeFilter}
-                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 380 }}
-                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
-                                filterOption={(input, option) => {
-                                    return (
-                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                        String(option.props.value).indexOf(input.toLowerCase()) >= 0
-                                    )
-                                }}
-                                onSelect={(value, option)=>{
-                                    this.setState({
-                                        storeFilter: value,
-                                    });
-                                }}
-                            >
-                                {this.state.storeOptions.map((elem, i)=>(
-                                    <Option key={i} value={elem.id}>
-                                        {elem.name}
-                                    </Option>
-                                ))}
-                            </Select>
+                            {this.state.storeOptions.length && 
+                                <Select
+                                    showSearch
+                                    value={this.state.storeFilter}
+                                    dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 380 }}
+                                    placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
+                                    filterOption={(input, option) => {
+                                        return (
+                                            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                            String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                        )
+                                    }}
+                                    onSelect={(value, option)=>{
+                                        this.setState({
+                                            storeFilter: value,
+                                        });
+                                    }}
+                                >
+                                    {this.state.storeOptions.map((elem, i)=>(
+                                        <Option key={i} value={elem.id}>
+                                            {elem.name}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            }
                             <Input
                                 allowClear
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
@@ -310,7 +312,6 @@ class DetailStorageModal extends React.Component{
                 key:       'select',
                 width:     '5%',
                 render: (elem)=>{
-                    console.log(elem)
                     var supplierBrandId = elem.supplierBrandId ? elem.supplierBrandId : (elem.price ? elem.price.supplierBrandId : undefined);
                     var brandId = elem.brandId ? elem.brandId : (elem.price ? elem.price.brandId : undefined);
                     var name = elem.storeGroupId == 1000000 ? elem.description : elem.storeGroupName;
@@ -322,8 +323,36 @@ class DetailStorageModal extends React.Component{
                         <Button
                             type="primary"
                             onClick={()=>{
-                                this.props.onSelect(elem.partNumber, brandId, elem.productId, this.props.tableKey, elem.storeGroupId, name, supplierOriginalCode, supplierProductNumber);
-                                this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, supplierOriginalCode, supplierProductNumber, this.props.tableKey, isFromStock, defaultWarehouseId, elem.productId);
+                                if(this.props.onSelect) {
+                                    this.props.onSelect(
+                                        elem.partNumber,
+                                        brandId,
+                                        elem.productId,
+                                        this.props.tableKey,
+                                        elem.storeGroupId,
+                                        name,
+                                        supplierOriginalCode,
+                                        supplierProductNumber
+                                    );
+                                }
+                                if(this.props.setSupplier) {
+                                    this.props.setSupplier(
+                                        elem.businessSupplierId,
+                                        elem.businessSupplierName,
+                                        supplierBrandId, elem.purchasePrice,
+                                        elem.salePrice,
+                                        elem.store,
+                                        supplierOriginalCode,
+                                        supplierProductNumber,
+                                        this.props.tableKey,
+                                        isFromStock,
+                                        defaultWarehouseId,
+                                        elem.productId
+                                    );
+                                }
+                                if(this.props.selectProduct) {
+                                    this.props.selectProduct(elem.productId)
+                                }
                                 this.handleCancel();
                             }}
                         >
@@ -428,13 +457,14 @@ class DetailStorageModal extends React.Component{
             })
             .then(function(data) {
                 console.log(data);
+                const brandOptions = [];
                 data.list.map((elem, key)=>{
                     elem.key = key;
                     elem.productId = elem.id;
                     elem.images = [];
                     elem.attributes = [];
                     elem.supplierId = elem.brand && elem.brand.id;
-                    elem.supplierName = elem.brand && elem.brand.name;
+                    elem.supplierName = (elem.brand && elem.brand.name) || "";
                     elem.businessSupplierId = 0;
                     elem.businessSupplierName = that.props.intl.formatMessage({id: 'navigation.storage'});
                     elem.purchasePrice = elem.stockPrice;
@@ -447,15 +477,33 @@ class DetailStorageModal extends React.Component{
                         isFromStock: true,
                         defaultWarehouseId: elem.defaultWarehouseId,
                     };
-                    elem.store = [elem.countInWarehouses, 0, 0, 0]
+                    elem.store = [elem.countInWarehouses, 0, 0, 0];
+
+                    if(that.state.brandFilter.length == 0 && that.props.brandFilter == elem.supplierName) {
+                        that.state.brandFilter.push(elem.supplierId);
+                    }
+
+                    if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1 && elem.supplierId) {
+                        brandOptions.push({
+                            id: elem.supplierId,
+                            name: elem.supplierName,
+                        })
+                    }
                 })
+
                 that.setState({
                     fetched: true,
                     dataSource: data.list,
+                    brandOptions: brandOptions,
+                    codeFilter: that.props.codeFilter,
                 })
             })
             .catch(function(error) {
                 console.log("error", error);
+                that.setState({
+                    fetched: true,
+                    codeFilter: that.props.codeFilter,
+                })
             });
             return;
         }
@@ -498,7 +546,7 @@ class DetailStorageModal extends React.Component{
                         elem.salePrice = elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
                     }
                     if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1) {
-                        if(that.props.brandFilter == elem.supplierName) {
+                        if(that.state.brandFilter.length == 0 && that.props.brandFilter == elem.supplierName) {
                             that.state.brandFilter.push(elem.supplierId);
                         }
                         brandOptions.push({
@@ -584,7 +632,7 @@ class DetailStorageModal extends React.Component{
                     elem.salePrice = elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
                 }
                 if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1) {
-                    if(that.props.brandFilter == elem.supplierName) {
+                    if(that.state.brandFilter.length == 0 && that.props.brandFilter == elem.supplierName) {
                         that.state.brandFilter.push(elem.supplierId);
                     }
                     brandOptions.push({
@@ -668,6 +716,15 @@ class DetailStorageModal extends React.Component{
         this._isMounted = false;
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.setVisible && prevProps.setVisible) {
+            this.fetchData();
+            this.setState({
+                visible: true,
+            })
+        }
+    }
+
     render() {
         const { dataSource, storeFilter, brandFilter, codeFilter, inStock } = this.state;
         const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
@@ -683,7 +740,7 @@ class DetailStorageModal extends React.Component{
         tblData = this.filterDataSourceByAttribute(tblData, 4);
 
         return (
-            <div>
+            <div style={{display: 'flex'}}>
                 <Button
                     type='primary'
                     disabled={disabled}

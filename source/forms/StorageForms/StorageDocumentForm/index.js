@@ -12,6 +12,7 @@ import moment from 'moment';
 import { Catcher } from 'commons';
 import { Numeral } from "commons";
 import { withReduxForm, isForbidden, permissions } from "utils";
+import { DetailStorageModal } from "modals";
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
@@ -112,6 +113,7 @@ class StorageDocumentForm extends Component {
             editDocProduct,
             clientList,
             loading,
+            user,
         } = this.props;
 
         const {
@@ -442,7 +444,7 @@ class StorageDocumentForm extends Component {
                                         })}
                                         nullText="0"
                                     >
-                                        {disabled ? 0 : sum}
+                                        {status == DONE ? sum : 0}
                                     </Numeral>
                                 </div>
                             </div>
@@ -472,7 +474,7 @@ class StorageDocumentForm extends Component {
                                             id: "currency",
                                         })}
                                     >
-                                        {!disabled ? 0 : sum}
+                                        {status == DONE ? 0 : sum}
                                     </Numeral>
                                 </p>
                             </div>
@@ -526,6 +528,7 @@ class StorageDocumentForm extends Component {
                         warehouses={warehouses}
                         warehouseId={incomeWarehouseId || expenseWarehouseId}
                         warning={warning}
+                        user={user}
                     /> 
                 : null}
             </div>
@@ -846,6 +849,7 @@ class AddProductModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
+            console.log(data);
             that.setState({
                 storageProducts: data.list
             })
@@ -941,9 +945,9 @@ class AddProductModal extends React.Component {
         });
     }
 
-    getProductId(detailCode) {
+    getProductId(detailCode, brandId) {
         const { storageProducts, storageBalance, detailName, quantity } = this.state;
-        const storageProduct = storageProducts.find((elem)=>elem.code==detailCode);
+        const storageProduct = storageProducts.find((elem)=>elem.code==detailCode && (!brandId || elem.brandId == brandId));
         if(storageProduct) {
             storageBalance[0].count = storageProduct.countInWarehouses;
             storageBalance[1].count = storageProduct.reservedCount;
@@ -1068,7 +1072,7 @@ class AddProductModal extends React.Component {
             return;
         }
 
-        if(!this.getProductId(detailCode)) {
+        if(!this.getProductId(detailCode, brandId)) {
             this.setState({
                 alertModalVisible: true,
             })
@@ -1129,7 +1133,6 @@ class AddProductModal extends React.Component {
     componentDidUpdate(prevProps) {
         if(!prevProps.visible && this.props.visible) {
             const { product } = this.props;
-            console.log(product);
             if(product) {
                 this.setState({
                     editMode: true,
@@ -1143,9 +1146,32 @@ class AddProductModal extends React.Component {
                     quantity: product.quantity,
                     productId: product.productId,
                     ordersAppurtenancies: product.ordersAppurtenancies,
-                    groupId: product.groupId,
                 })
             }
+        }
+    }
+
+    selectProduct = (productId) => {
+        const { storageBalance } = this.state;
+        const product = this.state.storageProducts.find((product)=>product.id == productId);
+        if(product) {
+            storageBalance[0].count = product.countInWarehouses;
+            storageBalance[1].count = product.reservedCount;
+            storageBalance[2].count = product.countInOrders;
+            storageBalance[3].count = product.countInStoreOrders;
+            storageBalance[4].count = product.lack;
+            storageBalance[5].count = product.min;
+            storageBalance[6].count = product.max;
+            storageBalance[7].count = product.quantity;
+            this.setState({
+                productId: product.id,
+                brandId: product.brandId,
+                brandName: product.brand && product.brand.name,
+                detailCode: product.code,
+                detailName: product.name,
+                tradeCode: product.tradeCode,
+                stockPrice: product.stockPrice || 0,
+            })
         }
     }
 
@@ -1180,7 +1206,9 @@ class AddProductModal extends React.Component {
                 <div
                     style={{
                         display: 'flex',
-                        justifyContent: 'space-between'
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-end',
+                        margin: '24px 0 0 0'
                     }}
                 >
                     <div className={Styles.addProductItemWrap}>
@@ -1193,7 +1221,7 @@ class AddProductModal extends React.Component {
                                     detailCode: value,
                                     detailCodeSearch: value,
                                 });
-                                this.getProductId(value);
+                                this.getProductId(value, brandId);
                             }}
                             onSelect={(value, option)=>{
                                 this.setState({
@@ -1364,8 +1392,16 @@ class AddProductModal extends React.Component {
                             value={Math.round(quantity*stockPrice*10)/10}
                         />
                     </div>}
+                    <DetailStorageModal
+                        brandFilter={brandName}
+                        codeFilter={detailCode}
+                        brandId={brandId}
+                        stockMode={true}
+                        user={this.props.user}
+                        selectProduct={this.selectProduct}
+                    />
                 </div>
-                <AlertModal
+                <AddStoreProductModal
                     alertVisible={alertModalVisible}
                     brands={this.props.brands}
                     confirmAlertModal={this.confirmAlertModal}
@@ -1376,7 +1412,7 @@ class AddProductModal extends React.Component {
                     {...this.state}
                 >
                     <FormattedMessage id='storage_document.error.product_not_found'/>
-                </AlertModal>
+                </AddStoreProductModal>
                 {this.props.type == ORDER && 
                 <div
                     style={{
@@ -1411,7 +1447,7 @@ const measureUnitsOptions = Object.freeze({
 });
 
 @injectIntl
-class AlertModal extends React.Component {
+export class AddStoreProductModal extends React.Component {
     constructor(props) {
         super(props);
 
@@ -1536,8 +1572,8 @@ class AlertModal extends React.Component {
         }
 
         if(storeInWarehouse) {
-            postData.min = min;
-            postData.max = max;
+            postData.min = min*multiplicity;
+            postData.max = max*multiplicity;
         }
 
         var that = this;
@@ -1647,7 +1683,7 @@ class AlertModal extends React.Component {
                                     detailCode: value,
                                     detailCodeSearch: value,
                                 });
-                                this.getProductId(value);
+                                this.getProductId(value, brandId);
                             }}
                             onSelect={(value, option)=>{
                                 this.setState({
@@ -1706,7 +1742,7 @@ class AlertModal extends React.Component {
                                 this.setState({
                                     groupId: value,
                                     detailName: detailName ? detailName : option.props.name,
-                                    priceGroupNumber: option.props.priceGroup,
+                                    priceGroupNumber: option.props.priceGroup || undefined,
                                 })
                             }}
                         />
@@ -1889,8 +1925,10 @@ class AlertModal extends React.Component {
                                     step={multiplicity}
                                     min={0}
                                     onChange={(value)=>{
+                                        const clearValue = Math.floor(value/multiplicity);
                                         this.setState({
                                             min: Math.floor(value/multiplicity),
+                                            //max: max < clearValue ? clearValue : max,
                                         })
                                     }}
                                 />
@@ -1899,8 +1937,8 @@ class AlertModal extends React.Component {
                                 <span style={{marginRight: 8}}><FormattedMessage id='storage.max'/></span>
                                 <InputNumber
                                     value={max*multiplicity}
-                                    step={1}
-                                    min={min}
+                                    step={multiplicity}
+                                    min={min*multiplicity}
                                     onChange={(value)=>{
                                         this.setState({
                                             max: Math.floor(value/multiplicity),
