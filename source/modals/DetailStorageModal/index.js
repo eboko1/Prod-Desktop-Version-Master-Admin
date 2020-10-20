@@ -439,7 +439,7 @@ class DetailStorageModal extends React.Component{
         if(this.props.stockMode) {
             var that = this;
             let token = localStorage.getItem('_my.carbook.pro_token');
-            let url = __API_URL__ + `/store_products`;
+            let url = __API_URL__ + `/store_products?all=true`;
             fetch(url, {
                 method: "GET",
                 headers: {
