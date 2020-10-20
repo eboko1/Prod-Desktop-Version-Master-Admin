@@ -1578,7 +1578,7 @@ export class AddStoreProductModal extends React.Component {
 
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/store_products?all=true`;
+        let url = __API_URL__ + `/store_products`;
         fetch(url, {
             method: "POST",
             headers: {
