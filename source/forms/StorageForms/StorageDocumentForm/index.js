@@ -1277,6 +1277,14 @@ class AddProductModal extends React.Component {
                             }
                         </AutoComplete>
                     </div>
+                    <DetailStorageModal
+                        brandFilter={brandName}
+                        codeFilter={detailCode}
+                        brandId={brandId}
+                        stockMode={true}
+                        user={this.props.user}
+                        selectProduct={this.selectProduct}
+                    />
                     <div className={Styles.addProductItemWrap} style={{minWidth: 140}}>
                         <FormattedMessage id='order_form_table.brand' />{requiredField()}
                         <Select
@@ -1392,14 +1400,6 @@ class AddProductModal extends React.Component {
                             value={Math.round(quantity*stockPrice*10)/10}
                         />
                     </div>}
-                    <DetailStorageModal
-                        brandFilter={brandName}
-                        codeFilter={detailCode}
-                        brandId={brandId}
-                        stockMode={true}
-                        user={this.props.user}
-                        selectProduct={this.selectProduct}
-                    />
                 </div>
                 <AddStoreProductModal
                     alertVisible={alertModalVisible}

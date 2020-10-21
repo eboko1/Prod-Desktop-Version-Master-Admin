@@ -50,5 +50,6 @@
 }
 
 .addProductItemWrap {
-
+    margin: 0 5px;
+    max-width: 180px;
 }
