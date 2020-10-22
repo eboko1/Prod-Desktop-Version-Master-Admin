@@ -15,6 +15,7 @@ export const StorageBalancePage = injectIntl(({intl}) => {
             title={ <FormattedMessage id='navigation.storage_balance' /> }
             controls={[
                 <Button
+                    type='primary'
                     onClick={()=>{
                         let token = localStorage.getItem('_my.carbook.pro_token');
                         let url =  __API_URL__ +`/store_docs/reserve_all_possible`;

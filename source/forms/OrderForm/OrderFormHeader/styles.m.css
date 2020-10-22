@@ -63,6 +63,8 @@
 .sumWrapper {
     font-weight: bold;
     margin-right: 8px;
+    text-transform: capitalize;
+    white-space: nowrap;
 }
 
 .sumNumeral {
