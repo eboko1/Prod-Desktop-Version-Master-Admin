@@ -217,6 +217,13 @@ class DetailsTable extends Component {
                 title: (
                     <div className={ Styles.numberColumn }>
                         <FormattedMessage id='order_form_table.price' />
+                        <p style={{
+                            color: 'var(--text2)',
+                            fontSize: 12,
+                            fontWeight: 400,
+                        }}>
+                            <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                        </p>
                     </div>
                 ),
                 className: Styles.numberColumn,
@@ -292,6 +299,13 @@ class DetailsTable extends Component {
                 title: (
                     <div className={ Styles.numberColumn }>
                         <FormattedMessage id='order_form_table.sum' />
+                        <p style={{
+                            color: 'var(--text2)',
+                            fontSize: 12,
+                            fontWeight: 400,
+                        }}>
+                            <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                        </p>
                     </div>
                 ),
                 className: Styles.numberColumn,
@@ -610,6 +624,7 @@ class DetailsTable extends Component {
             .then(function(data) {
                 data.details.map((elem, index) => {
                     elem.key = index;
+                    elem.brandId = elem.supplierBrandId || undefined;
                 });
                 that.setState({
                     dataSource: data.details,
@@ -649,7 +664,7 @@ class DetailsTable extends Component {
             name:            detail.detailName,
             productCode:     detail.detailCode ? detail.detailCode : null,
             supplierId:      detail.supplierId,
-            supplierBrandId: detail.supplierBrandId,
+            supplierBrandId: detail.supplierBrandId || detail.brandId,
             brandName:     detail.brandName ? detail.brandName : null,
             supplierOriginalCode: detail.supplierOriginalCode,
             supplierProductNumber: detail.supplierProductNumber,
@@ -930,7 +945,16 @@ class QuickEditModal extends React.Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.price' />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.price' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'price',
                 dataIndex: 'price',
                 width:     '10%',
@@ -990,7 +1014,16 @@ class QuickEditModal extends React.Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.sum' />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.sum' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'sum',
                 dataIndex: 'sum',
                 width:     '10%',

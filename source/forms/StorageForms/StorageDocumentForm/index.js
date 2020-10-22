@@ -1497,13 +1497,21 @@ export class AddStoreProductModal extends React.Component {
         });
     }
 
-    ordersAppurtenancies(orderIds = [], productId) {
-        const postData = [
-            {
+    ordersAppurtenancies(orderIds = [], productId, code, brandId) {
+        const postData = [];
+        if(orderIds.length) {
+            postData.push({
                 ordersAppurtenancies: [...orderIds],
                 productId: productId
-            }
-        ];
+            });
+        } else {
+            postData.push({
+                checkEverywhere: true,
+                productId: productId,
+                code: code,
+                brandId: brandId,
+            });
+        }
 
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
@@ -1525,7 +1533,7 @@ export class AddStoreProductModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
+            console.log(postData, data);
         })
         .catch(function(error) {
             console.log("error", error);
@@ -1598,7 +1606,7 @@ export class AddStoreProductModal extends React.Component {
         .then(function(data) {
             console.log(data);
             that.setState({visible: false});
-            that.ordersAppurtenancies(ordersAppurtenancies, data.id)
+            //that.ordersAppurtenancies(ordersAppurtenancies, data.id, detailCode, brandId);
             that.props.confirmAlertModal({
                 brandId: brandId,
                 brandName: brandName,
@@ -1673,7 +1681,7 @@ export class AddStoreProductModal extends React.Component {
                         this.setState({visible: false});
                     }}
                 >
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='order_form_table.detail_code' />{requiredField()}
                         <AutoComplete
                             value={detailCode}
@@ -1725,7 +1733,7 @@ export class AddStoreProductModal extends React.Component {
                             }
                         </AutoComplete>
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='order_form_table.store_group'/>{requiredField()}
                         <TreeSelect
                             showSearch
@@ -1747,7 +1755,7 @@ export class AddStoreProductModal extends React.Component {
                             }}
                         />
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='order_form_table.detail_name' />{requiredField()}
                         <Input
                             value={detailName}
@@ -1758,7 +1766,7 @@ export class AddStoreProductModal extends React.Component {
                             }}
                         />
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='order_form_table.brand' />{requiredField()}
                         <Select
                             showSearch
@@ -1802,7 +1810,7 @@ export class AddStoreProductModal extends React.Component {
                             }
                         </Select>
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='storage.measure_units' />
                         <Select
                             value={measureUnit}
@@ -1821,7 +1829,7 @@ export class AddStoreProductModal extends React.Component {
                             </Option>
                         </Select>
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='storage.price_group' />
                         <Select
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
@@ -1847,7 +1855,7 @@ export class AddStoreProductModal extends React.Component {
                             )) }
                         </Select>
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='storage.default_warehouse' />
                         <Select
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
@@ -1870,7 +1878,7 @@ export class AddStoreProductModal extends React.Component {
                             })}
                         </Select>
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='storage.trade_code' />
                         <Input
                             value={tradeCode}
@@ -1881,7 +1889,7 @@ export class AddStoreProductModal extends React.Component {
                             }}
                         />
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='storage.certificate' />
                         <Input
                             value={certificate}
@@ -1892,7 +1900,7 @@ export class AddStoreProductModal extends React.Component {
                             }}
                         />
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='storage_document.store_in_warehouse' />
                         <Checkbox
                             style={{marginLeft: 5}}
@@ -1904,7 +1912,7 @@ export class AddStoreProductModal extends React.Component {
                         />
                     </div>
                     {storeInWarehouse &&
-                        <div className={Styles.addProductItemWrap} style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <div>
                                 <span style={{marginRight: 8}}><FormattedMessage id='storage_document.multiplicity'/></span>
                                 <InputNumber

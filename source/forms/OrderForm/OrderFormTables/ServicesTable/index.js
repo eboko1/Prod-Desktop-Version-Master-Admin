@@ -182,11 +182,9 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='services_table.norm_hours' />
-                    </div>
-                ),
+                title:  <div className={ Styles.numberColumn }>
+                            <FormattedMessage id='services_table.norm_hours' />
+                        </div>,
                 className: Styles.numberColumn,
                 width:     '8%',
                 key:       'hours',
@@ -209,11 +207,9 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='order_form_table.prime_cost' />
-                    </div>
-                ),
+                title:  <div className={ Styles.numberColumn }>
+                            <FormattedMessage id='order_form_table.prime_cost' />
+                        </div>,
                 className: Styles.numberColumn,
                 width:     '8%',
                 key:       'purchasePrice',
@@ -236,11 +232,16 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='order_form_table.price' />
-                    </div>
-                ),
+                title:  <div className={ Styles.numberColumn }>   
+                            <FormattedMessage id='order_form_table.price' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 className: Styles.numberColumn,
                 width:     '8%',
                 key:       'price',
@@ -263,11 +264,9 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='order_form_table.count' />
-                    </div>
-                ),
+                title:  <div className={ Styles.numberColumn }>
+                            <FormattedMessage id='order_form_table.count' />
+                        </div>,
                 className: Styles.numberColumn,
                 width:     '5%',
                 key:       'count',
@@ -284,11 +283,16 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='order_form_table.sum' />
-                    </div>
-                ),
+                title:  <div className={ Styles.numberColumn }>   
+                            <FormattedMessage id='order_form_table.sum' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 className: Styles.numberColumn,
                 width:     '8%',
                 key:       'sum',
@@ -870,7 +874,16 @@ class QuickEditModal extends React.Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.price' />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.price' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'price',
                 dataIndex: 'price',
                 width:     '10%',
@@ -952,7 +965,16 @@ class QuickEditModal extends React.Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.sum' />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.sum' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'sum',
                 dataIndex: 'sum',
                 width:     '10%',

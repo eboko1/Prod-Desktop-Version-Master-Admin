@@ -371,7 +371,16 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.price" />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.price' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'price',
                 dataIndex: 'price',
                 width:     '3%',
@@ -429,7 +438,16 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.sum" />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.sum' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
@@ -502,7 +520,6 @@ class DetailProductModal extends React.Component{
                 details: [],
                 services: [],
             }
-            console.log(this.state.mainTableSource)
             this.state.mainTableSource.map((element)=>{
                 if(!element.productId) {
                     data.details.push({
@@ -510,7 +527,7 @@ class DetailProductModal extends React.Component{
                         name: element.detailName,
                         productCode: element.detailCode,
                         supplierId: element.supplierId,
-                        supplierBrandId: element.supplierBrandId,
+                        supplierBrandId: element.supplierBrandId || element.brandId,
                         brandName: element.brandName,
                         supplierOriginalCode: element.supplierOriginalCode,
                         supplierProductNumber: element.supplierProductNumber,
@@ -552,6 +569,7 @@ class DetailProductModal extends React.Component{
                     })
                 }
             });
+            console.log(this.state.mainTableSource, data);
             this.addDetailsAndLabors(data);
         }
         this.state.radioValue = 1;
