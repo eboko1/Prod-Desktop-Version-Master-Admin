@@ -1616,8 +1616,9 @@ class AutomaticOrderCreationModal extends React.Component {
                     elem.toOrder = elem.quantity;
                     elem.key = i;
                     elem.detailName = elem.name;
+                    elem.stockPrice = elem.stockPrice || 0;
                     elem.detailCode = elem.code;
-                    elem.sum = elem.quantity * elem.stockPrice;
+                    elem.sum = Math.round( ((elem.quantity * elem.stockPrice) || 0)*10 ) / 10;
                     elem.groupId = elem.storeGroupId;
                 })
                 that.setState({
@@ -1659,7 +1660,8 @@ class AutomaticOrderCreationModal extends React.Component {
                     elem.key = i;
                     elem.detailName = elem.name;
                     elem.detailCode = elem.code;
-                    elem.sum = elem.quantity * elem.stockPrice;
+                    elem.stockPrice = elem.stockPrice || 0;
+                    elem.sum = Math.round( ((elem.quantity * elem.stockPrice) || 0)*10 ) / 10;
                     elem.orderedSum = elem.sum;
                     elem.groupId = elem.storeGroupId;
                 })

@@ -83,10 +83,28 @@ export class LoginForm extends Component {
                 <Button type="primary" onClick={this._submit}>
                     <FormattedMessage id="enter" />
                 </Button>
-                <div style={{ marginTop: 10 }}>
-                    <Link to={book.forgotPassword}>
-                        <FormattedMessage id="login_form.forgot_password" />
-                    </Link>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between'
+                    }}
+                >
+                    <div style={{ marginTop: 10 }}>
+                        <Link to={book.forgotPassword}>
+                            <FormattedMessage id="login_form.forgot_password" />
+                        </Link>
+                    </div>
+                    <div 
+                        style={{
+                            color: 'var(--text2)',
+                            fontSize: 14,
+                            fontWeight: 400,
+                            textAlign: 'right',
+                            marginTop: 10,
+                        }}
+                    >
+                        <i style={{color: 'red'}}>* </i><FormattedMessage id='login_hint' />
+                    </div>
                 </div>
             </Form>
         );

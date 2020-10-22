@@ -247,7 +247,16 @@ class DetailStorageModal extends React.Component{
                 },
             },
             {
-                title:  <FormattedMessage id="order_form_table.price" />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.price' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'salePrice',
                 dataIndex: 'salePrice',
                 width:     '6%',
@@ -733,7 +742,10 @@ class DetailStorageModal extends React.Component{
         if(storeFilter) tblData = tblData.filter((elem)=>String(elem.storeGroupId).toLowerCase().indexOf(String(storeFilter).toLowerCase()) >= 0 );
         if(brandFilter.length) tblData = tblData.filter((elem)=>brandFilter.indexOf(elem.supplierId)!=-1);
         if(codeFilter) tblData = tblData.filter((elem)=>elem.partNumber.toLowerCase().indexOf(codeFilter.toLowerCase()) >= 0 );
-        if(inStock) tblData = tblData.filter((elem)=>elem.store);
+        if(inStock) {
+            if(this.props.stockMode) tblData = tblData.filter((elem)=>elem.store[0]);
+            else tblData = tblData.filter((elem)=>elem.store);
+        }
         tblData = this.filterDataSourceByAttribute(tblData, 1);
         tblData = this.filterDataSourceByAttribute(tblData, 2);
         tblData = this.filterDataSourceByAttribute(tblData, 3);

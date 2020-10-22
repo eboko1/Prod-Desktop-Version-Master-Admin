@@ -17,7 +17,7 @@ const ReducerState = {
     mrds: [],
     filter:     {
         page: 1,
-        MRDDate: undefined
+        MRDsUntilDate: undefined
     },
     sort: {
         field: 'datetime',
@@ -40,7 +40,7 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 filter:{
                     ...state.filter,
-                    MRDDate: payload
+                    MRDsUntilDate: payload
                 }
             };
 
