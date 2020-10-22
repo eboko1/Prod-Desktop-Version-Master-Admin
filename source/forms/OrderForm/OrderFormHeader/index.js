@@ -748,6 +748,19 @@ export default class OrderFormHeader extends Component {
                             </Numeral>
                         </span>
                         <span className={Styles.sumWrapper}>
+                            <FormattedMessage id="with" /> <FormattedMessage id="VAT" />
+                            <Numeral
+                                mask={mask}
+                                className={Styles.sumNumeral}
+                                nullText="0"
+                                currency={this.props.intl.formatMessage({
+                                    id: "currency",
+                                })}
+                            >
+                                {totalPrice}
+                            </Numeral>
+                        </span>
+                        <span className={Styles.sumWrapper}>
                             <FormattedMessage id="paid" />
                             <Numeral
                                 mask={mask}
