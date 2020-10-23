@@ -1175,7 +1175,7 @@ class ReserveButton extends React.Component {
     }
 
     reserveProduct = () => {
-        const { detail, setModal, updateDetail, orderId, reserveWarehouseId } = this.props;
+        const { detail, setModal, updateDetail, orderId, reserveWarehouseId, mainWarehouseId } = this.props;
         const data = {
             status: "DONE",
             documentType: "TRANSFER",
@@ -1189,8 +1189,8 @@ class ReserveButton extends React.Component {
                     stockPrice: detail.purchasePrice,
                 }
             ],
-            warehouseId: !detail.reserved ? detail.reservedFromWarehouseId : reserveWarehouseId,
-            counterpartWarehouseId: !detail.reserved ? reserveWarehouseId : detail.reservedFromWarehouseId,
+            warehouseId: !detail.reserved ? detail.reservedFromWarehouseId || mainWarehouseId : reserveWarehouseId,
+            counterpartWarehouseId: !detail.reserved ? reserveWarehouseId : detail.reservedFromWarehouseId || mainWarehouseId,
             orderId: this.props.orderId,
         };
         var that = this;
