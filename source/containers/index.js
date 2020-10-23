@@ -24,6 +24,7 @@ import StoreProductsContainer from './StoreProductsContainer';
 import DiagnosticPatternsContainer from './DiagnosticPatternsContainer';
 import StorageDocumentsContainer from './StorageDocumentsContainer';
 import StorageTable from './StorageDocumentsContainer/storageTable';
+import RequisiteSettingContainer from './RequisiteSettingContainer';
 
 export {
     OrdersContainer,
@@ -52,4 +53,5 @@ export {
     DiagnosticPatternsContainer,
     StorageDocumentsContainer,
     StorageTable,
+    RequisiteSettingContainer,
 };

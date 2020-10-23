@@ -19,7 +19,6 @@ export function* loginFormSaga() {
                 payload: { login, password },
             } = yield take(LOGIN);
 
-            replace(book.dashboard);
             yield put(setAuthFetchingState(true));
             const user = yield call(
                 fetchAPI,

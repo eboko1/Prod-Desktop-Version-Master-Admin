@@ -35,6 +35,7 @@ import UserAgreementPage from './UserAgreementPage';
 import DiagnosticPatternsPage from './DiagnosticPatternsPage';
 import AgreementPage from './AgreementPage';
 import AvailabilitiesPage from './AvailabilitiesPage';
+import RequisiteSettingPage from './RequisiteSettingPage';
 
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
@@ -78,4 +79,5 @@ export {
     DiagnosticPatternsPage,
     AgreementPage,
     AvailabilitiesPage,
+    RequisiteSettingPage,
 };
