@@ -11,13 +11,11 @@ import { Form, Modal, Button, Input, InputNumber, Radio, Checkbox, Icon, Row, Co
 // proj
 
 // own
+const FormItem = Form.Item;
+
 const formItemLayout = {
-    labelCol: {
-        span: 8,
-    },
-    wrapperCol: {
-        span: 16,
-    },
+    labelCol: { span: 8, },
+    wrapperCol: { span: 16, },
 };
 
 const formItemStyle= {
