@@ -32,6 +32,8 @@ import { ServicesForm } from './ServicesForm';
 import { BrandsForm } from './BrandsForm';
 import { SetDetailProductForm } from './SetDetailProductForm';
 import { SpreadBusinessBrandsForm } from './SpreadBusinessBrandsForm';
+import { RequisiteSettingForm, RequisiteSettingFormModal } from './RequisiteSettingForm';
+
 export { ForgotPasswordForm } from './ForgotPasswordForm';
 export { NewPasswordForm } from './NewPasswordForm';
 export { CashCreationForm } from './CashCreationForm';
@@ -81,4 +83,6 @@ export {
     BrandsForm,
     SetDetailProductForm,
     SpreadBusinessBrandsForm,
+    RequisiteSettingForm,
+    RequisiteSettingFormModal,
 };
