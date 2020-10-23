@@ -677,7 +677,7 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].productId = isFromStock ? productId : undefined;
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         this.state.mainTableSource[key].brandId = brandId;
-        this.state.mainTableSource[key].brandName = brand.brandName;
+        this.state.mainTableSource[key].brandName = brand && brand.brandName;
         this.setState({
             update: true
         })
