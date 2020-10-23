@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom'
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Row, Col, Collapse, DatePicker } from 'antd';
 import moment from 'moment';
@@ -13,9 +14,10 @@ import {
     setFilterDate,
 } from 'core/clientMRDs/duck';
 
-import { Loader } from 'commons';
+import { Numeral, Loader } from "commons";
 
 // own
+import book from "routes/book";
 import Styles from './styles.m.css';
 
 const DEF_DATE_FORMAT = 'DD/MM/YYYY';
@@ -83,7 +85,13 @@ export default class ClientMRDsTab extends Component {
                         return <Panel
                                 header={
                                     <Row>
-                                        <Col span={6}>{element.orderNum}</Col>
+                                        <Col span={6}>
+                                            <Link
+                                                to={`${book.order}/${element.orderId}`}
+                                            >
+                                                {element.orderNum}
+                                            </Link>
+                                        </Col>
                                         <Col span={6}>{<FormattedMessage id='client_mrds_tab.amoun'/>}: {element.amount}</Col>
                                         <Col span={6}><FormattedMessage id='client_mrds_tab.due_amount'/>: {element.dueAmount}</Col>
                                         <Col span={6}>{element.orderDatetime}</Col>
