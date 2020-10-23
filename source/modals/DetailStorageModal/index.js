@@ -332,6 +332,7 @@ class DetailStorageModal extends React.Component{
                         <Button
                             type="primary"
                             onClick={()=>{
+                                console.log(elem)
                                 if(this.props.onSelect) {
                                     this.props.onSelect(
                                         elem.partNumber,
