@@ -11,14 +11,7 @@ import { Form, Modal, Button, Input, InputNumber, Radio, Checkbox, Icon, Row, Co
 // proj
 
 // own
-const formItemLayout = {
-    labelCol: {
-        span: 8,
-    },
-    wrapperCol: {
-        span: 16,
-    },
-};
+const FormItem = Form.Item;
 
 const formItemStyle= {
     labelAlign: 'left',
@@ -76,7 +69,10 @@ export class RequisiteSettingForm extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        
+        const formItemLayout = {
+            labelCol: { span: 8, },
+            wrapperCol: { span: 16, },
+        };
         return (
             <Form {...formItemLayout} onSubmit={this.handleSubmit} layout='horizontal'>
                 <Form.Item 
