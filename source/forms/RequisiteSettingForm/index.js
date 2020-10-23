@@ -13,6 +13,11 @@ import { Form, Modal, Button, Input, InputNumber, Radio, Checkbox, Icon, Row, Co
 // own
 const FormItem = Form.Item;
 
+const formItemLayout = {
+    labelCol: { span: 8, },
+    wrapperCol: { span: 16, },
+};
+
 const formItemStyle= {
     labelAlign: 'left',
     style:{
@@ -69,15 +74,13 @@ export class RequisiteSettingForm extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const formItemLayout = {
-            labelCol: { span: 8, },
-            wrapperCol: { span: 16, },
-        };
+        
         return (
-            <Form {...formItemLayout} onSubmit={this.handleSubmit} layout='horizontal'>
+            <Form onSubmit={this.handleSubmit} layout='horizontal'>
                 <Form.Item 
                     label={<FormattedMessage id='requisite-setting.form'/>}
                     {...formItemStyle}
+                    {...formItemLayout}
                 >
                     {getFieldDecorator('form', { initialValue: "soleProprietor" })(
                         <Radio.Group>
@@ -90,36 +93,42 @@ export class RequisiteSettingForm extends Component {
                 <Form.Item
                     label={<FormattedMessage id='requisite-setting.name'/>}
                     {...formItemStyle}
+                    {...formItemLayout}
                 >
                   {getFieldDecorator('name')(<Input />)}
                 </Form.Item>
                 <Form.Item
                     label={<FormattedMessage id='requisite-setting.address'/>}
                     {...formItemStyle}
+                    {...formItemLayout}
                 >
                   {getFieldDecorator('address')(<Input />)}
                 </Form.Item>
                 <Form.Item
                     label={<span><FormattedMessage id='requisite-setting.code'/> <FormattedMessage id='USREOU'/></span>}
                     {...formItemStyle}
+                    {...formItemLayout}
                 >
                   {getFieldDecorator('code')(<Input />)}
                 </Form.Item>
                 <Form.Item
                     label={<span><FormattedMessage id='requisite-setting.account'/> <FormattedMessage id='IBAN'/></span>}
                     {...formItemStyle}
+                    {...formItemLayout}
                 >
                   {getFieldDecorator('IBAN')(<Input />)}
                 </Form.Item>
                 <Form.Item
                     label={<FormattedMessage id='requisite-setting.bank'/>}
                     {...formItemStyle}
+                    {...formItemLayout}
                 >
                   {getFieldDecorator('bank')(<Input />)}
                 </Form.Item>
                 <Form.Item
                     label={<span><FormattedMessage id='requisite-setting.payer'/> <FormattedMessage id='VAT'/></span>}
                     {...formItemStyle}
+                    {...formItemLayout}
                 >
                     {getFieldDecorator('isPayer', { initialValue: false })(
                         <Radio.Group>
@@ -131,12 +140,14 @@ export class RequisiteSettingForm extends Component {
                 <Form.Item
                     label={<span><FormattedMessage id='requisite-setting.rate'/> <FormattedMessage id='VAT'/></span>}
                     {...formItemStyle}
+                    {...formItemLayout}
                 >
                     {getFieldDecorator('rate', { initialValue: 20 })(<InputNumber min={0} max={100} formatter={value => `${value}%`} parser={value => value.replace('%', '')}/>)}
                 </Form.Item>
                 <Form.Item 
                     label={<FormattedMessage id='requisite-setting.method_of_calculation'/>}
                     {...formItemStyle}
+                    {...formItemLayout}
                 >
                     {getFieldDecorator('methodOfCalculation', { initialValue: "plus" })(
                         <Radio.Group>
@@ -148,6 +159,7 @@ export class RequisiteSettingForm extends Component {
                 <Form.Item
                     label={<FormattedMessage id='requisite-setting.active'/>}
                     {...formItemStyle}
+                    {...formItemLayout}
                 >
                   {getFieldDecorator('isActive', { valuePropName: 'checked', initialValue: true, })(<Checkbox />)}
                 </Form.Item>
