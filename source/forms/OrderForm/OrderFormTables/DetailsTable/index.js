@@ -206,7 +206,7 @@ class DetailsTable extends Component {
                                     /\B(?=(\d{3})+(?!\d))/g,
                                     ' ',
                                 )
-                                : (
+                              supplierBrandId: element.supplierBrandId || element.brandId,  : (
                                     <FormattedMessage id='long_dash' />
                                 ) }
                         </span>
@@ -652,6 +652,7 @@ class DetailsTable extends Component {
             reservedFromWarehouseId: detail.reservedFromWarehouseId || this.state.mainWarehouseId,
             reserved: detail.reserved,
             reservedCount: detail.reservedCount,
+            supplierBrandId: detail.supplierBrandId || detail.brandId,
             supplierId: detail.supplierId,
             comment: detail.comment || {
                 comment: undefined,
@@ -665,7 +666,6 @@ class DetailsTable extends Component {
             productCode:     detail.detailCode ? detail.detailCode : null,
             supplierId:      detail.supplierId,
             supplierBrandId: detail.supplierBrandId || detail.brandId,
-            brandName:     detail.brandName ? detail.brandName : null,
             supplierOriginalCode: detail.supplierOriginalCode,
             supplierProductNumber: detail.supplierProductNumber,
             purchasePrice:
