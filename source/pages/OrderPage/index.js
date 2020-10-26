@@ -474,6 +474,7 @@ class OrderPage extends Component {
 
     /* eslint-disable complexity*/
     render() {
+        console.log(this);
         const {showOilModal, oilModalData } = this.state;
         const {
             fetchOrderForm,
