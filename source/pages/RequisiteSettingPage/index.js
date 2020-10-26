@@ -20,7 +20,10 @@ export default class RequisiteSettingPage extends Component {
         this.state = {
             modalVisible: false,
             requisiteData: undefined,
+            dataSource: [],
         };
+
+        this.setDataSource = this.setDataSource.bind(this);
     }
 
     showModal = (requisiteData = undefined) => {
@@ -37,9 +40,21 @@ export default class RequisiteSettingPage extends Component {
         })
     }
 
+    componentDidMount() {
+        getData(this.setDataSource);
+    }
+
+    setDataSource(data) {
+        data.map((elem, i)=>{
+            elem.key=i;
+        });
+        this.setState({
+            dataSource: data,
+        })
+    }
 
     render() {
-        const { modalVisible, requisiteData } = this.state;
+        const { modalVisible, requisiteData, dataSource } = this.state;
         return (
             <Layout
                 title={ <FormattedMessage id='navigation.requisites' /> }
@@ -53,11 +68,11 @@ export default class RequisiteSettingPage extends Component {
                 ]}
             >
                 <RequisiteSettingContainer
-                    getData={getData}
                     modalVisible={modalVisible}
                     showModal={this.showModal}
                     hideModal={this.hideModal}
                     requisiteData={requisiteData}
+                    dataSource={dataSource}
                 />
             </Layout>
         );

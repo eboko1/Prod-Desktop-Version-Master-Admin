@@ -33,9 +33,10 @@ export class RequisiteSettingForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            formType: "ENTREPRENEUR",
             requisiteData: undefined,
         };
-        this.fields = ['form', 'name', 'address', 'code', 'IBAN', 'bank', 'isPayer', 'rate', 'methodOfCalculation', 'isActive']
+        this.fields = ['formType', 'name', 'address', 'ifi', 'ca', 'bank', 'isTaxPayer', 'taxRate', 'calculationMethod', 'isActive']
     }
 
     handleSubmit = e => {
@@ -49,19 +50,23 @@ export class RequisiteSettingForm extends Component {
 
     componentDidUpdate(prevProps) {
         if(Boolean(this.props.requisiteData) && !Boolean(prevProps.requisiteData)) {
-            console.log(this);
             const { requisiteData } = this.props;
             this.props.form.setFieldsValue({
-                form: requisiteData.form || "other",
+                formType: requisiteData.formType || "OTHER",
+                formName: requisiteData.formType ? undefined : requisiteData.formName,
                 name: requisiteData.name,
                 address: requisiteData.address,
-                code: requisiteData.code,
-                IBAN: requisiteData.IBAN,
+                ifi: requisiteData.ifi,
+                ca: requisiteData.ca,
                 bank: requisiteData.bank,
-                isPayer: Boolean(requisiteData.isPayer),
-                rate: requisiteData.rate || 20,
-                methodOfCalculation: requisiteData.methodOfCalculation,
+                isTaxPayer: Boolean(requisiteData.isTaxPayer),
+                taxRate: requisiteData.taxRate || 20,
+                calculationMethod: requisiteData.calculationMethod,
                 isActive: Boolean(requisiteData.isActive),
+            });
+
+            this.setState({
+                formType: requisiteData.formType || "OTHER",
             });
             
         } else if(!Boolean(this.props.requisiteData) && Boolean(prevProps.requisiteData)) {
@@ -73,7 +78,8 @@ export class RequisiteSettingForm extends Component {
     }
 
     render() {
-        const { getFieldDecorator } = this.props.form;
+        const { getFieldDecorator, getFieldValue } = this.props.form;
+        const isOtherForm = this.state.formType == "OTHER";
         
         return (
             <Form onSubmit={this.handleSubmit} layout='horizontal'>
@@ -82,14 +88,29 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator('form', { initialValue: "soleProprietor" })(
-                        <Radio.Group>
-                            <Radio value="soleProprietor"><FormattedMessage id='requisite-setting.form.soleProprietor'/></Radio>
-                            <Radio value="ltd"><FormattedMessage id='requisite-setting.form.ltd'/></Radio>
-                            <Radio value="other"><FormattedMessage id='requisite-setting.form.other'/></Radio>
+                    {getFieldDecorator('formType', { initialValue: "ENTREPRENEUR" })(
+                        <Radio.Group
+                            onChange={(event)=>{
+                                this.setState({
+                                    formType: event.target.value,
+                                });
+                            }}
+                        >
+                            <Radio value="ENTREPRENEUR"><FormattedMessage id='requisite-setting.form.ENTREPRENEUR'/></Radio>
+                            <Radio value="LEGAL_ENTITY"><FormattedMessage id='requisite-setting.form.LEGAL_ENTITY'/></Radio>
+                            <Radio value="OTHER"><FormattedMessage id='requisite-setting.form.other'/></Radio>
                         </Radio.Group>,
                     )}
                 </Form.Item>
+                {isOtherForm && 
+                    <Form.Item
+                        label={<FormattedMessage id='requisite-setting.form.other'/>}
+                        {...formItemStyle}
+                        {...formItemLayout}
+                    >
+                      {getFieldDecorator('formName')(<Input />)}
+                    </Form.Item>
+                }
                 <Form.Item
                     label={<FormattedMessage id='requisite-setting.name'/>}
                     {...formItemStyle}
@@ -109,14 +130,14 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                  {getFieldDecorator('code')(<Input />)}
+                  {getFieldDecorator('ifi')(<Input />)}
                 </Form.Item>
                 <Form.Item
                     label={<span><FormattedMessage id='requisite-setting.account'/> <FormattedMessage id='IBAN'/></span>}
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                  {getFieldDecorator('IBAN')(<Input />)}
+                  {getFieldDecorator('ca')(<Input />)}
                 </Form.Item>
                 <Form.Item
                     label={<FormattedMessage id='requisite-setting.bank'/>}
@@ -130,7 +151,7 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator('isPayer', { initialValue: false })(
+                    {getFieldDecorator('isTaxPayer', { initialValue: false })(
                         <Radio.Group>
                             <Radio value={true}><FormattedMessage id='yes'/></Radio>
                             <Radio value={false}><FormattedMessage id='no'/></Radio>
@@ -142,17 +163,17 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator('rate', { initialValue: 20 })(<InputNumber min={0} max={100} formatter={value => `${value}%`} parser={value => value.replace('%', '')}/>)}
+                    {getFieldDecorator('taxRate', { initialValue: 20 })(<InputNumber min={0} max={100} formatter={value => `${value}%`} parser={value => value.replace('%', '')}/>)}
                 </Form.Item>
                 <Form.Item 
                     label={<FormattedMessage id='requisite-setting.method_of_calculation'/>}
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator('methodOfCalculation', { initialValue: "plus" })(
+                    {getFieldDecorator('calculationMethod', { initialValue: "WITH_TAX" })(
                         <Radio.Group>
-                            <Radio value="plus"><FormattedMessage id='requisite-setting.VAT.plus'/></Radio>
-                            <Radio value="including" disabled><FormattedMessage id='requisite-setting.VAT.including'/></Radio>
+                            <Radio value="WITH_TAX"><FormattedMessage id='requisite-setting.VAT.plus'/></Radio>
+                            <Radio value="ADD_TAX" disabled><FormattedMessage id='requisite-setting.VAT.including'/></Radio>
                         </Radio.Group>,
                     )}
                 </Form.Item>

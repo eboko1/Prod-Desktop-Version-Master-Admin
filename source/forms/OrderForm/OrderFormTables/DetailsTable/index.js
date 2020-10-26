@@ -205,8 +205,7 @@ class DetailsTable extends Component {
                                 `${strVal}`.replace(
                                     /\B(?=(\d{3})+(?!\d))/g,
                                     ' ',
-                                )
-                              supplierBrandId: element.supplierBrandId || element.brandId,  : (
+                                ) : (
                                     <FormattedMessage id='long_dash' />
                                 ) }
                         </span>
