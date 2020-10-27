@@ -38,11 +38,13 @@ export default class RequisiteSettingContainer extends Component {
             },
             {
                 title:     <FormattedMessage id='requisite-setting.form'/>,
-                key:       'form',
-                dataIndex: 'form',
-                render:    (form) => {
-                    return (
-                        <FormattedMessage id={`requisite-setting.form.${form}`}/>
+                key:       'formType',
+                dataIndex: 'formType',
+                render:    (formType) => {
+                    return formType ? (
+                        <FormattedMessage id={`requisite-setting.form.${formType}`}/>
+                    ) : (
+                        formName
                     )
                 },
             },
@@ -53,16 +55,16 @@ export default class RequisiteSettingContainer extends Component {
             },
             {
                 title:     <p><FormattedMessage id='requisite-setting.code'/> <FormattedMessage id='USREOU'/></p>,
-                key:       'code',
-                dataIndex: 'code',
+                key:       'ifi',
+                dataIndex: 'ifi',
             },
             {
                 title:     <p><FormattedMessage id='requisite-setting.payer'/> <FormattedMessage id='VAT'/></p>,
-                key:       'isPayer',
-                dataIndex: 'isPayer',
-                render:    (isPayer) => {
+                key:       'isTaxPayer',
+                dataIndex: 'isTaxPayer',
+                render:    (isTaxPayer) => {
                     return (
-                        <Icon type={isPayer ? 'check' : 'close'}/>
+                        <Icon type={isTaxPayer ? 'check' : 'close'}/>
                     )
                 },
             },
@@ -77,6 +79,7 @@ export default class RequisiteSettingContainer extends Component {
                                 <Icon type='edit'/>
                             </Button>
                             <Button
+                                disabled={elem.used}
                             >
                                 <Icon style={{color: 'var(--danger)'}} type='delete'/>
                             </Button>
@@ -94,10 +97,9 @@ export default class RequisiteSettingContainer extends Component {
         })
     }
 
-
     render() {
-        const { getData, modalVisible, showModal, hideModal, requisiteData } = this.props;
-        const { fetched, dataSource } = this.state;
+        const { modalVisible, showModal, hideModal, requisiteData, dataSource } = this.props;
+        const { fetched } = this.state;
         return (
             <div>
                 <Table
