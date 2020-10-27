@@ -40,7 +40,8 @@
         "storage_document.docType.TRANSFER.TRANSFER": "Transfer",
 
         "storage_document.error.product_not_found": "This product is not in the product directory. Add?",
-        "storage_document.error.required_fields": "Fill all required fields"
+        "storage_document.error.required_fields": "Fill all required fields",
+        "storage_document.error.confirm_all": "There are no confirmed items to reserve"
     },
     "ru": {
         "storage_document.document": "Документ",
@@ -83,7 +84,8 @@
         "storage_document.docType.TRANSFER.TRANSFER": "Перемещение",
 
         "storage_document.error.product_not_found": "Данного товара нет в справочнике товаров. Добавить?",
-        "storage_document.error.required_fields": "Заполните все необходимые поля"
+        "storage_document.error.required_fields": "Заполните все необходимые поля",
+        "storage_document.error.confirm_all": "Нет подтвержденных позиций, которые можно зарезервировать"
     },
     "uk": {
         "storage_document.document": "Документ",
@@ -126,7 +128,8 @@
         "storage_document.docType.TRANSFER.TRANSFER": "Переміщення",
 
         "storage_document.error.product_not_found": "Даного товару немає в довіднику товарів. Додати?",
-        "storage_document.error.required_fields": "Заповніть всі необхідні поля"
+        "storage_document.error.required_fields": "Заповніть всі необхідні поля",
+        "storage_document.error.confirm_all": "Немає підтверджених позицій, які можна зарезервувати"
     }
   }
   

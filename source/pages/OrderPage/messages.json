@@ -18,7 +18,8 @@
     "order-page.diagnostic": "Diagnostic",
     "order-page.tech_info": "Technical information",
     "order-page.send_agreement": "Submit cost estimate for approval",
-    "order-page.no_positions": "There are no items to be agreed in the order"
+    "order-page.no_positions": "There are no items to be agreed in the order",
+    "order-page.reserved_error": "There is reserved products in order"
   },
   "ru": {
     "order-page.title": "Заказы",
@@ -39,7 +40,8 @@
     "order-page.diagnostic": "Диагностика",
     "order-page.tech_info": "Инфо по автомобилю",
     "order-page.send_agreement": "Послать калькуляцию на согласование",
-    "order-page.no_positions": "В заказе нет позиций к согласованию"
+    "order-page.no_positions": "В заказе нет позиций к согласованию",
+    "order-page.reserved_error": "В заказе присутствуют зарезервированные товары"
   },
   "uk": {
     "order-page.title": "Транзакції",
@@ -60,6 +62,7 @@
     "order-page.diagnostic": "Діагностика",
     "order-page.tech_info": "Інфо по автомобілю",
     "order-page.send_agreement": "Відправити калькуляцію на узгодження",
-    "order-page.no_positions": "В замовленні відсутні позицій до узгодження"
+    "order-page.no_positions": "В замовленні відсутні позицій до узгодження",
+    "order-page.reserved_error": "В замовлені є зарезервовані позиції"
   }
 }

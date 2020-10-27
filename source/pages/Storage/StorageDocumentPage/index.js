@@ -354,6 +354,9 @@ class StorageDocumentPage extends Component {
                     quantity: elem.quantity,
                     stockPrice: elem.stockPrice,
                 })
+                if(elem.storeDocProductId) {
+                    createData.docProducts[createData.docProducts.length-1].storeDocProductId = elem.storeDocProductId;
+                }
             } else if(!saveMode) {
                 /*notification.warning({
                     message: this.props.intl.formatMessage({id: 'error'}),
@@ -911,7 +914,6 @@ class ReturnModal extends React.Component {
             visible: false,
             brandSearchValue: "",
             storageProducts: [],
-            setStorageModalVisible: false,
             selectedProduct: {
                 brandId: undefined,
                 brandName: undefined,
@@ -934,7 +936,6 @@ class ReturnModal extends React.Component {
             visible: false,
             brandSearchValue: "",
             storageProducts: [],
-            setStorageModalVisible: false,
             selectedProduct: {
                 brandId: undefined,
                 brandName: undefined,
@@ -998,14 +999,6 @@ class ReturnModal extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if(this.state.setStorageModalVisible && prevState.setStorageModalVisible) {
-            this.setState({
-                setStorageModalVisible: false,
-            })
-        }
-    }
-
     render() {
         const {type, documentType, user } = this.props;
         const {
@@ -1013,7 +1006,6 @@ class ReturnModal extends React.Component {
             brandSearchValue,
             storageProducts,
             selectedProduct,
-            setStorageModalVisible,
         } = this.state;
         return (
             <div>
@@ -1028,7 +1020,6 @@ class ReturnModal extends React.Component {
                         this.fetchData();
                         this.setState({
                             visible: true,
-                            setStorageModalVisible: true,
                         });
                     }}
                 />
@@ -1067,11 +1058,24 @@ class ReturnModal extends React.Component {
                         </div>
                         <div>
                             <FormattedMessage id='order_form_table.detail_code' />
-                            <Input
-                                disabled
+                            <Select
                                 value={selectedProduct.detailCode}
-                                style={{color: 'var(--text)'}}
-                            />
+                                style={{color: 'var(--text)', minWidth: 180}}
+                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                                onChange={(value, option)=>{
+                                    this.state.selectedProduct.detailCode = value;
+                                    this.state.selectedProduct.brandId = option.props.brandId;
+                                    this.state.selectedProduct.detailName = option.props.name;
+                                    this.state.selectedProduct.tradeCode = option.props.tradeCode;
+                                    this.setState({update: true})
+                                }}
+                            >
+                                {this.state.storageProducts.map((elem, index)=>(
+                                    <Option key={index} value={elem.code} brandId={elem.brandId} name={elem.name} tradeCode={elem.tradeCode}>
+                                        {elem.code}
+                                    </Option>
+                                ))}
+                            </Select>
                         </div>
                         {documentType == SUPPLIER &&
                             <div>
@@ -1128,12 +1132,6 @@ class ReturnModal extends React.Component {
                                 }}
                             />
                         </div>
-                        <DetailStorageModal
-                            stockMode={true}
-                            user={user}
-                            selectProduct={this.selectProduct}
-                            setVisible={setStorageModalVisible}
-                        />
                     </div>
                 </Modal>
             </div>
