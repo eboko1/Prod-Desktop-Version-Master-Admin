@@ -10,6 +10,7 @@ import { Table, Button, Icon } from 'antd';
 
 // proj
 import { RequisiteSettingFormModal } from "forms";
+import { deleteRequisite } from "core/requisiteSettings/saga";
 // own
 
 export default class RequisiteSettingContainer extends Component {
@@ -40,11 +41,11 @@ export default class RequisiteSettingContainer extends Component {
                 title:     <FormattedMessage id='requisite-setting.form'/>,
                 key:       'formType',
                 dataIndex: 'formType',
-                render:    (formType) => {
+                render:    (formType, elem) => {
                     return formType ? (
                         <FormattedMessage id={`requisite-setting.form.${formType}`}/>
                     ) : (
-                        formName
+                        elem.formName
                     )
                 },
             },
@@ -80,6 +81,9 @@ export default class RequisiteSettingContainer extends Component {
                             </Button>
                             <Button
                                 disabled={elem.used}
+                                onClick={()=>{
+                                    deleteRequisite(elem.id, this.props.updateDataSource);
+                                }}
                             >
                                 <Icon style={{color: 'var(--danger)'}} type='delete'/>
                             </Button>
