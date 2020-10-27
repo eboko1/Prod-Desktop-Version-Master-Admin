@@ -14,7 +14,7 @@
         "requisite-setting.rate": "Rate",
         "requisite-setting.form.other": "Other",
         "requisite-setting.form.ENTREPRENEUR": "Sole proprietor",
-        "requisite-setting.form.LEGAL_ENTITY": "Ltd",
+        "requisite-setting.form.LEGAL_ENITITY": "Ltd",
         "requisite-setting.VAT.including": "including VAT",
         "requisite-setting.VAT.plus": "plus VAT"
     },
@@ -33,7 +33,7 @@
         "requisite-setting.rate": "Ставка",
         "requisite-setting.form.other": "Прочее",
         "requisite-setting.form.ENTREPRENEUR": "ФЛП",
-        "requisite-setting.form.LEGAL_ENTITY": "ООО",
+        "requisite-setting.form.LEGAL_ENITITY": "ООО",
         "requisite-setting.VAT.including": "включая НДС",
         "requisite-setting.VAT.plus": "плюс НДС"
     },
@@ -52,7 +52,7 @@
         "requisite-setting.rate": "Ставка",
         "requisite-setting.form.other": "Інше",
         "requisite-setting.form.ENTREPRENEUR": "ФОП",
-        "requisite-setting.form.LEGAL_ENTITY": "ТОВ",
+        "requisite-setting.form.LEGAL_ENITITY": "ТОВ",
         "requisite-setting.VAT.including": "включаючи ПДВ",
         "requisite-setting.VAT.plus": "плюс ПДВ"
     }
