@@ -42,8 +42,8 @@ export const StorageBalancePage = injectIntl(({intl}) => {
                                 })
                             }
                             else {
-                                notification.error({
-                                    message: intl.formatMessage({id: 'error'})
+                                notification.warning({
+                                    message: intl.formatMessage({id: 'storage_document.error.confirm_all'})
                                 })
                             }
                         })

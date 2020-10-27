@@ -309,7 +309,7 @@ class OrderPage extends Component {
             : returnToOrdersPage(status);
     };
 
-    _getCurrentOrder() {
+    _getCurrentOrder(isReservedCheck=false, callback) {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__;
@@ -331,7 +331,27 @@ class OrderPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            that._createCopy(data.orderServices, data.orderDetails);
+            if(!isReservedCheck) {
+                that._createCopy(data.orderServices, data.orderDetails);
+            } else {
+                console.log(data.orderDetails)
+                var isReserved = false;
+                data.orderDetails.map((elem)=>{
+                    if(elem.reservedCount) {
+                        isReserved = true;
+                        return;
+                    }
+                });
+                if(isReserved) {
+                    notification.error({
+                        message: that.props.intl.formatMessage({
+                            id: `order-page.reserved_error`,
+                        }),
+                    });
+                } else {
+                    callback();
+                }
+            }
         })
         .catch(function (error) {
             console.log('error', error)
@@ -689,9 +709,9 @@ class OrderPage extends Component {
                                     cursor:   'pointer',
                                     margin:   '0 10px',
                                 } }
-                                onClick={ () =>
-                                    setModal(MODALS.CANCEL_REASON)
-                                }
+                                onClick={ () =>{
+                                    this._getCurrentOrder(true, ()=>{setModal(MODALS.CANCEL_REASON)});
+                                }}
                             />
                         ) }
                         <Icon
