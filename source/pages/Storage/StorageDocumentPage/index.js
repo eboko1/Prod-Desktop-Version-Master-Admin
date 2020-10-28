@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Dropdown, Button, Icon, Menu, notification, Modal, Table, Input, InputNumber, Checkbox, Select, AutoComplete, Badge } from 'antd';
+import { Dropdown, Button, Icon, Menu, notification, Modal, Table, Input, InputNumber, Checkbox, Select, AutoComplete, Badge, Popconfirm } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import { saveAs } from 'file-saver';
@@ -773,13 +773,44 @@ class StorageDocumentPage extends Component {
                             </div>
                         )}
                         {id && formData.status != DONE &&
-                            <Icon
-                                type='delete'
-                                style={headerIconStyle}
-                                onClick={()=>{
-
-                                }}
-                            />
+                            <Popconfirm
+                                type='danger'
+                                title={ formatMessage({
+                                    id: 'add_order_form.delete_confirm',
+                                }) }
+                                placement="bottom"
+                                onConfirm={ () => {
+                                    var that = this;
+                                    let token = localStorage.getItem('_my.carbook.pro_token');
+                                    let url = __API_URL__ + `/store_docs/${this.props.id}`;
+                                    fetch(url, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Authorization': token,
+                                        },
+                                    })
+                                    .then(function (response) {
+                                        if (response.status !== 200) {
+                                        return Promise.reject(new Error(response.statusText))
+                                        }
+                                        return Promise.resolve(response)
+                                    })
+                                    .then(function (response) {
+                                        return response.json()
+                                    })
+                                    .then(function (data) {
+                                        that.props.history.goBack();
+                                    })
+                                    .catch(function (error) {
+                                        console.log('error', error);
+                                    });
+                                } }
+                            >
+                                <Icon
+                                    type='delete'
+                                    style={headerIconStyle}
+                                />
+                            </Popconfirm>
                         }
                         <Icon
                             type='close'
@@ -914,6 +945,7 @@ class ReturnModal extends React.Component {
             visible: false,
             brandSearchValue: "",
             storageProducts: [],
+            recommendedReturnsVisible: false,
             selectedProduct: {
                 brandId: undefined,
                 brandName: undefined,
@@ -934,6 +966,7 @@ class ReturnModal extends React.Component {
     handleCancel() {
         this.setState({
             visible: false,
+            recommendedReturnsVisible: false,
             brandSearchValue: "",
             storageProducts: [],
             selectedProduct: {
@@ -948,6 +981,7 @@ class ReturnModal extends React.Component {
     }
 
     getStorageProducts() {
+        console.log(this);
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/store_products?all=true`;
@@ -980,6 +1014,35 @@ class ReturnModal extends React.Component {
         this.getStorageProducts();
     }
 
+    fetchReturnData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_docs/return?documentType=${this.props.documentType}&productId=${this.state.selectedProduct.productId}`;
+        if(this.props.documentType == CLIENT) url += `&counterpartClientId=${this.props.counterpartId}`;
+        else url += `&counterpartBusinessSupplierId=${this.props.counterpartId}`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    }
+
     selectProduct = (productId) => {
         console.log(productId);
         const product = this.state.storageProducts.find((product)=>product.id == productId);
@@ -1006,6 +1069,7 @@ class ReturnModal extends React.Component {
             brandSearchValue,
             storageProducts,
             selectedProduct,
+            recommendedReturnsVisible,
         } = this.state;
         return (
             <div>
@@ -1064,14 +1128,15 @@ class ReturnModal extends React.Component {
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                                 onChange={(value, option)=>{
                                     this.state.selectedProduct.detailCode = value;
-                                    this.state.selectedProduct.brandId = option.props.brandId;
+                                    this.state.selectedProduct.brandId = option.props.brand_id;
                                     this.state.selectedProduct.detailName = option.props.name;
-                                    this.state.selectedProduct.tradeCode = option.props.tradeCode;
+                                    this.state.selectedProduct.tradeCode = option.props.trade_code;
+                                    this.state.selectedProduct.productId = option.props.product_id;
                                     this.setState({update: true})
                                 }}
                             >
                                 {this.state.storageProducts.map((elem, index)=>(
-                                    <Option key={index} value={elem.code} brandId={elem.brandId} name={elem.name} tradeCode={elem.tradeCode}>
+                                    <Option key={index} value={elem.code} brand_id={elem.brandId} name={elem.name} trade_code={elem.tradeCode} product_id={elem.id}>
                                         {elem.code}
                                     </Option>
                                 ))}
@@ -1134,12 +1199,35 @@ class ReturnModal extends React.Component {
                         </div>
                         <div>
                             <Button
+                                disabled={!selectedProduct.detailCode}
                                 type='primary'
+                                onClick={()=>{
+                                    this.fetchReturnData();
+                                    this.setState({
+                                        recommendedReturnsVisible: true,
+                                    })
+                                }}
                             >
-                                MODAL
+                                <Icon type="unordered-list" />
                             </Button>
                         </div>  
                     </div>
+                </Modal>
+                <Modal
+                    visible={recommendedReturnsVisible}
+                    width={'fit-content'}
+                    onOk={()=>{
+                        this.setState({
+                            recommendedReturnsVisible: false,
+                        })
+                    }}
+                    onCancel={()=>{
+                        this.setState({
+                            recommendedReturnsVisible: false,
+                        })
+                    }}
+                >
+                    A
                 </Modal>
             </div>
         );
