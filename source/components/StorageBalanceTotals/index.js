@@ -17,16 +17,15 @@ import {
 import { StoreProductsSelect } from 'forms/_formkit';
 import { numeralFormatter } from 'utils';
 
-const mapStateToProps = state => {console.log(state);return ({
+const mapStateToProps = state => ({
     collapsed: state.ui.collapsed,
     total:     selectStoreBalanceTotal(state),
     filters:   selectStoreBalanceFilters(state),
-})};
+});
 
 export const StorageBalanceTotals = connect(mapStateToProps, {
     setStoreBalanceFilters,
 })(props => {
-    console.log(props)
     // const total = _.get(props, 'balance.total[0]');
     const { filters, total, collapsed } = props;
     const onPickDate = date => props.setStoreBalanceFilters({ date });
