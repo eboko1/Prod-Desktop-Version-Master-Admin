@@ -4,6 +4,7 @@ import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { Table } from "antd";
 import _ from "lodash";
+import moment from 'moment';
 
 // proj
 import {
@@ -16,6 +17,7 @@ import {
 import book from "routes/book";
 import { RangePickerField } from "forms/_formkit";
 import { ResponsiveView } from "commons";
+import { StorageDateFilter } from 'components';
 import { BREAKPOINTS, linkTo } from "utils";
 
 // own
@@ -78,11 +80,12 @@ export class CashActivityTable extends Component {
                             <FormattedMessage id="cash-table.trace" />
                         </h3>
                     </ResponsiveView>
-                    <RangePickerField
-                        onChange={this._onDateRangeChange}
-                        // loading={ loading }
-                        startDate={_.get(filters, "startDate")}
-                        endDate={_.get(filters, "endDate")}
+                    <StorageDateFilter
+                        dateRange={[
+                            moment(_.get(filters, "startDate")),
+                            moment( _.get(filters, "endDate"))
+                        ]}
+                        onDateChange={ this._onDateRangeChange }
                     />
                 </div>
                 <Table

@@ -34,7 +34,6 @@ const StoreProductModal = props => {
                 return response.json()
             })
             .then(function (data) {
-                console.log(data);
                 setWarehouses(data);
             })
             .catch(function (error) {

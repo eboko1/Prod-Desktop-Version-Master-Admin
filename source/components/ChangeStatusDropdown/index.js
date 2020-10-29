@@ -21,6 +21,7 @@ class ChangeStatusDropdown extends React.Component {
             modals,
             isMobile,
             user,
+            checkReserved,
         } = this.props;
 
         const getMenuItems = () => {
@@ -63,7 +64,9 @@ class ChangeStatusDropdown extends React.Component {
                 name:   'transfer_success',
                 status: 'success',
                 icon:   'check',
-                action: () => setModal(modals.TO_SUCCESS),
+                action: () => {
+                    checkReserved(()=>setModal(modals.TO_SUCCESS));
+                },
             };
 
             const statuses = [

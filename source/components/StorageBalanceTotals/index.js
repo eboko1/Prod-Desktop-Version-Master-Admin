@@ -103,7 +103,7 @@ export const StorageBalanceTotals = connect(mapStateToProps, {
                         />
                     </div>
                     { !_.isEmpty(total)
-                        ? renderTotalData('sum', total.sum)
+                        ? renderTotalData('sum', Math.round(total.sum*10)/10)
                         : SkeletonLoader }
                 </DataWrapper>
             </DataRow>

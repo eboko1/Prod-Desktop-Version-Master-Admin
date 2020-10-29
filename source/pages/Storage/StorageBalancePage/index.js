@@ -35,7 +35,6 @@ export const StorageBalancePage = injectIntl(({intl}) => {
                             return response.json()
                         })
                         .then(function (data) {
-                            console.log(data);
                             if(data.created) {
                                 notification.success({
                                     message: intl.formatMessage({id: 'storage_document.reserve_all_success'})

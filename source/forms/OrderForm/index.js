@@ -87,6 +87,7 @@ export class OrderForm extends React.PureComponent {
         this._isMounted = false;
         this.orderDetails = [...this.props.orderDetails];
         this.orderServices = [...this.props.orderServices];
+        this.totalSumWithTax = this.props.order.totalSumWithTax;
         this._reloadOrderForm = this._reloadOrderForm.bind(this);
         this._updateDuration = this._updateDuration.bind(this);
     }
@@ -178,6 +179,7 @@ export class OrderForm extends React.PureComponent {
             .then(function(data) {
                 that.orderServices = data.orderServices;
                 that.orderDetails = data.orderDetails;
+                that.totalSumWithTax = data.order.totalSumWithTax;
                 
                 that.forceUpdate();
             })
@@ -503,6 +505,7 @@ export class OrderForm extends React.PureComponent {
                     zeroStationLoadBeginTime={zeroStationLoadBeginTime}
                     zeroStationLoadDuration={zeroStationLoadDuration}
                     zeroStationLoadStation={zeroStationLoadStation}
+                    totalSumWithTax={this.totalSumWithTax}
                 />
                 <OrderFormBody
                     errors={errors}

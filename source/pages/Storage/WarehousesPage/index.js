@@ -14,7 +14,9 @@ import { Layout } from 'commons';
 // own
 const Option = Select.Option;
 const MAIN = 'MAIN',
-      RESERVE = 'RESERVE';
+      RESERVE = 'RESERVE',
+      TOOL = 'TOOL',
+      REPAIRAREA= 'REPAIRAREA';
 
 class WarehousesPage extends Component {
     constructor(props) {
@@ -23,6 +25,8 @@ class WarehousesPage extends Component {
             warehouses: [],
             isMain: false,
             isReserve: false,
+            isTool: false,
+            isRepairArea: false,
         }
 
         this.getWarehouses = this.getWarehouses.bind(this);
@@ -131,9 +135,10 @@ class WarehousesPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             var isMain = false,
-                isReserve = false;
+                isReserve = false,
+                isTool = false,
+                isRepairArea = false;
             data.map((warehouse, i)=>{
                 warehouse.key = i;
                 if(warehouse.attribute == MAIN) {
@@ -142,11 +147,19 @@ class WarehousesPage extends Component {
                 if(warehouse.attribute == RESERVE) {
                     isReserve = true;
                 }
+                if(warehouse.attribute == TOOL) {
+                    isTool = true;
+                }
+                if(warehouse.attribute == REPAIRAREA) {
+                    isRepairArea = true;
+                }
             })
             that.setState({
                 warehouses: data,
                 isMain: isMain,
                 isReserve: isReserve,
+                isTool: isTool,
+                isRepairArea: isRepairArea,
             })
         })
         .catch(function (error) {
@@ -190,7 +203,7 @@ class WarehousesPage extends Component {
 
 
     render() {
-        const { warehouses, isMain, isReserve, editMode, warehouse } = this.state;
+        const { warehouses, isMain, isReserve, isTool, isRepairArea, editMode, warehouse } = this.state;
         return (
             <Layout
                 title={ <FormattedMessage id='navigation.warehouses' /> }
@@ -199,6 +212,8 @@ class WarehousesPage extends Component {
                         getWarehouses={this.getWarehouses} 
                         isMain={isMain}
                         isReserve={isReserve}
+                        isTool={isTool}
+                        isRepairArea={isRepairArea}
 
                         editMode={editMode}
                         warehouse={warehouse}
@@ -338,7 +353,7 @@ class AddWarehousesModal extends Component {
 
 
     render() {
-        const { isMain, isReserve, editMode, intl: {formatMessage} } = this.props;
+        const { isMain, isReserve, isTool, isRepairArea, editMode, intl: {formatMessage} } = this.props;
         return (
             <>
             <Button
@@ -414,6 +429,18 @@ class AddWarehousesModal extends Component {
                             disabled={isReserve && this.state.attribute != RESERVE}
                         >
                             {RESERVE}
+                        </Option>
+                        <Option
+                            value={TOOL}
+                            disabled={isTool && this.state.attribute != TOOL}
+                        >
+                            {TOOL}
+                        </Option>
+                        <Option
+                            value={REPAIRAREA}
+                            disabled={isRepairArea&& this.state.attribute != REPAIRAREA}
+                        >
+                            {REPAIRAREA}
                         </Option>
                     </Select>
                 </div>

@@ -74,6 +74,7 @@ export class CashBalanceTable extends Component {
                         </h3>
                     </ResponsiveView>
                     <DatePickerField
+                        allowClear={false}
                         date={_.get(filters, "date")}
                         onChange={this._handleDatePicker}
                     />
