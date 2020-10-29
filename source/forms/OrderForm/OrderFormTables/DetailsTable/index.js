@@ -41,6 +41,7 @@ class DetailsTable extends Component {
             dataSource:          [],
             reserveWarehouseId:  undefined,
             mainWarehouseId:     undefined,
+            fetched:             false,
         };
 
         this.storeGroups = [];
@@ -539,6 +540,7 @@ class DetailsTable extends Component {
             that.setState({
                 mainWarehouseId: warehousesData.main,
                 reserveWarehouseId: warehousesData.reserve,
+                fetched: true,
             })
         })
         .catch(function(error) {
@@ -599,6 +601,9 @@ class DetailsTable extends Component {
     }
 
     updateDataSource() {
+        this.setState({
+            fetched: false,
+        })
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -627,6 +632,7 @@ class DetailsTable extends Component {
                 });
                 that.setState({
                     dataSource: data.details,
+                    fetched: true,
                 });
                 that.props.reloadOrderForm();
             })
@@ -773,7 +779,8 @@ class DetailsTable extends Component {
                     className={ Styles.detailsTable }
                     loading={
                         this.props.detailsSuggestionsFetching ||
-                        this.props.suggestionsFetching
+                        this.props.suggestionsFetching ||
+                        !this.state.fetched
                     }
                     columns={ columns }
                     dataSource={ this.state.dataSource }
