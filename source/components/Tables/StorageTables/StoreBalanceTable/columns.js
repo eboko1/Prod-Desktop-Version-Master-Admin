@@ -112,7 +112,8 @@ export default props => {
         title: props.intl.formatMessage({
             id: 'storage.ordered',
         }),
-        key:    'ordered',
+        key:    'countInStoreOrders',
+        dataIndex: 'countInStoreOrders',
         width:  '10%',
         sorter: (a, b) => a.ordered - b.ordered,
         sortDirections: ['descend', 'ascend'],
