@@ -16,7 +16,7 @@ import {
 } from "core/cash/duck";
 import { onChangeCashOrdersFiltersForm } from "core/forms/cashOrdersFiltersForm/duck";
 
-import { StatsCountsPanel } from "components";
+import { StatsCountsPanel, StorageDateFilter } from "components";
 import {
     DecoratedSearch,
     DecoratedSelect,
@@ -106,34 +106,12 @@ export class CashOrdersFiltersForm extends Component {
                             </Option>
                         ))}
                     </DecoratedSelect>
-                    <DecoratedDatePicker
-                        field="daterange"
-                        initialValue={[
+                    <StorageDateFilter
+                        dateRange={[
                             moment(filters.startDate),
                             moment(filters.endDate),
                         ]}
-                        allowClear={false}
-                        getFieldDecorator={getFieldDecorator}
-                        formatMessage={formatMessage}
-                        getCalendarContainer={trigger => trigger.parentNode}
-                        cnStyles={Styles.filter}
-                        ranges={{
-                            // this day
-                            [formatMessage({
-                                id: "datepicker.today",
-                            })]: getDaterange("today", "ant"),
-                            // prev month
-                            [formatMessage({
-                                id: "datepicker.prev_month",
-                            })]: getDaterange("prevMonth", "ant"),
-                            // prev year
-                            [formatMessage({
-                                id: "datepicker.prev_year",
-                            })]: getDaterange("prevYear", "ant"),
-                        }}
-                        // showTime
-                        format="YYYY-MM-DD"
-                        onChange={this._onDateRangeChange}
+                        onDateChange={ this._onDateRangeChange }
                     />
                 </div>
                 <StatsCountsPanel stats={cashStats} extendedCounts />

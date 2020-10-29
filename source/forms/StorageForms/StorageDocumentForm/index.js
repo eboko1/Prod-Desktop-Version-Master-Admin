@@ -511,6 +511,8 @@ class StorageDocumentForm extends Component {
                     deleteDocProduct={deleteDocProduct}
                     editProduct={this.editProduct}
                     showModal={this.showModal}
+                    type={type}
+                    sellingPrice={type == EXPENSE}
                 />
                 { !disabled ? 
                     <AddProductModal
@@ -529,6 +531,7 @@ class StorageDocumentForm extends Component {
                         warehouseId={incomeWarehouseId || expenseWarehouseId}
                         warning={warning}
                         user={user}
+                        sellingPrice={type == EXPENSE}
                     /> 
                 : null}
             </div>
@@ -601,7 +604,6 @@ class DocProductsTable extends React.Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.brand' />,
-                width:     '10%',
                 key:       'brandName',
                 dataIndex: 'brandName',
                 render:     (data, elem)=>{
@@ -612,7 +614,6 @@ class DocProductsTable extends React.Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.detail_code' />,
-                width:     '15%',
                 key:       'detailCode',
                 dataIndex: 'detailCode',
                 render:     (data, elem)=>{
@@ -622,8 +623,7 @@ class DocProductsTable extends React.Component {
                 }
             },
             {
-                title:      <><FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)</>,
-                width:     '10%',
+                title:      <span><FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)</span>,
                 key:       'tradeCode',
                 dataIndex: 'tradeCode',
                 render:     (data, elem)=>{
@@ -636,7 +636,6 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='order_form_table.detail_name' />,
                 key:       'detailName',
                 dataIndex: 'detailName',
-                width:     '15%',
                 render:     (data, elem)=>{
                     return (
                         data || <FormattedMessage id='long_dash' />
@@ -647,7 +646,6 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='orders.source' />,
                 key:       'source',
                 dataIndex: 'source',
-                width:     '15%',
                 render:     (data, elem)=>{
                     return (
                         data || <FormattedMessage id='long_dash' />
@@ -658,10 +656,10 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='order_form_table.price' />,
                 key:       'stockPrice',
                 dataIndex: 'stockPrice',
-                width:     '10%',
                 render:     (data, elem)=>{
+                    const price = this.props.sellingPrice ? elem.sellingPrice : data;
                     return (
-                        data || <FormattedMessage id='long_dash' />
+                        price || <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -669,7 +667,6 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='order_form_table.count' />,
                 key:       'quantity',
                 dataIndex: 'quantity',
-                width:     '10%',
                 render:     (data, elem)=>{
                     return (
                         data || <FormattedMessage id='long_dash' />
@@ -680,10 +677,10 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='order_form_table.sum' />,
                 key:       'sum',
                 dataIndex: 'sum',
-                width:     '10%',
                 render:     (data, elem)=>{
+                    const sum = this.props.sellingPrice ? elem.sellingSum : data;
                     return (
-                        data ? Math.round(data*10)/10 : <FormattedMessage id='long_dash' />
+                        sum ? Math.round(sum*10)/10 : <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -708,10 +705,25 @@ class DocProductsTable extends React.Component {
                 }
             },
         ];
+
+        this.purchaseColumn = {
+            title:     <FormattedMessage id='order_form_table.purchasePrice' />,
+            key:       'purchasePrice',
+            dataIndex: 'purchasePrice',
+            render:     (data, elem)=>{
+                return (
+                    data || <FormattedMessage id='long_dash' />
+                )
+            }
+        };
     }
 
     render() {
-        const { disabled, docProducts, loading } = this.props;
+        const { disabled, docProducts, loading, type } = this.props;
+        const tblColumns = [...this.columns];
+        if(type == EXPENSE) {
+            tblColumns.splice( 7, 0, this.purchaseColumn);
+        }
         var tableData = docProducts;
         tableData = tableData.filter((elem)=>elem.detailCode);
         if(!disabled && (!tableData.length || tableData[tableData.length-1].detailCode)) {
@@ -722,7 +734,7 @@ class DocProductsTable extends React.Component {
         }
         return (
             <Table
-                columns={this.columns}
+                columns={tblColumns}
                 dataSource={tableData}
                 pagination={false}
                 loading={loading}
@@ -749,6 +761,7 @@ class AddProductModal extends React.Component {
             groupId: undefined,
             tradeCode: undefined,
             detailName: undefined,
+            sellingPrice: 0,
             stockPrice: 0,
             quantity: 1,
             detailCodeSearch: '',
@@ -849,7 +862,6 @@ class AddProductModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             that.setState({
                 storageProducts: data.list
             })
@@ -945,9 +957,14 @@ class AddProductModal extends React.Component {
         });
     }
 
-    getProductId(detailCode, brandId) {
+    getProductId(detailCode, brandId, productId) {
         const { storageProducts, storageBalance, detailName, quantity } = this.state;
-        const storageProduct = storageProducts.find((elem)=>elem.code==detailCode && (!brandId || elem.brandId == brandId));
+        var storageProduct;
+        if(productId) {
+            storageProduct = storageProducts.find((elem)=>elem.id==productId);
+        } else {
+            storageProduct = storageProducts.find((elem)=>elem.code==detailCode && (!brandId || elem.brandId == brandId));
+        }
         if(storageProduct) {
             storageBalance[0].count = storageProduct.countInWarehouses;
             storageBalance[1].count = storageProduct.reservedCount;
@@ -965,6 +982,9 @@ class AddProductModal extends React.Component {
                 brandName: storageProduct.brand && storageProduct.brand.name,
                 tradeCode: storageProduct.tradeCode,
                 quantity: storageProduct.quantity || 1,
+                stockPrice: (this.props.sellingPrice ? 
+                    storageProduct.stockPrice * (storageProduct.group && storageProduct.group.multiplier || 1.4) : 
+                    storageProduct.stockPrice) || 0,
             })
             this.getCurrentPrice(detailCode, this.props.businessSupplierId);
             return true;
@@ -1006,7 +1026,8 @@ class AddProductModal extends React.Component {
             detailCode,
             detailName,
             productId,
-            tradeCode
+            tradeCode,
+            sellingPrice,
         } = productData;
 
         if(!this.props.warning) {
@@ -1018,6 +1039,7 @@ class AddProductModal extends React.Component {
                 tradeCode: tradeCode,
                 detailName: detailName,
                 stockPrice: stockPrice,
+                sellingPrice: sellingPrice,
                 quantity: quantity,
                 sum: quantity*stockPrice,
             });
@@ -1035,6 +1057,7 @@ class AddProductModal extends React.Component {
                     tradeCode: tradeCode,
                     detailName: detailName,
                     stockPrice: stockPrice,
+                    sellingPrice: sellingPrice,
                     quantity: quantity,
                     sum: quantity*stockPrice,
                 }
@@ -1063,6 +1086,7 @@ class AddProductModal extends React.Component {
             stockPrice,
             quantity, 
             productId,
+            sellingPrice,
         } = this.state;
 
         if(!brandId || !detailCode) {
@@ -1089,9 +1113,11 @@ class AddProductModal extends React.Component {
                         tradeCode: tradeCode,
                         detailName: detailName,
                         stockPrice: stockPrice,
+                        sellingPrice: sellingPrice,
                         quantity: quantity,
                         groupId: groupId,
                         sum: quantity*stockPrice,
+                        sellingSum: quantity*sellingPrice,
                     }
                 );
                 this.handleCancel();
@@ -1107,7 +1133,9 @@ class AddProductModal extends React.Component {
                     stockPrice: stockPrice,
                     quantity: quantity,
                     groupId: groupId,
+                    sellingPrice: sellingPrice,
                     sum: quantity*stockPrice,
+                    sellingSum: quantity*sellingPrice,
                 });
                 this.handleCancel();
             }
@@ -1124,6 +1152,7 @@ class AddProductModal extends React.Component {
             groupId: undefined,
             tradeCode: undefined,
             detailName: undefined,
+            sellingPrice: 0,
             stockPrice: 0,
             quantity: 1,
         });
@@ -1146,6 +1175,7 @@ class AddProductModal extends React.Component {
                     quantity: product.quantity,
                     productId: product.productId,
                     ordersAppurtenancies: product.ordersAppurtenancies,
+                    sellingPrice: product.sellingPrice,
                 })
             }
         }
@@ -1154,6 +1184,7 @@ class AddProductModal extends React.Component {
     selectProduct = (productId) => {
         const { storageBalance } = this.state;
         const product = this.state.storageProducts.find((product)=>product.id == productId);
+        console.log(product)
         if(product) {
             storageBalance[0].count = product.countInWarehouses;
             storageBalance[1].count = product.reservedCount;
@@ -1170,7 +1201,8 @@ class AddProductModal extends React.Component {
                 detailCode: product.code,
                 detailName: product.name,
                 tradeCode: product.tradeCode,
-                stockPrice: product.stockPrice || 0,
+                stockPrice: Math.round(product.stockPrice*10)/10 || 0,
+                sellingPrice: product.salePrice || Math.round(product.stockPrice * 10 *((product.priceGroup && product.priceGroup.multiplier) || 1.4))/10 || 0
             })
         }
     }
@@ -1190,6 +1222,7 @@ class AddProductModal extends React.Component {
             quantity,
             detailCodeSearch,
             storageBalance,
+            sellingPrice,
         } = this.state;
 
         return (
@@ -1225,12 +1258,12 @@ class AddProductModal extends React.Component {
                             }}
                             onSelect={(value, option)=>{
                                 this.setState({
-                                    detailCode: value,
+                                    detailCode: option.props.code,
                                     detailName: option.props.detail_name,
                                     stockPrice: option.props.price,
                                     detailCodeSearch: "",
                                 });
-                                this.getProductId(value);
+                                this.getProductId(undefined, undefined, value);
                             }}
                             onBlur={()=>{
                                 this.setState({
@@ -1244,14 +1277,15 @@ class AddProductModal extends React.Component {
                             }}
                         >
                             {
-                                storageProducts.map((elem)=>{
+                                storageProducts.map((elem, key)=>{
                                     return (
                                         <Option
-                                            key={elem.id}
-                                            value={elem.code}
+                                            key={key}
+                                            value={String(elem.id)}
                                             detail_name={elem.name}
                                             price={0}
                                             trade_code={elem.tradeCode}
+                                            code={elem.code}
                                         >
                                             {elem.code}
                                         </Option>
@@ -1361,15 +1395,21 @@ class AddProductModal extends React.Component {
                         <div><FormattedMessage id='order_form_table.price' /></div>
                         <InputNumber
                             disabled={this.props.priceDisabled}
-                            value={stockPrice}
+                            value={this.props.sellingPrice ? sellingPrice : stockPrice}
                             style={{
                                 //marginLeft: 10,
                             }}
                             min={0}
                             onChange={(value)=>{
-                                this.setState({
-                                    stockPrice: value
-                                })
+                                if(this.props.sellingPrice) {
+                                    this.setState({
+                                        sellingPrice: value
+                                    })
+                                } else {
+                                    this.setState({
+                                        stockPrice: value
+                                    })
+                                }
                             }}
                         />
                     </div>}
@@ -1397,7 +1437,7 @@ class AddProductModal extends React.Component {
                                 color: 'black',
                                 //marginLeft: 10,
                             }}
-                            value={Math.round(quantity*stockPrice*10)/10}
+                            value={Math.round(quantity*(this.props.sellingPrice ? sellingPrice : stockPrice)*10)/10}
                         />
                     </div>}
                 </div>
@@ -1604,7 +1644,6 @@ export class AddStoreProductModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             that.setState({visible: false});
             //that.ordersAppurtenancies(ordersAppurtenancies, data.id, detailCode, brandId);
             that.props.confirmAlertModal({

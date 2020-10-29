@@ -86,6 +86,7 @@ export class RequisiteSettingForm extends Component {
     }
 
     render() {
+        const { intl: {formatMessage} } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const isOtherForm = this.state.formType == "OTHER";
         
@@ -124,7 +125,9 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                  {getFieldDecorator('name')(<Input />)}
+                  {getFieldDecorator('name', {
+                        rules: [{ required: true, message: formatMessage({id: 'storage_document.error.required_fields'}), }],
+                      })(<Input />)}
                 </Form.Item>
                 <Form.Item
                     label={<FormattedMessage id='requisite-setting.address'/>}

@@ -19,7 +19,8 @@
     "order-page.tech_info": "Technical information",
     "order-page.send_agreement": "Submit cost estimate for approval",
     "order-page.no_positions": "There are no items to be agreed in the order",
-    "order-page.reserved_error": "There is reserved products in order"
+    "order-page.reserved_error": "There is reserved products in order",
+    "order-page.status_confirmed_reserve_error": "There is not enough item in reserve. When posting an order, not all products will be written off from the warehouse. Proceed?"
   },
   "ru": {
     "order-page.title": "Заказы",
@@ -41,7 +42,8 @@
     "order-page.tech_info": "Инфо по автомобилю",
     "order-page.send_agreement": "Послать калькуляцию на согласование",
     "order-page.no_positions": "В заказе нет позиций к согласованию",
-    "order-page.reserved_error": "В заказе присутствуют зарезервированные товары"
+    "order-page.reserved_error": "В заказе присутствуют зарезервированные товары",
+    "order-page.status_confirmed_reserve_error": "Недостаточно товара в резерве. При учете заказа не все товары будут списаны со склада. Продолжить?"
   },
   "uk": {
     "order-page.title": "Транзакції",
@@ -63,6 +65,7 @@
     "order-page.tech_info": "Інфо по автомобілю",
     "order-page.send_agreement": "Відправити калькуляцію на узгодження",
     "order-page.no_positions": "В замовленні відсутні позицій до узгодження",
-    "order-page.reserved_error": "В замовлені є зарезервовані позиції"
+    "order-page.reserved_error": "В замовлені є зарезервовані позиції",
+    "order-page.status_confirmed_reserve_error": "Недостатньо товару в резерві. При обліку замовлення не всі товари будуть списані зі складу. Продовжити?"
   }
 }

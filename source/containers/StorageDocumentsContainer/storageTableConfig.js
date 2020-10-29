@@ -263,7 +263,29 @@ export function columnsConfig(
                         id: 'add_order_form.delete_confirm',
                     }) }
                     onConfirm={ () => {
-                        deleteAction();
+                        let token = localStorage.getItem('_my.carbook.pro_token');
+                        let url = __API_URL__ + `/store_docs/${document.id}`;
+                        fetch(url, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': token,
+                            },
+                        })
+                        .then(function (response) {
+                            if (response.status !== 200) {
+                            return Promise.reject(new Error(response.statusText))
+                            }
+                            return Promise.resolve(response)
+                        })
+                        .then(function (response) {
+                            return response.json()
+                        })
+                        .then(function (data) {
+                            window.location.reload();
+                        })
+                        .catch(function (error) {
+                            console.log('error', error);
+                        });
                     } }
                 >
                     <Icon

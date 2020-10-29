@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Button, Icon, notification, Popconfirm} from 'antd';
+import {Button, Icon, notification, Popconfirm, Modal} from 'antd';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -51,7 +51,7 @@ import {
 
 // own
 import Styles from './styles.m.css';
-
+const { confirm } = Modal;
 
 const compareOrderTasks = (initialOrderTask, orderTask) => {
     if (!initialOrderTask) {
@@ -206,6 +206,7 @@ class OrderPage extends Component {
 
     _onStatusChange = (status, redirectStatus, options, redirectTo) => {
         const {allServices, allDetails, selectedClient, history} = this.props;
+        console.log(this, status)
         const form = this.orderFormRef.props.form;
         const orderFormValues = form.getFieldsValue();
         const requiredFields = requiredFieldsOnStatuses(orderFormValues)[
@@ -309,7 +310,53 @@ class OrderPage extends Component {
             : returnToOrdersPage(status);
     };
 
-    _getCurrentOrder(isReservedCheck=false, callback) {
+    _checkIsAllReserved = (callback) => {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__;
+        let params = `/orders/${this.props.match.params.id}`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            var reserveError = false;
+            data.orderDetails.map((elem)=>{
+                if(elem.productId && elem.reservedCount != elem.count) {
+                    reserveError = true;
+                    return;
+                }
+            });
+            console.log(data);
+            if(reserveError) {
+                confirm({
+                    title: that.props.intl.formatMessage({id: 'order-page.status_confirmed_reserve_error'}),
+                    onOk() {
+                        callback();
+                    },
+                });
+            } else {
+                callback();
+            }
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    _getCurrentOrder = (isReservedCheck=false, callback) => {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__;
@@ -334,7 +381,6 @@ class OrderPage extends Component {
             if(!isReservedCheck) {
                 that._createCopy(data.orderServices, data.orderDetails);
             } else {
-                console.log(data.orderDetails)
                 var isReserved = false;
                 data.orderDetails.map((elem)=>{
                     if(elem.reservedCount) {
@@ -494,7 +540,6 @@ class OrderPage extends Component {
 
     /* eslint-disable complexity*/
     render() {
-        console.log(this);
         const {showOilModal, oilModalData } = this.state;
         const {
             fetchOrderForm,
@@ -657,6 +702,7 @@ class OrderPage extends Component {
                                 user={ user }
                                 orderStatus={ status }
                                 onStatusChange={ this._onStatusChange }
+                                checkReserved={ this._checkIsAllReserved }
                                 setModal={ setModal }
                                 modals={ MODALS }
                                 isMobile={ isMobile }

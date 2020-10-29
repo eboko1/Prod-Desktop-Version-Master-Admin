@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Dropdown, Button, Icon, Menu, notification, Modal, Table, Input, InputNumber, Checkbox, Select, AutoComplete, Badge } from 'antd';
+import { Dropdown, Button, Icon, Menu, notification, Modal, Table, Input, InputNumber, Checkbox, Select, AutoComplete, Badge, Popconfirm } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import { saveAs } from 'file-saver';
@@ -17,6 +17,7 @@ import { type } from 'ramda';
 import { DetailStorageModal } from 'modals';
 // own
 const Option = Select.Option;
+const dateFormat = 'DD.MM.YYYY';
 
 const mapStateToProps = state => {
     return {
@@ -42,7 +43,9 @@ const INCOME = 'INCOME',
       ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
-      DONE = 'DONE';
+      DONE = 'DONE',
+      TOOL = 'TOOL',
+      REPAIRAREA= 'REPAIRAREA';
 
 const typeToDocumentType = {
     income: {
@@ -105,7 +108,7 @@ class StorageDocumentPage extends Component {
             this.state.formData[field[0]] = field[1];
         })
         if(saveMode) {
-            this.updateDocument();
+            this.updateDocument(saveMode);
         }
         else {
             this.setState({
@@ -347,12 +350,14 @@ class StorageDocumentPage extends Component {
         }
 
         var productsError = false;
+
         formData.docProducts.map((elem)=>{
             if(elem.productId) {
                 createData.docProducts.push({
                     productId: elem.productId,
                     quantity: elem.quantity,
-                    stockPrice: elem.stockPrice,
+                    stockPrice: formData.type == EXPENSE ? elem.sellingPrice : elem.stockPrice,
+                    sellingPrice: elem.sellingPrice,
                 })
                 if(elem.storeDocProductId) {
                     createData.docProducts[createData.docProducts.length-1].storeDocProductId = elem.storeDocProductId;
@@ -376,7 +381,7 @@ class StorageDocumentPage extends Component {
                 })
             }
         })
-
+        console.log(formData, createData);
         if(productsError) {
             this.setState({loading: false});
             return;
@@ -587,19 +592,23 @@ class StorageDocumentPage extends Component {
                   RES = 'RES',
                   ORD = 'ORD',
                   BOR = 'BOR',
-                  COM = 'COM';
+                  COM = 'COM',
+                  TOL = 'TOL',
+                  TOR = 'TOR';
 
             data.counterpartId = data.counterpartBusinessSupplierId || data.counterpartClientId;
             data.payUntilDatetime = data.payUntilDatetime && moment(data.payUntilDatetime);
             data.docProducts.map((elem, key)=>{
-                elem.brandId = elem.product.brandId,
-                elem.brandName = elem.product.brand && elem.product.brand.name,
-                elem.detailCode = elem.product.code,
-                elem.detailName = elem.product.name,
-                elem.groupId = elem.product.groupId,
-                elem.tradeCode = elem.product.tradeCode,
-                elem.sum = elem.stockPrice * elem.quantity,
+                elem.brandId = elem.product.brandId;
+                elem.brandName = elem.product.brand && elem.product.brand.name;
+                elem.detailCode = elem.product.code;
+                elem.detailName = elem.product.name;
+                elem.groupId = elem.product.groupId;
+                elem.tradeCode = elem.product.tradeCode;
+                elem.sum = elem.stockPrice * elem.quantity;
                 elem.key = key;
+                elem.sellingSum = elem.sellingPrice * elem.quantity;
+                elem.purchasePrice = elem.purchasePrice || elem.stockPrice;
             })
             switch (data.operationCode) {
                 case INC:
@@ -614,6 +623,8 @@ class StorageDocumentPage extends Component {
                     data.type = EXPENSE;
                     break;
                 case TSF:
+                case TOL:
+                case TOR:
                     data.type = TRANSFER;
                     break;
                 case RES:
@@ -773,13 +784,44 @@ class StorageDocumentPage extends Component {
                             </div>
                         )}
                         {id && formData.status != DONE &&
-                            <Icon
-                                type='delete'
-                                style={headerIconStyle}
-                                onClick={()=>{
-
-                                }}
-                            />
+                            <Popconfirm
+                                type='danger'
+                                title={ formatMessage({
+                                    id: 'add_order_form.delete_confirm',
+                                }) }
+                                placement="bottom"
+                                onConfirm={ () => {
+                                    var that = this;
+                                    let token = localStorage.getItem('_my.carbook.pro_token');
+                                    let url = __API_URL__ + `/store_docs/${this.props.id}`;
+                                    fetch(url, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Authorization': token,
+                                        },
+                                    })
+                                    .then(function (response) {
+                                        if (response.status !== 200) {
+                                        return Promise.reject(new Error(response.statusText))
+                                        }
+                                        return Promise.resolve(response)
+                                    })
+                                    .then(function (response) {
+                                        return response.json()
+                                    })
+                                    .then(function (data) {
+                                        that.props.history.goBack();
+                                    })
+                                    .catch(function (error) {
+                                        console.log('error', error);
+                                    });
+                                } }
+                            >
+                                <Icon
+                                    type='delete'
+                                    style={headerIconStyle}
+                                />
+                            </Popconfirm>
                         }
                         <Icon
                             type='close'
@@ -914,6 +956,8 @@ class ReturnModal extends React.Component {
             visible: false,
             brandSearchValue: "",
             storageProducts: [],
+            recommendedReturnsVisible: false,
+            returnDataSource: [],
             selectedProduct: {
                 brandId: undefined,
                 brandName: undefined,
@@ -921,8 +965,88 @@ class ReturnModal extends React.Component {
                 detailName: undefined,
                 stockPrice: 0,
                 quantity: 0,
+                storeDocProductId: undefined,
             }
-        }
+        };
+
+        this.returnTableColumns = [
+            {
+                title: <FormattedMessage id='storage_document.document' />,
+                key: 'documentNumber',
+                dataIndex: 'documentNumber',
+            },
+            {
+                title: <FormattedMessage id='date' />,
+                key: 'doneDatetime',
+                dataIndex: 'doneDatetime',
+                render: (doneDatetime, row) => {
+                    return (
+                        moment(doneDatetime).format('LL')
+                    )
+                },
+            },
+            {
+                title: <FormattedMessage id='order_form_table.price' />,
+                key: 'price',
+                render: (row) => {
+                    return this.props.documentType == CLIENT ? (
+                        row.stockPrice
+                    ) : (
+                        row.sellingPrice
+                    )
+                },
+            },
+            {
+                title: <FormattedMessage id='order_form_table.count' />,
+                key: 'returnQuantity',
+                dataIndex: 'returnQuantity',
+            },
+            {
+                title: <FormattedMessage id='order_form_table.sum' />,
+                key: 'sum',
+                dataIndex: 'sum',
+            },
+            {
+                title: <FormattedMessage id='storage_document.return' />,
+                key: 'quantity',
+                dataIndex: 'quantity',
+                render: (quantity, row) => {
+                    return (
+                        <InputNumber
+                            min={0}
+                            max={row.returnQuantity}
+                            value={quantity}
+                            step={1}
+                            onChange={(value)=>{
+                                row.quantity = value;
+                                this.setState({})
+                            }}
+                        />
+                    )
+                },
+            },
+            {
+                key: 'select',
+                render: (row) => {
+                    return (
+                        <Button
+                            type='primary'
+                            disabled={!row.quantity}
+                            onClick={()=>{
+                                this.state.selectedProduct.stockPrice = row.stockPrice || row.sellingPrice;
+                                this.state.selectedProduct.quantity = row.quantity;
+                                this.state.selectedProduct.storeDocProductId = row.storeDocProductId;
+                                this.setState({
+                                    recommendedReturnsVisible: false,
+                                })
+                            }}
+                        >
+                            <FormattedMessage id='select' />
+                        </Button>
+                    )
+                },
+            },
+        ];
     }
 
     handleOk() {
@@ -934,6 +1058,8 @@ class ReturnModal extends React.Component {
     handleCancel() {
         this.setState({
             visible: false,
+            recommendedReturnsVisible: false,
+            returnDataSource: [],
             brandSearchValue: "",
             storageProducts: [],
             selectedProduct: {
@@ -943,11 +1069,13 @@ class ReturnModal extends React.Component {
                 detailName: undefined,
                 stockPrice: 0,
                 quantity: 0,
+                storeDocProductId: undefined,
             }
         });
     }
 
     getStorageProducts() {
+        console.log(this);
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/store_products?all=true`;
@@ -980,23 +1108,40 @@ class ReturnModal extends React.Component {
         this.getStorageProducts();
     }
 
-    selectProduct = (productId) => {
-        console.log(productId);
-        const product = this.state.storageProducts.find((product)=>product.id == productId);
-        if(product) {
-            this.setState({
-                selectedProduct: {
-                    productId: product.id,
-                    brandId: product.brandId,
-                    brandName: product.brand && product.brand.name,
-                    detailCode: product.code,
-                    detailName: product.name,
-                    tradeCode: product.tradeCode,
-                    stockPrice: product.stockPrice,
-                    quantity: product.quantity || 1,
-                }
+    fetchReturnData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_docs/return?documentType=${this.props.documentType}&productId=${this.state.selectedProduct.productId}`;
+        if(this.props.documentType == CLIENT) url += `&counterpartClientId=${this.props.counterpartId}`;
+        else url += `&counterpartBusinessSupplierId=${this.props.counterpartId}`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            data.map((elem, i)=>{
+                elem.key = i;
+                elem.quantity = elem.returnQuantity;
+                elem.sum = Math.abs(elem.sum);
             })
-        }
+            that.setState({
+                returnDataSource: data,
+            })
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
     }
 
     render() {
@@ -1006,6 +1151,8 @@ class ReturnModal extends React.Component {
             brandSearchValue,
             storageProducts,
             selectedProduct,
+            recommendedReturnsVisible,
+            returnDataSource,
         } = this.state;
         return (
             <div>
@@ -1026,6 +1173,7 @@ class ReturnModal extends React.Component {
                 <Modal
                     visible={visible}
                     width={'fit-content'}
+                    okButtonProps={{disabled: !selectedProduct.storeDocProductId}}
                     onOk={()=>{
                         this.handleOk();
                     }}
@@ -1059,19 +1207,21 @@ class ReturnModal extends React.Component {
                         <div>
                             <FormattedMessage id='order_form_table.detail_code' />
                             <Select
+                                showSearch
                                 value={selectedProduct.detailCode}
                                 style={{color: 'var(--text)', minWidth: 180}}
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                                 onChange={(value, option)=>{
-                                    this.state.selectedProduct.detailCode = value;
-                                    this.state.selectedProduct.brandId = option.props.brandId;
+                                    this.state.selectedProduct.detailCode = option.props.code;
+                                    this.state.selectedProduct.brandId = option.props.brand_id;
                                     this.state.selectedProduct.detailName = option.props.name;
-                                    this.state.selectedProduct.tradeCode = option.props.tradeCode;
+                                    this.state.selectedProduct.tradeCode = option.props.trade_code;
+                                    this.state.selectedProduct.productId = value;
                                     this.setState({update: true})
                                 }}
                             >
                                 {this.state.storageProducts.map((elem, index)=>(
-                                    <Option key={index} value={elem.code} brandId={elem.brandId} name={elem.name} tradeCode={elem.tradeCode}>
+                                    <Option key={index} value={elem.id} brand_id={elem.brandId} name={elem.name} trade_code={elem.tradeCode} code={elem.code}>
                                         {elem.code}
                                     </Option>
                                 ))}
@@ -1126,7 +1276,7 @@ class ReturnModal extends React.Component {
                             <InputNumber
                                 disabled
                                 value={Math.round(selectedProduct.quantity*selectedProduct.stockPrice*10)/10}
-                                min={1}
+                                min={0}
                                 style={{
                                     color: 'var(--text)'
                                 }}
@@ -1134,12 +1284,41 @@ class ReturnModal extends React.Component {
                         </div>
                         <div>
                             <Button
+                                disabled={!selectedProduct.detailCode}
                                 type='primary'
+                                onClick={()=>{
+                                    this.fetchReturnData();
+                                    this.setState({
+                                        recommendedReturnsVisible: true,
+                                    })
+                                }}
                             >
-                                MODAL
+                                <Icon type="unordered-list" />
                             </Button>
                         </div>  
                     </div>
+                </Modal>
+                <Modal
+                    visible={recommendedReturnsVisible}
+                    style={{
+                        minWidth: '50%'
+                    }}
+                    width={'fit-content'}
+                    onOk={()=>{
+                        this.setState({
+                            recommendedReturnsVisible: false,
+                        })
+                    }}
+                    onCancel={()=>{
+                        this.setState({
+                            recommendedReturnsVisible: false,
+                        })
+                    }}
+                >
+                    <Table 
+                        columns={this.returnTableColumns}
+                        dataSource={returnDataSource}
+                    />
                 </Modal>
             </div>
         );
@@ -1615,7 +1794,6 @@ class AutomaticOrderCreationModal extends React.Component {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 data.map((elem, i)=>{
                     elem.quantity = elem.quantity || 1;
                     elem.toOrder = elem.quantity;
@@ -1653,7 +1831,6 @@ class AutomaticOrderCreationModal extends React.Component {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 data.map((elem, i)=>{
                     elem.quantity = elem.quantity || 1;
                     elem.orderedSum = elem.sum;

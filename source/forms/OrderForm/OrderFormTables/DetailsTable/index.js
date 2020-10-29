@@ -628,7 +628,6 @@ class DetailsTable extends Component {
                 that.setState({
                     dataSource: data.details,
                 });
-                console.log(data);
                 that.props.reloadOrderForm();
             })
             .catch(function(error) {
@@ -1261,8 +1260,6 @@ class ReserveButton extends React.Component {
                         .catch(function(error) {
                             console.log('error', error);
                         });
-                    },
-                    onCancel() {
                     },
                 });
             }
