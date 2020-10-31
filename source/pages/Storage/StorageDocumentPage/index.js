@@ -17,6 +17,7 @@ import { type } from 'ramda';
 import { DetailStorageModal } from 'modals';
 // own
 const Option = Select.Option;
+const { error } = Modal;
 const dateFormat = 'DD.MM.YYYY';
 
 const mapStateToProps = state => {
@@ -44,8 +45,9 @@ const INCOME = 'INCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
       DONE = 'DONE',
+      MAIN = 'MAIN',
       TOOL = 'TOOL',
-      REPAIRAREA= 'REPAIRAREA';
+      REPAIR_AREA= 'REPAIR_AREA';
 
 const typeToDocumentType = {
     income: {
@@ -58,11 +60,7 @@ const typeToDocumentType = {
     },
     transfer: {
         type: EXPENSE,
-        documentType: [TRANSFER],
-    },
-    reserve: {
-        type: EXPENSE,
-        documentType: [TRANSFER],
+        documentType: [TRANSFER, RESERVE, TOOL, REPAIR_AREA],
     },
     order: {
         type: ORDER,
@@ -84,6 +82,7 @@ class StorageDocumentPage extends Component {
             warehouses: [],
             brands: [],
             counterpartSupplier: [],
+            employees: [],
             clientList: [],
             formData: {
                 type: INCOME,
@@ -94,6 +93,10 @@ class StorageDocumentPage extends Component {
             fetched: false,
             warnings: 0,
             loading: false,
+            mainWarehouseId: undefined,
+            reserveWarehouseId: undefined,
+            toolWarehouseId: undefined,
+            repairAreaWarehouseId: undefined,
         }
 
         this.updateFormData = this.updateFormData.bind(this);
@@ -257,11 +260,13 @@ class StorageDocumentPage extends Component {
                 }
                 break;
             case TRANSFER:
-            case RESERVE:
                 createData.type = EXPENSE;
                 createData.documentType = TRANSFER;
                 createData.warehouseId = formData.expenseWarehouseId;
                 createData.counterpartWarehouseId = formData.incomeWarehouseId;
+                if(formData.documentType == TOOL || formData.documentType == REPAIR_AREA) {
+                    createData.counterpartEmployeeId = formData.counterpartId;
+                }
                 delete createData.supplierDocNumber;
                 delete createData.payUntilDatetime;
                 break;
@@ -319,7 +324,8 @@ class StorageDocumentPage extends Component {
             return;
         }
 
-        const { formData } = this.state
+        const { formData } = this.state;
+        const { intl: {formatMessage} } = this.props;
         
         const createData = {
             status: formData.status,
@@ -340,7 +346,6 @@ class StorageDocumentPage extends Component {
                 }
                 break;
             case TRANSFER:
-            case RESERVE:
                 createData.warehouseId = formData.expenseWarehouseId;
                 createData.counterpartWarehouseId = formData.incomeWarehouseId;
                 break;
@@ -381,7 +386,6 @@ class StorageDocumentPage extends Component {
                 })
             }
         })
-        console.log(formData, createData);
         if(productsError) {
             this.setState({loading: false});
             return;
@@ -407,13 +411,46 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            that.getStorageDocument();
+            console.log(data);
+            if(data.updated) {
+                that.getStorageDocument();
+            } else {
+                const availableInfo = [];
+                data.notAvailableProducts.map(({available, productId: {product}})=>{
+                    availableInfo.push(
+                        <span style={{
+                            display: 'flex',
+                            margin: '8 0 0 0',
+                            justifyContent: 'space-between',
+                            fontSize: 14,
+                        }}>
+                            <span style={{fontWeight: 500}}>{product.name} ({product.code})</span>
+                            <span style={{padding: '0 0 0 12'}}>{formatMessage({id:'storage.available'})} { available } {formatMessage({id: 'pc'})}</span>
+                        </span>
+                    );
+                })
+                error({
+                    title: formatMessage({id: 'storage_document.error.available'}),
+                    content: availableInfo.map((txt, key)=>txt),
+                    cancelButtonProps: {style: {display: 'none'}},
+                    width: 'fit-content',
+                    style: {
+                        minWidth: 600,
+                    },
+                    onOk() {
+                        that.getStorageDocument();
+                    },
+                    onCancel() {
+                        that.getStorageDocument();
+                    }
+                });
+            }
         })
         .catch(function (error) {
             console.log('error', error);
             that.setState({loading: false});
             notification.error({
-                message: 'Ошибка склада. Проверьте количество товаров',
+                message: that.props.intl.formatMessage({id: 'error'}),
             });
             that.getStorageDocument();
         });
@@ -439,33 +476,88 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (warehouses) {
+            console.log(warehouses)
             const type = that.props.location.type;
-            if(type && warehouses.length) {
-                that.state.formData.type = type;
+            var mainWarehouseId, reserveWarehouseId, toolWarehouseId, repairAreaWarehouseId;
+            warehouses.map((warehouse)=>{
+                switch(warehouse.attribute) {
+                    case MAIN:
+                        mainWarehouseId = warehouse.id;
+                        break;
+                    case RESERVE:
+                        reserveWarehouseId = warehouse.id;
+                        break;
+                    case TOOL:
+                        toolWarehouseId = warehouse.id;
+                        break;
+                    case REPAIR_AREA:
+                        repairAreaWarehouseId = warehouse.id;
+                        break;
+                }
+            })
+            if(warehouses.length) {
                 var { incomeWarehouseId, expenseWarehouseId } = that.state.formData;
                 switch(type) {
                     case INCOME:
-                        incomeWarehouseId = warehouses[0].id;
+                        incomeWarehouseId = mainWarehouseId;
                         break
                     case EXPENSE:
-                        expenseWarehouseId = warehouses[0].id;
+                        expenseWarehouseId = mainWarehouseId;
                         break;
                     case TRANSFER:
-                    case RESERVE:
-                        incomeWarehouseId = warehouses[0].id;
-                        incomeWarehouseId = warehouses[1].id;
+                        expenseWarehouseId = reserveWarehouseId;
+                        incomeWarehouseId = mainWarehouseId;
                         break;
                     case ORDER:
-                        incomeWarehouseId = warehouses[0].id;
+                        incomeWarehouseId = mainWarehouseId;
                         break;
+                    default:
+                        incomeWarehouseId = mainWarehouseId;
                 }
-                that.state.formData.documentType = typeToDocumentType[type.toLowerCase()].documentType[0];
+                that.state.formData.type = type || INCOME;
+                that.state.formData.documentType = type ? typeToDocumentType[type.toLowerCase()].documentType[0] : SUPPLIER;
                 that.state.formData.incomeWarehouseId = incomeWarehouseId;
                 that.state.formData.expenseWarehouseId = expenseWarehouseId;
             } 
             that.setState({
                 warehouses: warehouses,
+                mainWarehouseId: mainWarehouseId,
+                reserveWarehouseId: reserveWarehouseId,
+                toolWarehouseId: toolWarehouseId,
+                repairAreaWarehouseId: repairAreaWarehouseId,
                 fetched: true,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    getEmployees() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + '/employees';
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            data.map((elem)=>{
+                elem.phone = `+38(${elem.phone.substring(2, 5)}) ${elem.phone.substring(5, 8)}-${elem.phone.substring(8, 10)}-${elem.phone.substring(10)}`;
+            })
+            that.setState({
+                employees: data,
             })
         })
         .catch(function (error) {
@@ -596,7 +688,7 @@ class StorageDocumentPage extends Component {
                   TOL = 'TOL',
                   TOR = 'TOR';
 
-            data.counterpartId = data.counterpartBusinessSupplierId || data.counterpartClientId;
+            data.counterpartId = data.counterpartBusinessSupplierId || data.counterpartClientId || data.counterpartEmployeeId;
             data.payUntilDatetime = data.payUntilDatetime && moment(data.payUntilDatetime);
             data.docProducts.map((elem, key)=>{
                 elem.brandId = elem.product.brandId;
@@ -623,12 +715,20 @@ class StorageDocumentPage extends Component {
                     data.type = EXPENSE;
                     break;
                 case TSF:
-                case TOL:
-                case TOR:
                     data.type = TRANSFER;
+                    data.documentType = TRANSFER;
                     break;
                 case RES:
-                    data.type = RESERVE;
+                    data.type = TRANSFER;
+                    data.documentType = RESERVE;
+                    break;
+                case TOL:
+                    data.type = TRANSFER;
+                    data.documentType = TOOL;
+                    break;
+                case TOR:
+                    data.type = TRANSFER;
+                    data.documentType = REPAIR_AREA;
                     break;
                 case ORD:
                 case BOR:
@@ -649,12 +749,8 @@ class StorageDocumentPage extends Component {
                     data.expenseWarehouseId = data.warehouseId;
                     break;
                 case TRANSFER:
-                case RESERVE:
                     data.incomeWarehouseId = data.counterpartWarehouseId;
                     data.expenseWarehouseId = data.warehouseId;
-                    break;
-                case RESERVE:
-                    data.incomeWarehouseId = data.warehouseId;
                     break;
                 case ORDER:
                     data.incomeWarehouseId = that.state.warehouses.length ? that.state.warehouses[0].id : undefined;
@@ -679,6 +775,7 @@ class StorageDocumentPage extends Component {
         this.getBrands();
         this.getClientList();
         this.getCounterpartSupplier();
+        this.getEmployees();
         if(id) this.getStorageDocument();
     }
 
@@ -695,7 +792,18 @@ class StorageDocumentPage extends Component {
     }
 
     render() {
-        const { warehouses, counterpartSupplier, formData, brands, clientList, fetched, forceUpdate, loading } = this.state;
+        const { 
+            warehouses,
+            counterpartSupplier,
+            employees, formData,
+            brands, clientList,
+            fetched, forceUpdate,
+            loading,
+            mainWarehouseId,
+            reserveWarehouseId,
+            toolWarehouseId,
+            repairAreaWarehouseId,
+        } = this.state;
         const { id, intl: {formatMessage}, user } = this.props;
         const dateTime = formData.createdDatetime || new Date();
         const titleType = " " + formatMessage({id: `storage_document.docType.${formData.type}.${formData.documentType}`}).toLowerCase();
@@ -840,6 +948,7 @@ class StorageDocumentPage extends Component {
                     wrappedComponentRef={ this.saveFormRef }
                     warehouses={warehouses}
                     counterpartSupplier={counterpartSupplier}
+                    employees={employees}
                     typeToDocumentType={typeToDocumentType}
                     updateFormData={this.updateFormData}
                     formData={formData}
@@ -849,6 +958,10 @@ class StorageDocumentPage extends Component {
                     editDocProduct={this.editDocProduct}
                     loading={loading}
                     user={user}
+                    mainWarehouseId={mainWarehouseId}
+                    reserveWarehouseId={reserveWarehouseId}
+                    toolWarehouseId={toolWarehouseId}
+                    repairAreaWarehouseId={repairAreaWarehouseId}
                 />
             </Layout>
         );

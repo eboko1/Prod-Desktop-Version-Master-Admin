@@ -44,7 +44,7 @@ export class LoginForm extends Component {
     };
 
     componentDidUpdate() {
-        if(this.state.submitCount > 2) {
+        if(this.state.submitCount > 1) {
             window.location.reload();
         }
     }

@@ -80,6 +80,11 @@ export const StorageBalanceTotals = connect(mapStateToProps, {
                         )
                         : SkeletonLoader }
                 </DataWrapper>
+                <DataWrapper>
+                    { !_.isEmpty(total)
+                        ? renderTotalData('ordered', total.countInStoreOrders)
+                        : SkeletonLoader }
+                </DataWrapper>
                 <DataWrapper
                     style={{
                         display: 'flex',

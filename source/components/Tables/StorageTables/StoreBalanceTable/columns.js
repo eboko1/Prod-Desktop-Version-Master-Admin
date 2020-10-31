@@ -115,7 +115,7 @@ export default props => {
         key:    'countInStoreOrders',
         dataIndex: 'countInStoreOrders',
         width:  '10%',
-        sorter: (a, b) => a.ordered - b.ordered,
+        sorter: (a, b) => a.countInStoreOrders - b.countInStoreOrders,
         sortDirections: ['descend', 'ascend'],
         render:    (ordered, data) => {
             return (

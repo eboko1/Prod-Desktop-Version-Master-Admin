@@ -91,7 +91,8 @@
     "storage.deficit": "Deficit",
     "storage.to_order": "To order",
     "storage.min": "Min.",
-    "storage.max": "Max."
+    "storage.max": "Max.",
+    "storage.employee": "Employee"
   },
   "ru": {
     "storage": "Склад",
@@ -186,7 +187,8 @@
     "storage.deficit": "Дефицит",
     "storage.to_order": "Заказать",
     "storage.min": "Mин.",
-    "storage.max": "Maкс."
+    "storage.max": "Maкс.",
+    "storage.employee": "Сотрудник"
   },
   "uk": {
     "storage": "Склад",
@@ -280,6 +282,7 @@
     "storage.deficit": "Дефіцит",
     "storage.to_order": "Замовити",
     "storage.min": "Miн.",
-    "storage.max": "Maкс."
+    "storage.max": "Maкс.",
+    "storage.employee": "Співробітник"
   }
 }
