@@ -17,8 +17,8 @@ import book from 'routes/book';
 // own
 const INCOME = 'INCOME',
       EXPENSE = 'EXPENSE',
-      RESERVE = 'RESERVE',
       SUPPLIER = 'SUPPLIER',
+      RESERVE = 'RESERVE',
       CLIENT = 'CLIENT',
       INVENTORY = 'INVENTORY',
       OWN_CONSUMPTION = 'OWN_CONSUMPTION',
@@ -27,7 +27,10 @@ const INCOME = 'INCOME',
       ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
-      DONE = 'DONE';
+      DONE = 'DONE',
+      MAIN = 'MAIN',
+      TOOL = 'TOOL',
+      REPAIR_AREA= 'REPAIR_AREA';
       
 const dateFormat = 'DD.MM.YYYY';
 const fetchStorage = (type, docType, action) => {
@@ -48,25 +51,26 @@ const fetchStorage = (type, docType, action) => {
             Authorization: token,
         },
     })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
+    .then(function(response) {
+        if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText));
+        }
 
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            if(docType != TRANSFER) {
-                data.list = data.list.filter((elem)=>elem.documentType != TRANSFER);
-            }
-            action(data);
-        })
-        .catch(function(error) {
-            console.log('error', error);
-        });
+        return Promise.resolve(response);
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        console.log(data);
+        if(docType != TRANSFER) {
+            data.list = data.list.filter((elem)=>elem.documentType != TRANSFER);
+        }
+        action(data);
+    })
+    .catch(function(error) {
+        console.log('error', error);
+    });
 };
 
 const mapDispatchToProps = {
@@ -286,6 +290,7 @@ class StorageDocumentsContainer extends Component {
                 paper={ false }
             >
                 <StorageTable
+                    docType={this.props.newDocType}
                     documentsList={ filtredDocumentsList }
                     listType={ this.props.listType }
                     onSearch={ this.querySearchFilter }

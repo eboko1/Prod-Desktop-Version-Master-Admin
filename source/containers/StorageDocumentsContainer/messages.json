@@ -36,12 +36,19 @@
         "storage_document.docType.ORDER.ADJUSTMENT": "Correction",
         "storage_document.docType.ORDER.ORDERINCOME": "Income",
         "storage_document.docType.EXPENSE.TRANSFER": "Transfer",
-        "storage_document.docType.RESERVE.TRANSFER": "Reserve",
+        "storage_document.docType.TRANSFER.RESERVE": "Reserve",
         "storage_document.docType.TRANSFER.TRANSFER": "Transfer",
+        "storage_document.docType.TRANSFER.TOOL": "Tool",
+        "storage_document.docType.TRANSFER.REPAIR_AREA": "Repair area",
 
         "storage_document.error.product_not_found": "This product is not in the product directory. Add?",
         "storage_document.error.required_fields": "Fill all required fields",
-        "storage_document.error.confirm_all": "There are no confirmed items to reserve"
+        "storage_document.error.confirm_all": "There are no confirmed items to reserve",
+        "storage_document.error.available": "There is not enough product in stock.",
+        "storage_document.warning.continue": "Сontinue?",
+        "storage_document.notification.available_from_warehouse": "Available from warehouse {name}",
+        "storage_document.notification.reserved": "Reserved {count} product units",
+        "storage_document.notification.reserve_canceled": "Reserve canceled"
     },
     "ru": {
         "storage_document.document": "Документ",
@@ -80,12 +87,19 @@
         "storage_document.docType.ORDER.ADJUSTMENT": "Корректировка",
         "storage_document.docType.ORDER.ORDERINCOME": "Приход",
         "storage_document.docType.EXPENSE.TRANSFER": "Перемещение",
-        "storage_document.docType.RESERVE.TRANSFER": "Резерв",
+        "storage_document.docType.TRANSFER.RESERVE": "Резерв",
         "storage_document.docType.TRANSFER.TRANSFER": "Перемещение",
+        "storage_document.docType.TRANSFER.TOOL": "Инструмент",
+        "storage_document.docType.TRANSFER.REPAIR_AREA": "Ремонтный участок",
 
         "storage_document.error.product_not_found": "Данного товара нет в справочнике товаров. Добавить?",
         "storage_document.error.required_fields": "Заполните все необходимые поля",
-        "storage_document.error.confirm_all": "Нет подтвержденных позиций, которые можно зарезервировать"
+        "storage_document.error.confirm_all": "Нет подтвержденных позиций, которые можно зарезервировать",
+        "storage_document.error.available": "Недостаточно товара на складе.",
+        "storage_document.warning.continue": "Продолжить?",
+        "storage_document.notification.available_from_warehouse": "Доступно со склада {name}",
+        "storage_document.notification.reserved": "Зарезервировано {count} ед. товара",
+        "storage_document.notification.reserve_canceled": "Резерв отменен"
     },
     "uk": {
         "storage_document.document": "Документ",
@@ -124,12 +138,19 @@
         "storage_document.docType.ORDER.ADJUSTMENT": "Корегування",
         "storage_document.docType.ORDER.ORDERINCOME": "Прихід",
         "storage_document.docType.EXPENSE.TRANSFER": "Переміщення",
-        "storage_document.docType.RESERVE.TRANSFER": "Резерв",
+        "storage_document.docType.TRANSFER.RESERVE": "Резерв",
         "storage_document.docType.TRANSFER.TRANSFER": "Переміщення",
+        "storage_document.docType.TRANSFER.TOOL": "Інструмент",
+        "storage_document.docType.TRANSFER.REPAIR_AREA": "Зона ремонту",
 
         "storage_document.error.product_not_found": "Даного товару немає в довіднику товарів. Додати?",
         "storage_document.error.required_fields": "Заповніть всі необхідні поля",
-        "storage_document.error.confirm_all": "Немає підтверджених позицій, які можна зарезервувати"
+        "storage_document.error.confirm_all": "Немає підтверджених позицій, які можна зарезервувати",
+        "storage_document.error.available": "Недостатньо товару на складі.",
+        "storage document.warning.continue": "Продовжити?",
+        "storage_document.notification.available_from_warehouse": "Доступно зі складу {name}",
+        "storage_document.notification.reserved": "Зарезервовано {count} од. товару",
+        "storage_document.notification.reserve_canceled": "Резерв скасовано"
     }
   }
   

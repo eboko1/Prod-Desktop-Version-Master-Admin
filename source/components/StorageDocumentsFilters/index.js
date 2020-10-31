@@ -17,8 +17,8 @@ const { RangePicker } = DatePicker;
 var isOrder, isTransfer;
 const INCOME = 'INCOME',
       EXPENSE = 'EXPENSE',
-      RESERVE = 'RESERVE',
       SUPPLIER = 'SUPPLIER',
+      RESERVE = 'RESERVE',
       CLIENT = 'CLIENT',
       INVENTORY = 'INVENTORY',
       OWN_CONSUMPTION = 'OWN_CONSUMPTION',
@@ -27,30 +27,29 @@ const INCOME = 'INCOME',
       ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
-      DONE = 'DONE';
-
+      DONE = 'DONE',
+      MAIN = 'MAIN',
+      TOOL = 'TOOL',
+      REPAIR_AREA= 'REPAIR_AREA';
+      
 const typeToDocumentType = {
-        income: {
-            type: INCOME,
-            documentType: [SUPPLIER, CLIENT, INVENTORY],
-        },
-        expense: {
-            type: EXPENSE,
-            documentType: [CLIENT, SUPPLIER, INVENTORY, OWN_CONSUMPTION],
-        },
-        transfer: {
-            type: EXPENSE,
-            documentType: [TRANSFER],
-        },
-        reserve: {
-            type: EXPENSE,
-            documentType: [TRANSFER],
-        },
-        order: {
-            type: ORDER,
-            documentType: [SUPPLIER, ADJUSTMENT, ORDERINCOME],
-        }, 
-    }
+    income: {
+        type: INCOME,
+        documentType: [SUPPLIER, CLIENT, INVENTORY],
+    },
+    expense: {
+        type: EXPENSE,
+        documentType: [CLIENT, SUPPLIER, INVENTORY, OWN_CONSUMPTION],
+    },
+    transfer: {
+        type: EXPENSE,
+        documentType: [TRANSFER, RESERVE, TOOL, REPAIR_AREA],
+    },
+    order: {
+        type: ORDER,
+        documentType: [SUPPLIER, ADJUSTMENT, ORDERINCOME],
+    }, 
+}
 
 @withRouter
 @injectIntl

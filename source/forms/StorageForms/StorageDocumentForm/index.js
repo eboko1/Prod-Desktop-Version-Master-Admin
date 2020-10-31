@@ -39,7 +39,10 @@ const INCOME = 'INCOME',
       ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
-      DONE = 'DONE';
+      DONE = 'DONE',
+      MAIN = 'MAIN',
+      TOOL = 'TOOL',
+      REPAIR_AREA= 'REPAIR_AREA';
 
 @withReduxForm({
     name: "storageDocumentForm",
@@ -108,12 +111,17 @@ class StorageDocumentForm extends Component {
             typeToDocumentType,
             warehouses,
             counterpartSupplier,
+            employees,
             brands,
             deleteDocProduct,
             editDocProduct,
             clientList,
             loading,
             user,
+            mainWarehouseId,
+            reserveWarehouseId,
+            toolWarehouseId,
+            repairAreaWarehouseId,
         } = this.props;
 
         const {
@@ -130,7 +138,7 @@ class StorageDocumentForm extends Component {
         } = this.props.formData;
         const dateFormat = 'DD.MM.YYYY';
         const disabled = status == DONE;
-        const onlySum = type == TRANSFER || type == RESERVE || type == ORDER || documentType == OWN_CONSUMPTION || documentType == INVENTORY;
+        const onlySum = type == TRANSFER || type == ORDER || documentType == OWN_CONSUMPTION || documentType == INVENTORY;
         
         return (
             <div>
@@ -158,20 +166,20 @@ class StorageDocumentForm extends Component {
                             onChange={(value)=>{
                                 if(value == INCOME || value == ORDER) {
                                     updateFormData({
-                                        incomeWarehouseId: warehouses[0].id,
+                                        incomeWarehouseId: mainWarehouseId,
                                         expenseWarehouseId: undefined,
                                     })
                                 }
                                 else if(value == EXPENSE) {
                                     updateFormData({
                                         incomeWarehouseId: undefined,
-                                        expenseWarehouseId: warehouses[0].id,
+                                        expenseWarehouseId: mainWarehouseId,
                                     })
                                 }
-                                else if(value == TRANSFER || value == RESERVE) {
+                                else if(value == TRANSFER) {
                                     updateFormData({
-                                        incomeWarehouseId: warehouses[1].id,
-                                        expenseWarehouseId: warehouses[0].id,
+                                        incomeWarehouseId: mainWarehouseId,
+                                        expenseWarehouseId: reserveWarehouseId,
                                     })
                                 }
 
@@ -198,18 +206,12 @@ class StorageDocumentForm extends Component {
                                 <FormattedMessage id='storage.TRANSFER'/>
                             </Option>
                             <Option
-                                value={RESERVE}
-                            >
-                                <FormattedMessage id='storage.RESERVE'/>
-                            </Option>
-                            <Option
                                 value={ORDER}
                             >
                                 <FormattedMessage id='storage.ORDER'/>
                             </Option>
                         </Select>
                     </div>
-                    {(type == ORDER || type== EXPENSE || type== INCOME) &&
                     <div>
                         <FormattedMessage id='storage_document.document_type'/>{requiredField()}
                         <Select
@@ -217,6 +219,27 @@ class StorageDocumentForm extends Component {
                             value={documentType}
                             style={disabledSelectText}
                             onChange={(value)=>{
+                                if(value == TRANSFER) {
+                                    updateFormData({
+                                        incomeWarehouseId: mainWarehouseId,
+                                        expenseWarehouseId: reserveWarehouseId,
+                                    })
+                                } else if(value == RESERVE) {
+                                    updateFormData({
+                                        incomeWarehouseId: reserveWarehouseId,
+                                        expenseWarehouseId: mainWarehouseId,
+                                    })
+                                } else if (value == REPAIR_AREA) {
+                                    updateFormData({
+                                        incomeWarehouseId: toolWarehouseId,
+                                        expenseWarehouseId: repairAreaWarehouseId,
+                                    })
+                                } else if (value == TOOL) {
+                                    updateFormData({
+                                        incomeWarehouseId: repairAreaWarehouseId,
+                                        expenseWarehouseId: toolWarehouseId,
+                                    })
+                                }
                                 updateFormData({
                                     documentType: value,
                                     counterpartId: undefined,
@@ -224,23 +247,33 @@ class StorageDocumentForm extends Component {
                             }}
                         >
                             {type && 
-                                typeToDocumentType[type.toLowerCase()].documentType.map((counterpart, i)=>{
+                                typeToDocumentType[type.toLowerCase()].documentType.map((documentType, i)=>{
                                     return (
                                         <Option
-                                            value={counterpart}
+                                            value={documentType}
                                             key={i}
                                         >
-                                            <FormattedMessage id={`storage_document.docType.${type}.${counterpart}`}/>
+                                            <FormattedMessage id={`storage_document.docType.${type}.${documentType}`}/>
                                         </Option>
                                     )
                                 })
                             }
                         </Select>
-                    </div>}
-                    {(type == INCOME || type == EXPENSE || type == ORDER) &&
-                    (documentType == CLIENT || documentType == SUPPLIER || documentType == ADJUSTMENT || documentType == ORDERINCOME) && 
+                    </div>
+                    {(
+                        documentType == CLIENT ||
+                        documentType == SUPPLIER ||
+                        documentType == ADJUSTMENT ||
+                        documentType == ORDERINCOME ||
+                        documentType == TOOL ||
+                        documentType == REPAIR_AREA) 
+                    && 
                     <div style={{position: 'relative'}}>
-                        <FormattedMessage id={`storage.${documentType != ADJUSTMENT && documentType != ORDERINCOME ? documentType.toLowerCase() : 'supplier'}`}/>{requiredField()}
+                        <FormattedMessage id={`storage.${
+                            documentType == ORDERINCOME || documentType == ADJUSTMENT ? 'supplier' :
+                            documentType == TOOL || documentType == REPAIR_AREA ? 'employee' :
+                            documentType.toLowerCase()}`
+                        }/>{requiredField()}
                         <Select
                             showSearch
                             disabled={disabled || status==NEW}
@@ -283,6 +316,18 @@ class StorageDocumentForm extends Component {
                                     </Option>
                                 )
                             })}
+                            {(documentType == TOOL || documentType == REPAIR_AREA) && 
+                                employees.map((employee, i)=>{
+                                    return (
+                                        <Option
+                                            key={i}
+                                            value={employee.id}
+                                        >
+                                            {`${employee.surname || ""} ${employee.name || ""} ${employee.phone}`}
+                                        </Option>
+                                    )
+                                })
+                            }
                             {documentType == CLIENT ?
                             clientSearchValue.length > 2 ?
                             clientList.map((client, key)=>{
@@ -311,9 +356,14 @@ class StorageDocumentForm extends Component {
                     }}
                 >
                     <div>
-                        <FormattedMessage id='storage_document.storage_expenses'/>{(type == EXPENSE || type == TRANSFER || type == RESERVE) && requiredField()}
+                        <FormattedMessage id='storage_document.storage_expenses'/>{(type == EXPENSE || type == TRANSFER) && requiredField()}
                         <Select
-                            disabled={type == INCOME || type == ORDER || disabled}
+                            disabled={
+                                type == INCOME || 
+                                type == ORDER || 
+                                documentType == TOOL ||
+                                documentType == REPAIR_AREA ||
+                                disabled}
                             value={expenseWarehouseId}
                             style={disabledSelectText}
                             onSelect={(value)=>{
@@ -335,9 +385,16 @@ class StorageDocumentForm extends Component {
                         </Select>
                     </div>
                     <div>
-                        <FormattedMessage id='storage_document.storage_income'/>{(type == INCOME || type == TRANSFER || type == RESERVE) && requiredField()}
+                        <FormattedMessage id='storage_document.storage_income'/>{(type == INCOME || type == TRANSFER) && requiredField()}
                         <Select
-                            disabled={type == EXPENSE || type == ORDER || type == RESERVE || disabled}
+                            disabled={
+                                type == EXPENSE ||
+                                type == ORDER || 
+                                documentType == RESERVE ||
+                                documentType == TOOL ||
+                                documentType == REPAIR_AREA ||
+                                disabled
+                            }
                             value={incomeWarehouseId}
                             style={disabledSelectText}
                             onSelect={(value)=>{
@@ -526,7 +583,7 @@ class StorageDocumentForm extends Component {
                         editKey={editKey}
                         editDocProduct={editDocProduct}
                         isIncome={type == INCOME}
-                        priceDisabled={type == TRANSFER || type == RESERVE || documentType == OWN_CONSUMPTION}
+                        priceDisabled={type == TRANSFER || documentType == OWN_CONSUMPTION}
                         warehouses={warehouses}
                         warehouseId={incomeWarehouseId || expenseWarehouseId}
                         warning={warning}
@@ -1184,7 +1241,6 @@ class AddProductModal extends React.Component {
     selectProduct = (productId) => {
         const { storageBalance } = this.state;
         const product = this.state.storageProducts.find((product)=>product.id == productId);
-        console.log(product)
         if(product) {
             storageBalance[0].count = product.countInWarehouses;
             storageBalance[1].count = product.reservedCount;

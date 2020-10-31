@@ -28,7 +28,7 @@ import { MODALS, setModal } from 'core/modals/duck';
 import Styles from './styles.m.css';
 import { value } from 'numeral';
 const Option = Select.Option;
-const { confirm } = Modal;
+const { confirm, warning } = Modal;
 
 @injectIntl
 class DetailsTable extends Component {
@@ -291,6 +291,16 @@ class DetailsTable extends Component {
                             mainWarehouseId={this.state.mainWarehouseId}
                             orderId={this.props.orderId}
                             brands={ this.props.allDetails.brands }
+                            onClick={()=>{
+                                this.setState({
+                                    fetched: false,
+                                })
+                            }}
+                            onExit={()=>{
+                                this.setState({
+                                    fetched: true,
+                                })
+                            }}
                         />
                     );
                 },
@@ -601,9 +611,6 @@ class DetailsTable extends Component {
     }
 
     updateDataSource() {
-        this.setState({
-            fetched: false,
-        })
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -642,6 +649,12 @@ class DetailsTable extends Component {
     }
 
     async updateDetail(key, detail) {
+        if(this.state.fetched) {
+            this.setState({
+                fetched: false,
+            })
+        }
+
         this.state.dataSource[ key ] = detail;
         const newDetail = detail.productId ? 
         {
@@ -1180,7 +1193,7 @@ class ReserveButton extends React.Component {
     }
 
     reserveProduct = () => {
-        const { detail, setModal, updateDetail, orderId, reserveWarehouseId, mainWarehouseId } = this.props;
+        const { detail, setModal, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, onExit, intl:{formatMessage} } = this.props;
         const data = {
             status: "DONE",
             documentType: "TRANSFER",
@@ -1221,8 +1234,9 @@ class ReserveButton extends React.Component {
             if(response.created) {
                 notification.success({
                     message: detail.reserved ? 
-                        `Отрезервировано ${data.docProducts[0].quantity} товаров` :
-                        `Зарезервировано ${data.docProducts[0].quantity} товаров со склада ${detail.reservedFromWarehouseName}`,
+                        formatMessage({id: 'storage_document.notification.reserve_canceled'}) :
+                        formatMessage({id: 'storage_document.notification.reserved'}, {count: data.docProducts[0].quantity}),
+                    description: `${formatMessage({id: 'storage'})} ${detail.reservedFromWarehouseName}`,
                 });
                 detail.reservedCount = detail.reserved ? 0 : detail.count;
                 if(!detail.reserved) {
@@ -1234,8 +1248,9 @@ class ReserveButton extends React.Component {
             else {
                 const availableCount = response.notAvailableProducts[0].available;
                 confirm({
-                    title: 'На складе недостаточно свободных товаров, продолжить?',
-                    content: `Доступное количество товара на складе ${detail.reservedFromWarehouseName} - ${availableCount}`,
+                    title: `${formatMessage({id: 'storage_document.error.available'})} ${formatMessage({id: 'storage_document.warning.continue'})}`,
+                    content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} ${formatMessage({id: 'pc'})}`,
+                    okButtonProps: {disabled: !availableCount},
                     onOk() {
                         data.docProducts[0].quantity = availableCount;
                         fetch(url, {
@@ -1263,24 +1278,29 @@ class ReserveButton extends React.Component {
                                     message: `Зарезервировано ${data.docProducts[0].quantity} товаров со склада ${detail.reservedFromWarehouseName}`,
                                 });
                             }
+                            onExit();
                         })
                         .catch(function(error) {
                             console.log('error', error);
                         });
                     },
+                    onCancel() {
+                        onExit();
+                    }
                 });
             }
         })
         .catch(function(error) {
             console.log('error', error);
+            onExit();
         });
     }
 
     addProduct = () => {
-        const { detail, setModal, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, brands } = this.props;
+        const { detail, setModal, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, brands, intl:{formatMessage} } = this.props;
         var that = this;
         confirm({
-            title: this.props.intl.formatMessage({id: 'storage_document.error.product_not_found'}),
+            title: formatMessage({id: 'storage_document.error.product_not_found'}),
             onOk() {
                 const postData = {
                     name: detail.detailName,
@@ -1330,7 +1350,7 @@ class ReserveButton extends React.Component {
     }
 
     render() {
-        const { detail, updateDetail, disabled, reserveWarehouseId, orderId } = this.props;
+        const { detail, updateDetail, disabled, reserveWarehouseId, orderId, onClick } = this.props;
         return (
             <div>
                 {detail.isFromStock ? 
@@ -1339,7 +1359,10 @@ class ReserveButton extends React.Component {
                             color: detail.reserved ? 'var(--green)' : null,
                         }}
                         disabled={disabled}
-                        onClick={this.reserveProduct}
+                        onClick={()=>{
+                            onClick();
+                            this.reserveProduct();
+                        }}
                     > 
                         <p>{detail.reservedCount || 0} <FormattedMessage id='pc'/></p>
                     </Button> :

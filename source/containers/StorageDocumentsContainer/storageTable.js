@@ -29,7 +29,7 @@ class StorageTable extends Component {
     }
 
     render() {
-        const { documentsList, location, listType, onSearch } = this.props;
+        const { documentsList, location, listType, onSearch, docType } = this.props;
         const { formatMessage } = this.props.intl;
 
         const columns = columnsConfig(
@@ -58,7 +58,7 @@ class StorageTable extends Component {
                         style={{
                             width: '30%'
                         }}
-                        disabled={ listType == 'INCOME' }
+                        disabled={ docType == 'INCOME' || docType == 'ORDER' }
                         placeholder={formatMessage({id:'storage_document.storage_expenses'})}
                         onChange={(event)=>{
                             this.props.documentWarehouseFilter([
@@ -72,7 +72,7 @@ class StorageTable extends Component {
                         style={{
                             width: '30%'
                         }}
-                        disabled={ listType == 'EXPENSE' }
+                        disabled={ docType == 'EXPENSE' || docType == 'ORDER' }
                         placeholder={formatMessage({id:'storage_document.storage_income'})}
                         onChange={(event)=>{
                             this.props.documentWarehouseFilter([
