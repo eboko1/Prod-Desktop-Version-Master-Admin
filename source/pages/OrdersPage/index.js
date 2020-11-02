@@ -108,7 +108,6 @@ export default class OrdersPage extends Component {
             funelWithFiltersShadow:    [ 'success', 'cancel' ].indexOf(status) < 0,
             funelMobile:               isMobile,
         });
-        console.log(this);
         return (
             <Layout
                 paper={ false }

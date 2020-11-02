@@ -84,19 +84,20 @@ export class OrderForm extends React.PureComponent {
             labors: [],
             details: [],
         };
-        this._isMounted = false;
-        this.orderDetails = [...this.props.orderDetails];
-        this.orderServices = [...this.props.orderServices];
-        this.totalSumWithTax = this.props.order.totalSumWithTax;
-        this._reloadOrderForm = this._reloadOrderForm.bind(this);
-        this._updateDuration = this._updateDuration.bind(this);
+        this.orderDetails = [...props.orderDetails];
+        this.orderServices = [...props.orderServices];
+        this.totalSumWithTax = props.order.totalSumWithTax;
+        //this._reloadOrderForm = this._reloadOrderForm.bind(this);
+        //this._updateDuration = this._updateDuration.bind(this);
     }
+
+    _isMounted = false;
 
     _fetchLaborsAndDetails = async () => {
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
         let url = __API_URL__ + `/labors`;
-        fetch(url, {
+        /*fetch(url, {
             method: "GET",
             headers: {
                 Authorization: token,
@@ -123,7 +124,7 @@ export class OrderForm extends React.PureComponent {
         })
         .catch(function(error) {
             console.log("error", error);
-        });
+        });*/
 
         url = __API_URL__ + `/store_groups`;
         fetch(url, {
@@ -155,7 +156,7 @@ export class OrderForm extends React.PureComponent {
         });
     };
 
-    _reloadOrderForm() {
+    _reloadOrderForm = () => {
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
         let url = API_URL;
@@ -188,7 +189,7 @@ export class OrderForm extends React.PureComponent {
             });
     }
 
-    _updateDuration() {
+    _updateDuration = () => {
         let hours = 0;
         this.orderServices.map(elem => {
             hours += elem.count;
@@ -254,11 +255,11 @@ export class OrderForm extends React.PureComponent {
 
     componentDidMount() {
         // TODO in order to fix late getFieldDecorator invoke for services
+        //this.setState({ initialized: true });
         this._isMounted = true;
-        if ((!this.labors || !this.details) && this._isMounted) {
+        if (this._isMounted && this.props.allDetails.brands.length) {
             this._fetchLaborsAndDetails();
         }
-        this.setState({ initialized: true });
     }
 
     componentWillUnmount() {
@@ -552,11 +553,10 @@ export class OrderForm extends React.PureComponent {
     }
 
     _renderTabs = formFieldsValues => {
-        if (!this.labors || !this.details) return;
+        if (!this.details) return;
         const {
             form,
             orderTasks,
-            allServices,
             schedule,
             stationLoads,
             orderId,
@@ -638,7 +638,7 @@ export class OrderForm extends React.PureComponent {
             orderServices,
             orderDetails,
             orderDiagnostic,
-            // allServices,
+            allServices,
             allDetails,
             employees,
             selectedClient,
@@ -719,9 +719,9 @@ export class OrderForm extends React.PureComponent {
                 orderServices={this.orderServices}
                 orderDetails={this.orderDetails}
                 orderDiagnostic={orderDiagnostic}
-                allServices={allServices}
+                labors={allServices}
                 allDetails={allDetails}
-                labors={this.labors}
+                //labors={this.labors}
                 details={this.details}
                 employees={employees}
                 selectedClient={selectedClient}

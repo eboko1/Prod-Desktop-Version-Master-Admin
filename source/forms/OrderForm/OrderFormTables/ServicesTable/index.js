@@ -69,7 +69,8 @@ class ServicesTable extends Component {
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {
-                    const confirmed = elem.agreement.toLowerCase();
+                    const confirmed = elem.agreement.toLowerCase(),
+                          backgroundColor = confirmed != 'undefined' || this.props.disabled ? 'black' : 'white';
 
                     return (
                         <div
@@ -95,11 +96,7 @@ class ServicesTable extends Component {
                                     style={ {
                                         width:           18,
                                         height:          18,
-                                        backgroundColor:
-                                            confirmed != 'undefined' ||
-                                            this.props.disabled
-                                                ? 'black'
-                                                : 'white',
+                                        backgroundColor: backgroundColor,
                                         mask:       `url(${images.wrenchIcon}) no-repeat center / contain`,
                                         WebkitMask: `url(${images.wrenchIcon}) no-repeat center / contain`,
                                         transform:  'scale(-1, 1)',
@@ -174,7 +171,7 @@ class ServicesTable extends Component {
                         elem => elem.id == data,
                     );
 
-                    return data ? 
+                    return employee ? 
                         `${employee.name} ${employee.surname}`
                         : (
                             <FormattedMessage id='long_dash' />
@@ -192,17 +189,14 @@ class ServicesTable extends Component {
                 render:    data => {
                     let strVal = Number(data).toFixed(1);
 
-                    return (
+                    return data ? 
+                    (
                         <span>
-                            { data ? (
-                                <>
-                                    { strVal }{ ' ' }
-                                    <FormattedMessage id='order_form_table.hours_short' />
-                                </>
-                            ) : (
-                                <FormattedMessage id='long_dash' />
-                            ) }
+                            { strVal }{ ' ' }
+                            <FormattedMessage id='order_form_table.hours_short' />
                         </span>
+                    ) : (
+                        <FormattedMessage id='long_dash' />
                     );
                 },
             },
@@ -218,7 +212,7 @@ class ServicesTable extends Component {
                     let strVal = Number(data).toFixed(2);
 
                     return (
-                        <span е>
+                        <span>
                             { data ? 
                                 `${strVal}`.replace(
                                     /\B(?=(\d{3})+(?!\d))/g,

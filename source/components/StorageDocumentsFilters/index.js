@@ -189,6 +189,7 @@ export class StorageDateFilter extends React.Component {
                         }}
                     >
                         <Dropdown
+                            className={Styles.datePickerButton}
                             overlay={
                                 <Menu>
                                     <Menu.Item
@@ -211,6 +212,16 @@ export class StorageDateFilter extends React.Component {
                                     >
                                         <FormattedMessage id='datepicker.yesterday' />
                                     </Menu.Item>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                            onDateChange([
+                                                moment().add(1, 'day'),
+                                                moment().add(1, 'day'),
+                                            ]);
+                                        }}
+                                    >
+                                        <FormattedMessage id='datepicker.tomorrow' />
+                                    </Menu.Item>
                                 </Menu>
                             }
                         >
@@ -219,13 +230,14 @@ export class StorageDateFilter extends React.Component {
                             </Button>
                         </Dropdown>
                         <Dropdown
+                            className={Styles.datePickerButton}
                             overlay={
                                 <Menu>
                                     <Menu.Item
                                         onClick={()=>{
                                             onDateChange([
                                                 moment().startOf('week'),
-                                                moment(new Date(), dateFormat)
+                                                moment().endOf('week'),
                                             ]);
                                         }}
                                     >
@@ -241,6 +253,16 @@ export class StorageDateFilter extends React.Component {
                                     >
                                         <FormattedMessage id='datepicker.previous' />
                                     </Menu.Item>
+                                    <Menu.Item
+                                        onClick={()=>{
+                                            onDateChange([
+                                                moment().startOf('week').add(1, 'week'),
+                                                moment().endOf('week').add(1, 'week')
+                                            ]);
+                                        }}
+                                    >
+                                        <FormattedMessage id='datepicker.next' />
+                                    </Menu.Item>
                                 </Menu>
                             }
                         >
@@ -249,13 +271,14 @@ export class StorageDateFilter extends React.Component {
                             </Button>
                         </Dropdown>
                         <Dropdown
+                            className={Styles.datePickerButton}
                             overlay={
                                 <Menu>
                                     <Menu.Item
                                         onClick={()=>{
                                             onDateChange([
                                                 moment().startOf('month'),
-                                                moment(new Date(), dateFormat)
+                                                moment().endOf('month'),
                                             ]);
                                         }}
                                     >
@@ -299,13 +322,14 @@ export class StorageDateFilter extends React.Component {
                             </Button>
                         </Dropdown>
                         <Dropdown
+                            className={Styles.datePickerButton}
                             overlay={
                                 <Menu>
                                     <Menu.Item
                                         onClick={()=>{
                                             onDateChange([
                                                 moment().startOf('quarter'),
-                                                moment(new Date(), dateFormat)
+                                                moment().endOf('quarter'),
                                             ]);
                                         }}
                                     >
@@ -349,13 +373,14 @@ export class StorageDateFilter extends React.Component {
                             </Button>
                         </Dropdown>
                         <Dropdown
+                            className={Styles.datePickerButton}
                             overlay={
                                 <Menu>
                                     <Menu.Item
                                         onClick={()=>{
                                             onDateChange([
                                                 moment().startOf('year'),
-                                                moment(new Date(), dateFormat)
+                                                moment().endOf('year'),
                                             ]);
                                         }}
                                     >

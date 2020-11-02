@@ -37,35 +37,30 @@ class TecDocInfoModal extends React.Component{
                 title:     <FormattedMessage id="info_modal.parameter" />,
                 key:       'itemmptext',
                 dataIndex: 'itemmptext',
-                width:     '20%',
                 
             },
             {
                 title:     <FormattedMessage id="info_modal.value" />,
                 key:       'valuetext',
                 dataIndex: 'valuetext',
-                width:     '15%',
                 
             },
             {
                 title:     <FormattedMessage id="info_modal.units" />,
                 key:       'quantitytext',
                 dataIndex: 'quantitytext',
-                width:     '10%',
                 
             },
             {
                 title:      `${this.props.intl.formatMessage({ id: 'comment' })} 1`,
                 key:       'qualcoltext',
                 dataIndex: 'qualcoltext',
-                width:     '15%',
                 
             },
             {
                 title:     `${this.props.intl.formatMessage({ id: 'comment' })} 2`,
                 key:       'addtext',
                 dataIndex: 'addtext',
-                width:     '15%',
                 
             },
         ];

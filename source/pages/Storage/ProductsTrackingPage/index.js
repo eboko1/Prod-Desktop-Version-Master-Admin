@@ -23,6 +23,35 @@ import { media } from 'theme/media';
 
 // own
 
+const getWarehouses = () => {
+    var that = this;
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = __API_URL__ + '/warehouses';
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': token,
+        }
+    })
+    .then(function (response) {
+        if (response.status !== 200) {
+        return Promise.reject(new Error(response.statusText))
+        }
+        return Promise.resolve(response)
+    })
+    .then(function (response) {
+        return response.json()
+    })
+    .then(function (data) {
+        that.setState({
+            warehouses: data,
+        })
+    })
+    .catch(function (error) {
+        console.log('error', error)
+    });
+}
+
 const mapStateToProps = state => ({
     collapsed: state.ui.collapsed,
     filters:   selectTrackingFilters(state),
@@ -51,14 +80,14 @@ export const ProductsTrackingPage = withRouter(
 
         const renderFilters = (
             <Filters>
-                <StorageDateFilter
-                    dateRange={[moment(filters.startDate), moment(filters.endDate)]}
-                    onDateChange={ setDaterange }
-                />
                 <ResponsiveView view={ { min: BREAKPOINTS.xxl.min, max: null } }>
                     <StoreProductsSelect
                         setFilters={ props.setTrackingFilters }
                         filters={ props.filters }
+                    />
+                    <StorageDateFilter
+                        dateRange={[moment(filters.startDate), moment(filters.endDate)]}
+                        onDateChange={ setDaterange }
                     />
                 </ResponsiveView>
             </Filters>
@@ -75,6 +104,10 @@ export const ProductsTrackingPage = withRouter(
                         <StoreProductsSelect
                             setFilters={ props.setTrackingFilters }
                             filters={ props.filters }
+                        />
+                        <StorageDateFilter
+                            dateRange={[moment(filters.startDate), moment(filters.endDate)]}
+                            onDateChange={ setDaterange }
                         />
                     </FiltersSubPanel>
                 </ResponsiveView>

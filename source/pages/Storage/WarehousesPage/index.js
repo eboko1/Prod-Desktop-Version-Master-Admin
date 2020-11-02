@@ -75,7 +75,7 @@ class WarehousesPage extends Component {
                     return (
                         data ? 
                         <Icon type='check' style={{color: 'var(--green)'}}/> :
-                        <Icon type='cross' style={{color: 'var(--warning)'}}/>
+                        <Icon type='close' style={{color: 'var(--warning)'}}/>
                     )
                 }
             },
