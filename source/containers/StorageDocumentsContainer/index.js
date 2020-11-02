@@ -30,18 +30,26 @@ const INCOME = 'INCOME',
       DONE = 'DONE',
       MAIN = 'MAIN',
       TOOL = 'TOOL',
-      REPAIR_AREA= 'REPAIR_AREA';
+      REPAIR_AREA= 'REPAIR_AREA',
+      STOCK = "STOCK";
       
 const dateFormat = 'DD.MM.YYYY';
-const fetchStorage = (type, docType, action) => {
+const fetchStorage = (type, action) => {
     let token = localStorage.getItem('_my.carbook.pro_token');
-    let url = __API_URL__ + `/store_docs?`;
-    if(type == ORDER) {
-        url += `context=${type}`;
-    }
-    else {
-        url += `type=${type}&context=STOCK`
-        if(docType) url += `&documentType=${docType}`
+    let url = __API_URL__ + `/store_docs`;
+    switch(type) {
+        case INCOME:
+            url += `?types=["${INCOME}"]&documentTypes=["${SUPPLIER}","${CLIENT}","${INVENTORY}"]&contexts=["${STOCK}"]`
+            break;
+        case EXPENSE:
+            url += `?types=["${EXPENSE}"]&documentTypes=["${SUPPLIER}","${CLIENT}","${INVENTORY}","${OWN_CONSUMPTION}"]&contexts=["${STOCK}"]`
+            break;
+        case TRANSFER:
+            url += `?types=["${EXPENSE}"]&documentTypes=["${TRANSFER}"]&contexts=["${STOCK}"]`
+            break;
+        case ORDER:
+            url += `?contexts=["${ORDER}"]`
+            break;
     }
     
 
@@ -63,9 +71,6 @@ const fetchStorage = (type, docType, action) => {
     })
     .then(function(data) {
         console.log(data);
-        if(docType != TRANSFER) {
-            data.list = data.list.filter((elem)=>elem.documentType != TRANSFER);
-        }
         action(data);
     })
     .catch(function(error) {
@@ -107,7 +112,7 @@ class StorageDocumentsContainer extends Component {
         const thisYear = new Date('1/1/' + new Date().getFullYear());
         const dateRange = [ moment(thisYear, dateFormat), moment(new Date(), dateFormat) ];
 
-        fetchStorage(this.props.listType, this.props.docType, data => {
+        fetchStorage(this.props.listType, data => {
             data.list.map((elem, i) => {
                 elem.key = i;
             });
@@ -130,7 +135,7 @@ class StorageDocumentsContainer extends Component {
             const defaultDateRange = [ moment(thisYear, dateFormat), moment(new Date(), dateFormat) ];
             dateRange = defaultDateRange;
         }
-        fetchStorage(this.props.listType, this.props.docType, data => {
+        fetchStorage(this.props.listType, data => {
             data.list.map((elem, i) => {
                 elem.key = i;
             });

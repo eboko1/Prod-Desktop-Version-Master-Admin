@@ -47,7 +47,8 @@ const INCOME = 'INCOME',
       DONE = 'DONE',
       MAIN = 'MAIN',
       TOOL = 'TOOL',
-      REPAIR_AREA= 'REPAIR_AREA';
+      REPAIR_AREA= 'REPAIR_AREA',
+      STOCK = "STOCK";
 
 const typeToDocumentType = {
     income: {
