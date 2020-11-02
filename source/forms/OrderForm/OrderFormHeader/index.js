@@ -215,9 +215,13 @@ export default class OrderFormHeader extends Component {
 
     _getBeginDatetimeConfig() {
         const { schedule } = this.props;
-        const { disabledDate, beginTime } = getDateTimeConfig(void 0, schedule);
+        const { disabledDate } = getDateTimeConfig(void 0, schedule);
+        const { beginTime } = getDateTimeConfig(void 0, schedule) || moment().add( (30 - (moment().minute() % 30)) , "minutes").format('YYYY-MM-DD HH:00');
 
-        return { disabledDate, beginTime };
+        return {
+            disabledDate,
+            beginTime,
+        };
     }
 
     _getDeliveryDatetimeConfig() {
