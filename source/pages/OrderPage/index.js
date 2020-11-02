@@ -781,7 +781,6 @@ class OrderPage extends Component {
                         orderHistory={ this.props.orderHistory }
                         orderId={ id }
                         orderDiagnostic={ diagnosis }
-                        allService={ this.props.allServices }
                         allDetails={ this.props.allDetails }
                     />
                 </MobileView>
@@ -799,7 +798,6 @@ class OrderPage extends Component {
                         modal={ modal }
                         orderCalls={ this.props.orderCalls }
                         orderDiagnostic = { diagnosis }
-                        allService={ this.props.allServices }
                         allDetails={ this.props.allDetails }
                         employees={ this.props.employees }
                         filteredDetails={ this.props.filteredDetails }

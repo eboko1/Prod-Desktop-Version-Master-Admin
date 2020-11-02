@@ -22,7 +22,7 @@ export class DecoratedTextArea extends React.PureComponent {
             field,
             disabled,
             placeholder,
-            autosize,
+            autoSize,
             initialValue,
         } = this.props;
 
@@ -33,7 +33,7 @@ export class DecoratedTextArea extends React.PureComponent {
             <TextArea
                 disabled={ disabled }
                 placeholder={ placeholder }
-                autosize={ autosize } //{ minRows: 2, maxRows: 6 }
+                autoSize={ autoSize } //{ minRows: 2, maxRows: 6 }
             />,
         );
 

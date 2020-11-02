@@ -623,7 +623,7 @@ export default class OrderFormBody extends Component {
                     placeholder={this._getLocalization(
                         "add_order_form.client_comments",
                     )}
-                    autosize={this._recommendationAutoSize}
+                    autoSize={this._recommendationAutoSize}
                 />
                 {this.state.recommendationStyles.prevRecommendation && (
                     <DecoratedTextArea
@@ -645,7 +645,7 @@ export default class OrderFormBody extends Component {
                         placeholder={this._getLocalization(
                             "add_order_form.client_comments",
                         )}
-                        autosize={this._prevRecommendationAutoSize}
+                        autoSize={this._prevRecommendationAutoSize}
                     />
                 )}
             </div>

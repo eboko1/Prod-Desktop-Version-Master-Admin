@@ -124,16 +124,16 @@ export function columnsConfig(
 
     const counterpartyCol = {
         title:     <FormattedMessage id='storage_document.counterparty' />,
-        dataIndex: 'businessSupplier',
         key:       'businessSupplier',
         width:     80,
         render:    (_, document) => (
             <div>
-                { document.counterpartBusinessSupplierId
-                    ? document.counterpartBusinessSupplierName
-                    : document.clientName || (
-                        <FormattedMessage id='long_dash' />
-                    ) }
+                {
+                    document.counterpartEmployeeName ||
+                    document.counterpartBusinessSupplierName ||
+                    document.counterpartClientName ||
+                    <FormattedMessage id='long_dash' />
+                }
             </div>
         ),
     };

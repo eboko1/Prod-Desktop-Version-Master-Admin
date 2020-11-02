@@ -9,4 +9,9 @@
 
 .filterDatePicker {
     margin: 0 15px 0 0;
+    width: fit-content;
+}
+
+.datePickerButton {
+	flex: 1 1 auto;
 }

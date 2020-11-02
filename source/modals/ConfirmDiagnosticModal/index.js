@@ -556,9 +556,6 @@ class ConfirmDiagnosticModal extends React.Component{
                 commentary: {commentary: "", positions: []},
                 checked: true,
             });
-            this.setState({
-                update: true,
-            })
         }
         else if(this.state.servicesList[this.state.servicesList.length-1].name != null) {
             this.state.servicesList.push({
@@ -569,9 +566,6 @@ class ConfirmDiagnosticModal extends React.Component{
                 commentary: {commentary: "", positions: [], problems: []},
                 checked: true
             });
-            this.setState({
-                update: true,
-            })
         }
     }
 
@@ -605,7 +599,6 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     getServicesContent() {
-        this.addNewServicesRow();
         let tmpServicesArray = [...this.state.servicesList];
         tmpServicesArray = tmpServicesArray.map((data, index)=>
             <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null} key={index}>
@@ -713,9 +706,6 @@ class ConfirmDiagnosticModal extends React.Component{
                     commentary: {commentary: "", positions: []},
                 },
             );
-            this.setState({
-                update: true,
-            })
         }
         else if(this.state.detailsList[this.state.detailsList.length-1].name != null) {
             this.state.detailsList.push(
@@ -728,9 +718,6 @@ class ConfirmDiagnosticModal extends React.Component{
                     commentary: {commentary: "", positions: []},
                 },
             );
-            this.setState({
-                update: true,
-            })
         }
     }
 
@@ -762,7 +749,6 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     getDetailsContent() {
-        this.addNewDetailsRow();
         let tmpDetailsArray = [...this.state.detailsList];
         tmpDetailsArray = tmpDetailsArray.map((data, index)=>
             <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null} key={index}>
@@ -851,6 +837,8 @@ class ConfirmDiagnosticModal extends React.Component{
     render() {
         const { visible, autoConfirmed } = this.state;
         const { isMobile, disabled, intl: {formatMessage} } = this.props;
+        this.addNewServicesRow();
+        this.addNewDetailsRow();
         
         const diagnosticComponents = this.getDiagnosticContent(),
               servicesComponents = this.getServicesContent(),

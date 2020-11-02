@@ -256,6 +256,7 @@ class StorageDocumentsContainer extends Component {
     }
 
     render() {
+        console.log(this);
         const { dateRange, filtredDocumentsList, isFiltred } = this.state;
 
         return (

@@ -71,7 +71,7 @@ export const DecoratedInput = memo(
 
         return formItem ? (
             <FormItem
-                hiddenField={ hiddenField }
+                hiddenfield={ hiddenField }
                 label={ label }
                 hasFeedback={ hasFeedback }
                 colon={ colon }
