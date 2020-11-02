@@ -140,7 +140,14 @@ export default class OrdersPage extends Component {
                                     <FormattedMessage id='orders-page.invite_to_service' />
                                 </Button>
                             ) }
-                            <Link to={ book.addOrder }>
+                            <Link
+                                to={ {
+                                    pathname: book.addOrder,
+                                    state:    {
+                                        beginDatetime: moment().add( (30 - (moment().minute() % 30)) , "minutes").format('YYYY-MM-DD HH:00'),
+                                    },
+                                } }
+                            >
                                 <Button
                                     type='primary'
                                     disabled={ isForbidden(

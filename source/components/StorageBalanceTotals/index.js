@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { DatePicker, Skeleton, Checkbox } from 'antd';
+import { DatePicker, Skeleton, Checkbox, Select } from 'antd';
 import moment from 'moment';
 import styled from 'styled-components';
 import _ from 'lodash';
@@ -14,6 +14,7 @@ import {
     setStoreBalanceFilters,
 } from 'core/storage/storeBalance';
 
+import { WarehouseSelect } from 'components';
 import { StoreProductsSelect } from 'forms/_formkit';
 import { numeralFormatter } from 'utils';
 
@@ -55,6 +56,9 @@ export const StorageBalanceTotals = connect(mapStateToProps, {
                         filters={ props.filters }
                     />
                 </FilterSpace>
+                <WarehouseSelect
+                    style={{margin: '0 0 0 24px'}}
+                />
             </FiltersRow>
             <DataRow
                 style={{
