@@ -196,6 +196,7 @@ export class StorageDateFilter extends React.Component {
             <div className={ Styles.filterDatePicker }>
                 <RangePicker
                     allowClear={ false }
+                    style={{width: '100%'}}
                     value={ this.verifyDate(dateRange) }
                     format={ dateFormat }
                     onChange={ newDate => {

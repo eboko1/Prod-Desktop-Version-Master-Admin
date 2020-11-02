@@ -35,9 +35,9 @@
         "storage_document.docType.ORDER.SUPPLIER": "Order to supplier",
         "storage_document.docType.ORDER.ADJUSTMENT": "Order Correction",
         "storage_document.docType.ORDER.ORDERINCOME": "Incoming by order",
-        "storage_document.docType.EXPENSE.TRANSFER": "Move",
+        "storage_document.docType.EXPENSE.TRANSFER": "Transfer",
         "storage_document.docType.TRANSFER.RESERVE": "Reserve",
-        "storage_document.docType.TRANSFER.TRANSFER": "Move",
+        "storage_document.docType.TRANSFER.TRANSFER": "Transfer",
         "storage_document.docType.TRANSFER.TOOL": "Tool issuance",
         "storage_document.docType.TRANSFER.REPAIR_AREA": "Tool return",
 
