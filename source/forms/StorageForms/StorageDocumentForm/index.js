@@ -39,7 +39,10 @@ const INCOME = 'INCOME',
       ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
-      DONE = 'DONE';
+      DONE = 'DONE',
+      MAIN = 'MAIN',
+      TOOL = 'TOOL',
+      REPAIR_AREA= 'REPAIR_AREA';
 
 @withReduxForm({
     name: "storageDocumentForm",
@@ -108,12 +111,17 @@ class StorageDocumentForm extends Component {
             typeToDocumentType,
             warehouses,
             counterpartSupplier,
+            employees,
             brands,
             deleteDocProduct,
             editDocProduct,
             clientList,
             loading,
             user,
+            mainWarehouseId,
+            reserveWarehouseId,
+            toolWarehouseId,
+            repairAreaWarehouseId,
         } = this.props;
 
         const {
@@ -130,7 +138,7 @@ class StorageDocumentForm extends Component {
         } = this.props.formData;
         const dateFormat = 'DD.MM.YYYY';
         const disabled = status == DONE;
-        const onlySum = type == TRANSFER || type == RESERVE || type == ORDER || documentType == OWN_CONSUMPTION || documentType == INVENTORY;
+        const onlySum = type == TRANSFER || type == ORDER || documentType == OWN_CONSUMPTION || documentType == INVENTORY;
         
         return (
             <div>
@@ -158,20 +166,20 @@ class StorageDocumentForm extends Component {
                             onChange={(value)=>{
                                 if(value == INCOME || value == ORDER) {
                                     updateFormData({
-                                        incomeWarehouseId: warehouses[0].id,
+                                        incomeWarehouseId: mainWarehouseId,
                                         expenseWarehouseId: undefined,
                                     })
                                 }
                                 else if(value == EXPENSE) {
                                     updateFormData({
                                         incomeWarehouseId: undefined,
-                                        expenseWarehouseId: warehouses[0].id,
+                                        expenseWarehouseId: mainWarehouseId,
                                     })
                                 }
-                                else if(value == TRANSFER || value == RESERVE) {
+                                else if(value == TRANSFER) {
                                     updateFormData({
-                                        incomeWarehouseId: warehouses[1].id,
-                                        expenseWarehouseId: warehouses[0].id,
+                                        incomeWarehouseId: mainWarehouseId,
+                                        expenseWarehouseId: reserveWarehouseId,
                                     })
                                 }
 
@@ -198,18 +206,12 @@ class StorageDocumentForm extends Component {
                                 <FormattedMessage id='storage.TRANSFER'/>
                             </Option>
                             <Option
-                                value={RESERVE}
-                            >
-                                <FormattedMessage id='storage.RESERVE'/>
-                            </Option>
-                            <Option
                                 value={ORDER}
                             >
                                 <FormattedMessage id='storage.ORDER'/>
                             </Option>
                         </Select>
                     </div>
-                    {(type == ORDER || type== EXPENSE || type== INCOME) &&
                     <div>
                         <FormattedMessage id='storage_document.document_type'/>{requiredField()}
                         <Select
@@ -217,6 +219,27 @@ class StorageDocumentForm extends Component {
                             value={documentType}
                             style={disabledSelectText}
                             onChange={(value)=>{
+                                if(value == TRANSFER) {
+                                    updateFormData({
+                                        incomeWarehouseId: mainWarehouseId,
+                                        expenseWarehouseId: reserveWarehouseId,
+                                    })
+                                } else if(value == RESERVE) {
+                                    updateFormData({
+                                        incomeWarehouseId: reserveWarehouseId,
+                                        expenseWarehouseId: mainWarehouseId,
+                                    })
+                                } else if (value == REPAIR_AREA) {
+                                    updateFormData({
+                                        incomeWarehouseId: toolWarehouseId,
+                                        expenseWarehouseId: repairAreaWarehouseId,
+                                    })
+                                } else if (value == TOOL) {
+                                    updateFormData({
+                                        incomeWarehouseId: repairAreaWarehouseId,
+                                        expenseWarehouseId: toolWarehouseId,
+                                    })
+                                }
                                 updateFormData({
                                     documentType: value,
                                     counterpartId: undefined,
@@ -224,23 +247,33 @@ class StorageDocumentForm extends Component {
                             }}
                         >
                             {type && 
-                                typeToDocumentType[type.toLowerCase()].documentType.map((counterpart, i)=>{
+                                typeToDocumentType[type.toLowerCase()].documentType.map((documentType, i)=>{
                                     return (
                                         <Option
-                                            value={counterpart}
+                                            value={documentType}
                                             key={i}
                                         >
-                                            <FormattedMessage id={`storage_document.docType.${type}.${counterpart}`}/>
+                                            <FormattedMessage id={`storage_document.docType.${type}.${documentType}`}/>
                                         </Option>
                                     )
                                 })
                             }
                         </Select>
-                    </div>}
-                    {(type == INCOME || type == EXPENSE || type == ORDER) &&
-                    (documentType == CLIENT || documentType == SUPPLIER || documentType == ADJUSTMENT || documentType == ORDERINCOME) && 
+                    </div>
+                    {(
+                        documentType == CLIENT ||
+                        documentType == SUPPLIER ||
+                        documentType == ADJUSTMENT ||
+                        documentType == ORDERINCOME ||
+                        documentType == TOOL ||
+                        documentType == REPAIR_AREA) 
+                    && 
                     <div style={{position: 'relative'}}>
-                        <FormattedMessage id={`storage.${documentType != ADJUSTMENT && documentType != ORDERINCOME ? documentType.toLowerCase() : 'supplier'}`}/>{requiredField()}
+                        <FormattedMessage id={`storage.${
+                            documentType == ORDERINCOME || documentType == ADJUSTMENT ? 'supplier' :
+                            documentType == TOOL || documentType == REPAIR_AREA ? 'employee' :
+                            documentType.toLowerCase()}`
+                        }/>{requiredField()}
                         <Select
                             showSearch
                             disabled={disabled || status==NEW}
@@ -283,6 +316,18 @@ class StorageDocumentForm extends Component {
                                     </Option>
                                 )
                             })}
+                            {(documentType == TOOL || documentType == REPAIR_AREA) && 
+                                employees.map((employee, i)=>{
+                                    return (
+                                        <Option
+                                            key={i}
+                                            value={employee.id}
+                                        >
+                                            {`${employee.surname || ""} ${employee.name || ""} ${employee.phone}`}
+                                        </Option>
+                                    )
+                                })
+                            }
                             {documentType == CLIENT ?
                             clientSearchValue.length > 2 ?
                             clientList.map((client, key)=>{
@@ -311,9 +356,14 @@ class StorageDocumentForm extends Component {
                     }}
                 >
                     <div>
-                        <FormattedMessage id='storage_document.storage_expenses'/>{(type == EXPENSE || type == TRANSFER || type == RESERVE) && requiredField()}
+                        <FormattedMessage id='storage_document.storage_expenses'/>{(type == EXPENSE || type == TRANSFER) && requiredField()}
                         <Select
-                            disabled={type == INCOME || type == ORDER || disabled}
+                            disabled={
+                                type == INCOME || 
+                                type == ORDER || 
+                                documentType == TOOL ||
+                                documentType == REPAIR_AREA ||
+                                disabled}
                             value={expenseWarehouseId}
                             style={disabledSelectText}
                             onSelect={(value)=>{
@@ -335,9 +385,16 @@ class StorageDocumentForm extends Component {
                         </Select>
                     </div>
                     <div>
-                        <FormattedMessage id='storage_document.storage_income'/>{(type == INCOME || type == TRANSFER || type == RESERVE) && requiredField()}
+                        <FormattedMessage id='storage_document.storage_income'/>{(type == INCOME || type == TRANSFER) && requiredField()}
                         <Select
-                            disabled={type == EXPENSE || type == ORDER || type == RESERVE || disabled}
+                            disabled={
+                                type == EXPENSE ||
+                                type == ORDER || 
+                                documentType == RESERVE ||
+                                documentType == TOOL ||
+                                documentType == REPAIR_AREA ||
+                                disabled
+                            }
                             value={incomeWarehouseId}
                             style={disabledSelectText}
                             onSelect={(value)=>{
@@ -511,6 +568,8 @@ class StorageDocumentForm extends Component {
                     deleteDocProduct={deleteDocProduct}
                     editProduct={this.editProduct}
                     showModal={this.showModal}
+                    type={type}
+                    sellingPrice={type == EXPENSE}
                 />
                 { !disabled ? 
                     <AddProductModal
@@ -524,11 +583,12 @@ class StorageDocumentForm extends Component {
                         editKey={editKey}
                         editDocProduct={editDocProduct}
                         isIncome={type == INCOME}
-                        priceDisabled={type == TRANSFER || type == RESERVE || documentType == OWN_CONSUMPTION}
+                        priceDisabled={type == TRANSFER || documentType == OWN_CONSUMPTION}
                         warehouses={warehouses}
                         warehouseId={incomeWarehouseId || expenseWarehouseId}
                         warning={warning}
                         user={user}
+                        sellingPrice={type == EXPENSE}
                     /> 
                 : null}
             </div>
@@ -601,7 +661,6 @@ class DocProductsTable extends React.Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.brand' />,
-                width:     '10%',
                 key:       'brandName',
                 dataIndex: 'brandName',
                 render:     (data, elem)=>{
@@ -612,7 +671,6 @@ class DocProductsTable extends React.Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.detail_code' />,
-                width:     '15%',
                 key:       'detailCode',
                 dataIndex: 'detailCode',
                 render:     (data, elem)=>{
@@ -622,8 +680,7 @@ class DocProductsTable extends React.Component {
                 }
             },
             {
-                title:      <><FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)</>,
-                width:     '10%',
+                title:      <span><FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)</span>,
                 key:       'tradeCode',
                 dataIndex: 'tradeCode',
                 render:     (data, elem)=>{
@@ -636,7 +693,6 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='order_form_table.detail_name' />,
                 key:       'detailName',
                 dataIndex: 'detailName',
-                width:     '15%',
                 render:     (data, elem)=>{
                     return (
                         data || <FormattedMessage id='long_dash' />
@@ -647,7 +703,6 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='orders.source' />,
                 key:       'source',
                 dataIndex: 'source',
-                width:     '15%',
                 render:     (data, elem)=>{
                     return (
                         data || <FormattedMessage id='long_dash' />
@@ -658,10 +713,10 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='order_form_table.price' />,
                 key:       'stockPrice',
                 dataIndex: 'stockPrice',
-                width:     '10%',
                 render:     (data, elem)=>{
+                    const price = this.props.sellingPrice ? elem.sellingPrice : data;
                     return (
-                        data || <FormattedMessage id='long_dash' />
+                        price || <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -669,7 +724,6 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='order_form_table.count' />,
                 key:       'quantity',
                 dataIndex: 'quantity',
-                width:     '10%',
                 render:     (data, elem)=>{
                     return (
                         data || <FormattedMessage id='long_dash' />
@@ -680,10 +734,10 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='order_form_table.sum' />,
                 key:       'sum',
                 dataIndex: 'sum',
-                width:     '10%',
                 render:     (data, elem)=>{
+                    const sum = this.props.sellingPrice ? elem.sellingSum : data;
                     return (
-                        data ? Math.round(data*10)/10 : <FormattedMessage id='long_dash' />
+                        sum ? Math.round(sum*10)/10 : <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -708,10 +762,25 @@ class DocProductsTable extends React.Component {
                 }
             },
         ];
+
+        this.purchaseColumn = {
+            title:     <FormattedMessage id='order_form_table.purchasePrice' />,
+            key:       'purchasePrice',
+            dataIndex: 'purchasePrice',
+            render:     (data, elem)=>{
+                return (
+                    data || <FormattedMessage id='long_dash' />
+                )
+            }
+        };
     }
 
     render() {
-        const { disabled, docProducts, loading } = this.props;
+        const { disabled, docProducts, loading, type } = this.props;
+        const tblColumns = [...this.columns];
+        if(type == EXPENSE) {
+            tblColumns.splice( 7, 0, this.purchaseColumn);
+        }
         var tableData = docProducts;
         tableData = tableData.filter((elem)=>elem.detailCode);
         if(!disabled && (!tableData.length || tableData[tableData.length-1].detailCode)) {
@@ -722,7 +791,7 @@ class DocProductsTable extends React.Component {
         }
         return (
             <Table
-                columns={this.columns}
+                columns={tblColumns}
                 dataSource={tableData}
                 pagination={false}
                 loading={loading}
@@ -749,6 +818,7 @@ class AddProductModal extends React.Component {
             groupId: undefined,
             tradeCode: undefined,
             detailName: undefined,
+            sellingPrice: 0,
             stockPrice: 0,
             quantity: 1,
             detailCodeSearch: '',
@@ -849,7 +919,6 @@ class AddProductModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             that.setState({
                 storageProducts: data.list
             })
@@ -945,9 +1014,14 @@ class AddProductModal extends React.Component {
         });
     }
 
-    getProductId(detailCode, brandId) {
+    getProductId(detailCode, brandId, productId) {
         const { storageProducts, storageBalance, detailName, quantity } = this.state;
-        const storageProduct = storageProducts.find((elem)=>elem.code==detailCode && (!brandId || elem.brandId == brandId));
+        var storageProduct;
+        if(productId) {
+            storageProduct = storageProducts.find((elem)=>elem.id==productId);
+        } else {
+            storageProduct = storageProducts.find((elem)=>elem.code==detailCode && (!brandId || elem.brandId == brandId));
+        }
         if(storageProduct) {
             storageBalance[0].count = storageProduct.countInWarehouses;
             storageBalance[1].count = storageProduct.reservedCount;
@@ -965,6 +1039,9 @@ class AddProductModal extends React.Component {
                 brandName: storageProduct.brand && storageProduct.brand.name,
                 tradeCode: storageProduct.tradeCode,
                 quantity: storageProduct.quantity || 1,
+                stockPrice: (this.props.sellingPrice ? 
+                    storageProduct.stockPrice * (storageProduct.group && storageProduct.group.multiplier || 1.4) : 
+                    storageProduct.stockPrice) || 0,
             })
             this.getCurrentPrice(detailCode, this.props.businessSupplierId);
             return true;
@@ -1006,7 +1083,8 @@ class AddProductModal extends React.Component {
             detailCode,
             detailName,
             productId,
-            tradeCode
+            tradeCode,
+            sellingPrice,
         } = productData;
 
         if(!this.props.warning) {
@@ -1018,6 +1096,7 @@ class AddProductModal extends React.Component {
                 tradeCode: tradeCode,
                 detailName: detailName,
                 stockPrice: stockPrice,
+                sellingPrice: sellingPrice,
                 quantity: quantity,
                 sum: quantity*stockPrice,
             });
@@ -1035,6 +1114,7 @@ class AddProductModal extends React.Component {
                     tradeCode: tradeCode,
                     detailName: detailName,
                     stockPrice: stockPrice,
+                    sellingPrice: sellingPrice,
                     quantity: quantity,
                     sum: quantity*stockPrice,
                 }
@@ -1063,6 +1143,7 @@ class AddProductModal extends React.Component {
             stockPrice,
             quantity, 
             productId,
+            sellingPrice,
         } = this.state;
 
         if(!brandId || !detailCode) {
@@ -1089,9 +1170,11 @@ class AddProductModal extends React.Component {
                         tradeCode: tradeCode,
                         detailName: detailName,
                         stockPrice: stockPrice,
+                        sellingPrice: sellingPrice,
                         quantity: quantity,
                         groupId: groupId,
                         sum: quantity*stockPrice,
+                        sellingSum: quantity*sellingPrice,
                     }
                 );
                 this.handleCancel();
@@ -1107,7 +1190,9 @@ class AddProductModal extends React.Component {
                     stockPrice: stockPrice,
                     quantity: quantity,
                     groupId: groupId,
+                    sellingPrice: sellingPrice,
                     sum: quantity*stockPrice,
+                    sellingSum: quantity*sellingPrice,
                 });
                 this.handleCancel();
             }
@@ -1124,6 +1209,7 @@ class AddProductModal extends React.Component {
             groupId: undefined,
             tradeCode: undefined,
             detailName: undefined,
+            sellingPrice: 0,
             stockPrice: 0,
             quantity: 1,
         });
@@ -1146,6 +1232,7 @@ class AddProductModal extends React.Component {
                     quantity: product.quantity,
                     productId: product.productId,
                     ordersAppurtenancies: product.ordersAppurtenancies,
+                    sellingPrice: product.sellingPrice,
                 })
             }
         }
@@ -1170,7 +1257,8 @@ class AddProductModal extends React.Component {
                 detailCode: product.code,
                 detailName: product.name,
                 tradeCode: product.tradeCode,
-                stockPrice: product.stockPrice || 0,
+                stockPrice: Math.round(product.stockPrice*10)/10 || 0,
+                sellingPrice: product.salePrice || Math.round(product.stockPrice * 10 *((product.priceGroup && product.priceGroup.multiplier) || 1.4))/10 || 0
             })
         }
     }
@@ -1190,6 +1278,7 @@ class AddProductModal extends React.Component {
             quantity,
             detailCodeSearch,
             storageBalance,
+            sellingPrice,
         } = this.state;
 
         return (
@@ -1225,12 +1314,12 @@ class AddProductModal extends React.Component {
                             }}
                             onSelect={(value, option)=>{
                                 this.setState({
-                                    detailCode: value,
+                                    detailCode: option.props.code,
                                     detailName: option.props.detail_name,
                                     stockPrice: option.props.price,
                                     detailCodeSearch: "",
                                 });
-                                this.getProductId(value);
+                                this.getProductId(undefined, undefined, value);
                             }}
                             onBlur={()=>{
                                 this.setState({
@@ -1244,14 +1333,15 @@ class AddProductModal extends React.Component {
                             }}
                         >
                             {
-                                storageProducts.map((elem)=>{
+                                storageProducts.map((elem, key)=>{
                                     return (
                                         <Option
-                                            key={elem.id}
-                                            value={elem.code}
+                                            key={key}
+                                            value={String(elem.id)}
                                             detail_name={elem.name}
                                             price={0}
                                             trade_code={elem.tradeCode}
+                                            code={elem.code}
                                         >
                                             {elem.code}
                                         </Option>
@@ -1361,15 +1451,21 @@ class AddProductModal extends React.Component {
                         <div><FormattedMessage id='order_form_table.price' /></div>
                         <InputNumber
                             disabled={this.props.priceDisabled}
-                            value={stockPrice}
+                            value={this.props.sellingPrice ? sellingPrice : stockPrice}
                             style={{
                                 //marginLeft: 10,
                             }}
                             min={0}
                             onChange={(value)=>{
-                                this.setState({
-                                    stockPrice: value
-                                })
+                                if(this.props.sellingPrice) {
+                                    this.setState({
+                                        sellingPrice: value
+                                    })
+                                } else {
+                                    this.setState({
+                                        stockPrice: value
+                                    })
+                                }
                             }}
                         />
                     </div>}
@@ -1397,7 +1493,7 @@ class AddProductModal extends React.Component {
                                 color: 'black',
                                 //marginLeft: 10,
                             }}
-                            value={Math.round(quantity*stockPrice*10)/10}
+                            value={Math.round(quantity*(this.props.sellingPrice ? sellingPrice : stockPrice)*10)/10}
                         />
                     </div>}
                 </div>
@@ -1604,7 +1700,6 @@ export class AddStoreProductModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             that.setState({visible: false});
             //that.ordersAppurtenancies(ordersAppurtenancies, data.id, detailCode, brandId);
             that.props.confirmAlertModal({

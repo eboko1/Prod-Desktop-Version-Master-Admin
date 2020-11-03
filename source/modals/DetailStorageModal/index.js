@@ -332,6 +332,7 @@ class DetailStorageModal extends React.Component{
                         <Button
                             type="primary"
                             onClick={()=>{
+                                console.log(elem)
                                 if(this.props.onSelect) {
                                     this.props.onSelect(
                                         elem.partNumber,
@@ -465,7 +466,6 @@ class DetailStorageModal extends React.Component{
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 const brandOptions = [];
                 data.list.map((elem, key)=>{
                     elem.key = key;

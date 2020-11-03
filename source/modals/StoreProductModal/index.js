@@ -15,33 +15,38 @@ const StoreProductModal = props => {
     const [warehouses, setWarehouses] = useState([]);
 
     useEffect(() => {
+        let cleanupFunction = false;
         if(!warehouses.length) {
-            let token = localStorage.getItem('_my.carbook.pro_token');
-            let url = __API_URL__ + '/warehouses';
-            fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': token,
-                }
-            })
-            .then(function (response) {
-                if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText))
-                }
-                return Promise.resolve(response)
-            })
-            .then(function (response) {
-                return response.json()
-            })
-            .then(function (data) {
-                console.log(data);
-                setWarehouses(data);
-            })
-            .catch(function (error) {
-                console.log('error', error)
-            });
+            const fetchData = async () => {
+                let token = localStorage.getItem('_my.carbook.pro_token');
+                let url = __API_URL__ + '/warehouses';
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': token,
+                    }
+                })
+                .then(function (response) {
+                    if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText))
+                    }
+                    return Promise.resolve(response)
+                })
+                .then(function (response) {
+                    return response.json()
+                })
+                .then(function (data) {
+                    if(!cleanupFunction) setWarehouses(data);
+                })
+                .catch(function (error) {
+                    console.log('error', error)
+                });
+            };
+
+            fetchData();
+            return () => cleanupFunction = true;
         }
-    })
+    }, [])
 
     useEffect(() => {
         setEditing(_.get(props, 'modalProps.editing'));

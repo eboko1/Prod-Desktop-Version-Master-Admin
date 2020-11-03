@@ -91,7 +91,7 @@ export const addDuration = (momentDate, hoursDuration) => {
     const newDate = momentDate.clone();
     const milliseconds = hoursDuration * 3600 * 1000;
 
-    return newDate.add('milliseconds', milliseconds);
+    return newDate.add(milliseconds, 'milliseconds');
 };
 
 const mapConfigToRange = (datetimes = []) => {

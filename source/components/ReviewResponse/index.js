@@ -62,7 +62,7 @@ export default class ReviewResponse extends Component {
                         {!replyText ? (
                             <>
                                 <TextArea
-                                    autosize={{ minRows: 2, maxRows: 4 }}
+                                    autoSize={{ minRows: 2, maxRows: 4 }}
                                     onChange={event =>
                                         this._handleReplyText(event)
                                     }
@@ -143,7 +143,7 @@ export default class ReviewResponse extends Component {
                     onClick={() => this._toggleComplainMode()}
                 />
                 <TextArea
-                    autosize={{ minRows: 2, maxRows: 4 }}
+                    autoSize={{ minRows: 2, maxRows: 4 }}
                     onChange={event => this._handleComplainText(event)}
                     rules={[
                         {

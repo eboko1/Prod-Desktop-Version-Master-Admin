@@ -7,6 +7,7 @@ import { numeralFormatter } from 'utils';
 
 //own
 import { ProductTableData } from '../ProductTableData';
+import Styles from './styles.m.css';
 
 export default props => {
     const name = {
@@ -40,7 +41,21 @@ export default props => {
         width:     '10%',
         sorter: (a, b) => a.remaining - b.remaining,
         sortDirections: ['descend', 'ascend'],
-        render:    remaining => numeralFormatter(remaining),
+        render:    (remaining, data) => {
+            return (
+                <div className={Styles.cellWrapp} 
+                    onClick={()=>{
+                        props.redirectToTracking({
+                            id:   data.id,
+                            name: data.name,
+                            code: data.code,
+                        })
+                    }}
+                >
+                    {numeralFormatter(remaining)}
+                </div>
+            )
+        },
     };
 
     const reserve = {
@@ -51,7 +66,21 @@ export default props => {
         width:     '10%',
         sorter: (a, b) => a.reserved - b.reserved,
         sortDirections: ['descend', 'ascend'],
-        render:    reserved => numeralFormatter(reserved),
+        render:    (reserved, data) => {
+            return (
+                <div className={Styles.cellWrapp} 
+                    onClick={()=>{
+                        props.redirectToTracking({
+                            id:   data.id,
+                            name: data.name,
+                            code: data.code,
+                        })
+                    }}
+                >
+                    {numeralFormatter(reserved)}
+                </div>
+            )
+        },
     };
 
     const available = {
@@ -62,7 +91,47 @@ export default props => {
         width:  '10%',
         sorter: (a, b) => (a.remaining - a.reserved) - (b   .remaining - b.reserved),
         sortDirections: ['descend', 'ascend'],
-        render: (_, data) => numeralFormatter(data.remaining - data.reserved),
+        render:    (_, data) => {
+            return (
+                <div className={Styles.cellWrapp} 
+                    onClick={()=>{
+                        props.redirectToTracking({
+                            id:   data.id,
+                            name: data.name,
+                            code: data.code,
+                        })
+                    }}
+                >
+                    {numeralFormatter(data.remaining - data.reserved)}
+                </div>
+            )
+        },
+    };
+
+    const ordered = {
+        title: props.intl.formatMessage({
+            id: 'storage.ordered',
+        }),
+        key:    'countInStoreOrders',
+        dataIndex: 'countInStoreOrders',
+        width:  '10%',
+        sorter: (a, b) => a.countInStoreOrders - b.countInStoreOrders,
+        sortDirections: ['descend', 'ascend'],
+        render:    (ordered, data) => {
+            return (
+                <div className={Styles.cellWrapp} 
+                    onClick={()=>{
+                        props.redirectToTracking({
+                            id:   data.id,
+                            name: data.name,
+                            code: data.code,
+                        })
+                    }}
+                >
+                    {numeralFormatter(ordered)}
+                </div>
+            )
+        },
     };
 
     const sum = {
@@ -86,6 +155,7 @@ export default props => {
         remaining,
         reserve,
         available,
+        ordered,
         sum,
     ];
 };

@@ -14,7 +14,7 @@ import {
 } from 'core/storage/tracking';
 
 import { Layout, ResponsiveView } from 'commons';
-import { TrackingTable, DatePickerGroup } from 'components';
+import { TrackingTable, DatePickerGroup, StorageDateFilter, WarehouseSelect } from 'components';
 import { StoreProductsSelect } from 'forms/_formkit';
 import { StoreProductModal } from 'modals';
 import { BREAKPOINTS } from 'utils';
@@ -22,6 +22,35 @@ import { BREAKPOINTS } from 'utils';
 import { media } from 'theme/media';
 
 // own
+
+const getWarehouses = () => {
+    var that = this;
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = __API_URL__ + '/warehouses';
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': token,
+        }
+    })
+    .then(function (response) {
+        if (response.status !== 200) {
+        return Promise.reject(new Error(response.statusText))
+        }
+        return Promise.resolve(response)
+    })
+    .then(function (response) {
+        return response.json()
+    })
+    .then(function (data) {
+        that.setState({
+            warehouses: data,
+        })
+    })
+    .catch(function (error) {
+        console.log('error', error)
+    });
+}
 
 const mapStateToProps = state => ({
     collapsed: state.ui.collapsed,
@@ -51,18 +80,19 @@ export const ProductsTrackingPage = withRouter(
 
         const renderFilters = (
             <Filters>
-                <DatePickerGroup
-                    startDate={ moment(filters.startDate) }
-                    endDate={ moment(filters.endDate) }
-                    loading={ props.loading }
-                    period={ period }
-                    onDaterangeChange={ setDaterange }
-                    onPeriodChange={ handlePeriod }
-                />
                 <ResponsiveView view={ { min: BREAKPOINTS.xxl.min, max: null } }>
                     <StoreProductsSelect
                         setFilters={ props.setTrackingFilters }
                         filters={ props.filters }
+                    />
+                    <WarehouseSelect 
+                        style={{margin: '0 0 0 8px'}}
+                    />
+                    <StorageDateFilter
+                        minimize
+                        dateRange={[moment(filters.startDate), moment(filters.endDate)]}
+                        onDateChange={ setDaterange }
+                        style={{margin: '0 0 0 8px'}}
                     />
                 </ResponsiveView>
             </Filters>
@@ -79,6 +109,11 @@ export const ProductsTrackingPage = withRouter(
                         <StoreProductsSelect
                             setFilters={ props.setTrackingFilters }
                             filters={ props.filters }
+                        />
+                        <StorageDateFilter
+                            minimize
+                            dateRange={[moment(filters.startDate), moment(filters.endDate)]}
+                            onDateChange={ setDaterange }
                         />
                     </FiltersSubPanel>
                 </ResponsiveView>
@@ -121,7 +156,6 @@ const TrackingTableWrapper = styled.div`
 
 const FiltersSubPanel = styled.div`
     display: flex;
-    flex-direction: column;
     overflow: initial;
     box-sizing: border-box;
     background-color: rgb(255, 255, 255);

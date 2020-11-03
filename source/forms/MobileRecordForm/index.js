@@ -377,7 +377,7 @@ export class MobileRecordForm extends Component {
                         id: "add_order_form.client_comments",
                         defaultMessage: "Client_comments",
                     })}
-                    autosize={{ minRows: 2, maxRows: 6 }}
+                    autoSize={{ minRows: 2, maxRows: 6 }}
                 />
                 {!isForbidden(
                     this.props.user,
@@ -868,7 +868,6 @@ class CommentaryButton extends React.Component {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
             })
             .catch(function(error) {
                 console.log("error", error);

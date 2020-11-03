@@ -431,7 +431,6 @@ class FavouriteDetailsModal extends React.Component{
             price: this.state.dataSource[index].price || 1,
             comment: this.state.dataSource[index].comment,
         })
-        console.log(data);
         this.addDetailsAndLabors(data);
         this.setState({
             visible: false,

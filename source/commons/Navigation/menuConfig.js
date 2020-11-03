@@ -283,7 +283,7 @@ export default {
                     key:      '/requisites',
                     disabled: user =>
                         !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link: book.oldApp.settingsRequisites,
+                    link: book.requisites,
                     name: 'navigation.requisites',
                 },
                 {

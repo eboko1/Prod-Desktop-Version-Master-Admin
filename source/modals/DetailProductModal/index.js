@@ -451,7 +451,7 @@ class DetailProductModal extends React.Component{
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
-                    const sum = elem.price * elem.count;
+                    const sum = elem.price * (elem.count || 1);
                     return (
                         <InputNumber
                             disabled
@@ -528,7 +528,6 @@ class DetailProductModal extends React.Component{
                         productCode: element.detailCode,
                         supplierId: element.supplierId,
                         supplierBrandId: element.supplierBrandId || element.brandId,
-                        brandName: element.brandName,
                         supplierOriginalCode: element.supplierOriginalCode,
                         supplierProductNumber: element.supplierProductNumber,
                         reservedFromWarehouseId: element.reservedFromWarehouseId || null,
@@ -547,6 +546,7 @@ class DetailProductModal extends React.Component{
                         name: element.detailName,
                         productId: element.productId,
                         productCode: element.detailCode,
+                        supplierBrandId: element.supplierBrandId || element.brandId,
                         purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                         count: element.count ? element.count : 1,
                         price: element.price ? Math.round(element.price*10)/10  : 1,
@@ -676,8 +676,10 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].reservedFromWarehouseId = defaultWarehouseId;
         this.state.mainTableSource[key].productId = isFromStock ? productId : undefined;
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
-        this.state.mainTableSource[key].brandId = brandId;
-        this.state.mainTableSource[key].brandName = brand.brandName;
+        if(brand) {
+            this.state.mainTableSource[key].brandId = brandId;
+            this.state.mainTableSource[key].brandName = brand && brand.brandName;
+        }
         this.setState({
             update: true
         })

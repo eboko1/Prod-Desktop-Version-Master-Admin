@@ -51,6 +51,7 @@ export const StorageMovementPage = connect(
             title={ <FormattedMessage id='navigation.storage_movement' /> }
             controls={
                 <StorageDateFilter
+                    autoMinimize
                     dateRange={[moment(filters.startDate), moment(filters.endDate)]}
                     onDateChange={ setDaterange }
                 />

@@ -24,8 +24,18 @@ import Styles from "./loginForm.m.css";
     },
 })
 export class LoginForm extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            submitCount: 0,
+        };
+    }
+
     _submit = event => {
-        //event.preventDefault();
+        event.preventDefault();
+        this.setState((state) => {
+            return {submitCount: state.submitCount + 1}
+        });
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 this.props.login(values);
@@ -33,10 +43,10 @@ export class LoginForm extends Component {
         });
     };
 
-    componentDidMount() {
-        this.setState({
-            update: true,
-        });
+    componentDidUpdate() {
+        if(this.state.submitCount > 1) {
+            window.location.reload();
+        }
     }
 
     render() {

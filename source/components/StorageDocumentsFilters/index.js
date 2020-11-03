@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { DatePicker, Icon, Radio, Button, Dropdown, Menu } from 'antd';
+import { DatePicker, Icon, Radio, Button, Dropdown, Menu, Popover, Select } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -14,11 +14,12 @@ import { Catcher } from 'commons';
 // own
 import Styles from './styles.m.css';
 const { RangePicker } = DatePicker;
+const Option = Select.Option;
 var isOrder, isTransfer;
 const INCOME = 'INCOME',
       EXPENSE = 'EXPENSE',
-      RESERVE = 'RESERVE',
       SUPPLIER = 'SUPPLIER',
+      RESERVE = 'RESERVE',
       CLIENT = 'CLIENT',
       INVENTORY = 'INVENTORY',
       OWN_CONSUMPTION = 'OWN_CONSUMPTION',
@@ -27,30 +28,29 @@ const INCOME = 'INCOME',
       ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
-      DONE = 'DONE';
-
+      DONE = 'DONE',
+      MAIN = 'MAIN',
+      TOOL = 'TOOL',
+      REPAIR_AREA= 'REPAIR_AREA';
+      
 const typeToDocumentType = {
-        income: {
-            type: INCOME,
-            documentType: [SUPPLIER, CLIENT, INVENTORY],
-        },
-        expense: {
-            type: EXPENSE,
-            documentType: [CLIENT, SUPPLIER, INVENTORY, OWN_CONSUMPTION],
-        },
-        transfer: {
-            type: EXPENSE,
-            documentType: [TRANSFER],
-        },
-        reserve: {
-            type: EXPENSE,
-            documentType: [TRANSFER],
-        },
-        order: {
-            type: ORDER,
-            documentType: [SUPPLIER, ADJUSTMENT, ORDERINCOME],
-        }, 
-    }
+    income: {
+        type: INCOME,
+        documentType: [SUPPLIER, CLIENT, INVENTORY],
+    },
+    expense: {
+        type: EXPENSE,
+        documentType: [CLIENT, SUPPLIER, INVENTORY, OWN_CONSUMPTION],
+    },
+    transfer: {
+        type: EXPENSE,
+        documentType: [TRANSFER, RESERVE, TOOL, REPAIR_AREA],
+    },
+    order: {
+        type: ORDER,
+        documentType: [SUPPLIER, ADJUSTMENT, ORDERINCOME],
+    }, 
+}
 
 @withRouter
 @injectIntl
@@ -129,6 +129,7 @@ class StorageDocumentsFilters extends Component {
                     </Radio.Group>
                 </div>
                 <StorageDateFilter
+                    autoMinimize
                     dateRange={dateRange}
                     dateFormat={dateFormat}
                     onDateChange={onDateChange}
@@ -159,11 +160,29 @@ export class StorageDateFilter extends React.Component {
         return dateRange;
     }
 
+    updateDimensions = () => {
+        this.setState({});
+    };
+
+    componentDidMount() {
+        window.addEventListener('resize', this.updateDimensions);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
+    }
+
     render() {
         const {
             dateRange,
             onDateChange,
+            minimize,
+            autoMinimize,
+            style,
         } = this.props;
+
+        const maxWidth = typeof autoMinimize == "number" ? autoMinimize : 1440;
+        const minimizeMode = autoMinimize ? window.innerWidth < maxWidth : minimize;
 
         const dateFormat = this.props.dateFormat || 'DD.MM.YYYY';
         const currentYear = new Date().getFullYear();
@@ -173,222 +192,333 @@ export class StorageDateFilter extends React.Component {
             yearOptions.push(year);
         }
 
-        return (
+        const datePicker = (
             <div className={ Styles.filterDatePicker }>
-                    <RangePicker
-                        allowClear={ false }
-                        value={ this.verifyDate(dateRange) }
-                        format={ dateFormat }
-                        onChange={ newDate => {
-                            onDateChange(newDate);
-                        } }
-                    />
-                    <div
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'space-between'
-                        }}
+                <RangePicker
+                    allowClear={ false }
+                    style={{width: '100%'}}
+                    value={ this.verifyDate(dateRange) }
+                    format={ dateFormat }
+                    onChange={ newDate => {
+                        onDateChange(newDate);
+                    } }
+                />
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between'
+                    }}
+                >
+                    <Dropdown
+                        className={Styles.datePickerButton}
+                        overlay={
+                            <Menu>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment(new Date(), dateFormat),
+                                            moment(new Date(), dateFormat)
+                                        ]);
+                                    }}
+                                >
+                                    <FormattedMessage id='datepicker.today' />
+                                </Menu.Item>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().add(-1, 'day'),
+                                            moment().add(-1, 'day'),
+                                        ]);
+                                    }}
+                                >
+                                    <FormattedMessage id='datepicker.yesterday' />
+                                </Menu.Item>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().add(1, 'day'),
+                                            moment().add(1, 'day'),
+                                        ]);
+                                    }}
+                                >
+                                    <FormattedMessage id='datepicker.tomorrow' />
+                                </Menu.Item>
+                            </Menu>
+                        }
                     >
-                        <Dropdown
-                            overlay={
-                                <Menu>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                            onDateChange([
-                                                moment(new Date(), dateFormat),
-                                                moment(new Date(), dateFormat)
-                                            ]);
-                                        }}
-                                    >
-                                        <FormattedMessage id='datepicker.today' />
-                                    </Menu.Item>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                            onDateChange([
-                                                moment().add(-1, 'day'),
-                                                moment().add(-1, 'day'),
-                                            ]);
-                                        }}
-                                    >
-                                        <FormattedMessage id='datepicker.yesterday' />
-                                    </Menu.Item>
-                                </Menu>
-                            }
-                        >
-                            <Button>
-                                <FormattedMessage id="datepicker.day"/>
-                            </Button>
-                        </Dropdown>
-                        <Dropdown
-                            overlay={
-                                <Menu>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                            onDateChange([
-                                                moment().startOf('week'),
-                                                moment(new Date(), dateFormat)
-                                            ]);
-                                        }}
-                                    >
-                                        <FormattedMessage id='datepicker.current' />
-                                    </Menu.Item>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                            onDateChange([
-                                                moment().startOf('week').add(-1, 'week'),
-                                                moment().endOf('week').add(-1, 'week')
-                                            ]);
-                                        }}
-                                    >
-                                        <FormattedMessage id='datepicker.previous' />
-                                    </Menu.Item>
-                                </Menu>
-                            }
-                        >
-                            <Button>
-                                <FormattedMessage id="datepicker.week"/>
-                            </Button>
-                        </Dropdown>
-                        <Dropdown
-                            overlay={
-                                <Menu>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                            onDateChange([
-                                                moment().startOf('month'),
-                                                moment(new Date(), dateFormat)
-                                            ]);
-                                        }}
-                                    >
-                                        <FormattedMessage id='datepicker.current' />
-                                    </Menu.Item>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                            onDateChange([
-                                                moment().add(-1, 'month').startOf('month'),
-                                                moment().add(-1, 'month').endOf('month')
-                                            ]);
-                                        }}
-                                    >
-                                        <FormattedMessage id='datepicker.previous' />
-                                    </Menu.Item>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                            onDateChange([
-                                                moment().add(-2, 'month').startOf('month'),
-                                                moment().add(-2, 'month').endOf('month')
-                                            ]);
-                                        }}
-                                    >
-                                        2 <FormattedMessage id='datepicker.month_before' />
-                                    </Menu.Item>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                            onDateChange([
-                                                moment().add(-3, 'month').startOf('month'),
-                                                moment().add(-3, 'month').endOf('month')
-                                            ]);
-                                        }}
-                                    >
-                                        3 <FormattedMessage id='datepicker.month_before' />
-                                    </Menu.Item>
-                                </Menu>
-                            }
-                        >
-                            <Button>
-                                <FormattedMessage id="datepicker.month"/>
-                            </Button>
-                        </Dropdown>
-                        <Dropdown
-                            overlay={
-                                <Menu>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                            onDateChange([
-                                                moment().startOf('quarter'),
-                                                moment(new Date(), dateFormat)
-                                            ]);
-                                        }}
-                                    >
-                                        <FormattedMessage id='datepicker.current' />
-                                    </Menu.Item>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                            onDateChange([
-                                                moment().add(-1, 'quarter').startOf('quarter'),
-                                                moment().add(-1, 'quarter').endOf('quarter')
-                                            ]);
-                                        }}
-                                    >
-                                        <FormattedMessage id='datepicker.previous' />
-                                    </Menu.Item>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                            onDateChange([
-                                                moment().add(-2, 'quarter').startOf('quarter'),
-                                                moment().add(-2, 'quarter').endOf('quarter')
-                                            ]);
-                                        }}
-                                    >
-                                        2 <FormattedMessage id='datepicker.quarters_before' />
-                                    </Menu.Item>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                            onDateChange([
-                                                moment().add(-3, 'quarter').startOf('quarter'),
-                                                moment().add(-3, 'quarter').endOf('quarter')
-                                            ]);
-                                        }}
-                                    >
-                                        3 <FormattedMessage id='datepicker.quarters_before' />
-                                    </Menu.Item>
-                                </Menu>
-                            }
-                        >
-                            <Button>
-                                <FormattedMessage id="datepicker.quarter"/>
-                            </Button>
-                        </Dropdown>
-                        <Dropdown
-                            overlay={
-                                <Menu>
-                                    <Menu.Item
-                                        onClick={()=>{
-                                            onDateChange([
-                                                moment().startOf('year'),
-                                                moment(new Date(), dateFormat)
-                                            ]);
-                                        }}
-                                    >
-                                        <FormattedMessage id='datepicker.current' />
-                                    </Menu.Item>
-                                    {yearOptions.map((year, key)=>{
-                                        return (
-                                            <Menu.Item
-                                                style={{
-                                                    textDecoration: 'lowercase'
-                                                }}
-                                                key={key}
-                                                onClick={()=>{
-                                                    onDateChange([
-                                                        moment(new Date('1/1/' + year), dateFormat),
-                                                        moment(new Date('1/1/' + year), dateFormat).endOf('year')
-                                                    ]);
-                                                }}
-                                            >
-                                                {year} <FormattedMessage id='datepicker.year' />
-                                            </Menu.Item>
-                                        )
-                                    })}
-                                </Menu>
-                            }
-                        >
-                            <Button>
-                                <FormattedMessage id="datepicker.year"/>
-                            </Button>
-                        </Dropdown>
-                    </div>
+                        <Button>
+                            <FormattedMessage id="datepicker.day"/>
+                        </Button>
+                    </Dropdown>
+                    <Dropdown
+                        className={Styles.datePickerButton}
+                        overlay={
+                            <Menu>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().startOf('week'),
+                                            moment().endOf('week'),
+                                        ]);
+                                    }}
+                                >
+                                    <FormattedMessage id='datepicker.current' />
+                                </Menu.Item>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().startOf('week').add(-1, 'week'),
+                                            moment().endOf('week').add(-1, 'week')
+                                        ]);
+                                    }}
+                                >
+                                    <FormattedMessage id='datepicker.previous' />
+                                </Menu.Item>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().startOf('week').add(1, 'week'),
+                                            moment().endOf('week').add(1, 'week')
+                                        ]);
+                                    }}
+                                >
+                                    <FormattedMessage id='datepicker.next' />
+                                </Menu.Item>
+                            </Menu>
+                        }
+                    >
+                        <Button>
+                            <FormattedMessage id="datepicker.week"/>
+                        </Button>
+                    </Dropdown>
+                    <Dropdown
+                        className={Styles.datePickerButton}
+                        overlay={
+                            <Menu>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().startOf('month'),
+                                            moment().endOf('month'),
+                                        ]);
+                                    }}
+                                >
+                                    <FormattedMessage id='datepicker.current' />
+                                </Menu.Item>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().add(-1, 'month').startOf('month'),
+                                            moment().add(-1, 'month').endOf('month')
+                                        ]);
+                                    }}
+                                >
+                                    <FormattedMessage id='datepicker.previous' />
+                                </Menu.Item>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().add(-2, 'month').startOf('month'),
+                                            moment().add(-2, 'month').endOf('month')
+                                        ]);
+                                    }}
+                                >
+                                    2 <FormattedMessage id='datepicker.month_before' />
+                                </Menu.Item>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().add(-3, 'month').startOf('month'),
+                                            moment().add(-3, 'month').endOf('month')
+                                        ]);
+                                    }}
+                                >
+                                    3 <FormattedMessage id='datepicker.month_before' />
+                                </Menu.Item>
+                            </Menu>
+                        }
+                    >
+                        <Button>
+                            <FormattedMessage id="datepicker.month"/>
+                        </Button>
+                    </Dropdown>
+                    <Dropdown
+                        className={Styles.datePickerButton}
+                        overlay={
+                            <Menu>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().startOf('quarter'),
+                                            moment().endOf('quarter'),
+                                        ]);
+                                    }}
+                                >
+                                    <FormattedMessage id='datepicker.current' />
+                                </Menu.Item>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().add(-1, 'quarter').startOf('quarter'),
+                                            moment().add(-1, 'quarter').endOf('quarter')
+                                        ]);
+                                    }}
+                                >
+                                    <FormattedMessage id='datepicker.previous' />
+                                </Menu.Item>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().add(-2, 'quarter').startOf('quarter'),
+                                            moment().add(-2, 'quarter').endOf('quarter')
+                                        ]);
+                                    }}
+                                >
+                                    2 <FormattedMessage id='datepicker.quarters_before' />
+                                </Menu.Item>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().add(-3, 'quarter').startOf('quarter'),
+                                            moment().add(-3, 'quarter').endOf('quarter')
+                                        ]);
+                                    }}
+                                >
+                                    3 <FormattedMessage id='datepicker.quarters_before' />
+                                </Menu.Item>
+                            </Menu>
+                        }
+                    >
+                        <Button>
+                            <FormattedMessage id="datepicker.quarter"/>
+                        </Button>
+                    </Dropdown>
+                    <Dropdown
+                        className={Styles.datePickerButton}
+                        overlay={
+                            <Menu>
+                                <Menu.Item
+                                    onClick={()=>{
+                                        onDateChange([
+                                            moment().startOf('year'),
+                                            moment().endOf('year'),
+                                        ]);
+                                    }}
+                                >
+                                    <FormattedMessage id='datepicker.current' />
+                                </Menu.Item>
+                                {yearOptions.map((year, key)=>{
+                                    return (
+                                        <Menu.Item
+                                            style={{
+                                                textDecoration: 'lowercase'
+                                            }}
+                                            key={key}
+                                            onClick={()=>{
+                                                onDateChange([
+                                                    moment(new Date('1/1/' + year), dateFormat),
+                                                    moment(new Date('1/1/' + year), dateFormat).endOf('year')
+                                                ]);
+                                            }}
+                                        >
+                                            {year} <FormattedMessage id='datepicker.year' />
+                                        </Menu.Item>
+                                    )
+                                })}
+                            </Menu>
+                        }
+                    >
+                        <Button>
+                            <FormattedMessage id="datepicker.year"/>
+                        </Button>
+                    </Dropdown>
                 </div>
+            </div>
+        )
+
+        return minimizeMode ? (
+            <div className={Styles.minimized} style={style}>
+                <Popover content={datePicker} trigger="click">
+                    <Button>
+                        <Icon type='calendar' />
+                    </Button>
+                </Popover>
+            </div>
+        ) : (
+            datePicker
         );
+    }
+}
+
+@injectIntl
+export class WarehouseSelect extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            warehouses: [],
+        };
+    }
+
+    getWarehouses() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + '/warehouses';
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            data.map((warehouse, i)=>{
+                warehouse.key = i;
+            })
+            that.setState({
+                warehouses: data,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    componentDidMount() {
+        this.getWarehouses();
+    }
+
+    render() {
+        const { intl: { formatMessage }, style } = this.props;
+        const { warehouses } = this.state;
+        const options = warehouses.map((warehouse, key)=>(
+            <Option 
+                key={key}
+                value={warehouse.id}
+                warehouse_attribute={warehouse.attribute}
+            >
+                {warehouse.name}
+            </Option>
+        ))
+        return (
+            <div className={Styles.warehouseSelect} style={style} >
+                <Select
+                    showSearch
+                    allowClear
+                    style={{ minWidth: 220 }}
+                    dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                    placeholder={formatMessage({id: 'storage'})}
+                >
+                    {options}
+                </Select>
+            </div>
+        )
     }
 }

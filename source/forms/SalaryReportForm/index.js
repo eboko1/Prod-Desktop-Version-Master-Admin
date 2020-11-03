@@ -12,6 +12,7 @@ import {
 } from "core/forms/settingSalaryForm/duck";
 import { DecoratedDatePicker, DecoratedSelect } from "forms/DecoratedFields";
 import { withReduxForm } from "utils";
+import { StorageDateFilter } from 'components';
 
 // own
 import Styles from "./styles.m.css";

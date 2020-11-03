@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { DatePicker, Skeleton, Checkbox } from 'antd';
+import { DatePicker, Skeleton, Checkbox, Select } from 'antd';
 import moment from 'moment';
 import styled from 'styled-components';
 import _ from 'lodash';
@@ -14,19 +14,19 @@ import {
     setStoreBalanceFilters,
 } from 'core/storage/storeBalance';
 
+import { WarehouseSelect } from 'components';
 import { StoreProductsSelect } from 'forms/_formkit';
 import { numeralFormatter } from 'utils';
 
-const mapStateToProps = state => {console.log(state);return ({
+const mapStateToProps = state => ({
     collapsed: state.ui.collapsed,
     total:     selectStoreBalanceTotal(state),
     filters:   selectStoreBalanceFilters(state),
-})};
+});
 
 export const StorageBalanceTotals = connect(mapStateToProps, {
     setStoreBalanceFilters,
 })(props => {
-    console.log(props)
     // const total = _.get(props, 'balance.total[0]');
     const { filters, total, collapsed } = props;
     const onPickDate = date => props.setStoreBalanceFilters({ date });
@@ -56,6 +56,9 @@ export const StorageBalanceTotals = connect(mapStateToProps, {
                         filters={ props.filters }
                     />
                 </FilterSpace>
+                <WarehouseSelect
+                    style={{margin: '0 0 0 24px'}}
+                />
             </FiltersRow>
             <DataRow
                 style={{
@@ -81,6 +84,11 @@ export const StorageBalanceTotals = connect(mapStateToProps, {
                         )
                         : SkeletonLoader }
                 </DataWrapper>
+                <DataWrapper>
+                    { !_.isEmpty(total)
+                        ? renderTotalData('ordered', total.countInStoreOrders)
+                        : SkeletonLoader }
+                </DataWrapper>
                 <DataWrapper
                     style={{
                         display: 'flex',
@@ -103,7 +111,7 @@ export const StorageBalanceTotals = connect(mapStateToProps, {
                         />
                     </div>
                     { !_.isEmpty(total)
-                        ? renderTotalData('sum', total.sum)
+                        ? renderTotalData('sum', Math.round(total.sum*10)/10)
                         : SkeletonLoader }
                 </DataWrapper>
             </DataRow>

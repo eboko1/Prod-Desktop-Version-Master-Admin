@@ -18,7 +18,6 @@ export function* fetchStorageSaga({ payload: type }) {
         const data = yield call(fetchAPI, 'GET', '/store_docs', {
             type: 'INCOME',
         });
-        console.log(data);
 
         yield put(fetchStorageSuccess(data));
     } catch (error) {
