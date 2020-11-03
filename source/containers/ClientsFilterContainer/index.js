@@ -57,9 +57,10 @@ export default class OrdersFilterContainer extends Component {
                         placeholder={this.props.intl.formatMessage({
                             id: "orders-filter.search_placeholder",
                         })}
-                        onChange={({ target: { value } }) =>
-                            this.handleClientsSearch(value)
-                        }
+                        onChange={({ target: { value } }) =>{
+                            const replacedValue = value.replace(/\D/g,'');;
+                            if(replacedValue) this.handleClientsSearch(replacedValue);
+                        }}
                     />
                 </div>
             </Catcher>

@@ -54,6 +54,7 @@ const book = Object.freeze({
     //  Cash
     //
     cashFlowPage:             '/cash/flow',
+    cashClientsDebtsPage:     '/cash/clients-debts',
     cashSettingsPage:         '/cash/settings',
     cashBankPage:             '/cash/bank',
     //
