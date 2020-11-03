@@ -26,6 +26,7 @@ import ForgotPasswordPage from './ForgotPasswordPage';
 import NewPasswordPage from './NewPasswordPage';
 import CashSettingsPage from './CashSettingsPage';
 import CashFlowPage from './CashFlowPage';
+import CashClientsDebtsPage from './CashClientsDebtsPage'
 import CashBankPage from './CashBankPage';
 import SuppliersPage from './SuppliersPage';
 import PaymentPage from './PaymentPage';
@@ -69,6 +70,7 @@ export {
     NewPasswordPage,
     CashSettingsPage,
     CashFlowPage,
+    CashClientsDebtsPage,
     CashBankPage,
     SuppliersPage,
     PaymentPage,

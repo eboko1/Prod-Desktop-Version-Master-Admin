@@ -30,6 +30,7 @@ import {
     CashSettingsPage,
     CashBankPage,
     CashFlowPage,
+    CashClientsDebtsPage,
     SuppliersPage,
     PaymentPage,
     SubscriptionHistoryPage,
@@ -142,6 +143,11 @@ export default class Private extends Component {
                     exact
                     component={ CashFlowPage }
                     path={ book.cashFlowPage }
+                />
+                <Route
+                    exact
+                    component={ CashClientsDebtsPage }
+                    path={ book.cashClientsDebtsPage }
                 />
                 <Route
                     exact

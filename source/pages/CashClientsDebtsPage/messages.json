@@ -1,0 +1,27 @@
+{
+    "en": {
+        "cash_clients_debts_page.filter_placeholder": "Search",
+        "cash_clients_debts_page.get_excel_file": "Download full report",
+        "cash_clients_debts_page.client_name": "Client name",
+        "cash_clients_debts_page.phone": "Phone",
+        "cash_clients_debts_page.payment_respite": "Payment term",
+        "cash_clients_debts_page.current_debt": "Current debt"
+        
+    },
+    "ru": {
+        "cash_clients_debts_page.filter_placeholder": "Поиск",
+        "cash_clients_debts_page.get_excel_file": "Загрузить отчет",
+        "cash_clients_debts_page.client_name": "Имя клиента",
+        "cash_clients_debts_page.phone": "Тел.",
+        "cash_clients_debts_page.payment_respite": "Отсрочка",
+        "cash_clients_debts_page.current_debt": "Задолженность"
+    },
+    "uk": {
+        "cash_clients_debts_page.filter_placeholder": "Пошук",
+        "cash_clients_debts_page.get_excel_file": "Завантажити повний звіт",
+        "cash_clients_debts_page.client_name": "Ім'я клієнта",
+        "cash_clients_debts_page.phone": "Тел.",
+        "cash_clients_debts_page.payment_respite": "Відстрочка",
+        "cash_clients_debts_page.current_debt": "Заборгованість"
+    }
+}
