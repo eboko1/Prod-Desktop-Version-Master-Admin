@@ -95,17 +95,17 @@ class StorageDocumentsFilters extends Component {
                                         if(value == null) {
                                             typeFilter(null);
                                             documentTypeFilter(null);
-                                        }
-                                        else if(value == ORDERINCOME) {
+                                        } else if(value == ORDERINCOME) {
                                             typeFilter(INCOME);
                                             documentTypeFilter(SUPPLIER);
-                                        }
-                                        else if(value == SUPPLIER) {
+                                        } else if(value == SUPPLIER) {
                                             typeFilter(EXPENSE);
                                             documentTypeFilter(value);
+                                        } else {
+                                            typeFilter(null);
+                                            documentTypeFilter(value);
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         documentTypeFilter(value);
                                     }
                                     this.setState({
