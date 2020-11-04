@@ -15,7 +15,9 @@
     "cash-table.activity": "Increase / Decrease",
     "cash-table.comment": "Comment",
     "cash-table.tag": "Analytics",
-    "cash-table_icon.unremovable": "Cashbox can't be deleted because it has already contain some cash orders"
+    "cash-table_icon.unremovable": "Cashbox can't be deleted because it has already contain some cash orders",
+    "cash-table.overdue_debt": "Overdue debt",
+    "cash-table.not_overdue_debt": "Not overdue debt"
   },
   "ru": {
     "cash-table.name": "Наименование Кассы",
@@ -34,7 +36,9 @@
     "cash-table.activity": "Приход / Расход",
     "cash-table.comment": "Комментарий",
     "cash-table.tag": "Аналитика",
-    "cash-table_icon.unremovable": "Касса не может быть удалена, поскольку уже содержит кассовые ордера"
+    "cash-table_icon.unremovable": "Касса не может быть удалена, поскольку уже содержит кассовые ордера",
+    "cash-table.overdue_debt": "Просроченная задолженность",
+    "cash-table.not_overdue_debt": "Не просрочена задолженность"
   },
   "uk": {
     "cash-table.name": "Назва Каси",
@@ -53,6 +57,8 @@
     "cash-table.activity": "Прибуток / Витрата",
     "cash-table.comment": "Коментар",
     "cash-table.tag": "Аналітика",
-    "cash-table_icon.unremovable": "Каса не може бути видалена, тому що вже містить касові ордери"
+    "cash-table_icon.unremovable": "Каса не може бути видалена, тому що вже містить касові ордери",
+    "cash-table.overdue_debt": "Прострочена заборгованість",
+    "cash-table.not_overdue_debt": "Не прострочена заборгованість"
   }
 }

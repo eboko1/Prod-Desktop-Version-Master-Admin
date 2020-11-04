@@ -237,6 +237,7 @@ export class AbstractClientForm extends Component {
                                     formItem
                                     initialValue={_.get(client, "paymentRespite", 0)}
                                     min={0}
+                                    max={1000}
                                     getFieldDecorator={getFieldDecorator}
                                     rules={[
                                         {
