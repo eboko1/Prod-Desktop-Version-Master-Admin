@@ -731,7 +731,7 @@ export default class OrderFormHeader extends Component {
     _renderTotalBlock = () => {
         const { fetchedOrder, fields } = this.props;
         const { getFieldDecorator } = this.props.form;
-        const { errors, totalPrice, cashSum, remainPrice, totalSumWithTax } = this.props;
+        const { errors, totalPrice, cashSum, remainPrice, totalSumWithTax, isTaxPayer } = this.props;
         const mask = "0,0.00";
 
         return (
@@ -751,19 +751,21 @@ export default class OrderFormHeader extends Component {
                                 {totalPrice}
                             </Numeral>
                         </span>
-                        <span className={Styles.sumWrapper}>
-                            <FormattedMessage id="with" /> <FormattedMessage id="VAT" />
-                            <Numeral
-                                mask={mask}
-                                className={Styles.sumNumeral}
-                                nullText="0"
-                                currency={this.props.intl.formatMessage({
-                                    id: "currency",
-                                })}
-                            >
-                                {totalSumWithTax}
-                            </Numeral>
-                        </span>
+                        {isTaxPayer &&
+                            <span className={Styles.sumWrapper}>
+                                <FormattedMessage id="with" /> <FormattedMessage id="VAT" />
+                                <Numeral
+                                    mask={mask}
+                                    className={Styles.sumNumeral}
+                                    nullText="0"
+                                    currency={this.props.intl.formatMessage({
+                                        id: "currency",
+                                    })}
+                                >
+                                    {totalSumWithTax}
+                                </Numeral>
+                            </span>
+                        }
                         <span className={Styles.sumWrapper}>
                             <FormattedMessage id="paid" />
                             <Numeral

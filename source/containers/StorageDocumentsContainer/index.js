@@ -71,6 +71,7 @@ const fetchStorage = (type, action) => {
     })
     .then(function(data) {
         console.log(data);
+        data.list = data.list.filter((elem)=>elem.documentNumber.substr(0, 3) != 'RES');
         action(data);
     })
     .catch(function(error) {
