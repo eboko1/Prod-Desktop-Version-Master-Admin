@@ -53,7 +53,7 @@ export function deleteRequisite(id, func) {
     });
 }
 
-export function postRequisite(data) {
+export function postRequisite(data, func) {
     console.log(data);
     let url = __API_URL__ + `/businesses/requisites`;
     fetch(url, {
@@ -74,13 +74,14 @@ export function postRequisite(data) {
     })
     .then(function (data) {
         console.log(data);
+        func();
     })
     .catch(function (error) {
         console.log('error', error)
     });
 }
 
-export function updateRequisite(id, data) {
+export function updateRequisite(id, data, func) {
     console.log(data);
     let url = __API_URL__ + `/businesses/requisites/${id}`;
     fetch(url, {
@@ -101,6 +102,7 @@ export function updateRequisite(id, data) {
     })
     .then(function (data) {
         console.log(data);
+        func();
     })
     .catch(function (error) {
         console.log('error', error)

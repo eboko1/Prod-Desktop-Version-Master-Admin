@@ -42,18 +42,18 @@ export class RequisiteSettingForm extends Component {
     handleSubmit = async (e) => {
         const id = this.props.requisiteData && this.props.requisiteData.id;
         e.preventDefault();
-        await this.props.form.validateFieldsAndScroll((err, values) => {
+        this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 values.itn = values.itn || values.ifi;
                 if(values.formName) values.formType = null;
                 if(id) {
-                    updateRequisite(id, values);
+                    updateRequisite(id, values, this.props.hideModal);
                 } else {
-                    postRequisite(values);
+                    postRequisite(values, this.props.hideModal);
                 }
             }
         });
-        await this.props.hideModal();
+        this.props.hideModal();
     };
 
     componentDidUpdate(prevProps) {
@@ -210,7 +210,10 @@ export class RequisiteSettingForm extends Component {
                         </Button>
                     </Form.Item>
                     <Form.Item wrapperCol={{ span: 12}}>
-                        <Button type="primary" htmlType="submit">
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                        >
                             <FormattedMessage id='save' />
                         </Button>
                     </Form.Item>

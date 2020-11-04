@@ -25,6 +25,7 @@ export default class RequisiteSettingPage extends Component {
 
         this.setDataSource = this.setDataSource.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
+        this.hideModal = this.hideModal.bind(this);
     }
 
     showModal = (requisiteData = undefined) => {
@@ -34,7 +35,7 @@ export default class RequisiteSettingPage extends Component {
         })
     }
 
-    hideModal = () => {
+    hideModal() {
         this.setState({
             modalVisible: false,
             requisiteData: undefined,
