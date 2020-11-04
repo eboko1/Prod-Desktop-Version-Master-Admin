@@ -57,6 +57,10 @@ export default class RequisiteSettingPage extends Component {
 
     async updateDataSource() {
         await getData(this.setDataSource);
+        await this.setState({
+            modalVisible: false,
+            requisiteData: undefined,
+        })
         await this.forceUpdate();
     }
 
