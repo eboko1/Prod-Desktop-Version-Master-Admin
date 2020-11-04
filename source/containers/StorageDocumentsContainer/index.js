@@ -93,6 +93,7 @@ class StorageDocumentsContainer extends Component {
             filtredDocumentsList: [],
             documentFilters:      {
                 querySearch:          '',
+                typeFilter:           null,
                 documentTypeFilter:   null,
                 documentStatusFilter: null,
                 documentWarehouseFilter: ["", ""],
@@ -102,6 +103,7 @@ class StorageDocumentsContainer extends Component {
 
         this.onDateChange = this.onDateChange.bind(this);
         this.querySearchFilter = this.querySearchFilter.bind(this);
+        this.typeFilter = this.typeFilter.bind(this);
         this.documentTypeFilter = this.documentTypeFilter.bind(this);
         this.documentStatusFilter = this.documentStatusFilter.bind(this);
         this.documentWarehouseFilter = this.documentWarehouseFilter.bind(this);
@@ -160,6 +162,14 @@ class StorageDocumentsContainer extends Component {
         this.filterDocumentList();
     }
 
+    typeFilter(value) {
+        this.state.documentFilters.typeFilter = value;
+        this.setState({
+            update: true,
+        });
+        this.filterDocumentList();
+    }
+
     documentTypeFilter(value) {
         this.state.documentFilters.documentTypeFilter = value;
         this.setState({
@@ -177,6 +187,7 @@ class StorageDocumentsContainer extends Component {
     }
 
     documentWarehouseFilter(warehouseInput) {
+        console.log(warehouseInput)
         this.state.documentFilters.documentWarehouseFilter = warehouseInput;
         this.setState({
             update: true,
@@ -188,12 +199,13 @@ class StorageDocumentsContainer extends Component {
         const { storageDocumentsList, documentFilters } = this.state;
         const {
             querySearch,
+            typeFilter,
             documentTypeFilter,
             documentStatusFilter,
             documentWarehouseFilter,
         } = documentFilters;
         const isFiltred =
-            querySearch || documentTypeFilter || documentStatusFilter || (documentWarehouseFilter[0] || documentWarehouseFilter[1]);
+            querySearch || typeFilter || documentTypeFilter || documentStatusFilter || (documentWarehouseFilter[0] || documentWarehouseFilter[1]);
 
         if (!isFiltred) {
             this.setState({
@@ -214,6 +226,11 @@ class StorageDocumentsContainer extends Component {
                         String(objValue)
                             .toLowerCase()
                             .includes(querySearch.toLowerCase())));
+            }
+            if (typeFilter) {
+                resultList = resultList.filter(
+                    elem => elem.type == typeFilter,
+                );
             }
             if (documentTypeFilter) {
                 resultList = resultList.filter(
@@ -250,9 +267,10 @@ class StorageDocumentsContainer extends Component {
             this.setState({
                 documentFilters: {
                     querySearch:             querySearch,
+                    typeFilter:              typeFilter,    
                     documentTypeFilter:      documentTypeFilter,
                     documentStatusFilter:    documentStatusFilter,
-                    documentWarehouseFilter: documentWarehouseFilter,
+                    documentWarehouseFilter: documentWarehouseFilter || ["", ""],
                 },
                 isFiltred:            isFiltred,
                 filtredDocumentsList: resultList,
@@ -261,7 +279,6 @@ class StorageDocumentsContainer extends Component {
     }
 
     render() {
-        console.log(this);
         const { dateRange, filtredDocumentsList, isFiltred } = this.state;
 
         return (
@@ -278,6 +295,7 @@ class StorageDocumentsContainer extends Component {
                             dateRange={ dateRange }
                             dateFormat={ dateFormat }
                             onDateChange={ this.onDateChange }
+                            typeFilter={ this.typeFilter }
                             documentTypeFilter={ this.documentTypeFilter }
                             documentStatusFilter={ this.documentStatusFilter }
                         />
