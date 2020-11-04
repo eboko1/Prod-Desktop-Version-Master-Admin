@@ -58,6 +58,7 @@ export const StorageBalanceTotals = connect(mapStateToProps, {
                 </FilterSpace>
                 <WarehouseSelect
                     style={{margin: '0 0 0 24px'}}
+                    onChange={ (warehouseId) => props.setStoreBalanceFilters({warehouseId: warehouseId}) }
                 />
             </FiltersRow>
             <DataRow

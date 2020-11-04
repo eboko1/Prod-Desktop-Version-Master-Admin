@@ -529,7 +529,7 @@ export class WarehouseSelect extends React.Component {
     }
 
     render() {
-        const { intl: { formatMessage }, style } = this.props;
+        const { intl: { formatMessage }, style, onChange } = this.props;
         const { warehouses } = this.state;
         const options = warehouses.map((warehouse, key)=>(
             <Option 
@@ -548,6 +548,9 @@ export class WarehouseSelect extends React.Component {
                     style={{ minWidth: 220 }}
                     dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                     placeholder={formatMessage({id: 'storage'})}
+                    onChange={(value)=>{
+                        onChange(value);
+                    }}
                 >
                     {options}
                 </Select>

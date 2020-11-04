@@ -308,7 +308,7 @@ class DetailStorageModal extends React.Component{
                 render: (store, elem) => {
                     return this.props.stockMode ? 
                     (
-                        elem.countInWarehouses
+                        elem.available
                     ) :
                     (
                         <AvailabilityIndicator
@@ -486,7 +486,7 @@ class DetailStorageModal extends React.Component{
                         isFromStock: true,
                         defaultWarehouseId: elem.defaultWarehouseId,
                     };
-                    elem.store = [elem.countInWarehouses, 0, 0, 0];
+                    elem.store = [elem.available, 0, 0, 0];
 
                     if(that.state.brandFilter.length == 0 && that.props.brandFilter == elem.supplierName) {
                         that.state.brandFilter.push(elem.supplierId);
