@@ -30,35 +30,116 @@ class TecDocInfoModal extends React.Component{
             dataSource8: [],
             dataSource9: [],
             fetched: false,
+
+            parameterFilter: undefined,
+            valueFilter: undefined,
+            unitsFilter: undefined,
+            firstCommentFilter: undefined,
+            secondCommentFilter: undefined,
         };
 
         this.columnsTypeB = [
             {
-                title:     <FormattedMessage id="info_modal.parameter" />,
+                title:     ()=>{
+                    return (
+                        <div>
+                            <FormattedMessage id="info_modal.parameter" />
+                            <Input
+                                allowClear
+                                onChange={(event)=>{
+                                    const { value } = event.target;
+                                    this.setState({
+                                        parameterFilter: value,
+                                    })
+                                }}
+                            />
+                        </div>
+                    )
+                },
                 key:       'itemmptext',
                 dataIndex: 'itemmptext',
                 
             },
             {
-                title:     <FormattedMessage id="info_modal.value" />,
+                title:     ()=>{
+                    return (
+                        <div>
+                            <FormattedMessage id="info_modal.value" />
+                            <Input
+                                allowClear
+                                onChange={(event)=>{
+                                    const { value } = event.target;
+                                    this.setState({
+                                        valueFilter: value,
+                                    })
+                                }}
+                            />
+                        </div>
+                    )
+                },
                 key:       'valuetext',
                 dataIndex: 'valuetext',
                 
             },
             {
-                title:     <FormattedMessage id="info_modal.units" />,
+                title:     ()=>{
+                    return (
+                        <div>
+                            <FormattedMessage id="info_modal.units" />
+                            <Input
+                                allowClear
+                                onChange={(event)=>{
+                                    const { value } = event.target;
+                                    this.setState({
+                                        unitsFilter: value,
+                                    })
+                                }}
+                            />
+                        </div>
+                    )
+                },
                 key:       'quantitytext',
                 dataIndex: 'quantitytext',
                 
             },
             {
-                title:      `${this.props.intl.formatMessage({ id: 'comment' })} 1`,
+                title:     ()=>{
+                    return (
+                        <div>
+                            <FormattedMessage id="comment" /> 1
+                           <Input
+                                allowClear
+                                onChange={(event)=>{
+                                    const { value } = event.target;
+                                    this.setState({
+                                        firstCommentFilter: value,
+                                    })
+                                }}
+                            />
+                        </div>
+                    )
+                },
                 key:       'qualcoltext',
                 dataIndex: 'qualcoltext',
                 
             },
             {
-                title:     `${this.props.intl.formatMessage({ id: 'comment' })} 2`,
+                title:     ()=>{
+                    return (
+                        <div>
+                            <FormattedMessage id="comment" /> 2
+                            <Input
+                                allowClear
+                                onChange={(event)=>{
+                                    const { value } = event.target;
+                                    this.setState({
+                                        secondCommentFilter: value,
+                                    })
+                                }}
+                            />
+                        </div>
+                    )
+                },
                 key:       'addtext',
                 dataIndex: 'addtext',
                 
@@ -158,7 +239,99 @@ class TecDocInfoModal extends React.Component{
     }
 
     render() {
-        const { visible } = this.state;
+        const {
+            visible,
+            parameterFilter,
+            valueFilter,
+            unitsFilter,
+            firstCommentFilter,
+            secondCommentFilter,
+
+            dataSource0,
+            dataSource1,
+            dataSource2,
+            dataSource3,
+            dataSource4,
+            dataSource5,
+            dataSource6,
+            dataSource7,
+            dataSource8,
+            dataSource9,
+        } = this.state;
+
+        var dt0 = [...dataSource0],
+              dt1 = [...dataSource1],
+              dt2 = [...dataSource2],
+              dt3 = [...dataSource3],
+              dt4 = [...dataSource4],
+              dt5 = [...dataSource5],
+              dt6 = [...dataSource6],
+              dt7 = [...dataSource7],
+              dt8 = [...dataSource8],
+              dt9 = [...dataSource9]
+
+
+        if(parameterFilter) {
+            dt0 = dt0.filter((elem)=>elem.itemmptext && elem.itemmptext.toLowerCase().indexOf(parameterFilter.toLowerCase()) >= 0);
+            dt1 = dt1.filter((elem)=>elem.itemmptext && elem.itemmptext.toLowerCase().indexOf(parameterFilter.toLowerCase()) >= 0);
+            dt2 = dt2.filter((elem)=>elem.itemmptext && elem.itemmptext.toLowerCase().indexOf(parameterFilter.toLowerCase()) >= 0);
+            dt3 = dt3.filter((elem)=>elem.itemmptext && elem.itemmptext.toLowerCase().indexOf(parameterFilter.toLowerCase()) >= 0);
+            dt4 = dt4.filter((elem)=>elem.itemmptext && elem.itemmptext.toLowerCase().indexOf(parameterFilter.toLowerCase()) >= 0);
+            dt5 = dt5.filter((elem)=>elem.itemmptext && elem.itemmptext.toLowerCase().indexOf(parameterFilter.toLowerCase()) >= 0);
+            dt6 = dt6.filter((elem)=>elem.itemmptext && elem.itemmptext.toLowerCase().indexOf(parameterFilter.toLowerCase()) >= 0);
+            dt7 = dt7.filter((elem)=>elem.itemmptext && elem.itemmptext.toLowerCase().indexOf(parameterFilter.toLowerCase()) >= 0);
+            dt8 = dt8.filter((elem)=>elem.itemmptext && elem.itemmptext.toLowerCase().indexOf(parameterFilter.toLowerCase()) >= 0);
+            dt9 = dt9.filter((elem)=>elem.itemmptext && elem.itemmptext.toLowerCase().indexOf(parameterFilter.toLowerCase()) >= 0);
+        }
+        if(valueFilter) {
+            dt0 = dt0.filter((elem)=>elem.valuetext && elem.valuetext.toLowerCase().indexOf(valueFilter.toLowerCase()) >= 0);
+            dt1 = dt1.filter((elem)=>elem.valuetext && elem.valuetext.toLowerCase().indexOf(valueFilter.toLowerCase()) >= 0);
+            dt2 = dt2.filter((elem)=>elem.valuetext && elem.valuetext.toLowerCase().indexOf(valueFilter.toLowerCase()) >= 0);
+            dt3 = dt3.filter((elem)=>elem.valuetext && elem.valuetext.toLowerCase().indexOf(valueFilter.toLowerCase()) >= 0);
+            dt4 = dt4.filter((elem)=>elem.valuetext && elem.valuetext.toLowerCase().indexOf(valueFilter.toLowerCase()) >= 0);
+            dt5 = dt5.filter((elem)=>elem.valuetext && elem.valuetext.toLowerCase().indexOf(valueFilter.toLowerCase()) >= 0);
+            dt6 = dt6.filter((elem)=>elem.valuetext && elem.valuetext.toLowerCase().indexOf(valueFilter.toLowerCase()) >= 0);
+            dt7 = dt7.filter((elem)=>elem.valuetext && elem.valuetext.toLowerCase().indexOf(valueFilter.toLowerCase()) >= 0);
+            dt8 = dt8.filter((elem)=>elem.valuetext && elem.valuetext.toLowerCase().indexOf(valueFilter.toLowerCase()) >= 0);
+            dt9 = dt9.filter((elem)=>elem.valuetext && elem.valuetext.toLowerCase().indexOf(valueFilter.toLowerCase()) >= 0);
+        }
+        if(unitsFilter) {
+            dt0 = dt0.filter((elem)=>elem.quantitytext && elem.quantitytext.toLowerCase().indexOf(unitsFilter.toLowerCase()) >= 0);
+            dt1 = dt1.filter((elem)=>elem.quantitytext && elem.quantitytext.toLowerCase().indexOf(unitsFilter.toLowerCase()) >= 0);
+            dt2 = dt2.filter((elem)=>elem.quantitytext && elem.quantitytext.toLowerCase().indexOf(unitsFilter.toLowerCase()) >= 0);
+            dt3 = dt3.filter((elem)=>elem.quantitytext && elem.quantitytext.toLowerCase().indexOf(unitsFilter.toLowerCase()) >= 0);
+            dt4 = dt4.filter((elem)=>elem.quantitytext && elem.quantitytext.toLowerCase().indexOf(unitsFilter.toLowerCase()) >= 0);
+            dt5 = dt5.filter((elem)=>elem.quantitytext && elem.quantitytext.toLowerCase().indexOf(unitsFilter.toLowerCase()) >= 0);
+            dt6 = dt6.filter((elem)=>elem.quantitytext && elem.quantitytext.toLowerCase().indexOf(unitsFilter.toLowerCase()) >= 0);
+            dt7 = dt7.filter((elem)=>elem.quantitytext && elem.quantitytext.toLowerCase().indexOf(unitsFilter.toLowerCase()) >= 0);
+            dt8 = dt8.filter((elem)=>elem.quantitytext && elem.quantitytext.toLowerCase().indexOf(unitsFilter.toLowerCase()) >= 0);
+            dt9 = dt9.filter((elem)=>elem.quantitytext && elem.quantitytext.toLowerCase().indexOf(unitsFilter.toLowerCase()) >= 0);
+        }
+        if(firstCommentFilter) {
+            dt0 = dt0.filter((elem)=>elem.qualcoltext && elem.qualcoltext.toLowerCase().indexOf(firstCommentFilter.toLowerCase()) >= 0);
+            dt1 = dt1.filter((elem)=>elem.qualcoltext && elem.qualcoltext.toLowerCase().indexOf(firstCommentFilter.toLowerCase()) >= 0);
+            dt2 = dt2.filter((elem)=>elem.qualcoltext && elem.qualcoltext.toLowerCase().indexOf(firstCommentFilter.toLowerCase()) >= 0);
+            dt3 = dt3.filter((elem)=>elem.qualcoltext && elem.qualcoltext.toLowerCase().indexOf(firstCommentFilter.toLowerCase()) >= 0);
+            dt4 = dt4.filter((elem)=>elem.qualcoltext && elem.qualcoltext.toLowerCase().indexOf(firstCommentFilter.toLowerCase()) >= 0);
+            dt5 = dt5.filter((elem)=>elem.qualcoltext && elem.qualcoltext.toLowerCase().indexOf(firstCommentFilter.toLowerCase()) >= 0);
+            dt6 = dt6.filter((elem)=>elem.qualcoltext && elem.qualcoltext.toLowerCase().indexOf(firstCommentFilter.toLowerCase()) >= 0);
+            dt7 = dt7.filter((elem)=>elem.qualcoltext && elem.qualcoltext.toLowerCase().indexOf(firstCommentFilter.toLowerCase()) >= 0);
+            dt8 = dt8.filter((elem)=>elem.qualcoltext && elem.qualcoltext.toLowerCase().indexOf(firstCommentFilter.toLowerCase()) >= 0);
+            dt9 = dt9.filter((elem)=>elem.qualcoltext && elem.qualcoltext.toLowerCase().indexOf(firstCommentFilter.toLowerCase()) >= 0);
+        }
+        if(secondCommentFilter) {
+            dt0 = dt0.filter((elem)=>elem.addtext && elem.addtext.toLowerCase().indexOf(secondCommentFilter.toLowerCase()) >= 0);
+            dt1 = dt1.filter((elem)=>elem.addtext && elem.addtext.toLowerCase().indexOf(secondCommentFilter.toLowerCase()) >= 0);
+            dt2 = dt2.filter((elem)=>elem.addtext && elem.addtext.toLowerCase().indexOf(secondCommentFilter.toLowerCase()) >= 0);
+            dt3 = dt3.filter((elem)=>elem.addtext && elem.addtext.toLowerCase().indexOf(secondCommentFilter.toLowerCase()) >= 0);
+            dt4 = dt4.filter((elem)=>elem.addtext && elem.addtext.toLowerCase().indexOf(secondCommentFilter.toLowerCase()) >= 0);
+            dt5 = dt5.filter((elem)=>elem.addtext && elem.addtext.toLowerCase().indexOf(secondCommentFilter.toLowerCase()) >= 0);
+            dt6 = dt6.filter((elem)=>elem.addtext && elem.addtext.toLowerCase().indexOf(secondCommentFilter.toLowerCase()) >= 0);
+            dt7 = dt7.filter((elem)=>elem.addtext && elem.addtext.toLowerCase().indexOf(secondCommentFilter.toLowerCase()) >= 0);
+            dt8 = dt8.filter((elem)=>elem.addtext && elem.addtext.toLowerCase().indexOf(secondCommentFilter.toLowerCase()) >= 0);
+            dt9 = dt9.filter((elem)=>elem.addtext && elem.addtext.toLowerCase().indexOf(secondCommentFilter.toLowerCase()) >= 0);
+        }
+
         return (
             <>
                 <Icon
@@ -186,7 +359,7 @@ class TecDocInfoModal extends React.Component{
                             <TabPane tab="Жидкости" key="1">
                                 <div className={Styles.tableHeader}>Спецификации масел и технических жидкостей</div>
                                 <Table
-                                    dataSource={this.state.dataSource0}
+                                    dataSource={dt0}
                                     columns={this.columnsTypeA}
                                 />
                                 
@@ -194,63 +367,63 @@ class TecDocInfoModal extends React.Component{
                             <TabPane tab="Литры" key="2">
                                 <div className={Styles.tableHeader}>Объёмы масел и технических жидкостей</div>
                                 <Table
-                                    dataSource={this.state.dataSource1}
+                                    dataSource={dt1}
                                     columns={this.columnsTypeB}
                                 />
                             </TabPane>
                             <TabPane tab="Интервалы" key="3">
                                 <div className={Styles.tableHeader}>Интервалы замены запчастей, масел и жидкостей</div>
                                 <Table
-                                    dataSource={this.state.dataSource2}
+                                    dataSource={dt2}
                                     columns={this.columnsTypeA}
                                 />
                             </TabPane>
                             <TabPane tab="Лампочки" key="4">
                                 <div className={Styles.tableHeader}>Спецификации автолампочек</div>
                                 <Table
-                                    dataSource={this.state.dataSource3}
+                                    dataSource={dt3}
                                     columns={this.columnsTypeA}
                                 />
                             </TabPane>
                             <TabPane tab="Тормоза" key="5">
                                 <div className={Styles.tableHeader}>Параметры тормозов</div>
                                 <Table
-                                    dataSource={this.state.dataSource4}
+                                    dataSource={dt4}
                                     columns={this.columnsTypeA}
                                 />
                             </TabPane>
                             <TabPane tab="Электрика" key="6">
                                 <div className={Styles.tableHeader}>Данные по электрике автомобиля</div>
                                 <Table
-                                    dataSource={this.state.dataSource5}
+                                    dataSource={dt5}
                                     columns={this.columnsTypeA}
                                 />
                             </TabPane>
                             <TabPane tab="Давление в шинах" key="7">
                                 <div className={Styles.tableHeader}>Давление в шинах</div>
                                 <Table
-                                    dataSource={this.state.dataSource6}
+                                    dataSource={dt6}
                                     columns={this.columnsTypeB}
                                 />
                             </TabPane>
                             <TabPane tab="Моменты затяжки" key="8">
                                 <div className={Styles.tableHeader}>Моменты затяжки креплений узлов и деталей</div>
                                 <Table
-                                    dataSource={this.state.dataSource7}
+                                    dataSource={dt7}
                                     columns={this.columnsTypeB}
                                 />
                             </TabPane>
                             <TabPane tab="Углы развала" key="9">
                                 <div className={Styles.tableHeader}>Углы развала-схождения автомобиля</div>
                                 <Table
-                                    dataSource={this.state.dataSource8}
+                                    dataSource={dt8}
                                     columns={this.columnsTypeB}
                                 />
                             </TabPane>
                             <TabPane tab="Прочее" key="10">
                                 <div className={Styles.tableHeader}>Прочие параметры</div>
                                 <Table
-                                    dataSource={this.state.dataSource9}
+                                    dataSource={dt9}
                                     columns={this.columnsTypeB}
                                 />
                             </TabPane>

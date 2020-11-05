@@ -281,7 +281,11 @@ class DetailStorageModal extends React.Component{
                 title:  ()=>{
                     return (
                         <div>
-                            <FormattedMessage id="order_form_table.store" />
+                            {
+                                this.props.stockMode ? 
+                                    <span><FormattedMessage id="storage.in_stock" /> / <FormattedMessage id="storage.available" /></span> :
+                                    <FormattedMessage id="order_form_table.store" />
+                            }
                             <div style={{fontWeight: '400', fontSize: 12}}>
                                 <FormattedMessage id='in_stock' />
                                 <Checkbox
@@ -308,7 +312,7 @@ class DetailStorageModal extends React.Component{
                 render: (store, elem) => {
                     return this.props.stockMode ? 
                     (
-                        elem.available
+                        <span>{elem.countInWarehouses} / {elem.available}</span>
                     ) :
                     (
                         <AvailabilityIndicator
@@ -466,6 +470,7 @@ class DetailStorageModal extends React.Component{
                 return response.json();
             })
             .then(function(data) {
+                console.log(data);
                 const brandOptions = [];
                 data.list.map((elem, key)=>{
                     elem.key = key;

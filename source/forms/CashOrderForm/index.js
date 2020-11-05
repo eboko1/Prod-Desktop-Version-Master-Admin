@@ -401,6 +401,7 @@ export class CashOrderForm extends Component {
         this.props.form.setFieldsValue({
             orderId: order.id,
             clientId: order.clientId,
+            increase: order.remainingSum,
         });
         this.props.onOrderSelect(order);
     };
