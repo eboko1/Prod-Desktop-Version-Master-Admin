@@ -97,7 +97,10 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator('formType', { initialValue: "ENTREPRENEUR" })(
+                    {getFieldDecorator('formType', {
+                        rules: [{ required: true, message: formatMessage({id: 'storage_document.error.required_fields'}), }],
+                        initialValue: "ENTREPRENEUR" 
+                    })(
                         <Radio.Group
                             onChange={(event)=>{
                                 this.setState({
@@ -162,7 +165,10 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator('isTaxPayer', { initialValue: false })(
+                    {getFieldDecorator('isTaxPayer', {
+                         rules: [{ required: true, message: formatMessage({id: 'storage_document.error.required_fields'}), }],
+                        initialValue: false
+                    })(
                         <Radio.Group>
                             <Radio value={true}><FormattedMessage id='yes'/></Radio>
                             <Radio value={false}><FormattedMessage id='no'/></Radio>

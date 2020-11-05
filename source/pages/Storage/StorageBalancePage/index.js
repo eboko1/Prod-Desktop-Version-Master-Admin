@@ -39,6 +39,7 @@ export const StorageBalancePage = injectIntl(({intl}) => {
                                 notification.success({
                                     message: intl.formatMessage({id: 'storage_document.reserve_all_success'})
                                 })
+                                window.location.reload();
                             }
                             else {
                                 notification.warning({

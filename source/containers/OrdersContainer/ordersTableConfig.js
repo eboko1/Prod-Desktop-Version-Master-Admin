@@ -184,7 +184,7 @@ export function columnsConfig(
     };
 
     const sumCol = {
-        title:     <FormattedMessage id='orders.sum' />,
+        title:     <FormattedMessage id='orders.sum_without_VAT' /> ,
         dataIndex: 'totalSum',
         key:       'totalSum',
         sorter:    true,
