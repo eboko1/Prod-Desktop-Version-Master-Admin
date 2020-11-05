@@ -42,18 +42,18 @@ export class RequisiteSettingForm extends Component {
     handleSubmit = async (e) => {
         const id = this.props.requisiteData && this.props.requisiteData.id;
         e.preventDefault();
-        await this.props.form.validateFieldsAndScroll((err, values) => {
+        this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 values.itn = values.itn || values.ifi;
                 if(values.formName) values.formType = null;
                 if(id) {
-                    updateRequisite(id, values);
+                    updateRequisite(id, values, this.props.hideModal);
                 } else {
-                    postRequisite(values);
+                    postRequisite(values, this.props.hideModal);
                 }
             }
         });
-        await this.props.hideModal();
+        this.props.hideModal();
     };
 
     componentDidUpdate(prevProps) {
@@ -97,7 +97,10 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator('formType', { initialValue: "ENTREPRENEUR" })(
+                    {getFieldDecorator('formType', {
+                        rules: [{ required: true, message: formatMessage({id: 'storage_document.error.required_fields'}), }],
+                        initialValue: "ENTREPRENEUR" 
+                    })(
                         <Radio.Group
                             onChange={(event)=>{
                                 this.setState({
@@ -162,7 +165,10 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator('isTaxPayer', { initialValue: false })(
+                    {getFieldDecorator('isTaxPayer', {
+                         rules: [{ required: true, message: formatMessage({id: 'storage_document.error.required_fields'}), }],
+                        initialValue: false
+                    })(
                         <Radio.Group>
                             <Radio value={true}><FormattedMessage id='yes'/></Radio>
                             <Radio value={false}><FormattedMessage id='no'/></Radio>
@@ -210,7 +216,10 @@ export class RequisiteSettingForm extends Component {
                         </Button>
                     </Form.Item>
                     <Form.Item wrapperCol={{ span: 12}}>
-                        <Button type="primary" htmlType="submit">
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                        >
                             <FormattedMessage id='save' />
                         </Button>
                     </Form.Item>

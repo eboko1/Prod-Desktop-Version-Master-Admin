@@ -59,6 +59,7 @@ class StorageDocumentsFilters extends Component {
         super(props);
         this.state = {
             searchQuery: undefined,
+            documentType: undefined,
         };
 
         const { pathname } = props.history.location;
@@ -71,34 +72,66 @@ class StorageDocumentsFilters extends Component {
             dateRange,
             dateFormat,
             onDateChange,
+            typeFilter,
             documentTypeFilter,
             documentStatusFilter,
             type,
         } = this.props;
+        const {
+            documentType
+        } = this.state;
 
         return (
             <div className={ Styles.filtersWrap }>
-               {!isTransfer && 
                <div className={ Styles.filterRadioButtonGroup }>
-                    <Radio.Group
-                        //buttonStyle="solid"
-                        onChange={ event => {
-                            documentTypeFilter(event.target.value);
-                        } }
-                        defaultValue={ null }
+                    <Dropdown
+                        className={Styles.datePickerButton}
+                        overlay={
+                            <Radio.Group
+                                //buttonStyle="solid"
+                                onChange={ event => {
+                                    const { value } = event.target;
+                                    if(type == ORDER) {
+                                        if(value == null) {
+                                            typeFilter(null);
+                                            documentTypeFilter(null);
+                                        } else if(value == ORDERINCOME) {
+                                            typeFilter(INCOME);
+                                            documentTypeFilter(SUPPLIER);
+                                        } else if(value == SUPPLIER) {
+                                            typeFilter(EXPENSE);
+                                            documentTypeFilter(value);
+                                        } else {
+                                            typeFilter(null);
+                                            documentTypeFilter(value);
+                                        }
+                                    } else {
+                                        documentTypeFilter(value);
+                                    }
+                                    this.setState({
+                                        documentType: event.target.value
+                                    })
+                                } }
+                                defaultValue={ null }
+                            >
+                                <Radio.Button value={ null }>
+                                    <FormattedMessage id='storage_document.all' />
+                                </Radio.Button>
+                                {typeToDocumentType[type.toLowerCase()].documentType.map((counterpart, i)=>{
+                                    return (
+                                    <Radio.Button value={ counterpart } key={ i }>
+                                        <FormattedMessage id={`storage_document.docType.${type}.${counterpart}`}/>
+                                    </Radio.Button>
+                                    )
+                                })}
+                            </Radio.Group>
+                        }
                     >
-                        <Radio.Button value={ null }>
-                            <FormattedMessage id='storage_document.all' />
-                        </Radio.Button>
-                        {typeToDocumentType[type.toLowerCase()].documentType.map((counterpart, i)=>{
-                            return (
-                            <Radio.Button value={ counterpart } key={ i }>
-                                <FormattedMessage id={`storage_document.docType.${type}.${counterpart}`}/>
-                            </Radio.Button>
-                            )
-                        })}
-                    </Radio.Group>
-                </div>}
+                        <Button>
+                            {documentType ? <FormattedMessage id={`storage_document.docType.${type}.${documentType}`}/> : <FormattedMessage id='storage_document.all' />}
+                        </Button>
+                    </Dropdown>
+                </div>
                 <div className={ Styles.filterRadioButtonGroup }>
                     <Radio.Group
                         //buttonStyle="solid"
@@ -496,7 +529,7 @@ export class WarehouseSelect extends React.Component {
     }
 
     render() {
-        const { intl: { formatMessage }, style } = this.props;
+        const { intl: { formatMessage }, style, onChange } = this.props;
         const { warehouses } = this.state;
         const options = warehouses.map((warehouse, key)=>(
             <Option 
@@ -515,6 +548,9 @@ export class WarehouseSelect extends React.Component {
                     style={{ minWidth: 220 }}
                     dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                     placeholder={formatMessage({id: 'storage'})}
+                    onChange={(value)=>{
+                        onChange(value);
+                    }}
                 >
                     {options}
                 </Select>

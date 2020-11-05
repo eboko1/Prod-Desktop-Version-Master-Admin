@@ -206,7 +206,6 @@ class OrderPage extends Component {
 
     _onStatusChange = (status, redirectStatus, options, redirectTo) => {
         const {allServices, allDetails, selectedClient, history} = this.props;
-        console.log(this, status)
         const form = this.orderFormRef.props.form;
         const orderFormValues = form.getFieldsValue();
         const requiredFields = requiredFieldsOnStatuses(orderFormValues)[

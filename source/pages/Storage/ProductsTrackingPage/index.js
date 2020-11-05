@@ -86,13 +86,13 @@ export const ProductsTrackingPage = withRouter(
                         filters={ props.filters }
                     />
                     <WarehouseSelect 
-                        style={{margin: '0 0 0 8px'}}
+                        style={{margin: '0 8px 0 8px'}}
+                        onChange={ (warehouseId) => props.setTrackingFilters({warehouseId: warehouseId})}
                     />
                     <StorageDateFilter
                         minimize
                         dateRange={[moment(filters.startDate), moment(filters.endDate)]}
                         onDateChange={ setDaterange }
-                        style={{margin: '0 0 0 8px'}}
                     />
                 </ResponsiveView>
             </Filters>
@@ -109,6 +109,10 @@ export const ProductsTrackingPage = withRouter(
                         <StoreProductsSelect
                             setFilters={ props.setTrackingFilters }
                             filters={ props.filters }
+                        />
+                        <WarehouseSelect 
+                            style={{margin: '0 8px 0 8px'}}
+                            onChange={ (warehouseId) => props.setTrackingFilters({warehouseId: warehouseId})}
                         />
                         <StorageDateFilter
                             minimize

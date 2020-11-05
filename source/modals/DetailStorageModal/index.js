@@ -7,9 +7,10 @@ import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
 import { permissions, isForbidden } from "utils";
 import { DetailSupplierModal } from 'modals';
-import { AvailabilityIndicator } from 'components';
+import { AvailabilityIndicator, WarehouseSelect } from 'components';
 // own
 import Styles from './styles.m.css';
+const { info } = Modal;
 const Option = Select.Option;
 const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
@@ -208,7 +209,16 @@ class DetailStorageModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.supplier" />,
+                title:  ()=>{
+                    return (
+                        <div>
+                            <FormattedMessage id="order_form_table.supplier" />
+                            <WarehouseSelect 
+                                onChange={ (warehouseId) => this.fetchData(warehouseId) }
+                            />
+                        </div>
+                    )
+                },
                 key:       'businessSupplierName',
                 dataIndex: 'businessSupplierName',
                 width:     '15%',
@@ -221,15 +231,47 @@ class DetailStorageModal extends React.Component{
                                 disabled
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                             />
-                            <DetailSupplierModal
-                                disabled={this.props.stockMode}
-                                user={this.props.user}
-                                setStoreSupplier={this.setSupplier}
-                                keyValue={elem.key}
-                                brandId={elem.brandId}
-                                detailCode={elem.partNumber}
-                                storeGroupId={this.props.storeGroupId || elem.storeGroupId}
-                            />
+                            {this.props.stockMode ?
+                                <Button
+                                    disabled
+                                    type='primary'
+                                    onClick={()=>{
+                                        info({
+                                            title:  ()=>(
+                                                    <div>
+                                                        <p>{this.props.intl.formatMessage({id: 'order_form_table.detail_code'})} {elem.detailCode}</p>
+                                                        <p>{this.props.intl.formatMessage({id: 'order_form_table.brand'})} {elem.brandName}</p>
+                                                    </div>
+                                            ),
+                                            content:' aaa',
+                                            cancelButtonProps: {style: {display: 'none'}},
+                                            width: 'fit-content',
+                                            style: {
+                                                minWidth: 600,
+                                            },
+                                        });
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            width: 18,
+                                            height: 18,
+                                            backgroundColor: 'black',
+                                            mask: `url(${images.stockIcon}) no-repeat center / contain`,
+                                            WebkitMask: `url(${images.stockIcon}) no-repeat center / contain`,
+                                        }}
+                                    ></div>
+                                </Button> :
+                                <DetailSupplierModal
+                                    disabled={this.props.stockMode}
+                                    user={this.props.user}
+                                    setStoreSupplier={this.setSupplier}
+                                    keyValue={elem.key}
+                                    brandId={elem.brandId}
+                                    detailCode={elem.partNumber}
+                                    storeGroupId={this.props.storeGroupId || elem.storeGroupId}
+                                />
+                            }
                         </div>
                     )
                 }
@@ -281,7 +323,11 @@ class DetailStorageModal extends React.Component{
                 title:  ()=>{
                     return (
                         <div>
-                            <FormattedMessage id="order_form_table.store" />
+                            {
+                                this.props.stockMode ? 
+                                    <span><FormattedMessage id="storage.in_stock" /> / <FormattedMessage id="storage.available" /></span> :
+                                    <FormattedMessage id="order_form_table.store" />
+                            }
                             <div style={{fontWeight: '400', fontSize: 12}}>
                                 <FormattedMessage id='in_stock' />
                                 <Checkbox
@@ -308,7 +354,7 @@ class DetailStorageModal extends React.Component{
                 render: (store, elem) => {
                     return this.props.stockMode ? 
                     (
-                        elem.countInWarehouses
+                        <span>{elem.countInWarehouses} / {elem.available}</span>
                     ) :
                     (
                         <AvailabilityIndicator
@@ -445,11 +491,13 @@ class DetailStorageModal extends React.Component{
         })
     };
 
-    fetchData() {
+    fetchData(warehouseId) {
         if(this.props.stockMode) {
             var that = this;
             let token = localStorage.getItem('_my.carbook.pro_token');
             let url = __API_URL__ + `/store_products?all=true`;
+            if(warehouseId) url += `&warehouseId=${warehouseId}`;
+            console.log(url)
             fetch(url, {
                 method: "GET",
                 headers: {
@@ -466,6 +514,7 @@ class DetailStorageModal extends React.Component{
                 return response.json();
             })
             .then(function(data) {
+                console.log(data);
                 const brandOptions = [];
                 data.list.map((elem, key)=>{
                     elem.key = key;
@@ -486,7 +535,7 @@ class DetailStorageModal extends React.Component{
                         isFromStock: true,
                         defaultWarehouseId: elem.defaultWarehouseId,
                     };
-                    elem.store = [elem.countInWarehouses, 0, 0, 0];
+                    elem.store = [elem.available, 0, 0, 0];
 
                     if(that.state.brandFilter.length == 0 && that.props.brandFilter == elem.supplierName) {
                         that.state.brandFilter.push(elem.supplierId);
