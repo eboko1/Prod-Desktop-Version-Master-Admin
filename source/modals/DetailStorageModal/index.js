@@ -40,7 +40,6 @@ class DetailStorageModal extends React.Component{
             {
                 title:  <FormattedMessage id="photo" />,
                 key:       'photo',
-                width:     '10%',
                 render: (elem)=>{
                     const src = elem.images[0] ? 
                         `${__TECDOC_IMAGES_URL__}/${elem.supplierId}/${elem.images[0].pictureName}` : 
@@ -98,7 +97,6 @@ class DetailStorageModal extends React.Component{
                 },
                 key:       'code',
                 dataIndex: 'partNumber',
-                width:     '15%',
                 sorter: (a, b) => a.partNumber.localeCompare(b.partNumber),
                 sortDirections: ['descend', 'ascend'],
                 render: (data, elem)=>{
@@ -154,7 +152,6 @@ class DetailStorageModal extends React.Component{
                 },
                 key:       'brand',
                 dataIndex: 'supplierName',
-                width:     '10%',
                 sorter: (a, b) => a.supplierName.localeCompare(b.supplierName),
                 sortDirections: ['descend', 'ascend'],
                 render: (data, elem)=>{
@@ -182,7 +179,6 @@ class DetailStorageModal extends React.Component{
                 },
                 key:       'attributes',
                 dataIndex: 'attributes',
-                width:     '25%',
                 render: (attributes, elem)=>{
                     let title = '';
                     let data = '';
@@ -221,7 +217,6 @@ class DetailStorageModal extends React.Component{
                 },
                 key:       'businessSupplierName',
                 dataIndex: 'businessSupplierName',
-                width:     '15%',
                 render: (data, elem)=>{
                     return (
                         <div style={{display: "flex"}}>
@@ -232,36 +227,9 @@ class DetailStorageModal extends React.Component{
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                             />
                             {this.props.stockMode ?
-                                <Button
-                                    disabled
-                                    type='primary'
-                                    onClick={()=>{
-                                        info({
-                                            title:  ()=>(
-                                                    <div>
-                                                        <p>{this.props.intl.formatMessage({id: 'order_form_table.detail_code'})} {elem.detailCode}</p>
-                                                        <p>{this.props.intl.formatMessage({id: 'order_form_table.brand'})} {elem.brandName}</p>
-                                                    </div>
-                                            ),
-                                            content:' aaa',
-                                            cancelButtonProps: {style: {display: 'none'}},
-                                            width: 'fit-content',
-                                            style: {
-                                                minWidth: 600,
-                                            },
-                                        });
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            width: 18,
-                                            height: 18,
-                                            backgroundColor: 'black',
-                                            mask: `url(${images.stockIcon}) no-repeat center / contain`,
-                                            WebkitMask: `url(${images.stockIcon}) no-repeat center / contain`,
-                                        }}
-                                    ></div>
-                                </Button> :
+                                <DetailWarehousesCountModal
+                                    productId={elem.id}
+                                /> :
                                 <DetailSupplierModal
                                     disabled={this.props.stockMode}
                                     user={this.props.user}
@@ -280,7 +248,6 @@ class DetailStorageModal extends React.Component{
                 title:  <FormattedMessage id="order_form_table.purchasePrice" />,
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
-                width:     '6%',
                 render: (data) => {
                     let strVal = String(Math.round(data*10)/10);
                     return (
@@ -301,7 +268,6 @@ class DetailStorageModal extends React.Component{
                         </div>,
                 key:       'salePrice',
                 dataIndex: 'salePrice',
-                width:     '6%',
                 sorter: (a, b) => {
                     if(!this.state.inStock) {
                         this.setState({
@@ -344,7 +310,6 @@ class DetailStorageModal extends React.Component{
                 },
                 key:       'store',
                 dataIndex: 'store',
-                width:     '8%',
                 sorter: (a, b) => {
                     let aStore = a.store ? a.store[0] : 0;
                     let bStore = b.store ? b.store[0] : 0;
@@ -365,7 +330,6 @@ class DetailStorageModal extends React.Component{
             },
             {
                 key:       'select',
-                width:     '5%',
                 render: (elem)=>{
                     var supplierBrandId = elem.supplierBrandId ? elem.supplierBrandId : (elem.price ? elem.price.supplierBrandId : undefined);
                     var brandId = elem.brandId ? elem.brandId : (elem.price ? elem.price.brandId : undefined);
@@ -864,7 +828,7 @@ export class PhotoModal extends React.Component{
 
     render() {
         return(
-            <>
+            <div>
                 <div style={{verticalAlign: 'middle'}}
                     onClick={()=>{
                         this.setState({
@@ -908,7 +872,101 @@ export class PhotoModal extends React.Component{
                         ))}
                     </div>
                 </Modal>
-            </>
+            </div>
+        )
+    }
+}
+
+class DetailWarehousesCountModal extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state={
+            visible: false,
+            countsOnWarehouses: [],
+            brandName: undefined,
+            code: undefined,
+        }
+    }
+
+    handleCancel = () => {
+        this.setState({
+            visible: false,
+        })
+    }
+
+    fetchData = () => {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_products/${this.props.productId}?showCountsOnWarehouses=true`;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            },
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+            that.setState({
+                brandName: data.brandName || data.brand && data.brand.name,
+                code: data.code,
+                countsOnWarehouses: data.countsOnWarehouses,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error);
+        });
+    }
+
+    render() {
+        return(
+            <div>
+                <Button
+                    type='primary'
+                    onClick={()=>{
+                        this.fetchData();
+                        this.setState({
+                            visible: true
+                        });
+                    }}
+                >
+                    <div
+                        style={{
+                            width: 18,
+                            height: 18,
+                            backgroundColor: 'white',
+                            mask: `url(${images.stockIcon}) no-repeat center / contain`,
+                            WebkitMask: `url(${images.stockIcon}) no-repeat center / contain`,
+                        }}
+                    ></div>
+                </Button>
+                <Modal
+                    visible={this.state.visible}
+                    footer={null}
+                    title={<FormattedMessage id="storage.in_stock" />}
+                    onCancel={this.handleCancel}
+                >
+                    <div>
+                        <FormattedMessage id="order_form_table.detail_code" /> {this.state.code}
+                    </div>
+                    <div>
+                        <FormattedMessage id="order_form_table.brand" /> {this.state.brandName}
+                    </div>
+                    {this.state.countsOnWarehouses.map((warehouse, key)=>(
+                        <div key={key}>
+                            {warehouse.name} {warehouse.countOnWarehouse}
+                        </div>
+                    ))}
+                </Modal>
+            </div>
         )
     }
 }
