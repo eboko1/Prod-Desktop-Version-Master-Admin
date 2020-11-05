@@ -497,7 +497,7 @@ class DiagnosticTable extends Component {
                                                 'order_form_table.diagnostic.filter',
                                         }) }
                                     >
-                                        <Button
+                                        <span
                                             className={
                                                 Styles.filter_half_button
                                             }
@@ -508,8 +508,8 @@ class DiagnosticTable extends Component {
                                             } }
                                         >
                                             <FormattedMessage id='order_form_table.diagnostic.status.bad' />
-                                        </Button>
-                                        <Button
+                                        </span>
+                                        <span
                                             className={
                                                 Styles.filter_half_button
                                             }
@@ -520,7 +520,7 @@ class DiagnosticTable extends Component {
                                             } }
                                         >
                                             <FormattedMessage id='order_form_table.diagnostic.status.critical' />
-                                        </Button>
+                                        </span>
                                     </Button>
                                     <Input
                                         style={

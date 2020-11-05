@@ -392,7 +392,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         placeholder={this._getLocalization(
                             "add_order_form.client_comments",
                         )}
-                        autosize={this.commentsAutoSize}
+                        autoSize={this.commentsAutoSize}
                     />
                     <DecoratedTextArea
                         errors={errors}
@@ -413,7 +413,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         placeholder={this._getLocalization(
                             "add_order_form.vehicle_condition",
                         )}
-                        autosize={this.commentsAutoSize}
+                        autoSize={this.commentsAutoSize}
                     />
 
                     <DecoratedTextArea
@@ -435,7 +435,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         placeholder={this._getLocalization(
                             "add_order_form.business_comment",
                         )}
-                        autosize={this.commentsAutoSize}
+                        autoSize={this.commentsAutoSize}
                     />
 
                     <DecoratedTextArea
@@ -457,7 +457,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         placeholder={this._getLocalization(
                             "add_order_form.service_recommendations",
                         )}
-                        autosize={this.commentsAutoSize}
+                        autoSize={this.commentsAutoSize}
                     />
                 </TabPane>
                 {!addOrderForm && (

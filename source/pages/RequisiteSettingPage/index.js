@@ -24,6 +24,8 @@ export default class RequisiteSettingPage extends Component {
         };
 
         this.setDataSource = this.setDataSource.bind(this);
+        this.updateDataSource = this.updateDataSource.bind(this);
+        this.hideModal = this.hideModal.bind(this);
     }
 
     showModal = (requisiteData = undefined) => {
@@ -33,15 +35,16 @@ export default class RequisiteSettingPage extends Component {
         })
     }
 
-    hideModal = () => {
+    hideModal() {
         this.setState({
             modalVisible: false,
             requisiteData: undefined,
         })
+        this.updateDataSource();
     }
 
     componentDidMount() {
-        getData(this.setDataSource);
+        this.updateDataSource();
     }
 
     setDataSource(data) {
@@ -51,6 +54,15 @@ export default class RequisiteSettingPage extends Component {
         this.setState({
             dataSource: data,
         })
+    }
+
+    async updateDataSource() {
+        await getData(this.setDataSource);
+        await this.setState({
+            modalVisible: false,
+            requisiteData: undefined,
+        })
+        await this.forceUpdate();
     }
 
     render() {
@@ -73,6 +85,7 @@ export default class RequisiteSettingPage extends Component {
                     hideModal={this.hideModal}
                     requisiteData={requisiteData}
                     dataSource={dataSource}
+                    updateDataSource={this.updateDataSource}
                 />
             </Layout>
         );

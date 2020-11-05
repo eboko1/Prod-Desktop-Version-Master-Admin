@@ -215,9 +215,13 @@ export default class OrderFormHeader extends Component {
 
     _getBeginDatetimeConfig() {
         const { schedule } = this.props;
-        const { disabledDate, beginTime } = getDateTimeConfig(void 0, schedule);
+        const { disabledDate } = getDateTimeConfig(void 0, schedule);
+        const { beginTime } = getDateTimeConfig(void 0, schedule) || moment().add( (30 - (moment().minute() % 30)) , "minutes").format('YYYY-MM-DD HH:00');
 
-        return { disabledDate, beginTime };
+        return {
+            disabledDate,
+            beginTime,
+        };
     }
 
     _getDeliveryDatetimeConfig() {
@@ -727,7 +731,7 @@ export default class OrderFormHeader extends Component {
     _renderTotalBlock = () => {
         const { fetchedOrder, fields } = this.props;
         const { getFieldDecorator } = this.props.form;
-        const { errors, totalPrice, cashSum, remainPrice } = this.props;
+        const { errors, totalPrice, cashSum, remainPrice, totalSumWithTax, isTaxPayer } = this.props;
         const mask = "0,0.00";
 
         return (
@@ -747,19 +751,21 @@ export default class OrderFormHeader extends Component {
                                 {totalPrice}
                             </Numeral>
                         </span>
-                        <span className={Styles.sumWrapper}>
-                            <FormattedMessage id="with" /> <FormattedMessage id="VAT" />
-                            <Numeral
-                                mask={mask}
-                                className={Styles.sumNumeral}
-                                nullText="0"
-                                currency={this.props.intl.formatMessage({
-                                    id: "currency",
-                                })}
-                            >
-                                {totalPrice}
-                            </Numeral>
-                        </span>
+                        {isTaxPayer &&
+                            <span className={Styles.sumWrapper}>
+                                <FormattedMessage id="with" /> <FormattedMessage id="VAT" />
+                                <Numeral
+                                    mask={mask}
+                                    className={Styles.sumNumeral}
+                                    nullText="0"
+                                    currency={this.props.intl.formatMessage({
+                                        id: "currency",
+                                    })}
+                                >
+                                    {totalSumWithTax}
+                                </Numeral>
+                            </span>
+                        }
                         <span className={Styles.sumWrapper}>
                             <FormattedMessage id="paid" />
                             <Numeral

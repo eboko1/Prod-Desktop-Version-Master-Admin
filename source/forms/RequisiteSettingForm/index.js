@@ -9,7 +9,7 @@ import moment from 'moment';
 import { Form, Modal, Button, Input, InputNumber, Radio, Checkbox, Icon, Row, Col } from 'antd';
 
 // proj
-
+import { postRequisite, updateRequisite } from "core/requisiteSettings/saga";
 // own
 const FormItem = Form.Item;
 
@@ -36,16 +36,24 @@ export class RequisiteSettingForm extends Component {
             formType: "ENTREPRENEUR",
             requisiteData: undefined,
         };
-        this.fields = ['formType', 'name', 'address', 'ifi', 'ca', 'bank', 'isTaxPayer', 'taxRate', 'calculationMethod', 'isActive']
+        this.fields = ['formType', 'name', 'address', 'ifi', 'ca', 'bank', 'isTaxPayer', 'taxRate', 'calculationMethod', 'enabled']
     }
 
-    handleSubmit = e => {
+    handleSubmit = async (e) => {
+        const id = this.props.requisiteData && this.props.requisiteData.id;
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                values.itn = values.itn || values.ifi;
+                if(values.formName) values.formType = null;
+                if(id) {
+                    updateRequisite(id, values, this.props.hideModal);
+                } else {
+                    postRequisite(values, this.props.hideModal);
+                }
             }
         });
+        this.props.hideModal();
     };
 
     componentDidUpdate(prevProps) {
@@ -62,7 +70,7 @@ export class RequisiteSettingForm extends Component {
                 isTaxPayer: Boolean(requisiteData.isTaxPayer),
                 taxRate: requisiteData.taxRate || 20,
                 calculationMethod: requisiteData.calculationMethod,
-                isActive: Boolean(requisiteData.isActive),
+                enabled: Boolean(requisiteData.enabled),
             });
 
             this.setState({
@@ -78,6 +86,7 @@ export class RequisiteSettingForm extends Component {
     }
 
     render() {
+        const { intl: {formatMessage} } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const isOtherForm = this.state.formType == "OTHER";
         
@@ -88,7 +97,10 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator('formType', { initialValue: "ENTREPRENEUR" })(
+                    {getFieldDecorator('formType', {
+                        rules: [{ required: true, message: formatMessage({id: 'storage_document.error.required_fields'}), }],
+                        initialValue: "ENTREPRENEUR" 
+                    })(
                         <Radio.Group
                             onChange={(event)=>{
                                 this.setState({
@@ -97,7 +109,7 @@ export class RequisiteSettingForm extends Component {
                             }}
                         >
                             <Radio value="ENTREPRENEUR"><FormattedMessage id='requisite-setting.form.ENTREPRENEUR'/></Radio>
-                            <Radio value="LEGAL_ENTITY"><FormattedMessage id='requisite-setting.form.LEGAL_ENTITY'/></Radio>
+                            <Radio value="LEGAL_ENITITY"><FormattedMessage id='requisite-setting.form.LEGAL_ENITITY'/></Radio>
                             <Radio value="OTHER"><FormattedMessage id='requisite-setting.form.other'/></Radio>
                         </Radio.Group>,
                     )}
@@ -116,7 +128,9 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                  {getFieldDecorator('name')(<Input />)}
+                  {getFieldDecorator('name', {
+                        rules: [{ required: true, message: formatMessage({id: 'storage_document.error.required_fields'}), }],
+                      })(<Input />)}
                 </Form.Item>
                 <Form.Item
                     label={<FormattedMessage id='requisite-setting.address'/>}
@@ -151,7 +165,10 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator('isTaxPayer', { initialValue: false })(
+                    {getFieldDecorator('isTaxPayer', {
+                         rules: [{ required: true, message: formatMessage({id: 'storage_document.error.required_fields'}), }],
+                        initialValue: false
+                    })(
                         <Radio.Group>
                             <Radio value={true}><FormattedMessage id='yes'/></Radio>
                             <Radio value={false}><FormattedMessage id='no'/></Radio>
@@ -182,7 +199,7 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                  {getFieldDecorator('isActive', { valuePropName: 'checked', initialValue: true, })(<Checkbox />)}
+                  {getFieldDecorator('enabled', { valuePropName: 'checked', initialValue: true, })(<Checkbox />)}
                 </Form.Item>
                 <Row
                     style={{
@@ -199,7 +216,10 @@ export class RequisiteSettingForm extends Component {
                         </Button>
                     </Form.Item>
                     <Form.Item wrapperCol={{ span: 12}}>
-                        <Button type="primary" htmlType="submit">
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                        >
                             <FormattedMessage id='save' />
                         </Button>
                     </Form.Item>

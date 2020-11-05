@@ -97,7 +97,7 @@ export default class ClientOrdersTab extends Component {
                 ),
             },
             {
-                title: <FormattedMessage id="client_order_tab.amount" />,
+                title: <FormattedMessage id="orders.sum_without_VAT" />,
                 width: "10%",
                 render: order => (
                     <Numeral
