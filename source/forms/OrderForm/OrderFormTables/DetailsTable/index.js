@@ -12,6 +12,7 @@ import {
     notification,
 } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { connect } from "react-redux";
 import _ from 'lodash';
 
 // proj
@@ -20,12 +21,14 @@ import { permissions, isForbidden, images } from 'utils';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { DetailProductModal, FavouriteDetailsModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
+import { StoreProductModal } from 'modals';
+import { MODALS, setModal } from 'core/modals/duck';
 
 // own
 import Styles from './styles.m.css';
 import { value } from 'numeral';
 const Option = Select.Option;
-const { confirm } = Modal;
+const { confirm, warning } = Modal;
 
 @injectIntl
 class DetailsTable extends Component {
@@ -36,7 +39,9 @@ class DetailsTable extends Component {
             productModalVisible: false,
             productModalKey:     0,
             dataSource:          [],
-            reserveId:           undefined,
+            reserveWarehouseId:  undefined,
+            mainWarehouseId:     undefined,
+            fetched:             false,
         };
 
         this.storeGroups = [];
@@ -201,8 +206,7 @@ class DetailsTable extends Component {
                                 `${strVal}`.replace(
                                     /\B(?=(\d{3})+(?!\d))/g,
                                     ' ',
-                                )
-                                : (
+                                ) : (
                                     <FormattedMessage id='long_dash' />
                                 ) }
                         </span>
@@ -213,6 +217,13 @@ class DetailsTable extends Component {
                 title: (
                     <div className={ Styles.numberColumn }>
                         <FormattedMessage id='order_form_table.price' />
+                        <p style={{
+                            color: 'var(--text2)',
+                            fontSize: 12,
+                            fontWeight: 400,
+                        }}>
+                            <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                        </p>
                     </div>
                 ),
                 className: Styles.numberColumn,
@@ -270,113 +281,27 @@ class DetailsTable extends Component {
                 width:     'auto',
                 key:       'reserve',
                 render:    elem => {
+                    const disabled = this.props.disabled || !elem.id;
                     return (
-                        <Button
-                            style={elem.reservedFromWarehouseId && {
-                                color: elem.reserved ? 'var(--green)' : null,
-                            }}
-                            disabled={!elem.reservedFromWarehouseId}
+                        <ReserveButton
+                            detail={elem}
+                            updateDetail={this.updateDetail}
+                            disabled={disabled}
+                            reserveWarehouseId={this.state.reserveWarehouseId}
+                            mainWarehouseId={this.state.mainWarehouseId}
+                            orderId={this.props.orderId}
+                            brands={ this.props.allDetails.brands }
                             onClick={()=>{
-                                const data = {
-                                    status: "DONE",
-                                    documentType: "TRANSFER",
-                                    type: "EXPENSE",
-                                    supplierDocNumber: this.props.orderId,
-                                    payUntilDatetime: null,
-                                    docProducts:[
-                                        {
-                                            productId: elem.productId,
-                                            quantity: !elem.reserved ? elem.count : elem.reservedCount,
-                                            stockPrice: elem.purchasePrice,
-                                        }
-                                    ],
-                                    warehouseId: !elem.reserved ? elem.reservedFromWarehouseId : this.state.reserveId,
-                                    counterpartWarehouseId: !elem.reserved ? this.state.reserveId : elem.reservedFromWarehouseId,
-                                    orderId: this.props.orderId,
-                                };
-                                console.log(data);
-                                var that = this;
-                                let token = localStorage.getItem('_my.carbook.pro_token');
-                                let url = __API_URL__ + `/store_docs`;
-                                fetch(url, {
-                                    method:  'POST',
-                                    headers: {
-                                        Authorization: token,
-                                    },
-                                    body: JSON.stringify(data),
+                                this.setState({
+                                    fetched: false,
                                 })
-                                .then(function(response) {
-                                    if (response.status !== 200) {
-                                        return Promise.reject(new Error(response.statusText));
-                                    }
-                                    return Promise.resolve(response);
-                                })
-                                .then(function(response) {
-                                    return response.json();
-                                })
-                                .then(function(response) {
-                                    if(response.created) {
-                                        notification.success({
-                                            message: elem.reserved ? 
-                                                `Отрезервировано ${data.docProducts[0].quantity} товаров` :
-                                                `Зарезервировано ${data.docProducts[0].quantity} товаров со склада ${elem.reservedFromWarehouseName}`,
-                                        });
-                                        elem.reservedCount = elem.reserved ? 0 : elem.count;
-                                        elem.reserved = !elem.reserved;
-                                        that.updateDetail(elem.key, elem);
-                                    }
-                                    else {
-                                        const availableCount = response.notAvailableProducts[0].available;
-                                        confirm({
-                                            title: 'На складе недостаточно свободных товаров, продолжить?',
-                                            content: `Доступное количество товара на складе ${elem.reservedFromWarehouseName} - ${availableCount}`,
-                                            onOk() {
-                                                data.docProducts[0].quantity = availableCount;
-                                                console.log(data)
-                                                fetch(url, {
-                                                    method:  'POST',
-                                                    headers: {
-                                                        Authorization: token,
-                                                    },
-                                                    body: JSON.stringify(data),
-                                                })
-                                                .then(function(response) {
-                                                    if (response.status !== 200) {
-                                                        return Promise.reject(new Error(response.statusText));
-                                                    }
-                                                    return Promise.resolve(response);
-                                                })
-                                                .then(function(response) {
-                                                    return response.json();
-                                                })
-                                                .then(function(response) {
-                                                    console.log(response);
-                                                    if(response.created) {
-                                                        elem.reservedCount = elem.reserved ? 0 : availableCount;
-                                                        elem.reserved = !elem.reserved;
-                                                        that.updateDetail(elem.key, elem);
-                                                        notification.success({
-                                                            message: `Зарезервировано ${data.docProducts[0].quantity} товаров со склада ${elem.reservedFromWarehouseName}`,
-                                                        });
-                                                    }
-                                                })
-                                                .catch(function(error) {
-                                                    console.log('error', error);
-                                                });
-                                            },
-                                            onCancel() {
-                                                console.log('Cancel');
-                                            },
-                                        });
-                                    }
-                                })
-                                .catch(function(error) {
-                                    console.log('error', error);
-                                });
                             }}
-                        > 
-                            <p>{elem.reservedCount || 0} <FormattedMessage id='pc'/></p>
-                        </Button>
+                            onExit={()=>{
+                                this.setState({
+                                    fetched: true,
+                                })
+                            }}
+                        />
                     );
                 },
             },
@@ -384,6 +309,13 @@ class DetailsTable extends Component {
                 title: (
                     <div className={ Styles.numberColumn }>
                         <FormattedMessage id='order_form_table.sum' />
+                        <p style={{
+                            color: 'var(--text2)',
+                            fontSize: 12,
+                            fontWeight: 400,
+                        }}>
+                            <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                        </p>
                     </div>
                 ),
                 className: Styles.numberColumn,
@@ -589,7 +521,7 @@ class DetailsTable extends Component {
     fetchData() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/warehouses?attribute=RESERVE`;
+        let url = __API_URL__ + `/warehouses`;
         fetch(url, {
             method:  'GET',
             headers: {
@@ -606,8 +538,19 @@ class DetailsTable extends Component {
             return response.json();
         })
         .then(function(data) {
+            const warehousesData = {};
+            data.map((warehouse)=>{
+                if(warehouse.attribute == 'MAIN') {
+                    warehousesData.main = warehouse.id;
+                }
+                if(warehouse.attribute == 'RESERVE') {
+                    warehousesData.reserve = warehouse.id;
+                }
+            })
             that.setState({
-                reserveId: data[0].id,
+                mainWarehouseId: warehousesData.main,
+                reserveWarehouseId: warehousesData.reserve,
+                fetched: true,
             })
         })
         .catch(function(error) {
@@ -692,9 +635,11 @@ class DetailsTable extends Component {
             .then(function(data) {
                 data.details.map((elem, index) => {
                     elem.key = index;
+                    elem.brandId = elem.supplierBrandId || undefined;
                 });
                 that.setState({
                     dataSource: data.details,
+                    fetched: true,
                 });
                 that.props.reloadOrderForm();
             })
@@ -704,8 +649,14 @@ class DetailsTable extends Component {
     }
 
     async updateDetail(key, detail) {
+        if(this.state.fetched) {
+            this.setState({
+                fetched: false,
+            })
+        }
+
         this.state.dataSource[ key ] = detail;
-        const newDetail = detail.isFromStock ? 
+        const newDetail = detail.productId ? 
         {
             id: detail.id,
             storeGroupId: detail.storeGroupId,
@@ -715,9 +666,11 @@ class DetailsTable extends Component {
             purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
             count: detail.count ? detail.count : 1,
             price: detail.price ? Math.round(detail.price*10)/10  : 1,
-            reservedFromWarehouseId: detail.reservedFromWarehouseId || null,
+            reservedFromWarehouseId: detail.reservedFromWarehouseId || this.state.mainWarehouseId,
             reserved: detail.reserved,
             reservedCount: detail.reservedCount,
+            supplierBrandId: detail.supplierBrandId || detail.brandId,
+            supplierId: detail.supplierId,
             comment: detail.comment || {
                 comment: undefined,
                 positions: [],
@@ -728,14 +681,10 @@ class DetailsTable extends Component {
             storeGroupId:    detail.storeGroupId,
             name:            detail.detailName,
             productCode:     detail.detailCode ? detail.detailCode : null,
-            supplierId:      detail.supplierId ? detail.supplierId : null,
-            supplierBrandId: detail.supplierBrandId
-                ? detail.supplierBrandId
-                : null,
-            brandName:     detail.brandName ? detail.brandName : null,
+            supplierId:      detail.supplierId,
+            supplierBrandId: detail.supplierBrandId || detail.brandId,
             supplierOriginalCode: detail.supplierOriginalCode,
             supplierProductNumber: detail.supplierProductNumber,
-            reservedFromWarehouseId: null,
             purchasePrice:
                 Math.round(detail.purchasePrice * 10) / 10 || 0,
             count:   detail.count,
@@ -802,7 +751,6 @@ class DetailsTable extends Component {
 
     componentDidUpdate(prevProps) {
         if(!prevProps.showOilModal && this.props.showOilModal) {
-            console.log(this.state.dataSource.length ? this.state.dataSource.length-1 : 0)
             this.setState({
                 productModalVisible: true,
                 productModalKey: this.state.dataSource.length ? this.state.dataSource.length-1 : 0,
@@ -844,7 +792,8 @@ class DetailsTable extends Component {
                     className={ Styles.detailsTable }
                     loading={
                         this.props.detailsSuggestionsFetching ||
-                        this.props.suggestionsFetching
+                        this.props.suggestionsFetching ||
+                        !this.state.fetched
                     }
                     columns={ columns }
                     dataSource={ this.state.dataSource }
@@ -1014,7 +963,16 @@ class QuickEditModal extends React.Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.price' />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.price' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'price',
                 dataIndex: 'price',
                 width:     '10%',
@@ -1074,7 +1032,16 @@ class QuickEditModal extends React.Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.sum' />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.sum' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'sum',
                 dataIndex: 'sum',
                 width:     '10%',
@@ -1131,7 +1098,7 @@ class QuickEditModal extends React.Component {
         const { detail } = this.props;
 
         return (
-            <>
+            <div>
                 <Button
                     type='primary'
                     disabled={ this.props.disabled }
@@ -1170,7 +1137,243 @@ class QuickEditModal extends React.Component {
                         pagination={ false }
                     />
                 </Modal>
-            </>
+            </div>
         );
+    }
+}
+
+
+@injectIntl
+class ReserveButton extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            visible:          false,
+            brandId:          undefined,
+            brandSearchValue: '',
+        };
+    }
+
+    getStoreProduct = (detailCode, brandId) => {
+        const { detail, updateDetail } = this.props;
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_products?all=true`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+
+            const product = data.list.find((product)=>product.code == detailCode && product.brandId == brandId);
+            if(product) {
+                detail.productId = product.id;
+                detail.defaultWarehouseId = product.defaultWarehouseId;
+                updateDetail(detail.key, detail);
+            }
+        })
+        .catch(function(error) {
+            console.log("error", error);
+            that.setState({
+                fetched: true,
+                codeFilter: that.props.codeFilter,
+            })
+        });
+    }
+
+    reserveProduct = () => {
+        const { detail, setModal, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, onExit, intl:{formatMessage} } = this.props;
+        const data = {
+            status: "DONE",
+            documentType: "TRANSFER",
+            type: "EXPENSE",
+            supplierDocNumber: orderId,
+            payUntilDatetime: null,
+            docProducts:[
+                {
+                    productId: detail.productId,
+                    quantity: !detail.reserved ? detail.count : detail.reservedCount,
+                    stockPrice: detail.purchasePrice,
+                }
+            ],
+            warehouseId: !detail.reserved ? detail.reservedFromWarehouseId || mainWarehouseId : reserveWarehouseId,
+            counterpartWarehouseId: !detail.reserved ? reserveWarehouseId : detail.reservedFromWarehouseId || mainWarehouseId,
+            orderId: this.props.orderId,
+        };
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_docs`;
+        fetch(url, {
+            method:  'POST',
+            headers: {
+                Authorization: token,
+            },
+            body: JSON.stringify(data),
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(response) {
+            if(response.created) {
+                notification.success({
+                    message: detail.reserved ? 
+                        formatMessage({id: 'storage_document.notification.reserve_canceled'}) :
+                        formatMessage({id: 'storage_document.notification.reserved'}, {count: data.docProducts[0].quantity}),
+                    description: `${formatMessage({id: 'storage'})} ${detail.reservedFromWarehouseName}`,
+                });
+                detail.reservedCount = detail.reserved ? 0 : detail.count;
+                if(!detail.reserved) {
+                    detail.supplierId = 0;
+                }
+                detail.reserved = !detail.reserved;
+                updateDetail(detail.key, detail);
+            }
+            else {
+                const availableCount = response.notAvailableProducts[0].available;
+                confirm({
+                    title: `${formatMessage({id: 'storage_document.error.available'})} ${formatMessage({id: 'storage_document.warning.continue'})}`,
+                    content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} ${formatMessage({id: 'pc'})}`,
+                    okButtonProps: {disabled: !availableCount},
+                    onOk() {
+                        data.docProducts[0].quantity = availableCount;
+                        fetch(url, {
+                            method:  'POST',
+                            headers: {
+                                Authorization: token,
+                            },
+                            body: JSON.stringify(data),
+                        })
+                        .then(function(response) {
+                            if (response.status !== 200) {
+                                return Promise.reject(new Error(response.statusText));
+                            }
+                            return Promise.resolve(response);
+                        })
+                        .then(function(response) {
+                            return response.json();
+                        })
+                        .then(function(response) {
+                            if(response.created) {
+                                detail.reservedCount = detail.reserved ? 0 : availableCount;
+                                detail.reserved = !detail.reserved;
+                                updateDetail(detail.key, detail);
+                                notification.success({
+                                    message: `Зарезервировано ${data.docProducts[0].quantity} товаров со склада ${detail.reservedFromWarehouseName}`,
+                                });
+                            }
+                            onExit();
+                        })
+                        .catch(function(error) {
+                            console.log('error', error);
+                        });
+                    },
+                    onCancel() {
+                        onExit();
+                    }
+                });
+            }
+        })
+        .catch(function(error) {
+            console.log('error', error);
+            onExit();
+        });
+    }
+
+    addProduct = () => {
+        const { detail, setModal, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, brands, intl:{formatMessage} } = this.props;
+        var that = this;
+        confirm({
+            title: formatMessage({id: 'storage_document.error.product_not_found'}),
+            onOk() {
+                const postData = {
+                    name: detail.detailName,
+                    groupId: detail.storeGroupId,
+                    code: detail.detailCode,
+                    brandId: detail.brandId,
+                    measureUnit: 'PIECE',
+                    defaultWarehouseId: mainWarehouseId,
+                }
+                if(detail.brandName && !(detail.brandId)) {
+                    const defaultBrand = brands.find((brand)=>brand.brandName==detail.brandName);
+                    if(defaultBrand) {
+                        detail.brandId = defaultBrand.brandId;
+                        postData.brandId = defaultBrand.brandId;
+                    }
+                }
+                let token = localStorage.getItem('_my.carbook.pro_token');
+                let url = __API_URL__ + `/store_products`;
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        Authorization: token,
+                    },
+                    body: JSON.stringify(postData)
+                })
+                .then(function(response) {
+                    if (response.status !== 200) {
+                        return Promise.reject(new Error(response.statusText));
+                    }
+                    return Promise.resolve(response);
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    if(data.created) {
+                        updateDetail(detail.key, {...detail, productId: data.id});
+                    }
+                    
+                })
+                .catch(function(error) {
+                    console.log("error", error);
+                    that.getStoreProduct(detail.detailCode, detail.brandId);
+                });
+            }
+        });
+    }
+
+    render() {
+        const { detail, updateDetail, disabled, reserveWarehouseId, orderId, onClick } = this.props;
+        return (
+            <div>
+                {detail.isFromStock ? 
+                    <Button
+                        style={detail.reservedFromWarehouseId && {
+                            color: detail.reserved ? 'var(--green)' : null,
+                        }}
+                        disabled={disabled}
+                        onClick={()=>{
+                            onClick();
+                            this.reserveProduct();
+                        }}
+                    > 
+                        <p>{detail.reservedCount || 0} <FormattedMessage id='pc'/></p>
+                    </Button> :
+                    <Button
+                        disabled={disabled}
+                        onClick={this.addProduct}
+                    > 
+                        <Icon type='plus'/>
+                    </Button>
+                }
+            </div>
+        )
     }
 }

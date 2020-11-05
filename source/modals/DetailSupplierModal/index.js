@@ -79,7 +79,16 @@ class DetailSupplierModal extends React.Component{
                 },
             },
             {
-                title:  <FormattedMessage id="order_form_table.price" />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.price' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'price',
                 width:     '10%',
                 sorter: (a, b) => Number(a.purchasePrice) * Number(a.markup) - Number(b.purchasePrice) * Number(b.markup),
@@ -125,7 +134,7 @@ class DetailSupplierModal extends React.Component{
                             type="primary"
                             onClick={()=>{
                                 if(this.props.onSelect) {
-                                    this.props.onSelect(elem.businessSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.purchasePrice, price, store, elem.supplierOriginalCode, elem.supplierProductNumber, this.props.tableKey, elem.isFromStock, elem.defaultWarehouseId, elem.id);
+                                    this.props.onSelect(elem.businessSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.purchasePrice, price, store, elem.supplierOriginalCode, elem.supplierProductNumber, this.props.tableKey, elem.isFromStock, elem.defaultWarehouseId, elem.id, elem.brandId);
                                 }
                                 else {
                                     this.props.setStoreSupplier(elem.businessSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.purchasePrice, price, store, elem.supplierOriginalCode, elem.supplierProductNumber, this.props.keyValue, elem.isFromStock, elem.defaultWarehouseId, elem.id);

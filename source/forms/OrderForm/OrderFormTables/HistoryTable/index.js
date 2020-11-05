@@ -70,7 +70,7 @@ export default class HistoryTable extends Component {
                 render: text => <div>{text}</div>,
             },
             {
-                title: <FormattedMessage id="order_form_table.order_sum" />,
+                title: <FormattedMessage id="orders.sum_without_VAT" />,
                 // dataIndex: 'servicesTotalSum',
                 key: "history-sum",
                 width: "15%",

@@ -95,6 +95,7 @@ const book = Object.freeze({
     businessPackagePage:      '/businesses/packages',
     managerRolePage:          '/managers/roles',
     rolePage:                 '/roles',
+    requisites:               '/requisites',
     //
     // Administration
     //

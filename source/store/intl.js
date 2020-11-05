@@ -40,6 +40,7 @@ import ManagerRolePage from 'pages/ManagerRolePage/messages';
 import DiagnosticPatternsPage from 'pages/DiagnosticPatternsPage/messages';
 import AgreementPage from 'pages/AgreementPage/messages'
 import AvailabilitiesPage from 'pages/AvailabilitiesPage/messages'
+import RequisiteSettingPage from 'pages/RequisiteSettingPage/messages'
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
@@ -112,6 +113,7 @@ import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages
 import ChangeStatusDropdown from 'components/ChangeStatusDropdown/messages';
 import ClientFeedbackTab from 'components/ClientFeedbackTab/messages';
 import ClientOrdersTab from 'components/ClientOrdersTab/messages';
+import ClientMRDsTab from 'components/ClientMRDsTab/messages';
 import EmployeeFeedback from 'components/EmployeeFeedback/messages';
 import EmployeeStatistics from 'components/EmployeeStatistics/messages';
 import ReviewsTable from 'components/ReviewsTable/messages';
@@ -159,6 +161,7 @@ const messages = merge.all([
     DiagnosticPatternsPage,
     AgreementPage,
     AvailabilitiesPage,
+    RequisiteSettingPage,
     // containers
     OrdersContainer,
     OrdersFilterContainer,
@@ -226,6 +229,7 @@ const messages = merge.all([
     ChangeStatusDropdown,
     ClientFeedbackTab,
     ClientOrdersTab,
+    ClientMRDsTab,
     EmployeeFeedback,
     EmployeeStatistics,
     ReviewsTable,

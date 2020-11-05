@@ -51,6 +51,7 @@ import {
     StorageTransferPage,
     AgreementPage,
     WarehousesPage,
+    RequisiteSettingPage,
 } from 'pages';
 import book from './book';
 
@@ -248,6 +249,12 @@ export default class Private extends Component {
                     exact
                     component={ SubscriptionPackagesPage }
                     path={ book.subscriptionPackagesPage }
+                />
+                { /* Settings */ }
+                <Route
+                    exact
+                    component={ RequisiteSettingPage }
+                    path={ book.requisites }
                 />
                 { /* Roles */ }
                 <Route

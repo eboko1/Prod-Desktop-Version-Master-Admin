@@ -15,6 +15,7 @@ export const StorageBalancePage = injectIntl(({intl}) => {
             title={ <FormattedMessage id='navigation.storage_balance' /> }
             controls={[
                 <Button
+                    type='primary'
                     onClick={()=>{
                         let token = localStorage.getItem('_my.carbook.pro_token');
                         let url =  __API_URL__ +`/store_docs/reserve_all_possible`;
@@ -34,15 +35,15 @@ export const StorageBalancePage = injectIntl(({intl}) => {
                             return response.json()
                         })
                         .then(function (data) {
-                            console.log(data);
                             if(data.created) {
                                 notification.success({
                                     message: intl.formatMessage({id: 'storage_document.reserve_all_success'})
                                 })
+                                window.location.reload();
                             }
                             else {
-                                notification.error({
-                                    message: intl.formatMessage({id: 'error'})
+                                notification.warning({
+                                    message: intl.formatMessage({id: 'storage_document.error.confirm_all'})
                                 })
                             }
                         })

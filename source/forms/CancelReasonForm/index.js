@@ -105,7 +105,7 @@ export class CancelReasonForm extends Component {
                     ]}
                     getFieldDecorator={getFieldDecorator}
                     rows={4}
-                    autosize={{ minRows: 2, maxRows: 6 }}
+                    autoSize={{ minRows: 2, maxRows: 6 }}
                 />
             </Form>
         );

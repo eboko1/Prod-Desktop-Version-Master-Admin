@@ -124,16 +124,16 @@ export function columnsConfig(
 
     const counterpartyCol = {
         title:     <FormattedMessage id='storage_document.counterparty' />,
-        dataIndex: 'businessSupplier',
         key:       'businessSupplier',
         width:     80,
         render:    (_, document) => (
             <div>
-                { document.counterpartBusinessSupplierId
-                    ? document.counterpartBusinessSupplierName
-                    : document.clientName || (
-                        <FormattedMessage id='long_dash' />
-                    ) }
+                {
+                    document.counterpartEmployeeName ||
+                    document.counterpartBusinessSupplierName ||
+                    document.counterpartClientName ||
+                    <FormattedMessage id='long_dash' />
+                }
             </div>
         ),
     };
@@ -186,7 +186,7 @@ export function columnsConfig(
         render:    (_, document) => {
             return (
                 <div>
-                    <FormattedMessage id={`storage_document.docType.${isOrder ? ORDER : document.type}.${document.documentType}`}/>
+                    <FormattedMessage id={`storage_document.docType.${isOrder ? ORDER : document.type}.${isOrder && document.type == INCOME ? ORDERINCOME : document.documentType}`}/>
                 </div>
             )
         }
@@ -263,7 +263,29 @@ export function columnsConfig(
                         id: 'add_order_form.delete_confirm',
                     }) }
                     onConfirm={ () => {
-                        deleteAction();
+                        let token = localStorage.getItem('_my.carbook.pro_token');
+                        let url = __API_URL__ + `/store_docs/${document.id}`;
+                        fetch(url, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': token,
+                            },
+                        })
+                        .then(function (response) {
+                            if (response.status !== 200) {
+                            return Promise.reject(new Error(response.statusText))
+                            }
+                            return Promise.resolve(response)
+                        })
+                        .then(function (response) {
+                            return response.json()
+                        })
+                        .then(function (data) {
+                            window.location.reload();
+                        })
+                        .catch(function (error) {
+                            console.log('error', error);
+                        });
                     } }
                 >
                     <Icon

@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Button, Icon, notification, Popconfirm} from 'antd';
+import {Button, Icon, notification, Popconfirm, Modal} from 'antd';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -51,7 +51,7 @@ import {
 
 // own
 import Styles from './styles.m.css';
-
+const { confirm } = Modal;
 
 const compareOrderTasks = (initialOrderTask, orderTask) => {
     if (!initialOrderTask) {
@@ -309,7 +309,7 @@ class OrderPage extends Component {
             : returnToOrdersPage(status);
     };
 
-    _getCurrentOrder() {
+    _checkIsAllReserved = (callback) => {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__;
@@ -331,7 +331,72 @@ class OrderPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            that._createCopy(data.orderServices, data.orderDetails);
+            var reserveError = false;
+            data.orderDetails.map((elem)=>{
+                if(elem.productId && elem.reservedCount != elem.count) {
+                    reserveError = true;
+                    return;
+                }
+            });
+            console.log(data);
+            if(reserveError) {
+                confirm({
+                    title: that.props.intl.formatMessage({id: 'order-page.status_confirmed_reserve_error'}),
+                    onOk() {
+                        callback();
+                    },
+                });
+            } else {
+                callback();
+            }
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    _getCurrentOrder = (isReservedCheck=false, callback) => {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__;
+        let params = `/orders/${this.props.match.params.id}`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            if(!isReservedCheck) {
+                that._createCopy(data.orderServices, data.orderDetails);
+            } else {
+                var isReserved = false;
+                data.orderDetails.map((elem)=>{
+                    if(elem.reservedCount) {
+                        isReserved = true;
+                        return;
+                    }
+                });
+                if(isReserved) {
+                    notification.error({
+                        message: that.props.intl.formatMessage({
+                            id: `order-page.reserved_error`,
+                        }),
+                    });
+                } else {
+                    callback();
+                }
+            }
         })
         .catch(function (error) {
             console.log('error', error)
@@ -636,6 +701,7 @@ class OrderPage extends Component {
                                 user={ user }
                                 orderStatus={ status }
                                 onStatusChange={ this._onStatusChange }
+                                checkReserved={ this._checkIsAllReserved }
                                 setModal={ setModal }
                                 modals={ MODALS }
                                 isMobile={ isMobile }
@@ -688,9 +754,9 @@ class OrderPage extends Component {
                                     cursor:   'pointer',
                                     margin:   '0 10px',
                                 } }
-                                onClick={ () =>
-                                    setModal(MODALS.CANCEL_REASON)
-                                }
+                                onClick={ () =>{
+                                    this._getCurrentOrder(true, ()=>{setModal(MODALS.CANCEL_REASON)});
+                                }}
                             />
                         ) }
                         <Icon
@@ -714,7 +780,6 @@ class OrderPage extends Component {
                         orderHistory={ this.props.orderHistory }
                         orderId={ id }
                         orderDiagnostic={ diagnosis }
-                        allService={ this.props.allServices }
                         allDetails={ this.props.allDetails }
                     />
                 </MobileView>
@@ -732,7 +797,6 @@ class OrderPage extends Component {
                         modal={ modal }
                         orderCalls={ this.props.orderCalls }
                         orderDiagnostic = { diagnosis }
-                        allService={ this.props.allServices }
                         allDetails={ this.props.allDetails }
                         employees={ this.props.employees }
                         filteredDetails={ this.props.filteredDetails }

@@ -78,6 +78,25 @@
     justify-content: space-around;
 }
 
+.allCategoriesList {
+    overflow-y: scroll;
+    width: 30%;
+    max-height: 610px;
+    user-select: none;
+    border: 1px solid black;
+}
+
+.previewBLock {
+    width: 70%;
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 610px;
+    overflow-y: scroll;
+    justify-content: space-between;
+    padding: 5px 10px;
+    border: 1px solid #000;
+}
+
 .emptyItem {
     width: 19%;
     margin-bottom: 2%;
@@ -99,10 +118,25 @@
     }
 }
 
+.categoryListItem {
+    width: 100%;
+    box-shadow: 0 0 1px 0px black;
+    padding: 0 0 0 4px; 
+    &:hover {
+        box-shadow: 0 0 2px 0px var(--primary);
+        color: var(--primary);
+    }
+}
+
 .categoryName {
     font-size: 18;
     text-transform: uppercase;
     text-align: center;
+}
+
+.categoryListName {
+    font-size: 18;
+    text-transform: uppercase;
 }
 
 .imgWrap {

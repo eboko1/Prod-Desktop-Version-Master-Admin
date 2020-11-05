@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Dropdown, Button, Icon, Menu, notification, Modal, Table, InputNumber, Checkbox, Select, AutoComplete } from 'antd';
+import { Dropdown, Button, Icon, Menu, notification, Modal, Table, Input, InputNumber, Checkbox, Select, AutoComplete, Badge, Popconfirm } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import { saveAs } from 'file-saver';
@@ -14,8 +14,11 @@ import { Layout, Spinner } from 'commons';
 import { StorageDocumentForm } from 'forms';
 import book from 'routes/book';
 import { type } from 'ramda';
+import { DetailStorageModal } from 'modals';
 // own
 const Option = Select.Option;
+const { error } = Modal;
+const dateFormat = 'DD.MM.YYYY';
 
 const mapStateToProps = state => {
     return {
@@ -41,7 +44,11 @@ const INCOME = 'INCOME',
       ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
-      DONE = 'DONE';
+      DONE = 'DONE',
+      MAIN = 'MAIN',
+      TOOL = 'TOOL',
+      REPAIR_AREA= 'REPAIR_AREA',
+      STOCK = "STOCK";
 
 const typeToDocumentType = {
     income: {
@@ -54,11 +61,7 @@ const typeToDocumentType = {
     },
     transfer: {
         type: EXPENSE,
-        documentType: [TRANSFER],
-    },
-    reserve: {
-        type: EXPENSE,
-        documentType: [TRANSFER],
+        documentType: [TRANSFER, RESERVE, TOOL, REPAIR_AREA],
     },
     order: {
         type: ORDER,
@@ -80,6 +83,7 @@ class StorageDocumentPage extends Component {
             warehouses: [],
             brands: [],
             counterpartSupplier: [],
+            employees: [],
             clientList: [],
             formData: {
                 type: INCOME,
@@ -88,6 +92,12 @@ class StorageDocumentPage extends Component {
                 docProducts: [],
             },
             fetched: false,
+            warnings: 0,
+            loading: false,
+            mainWarehouseId: undefined,
+            reserveWarehouseId: undefined,
+            toolWarehouseId: undefined,
+            repairAreaWarehouseId: undefined,
         }
 
         this.updateFormData = this.updateFormData.bind(this);
@@ -97,24 +107,47 @@ class StorageDocumentPage extends Component {
         this.editDocProduct = this.editDocProduct.bind(this);
     }
 
-    updateFormData(formData) {
+    updateFormData(formData, saveMode = false) {
         Object.entries(formData).map((field)=>{
             this.state.formData[field[0]] = field[1];
         })
-        this.setState({
-            update: true,
-        })
+        if(saveMode) {
+            this.updateDocument(saveMode);
+        }
+        else {
+            this.setState({
+                update: true,
+            })
+        }
     }
 
     addDocProduct(docProduct, arrayMode = false) {
         if(arrayMode) {
+            const newProducts = [],
+                  warningProducts = [];
+
             docProduct.map((product)=>{
                 product.sum = Math.round(product.sum*10)/10;
+                this.state.formData.sum += product.sum;
+                if(product.quantity) {
+                    if(!product.productId) {
+                        warningProducts.push(product);
+                    } else {
+                        newProducts.push(product);
+                    }
+                }
             })
-            this.state.formData.docProducts = this.state.formData.docProducts.concat(docProduct);
-            this.setState({
-                forceUpdate: true,
-            })
+            this.state.formData.docProducts = this.state.formData.docProducts.concat(newProducts);
+            if(warningProducts.length) {
+                this.state.formData.docProducts = warningProducts.concat(this.state.formData.docProducts);
+                this.setState({
+                    forceUpdate: true,
+                })
+            }
+            else {
+                this.updateDocument();
+            }
+            
         }
         else {
             docProduct.sum = Math.round(docProduct.sum*10)/10;
@@ -126,17 +159,16 @@ class StorageDocumentPage extends Component {
             this.setState({
                 update: true,
             })
+            this.updateDocument();
         }
-        if(this.props.id) this.updateDocument(this.state.formData.status);
     }
 
     deleteDocProduct(key) {
         const {formData } = this.state;
         formData.sum -= formData.docProducts[key].sum;
-        const tmpProducts = [...formData.docProducts.filter((elem)=>elem.key != key)];
-        tmpProducts.map((elem, i)=>{elem.key = i});
-        this.updateFormData({docProducts: tmpProducts});
-        this.forceUpdate()
+
+        this.state.formData.docProducts = this.state.formData.docProducts.filter((elem)=>elem.key != key);
+        this.updateDocument();
     } 
 
     editDocProduct(key, docProduct) {
@@ -150,9 +182,7 @@ class StorageDocumentPage extends Component {
         formData.docProducts.map((elem)=>{
             formData.sum += elem.quantity * elem.stockPrice;
         })
-        this.setState({
-            update: true,
-        })
+        this.updateDocument();
     }
 
     //saveFormRef = formRef => {
@@ -162,7 +192,6 @@ class StorageDocumentPage extends Component {
     verifyFields() {
         const { intl: {formatMessage} } = this.props;
         const { formData } = this.state;
-        console.log(formData);
         const showError = () => {
             notification.error({
                 message: formatMessage({id: 'storage_document.error.required_fields'}),
@@ -232,11 +261,13 @@ class StorageDocumentPage extends Component {
                 }
                 break;
             case TRANSFER:
-            case RESERVE:
                 createData.type = EXPENSE;
                 createData.documentType = TRANSFER;
                 createData.warehouseId = formData.expenseWarehouseId;
                 createData.counterpartWarehouseId = formData.incomeWarehouseId;
+                if(formData.documentType == TOOL || formData.documentType == REPAIR_AREA) {
+                    createData.counterpartEmployeeId = formData.counterpartId;
+                }
                 delete createData.supplierDocNumber;
                 delete createData.payUntilDatetime;
                 break;
@@ -257,16 +288,6 @@ class StorageDocumentPage extends Component {
                 break;
         }
 
-        formData.docProducts.map((elem)=>{
-            if(elem.productId) {
-                createData.docProducts.push({
-                    productId: elem.productId,
-                    quantity: elem.quantity,
-                    stockPrice: elem.stockPrice,
-                })
-            }
-        })
-        console.log(createData);
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + '/store_docs';
@@ -287,7 +308,7 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            that.props.history.push(`${book.storageDocument}/${data.id}`);
+            that.props.history.replace(`${book.storageDocument}/${data.id}`);
             window.location.reload();
         })
         .catch(function (error) {
@@ -298,15 +319,17 @@ class StorageDocumentPage extends Component {
         });
     }
 
-    updateDocument(status=NEW) {
+    updateDocument(saveMode = false) {
+        this.setState({loading: true});
         if(!this.verifyFields()) {
             return;
         }
 
-        const { formData } = this.state
+        const { formData } = this.state;
+        const { intl: {formatMessage} } = this.props;
         
         const createData = {
-            status: status,
+            status: formData.status,
             supplierDocNumber: formData.supplierDocNumber || null,
             payUntilDatetime: formData.payUntilDatetime ? formData.payUntilDatetime.toISOString() : null,
             docProducts: [],
@@ -324,7 +347,6 @@ class StorageDocumentPage extends Component {
                 }
                 break;
             case TRANSFER:
-            case RESERVE:
                 createData.warehouseId = formData.expenseWarehouseId;
                 createData.counterpartWarehouseId = formData.incomeWarehouseId;
                 break;
@@ -333,15 +355,43 @@ class StorageDocumentPage extends Component {
                 break;
         }
 
+        var productsError = false;
+
         formData.docProducts.map((elem)=>{
             if(elem.productId) {
                 createData.docProducts.push({
                     productId: elem.productId,
                     quantity: elem.quantity,
+                    stockPrice: formData.type == EXPENSE ? elem.sellingPrice : elem.stockPrice,
+                    sellingPrice: elem.sellingPrice,
+                })
+                if(elem.storeDocProductId) {
+                    createData.docProducts[createData.docProducts.length-1].storeDocProductId = elem.storeDocProductId;
+                }
+            } else if(!saveMode) {
+                /*notification.warning({
+                    message: this.props.intl.formatMessage({id: 'error'}),
+                });*/
+                productsError = true;
+                return;
+            } else if(elem.code && elem.brandId) {
+                createData.docProducts.push({
+                    addToStore: true,
+                    groupId: elem.groupId,
+                    code: elem.detailCode,
+                    name: elem.detailName || elem.detailCode,
+                    brandId: elem.brandId,
+
+                    quantity: elem.quantity,
                     stockPrice: elem.stockPrice,
                 })
             }
         })
+        if(productsError) {
+            this.setState({loading: false});
+            return;
+        };
+        
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/store_docs/${this.props.id}`;
@@ -362,13 +412,48 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            window.location.reload();
+            console.log(data);
+            if(data.updated) {
+                that.getStorageDocument();
+            } else {
+                const availableInfo = [];
+                data.notAvailableProducts.map(({available, productId: {product}})=>{
+                    availableInfo.push(
+                        <span style={{
+                            display: 'flex',
+                            margin: '8 0 0 0',
+                            justifyContent: 'space-between',
+                            fontSize: 14,
+                        }}>
+                            <span style={{fontWeight: 500}}>{product.name} ({product.code})</span>
+                            <span style={{padding: '0 0 0 12'}}>{formatMessage({id:'storage.available'})} { available } {formatMessage({id: 'pc'})}</span>
+                        </span>
+                    );
+                })
+                error({
+                    title: formatMessage({id: 'storage_document.error.available'}),
+                    content: availableInfo.map((txt, key)=>txt),
+                    cancelButtonProps: {style: {display: 'none'}},
+                    width: 'fit-content',
+                    style: {
+                        minWidth: 600,
+                    },
+                    onOk() {
+                        that.getStorageDocument();
+                    },
+                    onCancel() {
+                        that.getStorageDocument();
+                    }
+                });
+            }
         })
         .catch(function (error) {
             console.log('error', error);
+            that.setState({loading: false});
             notification.error({
-                message: 'Ошибка склада. Проверьте количество товаров',
+                message: that.props.intl.formatMessage({id: 'error'}),
             });
+            that.getStorageDocument();
         });
     }
 
@@ -392,33 +477,88 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (warehouses) {
+            console.log(warehouses)
             const type = that.props.location.type;
-            if(type && warehouses.length) {
-                that.state.formData.type = type;
+            var mainWarehouseId, reserveWarehouseId, toolWarehouseId, repairAreaWarehouseId;
+            warehouses.map((warehouse)=>{
+                switch(warehouse.attribute) {
+                    case MAIN:
+                        mainWarehouseId = warehouse.id;
+                        break;
+                    case RESERVE:
+                        reserveWarehouseId = warehouse.id;
+                        break;
+                    case TOOL:
+                        toolWarehouseId = warehouse.id;
+                        break;
+                    case REPAIR_AREA:
+                        repairAreaWarehouseId = warehouse.id;
+                        break;
+                }
+            })
+            if(warehouses.length) {
                 var { incomeWarehouseId, expenseWarehouseId } = that.state.formData;
                 switch(type) {
                     case INCOME:
-                        incomeWarehouseId = warehouses[0].id;
+                        incomeWarehouseId = mainWarehouseId;
                         break
                     case EXPENSE:
-                        expenseWarehouseId = warehouses[0].id;
+                        expenseWarehouseId = mainWarehouseId;
                         break;
                     case TRANSFER:
-                    case RESERVE:
-                        incomeWarehouseId = warehouses[0].id;
-                        incomeWarehouseId = warehouses[1].id;
+                        expenseWarehouseId = reserveWarehouseId;
+                        incomeWarehouseId = mainWarehouseId;
                         break;
                     case ORDER:
-                        incomeWarehouseId = warehouses[0].id;
+                        incomeWarehouseId = mainWarehouseId;
                         break;
+                    default:
+                        incomeWarehouseId = mainWarehouseId;
                 }
-                that.state.formData.documentType = typeToDocumentType[type.toLowerCase()].documentType[0];
+                that.state.formData.type = type || INCOME;
+                that.state.formData.documentType = type ? typeToDocumentType[type.toLowerCase()].documentType[0] : SUPPLIER;
                 that.state.formData.incomeWarehouseId = incomeWarehouseId;
                 that.state.formData.expenseWarehouseId = expenseWarehouseId;
-            }
+            } 
             that.setState({
                 warehouses: warehouses,
+                mainWarehouseId: mainWarehouseId,
+                reserveWarehouseId: reserveWarehouseId,
+                toolWarehouseId: toolWarehouseId,
+                repairAreaWarehouseId: repairAreaWarehouseId,
                 fetched: true,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    getEmployees() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + '/employees';
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            data.map((elem)=>{
+                elem.phone = `+38(${elem.phone.substring(2, 5)}) ${elem.phone.substring(5, 8)}-${elem.phone.substring(8, 10)}-${elem.phone.substring(10)}`;
+            })
+            that.setState({
+                employees: data,
             })
         })
         .catch(function (error) {
@@ -545,19 +685,23 @@ class StorageDocumentPage extends Component {
                   RES = 'RES',
                   ORD = 'ORD',
                   BOR = 'BOR',
-                  COM = 'COM';
+                  COM = 'COM',
+                  TOL = 'TOL',
+                  TOR = 'TOR';
 
-            data.counterpartId = data.counterpartBusinessSupplierId || data.counterpartClientId;
+            data.counterpartId = data.counterpartBusinessSupplierId || data.counterpartClientId || data.counterpartEmployeeId;
             data.payUntilDatetime = data.payUntilDatetime && moment(data.payUntilDatetime);
             data.docProducts.map((elem, key)=>{
-                elem.brandId = elem.product.brandId,
-                elem.brandName = elem.product.brand.name,
-                elem.detailCode = elem.product.code,
-                elem.detailName = elem.product.name,
-                elem.groupId = elem.product.groupId,
-                elem.tradeCode = elem.product.tradeCode,
-                elem.sum = elem.stockPrice * elem.quantity,
+                elem.brandId = elem.product.brandId;
+                elem.brandName = elem.product.brand && elem.product.brand.name;
+                elem.detailCode = elem.product.code;
+                elem.detailName = elem.product.name;
+                elem.groupId = elem.product.groupId;
+                elem.tradeCode = elem.product.tradeCode;
+                elem.sum = elem.stockPrice * elem.quantity;
                 elem.key = key;
+                elem.sellingSum = elem.sellingPrice * elem.quantity;
+                elem.purchasePrice = elem.purchasePrice || elem.stockPrice;
             })
             switch (data.operationCode) {
                 case INC:
@@ -573,9 +717,19 @@ class StorageDocumentPage extends Component {
                     break;
                 case TSF:
                     data.type = TRANSFER;
+                    data.documentType = TRANSFER;
                     break;
                 case RES:
-                    data.type = RESERVE;
+                    data.type = TRANSFER;
+                    data.documentType = RESERVE;
+                    break;
+                case TOL:
+                    data.type = TRANSFER;
+                    data.documentType = TOOL;
+                    break;
+                case TOR:
+                    data.type = TRANSFER;
+                    data.documentType = REPAIR_AREA;
                     break;
                 case ORD:
                 case BOR:
@@ -590,38 +744,40 @@ class StorageDocumentPage extends Component {
 
             switch (data.type) {
                 case INCOME:
-                    data.incomeWarehouseId= data.warehouseId;
+                    data.incomeWarehouseId = data.warehouseId;
                     break;
                 case EXPENSE:
-                    data.expenseWarehouseId= data.warehouseId;
+                    data.expenseWarehouseId = data.warehouseId;
                     break;
                 case TRANSFER:
-                case RESERVE:
                     data.incomeWarehouseId = data.counterpartWarehouseId;
-                    data.expenseWarehouseId= data.warehouseId;
+                    data.expenseWarehouseId = data.warehouseId;
+                    break;
+                case ORDER:
+                    data.incomeWarehouseId = that.state.warehouses.length ? that.state.warehouses[0].id : undefined;
                     break;
             }
 
             that.setState({
                 formData: data,
+                loading: false,
             })
         })
         .catch(function (error) {
-            console.log('error', error)
+            console.log('error', error);
+            that.setState({loading: true});
         });
     }
 
     componentDidMount() {
         this._isMounted = true;
         const { id, location: { type } } = this.props;
+        if(this._isMounted) this.getWarehouses();
         this.getBrands();
         this.getClientList();
         this.getCounterpartSupplier();
-        if(this._isMounted) this.getWarehouses();
-        if(id) {
-            this.getStorageDocument();
-        }
-        
+        this.getEmployees();
+        if(id) this.getStorageDocument();
     }
 
     componentWillUnmount() {
@@ -637,10 +793,28 @@ class StorageDocumentPage extends Component {
     }
 
     render() {
-        const { warehouses, counterpartSupplier, formData, brands, clientList, fetched, forceUpdate } = this.state;
-        const { id, intl: {formatMessage} } = this.props;
+        const { 
+            warehouses,
+            counterpartSupplier,
+            employees, formData,
+            brands, clientList,
+            fetched, forceUpdate,
+            loading,
+            mainWarehouseId,
+            reserveWarehouseId,
+            toolWarehouseId,
+            repairAreaWarehouseId,
+        } = this.state;
+        const { id, intl: {formatMessage}, user } = this.props;
         const dateTime = formData.createdDatetime || new Date();
         const titleType = " " + formatMessage({id: `storage_document.docType.${formData.type}.${formData.documentType}`}).toLowerCase();
+
+        this.state.warnings = 0;
+        formData.docProducts.map((elem, i)=>{
+            elem.key = i;
+            if(!elem.productId) this.state.warnings++;
+        })
+
         return !fetched ? (
             <Spinner spin={true}/>
             ) : (
@@ -667,7 +841,7 @@ class StorageDocumentPage extends Component {
                         <div style={{display: 'flex'}}>
                             {formData.status != DONE && 
                                 <ChangeStatusDropdown
-                                    updateDocument={this.updateDocument}
+                                    updateDocument={this.updateFormData}
                                 />
                             }
                             <ReportsDropdown
@@ -683,6 +857,7 @@ class StorageDocumentPage extends Component {
                                         addDocProduct={this.addDocProduct}
                                         type={formData.type}
                                         documentType={formData.documentType}
+                                        disabled={formData.status != NEW}
                                     />
                                 }
                                 {((formData.type == INCOME && formData.documentType == CLIENT) || (formData.type == EXPENSE && formData.documentType == SUPPLIER)) &&
@@ -692,30 +867,70 @@ class StorageDocumentPage extends Component {
                                         type={formData.type}
                                         documentType={formData.documentType}
                                         brands={brands}
+                                        disabled={formData.status != NEW}
+                                        user={user}
                                     />
                                 }
-                                <Icon
-                                    type='save'
-                                    style={headerIconStyle}
-                                    onClick={()=>{
-                                        if(id) {
-                                            this.updateDocument();
-                                        } 
-                                        else {
-                                            this.createDocument();
-                                        }
-                                    }}
-                                />
+                                <Badge 
+                                    count={this.state.warnings}
+                                    style={{ backgroundColor: 'var(--approve)' }} 
+                                >
+                                    <Icon
+                                        type='save'
+                                        style={{
+                                            ...headerIconStyle,                                        }}
+                                        onClick={()=>{
+                                            if(id) {
+                                                this.setState({loading: true});
+                                                setTimeout(()=> this.updateDocument(true), 500);
+                                            } 
+                                            else {
+                                                this.createDocument();
+                                            }
+                                        }}
+                                    />
+                                </Badge>
                             </div>
                         )}
                         {id && formData.status != DONE &&
-                            <Icon
-                                type='delete'
-                                style={headerIconStyle}
-                                onClick={()=>{
-
-                                }}
-                            />
+                            <Popconfirm
+                                type='danger'
+                                title={ formatMessage({
+                                    id: 'add_order_form.delete_confirm',
+                                }) }
+                                placement="bottom"
+                                onConfirm={ () => {
+                                    var that = this;
+                                    let token = localStorage.getItem('_my.carbook.pro_token');
+                                    let url = __API_URL__ + `/store_docs/${this.props.id}`;
+                                    fetch(url, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Authorization': token,
+                                        },
+                                    })
+                                    .then(function (response) {
+                                        if (response.status !== 200) {
+                                        return Promise.reject(new Error(response.statusText))
+                                        }
+                                        return Promise.resolve(response)
+                                    })
+                                    .then(function (response) {
+                                        return response.json()
+                                    })
+                                    .then(function (data) {
+                                        that.props.history.goBack();
+                                    })
+                                    .catch(function (error) {
+                                        console.log('error', error);
+                                    });
+                                } }
+                            >
+                                <Icon
+                                    type='delete'
+                                    style={headerIconStyle}
+                                />
+                            </Popconfirm>
                         }
                         <Icon
                             type='close'
@@ -734,6 +949,7 @@ class StorageDocumentPage extends Component {
                     wrappedComponentRef={ this.saveFormRef }
                     warehouses={warehouses}
                     counterpartSupplier={counterpartSupplier}
+                    employees={employees}
                     typeToDocumentType={typeToDocumentType}
                     updateFormData={this.updateFormData}
                     formData={formData}
@@ -741,6 +957,12 @@ class StorageDocumentPage extends Component {
                     addDocProduct={this.addDocProduct}
                     deleteDocProduct={this.deleteDocProduct}
                     editDocProduct={this.editDocProduct}
+                    loading={loading}
+                    user={user}
+                    mainWarehouseId={mainWarehouseId}
+                    reserveWarehouseId={reserveWarehouseId}
+                    toolWarehouseId={toolWarehouseId}
+                    repairAreaWarehouseId={repairAreaWarehouseId}
                 />
             </Layout>
         );
@@ -760,7 +982,7 @@ class ChangeStatusDropdown extends React.Component {
             <Menu>
                 <Menu.Item
                     onClick={()=>{
-                        this.props.updateDocument(String(DONE))
+                        this.props.updateDocument({status: DONE}, true)
                     }}
                 >
                     <FormattedMessage id='storage_document.status_confirmed' />
@@ -847,30 +1069,130 @@ class ReturnModal extends React.Component {
         this.state = {
             visible: false,
             brandSearchValue: "",
-            brandId: undefined,
-            brandName: undefined,
             storageProducts: [],
-            detailCode: undefined,
-            detailName: undefined,
-        }
+            recommendedReturnsVisible: false,
+            returnDataSource: [],
+            selectedProduct: {
+                brandId: undefined,
+                brandName: undefined,
+                detailCode: undefined,
+                detailName: undefined,
+                stockPrice: 0,
+                quantity: 0,
+                storeDocProductId: undefined,
+            }
+        };
+
+        this.returnTableColumns = [
+            {
+                title: <FormattedMessage id='storage_document.document' />,
+                key: 'documentNumber',
+                dataIndex: 'documentNumber',
+            },
+            {
+                title: <FormattedMessage id='date' />,
+                key: 'doneDatetime',
+                dataIndex: 'doneDatetime',
+                render: (doneDatetime, row) => {
+                    return (
+                        moment(doneDatetime).format('LL')
+                    )
+                },
+            },
+            {
+                title: <FormattedMessage id='order_form_table.price' />,
+                key: 'price',
+                render: (row) => {
+                    return this.props.documentType == CLIENT ? (
+                        row.stockPrice
+                    ) : (
+                        row.sellingPrice
+                    )
+                },
+            },
+            {
+                title: <FormattedMessage id='order_form_table.count' />,
+                key: 'returnQuantity',
+                dataIndex: 'returnQuantity',
+            },
+            {
+                title: <FormattedMessage id='order_form_table.sum' />,
+                key: 'sum',
+                dataIndex: 'sum',
+            },
+            {
+                title: <FormattedMessage id='storage_document.return' />,
+                key: 'quantity',
+                dataIndex: 'quantity',
+                render: (quantity, row) => {
+                    return (
+                        <InputNumber
+                            min={0}
+                            max={row.returnQuantity}
+                            value={quantity}
+                            step={1}
+                            onChange={(value)=>{
+                                row.quantity = value;
+                                this.setState({})
+                            }}
+                        />
+                    )
+                },
+            },
+            {
+                key: 'select',
+                render: (row) => {
+                    return (
+                        <Button
+                            type='primary'
+                            disabled={!row.quantity}
+                            onClick={()=>{
+                                this.state.selectedProduct.stockPrice = row.stockPrice || row.sellingPrice;
+                                this.state.selectedProduct.quantity = row.quantity;
+                                this.state.selectedProduct.storeDocProductId = row.storeDocProductId;
+                                this.setState({
+                                    recommendedReturnsVisible: false,
+                                })
+                            }}
+                        >
+                            <FormattedMessage id='select' />
+                        </Button>
+                    )
+                },
+            },
+        ];
     }
 
     handleOk() {
+        this.props.addDocProduct(this.state.selectedProduct);
         this.handleCancel();
 
     }
 
     handleCancel() {
         this.setState({
-            dataSource: [],
             visible: false,
+            recommendedReturnsVisible: false,
+            returnDataSource: [],
+            brandSearchValue: "",
+            storageProducts: [],
+            selectedProduct: {
+                brandId: undefined,
+                brandName: undefined,
+                detailCode: undefined,
+                detailName: undefined,
+                stockPrice: 0,
+                quantity: 0,
+                storeDocProductId: undefined,
+            }
         });
     }
 
     getStorageProducts() {
+        console.log(this);
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/store_products`;
+        let url = __API_URL__ + `/store_products?all=true`;
         fetch(url, {
             method: "GET",
             headers: {
@@ -887,7 +1209,6 @@ class ReturnModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data.list)
             that.setState({
                 storageProducts: data.list
             })
@@ -901,31 +1222,72 @@ class ReturnModal extends React.Component {
         this.getStorageProducts();
     }
 
+    fetchReturnData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_docs/return?documentType=${this.props.documentType}&productId=${this.state.selectedProduct.productId}`;
+        if(this.props.documentType == CLIENT) url += `&counterpartClientId=${this.props.counterpartId}`;
+        else url += `&counterpartBusinessSupplierId=${this.props.counterpartId}`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            data.map((elem, i)=>{
+                elem.key = i;
+                elem.quantity = elem.returnQuantity;
+                elem.sum = Math.abs(elem.sum);
+            })
+            that.setState({
+                returnDataSource: data,
+            })
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    }
+
     render() {
+        const {type, documentType, user } = this.props;
         const {
             visible,
             brandSearchValue,
-            brandId,
-            brandName,
             storageProducts,
-            detailCode,
-            detailName,
+            selectedProduct,
+            recommendedReturnsVisible,
+            returnDataSource,
         } = this.state;
         return (
             <div>
                 <Icon
                     type="rollback"
-                    style={headerIconStyle}
+                    style={{
+                        ...headerIconStyle,
+                        color: this.props.disabled ? 'var(--text2)' : null,
+                        pointerEvents: this.props.disabled ? 'none' : 'all',
+                    }}
                     onClick={()=>{
                         this.fetchData();
                         this.setState({
                             visible: true,
-                        })
+                        });
                     }}
                 />
                 <Modal
                     visible={visible}
                     width={'fit-content'}
+                    okButtonProps={{disabled: !selectedProduct.storeDocProductId}}
                     onOk={()=>{
                         this.handleOk();
                     }}
@@ -936,95 +1298,141 @@ class ReturnModal extends React.Component {
                     <div
                         style={{
                             display: 'flex',
-                            justifyContent: 'space-between'
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-end',
+                            margin: '24px 0 0 0',
                         }}
                     >
                         <div style={{minWidth: 140}}>
                             <FormattedMessage id='order_form_table.brand' />
                             <Select
-                                showSearch
-                                value={brandId}
+                                disabled
+                                value={selectedProduct.brandId}
+                                style={{color: 'var(--text)'}}
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                                filterOption={(input, option) => {
-                                    return (
-                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                        String(option.props.value).indexOf(input.toLowerCase()) >= 0
-                                    )
-                                }}
-                                onSelect={(value, option)=>{
-                                    this.getOptions(value)
-                                    this.setState({
-                                        brandId: value,
-                                        brandName: option.props.children,
-                                    })
-                                }}
-                                onSearch={(input)=>{
-                                    this.setState({
-                                        brandSearchValue: input,
-                                    })
-                                }}
-                                onBlur={()=>{
-                                    this.setState({
-                                        brandSearchValue: "",
-                                    })
-                                }}
                             >
-                                {
-                                    this.state.brandSearchValue.length > 1 ? 
-                                        this.props.brands.map((elem, index)=>(
-                                            <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
-                                                {elem.brandName}
-                                            </Option>
-                                        )) :
-                                        brandId ? 
-                                        <Option key={0} value={brandId}>
-                                            {brandName}
-                                        </Option> : 
-                                        []
-                                }
+                                {this.props.brands.map((elem, index)=>(
+                                    <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
+                                        {elem.brandName}
+                                    </Option>
+                                ))}
                             </Select>
                         </div>
                         <div>
                             <FormattedMessage id='order_form_table.detail_code' />
-                            <AutoComplete
-                                value={detailCode}
+                            <Select
+                                showSearch
+                                value={selectedProduct.detailCode}
+                                style={{color: 'var(--text)', minWidth: 180}}
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                                onChange={(value)=>{
-                                    this.setState({
-                                        detailCode: value,
-                                    });
-                                }}
-                                onSelect={(value, option)=>{
-                                    this.setState({
-                                        detailCode: value,
-                                        detailName: option.props.detail_name,
-                                        stockPrice: option.props.price,
-                                    });
-                                }}
-                                filterOption={(input, option) => {
-                                    return (
-                                        String(option.props.value).toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                    )
+                                onChange={(value, option)=>{
+                                    this.state.selectedProduct.detailCode = option.props.code;
+                                    this.state.selectedProduct.brandId = option.props.brand_id;
+                                    this.state.selectedProduct.detailName = option.props.name;
+                                    this.state.selectedProduct.tradeCode = option.props.trade_code;
+                                    this.state.selectedProduct.productId = value;
+                                    this.setState({update: true})
                                 }}
                             >
-                                {
-                                    storageProducts.map((elem)=>{
-                                        return (
-                                            <Option
-                                                key={elem.id}
-                                                value={elem.code}
-                                                detail_name={elem.name}
-                                                price={0}
-                                                trade_code={elem.tradeCode}
-                                            >
-                                                {elem.code}
-                                            </Option>
-                                        )
-                                    })
-                                }
-                            </AutoComplete>
+                                {this.state.storageProducts.map((elem, index)=>(
+                                    <Option key={index} value={elem.id} brand_id={elem.brandId} name={elem.name} trade_code={elem.tradeCode} code={elem.code}>
+                                        {elem.code}
+                                    </Option>
+                                ))}
+                            </Select>
                         </div>
+                        {documentType == SUPPLIER &&
+                            <div>
+                                <FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)
+                                <Input
+                                    disabled
+                                    value={selectedProduct.tradeCode}
+                                    style={{
+                                        color: 'var(--text)'
+                                    }}
+                                />
+                            </div>
+                        }
+                        <div>
+                            <FormattedMessage id='order_form_table.detail_name' />
+                            <Input
+                                disabled
+                                value={selectedProduct.detailName}
+                                style={{
+                                    color: 'var(--text)'
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <div><FormattedMessage id='order_form_table.price' /></div>
+                            <InputNumber
+                                value={selectedProduct.stockPrice}
+                                min={0}
+                                onChange={(value)=>{
+                                    selectedProduct.stockPrice = value;
+                                    this.setState({})
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <div><FormattedMessage id='order_form_table.count' /></div>
+                            <InputNumber
+                                value={selectedProduct.quantity}
+                                min={1}
+                                onChange={(value)=>{
+                                    selectedProduct.quantity = value;
+                                    this.setState({})
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <div><FormattedMessage id='order_form_table.sum' /></div>
+                            <InputNumber
+                                disabled
+                                value={Math.round(selectedProduct.quantity*selectedProduct.stockPrice*10)/10}
+                                min={0}
+                                style={{
+                                    color: 'var(--text)'
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <Button
+                                disabled={!selectedProduct.detailCode}
+                                type='primary'
+                                onClick={()=>{
+                                    this.fetchReturnData();
+                                    this.setState({
+                                        recommendedReturnsVisible: true,
+                                    })
+                                }}
+                            >
+                                <Icon type="unordered-list" />
+                            </Button>
+                        </div>  
                     </div>
+                </Modal>
+                <Modal
+                    visible={recommendedReturnsVisible}
+                    style={{
+                        minWidth: '50%'
+                    }}
+                    width={'fit-content'}
+                    onOk={()=>{
+                        this.setState({
+                            recommendedReturnsVisible: false,
+                        })
+                    }}
+                    onCancel={()=>{
+                        this.setState({
+                            recommendedReturnsVisible: false,
+                        })
+                    }}
+                >
+                    <Table 
+                        columns={this.returnTableColumns}
+                        dataSource={returnDataSource}
+                    />
                 </Modal>
             </div>
         );
@@ -1038,6 +1446,7 @@ class AutomaticOrderCreationModal extends React.Component {
         this.state = {
             dataSource: [],
             visible: false,
+            loading: true,
         };
 
         const { formatMessage } = props.intl;
@@ -1438,10 +1847,13 @@ class AutomaticOrderCreationModal extends React.Component {
                 key:       'switch',
                 width:     'auto',
                 render:     (elem)=>{
+                    const checked = elem.checked;
                     return (
                         <Checkbox
-                            onChange={(value)=>{
-                                elem.checked = value;
+                            checked={checked}
+                            onChange={(event)=>{
+                                elem.checked = event.target.checked;
+                                this.setState({update: true})
                             }}
                         />
                     )
@@ -1471,6 +1883,7 @@ class AutomaticOrderCreationModal extends React.Component {
         this.setState({
             dataSource: [],
             visible: false,
+            loading: true,
         });
     }
 
@@ -1495,16 +1908,19 @@ class AutomaticOrderCreationModal extends React.Component {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 data.map((elem, i)=>{
+                    elem.quantity = elem.quantity || 1;
                     elem.toOrder = elem.quantity;
                     elem.key = i;
                     elem.detailName = elem.name;
+                    elem.stockPrice = elem.stockPrice || 0;
                     elem.detailCode = elem.code;
-                    elem.sum = elem.quantity * elem.stockPrice;
+                    elem.sum = Math.round( ((elem.quantity * elem.stockPrice) || 0)*10 ) / 10;
+                    elem.groupId = elem.storeGroupId;
                 })
                 that.setState({
                     dataSource: data,
+                    loading: false,
                 })
             })
             .catch(function(error) {
@@ -1529,22 +1945,25 @@ class AutomaticOrderCreationModal extends React.Component {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 data.map((elem, i)=>{
+                    elem.quantity = elem.quantity || 1;
                     elem.orderedSum = elem.sum;
                     elem.orderedStockPrice = elem.stockPrice;
                     elem.orderedQuantity = elem.quantity;
                     elem.productId = elem.id;
                     elem.toOrder = elem.quantity;
-                    elem.brandName = elem.brand.name;
+                    elem.brandName = elem.brand && elem.brand.name;
                     elem.key = i;
                     elem.detailName = elem.name;
                     elem.detailCode = elem.code;
-                    elem.sum = elem.quantity * elem.stockPrice;
+                    elem.stockPrice = elem.stockPrice || 0;
+                    elem.sum = Math.round( ((elem.quantity * elem.stockPrice) || 0)*10 ) / 10;
                     elem.orderedSum = elem.sum;
+                    elem.groupId = elem.storeGroupId;
                 })
                 that.setState({
                     dataSource: data,
+                    loading: false,
                 })
             })
             .catch(function(error) {
@@ -1555,12 +1974,16 @@ class AutomaticOrderCreationModal extends React.Component {
 
 
     render() {
-        const { visible, dataSource } = this.state;
+        const { visible, dataSource, loading } = this.state;
         return (
             <div>
                 <Icon
                     type="check-circle"
-                    style={headerIconStyle}
+                    style={{
+                        ...headerIconStyle,
+                        color: this.props.disabled ? 'var(--text2)' : null,
+                        pointerEvents: this.props.disabled ? 'none' : 'all',
+                    }}
                     onClick={()=>{
                         this.fetchData();
                         this.setState({
@@ -1586,6 +2009,7 @@ class AutomaticOrderCreationModal extends React.Component {
                         }
                         dataSource={dataSource}
                         pagination={{pageSize: 6}}
+                        loading={loading}
                     />
                 </Modal>
             </div>

@@ -24,8 +24,18 @@ import Styles from "./loginForm.m.css";
     },
 })
 export class LoginForm extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            submitCount: 0,
+        };
+    }
+
     _submit = event => {
-        //event.preventDefault();
+        event.preventDefault();
+        this.setState((state) => {
+            return {submitCount: state.submitCount + 1}
+        });
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 this.props.login(values);
@@ -33,10 +43,10 @@ export class LoginForm extends Component {
         });
     };
 
-    componentDidMount() {
-        this.setState({
-            update: true,
-        });
+    componentDidUpdate() {
+        if(this.state.submitCount > 1) {
+            window.location.reload();
+        }
     }
 
     render() {
@@ -83,10 +93,28 @@ export class LoginForm extends Component {
                 <Button type="primary" onClick={this._submit}>
                     <FormattedMessage id="enter" />
                 </Button>
-                <div style={{ marginTop: 10 }}>
-                    <Link to={book.forgotPassword}>
-                        <FormattedMessage id="login_form.forgot_password" />
-                    </Link>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between'
+                    }}
+                >
+                    <div style={{ marginTop: 10 }}>
+                        <Link to={book.forgotPassword}>
+                            <FormattedMessage id="login_form.forgot_password" />
+                        </Link>
+                    </div>
+                    <div 
+                        style={{
+                            color: 'var(--text2)',
+                            fontSize: 14,
+                            fontWeight: 400,
+                            textAlign: 'right',
+                            marginTop: 10,
+                        }}
+                    >
+                        <i style={{color: 'red'}}>* </i><FormattedMessage id='login_hint' />
+                    </div>
                 </div>
             </Form>
         );

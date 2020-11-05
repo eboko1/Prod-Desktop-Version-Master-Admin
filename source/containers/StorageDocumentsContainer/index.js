@@ -17,8 +17,8 @@ import book from 'routes/book';
 // own
 const INCOME = 'INCOME',
       EXPENSE = 'EXPENSE',
-      RESERVE = 'RESERVE',
       SUPPLIER = 'SUPPLIER',
+      RESERVE = 'RESERVE',
       CLIENT = 'CLIENT',
       INVENTORY = 'INVENTORY',
       OWN_CONSUMPTION = 'OWN_CONSUMPTION',
@@ -27,18 +27,29 @@ const INCOME = 'INCOME',
       ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
-      DONE = 'DONE';
+      DONE = 'DONE',
+      MAIN = 'MAIN',
+      TOOL = 'TOOL',
+      REPAIR_AREA= 'REPAIR_AREA',
+      STOCK = "STOCK";
       
 const dateFormat = 'DD.MM.YYYY';
-const fetchStorage = (type, docType, action) => {
+const fetchStorage = (type, action) => {
     let token = localStorage.getItem('_my.carbook.pro_token');
-    let url = __API_URL__ + `/store_docs?`;
-    if(type == ORDER) {
-        url += `context=${type}`;
-    }
-    else {
-        url += `type=${type}&context=STOCK`
-        if(docType) url += `&documentType=${docType}`
+    let url = __API_URL__ + `/store_docs`;
+    switch(type) {
+        case INCOME:
+            url += `?types=["${INCOME}"]&documentTypes=["${SUPPLIER}","${CLIENT}","${INVENTORY}"]&contexts=["${STOCK}"]`
+            break;
+        case EXPENSE:
+            url += `?types=["${EXPENSE}"]&documentTypes=["${SUPPLIER}","${CLIENT}","${INVENTORY}","${OWN_CONSUMPTION}"]&contexts=["${STOCK}"]`
+            break;
+        case TRANSFER:
+            url += `?types=["${EXPENSE}"]&documentTypes=["${TRANSFER}"]&contexts=["${STOCK}"]`
+            break;
+        case ORDER:
+            url += `?contexts=["${ORDER}"]`
+            break;
     }
     
 
@@ -48,25 +59,24 @@ const fetchStorage = (type, docType, action) => {
             Authorization: token,
         },
     })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
+    .then(function(response) {
+        if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText));
+        }
 
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            if(docType != TRANSFER) {
-                data.list = data.list.filter((elem)=>elem.documentType != TRANSFER);
-            }
-            action(data);
-        })
-        .catch(function(error) {
-            console.log('error', error);
-        });
+        return Promise.resolve(response);
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        console.log(data);
+        data.list = data.list.filter((elem)=>elem.documentNumber.substr(0, 3) != 'RES');
+        action(data);
+    })
+    .catch(function(error) {
+        console.log('error', error);
+    });
 };
 
 const mapDispatchToProps = {
@@ -84,6 +94,7 @@ class StorageDocumentsContainer extends Component {
             filtredDocumentsList: [],
             documentFilters:      {
                 querySearch:          '',
+                typeFilter:           null,
                 documentTypeFilter:   null,
                 documentStatusFilter: null,
                 documentWarehouseFilter: ["", ""],
@@ -93,6 +104,7 @@ class StorageDocumentsContainer extends Component {
 
         this.onDateChange = this.onDateChange.bind(this);
         this.querySearchFilter = this.querySearchFilter.bind(this);
+        this.typeFilter = this.typeFilter.bind(this);
         this.documentTypeFilter = this.documentTypeFilter.bind(this);
         this.documentStatusFilter = this.documentStatusFilter.bind(this);
         this.documentWarehouseFilter = this.documentWarehouseFilter.bind(this);
@@ -103,7 +115,7 @@ class StorageDocumentsContainer extends Component {
         const thisYear = new Date('1/1/' + new Date().getFullYear());
         const dateRange = [ moment(thisYear, dateFormat), moment(new Date(), dateFormat) ];
 
-        fetchStorage(this.props.listType, this.props.docType, data => {
+        fetchStorage(this.props.listType, data => {
             data.list.map((elem, i) => {
                 elem.key = i;
             });
@@ -126,7 +138,7 @@ class StorageDocumentsContainer extends Component {
             const defaultDateRange = [ moment(thisYear, dateFormat), moment(new Date(), dateFormat) ];
             dateRange = defaultDateRange;
         }
-        fetchStorage(this.props.listType, this.props.docType, data => {
+        fetchStorage(this.props.listType, data => {
             data.list.map((elem, i) => {
                 elem.key = i;
             });
@@ -151,6 +163,14 @@ class StorageDocumentsContainer extends Component {
         this.filterDocumentList();
     }
 
+    typeFilter(value) {
+        this.state.documentFilters.typeFilter = value;
+        this.setState({
+            update: true,
+        });
+        this.filterDocumentList();
+    }
+
     documentTypeFilter(value) {
         this.state.documentFilters.documentTypeFilter = value;
         this.setState({
@@ -168,6 +188,7 @@ class StorageDocumentsContainer extends Component {
     }
 
     documentWarehouseFilter(warehouseInput) {
+        console.log(warehouseInput)
         this.state.documentFilters.documentWarehouseFilter = warehouseInput;
         this.setState({
             update: true,
@@ -179,12 +200,13 @@ class StorageDocumentsContainer extends Component {
         const { storageDocumentsList, documentFilters } = this.state;
         const {
             querySearch,
+            typeFilter,
             documentTypeFilter,
             documentStatusFilter,
             documentWarehouseFilter,
         } = documentFilters;
         const isFiltred =
-            querySearch || documentTypeFilter || documentStatusFilter || (documentWarehouseFilter[0] || documentWarehouseFilter[1]);
+            querySearch || typeFilter || documentTypeFilter || documentStatusFilter || (documentWarehouseFilter[0] || documentWarehouseFilter[1]);
 
         if (!isFiltred) {
             this.setState({
@@ -205,6 +227,11 @@ class StorageDocumentsContainer extends Component {
                         String(objValue)
                             .toLowerCase()
                             .includes(querySearch.toLowerCase())));
+            }
+            if (typeFilter) {
+                resultList = resultList.filter(
+                    elem => elem.type == typeFilter,
+                );
             }
             if (documentTypeFilter) {
                 resultList = resultList.filter(
@@ -241,9 +268,10 @@ class StorageDocumentsContainer extends Component {
             this.setState({
                 documentFilters: {
                     querySearch:             querySearch,
+                    typeFilter:              typeFilter,    
                     documentTypeFilter:      documentTypeFilter,
                     documentStatusFilter:    documentStatusFilter,
-                    documentWarehouseFilter: documentWarehouseFilter,
+                    documentWarehouseFilter: documentWarehouseFilter || ["", ""],
                 },
                 isFiltred:            isFiltred,
                 filtredDocumentsList: resultList,
@@ -268,6 +296,7 @@ class StorageDocumentsContainer extends Component {
                             dateRange={ dateRange }
                             dateFormat={ dateFormat }
                             onDateChange={ this.onDateChange }
+                            typeFilter={ this.typeFilter }
                             documentTypeFilter={ this.documentTypeFilter }
                             documentStatusFilter={ this.documentStatusFilter }
                         />
@@ -286,6 +315,7 @@ class StorageDocumentsContainer extends Component {
                 paper={ false }
             >
                 <StorageTable
+                    docType={this.props.newDocType}
                     documentsList={ filtredDocumentsList }
                     listType={ this.props.listType }
                     onSearch={ this.querySearchFilter }

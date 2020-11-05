@@ -50,5 +50,10 @@
 }
 
 .addProductItemWrap {
-    margin-top: 15px;
+    margin: 0 5px;
+    max-width: 180px;
+}
+
+.hiddenColumn {
+    display: none;
 }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Button, Input, Table, Select, Icon, DatePicker, AutoComplete, InputNumber, Modal, TreeSelect, notification, Checkbox } from 'antd';
+import { Form, Button, Input, Table, Select, Icon, DatePicker, AutoComplete, InputNumber, Modal, TreeSelect, notification, Checkbox, Badge } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -12,6 +12,7 @@ import moment from 'moment';
 import { Catcher } from 'commons';
 import { Numeral } from "commons";
 import { withReduxForm, isForbidden, permissions } from "utils";
+import { DetailStorageModal } from "modals";
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
@@ -24,6 +25,7 @@ const formItemStyle = {
         marginBottom: 0,
     }
 };
+const disabledSelectText = {color: 'var(--text)'};
 const mask = "0,0.00";
 const INCOME = 'INCOME',
       EXPENSE = 'EXPENSE',
@@ -37,7 +39,10 @@ const INCOME = 'INCOME',
       ORDERINCOME = 'ORDERINCOME',
       ORDER = 'ORDER',
       NEW = 'NEW',
-      DONE = 'DONE';
+      DONE = 'DONE',
+      MAIN = 'MAIN',
+      TOOL = 'TOOL',
+      REPAIR_AREA= 'REPAIR_AREA';
 
 @withReduxForm({
     name: "storageDocumentForm",
@@ -53,16 +58,18 @@ class StorageDocumentForm extends Component {
             counterpartOptionInfo: {
                 value: undefined,
                 children: "",
-            }
+            },
+            warning: false,
         };
         this.hideModal = this.hideModal.bind(this);
         this.showModal = this.showModal.bind(this);
         this.editProduct = this.editProduct.bind(this);
     }
 
-    editProduct(key) {
+    editProduct(key, warning=false) {
         this.setState({
             editKey: key,
+            warning: warning,
             modalVisible: true,
         })
     }
@@ -76,6 +83,7 @@ class StorageDocumentForm extends Component {
     hideModal() {
         this.setState({
             modalVisible: false,
+            warning: false,
             editKey: undefined,
         })
     }
@@ -95,7 +103,7 @@ class StorageDocumentForm extends Component {
     }
  
     render() {
-        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo } = this.state;
+        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo, warning } = this.state;
         const {
             id,
             addDocProduct,
@@ -103,10 +111,17 @@ class StorageDocumentForm extends Component {
             typeToDocumentType,
             warehouses,
             counterpartSupplier,
+            employees,
             brands,
             deleteDocProduct,
             editDocProduct,
-            clientList
+            clientList,
+            loading,
+            user,
+            mainWarehouseId,
+            reserveWarehouseId,
+            toolWarehouseId,
+            repairAreaWarehouseId,
         } = this.props;
 
         const {
@@ -123,7 +138,7 @@ class StorageDocumentForm extends Component {
         } = this.props.formData;
         const dateFormat = 'DD.MM.YYYY';
         const disabled = status == DONE;
-        const onlySum = type == TRANSFER || type == RESERVE || type == ORDER || documentType == OWN_CONSUMPTION || documentType == INVENTORY;
+        const onlySum = type == TRANSFER || type == ORDER || documentType == OWN_CONSUMPTION || documentType == INVENTORY;
         
         return (
             <div>
@@ -147,23 +162,24 @@ class StorageDocumentForm extends Component {
                         <Select
                             disabled={disabled || status==NEW}
                             value={type}
+                            style={disabledSelectText}
                             onChange={(value)=>{
                                 if(value == INCOME || value == ORDER) {
                                     updateFormData({
-                                        incomeWarehouseId: warehouses[0].id,
+                                        incomeWarehouseId: mainWarehouseId,
                                         expenseWarehouseId: undefined,
                                     })
                                 }
                                 else if(value == EXPENSE) {
                                     updateFormData({
                                         incomeWarehouseId: undefined,
-                                        expenseWarehouseId: warehouses[0].id,
+                                        expenseWarehouseId: mainWarehouseId,
                                     })
                                 }
-                                else if(value == TRANSFER || value == RESERVE) {
+                                else if(value == TRANSFER) {
                                     updateFormData({
-                                        incomeWarehouseId: warehouses[1].id,
-                                        expenseWarehouseId: warehouses[0].id,
+                                        incomeWarehouseId: mainWarehouseId,
+                                        expenseWarehouseId: reserveWarehouseId,
                                     })
                                 }
 
@@ -190,24 +206,40 @@ class StorageDocumentForm extends Component {
                                 <FormattedMessage id='storage.TRANSFER'/>
                             </Option>
                             <Option
-                                value={RESERVE}
-                            >
-                                <FormattedMessage id='storage.RESERVE'/>
-                            </Option>
-                            <Option
                                 value={ORDER}
                             >
                                 <FormattedMessage id='storage.ORDER'/>
                             </Option>
                         </Select>
                     </div>
-                    {(type == ORDER || type== EXPENSE || type== INCOME) &&
                     <div>
                         <FormattedMessage id='storage_document.document_type'/>{requiredField()}
                         <Select
                             disabled={disabled || status==NEW}
                             value={documentType}
+                            style={disabledSelectText}
                             onChange={(value)=>{
+                                if(value == TRANSFER) {
+                                    updateFormData({
+                                        incomeWarehouseId: mainWarehouseId,
+                                        expenseWarehouseId: reserveWarehouseId,
+                                    })
+                                } else if(value == RESERVE) {
+                                    updateFormData({
+                                        incomeWarehouseId: reserveWarehouseId,
+                                        expenseWarehouseId: mainWarehouseId,
+                                    })
+                                } else if (value == REPAIR_AREA) {
+                                    updateFormData({
+                                        incomeWarehouseId: toolWarehouseId,
+                                        expenseWarehouseId: repairAreaWarehouseId,
+                                    })
+                                } else if (value == TOOL) {
+                                    updateFormData({
+                                        incomeWarehouseId: repairAreaWarehouseId,
+                                        expenseWarehouseId: toolWarehouseId,
+                                    })
+                                }
                                 updateFormData({
                                     documentType: value,
                                     counterpartId: undefined,
@@ -215,27 +247,38 @@ class StorageDocumentForm extends Component {
                             }}
                         >
                             {type && 
-                                typeToDocumentType[type.toLowerCase()].documentType.map((counterpart, i)=>{
+                                typeToDocumentType[type.toLowerCase()].documentType.map((documentType, i)=>{
                                     return (
                                         <Option
-                                            value={counterpart}
+                                            value={documentType}
                                             key={i}
                                         >
-                                            <FormattedMessage id={`storage_document.docType.${type}.${counterpart}`}/>
+                                            <FormattedMessage id={`storage_document.docType.${type}.${documentType}`}/>
                                         </Option>
                                     )
                                 })
                             }
                         </Select>
-                    </div>}
-                    {(type == INCOME || type == EXPENSE || type == ORDER) &&
-                    (documentType == CLIENT || documentType == SUPPLIER || documentType == ADJUSTMENT || documentType == ORDERINCOME) && 
+                    </div>
+                    {(
+                        documentType == CLIENT ||
+                        documentType == SUPPLIER ||
+                        documentType == ADJUSTMENT ||
+                        documentType == ORDERINCOME ||
+                        documentType == TOOL ||
+                        documentType == REPAIR_AREA) 
+                    && 
                     <div style={{position: 'relative'}}>
-                        <FormattedMessage id={`storage.${documentType != ADJUSTMENT && documentType != ORDERINCOME ? documentType.toLowerCase() : 'supplier'}`}/>{requiredField()}
+                        <FormattedMessage id={`storage.${
+                            documentType == ORDERINCOME || documentType == ADJUSTMENT ? 'supplier' :
+                            documentType == TOOL || documentType == REPAIR_AREA ? 'employee' :
+                            documentType.toLowerCase()}`
+                        }/>{requiredField()}
                         <Select
                             showSearch
                             disabled={disabled || status==NEW}
                             value={counterpartId}
+                            style={disabledSelectText}
                             onChange={(value, option)=>{
                                 updateFormData({
                                     counterpartId: value,
@@ -273,6 +316,18 @@ class StorageDocumentForm extends Component {
                                     </Option>
                                 )
                             })}
+                            {(documentType == TOOL || documentType == REPAIR_AREA) && 
+                                employees.map((employee, i)=>{
+                                    return (
+                                        <Option
+                                            key={i}
+                                            value={employee.id}
+                                        >
+                                            {`${employee.surname || ""} ${employee.name || ""} ${employee.phone}`}
+                                        </Option>
+                                    )
+                                })
+                            }
                             {documentType == CLIENT ?
                             clientSearchValue.length > 2 ?
                             clientList.map((client, key)=>{
@@ -301,10 +356,16 @@ class StorageDocumentForm extends Component {
                     }}
                 >
                     <div>
-                        <FormattedMessage id='storage_document.storage_expenses'/>{(type == EXPENSE || type == TRANSFER || type == RESERVE) && requiredField()}
+                        <FormattedMessage id='storage_document.storage_expenses'/>{(type == EXPENSE || type == TRANSFER) && requiredField()}
                         <Select
-                            disabled={type == INCOME || type == ORDER || disabled}
+                            disabled={
+                                type == INCOME || 
+                                type == ORDER || 
+                                documentType == TOOL ||
+                                documentType == REPAIR_AREA ||
+                                disabled}
                             value={expenseWarehouseId}
+                            style={disabledSelectText}
                             onSelect={(value)=>{
                                 updateFormData({
                                     expenseWarehouseId: value,
@@ -324,10 +385,18 @@ class StorageDocumentForm extends Component {
                         </Select>
                     </div>
                     <div>
-                        <FormattedMessage id='storage_document.storage_income'/>{(type == INCOME || type == TRANSFER || type == RESERVE) && requiredField()}
+                        <FormattedMessage id='storage_document.storage_income'/>{(type == INCOME || type == TRANSFER) && requiredField()}
                         <Select
-                            disabled={type == EXPENSE || type == ORDER || type == RESERVE || disabled}
+                            disabled={
+                                type == EXPENSE ||
+                                type == ORDER || 
+                                documentType == RESERVE ||
+                                documentType == TOOL ||
+                                documentType == REPAIR_AREA ||
+                                disabled
+                            }
                             value={incomeWarehouseId}
+                            style={disabledSelectText}
                             onSelect={(value)=>{
                                 updateFormData({
                                     incomeWarehouseId: value,
@@ -352,6 +421,7 @@ class StorageDocumentForm extends Component {
                         <Input
                             disabled={disabled}
                             value={supplierDocNumber}
+                            style={{color: 'var(--text3)'}}
                             onChange={(event)=>{
                                 updateFormData({
                                     supplierDocNumber: event.target.value,
@@ -378,7 +448,7 @@ class StorageDocumentForm extends Component {
                                 background: 'var(--static)',
                                 fontSize: 16,
                                 height: '100%',
-                                margin: 15,
+                                margin: '15px 0px',
                                 justifyContent: 'center'
                             }}
                         >
@@ -431,7 +501,7 @@ class StorageDocumentForm extends Component {
                                         })}
                                         nullText="0"
                                     >
-                                        {disabled ? 0 : sum}
+                                        {status == DONE ? sum : 0}
                                     </Numeral>
                                 </div>
                             </div>
@@ -461,7 +531,7 @@ class StorageDocumentForm extends Component {
                                             id: "currency",
                                         })}
                                     >
-                                        {!disabled ? 0 : sum}
+                                        {status == DONE ? 0 : sum}
                                     </Numeral>
                                 </p>
                             </div>
@@ -472,7 +542,7 @@ class StorageDocumentForm extends Component {
                         <FormattedMessage id="storage_document.pay_until" />
                         <DatePicker
                             style={{
-                                width: '100%'
+                                width: '100%',
                             }}
                             defaultValue={payUntilDatetime}
                             disabled={disabled || onlySum}
@@ -490,13 +560,16 @@ class StorageDocumentForm extends Component {
                 margin: "24px",
             }}>
                 <DocProductsTable
+                    loading={loading}
                     docProducts={docProducts}
-                    disabled={disabled}
+                    disabled={disabled || !(status)}
                     updateFormData={updateFormData}
                     businessSupplierId={counterpartId}
                     deleteDocProduct={deleteDocProduct}
                     editProduct={this.editProduct}
                     showModal={this.showModal}
+                    type={type}
+                    sellingPrice={type == EXPENSE}
                 />
                 { !disabled ? 
                     <AddProductModal
@@ -507,11 +580,15 @@ class StorageDocumentForm extends Component {
                         brands={brands}
                         addDocProduct={addDocProduct}
                         product={editKey !== undefined ? docProducts[editKey] : undefined}
+                        editKey={editKey}
                         editDocProduct={editDocProduct}
                         isIncome={type == INCOME}
-                        priceDisabled={type == TRANSFER || type == RESERVE || documentType == OWN_CONSUMPTION}
+                        priceDisabled={type == TRANSFER || documentType == OWN_CONSUMPTION}
                         warehouses={warehouses}
                         warehouseId={incomeWarehouseId || expenseWarehouseId}
+                        warning={warning}
+                        user={user}
+                        sellingPrice={type == EXPENSE}
                     /> 
                 : null}
             </div>
@@ -537,23 +614,38 @@ class DocProductsTable extends React.Component {
                 key:       'edit',
                 render:     (elem)=>{
                     return this.props.disabled ? null :
-                        elem.productId ?
+                        !elem.detailCode ?
                             <Button
-                                disabled={this.props.disabled}
-                                onClick={()=>{
-                                    this.props.editProduct(elem.key);
-                                }}
-                            >
-                                <Icon type='edit' />
-                            </Button> : 
-                            <Button
-                                type='primary'
+                                
                                 onClick={()=>{
                                     this.props.showModal();
                                 }}
                             >
                                 <Icon type='plus'/>
-                            </Button>
+                            </Button> :
+                            elem.productId ? 
+                                <Button
+                                    disabled={this.props.disabled}
+                                    type='primary'
+                                    onClick={()=>{
+                                        this.props.editProduct(elem.key);
+                                    }}
+                                >
+                                    <Icon type='edit' />
+                                </Button> :
+                                <Button
+                                    disabled={this.props.disabled}
+                                    type='primary'
+                                    style={{
+                                        backgroundColor: 'var(--approve)'
+                                    }}
+                                    onClick={()=>{
+                                        this.props.editProduct(elem.key, true);
+                                    }}
+                                >
+                                    <Icon type='warning'/>
+                                </Button>
+                            
                 }
             },
             {
@@ -569,7 +661,6 @@ class DocProductsTable extends React.Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.brand' />,
-                width:     '10%',
                 key:       'brandName',
                 dataIndex: 'brandName',
                 render:     (data, elem)=>{
@@ -580,7 +671,6 @@ class DocProductsTable extends React.Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.detail_code' />,
-                width:     '15%',
                 key:       'detailCode',
                 dataIndex: 'detailCode',
                 render:     (data, elem)=>{
@@ -590,8 +680,7 @@ class DocProductsTable extends React.Component {
                 }
             },
             {
-                title:      <><FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)</>,
-                width:     '10%',
+                title:      <span><FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)</span>,
                 key:       'tradeCode',
                 dataIndex: 'tradeCode',
                 render:     (data, elem)=>{
@@ -604,7 +693,6 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='order_form_table.detail_name' />,
                 key:       'detailName',
                 dataIndex: 'detailName',
-                width:     '15%',
                 render:     (data, elem)=>{
                     return (
                         data || <FormattedMessage id='long_dash' />
@@ -615,7 +703,6 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='orders.source' />,
                 key:       'source',
                 dataIndex: 'source',
-                width:     '15%',
                 render:     (data, elem)=>{
                     return (
                         data || <FormattedMessage id='long_dash' />
@@ -626,10 +713,10 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='order_form_table.price' />,
                 key:       'stockPrice',
                 dataIndex: 'stockPrice',
-                width:     '10%',
                 render:     (data, elem)=>{
+                    const price = this.props.sellingPrice ? elem.sellingPrice : data;
                     return (
-                        data || <FormattedMessage id='long_dash' />
+                        price || <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -637,7 +724,6 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='order_form_table.count' />,
                 key:       'quantity',
                 dataIndex: 'quantity',
-                width:     '10%',
                 render:     (data, elem)=>{
                     return (
                         data || <FormattedMessage id='long_dash' />
@@ -648,10 +734,10 @@ class DocProductsTable extends React.Component {
                 title:     <FormattedMessage id='order_form_table.sum' />,
                 key:       'sum',
                 dataIndex: 'sum',
-                width:     '10%',
                 render:     (data, elem)=>{
+                    const sum = this.props.sellingPrice ? elem.sellingSum : data;
                     return (
-                        data ? Math.round(data*10)/10 : <FormattedMessage id='long_dash' />
+                        sum ? Math.round(sum*10)/10 : <FormattedMessage id='long_dash' />
                     )
                 }
             },
@@ -661,7 +747,7 @@ class DocProductsTable extends React.Component {
                 render:     (elem)=>{
                     return this.props.disabled ? null : (
                         <Button
-                            disabled={this.props.disabled}
+                            disabled={this.props.disabled || !elem.detailCode}
                             type={'danger'}
                             onClick={()=>{
                                 this.props.deleteDocProduct(elem.key)
@@ -676,13 +762,28 @@ class DocProductsTable extends React.Component {
                 }
             },
         ];
+
+        this.purchaseColumn = {
+            title:     <FormattedMessage id='order_form_table.purchasePrice' />,
+            key:       'purchasePrice',
+            dataIndex: 'purchasePrice',
+            render:     (data, elem)=>{
+                return (
+                    data || <FormattedMessage id='long_dash' />
+                )
+            }
+        };
     }
 
     render() {
-        const { disabled, docProducts } = this.props;
+        const { disabled, docProducts, loading, type } = this.props;
+        const tblColumns = [...this.columns];
+        if(type == EXPENSE) {
+            tblColumns.splice( 7, 0, this.purchaseColumn);
+        }
         var tableData = docProducts;
-        tableData = tableData.filter((elem)=>elem.productId)
-        if(!disabled && (!tableData.length || tableData[tableData.length-1].productId)) {
+        tableData = tableData.filter((elem)=>elem.detailCode);
+        if(!disabled && (!tableData.length || tableData[tableData.length-1].detailCode)) {
             tableData.push({
                 key: tableData.length,
                 productId: undefined,
@@ -690,9 +791,10 @@ class DocProductsTable extends React.Component {
         }
         return (
             <Table
-                columns={this.columns}
+                columns={tblColumns}
                 dataSource={tableData}
                 pagination={false}
+                loading={loading}
             />
         );
     }
@@ -716,6 +818,7 @@ class AddProductModal extends React.Component {
             groupId: undefined,
             tradeCode: undefined,
             detailName: undefined,
+            sellingPrice: 0,
             stockPrice: 0,
             quantity: 1,
             detailCodeSearch: '',
@@ -757,7 +860,6 @@ class AddProductModal extends React.Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.setState({
                 detailOptions: data,
             })
@@ -800,7 +902,7 @@ class AddProductModal extends React.Component {
     getStorageProducts() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/store_products`;
+        let url = __API_URL__ + `/store_products?all=true`;
         fetch(url, {
             method: "GET",
             headers: {
@@ -817,7 +919,6 @@ class AddProductModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data.list)
             that.setState({
                 storageProducts: data.list
             })
@@ -881,10 +982,46 @@ class AddProductModal extends React.Component {
         })
     }
 
-    getProductId(detailCode) {
-        const { storageProducts, storageBalance } = this.state;
-        const storageProduct = storageProducts.find((elem)=>elem.code==detailCode);
-        console.log(storageProduct)
+    getCurrentPrice(detailCode, businessSupplierId) {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/business_suppliers/pricelists?partNumber=${detailCode}&businessSupplierId=${businessSupplierId}`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if(data.length) {   
+                that.setState({
+                    stockPrice: data[0].purchasePrice,
+                })
+            }
+            
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    }
+
+    getProductId(detailCode, brandId, productId) {
+        const { storageProducts, storageBalance, detailName, quantity } = this.state;
+        var storageProduct;
+        if(productId) {
+            storageProduct = storageProducts.find((elem)=>elem.id==productId);
+        } else {
+            storageProduct = storageProducts.find((elem)=>elem.code==detailCode && (!brandId || elem.brandId == brandId));
+        }
         if(storageProduct) {
             storageBalance[0].count = storageProduct.countInWarehouses;
             storageBalance[1].count = storageProduct.reservedCount;
@@ -901,8 +1038,12 @@ class AddProductModal extends React.Component {
                 brandId: storageProduct.brandId,
                 brandName: storageProduct.brand && storageProduct.brand.name,
                 tradeCode: storageProduct.tradeCode,
-                quantity: storageProduct.quantity,
+                quantity: storageProduct.quantity || 1,
+                stockPrice: (this.props.sellingPrice ? 
+                    storageProduct.stockPrice * (storageProduct.group && storageProduct.group.multiplier || 1.4) : 
+                    storageProduct.stockPrice) || 0,
             })
+            this.getCurrentPrice(detailCode, this.props.businessSupplierId);
             return true;
         }
         else {
@@ -917,9 +1058,9 @@ class AddProductModal extends React.Component {
             this.setState({
                 groupId: undefined,
                 productId: undefined,
-                detailName: undefined,
+                detailName: this.props.warning ? detailName : undefined,
                 tradeCode: undefined,
-                quantity: 1,
+                quantity: quantity || 1,
             })
             return false;
         }
@@ -942,23 +1083,43 @@ class AddProductModal extends React.Component {
             detailCode,
             detailName,
             productId,
-            tradeCode
+            tradeCode,
+            sellingPrice,
         } = productData;
 
-        this.props.addDocProduct({
-            productId: productId,
-            detailCode: detailCode,
-            brandName: brandName,
-            brandId: brandId,
-            tradeCode: tradeCode,
-            detailName: detailName,
-            stockPrice: stockPrice,
-            quantity: quantity,
-            sum: quantity*stockPrice,
-        });
-        this.setState({
-            alertModalVisible: false,
-        });
+        if(!this.props.warning) {
+            this.props.addDocProduct({
+                productId: productId,
+                detailCode: detailCode,
+                brandName: brandName,
+                brandId: brandId,
+                tradeCode: tradeCode,
+                detailName: detailName,
+                stockPrice: stockPrice,
+                sellingPrice: sellingPrice,
+                quantity: quantity,
+                sum: quantity*stockPrice,
+            });
+            this.setState({
+                alertModalVisible: false,
+            });
+        } else {
+            this.props.editDocProduct(
+                this.props.product.key,
+                {
+                    productId: productId,
+                    detailCode: detailCode,
+                    brandName: brandName,
+                    brandId: brandId,
+                    tradeCode: tradeCode,
+                    detailName: detailName,
+                    stockPrice: stockPrice,
+                    sellingPrice: sellingPrice,
+                    quantity: quantity,
+                    sum: quantity*stockPrice,
+                }
+            );
+        }
         this.handleCancel();
         this.getStorageProducts();
     }
@@ -982,6 +1143,7 @@ class AddProductModal extends React.Component {
             stockPrice,
             quantity, 
             productId,
+            sellingPrice,
         } = this.state;
 
         if(!brandId || !detailCode) {
@@ -991,7 +1153,7 @@ class AddProductModal extends React.Component {
             return;
         }
 
-        if(!this.getProductId(detailCode)) {
+        if(!this.getProductId(detailCode, brandId)) {
             this.setState({
                 alertModalVisible: true,
             })
@@ -1008,9 +1170,11 @@ class AddProductModal extends React.Component {
                         tradeCode: tradeCode,
                         detailName: detailName,
                         stockPrice: stockPrice,
+                        sellingPrice: sellingPrice,
                         quantity: quantity,
                         groupId: groupId,
                         sum: quantity*stockPrice,
+                        sellingSum: quantity*sellingPrice,
                     }
                 );
                 this.handleCancel();
@@ -1026,7 +1190,9 @@ class AddProductModal extends React.Component {
                     stockPrice: stockPrice,
                     quantity: quantity,
                     groupId: groupId,
+                    sellingPrice: sellingPrice,
                     sum: quantity*stockPrice,
+                    sellingSum: quantity*sellingPrice,
                 });
                 this.handleCancel();
             }
@@ -1043,6 +1209,7 @@ class AddProductModal extends React.Component {
             groupId: undefined,
             tradeCode: undefined,
             detailName: undefined,
+            sellingPrice: 0,
             stockPrice: 0,
             quantity: 1,
         });
@@ -1064,8 +1231,36 @@ class AddProductModal extends React.Component {
                     stockPrice: product.stockPrice,
                     quantity: product.quantity,
                     productId: product.productId,
+                    ordersAppurtenancies: product.ordersAppurtenancies,
+                    sellingPrice: product.sellingPrice,
                 })
             }
+        }
+    }
+
+    selectProduct = (productId) => {
+        const { storageBalance } = this.state;
+        const product = this.state.storageProducts.find((product)=>product.id == productId);
+        if(product) {
+            storageBalance[0].count = product.countInWarehouses;
+            storageBalance[1].count = product.reservedCount;
+            storageBalance[2].count = product.countInOrders;
+            storageBalance[3].count = product.countInStoreOrders;
+            storageBalance[4].count = product.lack;
+            storageBalance[5].count = product.min;
+            storageBalance[6].count = product.max;
+            storageBalance[7].count = product.quantity;
+            this.setState({
+                productId: product.id,
+                brandId: product.brandId,
+                brandName: product.brand && product.brand.name,
+                detailCode: product.code,
+                detailName: product.name,
+                tradeCode: product.tradeCode,
+                stockPrice: Math.round(product.stockPrice*10)/10 || 0,
+                sellingPrice: product.salePrice || Math.round(product.stockPrice * 10 *((product.priceGroup && product.priceGroup.multiplier) || 1.4))/10 || 0,
+                quantity: product.quantity,
+            })
         }
     }
 
@@ -1084,7 +1279,9 @@ class AddProductModal extends React.Component {
             quantity,
             detailCodeSearch,
             storageBalance,
+            sellingPrice,
         } = this.state;
+
         return (
             <Modal
                 visible={this.props.visible}
@@ -1099,9 +1296,86 @@ class AddProductModal extends React.Component {
                 <div
                     style={{
                         display: 'flex',
-                        justifyContent: 'space-between'
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-end',
+                        margin: '24px 0 0 0'
                     }}
                 >
+                    <div className={Styles.addProductItemWrap}>
+                        <FormattedMessage id='order_form_table.detail_code' />{requiredField()}
+                        <AutoComplete
+                            value={detailCode}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            onChange={(value)=>{
+                                this.setState({
+                                    detailCode: value,
+                                    detailCodeSearch: value,
+                                });
+                                this.getProductId(value, brandId);
+                            }}
+                            onSelect={(value, option)=>{
+                                this.setState({
+                                    detailCode: option.props.code,
+                                    detailName: option.props.detail_name,
+                                    stockPrice: option.props.price,
+                                    detailCodeSearch: "",
+                                });
+                                this.getProductId(undefined, undefined, value);
+                            }}
+                            onBlur={()=>{
+                                this.setState({
+                                    detailCodeSearch: "",
+                                })
+                            }}
+                            filterOption={(input, option) => {
+                                return (
+                                    String(option.props.value).toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                        >
+                            {
+                                storageProducts.map((elem, key)=>{
+                                    return (
+                                        <Option
+                                            key={key}
+                                            value={String(elem.id)}
+                                            detail_name={elem.name}
+                                            price={0}
+                                            trade_code={elem.tradeCode}
+                                            code={elem.code}
+                                        >
+                                            {elem.code}
+                                        </Option>
+                                    )
+                                })
+                            }
+                            {
+                                detailCodeSearch.length > 3 ? 
+                                detailOptions.map((elem)=>{
+                                    return (
+                                        <Option
+                                            key={elem.id}
+                                            value={elem.partNumber}
+                                            detail_name={elem.itemName}
+                                            price={elem.purchasePrice}
+                                            trade_code={elem.supplierPartNumber}
+                                        >
+                                            {elem.partNumber}
+                                        </Option>
+                                    )
+                                }) :
+                                []
+                            }
+                        </AutoComplete>
+                    </div>
+                    <DetailStorageModal
+                        brandFilter={brandName}
+                        codeFilter={detailCode}
+                        brandId={brandId}
+                        stockMode={true}
+                        user={this.props.user}
+                        selectProduct={this.selectProduct}
+                    />
                     <div className={Styles.addProductItemWrap} style={{minWidth: 140}}>
                         <FormattedMessage id='order_form_table.brand' />{requiredField()}
                         <Select
@@ -1147,72 +1421,6 @@ class AddProductModal extends React.Component {
                             }
                         </Select>
                     </div>
-                    <div className={Styles.addProductItemWrap}>
-                        <FormattedMessage id='order_form_table.detail_code' />{requiredField()}
-                        <AutoComplete
-                            value={detailCode}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                            onChange={(value)=>{
-                                this.setState({
-                                    detailCode: value,
-                                    detailCodeSearch: value,
-                                });
-                                this.getProductId(value);
-                            }}
-                            onSelect={(value, option)=>{
-                                this.setState({
-                                    detailCode: value,
-                                    detailName: option.props.detail_name,
-                                    stockPrice: option.props.price,
-                                    detailCodeSearch: "",
-                                });
-                                this.getProductId(value);
-                            }}
-                            onBlur={()=>{
-                                this.setState({
-                                    detailCodeSearch: "",
-                                })
-                            }}
-                            filterOption={(input, option) => {
-                                return (
-                                    String(option.props.value).toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                )
-                            }}
-                        >
-                            {
-                                storageProducts.map((elem)=>{
-                                    return (
-                                        <Option
-                                            key={elem.id}
-                                            value={elem.code}
-                                            detail_name={elem.name}
-                                            price={0}
-                                            trade_code={elem.tradeCode}
-                                        >
-                                            {elem.code}
-                                        </Option>
-                                    )
-                                })
-                            }
-                            {
-                                detailCodeSearch.length > 3 ? 
-                                detailOptions.map((elem)=>{
-                                    return (
-                                        <Option
-                                            key={elem.id}
-                                            value={elem.partNumber}
-                                            detail_name={elem.itemName}
-                                            price={elem.purchasePrice}
-                                            trade_code={elem.supplierPartNumber}
-                                        >
-                                            {elem.partNumber}
-                                        </Option>
-                                    )
-                                }) :
-                                []
-                            }
-                        </AutoComplete>
-                    </div>
                    {(this.props.isIncome && !this.props.priceDisabled) &&
                     <div className={Styles.addProductItemWrap}>
                         <FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)
@@ -1244,15 +1452,21 @@ class AddProductModal extends React.Component {
                         <div><FormattedMessage id='order_form_table.price' /></div>
                         <InputNumber
                             disabled={this.props.priceDisabled}
-                            value={stockPrice}
+                            value={this.props.sellingPrice ? sellingPrice : stockPrice}
                             style={{
                                 //marginLeft: 10,
                             }}
                             min={0}
                             onChange={(value)=>{
-                                this.setState({
-                                    stockPrice: value
-                                })
+                                if(this.props.sellingPrice) {
+                                    this.setState({
+                                        sellingPrice: value
+                                    })
+                                } else {
+                                    this.setState({
+                                        stockPrice: value
+                                    })
+                                }
                             }}
                         />
                     </div>}
@@ -1263,7 +1477,7 @@ class AddProductModal extends React.Component {
                             style={{
                                 //marginLeft: 10,
                             }}
-                            min={0}
+                            min={1}
                             onChange={(value)=>{
                                 this.setState({
                                     quantity: value
@@ -1280,11 +1494,11 @@ class AddProductModal extends React.Component {
                                 color: 'black',
                                 //marginLeft: 10,
                             }}
-                            value={Math.round(quantity*stockPrice*10)/10}
+                            value={Math.round(quantity*(this.props.sellingPrice ? sellingPrice : stockPrice)*10)/10}
                         />
                     </div>}
                 </div>
-                <AlertModal
+                <AddStoreProductModal
                     alertVisible={alertModalVisible}
                     brands={this.props.brands}
                     confirmAlertModal={this.confirmAlertModal}
@@ -1295,7 +1509,7 @@ class AddProductModal extends React.Component {
                     {...this.state}
                 >
                     <FormattedMessage id='storage_document.error.product_not_found'/>
-                </AlertModal>
+                </AddStoreProductModal>
                 {this.props.type == ORDER && 
                 <div
                     style={{
@@ -1330,7 +1544,7 @@ const measureUnitsOptions = Object.freeze({
 });
 
 @injectIntl
-class AlertModal extends React.Component {
+export class AddStoreProductModal extends React.Component {
     constructor(props) {
         super(props);
 
@@ -1380,6 +1594,49 @@ class AlertModal extends React.Component {
         });
     }
 
+    ordersAppurtenancies(orderIds = [], productId, code, brandId) {
+        const postData = [];
+        if(orderIds.length) {
+            postData.push({
+                ordersAppurtenancies: [...orderIds],
+                productId: productId
+            });
+        } else {
+            postData.push({
+                checkEverywhere: true,
+                productId: productId,
+                code: code,
+                brandId: brandId,
+            });
+        }
+
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/orders/update_orders_appurtenancies_from_stock`;
+        fetch(url, {
+            method: "PUT",
+            headers: {
+                Authorization: token,
+            },
+            body: JSON.stringify(postData)
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(postData, data);
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    }
+
     postStoreProduct() {
         const { intl: {formatMessage} } = this.props;
         const {
@@ -1396,6 +1653,8 @@ class AlertModal extends React.Component {
             multiplicity,
             min,
             max,
+            storeInWarehouse,
+            ordersAppurtenancies,
         } = this.state;
 
         if(!brandId || !detailCode || !groupId || !detailName) {
@@ -1415,8 +1674,11 @@ class AlertModal extends React.Component {
             certificate: certificate,
             priceGroupNumber: priceGroupNumber,
             defaultWarehouseId: defaultWarehouseId,
-            min: min,
-            max: max,
+        }
+
+        if(storeInWarehouse) {
+            postData.min = min*multiplicity;
+            postData.max = max*multiplicity;
         }
 
         var that = this;
@@ -1440,6 +1702,7 @@ class AlertModal extends React.Component {
         })
         .then(function(data) {
             that.setState({visible: false});
+            //that.ordersAppurtenancies(ordersAppurtenancies, data.id, detailCode, brandId);
             that.props.confirmAlertModal({
                 brandId: brandId,
                 brandName: brandName,
@@ -1514,7 +1777,7 @@ class AlertModal extends React.Component {
                         this.setState({visible: false});
                     }}
                 >
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='order_form_table.detail_code' />{requiredField()}
                         <AutoComplete
                             value={detailCode}
@@ -1524,7 +1787,7 @@ class AlertModal extends React.Component {
                                     detailCode: value,
                                     detailCodeSearch: value,
                                 });
-                                this.getProductId(value);
+                                this.getProductId(value, brandId);
                             }}
                             onSelect={(value, option)=>{
                                 this.setState({
@@ -1566,7 +1829,7 @@ class AlertModal extends React.Component {
                             }
                         </AutoComplete>
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='order_form_table.store_group'/>{requiredField()}
                         <TreeSelect
                             showSearch
@@ -1580,16 +1843,15 @@ class AlertModal extends React.Component {
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                console.log(option)
                                 this.setState({
                                     groupId: value,
                                     detailName: detailName ? detailName : option.props.name,
-                                    priceGroupNumber: option.props.priceGroup,
+                                    priceGroupNumber: option.props.priceGroup || undefined,
                                 })
                             }}
                         />
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='order_form_table.detail_name' />{requiredField()}
                         <Input
                             value={detailName}
@@ -1600,7 +1862,7 @@ class AlertModal extends React.Component {
                             }}
                         />
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='order_form_table.brand' />{requiredField()}
                         <Select
                             showSearch
@@ -1644,7 +1906,7 @@ class AlertModal extends React.Component {
                             }
                         </Select>
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='storage.measure_units' />
                         <Select
                             value={measureUnit}
@@ -1663,7 +1925,7 @@ class AlertModal extends React.Component {
                             </Option>
                         </Select>
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='storage.price_group' />
                         <Select
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
@@ -1689,7 +1951,7 @@ class AlertModal extends React.Component {
                             )) }
                         </Select>
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='storage.default_warehouse' />
                         <Select
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
@@ -1712,7 +1974,7 @@ class AlertModal extends React.Component {
                             })}
                         </Select>
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='storage.trade_code' />
                         <Input
                             value={tradeCode}
@@ -1723,7 +1985,7 @@ class AlertModal extends React.Component {
                             }}
                         />
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='storage.certificate' />
                         <Input
                             value={certificate}
@@ -1734,7 +1996,7 @@ class AlertModal extends React.Component {
                             }}
                         />
                     </div>
-                    <div className={Styles.addProductItemWrap}>
+                    <div>
                         <FormattedMessage id='storage_document.store_in_warehouse' />
                         <Checkbox
                             style={{marginLeft: 5}}
@@ -1746,7 +2008,7 @@ class AlertModal extends React.Component {
                         />
                     </div>
                     {storeInWarehouse &&
-                        <div className={Styles.addProductItemWrap} style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <div>
                                 <span style={{marginRight: 8}}><FormattedMessage id='storage_document.multiplicity'/></span>
                                 <InputNumber
@@ -1767,8 +2029,10 @@ class AlertModal extends React.Component {
                                     step={multiplicity}
                                     min={0}
                                     onChange={(value)=>{
+                                        const clearValue = Math.floor(value/multiplicity);
                                         this.setState({
                                             min: Math.floor(value/multiplicity),
+                                            //max: max < clearValue ? clearValue : max,
                                         })
                                     }}
                                 />
@@ -1777,8 +2041,8 @@ class AlertModal extends React.Component {
                                 <span style={{marginRight: 8}}><FormattedMessage id='storage.max'/></span>
                                 <InputNumber
                                     value={max*multiplicity}
-                                    step={1}
-                                    min={min}
+                                    step={multiplicity}
+                                    min={min*multiplicity}
                                     onChange={(value)=>{
                                         this.setState({
                                             max: Math.floor(value/multiplicity),

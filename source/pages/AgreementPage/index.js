@@ -129,6 +129,7 @@ class AgreementPage extends Component {
             window.location.reload();
         }
         getAgreementData(this.sessionId, this.lang, this.updateData);
+        window.addEventListener('resize', this.updateDimensions);
     }
 
     formatPhoneNumber = (str) => {
@@ -146,6 +147,14 @@ class AgreementPage extends Component {
         }
         
         return null;
+    }
+
+    updateDimensions = () => {
+        this.setState({});
+    };
+    
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
     }
 
     render() {

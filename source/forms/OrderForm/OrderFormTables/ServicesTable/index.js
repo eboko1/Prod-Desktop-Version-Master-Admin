@@ -69,7 +69,8 @@ class ServicesTable extends Component {
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {
-                    const confirmed = elem.agreement.toLowerCase();
+                    const confirmed = elem.agreement.toLowerCase(),
+                          backgroundColor = confirmed != 'undefined' || this.props.disabled ? 'black' : 'white';
 
                     return (
                         <div
@@ -95,11 +96,7 @@ class ServicesTable extends Component {
                                     style={ {
                                         width:           18,
                                         height:          18,
-                                        backgroundColor:
-                                            confirmed != 'undefined' ||
-                                            this.props.disabled
-                                                ? 'black'
-                                                : 'white',
+                                        backgroundColor: backgroundColor,
                                         mask:       `url(${images.wrenchIcon}) no-repeat center / contain`,
                                         WebkitMask: `url(${images.wrenchIcon}) no-repeat center / contain`,
                                         transform:  'scale(-1, 1)',
@@ -174,7 +171,7 @@ class ServicesTable extends Component {
                         elem => elem.id == data,
                     );
 
-                    return data ? 
+                    return employee ? 
                         `${employee.name} ${employee.surname}`
                         : (
                             <FormattedMessage id='long_dash' />
@@ -182,11 +179,9 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='services_table.norm_hours' />
-                    </div>
-                ),
+                title:  <div className={ Styles.numberColumn }>
+                            <FormattedMessage id='services_table.norm_hours' />
+                        </div>,
                 className: Styles.numberColumn,
                 width:     '8%',
                 key:       'hours',
@@ -194,26 +189,21 @@ class ServicesTable extends Component {
                 render:    data => {
                     let strVal = Number(data).toFixed(1);
 
-                    return (
+                    return data ? 
+                    (
                         <span>
-                            { data ? (
-                                <>
-                                    { strVal }{ ' ' }
-                                    <FormattedMessage id='order_form_table.hours_short' />
-                                </>
-                            ) : (
-                                <FormattedMessage id='long_dash' />
-                            ) }
+                            { strVal }{ ' ' }
+                            <FormattedMessage id='order_form_table.hours_short' />
                         </span>
+                    ) : (
+                        <FormattedMessage id='long_dash' />
                     );
                 },
             },
             {
-                title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='order_form_table.prime_cost' />
-                    </div>
-                ),
+                title:  <div className={ Styles.numberColumn }>
+                            <FormattedMessage id='order_form_table.prime_cost' />
+                        </div>,
                 className: Styles.numberColumn,
                 width:     '8%',
                 key:       'purchasePrice',
@@ -222,7 +212,7 @@ class ServicesTable extends Component {
                     let strVal = Number(data).toFixed(2);
 
                     return (
-                        <span е>
+                        <span>
                             { data ? 
                                 `${strVal}`.replace(
                                     /\B(?=(\d{3})+(?!\d))/g,
@@ -236,11 +226,16 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='order_form_table.price' />
-                    </div>
-                ),
+                title:  <div className={ Styles.numberColumn }>   
+                            <FormattedMessage id='order_form_table.price' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 className: Styles.numberColumn,
                 width:     '8%',
                 key:       'price',
@@ -263,11 +258,9 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='order_form_table.count' />
-                    </div>
-                ),
+                title:  <div className={ Styles.numberColumn }>
+                            <FormattedMessage id='order_form_table.count' />
+                        </div>,
                 className: Styles.numberColumn,
                 width:     '5%',
                 key:       'count',
@@ -284,11 +277,16 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='order_form_table.sum' />
-                    </div>
-                ),
+                title:  <div className={ Styles.numberColumn }>   
+                            <FormattedMessage id='order_form_table.sum' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 className: Styles.numberColumn,
                 width:     '8%',
                 key:       'sum',
@@ -870,7 +868,16 @@ class QuickEditModal extends React.Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.price' />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.price' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'price',
                 dataIndex: 'price',
                 width:     '10%',
@@ -952,7 +959,16 @@ class QuickEditModal extends React.Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.sum' />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.sum' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'sum',
                 dataIndex: 'sum',
                 width:     '10%',

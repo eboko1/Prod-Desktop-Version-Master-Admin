@@ -5,6 +5,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { DetailStorageModal, DetailSupplierModal, OilModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
+import { images } from 'utils';
 // own
 import Styles from './styles.m.css';
 const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
@@ -120,7 +121,6 @@ class DetailProductModal extends React.Component{
                 width:     '3%',
                 render: (data, elem)=>{
                     var detail = String(elem.detailName);
-                    console.log(elem)
                     if(detail && detail.indexOf(' - ') > -1) {
                         detail = detail.slice(0, detail.indexOf(' - '));
                     }
@@ -171,18 +171,14 @@ class DetailProductModal extends React.Component{
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                this.state.mainTableSource[0].detailCode = undefined;
-                                this.state.mainTableSource[0].supplierName = undefined;
-                                this.state.mainTableSource[0].supplierBrandId = undefined;
-                                this.state.mainTableSource[0].supplierId = undefined;
-                                this.state.mainTableSource[0].store = null;
-                                this.state.mainTableSource[0].purchasePrice = 0;
-                                this.state.mainTableSource[0].price = 1;
-                                this.state.mainTableSource[0].count = 1;
-                                this.state.mainTableSource[0].sum = undefined;
-                                this.state.mainTableSource[0].brandId = value;
-                                this.state.mainTableSource[0].brandName = option.props.children;
-                                this.state.mainTableSource[0].isFromStock = false;
+                                this.unsetSupplier();
+                                elem.detailCode = undefined;
+                                elem.purchasePrice = 0;
+                                elem.price = 1;
+                                elem.count = 1;
+                                elem.sum = undefined;
+                                elem.brandId = value;
+                                elem.brandName = option.props.children;
                                 this.setState({
                                     update: true
                                 })
@@ -229,8 +225,8 @@ class DetailProductModal extends React.Component{
                                 value={data}
                                 disabled={elem.storeGroupId == null && this.state.radioValue == 1}
                                 onChange={(event)=>{
-                                    this.state.mainTableSource[0].detailCode = event.target.value;
-                                    this.state.mainTableSource[0].isFromStock = false;
+                                    elem.detailCode = event.target.value;
+                                    this.unsetSupplier();
                                     this.setState({
                                         update: true
                                     })
@@ -242,18 +238,20 @@ class DetailProductModal extends React.Component{
                                 tableKey={0}
                                 onSelect={this.setCode}
                                 disabled={
-                                    elem.storeGroupId == null && this.state.radioValue != 3 
+                                    elem.storeGroupId == null && this.state.radioValue != 3 && this.state.radioValue != 5 
                                     || this.state.radioValue == 2 
-                                    || this.state.radioValue == 3 && (data || '').length < 3}
+                                    || this.state.radioValue == 3 && (data || '').length < 3
+                                }
                                 codeSearch={this.state.radioValue == 3}
                                 tecdocId={this.props.tecdocId}
                                 storeGroupId={this.state.mainTableSource[0].storeGroupId}
                                 setSupplier={this.setSupplier}
                                 brandFilter={elem.brandName}
                                 supplierId={elem.supplierId}
-                                codeFilter={elem.detailCode}
+                                codeFilter={elem.brandId == 8000 ? undefined : elem.detailCode}
                                 brandId={elem.brandId}
                                 defaultBrandName={this.state.defaultBrandName}
+                                stockMode={this.state.radioValue == 5}
                             /> :
                             <OilModal
                                 brands={this.props.brands}
@@ -285,7 +283,7 @@ class DetailProductModal extends React.Component{
                                     showSearch
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                                     value={elem.supplierId ? elem.supplierId : undefined}
-                                    style={{maxWidth: 200, minWidth: 160}}
+                                    style={{minWidth: 160, maxWidth: 200}}
                                     dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                                     filterOption={(input, option) => {
                                         return (
@@ -294,6 +292,7 @@ class DetailProductModal extends React.Component{
                                         )
                                     }}
                                     onSelect={(value, option)=>{
+                                        this.unsetSupplier();
                                         this.state.mainTableSource[0].supplierId = value;
                                         this.setState({
                                             update: true
@@ -304,7 +303,7 @@ class DetailProductModal extends React.Component{
                                 </Select>
                                 :
                                 <Input
-                                    style={{maxWidth: 180, color: 'black'}}
+                                    style={{minWidth: 80, maxWidth: 180, color: 'black'}}
                                     disabled
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                                     value={data}
@@ -316,7 +315,8 @@ class DetailProductModal extends React.Component{
                                 disabled={
                                     (this.state.radioValue != 2 && elem.storeGroupId == null) || 
                                     !(elem.detailCode) || 
-                                    !(elem.brandName)
+                                    !(elem.brandName) ||
+                                    this.state.radioValue == 5
                                 }
                                 onSelect={this.setSupplier}
                                 storeGroupId={elem.storeGroupId}
@@ -371,7 +371,16 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.price" />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.price' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'price',
                 dataIndex: 'price',
                 width:     '3%',
@@ -429,11 +438,20 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.sum" />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.sum' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
-                    const sum = elem.price * elem.count;
+                    const sum = elem.price * (elem.count || 1);
                     return (
                         <InputNumber
                             disabled
@@ -503,14 +521,13 @@ class DetailProductModal extends React.Component{
                 services: [],
             }
             this.state.mainTableSource.map((element)=>{
-                if(element.supplierId !== 0) {
+                if(!element.productId) {
                     data.details.push({
                         storeGroupId: element.storeGroupId,
                         name: element.detailName,
                         productCode: element.detailCode,
                         supplierId: element.supplierId,
-                        supplierBrandId: element.supplierBrandId,
-                        brandName: element.brandName,
+                        supplierBrandId: element.supplierBrandId || element.brandId,
                         supplierOriginalCode: element.supplierOriginalCode,
                         supplierProductNumber: element.supplierProductNumber,
                         reservedFromWarehouseId: element.reservedFromWarehouseId || null,
@@ -527,12 +544,14 @@ class DetailProductModal extends React.Component{
                     data.details.push({
                         storeGroupId: element.storeGroupId,
                         name: element.detailName,
-                        productId: element.storeId,
+                        productId: element.productId,
                         productCode: element.detailCode,
+                        supplierBrandId: element.supplierBrandId || element.brandId,
                         purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                         count: element.count ? element.count : 1,
                         price: element.price ? Math.round(element.price*10)/10  : 1,
                         reservedFromWarehouseId: element.reservedFromWarehouseId || null,
+                        supplierId: element.supplierId,
                         comment: element.comment || {
                             comment: undefined,
                             positions: [],
@@ -550,7 +569,7 @@ class DetailProductModal extends React.Component{
                     })
                 }
             });
-            console.log(data)
+            console.log(this.state.mainTableSource, data);
             this.addDetailsAndLabors(data);
         }
         this.state.radioValue = 1;
@@ -596,7 +615,7 @@ class DetailProductModal extends React.Component{
                     that.state.mainTableSource[0].detailCode = result.partNumber;
                     that.state.mainTableSource[0].supplierId = result.price ? result.price.businessSupplierId : undefined;
                     that.state.mainTableSource[0].supplierName = result.price ? result.price.businessSupplierName : undefined;
-                    that.state.mainTableSource[0].storeId = result.price ? result.price.id : undefined;
+                    that.state.mainTableSource[0].productId = result.price && that.state.mainTableSource[0].supplierId == 0 ? result.price.id : undefined;
                     that.state.mainTableSource[0].store = result.price ? result.price.store : undefined;
                     that.state.mainTableSource[0].purchasePrice = purchasePrice;
                     that.state.mainTableSource[0].price = purchasePrice * markup;
@@ -615,15 +634,16 @@ class DetailProductModal extends React.Component{
         }
     }
 
-    setCode(code, brandId, storeId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber) {
+    setCode(code, brandId, productId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber) {
+        this.unsetSupplier(key);
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         this.state.mainTableSource[key].detailCode = code;
         this.state.mainTableSource[key].brandId = brandId;
         this.state.mainTableSource[key].brandName = brand.brandName;
-        this.state.mainTableSource[key].storeId = storeId;
+        this.state.mainTableSource[key].productId = productId;
         this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
         this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
-        if(this.state.radioValue == 3 || this.state.radioValue == 4) {
+        if(this.state.radioValue == 3 || this.state.radioValue == 4 || this.state.radioValue == 5) {
             this.state.mainTableSource[key].storeGroupId = storeGroupId;
             this.state.mainTableSource[key].detailName = String(storeGroupName);
         }
@@ -643,7 +663,7 @@ class DetailProductModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId, storeId) {
+    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId, productId, brandId) {
         this.state.mainTableSource[key].supplierId = supplierId;
         this.state.mainTableSource[key].supplierName = supplierName;
         this.state.mainTableSource[key].supplierBrandId = supplierBrandId;
@@ -654,29 +674,50 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
         this.state.mainTableSource[key].isFromStock = isFromStock;
         this.state.mainTableSource[key].reservedFromWarehouseId = defaultWarehouseId;
-        this.state.mainTableSource[key].storeId = storeId;
+        this.state.mainTableSource[key].productId = isFromStock ? productId : undefined;
+        const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
+        if(brand) {
+            this.state.mainTableSource[key].brandId = brandId;
+            this.state.mainTableSource[key].brandName = brand && brand.brandName;
+        }
+        this.setState({
+            update: true
+        })
+    }
+
+    unsetSupplier(key = 0) {
+        if(this.state.radioValue == 5) {
+            this.state.mainTableSource[0].supplierId = 0;
+            this.state.mainTableSource[0].supplierName = this.props.intl.formatMessage({id: 'navigation.storage'});
+        } else {
+            this.state.mainTableSource[key].productId = undefined;
+            this.state.mainTableSource[key].isFromStock = false;
+            this.state.mainTableSource[key].supplierId = null;
+            this.state.mainTableSource[key].supplierName = undefined;
+            this.state.mainTableSource[key].supplierBrandId = undefined;
+            this.state.mainTableSource[key].supplierOriginalCode = undefined;
+            this.state.mainTableSource[key].supplierProductNumber = undefined;
+            this.state.mainTableSource[key].store = undefined;
+            this.state.mainTableSource[key].reservedFromWarehouseId = undefined;
+        }
         this.setState({
             update: true
         })
     }
 
     setVinDetail(code, name) {
+        this.unsetSupplier();
         this.state.mainTableSource[0].detailName = name;
         this.state.mainTableSource[0].detailCode = code;
-        this.state.mainTableSource[0].brandName = undefined;
-        this.state.mainTableSource[0].brandId = undefined;
+        
+        const oesBrand = this.props.brands.find((brand)=>brand.brandId==8000);
+        this.state.mainTableSource[0].brandName = oesBrand ? oesBrand.brandName : undefined;
+        this.state.mainTableSource[0].brandId = oesBrand ? oesBrand.brandId : undefined;
         this.state.radioValue = 3;
 
-        this.state.mainTableSource[0].supplierId = undefined;
-        this.state.mainTableSource[0].supplierName = undefined;
-        this.state.mainTableSource[0].supplierBrandId = undefined;
         this.state.mainTableSource[0].purchasePrice = undefined;
         this.state.mainTableSource[0].price = 0;
         this.state.mainTableSource[0].count = 1;
-        this.state.mainTableSource[0].store = undefined;
-        this.state.mainTableSource[0].supplierOriginalCode = undefined;
-        this.state.mainTableSource[0].supplierProductNumber = undefined;
-        this.state.mainTableSource[0].reservedFromWarehouseId = undefined;
 
         this.setState({
             update: true
@@ -807,6 +848,11 @@ class DetailProductModal extends React.Component{
                     <Radio.Group 
                         value={this.state.radioValue}
                         onChange={(event)=>{
+                            if(event.target.value == 5) {
+                                this.unsetSupplier();
+                                this.state.mainTableSource[0].supplierId = 0;
+                                this.state.mainTableSource[0].supplierName = this.props.intl.formatMessage({id: 'navigation.storage'});
+                            }
                             this.setState({
                                 radioValue: event.target.value,
                             })
@@ -816,6 +862,7 @@ class DetailProductModal extends React.Component{
                         <Radio value={2}><FormattedMessage id="details_table.direct_editing"/></Radio>
                         <Radio value={3}><FormattedMessage id="details_table.selection_by_product_code"/></Radio>
                         <Radio value={4}><FormattedMessage id="details_table.oils_and_liquids"/></Radio>
+                        <Radio value={5}><FormattedMessage id="navigation.storage"/></Radio>
                     </Radio.Group>
                     </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
@@ -1098,6 +1145,7 @@ class VinCodeModal extends Component{
     constructor(props) {
         super(props);
         this.state = {
+            displayType: 'list',
             categoryMode: false,
             categories: [],
             visible: false,
@@ -1111,12 +1159,15 @@ class VinCodeModal extends Component{
             checkedCodes: [],
             infoModalVisible: false,
             infoItem: undefined,
-            images: [],
+            imageList: [],
             image: undefined,
             itemsListEmpty: false,
             zoomMultiplier: 0.75,
             allCategories: [],
             imgSearch: "",
+            listItemPreview: [],
+            previewIndex: undefined,
+            variantRadioValue: 0,
         };
         this.showInfoModal = this.showInfoModal.bind(this);
         this.onImgLoad = this.onImgLoad.bind(this);
@@ -1129,17 +1180,29 @@ class VinCodeModal extends Component{
                 width:     'auto',
                 render: (data, elem)=>{
                     const itemsInfo = this.state.itemsInfo.length ? this.state.itemsInfo[this.state.itemsInfo.length-1] : [];
+                    const isChecked = this.state.checkedCodes.indexOf(elem.codeonimage) >= 0;
                     const isVariant = itemsInfo.findIndex((item)=>item.key == elem.key || item.codeonimage == elem.codeonimage) != elem.key;
-                    return !isVariant || !elem.codeonimage ? (
-                        elem.codeonimage || data + 1
-                    ) : (
+                    const outputText = !isVariant || !elem.codeonimage ? elem.codeonimage || data + 1 : 'Var.';
+                    return (
                         <span
                             style={{
-                                color: 'var(--text2)',
+                                color: isVariant ? 'var(--text2)' : 'var(--text1)',
                                 fontSize: 12,
                             }}
                         >
-                            {'Var.'}
+                            {isChecked ? 
+                                <Radio
+                                    checked={this.state.variantRadioValue == data}
+                                    onChange={(event)=>{
+                                        this.setState({
+                                            variantRadioValue: data,
+                                        })
+                                    }}
+                                >
+                                    {outputText}
+                                </Radio> :
+                                outputText
+                            }
                         </span>
                     )
                 }
@@ -1210,9 +1273,9 @@ class VinCodeModal extends Component{
     }
 
     onImgLoad({target:img}) {
-        if(this.state.images.length) {
-            this.state.images[this.state.images.length-1].height = img.naturalHeight;
-            this.state.images[this.state.images.length-1].width = img.naturalWidth;
+        if(this.state.imageList.length) {
+            this.state.imageList[this.state.imageList.length-1].height = img.naturalHeight;
+            this.state.imageList[this.state.imageList.length-1].width = img.naturalWidth;
         }
         this.setState({
             update: true,
@@ -1221,16 +1284,16 @@ class VinCodeModal extends Component{
 
 
     handleOk = () => {
-        const { checkedCodes } = this.state;
+        const { checkedCodes, variantRadioValue } = this.state;
         const itemsInfo = this.state.itemsInfo.length ? this.state.itemsInfo[this.state.itemsInfo.length-1] : [];
-        const selectedItem = itemsInfo.find((item)=>item.codeonimage == checkedCodes[0]);
-        console.log(selectedItem);
+        const selectedItem = itemsInfo.find((item)=>item.key == variantRadioValue);
         if(selectedItem) this.props.setVinDetail(selectedItem.oem, selectedItem.name);
         this.handleCancel();
     }
 
     handleCancel = () => {
         this.setState({
+            displayType: 'list',
             categoryMode: false,
             categories: [],
             visible: false,
@@ -1244,12 +1307,15 @@ class VinCodeModal extends Component{
             checkedCodes: [],
             infoModalVisible: false,
             infoItem: undefined,
-            images: [],
+            imageList: [],
             image: undefined,
             itemsListEmpty: false,
             zoomMultiplier: 0.75,
             allCategories: [],
             imgSearch: "",
+            listItemPreview: [],
+            previewIndex: undefined,
+            variantRadioValue: 0,
         })
     }
 
@@ -1264,16 +1330,18 @@ class VinCodeModal extends Component{
             if(this.state.itemsInfo.length > 1) {
                 const itemsInfo = this.state.itemsInfo.pop();
                 const blockPositions = this.state.blockPositions.pop();
-                const images = this.state.images.pop();
+                const imageList = this.state.imageList.pop();
                 this.setState({
                     itemsInfo: itemsInfo,
                     blockPositions: blockPositions,
-                    images: images,
+                    imageList: imageList,
+                    checkedCodes: [],
                 })
             }
             else {
                 this.setState({
                     categoryMode: true,
+                    checkedCodes: [],
                 })
             }
         }
@@ -1300,7 +1368,6 @@ class VinCodeModal extends Component{
                 return response.json()
             })
             .then(function (data) {
-                console.log(data);
                 if(data) {
                     const { catalog, ssd, vehicleid } = data.vehicle;
                     const categoriesArray = data.categories;
@@ -1333,12 +1400,12 @@ class VinCodeModal extends Component{
                             
                         })
                     }
-                    console.log(normalizedCategories)
                     if(normalizedCategories.length == 1) {
                         that.setState({
                             loading: false,
                             categoryMode: false,
                             categories: normalizedCategories,
+                            displayType: 'grid',
                         })
                         that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
                     }
@@ -1348,10 +1415,9 @@ class VinCodeModal extends Component{
                                 emptyElement: true,
                             })
                         }
-
-                        console.log(normalizedCategories);
                         that.setState({
                             loading: false,
+                            displayType: 'grid',
                             categoryMode: normalizedCategories.length,
                             categories: normalizedCategories,
                         })
@@ -1390,7 +1456,6 @@ class VinCodeModal extends Component{
                 return response.json()
             })
             .then(function ({data}) {
-                console.log(data);
                 if(data) {
                     const { catalog, ssd, vehicleid } = data.response.FindVehicle.response.FindVehicle[0].row[0].$;
                     const categoriesArray = data.response.ListCategories[0].row;
@@ -1406,7 +1471,6 @@ class VinCodeModal extends Component{
                             });
                         })
                     }
-                    console.log(normalizedCategories)
                     if(normalizedCategories.length == 1) {
                         that.setState({
                             loading: false,
@@ -1416,19 +1480,29 @@ class VinCodeModal extends Component{
                         that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
                     }
                     else {
-                        for (var i = 0; i < normalizedCategories.length % 5; i++) {
-                            normalizedCategories.push({
-                                emptyElement: true,
-                            })
+                        if(that.state.displayType == 'grid') {
+                            for (var i = 0; i < normalizedCategories.length % 5; i++) {
+                                normalizedCategories.push({
+                                    emptyElement: true,
+                                })
+                            }
                         }
-
-                        console.log(normalizedCategories);
                         that.setState({
                             loading: false,
                             categoryMode: normalizedCategories.length,
                             categories: normalizedCategories,
                             allCategories: normalizedCategories,
                         })
+                    }
+                    if(that.state.displayType == 'list' && normalizedCategories.length) {
+                        that.fetchCategoryItemsList(
+                            normalizedCategories[0].ssd,
+                            normalizedCategories[0].catalog,
+                            normalizedCategories[0].categoryid,
+                            normalizedCategories[0].vehicleId,
+                            true,
+                            0
+                        )
                     }
                 }
                 else {
@@ -1472,7 +1546,6 @@ class VinCodeModal extends Component{
             return response.json()
         })
         .then(function ({data}) {
-            console.log(data.response);
             const itemsInfo = [];
             const blockPositions = [];
             const image = data.response.GetUnitInfo[0].row[0].$;
@@ -1489,11 +1562,9 @@ class VinCodeModal extends Component{
                     key: key,
                 });
             })
-
-            console.log(itemsInfo, blockPositions, image);
             that.setState({
                 loading: false,
-                images: [image],
+                imageList: [image],
                 itemsInfo: [itemsInfo],
                 blockPositions: [blockPositions],
                 categoryMode: false,
@@ -1510,10 +1581,17 @@ class VinCodeModal extends Component{
         })
     }
 
-    fetchCategoryItemsList(ssd, catalog, categoryid, vehicleId) {
-        this.setState({
-            loading: true,
-        })
+    fetchCategoryItemsList(ssd, catalog, categoryid, vehicleId, previewMode = false, index) {
+        if(!previewMode) {
+            this.setState({
+                loading: true,
+            })
+        }
+        else {
+            this.setState({
+                previewIndex: index,
+            })
+        }
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url =  __API_URL__ + `/vin/list_units?catalog=${catalog}&vehicleid=${vehicleId}&categoryId=${categoryid}&ssd=${ssd}`
@@ -1533,8 +1611,6 @@ class VinCodeModal extends Component{
             return response.json()
         })
         .then(function ({data}) {
-
-            console.log(data);
             if(data) {
                 const categoriesArray = data.response.ListUnits[0].row;
                 const normalizedCategories = [];
@@ -1549,28 +1625,39 @@ class VinCodeModal extends Component{
                         });
                     })
                 }
-                console.log(normalizedCategories)
-                if(normalizedCategories.length == 1) {
-                    that.setState({
-                        loading: false,
-                        categoryMode: false,
-                        categories: normalizedCategories,
-                    })
-                    that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
-                }
-                else {
-                    for (var i = 0; i < normalizedCategories.length % 5; i++) {
+                if(previewMode) {
+                    for (var i = 0; i < normalizedCategories.length % 3; i++) {
                         normalizedCategories.push({
                             emptyElement: true,
                         })
                     }
-
-                    console.log(normalizedCategories);
                     that.setState({
                         loading: false,
-                        categoryMode: normalizedCategories.length,
-                        categories: normalizedCategories,
+                        listItemPreview: normalizedCategories,
+                        
                     })
+                }
+                else {
+                    if(normalizedCategories.length == 1) {
+                        that.setState({
+                            loading: false,
+                            categoryMode: false,
+                            categories: normalizedCategories,
+                        })
+                        that.fetchItemsList(normalizedCategories[0].unit.ssd, normalizedCategories[0].unit.unitid, normalizedCategories[0].catalog);
+                    }
+                    else {
+                        for (var i = 0; i < normalizedCategories.length % 5; i++) {
+                            normalizedCategories.push({
+                                emptyElement: true,
+                            })
+                        }
+                        that.setState({
+                            loading: false,
+                            categoryMode: normalizedCategories.length,
+                            categories: normalizedCategories,
+                        })
+                    }
                 }
             }
             else {
@@ -1609,6 +1696,7 @@ class VinCodeModal extends Component{
     render() {
         const { disabled } = this.props;
         const {
+            displayType,
             visible,
             zoomed,
             positions,
@@ -1621,16 +1709,18 @@ class VinCodeModal extends Component{
             loading,
             categories,
             categoryMode,
-            images,
+            imageList,
             itemsListEmpty,
             zoomMultiplier,
             allCategories,
             imgSearch,
+            listItemPreview,
+            previewIndex,
         } = this.state;
 
         const itemsInfo = this.state.itemsInfo.length ? this.state.itemsInfo[this.state.itemsInfo.length-1] : [];
         const blockPositions = this.state.blockPositions.length ? this.state.blockPositions[this.state.blockPositions.length-1] : [];
-        const image = this.state.images.length ? this.state.images[this.state.images.length-1] : undefined;
+        const image = this.state.imageList.length ? this.state.imageList[this.state.imageList.length-1] : undefined;
 
         return (
             <>
@@ -1648,8 +1738,8 @@ class VinCodeModal extends Component{
                 <Modal
                     width='fit-content'
                     style={{
-                        maxWidth: '90%',
-                        minWidth: '70%'
+                        maxWidth: '95%',
+                        minWidth: displayType == 'list' ? '85%' : '70%'
                     }}
                     visible={visible}
                     title={<FormattedMessage id='add_order_form.vin'/>}
@@ -1657,7 +1747,60 @@ class VinCodeModal extends Component{
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                 >
-                    {!loading && (!categoryMode || !this.props.storeGroupId && allCategories && allCategories != categories) &&
+                    {
+                        !loading && !itemsListEmpty && categoryMode && !this.props.storeGroupId && allCategories && allCategories == categories &&
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                margin: '-16px 0 8px 0'
+                            }}
+                        >
+                            <div style={{fontSize: 18}}>
+                                {(displayType == 'list' && categories.length > previewIndex) ? categories[previewIndex].name : null}
+                            </div>
+                            <Radio.Group
+                                value={displayType}
+                                buttonStyle="solid"
+                                onChange={(event)=>{
+                                    this.setState({
+                                        displayType: event.target.value,
+                                    })
+                                }}
+                            >
+                                <Radio.Button value="list">
+                                    <Icon
+                                        type="unordered-list"
+                                        style={{
+                                            fontSize: 18,
+                                            verticalAlign: 'middle'
+                                        }}
+                                    />
+                                </Radio.Button>
+                                <Radio.Button value="grid">
+                                    <div
+                                        style={{
+
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                width: 18,
+                                                height: 18,
+                                                backgroundColor: displayType == 'grid' ? 'white' : 'var(--text3)',
+                                                mask: `url(${images.gridIcon}) no-repeat center / contain`,
+                                                WebkitMask: `url(${images.gridIcon}) no-repeat center / contain`,
+                                                display: 'inline-block',
+                                                verticalAlign: 'middle'
+                                            }}
+                                        ></div>
+                                    </div>
+                                </Radio.Button>
+                            
+                            </Radio.Group>
+                        </div>
+                    }
+                    {!loading && !itemsListEmpty && (!categoryMode || !this.props.storeGroupId && allCategories && allCategories != categories) &&
                         <div 
                             style={{
                                 display: 'flex',
@@ -1686,7 +1829,7 @@ class VinCodeModal extends Component{
                             <Button key="back" onClick={this.handleBack}>
                                 <FormattedMessage id='step_back'/>
                             </Button>
-                            <Button key="submit" type="primary" onClick={this.handleOk} style={{marginLeft: 10}}>
+                            <Button disabled={checkedCodes.length == 0} key="submit" type="primary" onClick={this.handleOk} style={{marginLeft: 10}}>
                                 <FormattedMessage id='select'/>
                             </Button>
                         </div>
@@ -1694,36 +1837,90 @@ class VinCodeModal extends Component{
                     {loading ? <Spin indicator={spinIcon} /> :
                     categoryMode && !itemsListEmpty ? 
                     <div className={Styles.categoryList}>
-                        {categories.map((category, key)=>{
-                            return category.emptyElement ? <div className={Styles.emptyItem} style={{pointerEvents: 'none'}}></div> : (
-                            <div
-                                className={Styles.categoryItem}
-                                key={key}
-                                onClick={()=>{
-                                    if(category.unit.imageurl)
-                                        this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog);
-                                    else 
-                                        this.fetchCategoryItemsList(category.ssd, category.catalog, category.categoryid, category.vehicleId)
-                                }}
-                            >
-                            {category.unit.imageurl &&
-                                <img
-                                    title={category.unit.name}
-                                    src={category.unit.imageurl.replace('%size%', 'source')}
-                                    style={{
-                                        cursor: 'pointer',
-                                        width: '100%'
-                                    }}
-                                    onClick={()=>{
-                                        this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog)
-                                    }}
-                                />}
+                        {displayType == 'grid' ?
+                            categories.map((category, key)=>{
+                                return category.emptyElement ? <div key={key} className={Styles.emptyItem} style={{pointerEvents: 'none'}}></div> : 
                                 <div
-                                    className={Styles.categoryName}
+                                    className={Styles.categoryItem}
+                                    key={key}
+                                    onClick={()=>{
+                                        if(category.unit.imageurl)
+                                            this.fetchItemsList(category.unit.ssd, category.unit.unitid, category.catalog);
+                                        else 
+                                            this.fetchCategoryItemsList(category.ssd, category.catalog, category.categoryid, category.vehicleId)
+                                    }}
                                 >
-                                    {category.name}
+                                {category.unit.imageurl &&
+                                    <img
+                                        title={category.unit.name}
+                                        src={category.unit.imageurl.replace('%size%', 'source')}
+                                        style={{
+                                            cursor: 'pointer',
+                                            width: '100%'
+                                        }}
+                                    />}
+                                    <div
+                                        className={Styles.categoryName}
+                                    >
+                                        {category.name}
+                                    </div>
                                 </div>
-                            </div>)})
+                            }) :
+                            <>
+                            <div className={Styles.allCategoriesList}>
+                                {categories.map((category, key)=>{
+                                    return category.emptyElement ? <div key={key} className={Styles.emptyItem} style={{pointerEvents: 'none'}}></div> : 
+                                    <div
+                                        className={Styles.categoryListItem}
+                                        style={previewIndex == key ? {
+                                            backgroundColor: 'var(--db_reserve)'
+                                        } : {}}
+                                        key={key}
+                                        onClick={()=>{
+                                            this.fetchCategoryItemsList(category.ssd, category.catalog, category.categoryid, category.vehicleId, true, key)
+                                        }}
+                                    >
+                                        <div
+                                            className={Styles.categoryListName}
+                                        >
+                                            {category.name}
+                                        </div>
+                                    </div>
+                                })}
+                            </div>
+                            <div className={Styles.previewBLock}>
+                                {listItemPreview.length == 0 ? <FormattedMessage id='no_data' /> :
+                                    listItemPreview.map((item, key)=>{
+                                        return item.emptyElement ? <div key={key} className={Styles.emptyItem} style={{pointerEvents: 'none', width: '33%'}}></div> : 
+                                            <div
+                                                key={key}
+                                                className={Styles.categoryItem}
+                                                style={{
+                                                    width: '33%',
+                                                    height: 'fit-content',
+                                                }}
+                                                onClick={()=>{
+                                                    this.fetchItemsList(item.unit.ssd, item.unit.unitid, item.catalog);
+                                                }}
+                                            >
+                                                <img
+                                                    title={item.unit.name}
+                                                    src={item.unit.imageurl.replace('%size%', 'source')}
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        width: '100%'
+                                                    }}
+                                                />
+                                                <div
+                                                    className={Styles.categoryName}
+                                                >
+                                                    {item.name}
+                                                </div>
+                                            </div>
+                                    })
+                                }
+                            </div>
+                            </>
                         }
                     </div> : 
                     !itemsListEmpty ? <>
@@ -1776,7 +1973,8 @@ class VinCodeModal extends Component{
                             >
                                 {blockPositions.map((item, key)=>{
                                     const code = item.code;
-                                    const title = itemsInfo.find((elem)=>elem.codeonimage == code) ? itemsInfo.find((elem)=>elem.codeonimage == code).name : "";
+                                    const mainItem = itemsInfo.find((elem)=>elem.codeonimage == code);
+                                    const title = mainItem ? mainItem.name : "";
                                     const isHovered =  imgHoverCode == code || imgHoverIndex == key;
                                     const isChecked = checkedCodes.indexOf(code) >= 0;
                                     return (
@@ -1819,6 +2017,7 @@ class VinCodeModal extends Component{
                                                 else {
                                                     this.setState({
                                                         checkedCodes: [code],
+                                                        variantRadioValue: mainItem.key,
                                                     })
                                                 }
                                                 
@@ -1883,6 +2082,7 @@ class VinCodeModal extends Component{
                                         else {
                                             this.setState({
                                                 checkedCodes: [code],
+                                                variantRadioValue: record.key,
                                             })
                                         }
                                       },
