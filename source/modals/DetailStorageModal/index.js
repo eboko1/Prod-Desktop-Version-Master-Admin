@@ -953,16 +953,35 @@ class DetailWarehousesCountModal extends React.Component {
                     footer={null}
                     title={<FormattedMessage id="storage.in_stock" />}
                     onCancel={this.handleCancel}
+                    style={{
+                        maxWidth: 380,
+                        fontSize: 16,
+                    }}
                 >
-                    <div>
-                        <FormattedMessage id="order_form_table.detail_code" /> {this.state.code}
+                    <div className={Styles.detailWarehousesCountModalLine}>
+                        <div>
+                            <FormattedMessage id="order_form_table.detail_code" />
+                        </div>
+                        <div style={{fontWeight: 700}}>
+                            {this.state.code}
+                        </div>
                     </div>
-                    <div>
-                        <FormattedMessage id="order_form_table.brand" /> {this.state.brandName}
+                    <div className={Styles.detailWarehousesCountModalLine}>
+                        <div>
+                            <FormattedMessage id="order_form_table.brand" />
+                        </div>
+                        <div style={{fontWeight: 700}}>
+                            {this.state.brandName}
+                        </div>
                     </div>
                     {this.state.countsOnWarehouses.map((warehouse, key)=>(
-                        <div key={key}>
-                            {warehouse.name} {warehouse.countOnWarehouse}
+                        <div className={Styles.detailWarehousesCountModalLine}>
+                            <div>
+                                {warehouse.name}
+                            </div>
+                            <div>
+                                {warehouse.countOnWarehouse}
+                            </div> 
                         </div>
                     ))}
                 </Modal>
