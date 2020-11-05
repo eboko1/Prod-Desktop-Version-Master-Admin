@@ -126,6 +126,7 @@ class StorageDocumentPage extends Component {
             const newProducts = [],
                   warningProducts = [];
 
+            console.log(docProduct)
             docProduct.map((product)=>{
                 product.sum = Math.round(product.sum*10)/10;
                 this.state.formData.sum += product.sum;
