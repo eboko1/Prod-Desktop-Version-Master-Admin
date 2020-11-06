@@ -715,8 +715,11 @@ class DocProductsTable extends React.Component {
                 dataIndex: 'stockPrice',
                 render:     (data, elem)=>{
                     const price = this.props.sellingPrice ? elem.sellingPrice : data;
+                    let strVal = Number(price).toFixed(2);
                     return (
-                        price || <FormattedMessage id='long_dash' />
+                        <div style={{textAlign: 'right'}}>
+                            {price ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : <FormattedMessage id='long_dash' />}
+                        </div>
                     )
                 }
             },
@@ -726,7 +729,9 @@ class DocProductsTable extends React.Component {
                 dataIndex: 'quantity',
                 render:     (data, elem)=>{
                     return (
-                        data || <FormattedMessage id='long_dash' />
+                        <div style={{textAlign: 'right'}}>
+                            {data || <FormattedMessage id='long_dash' />}
+                        </div>
                     )
                 }
             },
@@ -736,8 +741,11 @@ class DocProductsTable extends React.Component {
                 dataIndex: 'sum',
                 render:     (data, elem)=>{
                     const sum = this.props.sellingPrice ? elem.sellingSum : data;
+                    let strVal = Number(sum).toFixed(2);
                     return (
-                        sum ? Math.round(sum*10)/10 : <FormattedMessage id='long_dash' />
+                        <div style={{textAlign: 'right'}}>
+                            {sum ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : <FormattedMessage id='long_dash' />}
+                        </div>
                     )
                 }
             },
@@ -769,7 +777,9 @@ class DocProductsTable extends React.Component {
             dataIndex: 'purchasePrice',
             render:     (data, elem)=>{
                 return (
-                    data || <FormattedMessage id='long_dash' />
+                    <div style={{textAlign: 'right'}}>
+                        {data ?`${data}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : <FormattedMessage id='long_dash' />}
+                    </div>
                 )
             }
         };

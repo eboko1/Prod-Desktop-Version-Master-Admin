@@ -157,7 +157,7 @@ export class OrderForm extends React.PureComponent {
         });
     };
 
-    _reloadOrderForm = () => {
+    _reloadOrderForm = (callback) => {
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
         let url = API_URL;
@@ -179,11 +179,12 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
+                console.log(data);
                 that.orderServices = data.orderServices;
                 that.orderDetails = data.orderDetails;
                 that.totalSumWithTax = data.order.totalSumWithTax;
                 that.isTaxPayer = data.order.isTaxPayer;
-                
+                callback(data);
                 that.forceUpdate();
             })
             .catch(function(error) {
