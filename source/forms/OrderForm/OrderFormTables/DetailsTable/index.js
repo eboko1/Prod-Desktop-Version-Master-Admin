@@ -611,43 +611,21 @@ class DetailsTable extends Component {
     }
 
     updateDataSource() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/orders/${this.props.orderId}/details`;
-        url += params;
-        fetch(url, {
-            method:  'GET',
-            headers: {
-                Authorization: token,
-            },
-        })
-            .then(function(response) {
-                if (response.status !== 200) {
-                    return Promise.reject(new Error(response.statusText));
-                }
-
-                return Promise.resolve(response);
+        if(this.state.fetched) {
+            this.setState({
+                fetched: false,
             })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                console.log(data)
-                data.details.map((elem, index) => {
-                    elem.key = index;
-                    elem.brandId = elem.supplierBrandId || undefined;
-                    elem.brandName = elem.supplierBrandName;
-                });
-                that.setState({
-                    dataSource: data.details,
-                    fetched: true,
-                });
-                that.props.reloadOrderForm();
-            })
-            .catch(function(error) {
-                console.log('error', error);
+        }
+        const callback = (data) => {
+            data.orderDetails.map((elem, index) => {
+                elem.key = index;
             });
+            this.setState({
+                dataSource: data.orderDetails,
+                fetched: true,
+            });
+        }
+        this.props.reloadOrderForm(callback);
     }
 
     async updateDetail(key, detail) {
