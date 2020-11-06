@@ -30,7 +30,8 @@
         "add_client_form.error_title": "Error!",
         "add_client_form.client_exists_error": "Client with such number already exists!",
         "add_client_form.search_query": "Search text",
-        "add_client_form.invalid_phone_format": "Incorrect phone format"
+        "add_client_form.invalid_phone_format": "Incorrect phone format",
+        "add_client_form.payment_respite": "Payment term"
     },
     "ru": {
         "add_client_form.year": "Год",
@@ -63,7 +64,8 @@
         "add_client_form.error_title": "Ошибка!",
         "add_client_form.client_exists_error": "Клиент с таким номером уже существует!",
         "add_client_form.search_query": "Строка поиска",
-        "add_client_form.invalid_phone_format": "Неправильный формат номера"
+        "add_client_form.invalid_phone_format": "Неправильный формат номера",
+        "add_client_form.payment_respite": "Отсрочка"
     },
     "uk": {
         "add_client_form.year": "Рік",
@@ -96,6 +98,7 @@
         "add_client_form.error_title": "Помилка!",
         "add_client_form.client_exists_error": "Клієнт з таким номером вже існує!",
         "add_client_form.search_query": "Стрічка пошуку",
-        "add_client_form.invalid_phone_format": "Неправильний формат номера"
+        "add_client_form.invalid_phone_format": "Неправильний формат номера",
+        "add_client_form.payment_respite": "Відстрочка"
     }
 }

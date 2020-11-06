@@ -1,9 +1,9 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Table, Rate, Row, Col, Collapse, DatePicker } from 'antd';
+import { Row, Col, Collapse, DatePicker } from 'antd';
 import moment from 'moment';
 
 const { Panel } = Collapse;
@@ -12,23 +12,20 @@ const { Panel } = Collapse;
 import {
     fetchClientMRDs,
     setFilterDate,
-    //setClientOrdersPageFilter,
 } from 'core/clientMRDs/duck';
 
-import { Numeral, Loader } from 'commons';
-import { FormattedDatetime, OrderStatusIcon } from 'components';
+import { Numeral, Loader } from "commons";
 
 // own
-import book from 'routes/book';
+import book from "routes/book";
 import Styles from './styles.m.css';
 
 const DEF_DATE_FORMAT = 'DD/MM/YYYY';
 
 const mapStateToProps = state => ({
     isFetching: state.ui.clientMRDsFetching,
-    MRDDate: state.clientMRDs.filter.MRDDate,
+    MRDsUntilDate: state.clientMRDs.filter.MRDsUntilDate,
     mrds: state.clientMRDs.mrds,
-    //filter:     state.clientOrders.filter,
 });
 
 const mapDispatchToProps = {
@@ -53,7 +50,6 @@ export default class ClientMRDsTab extends Component {
         
         this.props.setFilterDate(moment().format(DEF_DATE_FORMAT));
         this.props.fetchClientMRDs({ clientId });
-        // console.log("=============", clientId);
         
     }
 
@@ -72,20 +68,13 @@ export default class ClientMRDsTab extends Component {
         if (isFetching) {
             return <Loader loading={ isFetching } />;
         }
-        //console.log("MRDs from comp", mrds);
-        // if(mrds) mrds.forEach(element => {
-        //     console.log(element);
-
-        // })
-
-        //console.log(this.props.MRDDate);
 
         return (
             <>
                 <div className={Styles.headerContainer}>
                     <DatePicker
                         allowClear={false}
-                        defaultValue={moment(this.props.MRDDate, DEF_DATE_FORMAT)}
+                        defaultValue={moment(this.props.MRDsUntilDate, DEF_DATE_FORMAT)}
                         format={DEF_DATE_FORMAT}
                         onChange={date => this.onDatePicker(date)}></DatePicker
                     >
@@ -96,10 +85,17 @@ export default class ClientMRDsTab extends Component {
                         return <Panel
                                 header={
                                     <Row>
-                                        <Col span={6}>{element.documentType}</Col>
-                                        <Col span={6}>{<FormattedMessage id='client_mrds_tab.amoun'/>}: {element.amount}</Col>
-                                        <Col span={6}><FormattedMessage id='client_mrds_tab.due_amount'/>: {element.dueAmount}</Col>
-                                        <Col span={6}>{element.orderDatetime}</Col>
+                                        <Col span={6}>
+                                            <Link
+                                                to={`${book.order}/${element.orderId}`}
+                                            >
+                                                {element.orderNum}
+                                            </Link>
+                                        </Col>
+                                        <Col span={6}>{<FormattedMessage id='client_mrds_tab.amoun_with_taxes'/>}: {element.amountWithTaxes}</Col>
+                                        <Col span={6}><FormattedMessage id='client_mrds_tab.due_amount_with_taxes'/>: {element.dueAmountWithTaxes}</Col>
+                                        <Col span={2}> </Col>
+                                        <Col span={4}>{element.orderDatetime}</Col>
                                     </Row>
                                 }
                                 key = {element.orderId}
