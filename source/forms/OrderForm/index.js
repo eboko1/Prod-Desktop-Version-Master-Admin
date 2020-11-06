@@ -161,7 +161,7 @@ export class OrderForm extends React.PureComponent {
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
         let url = API_URL;
-        let params = `/orders/${this.props.orderId}`;
+        let params = `/orders/${this.props.orderId}?onlyDetailsAndLabors=true`;
         url += params;
         fetch(url, {
             method: "GET",
@@ -183,7 +183,6 @@ export class OrderForm extends React.PureComponent {
                 that.orderServices = data.orderServices;
                 that.orderDetails = data.orderDetails;
                 that.totalSumWithTax = data.order.totalSumWithTax;
-                that.isTaxPayer = data.order.isTaxPayer;
                 callback(data);
                 that.forceUpdate();
             })
