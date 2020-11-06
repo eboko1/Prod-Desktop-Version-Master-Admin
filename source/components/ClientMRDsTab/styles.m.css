@@ -1,0 +1,30 @@
+.MBRDoc {
+    margin-left: 2%;
+}
+
+.payDocsContainer {
+    height: 100%;
+    padding-left: 4%;
+}
+
+.payDoc {
+    margin: 0 2px 2px 0;
+    display: flex;
+    justify-content: flex-end;
+    height: 2em;
+    border-radius: 1em;
+} 
+
+.payPDoc {
+    background-color: #6F6;
+}
+
+.payMDoc {
+    background-color: #F88;
+}
+
+.headerContainer {
+    height: 10%;
+    padding: 10px;
+    background-color: #CCC;
+}

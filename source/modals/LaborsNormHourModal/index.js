@@ -79,7 +79,16 @@ class LaborsNormHourModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.price" />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.price' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'price',
                 dataIndex: 'price',
                 width:     '10%',
@@ -105,7 +114,16 @@ class LaborsNormHourModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="sum" />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.sum' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'sum',
                 dataIndex: 'sum',
                 width:     '10%',

@@ -32,10 +32,7 @@ const mapDispatchToProps = {
 
 @withResponsive()
 @withRouter
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export class LayoutComponent extends Component {
     static defaultProps = {
         paper: true,
@@ -90,6 +87,7 @@ export class LayoutComponent extends Component {
                         collapsed={collapsed}
                         isMobile={isMobile}
                         user={user}
+                        logout={this._logout}
                     />
                     <Layout className={Styles.layout}>
                         {!isMobile && (

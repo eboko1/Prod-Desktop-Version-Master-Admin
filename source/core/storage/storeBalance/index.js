@@ -35,6 +35,7 @@ const ReducerState = {
     storeBalanceLoading: false,
     filters:             {
         page: 1,
+        inStock: true,
         date: moment(),
     },
 };

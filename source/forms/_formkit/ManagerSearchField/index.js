@@ -1,21 +1,21 @@
 // vendor
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Select, Spin } from 'antd';
-import { injectIntl } from 'react-intl';
-import { FormattedMessage } from 'react-intl';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Select, Spin } from "antd";
+import { injectIntl } from "react-intl";
+import { FormattedMessage } from "react-intl";
+import _ from "lodash";
 
 // proj
-import { setManagerSearchQuery } from 'core/search/duck';
+import { setManagerSearchQuery } from "core/search/duck";
 
 // own
 const Option = Select.Option;
 
 const mapStateToProps = state => ({
-    managers:           state.search.managers,
+    managers: state.search.managers,
     isFetchingManagers: state.search.isFetchingManagers,
-    user:               state.auth,
+    user: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -23,10 +23,7 @@ const mapDispatchToProps = {
 };
 
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class ManagerSearchField extends Component {
     componentDidMount() {
         this.props.setManagerSearchQuery();
@@ -44,36 +41,39 @@ export default class ManagerSearchField extends Component {
             managerId,
         } = this.props;
         const managers = !_.find(initManagers, { managerId: id })
-            ? [ ...initManagers, { managerId: id, managerName: name, managerSurname: surname }]
+            ? [
+                  ...initManagers,
+                  { managerId: id, managerName: name, managerSurname: surname },
+              ]
             : initManagers;
 
         return (
             <Select
-                style={ { width: '60%' } }
+                style={{ width: "60%" }}
                 showSearch
                 allowClear
-                placeholder={ <FormattedMessage id='select_manager' /> }
-                filterOption={ false }
+                placeholder={<FormattedMessage id="select_manager" />}
+                filterOption={false}
                 notFoundContent={
                     isFetchingManagers ? (
-                        <Spin size='small' />
+                        <Spin size="small" />
                     ) : (
-                        <FormattedMessage id='not_found' />
+                        <FormattedMessage id="not_found" />
                     )
                 }
-                onSearch={ item => setManagerSearchQuery(item) }
-                onChange={ managerId => onSelect(managerId) }
-                value={ managerId }
+                onSearch={item => setManagerSearchQuery(item)}
+                onChange={managerId => onSelect(managerId)}
+                value={managerId}
             >
-                { isFetchingManagers
+                {isFetchingManagers
                     ? []
                     : managers.map(
-                        ({ managerId, managerName, managerSurname }) => (
-                            <Option key={ managerId } value={ managerId }>
-                                { managerName } { managerSurname }
-                            </Option>
-                        ),
-                    ) }
+                          ({ managerId, managerName, managerSurname }) => (
+                              <Option key={managerId} value={managerId}>
+                                  {managerName} {managerSurname}
+                              </Option>
+                          ),
+                      )}
             </Select>
         );
     }

@@ -1,25 +1,25 @@
 // vendor
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Tabs } from 'antd';
-import { permissions, isForbidden } from 'utils';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { Tabs } from "antd";
+import { permissions, isForbidden } from "utils";
 
 // proj
 import {
     createClientVehicle,
     updateClientVehicle,
     deleteClientVehicle,
-} from 'core/client/duck';
+} from "core/client/duck";
 
-import { Catcher } from 'commons';
-import { ClientRequisitesContainer } from 'containers';
+import { Catcher } from "commons";
+import { ClientRequisitesContainer } from "containers";
 import {
     AddClientVehicleForm,
     EditClientVehicleForm,
     EditClientForm,
 } from 'forms';
-import { ClientFeedbackTab, ClientOrdersTab } from 'components';
+import { ClientFeedbackTab, ClientOrdersTab, ClientMRDsTab } from 'components';
 
 // own
 const { TabPane } = Tabs;
@@ -35,13 +35,10 @@ const mapDispatchToProps = {
 };
 
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class ClientContainer extends Component {
     render() {
-        const { clientEntity, clientId, user } = this.props;
+        const { clientEntity, clientId, user, specificTab } = this.props;
         const {
             CREATE_EDIT_DELETE_CLIENTS,
             GET_CLIENTS_ADDITIONAL_INFORMATION,
@@ -50,76 +47,83 @@ export default class ClientContainer extends Component {
         return (
             <Catcher>
                 <Tabs
-                    defaultActiveKey='generalInfo'
+                    defaultActiveKey= {specificTab ? specificTab :'generalInfo'}
                     tabPosition='right'
                     type='card'
                 >
                     <TabPane
                         tab={
                             <FormattedMessage
-                                id={ 'client_container.general_info' }
+                                id={"client_container.general_info"}
                             />
                         }
-                        key='generalInfo'
+                        key="generalInfo"
                     >
                         <EditClientForm
-                            client={ clientEntity }
-                            clientId={ clientId }
+                            client={clientEntity}
+                            clientId={clientId}
                         />
                         <EditClientVehicleForm
-                            updateClientVehicle={ this.props.updateClientVehicle }
-                            deleteClientVehicle={ this.props.deleteClientVehicle }
-                            clientEntity={ clientEntity }
-                            clientId={ clientId }
+                            updateClientVehicle={this.props.updateClientVehicle}
+                            deleteClientVehicle={this.props.deleteClientVehicle}
+                            clientEntity={clientEntity}
+                            clientId={clientId}
                         />
-                        { !isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
+                        {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
                             <AddClientVehicleForm
-                                addClientVehicle={ this.props.createClientVehicle.bind(
+                                addClientVehicle={this.props.createClientVehicle.bind(
                                     null,
                                     clientId,
-                                ) }
+                                )}
                             />
-                        ) : null }
+                        ) : null}
                     </TabPane>
                     <TabPane
                         tab={
-                            <FormattedMessage id={ 'client_container.orders' } />
+                            <FormattedMessage id={"client_container.orders"} />
                         }
-                        key='orders'
-                        disabled={ isForbidden(
+                        key="orders"
+                        disabled={isForbidden(
                             user,
                             GET_CLIENTS_ADDITIONAL_INFORMATION,
-                        ) }
+                        )}
                     >
-                        <ClientOrdersTab clientId={ clientId } />
+                        <ClientOrdersTab clientId={clientId} />
                     </TabPane>
                     <TabPane
                         tab={
                             <FormattedMessage
-                                id={ 'client_container.feedback' }
+                                id={"client_container.feedback"}
                             />
                         }
-                        key='feedback'
-                        disabled={ isForbidden(
+                        key="feedback"
+                        disabled={isForbidden(
                             user,
                             GET_CLIENTS_ADDITIONAL_INFORMATION,
-                        ) }
+                        )}
                     >
-                        <ClientFeedbackTab feedback={ clientEntity.reviews } />
+                        <ClientFeedbackTab feedback={clientEntity.reviews} />
                     </TabPane>
                     <TabPane
-                        disabled={ isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) }
+                        disabled={isForbidden(user, CREATE_EDIT_DELETE_CLIENTS)}
                         tab={
                             <FormattedMessage
-                                id={ 'client_container.requisites' }
+                                id={"client_container.requisites"}
                             />
                         }
-                        key='clientRequisites'
+                        key="clientRequisites"
                     >
                         <ClientRequisitesContainer
-                            requisites={ clientEntity.requisites }
-                            clientId={ clientEntity.clientId }
+                            requisites={clientEntity.requisites}
+                            clientId={clientEntity.clientId}
                         />
+                    </TabPane>
+                    <TabPane
+                        disabled={ isForbidden(user, GET_CLIENTS_ADDITIONAL_INFORMATION) }
+                        tab={<FormattedMessage id={ 'client_container.debt'}/>}
+                        key='clientDebt'
+                    >
+                        <ClientMRDsTab clientId={clientId}/>
                     </TabPane>
                 </Tabs>
             </Catcher>

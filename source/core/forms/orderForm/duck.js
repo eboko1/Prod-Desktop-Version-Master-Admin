@@ -290,26 +290,23 @@ export default function reducer(state = ReducerState, action) {
 export const orderSelector = state => state.forms[moduleName].order;
 export const moduleSelector = state => state.forms[moduleName];
 
-export const selectInviteData = createSelector(
-    orderSelector,
-    order => {
-        const hasInviteStatus = ["success", "cancel"].includes(order.status);
+export const selectInviteData = createSelector(orderSelector, order => {
+    const hasInviteStatus = ["success", "cancel"].includes(order.status);
 
-        const isInviteVisible =
-            !order.inviteOrderId && order.id && order.status && hasInviteStatus;
+    const isInviteVisible =
+        !order.inviteOrderId && order.id && order.status && hasInviteStatus;
 
-        const isInviteEnabled =
-            hasInviteStatus &&
-            order.id &&
-            order.status &&
-            order.clientVehicleId &&
-            order.clientId &&
-            order.clientPhone &&
-            !order.invited;
+    const isInviteEnabled =
+        hasInviteStatus &&
+        order.id &&
+        order.status &&
+        order.clientVehicleId &&
+        order.clientId &&
+        order.clientPhone &&
+        !order.invited;
 
-        return { hasInviteStatus, isInviteVisible, isInviteEnabled };
-    },
-);
+    return { hasInviteStatus, isInviteVisible, isInviteEnabled };
+});
 
 export const selectCashSum = createSelector(
     moduleSelector,

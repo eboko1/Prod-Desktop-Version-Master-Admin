@@ -1,13 +1,13 @@
 // vendor
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
-import { Button } from 'antd';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { injectIntl } from "react-intl";
+import { Button } from "antd";
+import _ from "lodash";
 
 // proj
-import { Catcher, StyledButton } from 'commons';
-import { TecDocModals } from 'components';
+import { Catcher, StyledButton } from "commons";
+import { TecDocModals } from "components";
 import {
     fetchPartAttributes,
     fetchSuggestionParts,
@@ -16,10 +16,10 @@ import {
     clearSuggestionParts,
     clearCrossParts,
     setOperationIndex,
-} from 'core/tecDocActions/duck';
+} from "core/tecDocActions/duck";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 
 const mapDispatchToProps = {
     fetchPartAttributes,
@@ -32,20 +32,17 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = state => ({
-    suggestions:         state.tecDocActions.suggestions,
-    crosses:             state.tecDocActions.crosses,
-    attributes:          state.tecDocActions.attributes,
-    selectedAttributes:  state.tecDocActions.selectedAttributes,
+    suggestions: state.tecDocActions.suggestions,
+    crosses: state.tecDocActions.crosses,
+    attributes: state.tecDocActions.attributes,
+    selectedAttributes: state.tecDocActions.selectedAttributes,
     selectedSuggestions: state.tecDocActions.selectedSuggestions,
-    selectedCrosses:     state.tecDocActions.selectedCrosses,
-    operationIndex:      state.tecDocActions.operationIndex,
+    selectedCrosses: state.tecDocActions.selectedCrosses,
+    operationIndex: state.tecDocActions.operationIndex,
 });
 
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class TecDocActionsContainer extends Component {
     getSupplier() {
         const { selectedAttributes, brands, brandId } = this.props;
@@ -53,8 +50,8 @@ export default class TecDocActionsContainer extends Component {
 
         return supplierId || brandId
             ? _.chain(brands)
-                .find(supplierId ? { supplierId } : { brandId })
-                .value()
+                  .find(supplierId ? { supplierId } : { brandId })
+                  .value()
             : null;
     }
 
@@ -63,8 +60,8 @@ export default class TecDocActionsContainer extends Component {
 
         return detailId
             ? _.chain(details)
-                .find({ detailId })
-                .value()
+                  .find({ detailId })
+                  .value()
             : null;
     }
 
@@ -78,8 +75,8 @@ export default class TecDocActionsContainer extends Component {
 
         const product = this.getProduct();
         const supplier = this.getSupplier();
-        const productId = _.get(product, 'productId');
-        const supplierId = _.get(supplier, 'supplierId');
+        const productId = _.get(product, "productId");
+        const supplierId = _.get(supplier, "supplierId");
 
         const {
             fetchPartAttributes,
@@ -94,42 +91,42 @@ export default class TecDocActionsContainer extends Component {
 
         return (
             <Catcher>
-                { index === operationIndex && (
+                {index === operationIndex && (
                     <TecDocModals
-                        product={ product }
-                        supplier={ supplier }
-                        { ...this.props }
+                        product={product}
+                        supplier={supplier}
+                        {...this.props}
                     />
-                ) }
-                <div className={ Styles.actionContainer }>
+                )}
+                <div className={Styles.actionContainer}>
                     <Button
-                        className={ Styles.actionItem }
-                        disabled={ areAttributesForbidden }
-                        icon='check'
-                        onClick={ () => {
+                        className={Styles.actionItem}
+                        disabled={areAttributesForbidden}
+                        icon="check"
+                        onClick={() => {
                             setOperationIndex(index);
                             fetchPartAttributes(detailCode, supplierId);
-                        } }
+                        }}
                     />
                     <StyledButton
-                        className={ Styles.actionItem }
-                        disabled={ areSuggestionsForbidden }
-                        icon='question'
-                        type='secondary'
-                        onClick={ () => {
+                        className={Styles.actionItem}
+                        disabled={areSuggestionsForbidden}
+                        icon="question"
+                        type="secondary"
+                        onClick={() => {
                             setOperationIndex(index);
                             fetchSuggestionParts(productId, modificationId);
-                        } }
+                        }}
                     />
                     <StyledButton
-                        className={ Styles.actionItem }
-                        disabled={ areCrossesForbidden }
-                        type='warning'
-                        icon='swap'
-                        onClick={ () => {
+                        className={Styles.actionItem}
+                        disabled={areCrossesForbidden}
+                        type="warning"
+                        icon="swap"
+                        onClick={() => {
                             setOperationIndex(index);
                             fetchCrossParts(productId, modificationId);
-                        } }
+                        }}
                     />
                 </div>
             </Catcher>

@@ -586,7 +586,7 @@ export default class LaborsPage extends Component {
                                 this.updatePrice()
                             }
                         >
-                            <FormattedMessage id='Обновить цену' /> 
+                            <FormattedMessage id='update_price' /> 
                         </Button>
                         <Button
                             type='primary'

@@ -37,7 +37,7 @@ export default function reducer(state = ReducerState, action) {
                     ...payload,
                 },
             };
-       
+
         case SET_EDIT_CLIENT_REQUISITE_ID:
             return {
                 ...state,

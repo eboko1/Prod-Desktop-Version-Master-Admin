@@ -6,6 +6,7 @@ import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Button, Radio } from 'antd';
 import classNames from 'classnames/bind';
+import moment from 'moment';
 
 // proj
 import {
@@ -23,6 +24,7 @@ import {
     OrdersFilterContainer,
     UniversalFilters,
 } from 'containers';
+import { StorageDateFilter } from 'components';
 import book from 'routes/book';
 import { withResponsive, getDaterange, permissions, isForbidden } from 'utils';
 
@@ -85,13 +87,11 @@ export default class OrdersPage extends Component {
     _setOrdersDaterange = daterange => {
         const { setOrdersDaterangeFilter, fetchOrders } = this.props;
 
-        if (daterange === 'all') {
-            setOrdersDaterangeFilter({});
-        } else if (daterange !== 'all') {
-            const daterangeFilter = getDaterange(daterange);
-            setOrdersDaterangeFilter({ daterange, ...daterangeFilter });
-        }
-
+        setOrdersDaterangeFilter({
+            daterange,
+            startDate: moment(daterange[0]).format('YYYY-MM-DD'),
+            endDate: moment(daterange[1]).format('YYYY-MM-DD'),
+        });
         fetchOrders();
     };
     // eslint-disable-next-line
@@ -108,7 +108,6 @@ export default class OrdersPage extends Component {
             funelWithFiltersShadow:    [ 'success', 'cancel' ].indexOf(status) < 0,
             funelMobile:               isMobile,
         });
-
         return (
             <Layout
                 paper={ false }
@@ -117,9 +116,9 @@ export default class OrdersPage extends Component {
                 controls={
                     <div className={ Styles.controls }>
                         { !isMobile &&
-                            ([ 'success', 'cancel', 'reviews' ].indexOf(status) <
-                                0 &&
-                                headerControls) }
+                            /*([ 'success', 'cancel', 'reviews' ].indexOf(status) <
+                                0 &&*/
+                                headerControls }
                         <div className={ Styles.buttonGroup }>
                             { (status === 'cancel' || status === 'success') && (
                                 <Button
@@ -141,7 +140,14 @@ export default class OrdersPage extends Component {
                                     <FormattedMessage id='orders-page.invite_to_service' />
                                 </Button>
                             ) }
-                            <Link to={ book.addOrder }>
+                            <Link
+                                to={ {
+                                    pathname: book.addOrder,
+                                    state:    {
+                                        beginDatetime: moment().add( (30 - (moment().minute() % 30)) , "minutes").format('YYYY-MM-DD HH:00'),
+                                    },
+                                } }
+                            >
                                 <Button
                                     type='primary'
                                     disabled={ isForbidden(
@@ -197,38 +203,10 @@ export default class OrdersPage extends Component {
         // } = this.props;
 
         return (
-            <RadioGroup value={ this.props.daterange } className={ Styles.filters }>
-                <RadioButton
-                    value='all'
-                    onClick={ () => this._setOrdersDaterange('all') }
-                >
-                    <FormattedMessage id='orders-page.all' />
-                </RadioButton>
-                <RadioButton
-                    value='today'
-                    onClick={ () => this._setOrdersDaterange('today') }
-                >
-                    <FormattedMessage id='orders-page.today' />
-                </RadioButton>
-                <RadioButton
-                    value='tomorrow'
-                    onClick={ () => this._setOrdersDaterange('tomorrow') }
-                >
-                    <FormattedMessage id='orders-page.tomorrow' />
-                </RadioButton>
-                <RadioButton
-                    value='nextWeek'
-                    onClick={ () => this._setOrdersDaterange('nextWeek') }
-                >
-                    <FormattedMessage id='orders-page.week' />
-                </RadioButton>
-                <RadioButton
-                    value='nextMonth'
-                    onClick={ () => this._setOrdersDaterange('nextMonth') }
-                >
-                    <FormattedMessage id='orders-page.month' />
-                </RadioButton>
-            </RadioGroup>
+            <StorageDateFilter
+                dateRange={this.props.daterange}
+                onDateChange={ this._setOrdersDaterange }
+            />
         );
     };
 }

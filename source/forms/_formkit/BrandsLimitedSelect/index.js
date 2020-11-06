@@ -31,4 +31,3 @@
 // ];
 
 // const defaultBrands = this._cachedInvoke.getCachedResult(func, args);
-

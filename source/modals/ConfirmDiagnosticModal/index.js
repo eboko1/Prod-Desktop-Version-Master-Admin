@@ -14,6 +14,7 @@ import {
 } from 'core/forms/orderDiagnosticForm/saga';
 // own
 import Styles from './styles.m.css';
+const { TabPane } = Tabs;
 
 @injectIntl
 class ConfirmDiagnosticModal extends React.Component{
@@ -27,6 +28,7 @@ class ConfirmDiagnosticModal extends React.Component{
             allDetails: null,
             servicesList: [],
             detailsList: [],
+            autoConfirmed: false,
         }
         this.tmp = {};
         this.servicesOptions = null;
@@ -58,39 +60,49 @@ class ConfirmDiagnosticModal extends React.Component{
         var data = {
             services: [],
             details: [],
-            modificationId: this.props.tecdocId,
             insertMode: true,
+        }
+        if(this.props.tecdocId) {
+            data.modificationId = this.props.tecdocId;
         }
         this.state.servicesList.map((element)=>{
             if(element.checked && element.id != null) {
                 data.services.push({
-                    serviceName: element.name + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`),
+                    serviceName:
+                        element.commentary && element.commentary.positions.length ?
+                        element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
+                        element.name,
                     serviceId: element.id,
                     count: element.hours,
                     servicePrice: element.price,
                     employeeId: this.props.defaultEmployeeId,
                     serviceHours: 0,
                     comment: {
-                        comment: element.commentary.comment,
-                        positions: element.commentary.positions,
+                        comment: element.commentary && element.commentary.comment,
+                        positions: element.commentary && element.commentary.positions,
+                        problems: element.commentary && element.commentary.problems,
                     },
+                    isCritical: element.status == 3,
                 })
             }
         });
         this.state.detailsList.map((element)=>{
             if(element.checked && element.id != null) {
                 data.details.push({
-                    name: element.name + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`),
+                    name:
+                        element.commentary &&  element.commentary.positions.length ?
+                        element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
+                        element.name,
                     storeGroupId: element.id,
                     count: element.count,
                     comment: {
-                        comment: element.commentary.comment,
-                        positions: element.commentary.positions,
+                        comment: element.commentary && element.commentary.comment,
+                        positions: element.commentary && element.commentary.positions,
                     },
+                    isCritical: element.status == 3,
                 })
             }
         });
-        console.log(data);
         this.endСonfirmation(this.props.orderId, data);
     };
     
@@ -153,7 +165,7 @@ class ConfirmDiagnosticModal extends React.Component{
         this.updateState();
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState) {
         if(this.state.labors != null && this.servicesOptions == null) {
             this.servicesOptions = this.getServicesOptions();
         }
@@ -165,36 +177,7 @@ class ConfirmDiagnosticModal extends React.Component{
     fetchOptionsSourceData() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/labors`;
-        url += params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.setState({
-                labors: data,
-            });
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        url = API_URL;
-        params = `/store_groups?keepFlat=true`;
-        url += params;
+        let url = __API_URL__ + `/store_groups?keepFlat=true`;
         fetch(url, {
             method: 'GET',
             headers: {
@@ -213,6 +196,7 @@ class ConfirmDiagnosticModal extends React.Component{
         .then(function (data) {
             that.setState({
                 allDetails: data,
+                labors: that.props.labors,
             });
         })
         .catch(function (error) {
@@ -250,7 +234,7 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     addServicesByLaborId(id, index = -1, commentary, status) {
-        const service = this.state.labors.labors.find(x => x.laborId == id);
+        const service = this.props.labors.find(x => x.laborId == id);
         if(service == undefined) return;
 
         if(index == -1) {
@@ -335,7 +319,7 @@ class ConfirmDiagnosticModal extends React.Component{
 
 
     changeResolved(index, type) {
-        this.state.diagnosticList[index].resolved = type=='disabled'?true:!this.state.diagnosticList[index].resolved;
+        this.state.diagnosticList[index].resolved = type=='disabled' ? true : !this.state.diagnosticList[index].resolved;
         this.state.diagnosticList[index].type = type;
         this.setState({
             update: true,
@@ -362,10 +346,13 @@ class ConfirmDiagnosticModal extends React.Component{
         this.state.diagnosticList.map((data, index)=>{
             if(!data.resolved) {
                 this.changeResolved(index, 'automaticly');
-                partIds.push(data.id);
+                partIds.push({
+                    id: data.id,
+                    isCritical: data.status == 3,
+                    comment: data.commentary,
+                });
             }
         });
-
         this.getDataByPartIds(partIds);
     }
 
@@ -373,13 +360,14 @@ class ConfirmDiagnosticModal extends React.Component{
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/diagnostics/calculation_data?partIds=[${partIds}]`;
+        let params = `/diagnostics/calculation_data`;
         url += params;
         fetch(url, {
-            method: 'GET',
+            method: 'PUT',
             headers: {
                 'Authorization': token,
-            }
+            },
+            body: JSON.stringify({partIds: partIds})
         })
         .then(function (response) {
             if (response.status !== 200) {
@@ -397,42 +385,36 @@ class ConfirmDiagnosticModal extends React.Component{
             const serviceArray = [];
             const detailArrat = [];
             
-            data.map((elem)=>{
-                const diagnosticPart = that.state.diagnosticList.find((part)=>part.id==elem.partId);
-                const commentary = diagnosticPart ? Object.assign({}, diagnosticPart.commentary) : {comment: "", positions: []};
-                const servicesComment = JSON.parse(JSON.stringify(commentary));
-                const detailComment = JSON.parse(JSON.stringify(commentary));
-                const status = diagnosticPart ? diagnosticPart.status : undefined;
-                
-
+            data.map((elem, index)=>{
                 elem.labor.map((labor)=>{
                     let laborObjCopy = Object.assign({}, {
-                        key: that.state.servicesList.length+1,
+                        key: that.state.servicesList.length+index+1,
                         id: labor.laborId,
                         productId: labor.productId,
                         name: labor.name,
                         hours: Number(labor.normHours) || 1,
                         checked: true,
-                        commentary: servicesComment,
-                        status: status,
+                        commentary: elem.comment,
+                        status: elem.isCritical ? 3 : 2,
                         automaticly: true,
                     });
                     serviceArray.push(laborObjCopy);
                 })
 
                 let detailObjCopy = Object.assign({}, {
-                    key: that.state.detailsList.length+1,
+                    key: that.state.detailsList.length+index+1,
                     id: elem.storeGroup.id,
                     name: elem.storeGroup.name,
                     count: 1,
                     checked: true,
-                    commentary: detailComment,
-                    status: status,
+                    commentary: elem.comment,
+                    status: elem.isCritical ? 3 : 2,
                 });
                 
                 detailArrat.push(detailObjCopy);
             })
             that.setState({
+                autoConfirmed: true,
                 servicesList: serviceArray,
                 detailsList: detailArrat,
             })
@@ -451,16 +433,16 @@ class ConfirmDiagnosticModal extends React.Component{
                 tmpSource.push(dataSource[i]);
                 const commentary = Object.assign({}, dataSource[i].commentary);
                 if(this.state.diagnosticList.findIndex(x => x.id == dataSource[i].partId) == -1){
-
                     let diagnosticObjCopy =  Object.assign({}, {
                         key: this.diagnosticKey,
                         id: dataSource[i].partId,
-                        commentary: commentary || {comment: "", positions: []},
+                        commentary: commentary || {comment: "", positions: [], problems: []},
                         resolved: false,
                         type:'',
                         disabled: false,
                         checked: true,
                         status: Number(dataSource[i].status),
+                        templateIndex: dataSource[i].templateIndex,
                     });
 
                     diagnosticList.push(diagnosticObjCopy);
@@ -470,8 +452,8 @@ class ConfirmDiagnosticModal extends React.Component{
         }
         this.state.diagnosticList = diagnosticList;
 
-        return tmpSource.map((data)=>{
-        let index = this.state.diagnosticList.findIndex(x => x.id == data.partId),
+        return tmpSource.map((data, divKey)=>{
+        let index = this.state.diagnosticList.findIndex(x => x.id == data.partId && x.templateIndex == data.templateIndex),
             key = this.state.diagnosticList[index].key,
             bgColor = this.state.diagnosticList[index].disabled?"#d9d9d9":"",
             txtColor = this.state.diagnosticList[index].disabled?"gray":"";
@@ -491,7 +473,7 @@ class ConfirmDiagnosticModal extends React.Component{
         }
 
         return (
-        <div className={Styles.confirm_diagnostic_modal_row} style={{backgroundColor: bgColor, color: txtColor}}>
+        <div className={Styles.confirm_diagnostic_modal_row} style={{backgroundColor: bgColor, color: txtColor}} key={divKey}>
             <div style={{ width: '10%' }}>
                 {key} <Checkbox
                         onChange={()=>this.disableDiagnosticRow(index)}
@@ -549,8 +531,8 @@ class ConfirmDiagnosticModal extends React.Component{
             }
         }
 
-        return stageList.map((stage)=>
-            <div>
+        return stageList.map((stage, key)=>
+            <div key={key}>
                 <div className={Styles.confirm_diagnostic_modal_row_title}>{stage}</div>
                 {this.getDiagnostics(stage)}
             </div>
@@ -574,9 +556,6 @@ class ConfirmDiagnosticModal extends React.Component{
                 commentary: {commentary: "", positions: []},
                 checked: true,
             });
-            this.setState({
-                update: true,
-            })
         }
         else if(this.state.servicesList[this.state.servicesList.length-1].name != null) {
             this.state.servicesList.push({
@@ -584,18 +563,15 @@ class ConfirmDiagnosticModal extends React.Component{
                 id: null,
                 name: null,
                 hours: 1,
-                commentary: {commentary: "", positions: []},
+                commentary: {commentary: "", positions: [], problems: []},
                 checked: true
             });
-            this.setState({
-                update: true,
-            })
         }
     }
 
     getServicesOptions() {
         const { Option } = Select;
-        return this.state.labors.labors.map(
+        return this.props.labors.map(
             (data, index) => (
                 <Option
                     value={ String(data.laborId) }
@@ -623,10 +599,9 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     getServicesContent() {
-        this.addNewServicesRow();
         let tmpServicesArray = [...this.state.servicesList];
         tmpServicesArray = tmpServicesArray.map((data, index)=>
-            <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null}>
+            <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null} key={index}>
                 <div style={{ width: '10%' }}>
                     {data.key} <Checkbox
                         checked={data.checked}
@@ -678,6 +653,7 @@ class ConfirmDiagnosticModal extends React.Component{
                                 {
                                     comment: undefined,
                                     positions: [],
+                                    problems: [],
                                 }
                             }
                             detail={data.name}
@@ -699,10 +675,11 @@ class ConfirmDiagnosticModal extends React.Component{
         return tmpServicesArray;
     }
 
-    setServicesComment(comment, positions, index) {
+    setServicesComment(comment, positions, index, problems) {
         this.state.servicesList[index].commentary = {
             comment: comment,
             positions: positions,
+            problems: problems,
         };
         this.setState({
             update: true
@@ -720,19 +697,27 @@ class ConfirmDiagnosticModal extends React.Component{
     addNewDetailsRow() {
         if(this.state.detailsList.length == 0) {
             this.state.detailsList.push(
-                {key:1, id:null, name: null, count: 1, checked: true},
+                {
+                    key:1,
+                    id:null,
+                    name: null,
+                    count: 1,
+                    checked: true,
+                    commentary: {commentary: "", positions: []},
+                },
             );
-            this.setState({
-                update: true,
-            })
         }
         else if(this.state.detailsList[this.state.detailsList.length-1].name != null) {
             this.state.detailsList.push(
-                {key:this.state.detailsList[this.state.detailsList.length-1].key+1, id:null, name: null, count: 1, checked: true},
+                {
+                    key:this.state.detailsList[this.state.detailsList.length-1].key+1, 
+                    id:null, 
+                    name: null, 
+                    count: 1, 
+                    checked: true,
+                    commentary: {commentary: "", positions: []},
+                },
             );
-            this.setState({
-                update: true,
-            })
         }
     }
 
@@ -764,10 +749,9 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     getDetailsContent() {
-        this.addNewDetailsRow();
         let tmpDetailsArray = [...this.state.detailsList];
         tmpDetailsArray = tmpDetailsArray.map((data, index)=>
-            <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null}>
+            <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null} key={index}>
                 <div style={{ width: '10%' }}>
                     {data.key} <Checkbox
                         checked={data.checked}
@@ -786,8 +770,8 @@ class ConfirmDiagnosticModal extends React.Component{
                         onSelect={(value, option)=>{
                             this.addDetailsByGroupId(value, index);
                         }}
-                        onChange={(inputValue)=>{
-                            data.name = inputValue;
+                        onChange={(inputValue, option)=>{
+                            data.name = option.props.detail_name;
                             this.setState({update: true});
                         }}
                         placeholder={this.props.intl.formatMessage({id: 'order_form_table.service.placeholder'})}
@@ -851,9 +835,14 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     render() {
-        const { visible } = this.state;
-        const { isMobile } = this.props;
-        const { TabPane } = Tabs;
+        const { visible, autoConfirmed } = this.state;
+        const { isMobile, disabled, intl: {formatMessage} } = this.props;
+        this.addNewServicesRow();
+        this.addNewDetailsRow();
+        
+        const diagnosticComponents = this.getDiagnosticContent(),
+              servicesComponents = this.getServicesContent(),
+              detailsComponents = this.getDetailsContent();
         return (
             <div>
                 <>
@@ -863,11 +852,13 @@ class ConfirmDiagnosticModal extends React.Component{
                         type="primary"
                         onClick={()=>{
                             notification.success({
-                                message: 'Сообщение отправлено!',
+                                message: formatMessage({
+                                    id: `message_sent`,
+                                }),
                             });
                             sendMessage(this.props.orderId);
                         }}
-                        disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
+                        disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM) || disabled}
                     >
                         <FormattedMessage id='end'/>
                     </Button>
@@ -877,7 +868,7 @@ class ConfirmDiagnosticModal extends React.Component{
                             style={{ width: "35%", marginRight: 5 }}
                             type="primary"
                             onClick={this.showModal}
-                            disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW)}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW) || disabled}
                         >
                             <FormattedMessage id='order_form_table.diagnostic.create_order'/>
                         </Button>
@@ -886,11 +877,13 @@ class ConfirmDiagnosticModal extends React.Component{
                             type="primary"
                             onClick={()=>{
                                 notification.success({
-                                    message: 'Сообщение отправлено!',
+                                    message: formatMessage({
+                                        id: `message_sent`,
+                                    }),
                                 });
                                 sendMessage(this.props.orderId);
                             }}
-                            disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM) || disabled}
                         >
                             <FormattedMessage id='end'/>
                         </Button>
@@ -917,15 +910,18 @@ class ConfirmDiagnosticModal extends React.Component{
                             <div className={Styles.confirm_diagnostic_modal_element_title} style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                                 <FormattedMessage id='order_form_table.diagnostic.results' />
                                 <Button
+                                    disabled={autoConfirmed}
                                     type="primary"
-                                    onClick={()=>{this.automaticlyConfirmDiagnostic()}}
-                                    title={this.props.intl.formatMessage({id: "confirm_diagnostic_modal.auto"})}
+                                    onClick={()=>{
+                                        this.automaticlyConfirmDiagnostic()
+                                    }}
+                                    title={formatMessage({id: "confirm_diagnostic_modal.auto"})}
                                 >
                                     <FormattedMessage id='order_form_table.diagnostic.automaticly' />
                                 </Button>
                             </div>
                             <div className={Styles.confirm_diagnostic_modal_element_content}>
-                                {this.getDiagnosticContent()}
+                                {diagnosticComponents}
                             </div>
                         </div>
                         <div id={Styles.diagnosticModalServices} className={Styles.confirm_diagnostic_modal_element}>
@@ -933,7 +929,7 @@ class ConfirmDiagnosticModal extends React.Component{
                                 <FormattedMessage id='add_order_form.services' />
                             </div>
                             <div className={Styles.confirm_diagnostic_modal_element_content}>
-                                {this.getServicesContent()}
+                                {servicesComponents}
                             </div>
                         </div>
                         <div id={Styles.diagnosticModalDetails} className={Styles.confirm_diagnostic_modal_element}>
@@ -941,45 +937,45 @@ class ConfirmDiagnosticModal extends React.Component{
                                 <FormattedMessage id='add_order_form.details' />
                             </div>
                             <div className={Styles.confirm_diagnostic_modal_element_content}>
-                                {this.getDetailsContent()}
+                                {detailsComponents}
                             </div>
                         </div>
                     </div> 
                     ):(
-                        <div className={Styles.confirm_diagnostic_modal_wrap}>
-                            <Tabs defaultActiveKey="1">
-                                <TabPane tab={<Icon type="reconciliation" className={Styles.modal_tab_icon} />} key="1">
-                                    <div className={Styles.confirm_diagnostic_modal_element_mobile}>
-                                        <div className={Styles.confirm_diagnostic_modal_element_title}>
-                                            <FormattedMessage id='order_form_table.diagnostic.results' />
-                                        </div>
-                                        <div className={Styles.confirm_diagnostic_modal_element_content}>
-                                            {this.getDiagnosticContent()}
-                                        </div>
+                    <div className={Styles.confirm_diagnostic_modal_wrap}>
+                        <Tabs defaultActiveKey="1">
+                            <TabPane tab={<Icon type="reconciliation" className={Styles.modal_tab_icon} />} key="1">
+                                <div className={Styles.confirm_diagnostic_modal_element_mobile}>
+                                    <div className={Styles.confirm_diagnostic_modal_element_title}>
+                                        <FormattedMessage id='order_form_table.diagnostic.results' />
                                     </div>
-                                </TabPane>
-                                <TabPane tab={<Icon type="tool" className={Styles.modal_tab_icon} />} key="2">
-                                    <div id={Styles.diagnosticModalServices} className={Styles.confirm_diagnostic_modal_element_mobile}>
-                                        <div className={Styles.confirm_diagnostic_modal_element_title}>
-                                            <FormattedMessage id='add_order_form.services' />
-                                        </div>
-                                        <div className={Styles.confirm_diagnostic_modal_element_content}>
-                                            {this.getServicesContent()}
-                                        </div>
+                                    <div className={Styles.confirm_diagnostic_modal_element_content}>
+                                        {diagnosticComponents}
                                     </div>
-                                </TabPane>
-                                <TabPane tab={<Icon type="setting" className={Styles.modal_tab_icon} />} key="3">
-                                    <div id={Styles.diagnosticModalDetails} className={Styles.confirm_diagnostic_modal_element_mobile}>
-                                        <div className={Styles.confirm_diagnostic_modal_element_title}>
-                                            <FormattedMessage id='add_order_form.details' />
-                                        </div>
-                                        <div className={Styles.confirm_diagnostic_modal_element_content}>
-                                            {this.getDetailsContent()}
-                                        </div>
+                                </div>
+                            </TabPane>
+                            <TabPane tab={<Icon type="tool" className={Styles.modal_tab_icon} />} key="2">
+                                <div id={Styles.diagnosticModalServices} className={Styles.confirm_diagnostic_modal_element_mobile}>
+                                    <div className={Styles.confirm_diagnostic_modal_element_title}>
+                                        <FormattedMessage id='add_order_form.services' />
                                     </div>
-                                </TabPane>
-                            </Tabs>
-                        </div>
+                                    <div className={Styles.confirm_diagnostic_modal_element_content}>
+                                        {servicesComponents}
+                                    </div>
+                                </div>
+                            </TabPane>
+                            <TabPane tab={<Icon type="setting" className={Styles.modal_tab_icon} />} key="3">
+                                <div id={Styles.diagnosticModalDetails} className={Styles.confirm_diagnostic_modal_element_mobile}>
+                                    <div className={Styles.confirm_diagnostic_modal_element_title}>
+                                        <FormattedMessage id='add_order_form.details' />
+                                    </div>
+                                    <div className={Styles.confirm_diagnostic_modal_element_content}>
+                                        {detailsComponents}
+                                    </div>
+                                </div>
+                            </TabPane>
+                        </Tabs>
+                    </div>
                     )}
                 </Modal>
             </div>
@@ -1028,6 +1024,7 @@ class CommentaryButton extends React.Component{
             visible: true,
             currentCommentaryProps: {
                 positions: this.props.commentary.positions || [],
+                problems: this.props.commentary.problems || [],
             }
         });
         if(this.commentaryInput.current != undefined) {
@@ -1040,7 +1037,7 @@ class CommentaryButton extends React.Component{
         this.setState({
             loading: true,
         });
-        this.props.setComment(currentCommentary, currentCommentaryProps.positions, this.props.tableKey);
+        this.props.setComment(currentCommentary, currentCommentaryProps.positions, this.props.tableKey, currentCommentaryProps.problems);
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
         }, 500);

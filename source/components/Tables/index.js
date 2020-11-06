@@ -3,18 +3,13 @@ export { SuppliersTable } from './SuppliersTable';
 
 export { CashboxesTable } from './CashTables/CashboxesTable';
 export { CashOrdersTable } from './CashTables/CashOrdersTable';
+export { CashReportTable } from './CashTables/CashReportTable';
 export { CashActivityTable } from './CashTables/CashActivityTable';
 export { CashBalanceTable } from './CashTables/CashBalanceTable';
-export {
-    CashSelectedClientOrdersTable,
-} from './CashTables/CashSelectedClientOrdersTable';
+export { CashSelectedClientOrdersTable } from './CashTables/CashSelectedClientOrdersTable';
 
-export {
-    SubscriptionCarbookTable,
-} from './SubscriptionTables/SubscriptionCarbookTable';
-export {
-    SubscriptionProTable,
-} from './SubscriptionTables/SubscriptionProTable';
+export { SubscriptionCarbookTable } from './SubscriptionTables/SubscriptionCarbookTable';
+export { SubscriptionProTable } from './SubscriptionTables/SubscriptionProTable';
 
 export { ProductsExcelTable } from './StorageTables/ProductsExcelTable';
 export { StoreProductsTable } from './StorageTables/StoreProductsTable';

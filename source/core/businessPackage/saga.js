@@ -76,7 +76,6 @@ function* createBusinessPackageSaga({
 function* updateBusinessPackageSaga({
     payload: { businessPackageId, entity },
 }) {
-
     yield call(
         fetchAPI,
         'PUT',

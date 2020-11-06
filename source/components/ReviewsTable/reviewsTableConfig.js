@@ -78,9 +78,7 @@ export function columnsConfig() {
                             <FormattedMessage id='reviews-table.vehicle' />:{ ' ' }
                         </span>
                         <span className={ Styles.vehicle }>
-                            { `${review.vehicleMakeName} ${
-                                review.vehicleModelName
-                            } (${review.vehicleYear})` }
+                            { `${review.vehicleMakeName} ${review.vehicleModelName} (${review.vehicleYear})` }
                         </span>
                     </div>
                 ) }
@@ -135,5 +133,11 @@ export function columnsConfig() {
         ),
     };
 
-    return [ client, feedback, nps, rating, link ];
+    return [
+        client,
+        feedback,
+        nps,
+        rating,
+        link, 
+    ];
 }

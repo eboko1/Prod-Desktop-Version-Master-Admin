@@ -352,9 +352,7 @@ export default class OrderFormHeader extends Component {
                             }
                             formItem
                             hasFeedback
-                            className={`${Styles.clientCol} ${
-                                Styles.comboFieldSelect
-                            }`}
+                            className={`${Styles.clientCol} ${Styles.comboFieldSelect}`}
                             colon={false}
                             rules={this.requiredFieldRules}
                             getFieldDecorator={getFieldDecorator}
@@ -452,9 +450,7 @@ export default class OrderFormHeader extends Component {
                                 <Icon type="edit" className={Styles.editIcon} />
                             </Link>
                             <CopyToClipboard
-                                text={`${selectedVehicle.make} ${
-                                    selectedVehicle.model
-                                }`}
+                                text={`${selectedVehicle.make} ${selectedVehicle.model}`}
                             >
                                 <Icon
                                     type="copy"

@@ -1,21 +1,21 @@
 // Core
-import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Input, Icon } from 'antd';
+import React, { Component } from "react";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { Input, Icon } from "antd";
 
 // proj
-import { Catcher, StyledButton, Loader } from 'commons';
+import { Catcher, StyledButton, Loader } from "commons";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 const { TextArea } = Input;
 
 @injectIntl
 export default class ReviewResponse extends Component {
     state = {
         complainMode: true,
-        reply:        null,
-        complain:     null,
+        reply: null,
+        complain: null,
     };
 
     _toggleComplainMode = () =>
@@ -48,59 +48,59 @@ export default class ReviewResponse extends Component {
 
         return (
             <Catcher>
-                <div className={ Styles.reviewResponse }>
-                    <div className={ Styles.block }>
-                        <div className={ Styles.title }>
-                            <FormattedMessage id='review-response.feedback' />
+                <div className={Styles.reviewResponse}>
+                    <div className={Styles.block}>
+                        <div className={Styles.title}>
+                            <FormattedMessage id="review-response.feedback" />
                         </div>
-                        <div className={ Styles.feedbackText }>{ text }</div>
+                        <div className={Styles.feedbackText}>{text}</div>
                     </div>
-                    <div className={ `${Styles.block} ${Styles.response}` }>
-                        <div className={ Styles.title }>
-                            <FormattedMessage id='review-response.respond_to_customer' />
+                    <div className={`${Styles.block} ${Styles.response}`}>
+                        <div className={Styles.title}>
+                            <FormattedMessage id="review-response.respond_to_customer" />
                         </div>
-                        { !replyText ? 
+                        {!replyText ? (
                             <>
                                 <TextArea
-                                    autosize={ { minRows: 2, maxRows: 4 } }
-                                    onChange={ event =>
+                                    autoSize={{ minRows: 2, maxRows: 4 }}
+                                    onChange={event =>
                                         this._handleReplyText(event)
                                     }
-                                    rules={ [
+                                    rules={[
                                         {
-                                            max:     2000,
+                                            max: 2000,
                                             message: formatMessage({
                                                 id:
-                                                    'field_should_be_below_2000_chars',
+                                                    "field_should_be_below_2000_chars",
                                             }),
                                         },
-                                    ] }
+                                    ]}
                                 />
                                 <StyledButton
-                                    type='secondary'
-                                    className={ Styles.send }
-                                    onClick={ this._sendReply }
+                                    type="secondary"
+                                    className={Styles.send}
+                                    onClick={this._sendReply}
                                 >
-                                    <FormattedMessage id='review-response.send_response' />
+                                    <FormattedMessage id="review-response.send_response" />
                                 </StyledButton>
                             </>
-                            : (
-                                <div className={ Styles.feedbackText }>
-                                    { replyText }
-                                </div>
-                            ) }
-                        { !complaint ? 
+                        ) : (
+                            <div className={Styles.feedbackText}>
+                                {replyText}
+                            </div>
+                        )}
+                        {!complaint ? (
                             renderComplain
-                            : (
-                                <div className={ Styles.complained }>
-                                    <FormattedMessage id='review-response.complaint' />
-                                    { complaint && (
-                                        <div className={ Styles.complainText }>
-                                            { complaint }
-                                        </div>
-                                    ) }
-                                </div>
-                            ) }
+                        ) : (
+                            <div className={Styles.complained}>
+                                <FormattedMessage id="review-response.complaint" />
+                                {complaint && (
+                                    <div className={Styles.complainText}>
+                                        {complaint}
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </Catcher>
@@ -114,52 +114,52 @@ export default class ReviewResponse extends Component {
         } = this.props;
         const { complainMode } = this.state;
         if (reviewComplaintLoading) {
-            return <Loader loading={ reviewComplaintLoading } />;
+            return <Loader loading={reviewComplaintLoading} />;
         }
 
         return complainMode ? (
-            <div className={ Styles.complain }>
+            <div className={Styles.complain}>
                 <div>
                     <div>
-                        <FormattedMessage id='review-response.complain_text-1' />
+                        <FormattedMessage id="review-response.complain_text-1" />
                     </div>
                     <div>
-                        <FormattedMessage id='review-response.complain_text-2' />
+                        <FormattedMessage id="review-response.complain_text-2" />
                     </div>
                 </div>
                 <StyledButton
-                    type='warning'
-                    className={ Styles.complainBtn }
-                    onClick={ () => this._toggleComplainMode() }
+                    type="warning"
+                    className={Styles.complainBtn}
+                    onClick={() => this._toggleComplainMode()}
                 >
-                    <FormattedMessage id='review-response.complain' />
+                    <FormattedMessage id="review-response.complain" />
                 </StyledButton>
             </div>
         ) : (
-            <div className={ Styles.complained }>
+            <div className={Styles.complained}>
                 <Icon
-                    type='close'
-                    className={ Styles.closeComplain }
-                    onClick={ () => this._toggleComplainMode() }
+                    type="close"
+                    className={Styles.closeComplain}
+                    onClick={() => this._toggleComplainMode()}
                 />
                 <TextArea
-                    autosize={ { minRows: 2, maxRows: 4 } }
-                    onChange={ event => this._handleComplainText(event) }
-                    rules={ [
+                    autoSize={{ minRows: 2, maxRows: 4 }}
+                    onChange={event => this._handleComplainText(event)}
+                    rules={[
                         {
-                            max:     2000,
+                            max: 2000,
                             message: formatMessage({
-                                id: 'field_should_be_below_2000_chars',
+                                id: "field_should_be_below_2000_chars",
                             }),
                         },
-                    ] }
+                    ]}
                 />
                 <StyledButton
-                    type='warning'
-                    className={ Styles.send }
-                    onClick={ () => this._sendComplain() }
+                    type="warning"
+                    className={Styles.send}
+                    onClick={() => this._sendComplain()}
                 >
-                    <FormattedMessage id='review-response.send_complaint' />
+                    <FormattedMessage id="review-response.send_complaint" />
                 </StyledButton>
             </div>
         );

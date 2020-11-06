@@ -1,26 +1,26 @@
 //vendor
-import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, Button, Select } from 'antd';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { Form, Button, Select } from "antd";
+import _ from "lodash";
 
 // proj
 import {
     onChangeSpreadBusinessBrandsForm,
     searchBusinesses,
     submitSpreadBusinessBrands,
-} from 'core/forms/spreadBusinessBrands/duck';
+} from "core/forms/spreadBusinessBrands/duck";
 
-import { DecoratedSelect } from 'forms/DecoratedFields';
+import { DecoratedSelect } from "forms/DecoratedFields";
 
-import { withReduxForm } from 'utils';
+import { withReduxForm } from "utils";
 
 // own
 const Option = Select.Option;
 
 @injectIntl
 @withReduxForm({
-    name:    'spreadBusinessBrandsForm',
+    name: "spreadBusinessBrandsForm",
     actions: {
         change: onChangeSpreadBusinessBrandsForm,
         searchBusinesses,
@@ -31,25 +31,25 @@ export class SpreadBusinessBrandsForm extends Component {
     getSelect(getFieldDecorator, search, name, options) {
         return (
             <DecoratedSelect
-                { ...options }
+                {...options}
                 formItem
-                getPopupContainer={ trigger => trigger.parentNode }
-                getFieldDecorator={ getFieldDecorator }
-                key={ name }
-                field={ name }
+                getPopupContainer={trigger => trigger.parentNode}
+                getFieldDecorator={getFieldDecorator}
+                key={name}
+                field={name}
                 showSearch
-                onFocus={ () =>
+                onFocus={() =>
                     _.isNil(_.get(search, name)) &&
-                    this.props.searchBusinesses(name, '')
+                    this.props.searchBusinesses(name, "")
                 }
-                onSearch={ query => this.props.searchBusinesses(name, query) }
-                filterOption={ false }
+                onSearch={query => this.props.searchBusinesses(name, query)}
+                filterOption={false}
             >
-                { _.get(search, [ name ], []).map(({ businessId, name }) => (
-                    <Option value={ businessId } key={ String(businessId) }>
-                        { name }
+                {_.get(search, [name], []).map(({ businessId, name }) => (
+                    <Option value={businessId} key={String(businessId)}>
+                        {name}
                     </Option>
-                )) }
+                ))}
             </DecoratedSelect>
         );
     }
@@ -63,29 +63,29 @@ export class SpreadBusinessBrandsForm extends Component {
 
         return (
             <Form>
-                { this.getSelect(getFieldDecorator, search, 'businessId', {
+                {this.getSelect(getFieldDecorator, search, "businessId", {
                     label: (
-                        <FormattedMessage id='spread_business_brands.source' />
+                        <FormattedMessage id="spread_business_brands.source" />
                     ),
-                }) }
-                { this.getSelect(getFieldDecorator, search, 'businessIds', {
+                })}
+                {this.getSelect(getFieldDecorator, search, "businessIds", {
                     label: (
-                        <FormattedMessage id='spread_business_brands.target' />
+                        <FormattedMessage id="spread_business_brands.target" />
                     ),
-                    mode: 'multiple',
-                }) }
+                    mode: "multiple",
+                })}
                 <Button
-                    type='primary'
-                    style={ { width: '100%' } }
-                    disabled={ !businessId || !businessIds }
-                    onClick={ () =>
+                    type="primary"
+                    style={{ width: "100%" }}
+                    disabled={!businessId || !businessIds}
+                    onClick={() =>
                         this.props.submitSpreadBusinessBrands(
                             businessId,
                             businessIds,
                         )
                     }
                 >
-                    <FormattedMessage id='submit' />
+                    <FormattedMessage id="submit" />
                 </Button>
             </Form>
         );

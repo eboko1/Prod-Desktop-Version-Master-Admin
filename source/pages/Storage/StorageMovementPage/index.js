@@ -17,6 +17,8 @@ import {
     StoreMovementTable,
     StorageMovementTotals,
     DatePickerGroup,
+    StorageDateFilter,
+    WarehouseSelect,
 } from 'components';
 
 const mapStateToProps = state => ({
@@ -49,14 +51,17 @@ export const StorageMovementPage = connect(
             paper={ false }
             title={ <FormattedMessage id='navigation.storage_movement' /> }
             controls={
-                <DatePickerGroup
-                    startDate={ moment(filters.startDate) }
-                    endDate={ moment(filters.endDate) }
-                    loading={ loading }
-                    period={ period }
-                    onDaterangeChange={ setDaterange }
-                    onPeriodChange={ handlePeriod }
-                />
+                <div style={{display: 'flex'}}>
+                    <WarehouseSelect 
+                        style={{margin: '0 0 0 8px'}}
+                        onChange={ (warehouseId) => props.setStoreMovementFilters({warehouseId: warehouseId})}
+                    />
+                    <StorageDateFilter
+                        dateRange={[moment(filters.startDate), moment(filters.endDate)]}
+                        onDateChange={ setDaterange }
+                        minimize
+                    />
+                </div>
             }
         >
             <StorageMovementTotals filters={ filters } />

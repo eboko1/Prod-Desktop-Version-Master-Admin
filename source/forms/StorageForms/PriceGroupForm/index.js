@@ -86,8 +86,5 @@ const PriceGroup = props => {
 };
 
 export const PriceGroupForm = injectIntl(
-    connect(
-        null,
-        { createPriceGroup },
-    )(Form.create()(PriceGroup)),
+    connect(null, { createPriceGroup })(Form.create()(PriceGroup)),
 );

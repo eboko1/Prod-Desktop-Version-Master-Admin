@@ -97,12 +97,10 @@ export class EmployeeForm extends Component {
                         )}
                         onChange={() => this._setPasswordField()}
                     />
-                     <DecoratedCheckbox
+                    <DecoratedCheckbox
                         field="isMechanic"
                         formItem
-                        label={
-                            <FormattedMessage id="employee.is_mechanic" />
-                        }
+                        label={<FormattedMessage id="employee.is_mechanic" />}
                         formItemLayout={formItemLayout}
                         getFieldDecorator={getFieldDecorator}
                         initialValue={Boolean(
@@ -208,7 +206,7 @@ export class EmployeeForm extends Component {
                         formItem
                         formItemLayout={formItemLayout}
                         initialValue={_.get(initialEmployee, "email")}
-                        autosize={{ minRows: 2, maxRows: 6 }}
+                        autoSize={{ minRows: 2, maxRows: 6 }}
                         rules={[
                             {
                                 required: managerEnabled,
@@ -253,7 +251,7 @@ export class EmployeeForm extends Component {
                         formItem
                         formItemLayout={formItemLayout}
                         initialValue={_.get(initialEmployee, "jobTitle")}
-                        autosize={{ minRows: 2, maxRows: 6 }}
+                        autoSize={{ minRows: 2, maxRows: 6 }}
                         rules={[
                             {
                                 required: true,

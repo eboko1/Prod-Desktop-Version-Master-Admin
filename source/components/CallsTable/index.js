@@ -1,15 +1,15 @@
 // vendor
-import React, { Component } from 'react';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import { Radio, Table } from 'antd';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { injectIntl, FormattedMessage } from "react-intl";
+import { Radio, Table } from "antd";
+import _ from "lodash";
 
 // proj
-import { Catcher, Loader } from 'commons';
+import { Catcher, Loader } from "commons";
 
 //own
-import { columnsConfig } from './callsTableConfig.js';
-import Styles from './styles.m.css';
+import { columnsConfig } from "./callsTableConfig.js";
+import Styles from "./styles.m.css";
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -26,7 +26,7 @@ export default class CallsTable extends Component {
 
     _showPhone = phone => {
         this.setState(state => ({
-            visiblePhones: [ ...state.visiblePhones, phone ],
+            visiblePhones: [...state.visiblePhones, phone],
         }));
     };
 
@@ -46,12 +46,12 @@ export default class CallsTable extends Component {
         );
 
         const pagination = {
-            pageSize:         25,
-            size:             'large',
-            total:            Math.ceil(_.get(stats, 'total') / 25) * 25,
+            pageSize: 25,
+            size: "large",
+            total: Math.ceil(_.get(stats, "total") / 25) * 25,
             hideOnSinglePage: true,
-            current:          filter.page,
-            onChange:         page => {
+            current: filter.page,
+            onChange: page => {
                 this.props.setCallsPageFilter(page);
                 this.setState({ visiblePhones: [] });
                 this.props.fetchCalls();
@@ -61,21 +61,21 @@ export default class CallsTable extends Component {
         const callsTableControls = this._renderCallsTableControls();
 
         return callsFetching ? (
-            <Loader loading={ callsFetching } />
+            <Loader loading={callsFetching} />
         ) : (
             <Catcher>
-                { callsTableControls }
+                {callsTableControls}
                 <Table
-                    size='small'
-                    className={ Styles.table }
-                    columns={ columns }
-                    dataSource={ calls }
-                    loading={ callsFetching }
-                    locale={ {
-                        emptyText: <FormattedMessage id='no_data' />,
-                    } }
-                    pagination={ pagination }
-                    scroll={ { x: 1080 } }
+                    size="small"
+                    className={Styles.table}
+                    columns={columns}
+                    dataSource={calls}
+                    loading={callsFetching}
+                    locale={{
+                        emptyText: <FormattedMessage id="no_data" />,
+                    }}
+                    pagination={pagination}
+                    scroll={{ x: 1080 }}
                 />
             </Catcher>
         );
@@ -85,18 +85,18 @@ export default class CallsTable extends Component {
         const { filter } = this.props;
 
         return (
-            <RadioGroup value={ filter.mode }>
+            <RadioGroup value={filter.mode}>
                 <RadioButton
-                    value='answered'
-                    onClick={ () => this._setCallsTableFilterMode('answered') }
+                    value="answered"
+                    onClick={() => this._setCallsTableFilterMode("answered")}
                 >
-                    <FormattedMessage id='calls-table.answered' />
+                    <FormattedMessage id="calls-table.answered" />
                 </RadioButton>
                 <RadioButton
-                    value='missed'
-                    onClick={ () => this._setCallsTableFilterMode('missed') }
+                    value="missed"
+                    onClick={() => this._setCallsTableFilterMode("missed")}
                 >
-                    <FormattedMessage id='calls-table.missed' />
+                    <FormattedMessage id="calls-table.missed" />
                 </RadioButton>
             </RadioGroup>
         );

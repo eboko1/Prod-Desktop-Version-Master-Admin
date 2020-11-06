@@ -1,10 +1,21 @@
 // vendor
-import React, { Component } from 'react';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Button, Input, Select, Modal, Icon, Upload, notification, InputNumber } from 'antd';
-import { v4 } from 'uuid';
-import _ from 'lodash';
-import moment from 'moment';
+import React, { Component } from "react";
+import { injectIntl, FormattedMessage } from "react-intl";
+import { Link } from "react-router-dom";
+import {
+    Form,
+    Button,
+    Input,
+    Select,
+    Modal,
+    Icon,
+    Upload,
+    notification,
+    InputNumber,
+} from "antd";
+import { v4 } from "uuid";
+import _ from "lodash";
+import moment from "moment";
 import {
     API_URL,
     getPartProblems,
@@ -14,14 +25,13 @@ import {
     sendMessage,
     sendDiagnosticAnswer,
     deleteDiagnosticProcess,
-    deleteDiagnosticTemplate
-} from 'core/forms/orderDiagnosticForm/saga';
+    deleteDiagnosticTemplate,
+} from "core/forms/orderDiagnosticForm/saga";
 
 // proj
 // import { onChangeMobileRecordForm } from 'core/forms/mobileRecordForm/duck';
-import {
-    onChangeOrderForm,
-} from 'core/forms/orderForm/duck';
+import book from "routes/book";
+import { onChangeOrderForm } from "core/forms/orderForm/duck";
 
 import {
     DecoratedInput,
@@ -30,25 +40,25 @@ import {
     DecoratedDatePicker,
     DecoratedTimePicker,
     DecoratedSlider,
-} from 'forms/DecoratedFields';
+} from "forms/DecoratedFields";
 
-import { ConfirmDiagnosticModal } from 'modals'
+import { ConfirmDiagnosticModal } from "modals";
 
-import { withReduxForm } from 'utils';
+import { withReduxForm } from "utils";
 import { permissions, isForbidden } from "utils";
 
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 const formItemLayout = {
     labelCol: {
-        xl:  { span: 24 },
+        xl: { span: 24 },
         xxl: { span: 4 },
     },
     wrapperCol: {
-        xl:  { span: 24 },
+        xl: { span: 24 },
         xxl: { span: 20 },
     },
     colon: false,
@@ -56,14 +66,18 @@ const formItemLayout = {
 
 @injectIntl
 @withReduxForm({
-    name:            'orderForm',
-    debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment' ],
-    actions:         {
+    name: "orderForm",
+    debouncedFields: [
+        "comment",
+        "recommendation",
+        "vehicleCondition",
+        "businessComment",
+    ],
+    actions: {
         change: onChangeOrderForm,
     },
 })
 export class MobileRecordForm extends Component {
-
     render() {
         const {
             selectedClient,
@@ -76,283 +90,318 @@ export class MobileRecordForm extends Component {
         const { formatMessage } = this.props.intl;
 
         const isDurationDisabled = _.every(
-            getFieldsValue([ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'stationLoads[0].station' ]),
+            getFieldsValue([
+                "stationLoads[0].beginDate",
+                "stationLoads[0].beginTime",
+                "stationLoads[0].station",
+            ]),
         );
         return (
-            <Form layout='horizontal'>
-                <div style={{display: 'none'}}>
+            <Form layout="horizontal">
+                <div style={{ display: "none" }}>
                     <DecoratedInput
                         field="stationLoads[0].status"
-                        hiddeninput='hiddeninput'
+                        hiddeninput="hiddeninput"
                         formItem
-                        initialValue={
-                            'TO_DO'
-                        }
+                        initialValue={"TO_DO"}
                         getFieldDecorator={getFieldDecorator}
                     />
                 </div>
-                <div className={ Styles.mobileRecordFormFooter }>
-                    { status !== 'cancel' &&
-                        status !== 'approve' && (
+                <div className={Styles.mobileRecordFormFooter}>
+                    {status !== "cancel" && status !== "approve" && (
                         <Button
-                            className={ Styles.mobileRecordSubmitBtn }
-                            type='primary'
-                            onClick={ () => onStatusChange('approve') }
+                            className={Styles.mobileRecordSubmitBtn}
+                            type="primary"
+                            onClick={() => onStatusChange("approve")}
                         >
-                            <FormattedMessage id='add_order_form.save_appointment' />
+                            <FormattedMessage id="add_order_form.save_appointment" />
                         </Button>
-                    ) }
-                    { status !== 'cancel' && (
+                    )}
+                    {status !== "cancel" && (
                         <Button
-                            className={ Styles.mobileRecordSubmitBtn }
-                            onClick={ () => onStatusChange('cancel') }
+                            className={Styles.mobileRecordSubmitBtn}
+                            onClick={() =>
+                                onStatusChange(
+                                    status,
+                                    undefined,
+                                    undefined,
+                                    `${book.dashboard}`,
+                                )
+                            }
                         >
-                            <FormattedMessage id='close' />
+                            <FormattedMessage id="close" />
                         </Button>
-                    ) }
+                    )}
                 </div>
                 <FormItem
-                    label={ <FormattedMessage id='add_order_form.name' /> }
-                    { ...formItemLayout }
+                    label={<FormattedMessage id="add_order_form.name" />}
+                    {...formItemLayout}
                 >
                     <Input
-                        placeholder={ formatMessage({
-                            id:             'add_order_form.select_name',
-                            defaultMessage: 'Select client',
-                        }) }
+                        placeholder={formatMessage({
+                            id: "add_order_form.select_name",
+                            defaultMessage: "Select client",
+                        })}
                         disabled
                         value={
                             selectedClient.name || selectedClient.surname
                                 ? (selectedClient.surname
-                                    ? selectedClient.surname + ' '
-                                    : '') + `${selectedClient.name}`
+                                      ? selectedClient.surname + " "
+                                      : "") + `${selectedClient.name}`
                                 : void 0
                         }
                     />
                 </FormItem>
                 <DecoratedSelect
-                    label={ <FormattedMessage id='add_order_form.phone' /> }
-                    field='clientPhone'
+                    label={<FormattedMessage id="add_order_form.phone" />}
+                    field="clientPhone"
                     initialValue={this.props.order.clientPhone}
                     formItem
-                    formItemLayout={ formItemLayout }
+                    formItemLayout={formItemLayout}
                     hasFeedback
-                    className={ Styles.clientCol }
-                    colon={ false }
-                    rules={ [
+                    className={Styles.clientCol}
+                    colon={false}
+                    rules={[
                         {
                             required: true,
-                            message:  formatMessage({
-                                id: 'required_field',
+                            message: formatMessage({
+                                id: "required_field",
                             }),
                         },
-                    ] }
-                    getFieldDecorator={ getFieldDecorator }
-                    placeholder={ formatMessage({
-                        id: 'add_order_form.select_client_phone',
-                    }) }
+                    ]}
+                    getFieldDecorator={getFieldDecorator}
+                    placeholder={formatMessage({
+                        id: "add_order_form.select_client_phone",
+                    })}
                 >
-                    { selectedClient.phones.filter(Boolean).map(phone => (
-                        <Option value={ phone } key={ v4() }>
-                            { phone }
+                    {selectedClient.phones.filter(Boolean).map(phone => (
+                        <Option value={phone} key={v4()}>
+                            {phone}
                         </Option>
-                    )) }
+                    ))}
                 </DecoratedSelect>
                 <DecoratedSelect
-                    field='clientVehicle'
+                    field="clientVehicle"
                     initialValue={this.props.order.clientVehicleId}
                     formItem
                     hasFeedback
-                    label={ <FormattedMessage id='add_order_form.car' /> }
-                    formItemLayout={ formItemLayout }
-                    colon={ false }
-                    className={ Styles.clientCol }
-                    getFieldDecorator={ getFieldDecorator }
-                    rules={ [
+                    label={<FormattedMessage id="add_order_form.car" />}
+                    formItemLayout={formItemLayout}
+                    colon={false}
+                    className={Styles.clientCol}
+                    getFieldDecorator={getFieldDecorator}
+                    rules={[
                         {
                             required: true,
-                            message:  formatMessage({
-                                id: 'required_field',
+                            message: formatMessage({
+                                id: "required_field",
                             }),
                         },
-                    ] }
-                    placeholder={ formatMessage({
-                        id: 'add_order_form.select_client_vehicle',
-                    }) }
-                    optionDisabled='enabled'
+                    ]}
+                    placeholder={formatMessage({
+                        id: "add_order_form.select_client_vehicle",
+                    })}
+                    optionDisabled="enabled"
                 >
-                    { selectedClient.vehicles.map(vehicle => (
-                        <Option value={ vehicle.id } key={ v4() }>
-                            { `${vehicle.make} ${
+                    {selectedClient.vehicles.map(vehicle => (
+                        <Option value={vehicle.id} key={v4()}>
+                            {`${vehicle.make} ${
                                 vehicle.model
-                            } ${vehicle.number || vehicle.vin || ''}` }
+                            } ${vehicle.number || vehicle.vin || ""}`}
                         </Option>
-                    )) }
+                    ))}
                 </DecoratedSelect>
                 <hr />
                 <DecoratedSelect
-                    field='manager'
+                    field="manager"
                     initialValue={this.props.order.managerId}
                     formItem
-                    getFieldDecorator={ getFieldDecorator }
-                    rules={ [
+                    getFieldDecorator={getFieldDecorator}
+                    rules={[
                         {
                             required: true,
-                            message:  formatMessage({
-                                id: 'required_field',
+                            message: formatMessage({
+                                id: "required_field",
                             }),
                         },
-                    ] }
-                    label={ <FormattedMessage id='add_order_form.manager' /> }
+                    ]}
+                    label={<FormattedMessage id="add_order_form.manager" />}
                     hasFeedback
-                    colon={ false }
-                    className={ Styles.datePanelItem }
-                    placeholder={ formatMessage({
-                        id: 'add_order_form.select_manager',
-                    }) }
+                    colon={false}
+                    className={Styles.datePanelItem}
+                    placeholder={formatMessage({
+                        id: "add_order_form.select_manager",
+                    })}
                 >
-                    { this.props.managers.map(manager => (
+                    {this.props.managers.map(manager => (
                         <Option
-                            disabled={ manager.disabled }
-                            value={ manager.id }
-                            key={ v4() }
+                            disabled={manager.disabled}
+                            value={manager.id}
+                            key={v4()}
                         >
-                            { `${manager.managerName} ${manager.managerSurname}` }
+                            {`${manager.managerName} ${manager.managerSurname}`}
                         </Option>
-                    )) }
+                    ))}
                 </DecoratedSelect>
                 <hr />
-                <div style={ { fontSize: '18px', marginBottom: '10px' } }>
-                    <FormattedMessage id='add_order_form.appointment_details' />
+                <div style={{ fontSize: "18px", marginBottom: "10px" }}>
+                    <FormattedMessage id="add_order_form.appointment_details" />
                 </div>
                 <DecoratedSelect
-                    field='stationLoads[0].station'
+                    field="stationLoads[0].station"
                     initialValue={this.props.order.stationNum}
-                    rules={ [
+                    rules={[
                         {
                             required: true,
-                            message:  formatMessage({
-                                id: 'required_field',
+                            message: formatMessage({
+                                id: "required_field",
                             }),
                         },
-                    ] }
+                    ]}
                     formItem
-                    label={ <FormattedMessage id='add_order_form.station' /> }
-                    colon={ false }
+                    label={<FormattedMessage id="add_order_form.station" />}
+                    colon={false}
                     hasFeedback
-                    className={ Styles.datePanelItem }
-                    getFieldDecorator={ getFieldDecorator }
+                    className={Styles.datePanelItem}
+                    getFieldDecorator={getFieldDecorator}
                     placeholder={
-                        <FormattedMessage id='add_order_form.select_station' />
+                        <FormattedMessage id="add_order_form.select_station" />
                     }
-                    options={ stations }
-                    optionValue='num'
-                    optionLabel='name'
+                    options={stations}
+                    optionValue="num"
+                    optionLabel="name"
                 />
                 <DecoratedDatePicker
                     formItem
-                    initialValue={moment(this.props.order.beginDatetime).toISOString()}
-                    field='stationLoads[0].beginDate'
+                    initialValue={moment(
+                        this.props.order.beginDatetime,
+                    ).toISOString()}
+                    field="stationLoads[0].beginDate"
                     hasFeedback
-                    label={ <FormattedMessage id='date' /> }
-                    className={ Styles.datePanelItem }
-                    getFieldDecorator={ getFieldDecorator }
-                    formatMessage={ formatMessage }
-                    allowClear={ false }
-                    { ...formItemLayout }
+                    label={<FormattedMessage id="date" />}
+                    className={Styles.datePanelItem}
+                    getFieldDecorator={getFieldDecorator}
+                    formatMessage={formatMessage}
+                    allowClear={false}
+                    {...formItemLayout}
                 />
                 <DecoratedTimePicker
-                    field='stationLoads[0].beginTime'
-                    initialValue={moment(this.props.order.deliveryDatetime).toISOString()}
+                    field="stationLoads[0].beginTime"
+                    initialValue={moment(
+                        this.props.order.deliveryDatetime,
+                    ).toISOString()}
                     formItem
                     hasFeedback
                     inputReadOnly
-                    allowClear={ false }
+                    allowClear={false}
                     disabled={
-                        !this.props.form.getFieldValue('stationLoads[0].beginDate') ||
-                        !this.props.form.getFieldValue('stationLoads[0].station')
+                        !this.props.form.getFieldValue(
+                            "stationLoads[0].beginDate",
+                        ) ||
+                        !this.props.form.getFieldValue(
+                            "stationLoads[0].station",
+                        )
                     }
-                    disabledHours={ () => {
-                        const availableHours = _.get(this.props.availableHours, '0', []);
+                    disabledHours={() => {
+                        const availableHours = _.get(
+                            this.props.availableHours,
+                            "0",
+                            [],
+                        );
 
                         return _.difference(
                             Array(24)
                                 .fill(1)
                                 .map((value, index) => index),
                             availableHours.map(availableHour =>
-                                Number(moment(availableHour).format('HH'))),
+                                Number(moment(availableHour).format("HH")),
+                            ),
                         );
-                    } }
-                    disabledMinutes={ hour => {
-                        const availableHours = _.get(this.props.availableHours, '0', []);
+                    }}
+                    disabledMinutes={hour => {
+                        const availableHours = _.get(
+                            this.props.availableHours,
+                            "0",
+                            [],
+                        );
 
                         const availableMinutes = availableHours
                             .map(availableHour => moment(availableHour))
                             .filter(
                                 availableHour =>
-                                    Number(availableHour.format('HH')) === hour,
+                                    Number(availableHour.format("HH")) === hour,
                             )
                             .map(availableHour =>
-                                Number(availableHour.format('mm')));
+                                Number(availableHour.format("mm")),
+                            );
 
-                        return _.difference([ 0, 30 ], availableMinutes);
-                    } }
+                        return _.difference([0, 30], availableMinutes);
+                    }}
                     // disabledSeconds={ disabledSeconds }
-                    label={ <FormattedMessage id='time' /> }
-                    formatMessage={ formatMessage }
-                    className={ Styles.datePanelItem }
-                    getFieldDecorator={ getFieldDecorator }
-                    minuteStep={ 30 }
+                    label={<FormattedMessage id="time" />}
+                    formatMessage={formatMessage}
+                    className={Styles.datePanelItem}
+                    getFieldDecorator={getFieldDecorator}
+                    minuteStep={30}
                 />
 
                 <DecoratedSlider
                     formItem
-                    label={ <FormattedMessage id='add_order_form.duration' /> }
-                    field='stationLoads[0].duration'
+                    label={<FormattedMessage id="add_order_form.duration" />}
+                    field="stationLoads[0].duration"
                     initialValue={this.props.order.duration}
-                    getFieldDecorator={ getFieldDecorator }
-                    disabled={ !isDurationDisabled }
-                    min={ 0 }
-                    step={ 0.5 }
-                    max={ 8 }
-                    { ...formItemLayout }
+                    getFieldDecorator={getFieldDecorator}
+                    disabled={!isDurationDisabled}
+                    min={0}
+                    step={0.5}
+                    max={8}
+                    {...formItemLayout}
                 />
                 <DecoratedTextArea
                     formItem
                     initialValue={this.props.order.comment}
                     label={
-                        <FormattedMessage id='add_order_form.client_comments' />
+                        <FormattedMessage id="add_order_form.client_comments" />
                     }
-                    getFieldDecorator={ getFieldDecorator }
-                    field='comment'
-                    rules={ [
+                    getFieldDecorator={getFieldDecorator}
+                    field="comment"
+                    rules={[
                         {
-                            max:     2000,
+                            max: 2000,
                             message: formatMessage({
-                                id: 'field_should_be_below_2000_chars',
+                                id: "field_should_be_below_2000_chars",
                             }),
                         },
-                    ] }
-                    placeholder={ formatMessage({
-                        id:             'add_order_form.client_comments',
-                        defaultMessage: 'Client_comments',
-                    }) }
-                    autosize={ { minRows: 2, maxRows: 6 } }
+                    ]}
+                    placeholder={formatMessage({
+                        id: "add_order_form.client_comments",
+                        defaultMessage: "Client_comments",
+                    })}
+                    autoSize={{ minRows: 2, maxRows: 6 }}
                 />
-                { !isForbidden(this.props.user, permissions.ACCESS_ORDER_DIAGNOSTICS) ? 
-                <MobileDiagnostic
-                    disabled={this.props.orderStatus == 'success' || this.props.orderStatus == 'cancel'}
-                    user={this.props.user}
-                    orderId={this.props.orderId}
-                    orderDiagnostic={this.props.orderDiagnostic}
-                    vehicle={this.props.selectedClient.vehicles[0]}
-                />
-                : <></>}
+                {!isForbidden(
+                    this.props.user,
+                    permissions.ACCESS_ORDER_DIAGNOSTICS,
+                ) ? (
+                    <MobileDiagnostic
+                        disabled={
+                            this.props.orderStatus == "success" ||
+                            this.props.orderStatus == "cancel"
+                        }
+                        user={this.props.user}
+                        orderId={this.props.orderId}
+                        orderDiagnostic={this.props.orderDiagnostic}
+                        vehicle={this.props.selectedClient.vehicles[0]}
+                    />
+                ) : (
+                    <></>
+                )}
             </Form>
         );
     }
 }
 
+@injectIntl
 class MobileDiagnostic extends Component {
     _isMounted = false;
 
@@ -363,7 +412,7 @@ class MobileDiagnostic extends Component {
             orderId: props.orderId,
             orderDiagnostic: props.orderDiagnostic,
             dataSource: [],
-        }
+        };
         this.getCurrentDiagnostic = this.getCurrentDiagnostic.bind(this);
     }
 
@@ -378,61 +427,36 @@ class MobileDiagnostic extends Component {
             "diagnosticTemplates",
         ]).diagnosticTemplates;
         let key = 1;
-        for(let i = 0; i < diagnosticTemplatesCount; i++) {
-            let groupsCount = _.pick(diagnosticTemplates[i], [
-                "groupsCount",
-            ]).groupsCount;
+        for (let i = 0; i < diagnosticTemplatesCount; i++) {
+            let groupsCount = _.pick(diagnosticTemplates[i], ["groupsCount"])
+                .groupsCount;
             let diagnosticTemplateTitle = _.pick(diagnosticTemplates[i], [
                 "diagnosticTemplateTitle",
             ]).diagnosticTemplateTitle;
             let diagnosticTemplateId = _.pick(diagnosticTemplates[i], [
                 "diagnosticTemplateId",
             ]).diagnosticTemplateId;
-            let groups = _.pick(diagnosticTemplates[i], [
-                "groups",
-            ]).groups;
-            for(let j = 0; j < groupsCount; j++) {
-                let groupTitle = _.pick(groups[j], [
-                    "groupTitle",
-                ]).groupTitle;
-                let groupId = _.pick(groups[j], [
-                    "groupId",
-                ]).groupId;
-                let partsCount = _.pick(groups[j], [
-                    "partsCount",
-                ]).partsCount;
-                let parts = _.pick(groups[j], [
-                    "parts",
-                ]).parts;
-                for(let k = 0; k < partsCount; k++) {
-                    let index = _.pick(parts[k], [
-                        "index",
-                    ]).index;
-                    let partTitle = _.pick(parts[k], [
-                        "partTitle",
-                    ]).partTitle;
-                    let actionTitle = _.pick(parts[k], [
-                        "actionTitle",
-                    ]).actionTitle;
-                    let partId = _.pick(parts[k], [
-                        "partId",
-                    ]).partId;
-                    let answer = _.pick(parts[k], [
-                        "answer",
-                    ]).answer;
-                    let comment = _.pick(parts[k], [
-                        "comment",
-                    ]).comment;
-                    let calcDone = _.pick(parts[k], [
-                        "calcDone",
-                    ]).calcDone;
-                    let photo = _.pick(parts[k], [
-                        "photo",
-                    ]).photo;
-                    if(comment == null) comment = {
-                        comment: undefined,
-                        positions: [],
-                    }
+            let groups = _.pick(diagnosticTemplates[i], ["groups"]).groups;
+            for (let j = 0; j < groupsCount; j++) {
+                let groupTitle = _.pick(groups[j], ["groupTitle"]).groupTitle;
+                let groupId = _.pick(groups[j], ["groupId"]).groupId;
+                let partsCount = _.pick(groups[j], ["partsCount"]).partsCount;
+                let parts = _.pick(groups[j], ["parts"]).parts;
+                for (let k = 0; k < partsCount; k++) {
+                    let index = _.pick(parts[k], ["index"]).index;
+                    let partTitle = _.pick(parts[k], ["partTitle"]).partTitle;
+                    let actionTitle = _.pick(parts[k], ["actionTitle"])
+                        .actionTitle;
+                    let partId = _.pick(parts[k], ["partId"]).partId;
+                    let answer = _.pick(parts[k], ["answer"]).answer;
+                    let comment = _.pick(parts[k], ["comment"]).comment;
+                    let calcDone = _.pick(parts[k], ["calcDone"]).calcDone;
+                    let photo = _.pick(parts[k], ["photo"]).photo;
+                    if (comment == null)
+                        comment = {
+                            comment: undefined,
+                            positions: [],
+                        };
                     dataSource.push({
                         templateIndex: index,
                         key: key,
@@ -448,7 +472,7 @@ class MobileDiagnostic extends Component {
                         groupId: groupId,
                         photo: photo,
                         disabled: calcDone,
-                    },);
+                    });
                     key++;
                 }
             }
@@ -478,143 +502,163 @@ class MobileDiagnostic extends Component {
 
     getCurrentDiagnostic() {
         var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
+        let token = localStorage.getItem("_my.carbook.pro_token");
         let url = API_URL;
         let params = `/orders/diagnostics?orderId=${this.state.orderId}`;
         url += params;
         fetch(url, {
-            method: 'GET',
+            method: "GET",
             headers: {
-                'Authorization': token,
-            }
+                Authorization: token,
+            },
         })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.state.orderDiagnostic = data.diagnosis;
-            that.updateDataSource();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                that.state.orderDiagnostic = data.diagnosis;
+                that.updateDataSource();
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
     }
 
     getDiagnosticHeader() {
         const vehicle = this.props.vehicle;
-        if(typeof vehicle != 'undefined') {
+        if (typeof vehicle != "undefined") {
             return (
                 <div className={Styles.diagnostic_header}>
-                    <div className={Styles.diagnostic_vehicle_number}>{vehicle.number}</div>
-                    <div className={Styles.diagnostic_vehicle_info}>{vehicle.make} {vehicle.model} {vehicle.modification}</div>
+                    <div className={Styles.diagnostic_vehicle_number}>
+                        {vehicle.number}
+                    </div>
+                    <div className={Styles.diagnostic_vehicle_info}>
+                        {vehicle.make} {vehicle.model} {vehicle.modification}
+                    </div>
                     <ConfirmDiagnosticModal
                         user={this.props.user}
                         confirmed={this.props.disabled}
                         orderId={this.props.orderId}
                         isMobile={true}
-                        dataSource = {this.state.dataSource}
+                        dataSource={this.state.dataSource}
                         orderServices={this.props.orderServices}
                         orderDetails={this.props.orderDetails}
                         getCurrentDiagnostic={this.getCurrentDiagnostic}
                     />
                 </div>
-            )
+            );
         }
     }
 
     getDiagnosticElementsByTitle(title) {
         const dataSource = this.state.dataSource;
-
-        console.log(dataSource)
-
-        return dataSource.map((data)=>{
+        return dataSource.map((data, key) => {
             let color = "";
-            if(data.status == 1) {
+            if (data.status == 1) {
                 color = "rgb(200,225,180)";
-            }
-            else if(data.status == 2) {
+            } else if (data.status == 2) {
                 color = "rgb(255,240,180)";
-            }
-            else if(data.status == 3) {
+            } else if (data.status == 3) {
                 color = "rgb(250,175,175)";
             }
-            if(data.plan == title) {
-                return  (
-                    <div className={Styles.diagnostic} style={{backgroundColor: color}}>
-                        <div className={Styles.diagnostic_key}>{data.key}</div>                           
+            if (data.plan == title) {
+                return (
+                    <div
+                        className={Styles.diagnostic}
+                        style={{ backgroundColor: color }}
+                        key={key}
+                    >
+                        <div className={Styles.diagnostic_key}>{data.key}</div>
                         <div className={Styles.diagnistic_info}>
                             <div className={Styles.diagnistic_info_up}>
-                                <div className={Styles.diagnostic_detail}>{data.detail}</div>
-                                <div>{data.actionTitle}</div> 
-                            </div>                                
-                            <div>                              
+                                <div className={Styles.diagnostic_detail}>
+                                    {data.detail}
+                                </div>
+                                <div>{data.actionTitle}</div>
+                            </div>
+                            <div>
                                 <MobileDiagnosticStatusButton
-                                    getCurrentDiagnostic={this.getCurrentDiagnostic}
+                                    getCurrentDiagnostic={
+                                        this.getCurrentDiagnostic
+                                    }
                                     status={data.status}
                                     rowProp={data}
-                                    disabled={this.props.disabled || data.disabled}
+                                    disabled={
+                                        this.props.disabled || data.disabled
+                                    }
                                 />
                                 <div className={Styles.diagnostic_buttons}>
                                     <CommentaryButton
-                                        getCurrentDiagnostic={this.getCurrentDiagnostic}
-                                        disabled={this.props.disabled || data.disabled}
-                                        commentary={data.commentary || 
-                                            {
+                                        getCurrentDiagnostic={
+                                            this.getCurrentDiagnostic
+                                        }
+                                        disabled={
+                                            this.props.disabled || data.disabled
+                                        }
+                                        commentary={
+                                            data.commentary || {
                                                 comment: undefined,
                                                 positions: [],
                                                 problems: [],
-                                            }}
+                                                mm: 0,
+                                                percent: 0,
+                                                deg: 0,
+                                            }
+                                        }
                                         rowProp={data}
                                     />
-                                     <Button
+                                    <Button
                                         type="primary"
-                                        style={{width: '49%'}}
-                                        disabled={this.props.disabled || data.disabled}
-                                        onClick={async ()=>{
+                                        style={{ width: "49%" }}
+                                        disabled={
+                                            this.props.disabled || data.disabled
+                                        }
+                                        onClick={async () => {
                                             await addNewDiagnosticRow(
                                                 data.orderId,
                                                 data.diagnosticTemplateId,
                                                 data.groupId,
                                                 data.partId,
-                                                data.templateIndex
+                                                data.templateIndex,
                                             );
-                                            await this.getCurrentDiagnostic()
+                                            await this.getCurrentDiagnostic();
                                         }}
                                     >
-                                        <Icon type="plus"/>
+                                        <Icon type="plus" />
                                     </Button>
                                 </div>
                             </div>
-                        </div>                       
+                        </div>
                     </div>
-                )
+                );
             }
-        })
+        });
     }
 
     getDiagnosticElements() {
         const dataSource = this.state.dataSource;
         let diagnosicTitles = [];
         for (let i = 0; i < dataSource.length; i++) {
-            if(diagnosicTitles.indexOf(dataSource[i].plan) == -1) {
+            if (diagnosicTitles.indexOf(dataSource[i].plan) == -1) {
                 diagnosicTitles.push(dataSource[i].plan);
             }
         }
-        
-        return diagnosicTitles.map((data)=>
-            <div>
+
+        return diagnosicTitles.map((data, key) => (
+            <div key={key}>
                 <div className={Styles.diagnostic_title}>{data}</div>
                 {this.getDiagnosticElementsByTitle(data)}
-            </div>)
+            </div>
+        ));
     }
 
-    componentWillMount(){
+    componentWillMount() {
         this.getCurrentDiagnostic();
     }
 
@@ -641,12 +685,16 @@ class MobileDiagnostic extends Component {
         const { visible, dataSource } = this.state;
         return (
             <div>
-                <Button onClick={this.showModal} type="primary" style={{ width: "100%"}}>
-                    <FormattedMessage id='order-page.diagnostic'/>
+                <Button
+                    onClick={this.showModal}
+                    type="primary"
+                    style={{ width: "100%" }}
+                >
+                    <FormattedMessage id="order-page.diagnostic" />
                 </Button>
                 <Modal
                     visible={visible}
-                    title={<FormattedMessage id='order-page.diagnostic' />}
+                    title={<FormattedMessage id="order-page.diagnostic" />}
                     onCancel={this.handleCancel}
                     footer={[]}
                 >
@@ -654,29 +702,34 @@ class MobileDiagnostic extends Component {
                     {this.getDiagnosticElements()}
                     <Button
                         type="primary"
-                        style={{marginTop: 15, width: '100%'}}
-                        onClick={()=>{
+                        style={{ marginTop: 15, width: "100%" }}
+                        onClick={() => {
                             notification.success({
-                                message: 'Сообщение отправлено!',
+                                message: this.props.intl.formatMessage({
+                                    id: `message_sent`,
+                                }),
                             });
                             sendMessage(this.props.orderId);
                         }}
-                        disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
+                        disabled={isForbidden(
+                            this.props.user,
+                            permissions.ACCESS_TELEGRAM,
+                        )}
                     >
-                        <FormattedMessage id='end'/>
+                        <FormattedMessage id="end" />
                     </Button>
                 </Modal>
             </div>
-        )
+        );
     }
 }
 
-class MobileDiagnosticStatusButton extends React.Component{
+class MobileDiagnosticStatusButton extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            status: props.status
-        }
+            status: props.status,
+        };
     }
 
     updateState() {
@@ -687,13 +740,21 @@ class MobileDiagnosticStatusButton extends React.Component{
         this.updateState();
     }
 
-    handleClick = (status) => {
+    handleClick = status => {
         const { rowProp } = this.props;
-        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, status);
-        this.setState({status:status});
+        sendDiagnosticAnswer(
+            rowProp.orderId,
+            rowProp.diagnosticTemplateId,
+            rowProp.groupId,
+            rowProp.partId,
+            rowProp.templateIndex,
+            status,
+            rowProp.commentary,
+        );
+        this.setState({ status: status });
         setTimeout(this.props.getCurrentDiagnostic, 500);
-    }
-    render(){
+    };
+    render() {
         const status = this.state.status;
         return status > 0 ? (
             <div className={Styles.diagnostic_edit_button_wrap}>
@@ -701,37 +762,37 @@ class MobileDiagnosticStatusButton extends React.Component{
                     disabled={this.props.disabled}
                     className={Styles.diagnostic_status_button_edit}
                     type="primary"
-                    onClick={()=>this.handleClick(0)}
+                    onClick={() => this.handleClick(0)}
                 >
-                    <FormattedMessage id='order_form_table.diagnostic.status.edit' />
+                    <FormattedMessage id="order_form_table.diagnostic.status.edit" />
                 </Button>
             </div>
-            ) : (
+        ) : (
             <div className={Styles.diagnostic_status_button_wrap}>
                 <Button
                     disabled={this.props.disabled}
                     className={Styles.diagnostic_status_button_ok}
-                    onClick={()=>this.handleClick(1)}
-                    style={{background:'rgb(81, 205, 102)'}}
+                    onClick={() => this.handleClick(1)}
+                    style={{ background: "var(--green)" }}
                 >
-                    <FormattedMessage id='order_form_table.diagnostic.status.ok' />
+                    <FormattedMessage id="order_form_table.diagnostic.status.ok" />
                 </Button>
                 <Button
                     disabled={this.props.disabled}
                     className={Styles.diagnostic_status_button_bad}
-                    onClick={()=>this.handleClick(2)}
-                    style={{background:'rgb(255, 255, 0)'}}
+                    onClick={() => this.handleClick(2)}
+                    style={{ background: "rgb(255, 255, 0)" }}
                 >
-                    <FormattedMessage id='order_form_table.diagnostic.status.bad' />
+                    <FormattedMessage id="order_form_table.diagnostic.status.bad" />
                 </Button>
                 <Button
                     disabled={this.props.disabled}
                     className={Styles.diagnostic_status_button_critical}
                     type="danger"
-                    onClick={()=>this.handleClick(3)}
-                    style={{background:'rgb(255, 126, 126)', color: 'black'}}
+                    onClick={() => this.handleClick(3)}
+                    style={{ background: "rgb(255, 126, 126)", color: "black" }}
                 >
-                    <FormattedMessage id='order_form_table.diagnostic.status.critical' />
+                    <FormattedMessage id="order_form_table.diagnostic.status.critical" />
                 </Button>
             </div>
         );
@@ -739,7 +800,7 @@ class MobileDiagnosticStatusButton extends React.Component{
 }
 
 @injectIntl
-class CommentaryButton extends React.Component{
+class CommentaryButton extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -747,16 +808,16 @@ class CommentaryButton extends React.Component{
             visible: false,
             currentCommentaryProps: {
                 name: props.rowProp.detail,
-                positions : [],
+                positions: [],
                 problems: [],
                 params: {
                     mm: 0,
                     percent: 0,
                     deg: 0,
-                }
+                },
             },
             currentCommentary: undefined,
-        }
+        };
         this.commentaryInput = React.createRef();
         this.positions = [
             "front_axle",
@@ -777,80 +838,103 @@ class CommentaryButton extends React.Component{
         ];
         this.problems = [];
         this.params = [
-            {name: "mm", symbol: "mm"},
-            {name: "percent", symbol: "%"},
-            {name: "deg", symbol: "°"},
+            { name: "mm", symbol: "mm" },
+            { name: "percent", symbol: "%" },
+            { name: "deg", symbol: "°" },
         ];
         this._isMounted = false;
     }
 
     getPositions() {
         const that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
+        let token = localStorage.getItem("_my.carbook.pro_token");
         let url = API_URL;
         let params = `/diagnostics/positions?partId=${this.props.rowProp.partId}`;
         url += params;
 
         fetch(url, {
-            method: 'GET',
+            method: "GET",
             headers: {
-                'Authorization': token,
-            }
+                Authorization: token,
+            },
         })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            console.log(data);
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
     }
 
-    showModal = () => {
-        this.setState({
-            currentCommentary: this.props.commentary.comment ? this.props.commentary.comment : this.state.currentCommentary,
+    showModal = async () => {
+        const { commentary, rowProp } = this.props;
+        await getPartProblems(rowProp.partId, data => {
+            this.problems = data.map(elem => {
+                return {
+                    label: elem.description,
+                    value: elem.code,
+                };
+            });
+        });
+        await this.setState({
+            currentCommentary: commentary.comment,
+            currentCommentaryProps: {
+                name: rowProp.detail,
+                positions: commentary.positions || [],
+                problems: commentary.problems || [],
+                params: {
+                    mm: commentary.mm || 0,
+                    percent: commentary.percent || 0,
+                    deg: commentary.deg || 0,
+                },
+            },
             visible: true,
         });
-        if(this.commentaryInput.current != undefined) {
+        if (this.commentaryInput.current != undefined) {
             this.commentaryInput.current.focus();
         }
     };
 
     handleOk = async () => {
-        const {currentCommentary, currentCommentaryProps} = this.state;
+        const { currentCommentary, currentCommentaryProps } = this.state;
         this.setState({
             loading: true,
         });
         const { rowProp } = this.props;
-        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, rowProp.status, 
-            JSON.stringify(
-                {
-                    comment: currentCommentary,
-                    positions: currentCommentaryProps.positions,
-                    problems: currentCommentaryProps.problems,
-                    mm: currentCommentaryProps.mm,
-                    percent: currentCommentaryProps.percent,
-                    deg: currentCommentaryProps.deg,
-                }
-            ));
+        await sendDiagnosticAnswer(
+            rowProp.orderId,
+            rowProp.diagnosticTemplateId,
+            rowProp.groupId,
+            rowProp.partId,
+            rowProp.templateIndex,
+            rowProp.status,
+            {
+                comment: currentCommentary,
+                positions: currentCommentaryProps.positions,
+                problems: currentCommentaryProps.problems,
+                mm: currentCommentaryProps.params.mm,
+                percent: currentCommentaryProps.params.percent,
+                deg: currentCommentaryProps.params.deg,
+            },
+        );
         await this.props.getCurrentDiagnostic();
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
         }, 500);
     };
-    
+
     handleCancel = () => {
         this.setState({
             visible: false,
-            currentCommentary: null, 
+            currentCommentary: null,
         });
     };
 
@@ -859,59 +943,89 @@ class CommentaryButton extends React.Component{
         const { problems } = this;
         return (
             <div>
-              <p>
-                  {this.props.rowProp.detail}
-              </p>
-              <p style={{fontSize:"16px", fontStyle: "italic", fontWeight: "normal"}}>
-                  {
-                    //this.props.rowProp.actionTitle
-                    currentCommentaryProps.problems.map((data, index)=>{
-                        const punctuation = index == currentCommentaryProps.problems.length - 1 ? "" : ",";
-                        const problemLable = problems.find((problem)=>problem.value == data);
-                        return ` ${problemLable ? problemLable.label.toLowerCase() : null}${punctuation}`
-                    })
-                  }
-              </p>
+                <p>{this.props.rowProp.detail}</p>
+                <p
+                    style={{
+                        fontSize: "16px",
+                        fontStyle: "italic",
+                        fontWeight: "normal",
+                    }}
+                >
+                    {//this.props.rowProp.actionTitle
+                    currentCommentaryProps.problems.map((data, index) => {
+                        const punctuation =
+                            index == currentCommentaryProps.problems.length - 1
+                                ? ""
+                                : ",";
+                        const problemLable = problems.find(
+                            problem => problem.value == data,
+                        );
+                        return ` ${
+                            problemLable
+                                ? problemLable.label.toLowerCase()
+                                : null
+                        }${punctuation}`;
+                    })}
+                </p>
             </div>
-          );
-    }
+        );
+    };
 
     getCommentary() {
         const { currentCommentaryProps } = this.state;
         const { problems, params } = this;
-        const paramsValue = Object.entries(currentCommentaryProps.params).map((pair, key)=>{
-            if(pair[1] !== 0) return ` ${pair[1]}${params[key].symbol}`; 
-        });
-        const isParamsSet = paramsValue.some((param) => !_.isNil(param));
+        const paramsValue = Object.entries(currentCommentaryProps.params).map(
+            (pair, key) => {
+                if (pair[1] !== 0) return ` ${pair[1]}${params[key].symbol}`;
+            },
+        );
+        const isParamsSet = paramsValue.some(param => !_.isNil(param));
         var currentCommentary = this.props.rowProp.detail;
 
-        if(currentCommentaryProps.positions.length || currentCommentaryProps.problems.length || isParamsSet) {
-            currentCommentary += ' -'
-            if(currentCommentaryProps.positions.length) {
-                currentCommentary += currentCommentaryProps.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) + ';';
+        if (
+            currentCommentaryProps.positions.length ||
+            currentCommentaryProps.problems.length ||
+            isParamsSet
+        ) {
+            currentCommentary += " -";
+            if (currentCommentaryProps.positions.length) {
+                currentCommentary +=
+                    currentCommentaryProps.positions.map(
+                        data =>
+                            ` ${this.props.intl
+                                .formatMessage({ id: data })
+                                .toLowerCase()}`,
+                    ) + ";";
             }
-            if(currentCommentaryProps.problems.length) {
-                currentCommentary += currentCommentaryProps.problems.map((data)=>{
-                    return ` ${problems.find((problem)=>problem.value == data).label.toLowerCase()}`;
-                }) + ';';
+            if (currentCommentaryProps.problems.length) {
+                currentCommentary +=
+                    currentCommentaryProps.problems.map(data => {
+                        return ` ${problems
+                            .find(problem => problem.value == data)
+                            .label.toLowerCase()}`;
+                    }) + ";";
             }
-            if(isParamsSet) {
-                currentCommentary += paramsValue.filter((param)=>!_.isNil(param)) + ';';
+            if (isParamsSet) {
+                currentCommentary +=
+                    paramsValue.filter(param => !_.isNil(param)) + ";";
             }
         }
         this.setState({
-            currentCommentary: currentCommentary
+            currentCommentary: currentCommentary,
         });
     }
 
     setCommentaryPosition(position) {
         const { currentCommentaryProps } = this.state;
-        const positionIndex = currentCommentaryProps.positions.indexOf(position);
-        if(positionIndex == -1) {
+        const positionIndex = currentCommentaryProps.positions.indexOf(
+            position,
+        );
+        if (positionIndex == -1) {
             currentCommentaryProps.positions.push(position);
-        }
-        else {
-            currentCommentaryProps.positions = currentCommentaryProps.positions.filter((value, index)=>index != positionIndex);
+        } else {
+            currentCommentaryProps.positions = currentCommentaryProps.positions.filter(
+                (value, index) => index != positionIndex,
+            );
         }
         this.getCommentary();
     }
@@ -919,11 +1033,12 @@ class CommentaryButton extends React.Component{
     setCommentaryProblems(value) {
         const { currentCommentaryProps } = this.state;
         const problemIndex = currentCommentaryProps.problems.indexOf(value);
-        if(problemIndex == -1) {
+        if (problemIndex == -1) {
             currentCommentaryProps.problems.push(value);
-        }
-        else {
-            currentCommentaryProps.problems = currentCommentaryProps.problems.filter((value, index)=>index != problemIndex);
+        } else {
+            currentCommentaryProps.problems = currentCommentaryProps.problems.filter(
+                (value, index) => index != problemIndex,
+            );
         }
         this.getCommentary();
     }
@@ -938,17 +1053,17 @@ class CommentaryButton extends React.Component{
         this._isMounted = true;
         const { currentCommentaryProps } = this.state;
         const { commentary, rowProp } = this.props;
-        if(!this.problems.length && this.props.rowProp.partId) {
-            await getPartProblems(this.props.rowProp.partId, (data)=>{
-                this.problems = data.map((elem)=>{
-                    return ({
+        if (!this.problems.length && this.props.rowProp.partId) {
+            await getPartProblems(this.props.rowProp.partId, data => {
+                this.problems = data.map(elem => {
+                    return {
                         label: elem.description,
                         value: elem.code,
-                    })
+                    };
                 });
                 //console.log(data);
             });
-            if(this._isMounted) {
+            if (this._isMounted) {
                 this.setState({
                     currentCommentaryProps: {
                         name: rowProp.detail,
@@ -958,9 +1073,9 @@ class CommentaryButton extends React.Component{
                             mm: commentary.mm || 0,
                             percent: commentary.percent || 0,
                             deg: commentary.deg || 0,
-                        }
+                        },
                     },
-                })
+                });
             }
             //await this.getPositions();
         }
@@ -972,12 +1087,17 @@ class CommentaryButton extends React.Component{
 
     render() {
         const { TextArea } = Input;
-        const { visible, loading, currentCommentaryProps, currentCommentary } = this.state;
+        const {
+            visible,
+            loading,
+            currentCommentaryProps,
+            currentCommentary,
+        } = this.state;
         const { disabled, commentary } = this.props;
         const { positions, problems, params } = this;
 
         return (
-            <div style={{width: '49%'}}>
+            <div style={{ width: "49%" }}>
                 {commentary.comment ? (
                     <Button
                         className={Styles.commentaryButton}
@@ -985,8 +1105,9 @@ class CommentaryButton extends React.Component{
                     >
                         <Icon
                             className={Styles.commentaryButtonIcon}
-                            style={{color: "rgba(0, 0, 0, 0.65)"}}
-                            type="form"/>
+                            style={{ color: "rgba(0, 0, 0, 0.65)" }}
+                            type="form"
+                        />
                     </Button>
                 ) : (
                     <Button
@@ -1002,94 +1123,153 @@ class CommentaryButton extends React.Component{
                     title={this.renderHeader()}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
-                    footer={disabled?(
-                        null
-                        ):([
-                            <Button key="back" onClick={this.handleCancel}>
-                                {<FormattedMessage id='cancel' />}
-                            </Button>,
-                            <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
-                                {<FormattedMessage id='save' />}
-                            </Button>,
-                        ])
+                    footer={
+                        disabled
+                            ? null
+                            : [
+                                  <Button
+                                      key="back"
+                                      onClick={this.handleCancel}
+                                  >
+                                      {<FormattedMessage id="cancel" />}
+                                  </Button>,
+                                  <Button
+                                      key="submit"
+                                      type="primary"
+                                      loading={loading}
+                                      onClick={this.handleOk}
+                                  >
+                                      {<FormattedMessage id="save" />}
+                                  </Button>,
+                              ]
                     }
                 >
                     <>
-                    <div className={Styles.commentaryVehicleSchemeWrap}>
-                        <p className={Styles.commentarySectionHeader}>
-                            <FormattedMessage id='commentary_modal.where'/>?
-                        </p>
-                        <div className={Styles.blockButtonsWrap}>
-                            {positions.map((position, key)=> {
-                                return (
-                                    <Button
-                                        key={key}
-                                        type={currentCommentaryProps.positions.findIndex((elem)=>position==elem) > -1 ? 'normal' : 'primary'}
-                                        className={Styles.commentaryBlockButton}
-                                        onClick={()=>{this.setCommentaryPosition(position)}}
-                                    >
-                                        <FormattedMessage id={position}/>
-                                    </Button>
-                                )
-                            })}
+                        <div className={Styles.commentaryVehicleSchemeWrap}>
+                            <p className={Styles.commentarySectionHeader}>
+                                <FormattedMessage id="commentary_modal.where" />
+                                ?
+                            </p>
+                            <div className={Styles.blockButtonsWrap}>
+                                {positions.map((position, key) => {
+                                    return (
+                                        <Button
+                                            key={key}
+                                            type={
+                                                currentCommentaryProps.positions.findIndex(
+                                                    elem => position == elem,
+                                                ) > -1
+                                                    ? "normal"
+                                                    : "primary"
+                                            }
+                                            className={
+                                                Styles.commentaryBlockButton
+                                            }
+                                            onClick={() => {
+                                                this.setCommentaryPosition(
+                                                    position,
+                                                );
+                                            }}
+                                        >
+                                            <FormattedMessage id={position} />
+                                        </Button>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
-                    <div className={Styles.commentaryVehicleSchemeWrap}>
-                        <p className={Styles.commentarySectionHeader}>
-                            <FormattedMessage id='commentary_modal.what'/>?
-                        </p>
-                        <div className={Styles.blockButtonsWrap}>
-                            {problems.map((problem, key) => {
-                                return (
-                                    <Button
-                                        key={key}
-                                        type={currentCommentaryProps.problems.findIndex((elem)=>problem.value==elem) > -1 ? 'normal' : 'primary'}
-                                        className={Styles.commentaryBlockButton}
-                                        onClick={()=>{this.setCommentaryProblems(problem.value)}}
-                                    >
-                                        <span>{problem.label}</span>
-                                    </Button>
-                                )
-                            })}
+                        <div className={Styles.commentaryVehicleSchemeWrap}>
+                            <p className={Styles.commentarySectionHeader}>
+                                <FormattedMessage id="commentary_modal.what" />?
+                            </p>
+                            <div className={Styles.blockButtonsWrap}>
+                                {problems.map((problem, key) => {
+                                    return (
+                                        <Button
+                                            key={key}
+                                            type={
+                                                currentCommentaryProps.problems.findIndex(
+                                                    elem =>
+                                                        problem.value == elem,
+                                                ) > -1
+                                                    ? "normal"
+                                                    : "primary"
+                                            }
+                                            className={
+                                                Styles.commentaryBlockButton
+                                            }
+                                            onClick={() => {
+                                                this.setCommentaryProblems(
+                                                    problem.value,
+                                                );
+                                            }}
+                                        >
+                                            <span>{problem.label}</span>
+                                        </Button>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
-                    <div  className={Styles.commentaryVehicleSchemeWrap}>
-                        <p className={Styles.commentarySectionHeader}>
-                            <FormattedMessage id='commentary_modal.parameters'/>
-                        </p>
-                        <div className={Styles.blockButtonsWrap}>
-                            {params.map((param, key) => {
-                                return (
-                                    <InputNumber
-                                        key={key}
-                                        className={Styles.commentaryBlockButton}
-                                        value={currentCommentaryProps.params[param.name]}
-                                        formatter={value => `${value} ${param.symbol}`}
-                                        parser={value => value.replace(` ${param.symbol}`, '')}
-                                        onChange={(value)=>{this.setCommetaryParams(param.name, value)}}
-                                    />
-                                )
-                            })}
+                        <div className={Styles.commentaryVehicleSchemeWrap}>
+                            <p className={Styles.commentarySectionHeader}>
+                                <FormattedMessage id="commentary_modal.parameters" />
+                            </p>
+                            <div className={Styles.blockButtonsWrap}>
+                                {params.map((param, key) => {
+                                    return (
+                                        <InputNumber
+                                            key={key}
+                                            className={
+                                                Styles.commentaryBlockButton
+                                            }
+                                            value={
+                                                currentCommentaryProps.params[
+                                                    param.name
+                                                ]
+                                            }
+                                            formatter={value =>
+                                                `${value} ${param.symbol}`
+                                            }
+                                            parser={value =>
+                                                value.replace(
+                                                    ` ${param.symbol}`,
+                                                    "",
+                                                )
+                                            }
+                                            onChange={value => {
+                                                this.setCommetaryParams(
+                                                    param.name,
+                                                    value,
+                                                );
+                                            }}
+                                        />
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <p className={Styles.commentarySectionHeader}>
-                            <FormattedMessage id='order_form_table.diagnostic.commentary' />
-                        </p>
-                        <TextArea
-                            disabled={disabled}
-                            value={currentCommentary}
-                            placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
-                            autoFocus
-                            onChange={()=>{
-                                this.setState({
-                                    currentCommentary: event.target.value,
-                                });
-                            }}
-                            style={{width: '100%', minHeight: '150px', resize:'none'}}
-                            ref={this.commentaryInput}
-                        />
-                    </div>
+                        <div>
+                            <p className={Styles.commentarySectionHeader}>
+                                <FormattedMessage id="order_form_table.diagnostic.commentary" />
+                            </p>
+                            <TextArea
+                                disabled={disabled}
+                                value={currentCommentary}
+                                placeholder={`${this.props.intl.formatMessage({
+                                    id: "comment",
+                                })}...`}
+                                autoFocus
+                                onChange={() => {
+                                    this.setState({
+                                        currentCommentary: event.target.value,
+                                    });
+                                }}
+                                style={{
+                                    width: "100%",
+                                    minHeight: "150px",
+                                    resize: "none",
+                                }}
+                                ref={this.commentaryInput}
+                            />
+                        </div>
                     </>
                 </Modal>
             </div>
@@ -1097,15 +1277,14 @@ class CommentaryButton extends React.Component{
     }
 }
 
-
-class PhotoButton extends React.Component{
+class PhotoButton extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             loading: false,
             visible: false,
             photo: props.photo,
-        }
+        };
     }
 
     showModal = () => {
@@ -1117,12 +1296,20 @@ class PhotoButton extends React.Component{
     handleOk = () => {
         this.setState({ loading: true });
         const { rowProp } = this.props;
-        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, rowProp.commentary, this.state.photo);
+        sendDiagnosticAnswer(
+            rowProp.orderId,
+            rowProp.diagnosticTemplateId,
+            rowProp.groupId,
+            rowProp.partId,
+            rowProp.status,
+            rowProp.commentary,
+            this.state.photo,
+        );
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
         }, 100);
     };
-    
+
     handleCancel = () => {
         this.setState({ visible: false });
     };
@@ -1142,38 +1329,49 @@ class PhotoButton extends React.Component{
               name: 'yyy.png',
               status: 'error',
             },*/
-          ];
+        ];
         const props = {
-            action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-            listType: 'picture',
+            action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+            listType: "picture",
             defaultFileList: [...fileList],
-          };
+        };
         const photo = this.state.photo;
         return (
             <div className={Styles.diagnistic_photo_button}>
-                {photo? (
-                    <Button onClick={this.showModal}><Icon type="file-image" /></Button>
+                {photo ? (
+                    <Button onClick={this.showModal}>
+                        <Icon type="file-image" />
+                    </Button>
                 ) : (
-                    <Button type="primary" onClick={this.showModal}><Icon type="camera" /></Button>
+                    <Button type="primary" onClick={this.showModal}>
+                        <Icon type="camera" />
+                    </Button>
                 )}
                 <Modal
                     visible={visible}
-                    title={<FormattedMessage id='order_form_table.diagnostic.photo' />}
+                    title={
+                        <FormattedMessage id="order_form_table.diagnostic.photo" />
+                    }
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                     footer={[
                         <Button key="back" onClick={this.handleCancel}>
-                            {<FormattedMessage id='cancel' />}
+                            {<FormattedMessage id="cancel" />}
                         </Button>,
-                        <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
-                            {<FormattedMessage id='add' />}
+                        <Button
+                            key="submit"
+                            type="primary"
+                            loading={loading}
+                            onClick={this.handleOk}
+                        >
+                            {<FormattedMessage id="add" />}
                         </Button>,
                     ]}
-                    >
+                >
                     <Upload {...props}>
                         <Button>
                             <Icon type="upload" />
-                            <FormattedMessage id='upload' />
+                            <FormattedMessage id="upload" />
                         </Button>
                     </Upload>
                 </Modal>

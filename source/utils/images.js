@@ -45,6 +45,9 @@ import stockIcon from 'theme/images/icons/stock.svg';
 import wrenchIcon from 'theme/images/icons/wrench.svg';
 import pistonIcon from 'theme/images/icons/piston.svg';
 import deliveryTruckIcon from 'theme/images/icons/delivery-truck.svg';
+import oilIcon from 'theme/images/icons/oil.svg';
+import gridIcon from 'theme/images/icons/grid.svg';
+import listIcon from 'theme/images/icons/list.svg';
 
 export default {
     // Exceptions
@@ -93,4 +96,7 @@ export default {
     wrenchIcon,
     pistonIcon,
     deliveryTruckIcon,
+    oilIcon,
+    gridIcon,
+    listIcon,
 };

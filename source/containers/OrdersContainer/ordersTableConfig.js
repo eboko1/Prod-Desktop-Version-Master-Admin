@@ -184,7 +184,7 @@ export function columnsConfig(
     };
 
     const sumCol = {
-        title:     <FormattedMessage id='orders.sum' />,
+        title:     <FormattedMessage id='orders.sum_without_VAT' /> ,
         dataIndex: 'totalSum',
         key:       'totalSum',
         sorter:    true,
@@ -195,6 +195,7 @@ export function columnsConfig(
                 // TODO
                 currency={ formatMessage({ id: 'currency' }) }
                 nullText='0'
+                mask='0,0.00'
             >
                 { order.servicesTotalSum + order.detailsTotalSum }
             </Numeral>

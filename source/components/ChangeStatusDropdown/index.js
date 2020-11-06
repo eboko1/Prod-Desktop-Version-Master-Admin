@@ -21,6 +21,7 @@ class ChangeStatusDropdown extends React.Component {
             modals,
             isMobile,
             user,
+            checkReserved,
         } = this.props;
 
         const getMenuItems = () => {
@@ -63,19 +64,31 @@ class ChangeStatusDropdown extends React.Component {
                 name:   'transfer_success',
                 status: 'success',
                 icon:   'check',
-                action: () => setModal(modals.TO_SUCCESS),
+                action: () => {
+                    checkReserved(()=>setModal(modals.TO_SUCCESS));
+                },
             };
 
-            const statuses = [ changeToReserve, changeToRequired, changeToNotComplete, changeToApprove, changeToProgress, changeToSuccess ];
+            const statuses = [
+                changeToReserve,
+                changeToRequired,
+                changeToNotComplete,
+                changeToApprove,
+                changeToProgress,
+                changeToSuccess,
+            ];
             const appointments = [ 'required', 'not_complete', 'reserve' ];
             const approves = [ 'approve' ];
-            const statusesChain = [[ 'call', 'invite' ], appointments, approves, 'progress', 'success' ];
+            const statusesChain = [
+                [ 'call', 'invite' ],
+                appointments,
+                approves,
+                'progress',
+                'success',
+            ];
 
-            const statusIndex = _.findIndex(
-                statusesChain,
-                elem =>
-                    _.isArray(elem) ? elem.includes(status) : elem === status,
-            );
+            const statusIndex = _.findIndex(statusesChain, elem =>
+                _.isArray(elem) ? elem.includes(status) : elem === status);
 
             const suggestStatus = ~statusIndex
                 ? _.flatten(statusesChain.slice(statusIndex + 1))

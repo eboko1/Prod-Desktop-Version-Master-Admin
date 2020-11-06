@@ -356,9 +356,7 @@ export default class OrderFormBody extends Component {
                             }
                             formItem
                             hasFeedback
-                            className={`${Styles.clientCol} ${
-                                Styles.comboFieldSelect
-                            }`}
+                            className={`${Styles.clientCol} ${Styles.comboFieldSelect}`}
                             colon={false}
                             rules={this.requiredFieldRules}
                             getFieldDecorator={getFieldDecorator}
@@ -369,35 +367,37 @@ export default class OrderFormBody extends Component {
                     </div>
                     {hasClient && (
                         <div className={Styles.iconsCol}>
-                            {
-                                createOrder ? 
+                            {createOrder ? (
                                 <Popconfirm
-                                    title={<FormattedMessage id='save_order_changes'/>}
-                                    onConfirm={()=>{
-                                        createOrder(createStatus, `${book.client}/${selectedClient.clientId}`)
+                                    title={
+                                        <FormattedMessage id="save_order_changes" />
+                                    }
+                                    onConfirm={() => {
+                                        createOrder(
+                                            createStatus,
+                                            `${book.client}/${selectedClient.clientId}`,
+                                        );
                                     }}
                                 >
                                     <Link
                                         to={`${book.client}/${selectedClient.clientId}`}
                                     >
-                                        
                                         <Icon
                                             type="edit"
                                             className={Styles.editIcon}
                                         />
                                     </Link>
                                 </Popconfirm>
-                                :
+                            ) : (
                                 <Link
                                     to={`${book.client}/${selectedClient.clientId}`}
                                 >
-                                    
                                     <Icon
                                         type="edit"
                                         className={Styles.editIcon}
                                     />
                                 </Link>
-                            }
+                            )}
                             <CopyToClipboard text={hasClient}>
                                 <Icon
                                     type="copy"
@@ -527,39 +527,39 @@ export default class OrderFormBody extends Component {
                     </div>
                     {selectedVehicle && (
                         <div className={Styles.iconsCol}>
-                            {
-                                createOrder ? 
+                            {createOrder ? (
                                 <Popconfirm
-                                    title={<FormattedMessage id='save_order_changes'/>}
-                                    onConfirm={()=>{
-                                        createOrder(createStatus, `${book.client}/${selectedClient.clientId}`)
+                                    title={
+                                        <FormattedMessage id="save_order_changes" />
+                                    }
+                                    onConfirm={() => {
+                                        createOrder(
+                                            createStatus,
+                                            `${book.client}/${selectedClient.clientId}`,
+                                        );
                                     }}
                                 >
                                     <Link
                                         to={`${book.client}/${selectedClient.clientId}`}
                                     >
-                                        
                                         <Icon
                                             type="edit"
                                             className={Styles.editIcon}
                                         />
                                     </Link>
                                 </Popconfirm>
-                                :
+                            ) : (
                                 <Link
                                     to={`${book.client}/${selectedClient.clientId}`}
                                 >
-                                    
                                     <Icon
                                         type="edit"
                                         className={Styles.editIcon}
                                     />
                                 </Link>
-                            }
+                            )}
                             <CopyToClipboard
-                                text={`${selectedVehicle.make} ${
-                                    selectedVehicle.model
-                                }`}
+                                text={`${selectedVehicle.make} ${selectedVehicle.model}`}
                             >
                                 <Icon
                                     type="copy"
@@ -623,7 +623,7 @@ export default class OrderFormBody extends Component {
                     placeholder={this._getLocalization(
                         "add_order_form.client_comments",
                     )}
-                    autosize={this._recommendationAutoSize}
+                    autoSize={this._recommendationAutoSize}
                 />
                 {this.state.recommendationStyles.prevRecommendation && (
                     <DecoratedTextArea
@@ -645,7 +645,7 @@ export default class OrderFormBody extends Component {
                         placeholder={this._getLocalization(
                             "add_order_form.client_comments",
                         )}
-                        autosize={this._prevRecommendationAutoSize}
+                        autoSize={this._prevRecommendationAutoSize}
                     />
                 )}
             </div>

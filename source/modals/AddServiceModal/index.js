@@ -89,7 +89,7 @@ class AddServiceModal extends React.Component{
                             style={{maxWidth: 180, minWidth: 100}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.laborsTreeData}
+                            treeData={this.props.laborsTreeData}
                             filterTreeNode={(input, node) => {
                                 return (
                                     node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -136,7 +136,7 @@ class AddServiceModal extends React.Component{
                                 this.state.mainTableSource[0].laborId = value;
                                 this.state.mainTableSource[0].serviceName = option.props.children;
                                 //this.state.mainTableSource[0].masterLaborId = option.props.master_id;
-                                //this.state.mainTableSource[0].storeGroupId = option.props.product_id;
+                                this.state.mainTableSource[0].tmpStoreGroupId = option.props.product_id;
                                 this.state.mainTableSource[0].count = count;
                                 this.state.mainTableSource[0].price = price;
                                 this.state.mainTableSource[0].sum = price * count;
@@ -257,6 +257,7 @@ class AddServiceModal extends React.Component{
                                 {
                                     comment: undefined,
                                     positions: [],
+                                    problems: [],
                                 }
                             }
                             detail={detail}
@@ -293,7 +294,16 @@ class AddServiceModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.price" />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.price' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'price',
                 dataIndex: 'price',
                 width:     '3%',
@@ -359,7 +369,7 @@ class AddServiceModal extends React.Component{
                         <LaborsNormHourModal
                             user={this.props.user}
                             tecdocId={this.props.tecdocId}
-                            storeGroupId={elem.storeGroupId}
+                            storeGroupId={elem.tmpStoreGroupId || elem.storeGroupId}
                             onSelect={this.setHours}
                             hours={data}
                         />
@@ -367,7 +377,16 @@ class AddServiceModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.sum" />,
+                title:  <div>   
+                            <FormattedMessage id='order_form_table.sum' />
+                            <p style={{
+                                color: 'var(--text2)',
+                                fontSize: 12,
+                                fontWeight: 400,
+                            }}>
+                                <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                            </p>
+                        </div>,
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
@@ -458,10 +477,11 @@ class AddServiceModal extends React.Component{
         this.props.hideModal();
     };
 
-    setComment(comment, positions) {
+    setComment(comment, positions, problems) {
         this.state.mainTableSource[0].comment = {
             comment: comment,
             positions: positions,
+            problems: problems,
         };
         this.state.mainTableSource[0].serviceName = comment || this.state.mainTableSource[0].serviceName;
         this.setState({
@@ -504,87 +524,11 @@ class AddServiceModal extends React.Component{
     }
 
     fetchData() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/labors`;
-        url += params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            data.labors.map((elem, index)=>{
-                elem.key = index;
-                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
-            })
-            that.labors = data.labors;
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        params = `/labors/master?makeTree=true`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.masterLabors = data.masterLabors;
-            that.buildLaborsTree();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        params = `/store_groups`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.storeGroups = data;
-            that.buildStoreGroupsTree();
-            that.getOptions();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
+        this.masterLabors = this.props.masterLabors;
+        this.labors = this.props.labors;
+        this.storeGroups = this.props.details;
+        this.buildStoreGroupsTree();
+        this.getOptions();
     }
 
     buildStoreGroupsTree() {
@@ -635,45 +579,6 @@ class AddServiceModal extends React.Component{
             }
         }
         this.storeGroupsTreeData = treeData;
-    }
-
-    buildLaborsTree() {
-        var treeData = [];
-        for(let i = 0; i < this.masterLabors.length; i++) {
-            const parentGroup = this.masterLabors[i];
-            treeData.push({
-                title: `${parentGroup.defaultMasterLaborName} (#${parentGroup.masterLaborId})`,
-                name: parentGroup.defaultMasterLaborName,
-                value: parentGroup.masterLaborId,
-                className: Styles.groupTreeOption,
-                key: `${i}`,
-                selectable: false,
-                children: [],
-            })
-            for(let j = 0; j < parentGroup.childGroups.length; j++) {
-                const childGroup = parentGroup.childGroups[j];
-                treeData[i].children.push({
-                    title: `${childGroup.defaultMasterLaborName} (#${childGroup.masterLaborId})`,
-                    name: childGroup.defaultMasterLaborName,
-                    value: childGroup.masterLaborId,
-                    className: Styles.groupTreeOption,
-                    key: `${i}-${j}`,
-                    selectable: false,
-                    children: [],
-                })
-                for(let k = 0; k < childGroup.childGroups.length; k++) {
-                    const lastNode = childGroup.childGroups[k];
-                    treeData[i].children[j].children.push({
-                        title: `${lastNode.defaultMasterLaborName} (#${lastNode.masterLaborId})`,
-                        name: lastNode.defaultMasterLaborName,
-                        value: lastNode.masterLaborId,
-                        className: Styles.groupTreeOption,
-                        key: `${i}-${j}-${k}`,
-                    })
-                }
-            }
-        }
-        this.laborsTreeData = treeData;
     }
 
     getOptions() {
@@ -730,7 +635,7 @@ class AddServiceModal extends React.Component{
                 >
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
-                            <div style={{display: 'block'}}>Работа</div>
+                            <div style={{display: 'block'}}><FormattedMessage id='services_table.labor'/></div>
                         </div>
                         <Table
                             dataSource={this.state.mainTableSource}
@@ -739,7 +644,7 @@ class AddServiceModal extends React.Component{
                         />
                     </div>
                     <div style={{marginTop: 15}}>
-                        Сопутствующие: детали
+                        <FormattedMessage id="add_order_form.related"/>: <FormattedMessage id="add_order_form.details"/>
                         <Checkbox
                             style={{marginLeft: 5}}
                             disabled
@@ -768,6 +673,7 @@ class CommentaryButton extends React.Component{
             currentCommentaryProps: {
                 name: props.detail,
                 positions : [],
+                problems: [],
             },
             currentCommentary: undefined,
         }
@@ -807,7 +713,7 @@ class CommentaryButton extends React.Component{
         this.setState({
             loading: true,
         });
-        this.props.setComment(currentCommentary, currentCommentaryProps.positions);
+        this.props.setComment(currentCommentary, currentCommentaryProps.positions, currentCommentaryProps.problems);
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
         }, 500);
@@ -819,7 +725,8 @@ class CommentaryButton extends React.Component{
             currentCommentary: this.props.detail, 
             currentCommentaryProps: {
                 name: this.props.detail,
-                positions : [],
+                positions: [],
+                problems: [],
             },
         });
     };
@@ -868,6 +775,7 @@ class CommentaryButton extends React.Component{
                 currentCommentaryProps: {
                     name: detail,
                     positions: commentary.positions || [],
+                    problems: commentary.problems || [],
                 }
             })
         }

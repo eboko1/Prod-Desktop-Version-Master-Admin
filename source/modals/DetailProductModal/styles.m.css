@@ -57,3 +57,191 @@
     width: 30%;
     margin-bottom: 5px;
 }
+
+/*VIN Code Modal Styles*/
+.vinModal {
+    display: flex;
+    position: relative;
+}
+
+.categoryTitle {
+    font-size: 20px;
+    font-weight: 500;
+    padding: 6px 8px;
+    background: var(--lightGray);
+    text-transform: uppercase;
+}
+
+.categoryList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.allCategoriesList {
+    overflow-y: scroll;
+    width: 30%;
+    max-height: 610px;
+    user-select: none;
+    border: 1px solid black;
+}
+
+.previewBLock {
+    width: 70%;
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 610px;
+    overflow-y: scroll;
+    justify-content: space-between;
+    padding: 5px 10px;
+    border: 1px solid #000;
+}
+
+.emptyItem {
+    width: 19%;
+    margin-bottom: 2%;
+}
+
+.categoryItem {
+    width: 19%;
+    margin-bottom: 2%;
+    box-shadow: 0 0 1px 0px black;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    &:hover {
+        /*border: 1px solid var(--text2);*/
+        box-shadow: 0 0 2px 0px var(--primary);
+        color: var(--primary);
+    }
+}
+
+.categoryListItem {
+    width: 100%;
+    box-shadow: 0 0 1px 0px black;
+    padding: 0 0 0 4px; 
+    &:hover {
+        box-shadow: 0 0 2px 0px var(--primary);
+        color: var(--primary);
+    }
+}
+
+.categoryName {
+    font-size: 18;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.categoryListName {
+    font-size: 18;
+    text-transform: uppercase;
+}
+
+.imgWrap {
+    width: 60%;
+    max-height: 480px;
+    border-left: 1px solid rgb(232 232 232);
+    border-bottom: 1px solid rgb(232 232 232); 
+    overflow: scroll;
+    &:hover {
+        
+    }
+}
+
+.zoomBlock {
+    position: relative;
+}
+
+.zoomBlockItem {
+    position: absolute;
+    cursor: pointer;
+    font-Size: 18px;
+    font-Weight: 500px;
+    border: solid var(--text2) 1px;
+    text-align: center;
+   
+    z-index: 100;
+
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Likely future */   
+}
+
+.imageName {
+    position: absolute;
+    z-index: 100;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    font-size: 16px;
+    text-transform: uppercase;
+    width: 65%;
+    text-align: center;
+}
+
+.zoomActionBlock {
+    background: white;
+    color: black;
+    display: flex;
+    margin: 0 0 0 1px;
+    align-items: center;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 999;
+    padding: 5px 10px;
+    border-bottom: 1px solid #e8e8e8;
+    border-right: 1px solid #e8e8e8;
+}
+
+.zoomBlock img {
+
+}
+
+.listWrap {
+    width: 40%;
+    max-height: 480px;
+    overflow: scroll;
+    border-bottom: 1px solid rgb(232 232 232);
+    border-right: 1px solid rgb(232 232 232);
+
+    &::-webkit-scrollbar { width: 0; }
+}
+
+.infoActionButtonCol {
+    pointer-events: none;
+}
+
+.listTableRow > td{
+    vertical-align: middle;
+}
+
+.hoveredItem {
+    border: solid var(--db_reserve) 3px;
+    z-index: 200;
+}
+
+.tableRowHovered {
+    background: var(--db_reserve);
+}
+
+.checkedItem{
+    border: solid var(--primary) 5px;
+}
+
+.checkedRow {
+    background: var(--primary);
+    z-index: 150;
+}
+
+.hoveredItem.checkedItem {
+
+}
+
+.tableRowHovered.checkedRow > td {
+    background: var(--db_reserve) !important;
+}
+/*VIN Code Modal Styles End*/

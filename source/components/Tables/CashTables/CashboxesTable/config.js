@@ -69,6 +69,6 @@ export function columnsConfig(props) {
         nameCol,
         typeCol,
         infoCol,
-        deleteCol, 
+        deleteCol,
     ];
 }

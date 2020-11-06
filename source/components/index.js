@@ -13,6 +13,7 @@ import SettingSalaryTable from './SettingSalaryTable';
 import EmployeesTable from './EmployeesTable';
 import ClientFeedbackTab from './ClientFeedbackTab';
 import ClientOrdersTab from './ClientOrdersTab';
+import ClientMRDsTab from './ClientMRDsTab';
 import FormattedDatetime from './FormattedDatetime';
 import Rating from './Rating';
 import { Like } from './Like';
@@ -42,6 +43,8 @@ import { ExcelReader } from './ExcelReader';
 import { StorageBalanceTotals } from './StorageBalanceTotals';
 import { StorageMovementTotals } from './StorageMovementTotals';
 import { StorageFilters } from './StorageFilters';
+import StorageDocumentsFilters, { StorageDateFilter, WarehouseSelect } from './StorageDocumentsFilters';
+import AvailabilityIndicator from './AvailabilityIndicator';
 
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
@@ -64,6 +67,7 @@ export {
     ArrayBreakScheduleInput,
     ClientFeedbackTab,
     ClientOrdersTab,
+    ClientMRDsTab,
     FormattedDatetime,
     Rating,
     Like,
@@ -93,4 +97,8 @@ export {
     StorageBalanceTotals,
     StorageMovementTotals,
     StorageFilters,
+    StorageDocumentsFilters,
+    AvailabilityIndicator,
+    StorageDateFilter,
+    WarehouseSelect,
 };

@@ -215,9 +215,13 @@ export default class OrderFormHeader extends Component {
 
     _getBeginDatetimeConfig() {
         const { schedule } = this.props;
-        const { disabledDate, beginTime } = getDateTimeConfig(void 0, schedule);
+        const { disabledDate } = getDateTimeConfig(void 0, schedule);
+        const { beginTime } = getDateTimeConfig(void 0, schedule) || moment().add( (30 - (moment().minute() % 30)) , "minutes").format('YYYY-MM-DD HH:00');
 
-        return { disabledDate, beginTime };
+        return {
+            disabledDate,
+            beginTime,
+        };
     }
 
     _getDeliveryDatetimeConfig() {
@@ -314,7 +318,7 @@ export default class OrderFormHeader extends Component {
 
     _getEmployeesOptions = () => {
         return _.get(this.props, "employees", []).map(employee => {
-            if(!employee.disabled) {
+            if (!employee.disabled) {
                 return (
                     <Option
                         value={employee.id}
@@ -323,7 +327,7 @@ export default class OrderFormHeader extends Component {
                     >
                         {`${employee.name} ${employee.surname}`}
                     </Option>
-                )
+                );
             }
         });
     };
@@ -402,15 +406,21 @@ export default class OrderFormHeader extends Component {
                     label={
                         <>
                             <span>
-                                {`${this._getLocalization("time")} (${zeroStationLoadDuration}${this._getLocalization("add_order_form.hours_shortcut")})`}
+                                {`${this._getLocalization(
+                                    "time",
+                                )} (${zeroStationLoadDuration}${this._getLocalization(
+                                    "add_order_form.hours_shortcut",
+                                )})`}
                             </span>
-                            <span style={{marginLeft: 10}}>
+                            <span style={{ marginLeft: 10 }}>
                                 <Icon
                                     className={Styles.updateDurationIcon}
-                                    type='redo'
-                                    title='Пересчитать длительность'
+                                    type="redo"
+                                    title="Пересчитать длительность"
                                     onClick={() => this.props.updateDuration()}
-                                    title={this.props.intl.formatMessage({id: "duration.recalculate"})}
+                                    title={this.props.intl.formatMessage({
+                                        id: "duration.recalculate",
+                                    })}
                                 />
                             </span>
                         </>
@@ -633,7 +643,7 @@ export default class OrderFormHeader extends Component {
             authentificatedManager,
             fields,
             errors,
-            location
+            location,
         } = this.props;
 
         const isOwnBusiness =
@@ -680,7 +690,10 @@ export default class OrderFormHeader extends Component {
                     className={Styles.durationPanelItem}
                     disabled={this.bodyUpdateIsForbidden()}
                     getFieldDecorator={getFieldDecorator}
-                    initialValue={_.get(fetchedOrder, "order.employeeId") || (location.state ? location.state.employeeId : undefined)}
+                    initialValue={
+                        _.get(fetchedOrder, "order.employeeId") ||
+                        (location.state ? location.state.employeeId : undefined)
+                    }
                     placeholder={this._getLocalization(
                         "order_form_table.select_master",
                     )}
@@ -718,7 +731,8 @@ export default class OrderFormHeader extends Component {
     _renderTotalBlock = () => {
         const { fetchedOrder, fields } = this.props;
         const { getFieldDecorator } = this.props.form;
-        const { errors, totalPrice, cashSum, remainPrice } = this.props;
+        const { errors, totalPrice, cashSum, remainPrice, totalSumWithTax, isTaxPayer } = this.props;
+        const mask = "0,0.00";
 
         return (
             <div className={Styles.headerCol}>
@@ -727,6 +741,7 @@ export default class OrderFormHeader extends Component {
                         <span className={Styles.sumWrapper}>
                             <FormattedMessage id="sum" />
                             <Numeral
+                                mask={mask}
                                 className={Styles.sumNumeral}
                                 nullText="0"
                                 currency={this.props.intl.formatMessage({
@@ -736,9 +751,25 @@ export default class OrderFormHeader extends Component {
                                 {totalPrice}
                             </Numeral>
                         </span>
+                        {isTaxPayer &&
+                            <span className={Styles.sumWrapper}>
+                                <FormattedMessage id="with" /> <FormattedMessage id="VAT" />
+                                <Numeral
+                                    mask={mask}
+                                    className={Styles.sumNumeral}
+                                    nullText="0"
+                                    currency={this.props.intl.formatMessage({
+                                        id: "currency",
+                                    })}
+                                >
+                                    {totalSumWithTax}
+                                </Numeral>
+                            </span>
+                        }
                         <span className={Styles.sumWrapper}>
                             <FormattedMessage id="paid" />
                             <Numeral
+                                mask={mask}
                                 className={Styles.sumNumeral}
                                 nullText="0"
                                 currency={this.props.intl.formatMessage({
@@ -760,6 +791,7 @@ export default class OrderFormHeader extends Component {
                     >
                         <FormattedMessage id="remain" />
                         <Numeral
+                            mask={mask}
                             className={Styles.totalSum}
                             currency={this.props.intl.formatMessage({
                                 id: "currency",

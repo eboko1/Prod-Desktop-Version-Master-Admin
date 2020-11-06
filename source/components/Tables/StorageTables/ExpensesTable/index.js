@@ -74,8 +74,5 @@ const mapDispatchToProps = {
 };
 
 export const ExpensesTable = injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(ExpensesTableComponent),
+    connect(mapStateToProps, mapDispatchToProps)(ExpensesTableComponent),
 );

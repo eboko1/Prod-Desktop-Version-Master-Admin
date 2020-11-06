@@ -34,11 +34,11 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
                 >
                     { client.name } { client.surname }
                 </Link>
-            ) : 
+            ) : (
                 <>
-                    {client.name} {client.surname}
+                    { client.name } { client.surname }
                 </>
-        ,
+            ),
     };
 
     const phone = {
@@ -52,6 +52,40 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
             </a>
         ),
     };
+
+    const currentDebtWithTaxes = {
+        title:     <FormattedMessage id='clients-table.debt' />,
+        width:     100,
+        dataIndex: 'totalDebtWithTaxes',
+        key:       'totalDebtWithTaxes',
+        render:    (totalDebtWithTaxes, client) => {
+            
+            const debt = totalDebtWithTaxes ? totalDebtWithTaxes : 0;
+
+            return !isForbidden(user, permissions.GET_CLIENTS_BASIC_INFORMATION) ? (
+                
+                <Link
+                    className={ Styles.client }
+                    to={{
+                        pathname: `${book.client}/${client.clientId}`,
+                        state:{
+                            specificTab: 'clientDebt'
+                        },
+                    }}
+                >
+                    <Numeral className={ Styles.orders }>
+                        {debt}
+                    </Numeral>
+                </Link>
+            ) : 
+                <>
+                    <Numeral className={ Styles.orders }>
+                        {debt}
+                    </Numeral>
+                </>
+        },
+    };
+
 
     const vehicles = {
         title:     <FormattedMessage id='clients-table.vehicles' />,
@@ -167,5 +201,14 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
         ),
     };
 
-    return [ client, phone, vehicles, lastOrder, orders, invitation, actions ];
+    return [
+        client,
+        phone,
+        currentDebtWithTaxes,
+        vehicles,
+        lastOrder,
+        orders,
+        invitation,
+        actions,
+    ];
 }

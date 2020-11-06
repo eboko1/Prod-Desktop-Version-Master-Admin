@@ -1,8 +1,8 @@
 // vendor
-import React, { Component } from 'react';
-import { injectIntl } from 'react-intl';
-import { connect } from 'react-redux';
-import { Tabs } from 'antd';
+import React, { Component } from "react";
+import { injectIntl } from "react-intl";
+import { connect } from "react-redux";
+import { Tabs } from "antd";
 
 // proj
 import {
@@ -17,22 +17,22 @@ import {
     selectCallsData,
     selectCallsFilter,
     selectCallsStats,
-} from 'core/calls/duck';
+} from "core/calls/duck";
 
-import { Catcher } from 'commons';
+import { Catcher } from "commons";
 
-import { CallsTable, CallsStatistics } from 'components';
+import { CallsTable, CallsStatistics } from "components";
 
 // own
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => {
     return {
-        calls:              selectCallsData(state),
-        stats:              selectCallsStats(state),
-        pieStats:           [ ...selectCallsPieData(state) ],
-        chart:              [ ...selectCallsChartData(state) ],
-        filter:             { ...selectCallsFilter(state) },
+        calls: selectCallsData(state),
+        stats: selectCallsStats(state),
+        pieStats: [...selectCallsPieData(state)],
+        chart: [...selectCallsChartData(state)],
+        filter: { ...selectCallsFilter(state) },
         callsChartFetching: state.ui.callsChartFetching,
     };
 };
@@ -47,18 +47,15 @@ const mapDispatchToProps = {
 };
 
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class CallsContainer extends Component {
     _handleTab = tab => {
-        if (tab === 'callsTable') {
-            this.props.setCallsTab('callsTable');
+        if (tab === "callsTable") {
+            this.props.setCallsTab("callsTable");
             this.props.fetchCalls();
         }
-        if (tab === 'callsChart') {
-            this.props.setCallsTab('callsChart');
+        if (tab === "callsChart") {
+            this.props.setCallsTab("callsChart");
             this.props.fetchCallsChart();
         }
     };
@@ -83,36 +80,36 @@ export default class CallsContainer extends Component {
 
         return (
             <Catcher>
-                <Tabs type='cards' onTabClick={ tab => this._handleTab(tab) }>
+                <Tabs type="cards" onTabClick={tab => this._handleTab(tab)}>
                     <TabPane
-                        tab={ formatMessage({
-                            id: 'calls-page.statistics',
-                        }) }
-                        key='callsChart'
+                        tab={formatMessage({
+                            id: "calls-page.statistics",
+                        })}
+                        key="callsChart"
                     >
                         <CallsStatistics
-                            stats={ stats }
-                            chart={ chart }
-                            pieStats={ pieStats }
-                            setCallsChartMode={ setCallsChartMode }
-                            fetchCallsChart={ fetchCallsChart }
-                            callsChartFetching={ callsChartFetching }
+                            stats={stats}
+                            chart={chart}
+                            pieStats={pieStats}
+                            setCallsChartMode={setCallsChartMode}
+                            fetchCallsChart={fetchCallsChart}
+                            callsChartFetching={callsChartFetching}
                         />
                     </TabPane>
                     <TabPane
-                        tab={ formatMessage({
-                            id: 'calls-page.calls',
-                        }) }
-                        key='callsTable'
+                        tab={formatMessage({
+                            id: "calls-page.calls",
+                        })}
+                        key="callsTable"
                     >
                         <CallsTable
-                            calls={ calls }
-                            stats={ stats }
-                            filter={ filter }
-                            fetchCalls={ fetchCalls }
-                            setCallsTableMode={ setCallsTableMode }
-                            setCallsPageFilter={ setCallsPageFilter }
-                            callsFetching={ callsFetching }
+                            calls={calls}
+                            stats={stats}
+                            filter={filter}
+                            fetchCalls={fetchCalls}
+                            setCallsTableMode={setCallsTableMode}
+                            setCallsPageFilter={setCallsPageFilter}
+                            callsFetching={callsFetching}
                         />
                     </TabPane>
                 </Tabs>

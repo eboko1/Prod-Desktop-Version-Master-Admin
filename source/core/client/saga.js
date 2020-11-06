@@ -107,5 +107,10 @@ export function* deleteClientVehicleSaga() {
 }
 
 export function* saga() {
-    yield all([ call(fetchClientSaga), call(createClientVehicleSaga), call(updateClientVehicleSaga), call(deleteClientVehicleSaga) ]);
+    yield all([
+        call(fetchClientSaga),
+        call(createClientVehicleSaga),
+        call(updateClientVehicleSaga),
+        call(deleteClientVehicleSaga),
+    ]);
 }

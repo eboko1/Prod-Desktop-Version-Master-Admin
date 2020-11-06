@@ -1,22 +1,22 @@
 // vendor
-import React, { Component } from 'react';
-import { Button, Form } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import React, { Component } from "react";
+import { Button, Form } from "antd";
+import { FormattedMessage, injectIntl } from "react-intl";
 
 // proj
-import { AbstractClientForm } from 'forms';
-import { withReduxForm2 } from 'utils';
+import { AbstractClientForm } from "forms";
+import { withReduxForm2 } from "utils";
 import {
     onChangeClientForm,
     updateClient,
-} from 'core/forms/editClientForm/duck';
-import { permissions, isForbidden } from 'utils';
+} from "core/forms/editClientForm/duck";
+import { permissions, isForbidden } from "utils";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 
 @withReduxForm2({
-    name:    'editClientForm',
+    name: "editClientForm",
     actions: {
         change: onChangeClientForm,
         updateClient,
@@ -37,30 +37,31 @@ export class EditClientForm extends Component {
 
         return (
             <>
-                <AbstractClientForm { ...this.props } />
-                <Form className={ Styles.editClientForm }>
+                <AbstractClientForm {...this.props} />
+                <Form className={Styles.editClientForm}>
                     <Button
-                        disabled={ isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) }
-                        type='primary'
-                        className={ Styles.editClientButton }
-                        onClick={ () => {
+                        disabled={isForbidden(user, CREATE_EDIT_DELETE_CLIENTS)}
+                        type="primary"
+                        className={Styles.editClientButton}
+                        onClick={() => {
                             this.props.form.validateFields((err, values) => {
                                 if (!err) {
                                     const clientFormData = values;
 
                                     const clientEntity = {
                                         birthday: clientFormData.birthday,
-                                        emails:   clientFormData.emails
+                                        emails: clientFormData.emails
                                             ? clientFormData.emails.filter(
-                                                Boolean,
-                                            )
+                                                  Boolean,
+                                              )
                                             : clientFormData.emails,
                                         middlename: clientFormData.patronymic,
-                                        name:       clientFormData.name,
-                                        surname:    clientFormData.surname,
-                                        sex:        clientFormData.sex,
-                                        status:     clientFormData.status,
-                                        phones:     clientFormData.phones
+                                        name: clientFormData.name,
+                                        surname: clientFormData.surname,
+                                        sex: clientFormData.sex,
+                                        status: clientFormData.status,
+                                        paymentRespite: clientFormData.paymentRespite,
+                                        phones: clientFormData.phones
                                             .filter(
                                                 phone =>
                                                     phone &&
@@ -79,9 +80,9 @@ export class EditClientForm extends Component {
                                     );
                                 }
                             });
-                        } }
+                        }}
                     >
-                        <FormattedMessage id='edit' />
+                        <FormattedMessage id="edit" />
                     </Button>
                 </Form>
             </>

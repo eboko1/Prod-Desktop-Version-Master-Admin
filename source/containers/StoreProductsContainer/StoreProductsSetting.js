@@ -47,7 +47,7 @@ export const StoreProductsSetting = connect(mapStateToProps)(
 
         return (
             <>
-                {/*<Icon
+                { /*<Icon
                     type={ 'plus' }
                     onClick={ () =>
                         setModal(MODALS.STORE_GROUP, {
@@ -59,7 +59,7 @@ export const StoreProductsSetting = connect(mapStateToProps)(
                         fontSize: '16px',
                         color:    'var(--primary)',
                     } }
-                />*/}
+                />*/ }
                 { !isForbidden(user, permissions.ACCESS_STORE_GROUPS)
                     ? renderEditing()
                     : !storeGroup.systemWide

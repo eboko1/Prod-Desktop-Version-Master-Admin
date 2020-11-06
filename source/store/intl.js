@@ -29,6 +29,7 @@ import DashboardPage from 'pages/DashboardPage/messages';
 import RolePage from 'pages/RolePage/messages';
 import PackagePage from 'pages/PackagePage/messages';
 import ClientsPage from 'pages/ClientsPage/messages';
+import CashClientsDebtsPage from 'pages/CashClientsDebtsPage/messages';
 import EmployeesPage from 'pages/EmployeesPage/messages';
 import AddEmployeePage from 'pages/AddEmployeePage/messages';
 import ChartPage from 'pages/ChartPage/messages';
@@ -40,6 +41,7 @@ import ManagerRolePage from 'pages/ManagerRolePage/messages';
 import DiagnosticPatternsPage from 'pages/DiagnosticPatternsPage/messages';
 import AgreementPage from 'pages/AgreementPage/messages'
 import AvailabilitiesPage from 'pages/AvailabilitiesPage/messages'
+import RequisiteSettingPage from 'pages/RequisiteSettingPage/messages'
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
@@ -55,6 +57,7 @@ import ClientContainer from 'containers/ClientContainer/messages';
 import ClientRequisitesContainer from 'containers/ClientRequisitesContainer/messages';
 import ClientsContainer from 'containers/ClientsContainer/messages';
 import ReviewsContainer from 'containers/ReviewsContainer/messages';
+import StorageDocumentsContainer from 'containers/StorageDocumentsContainer/messages';
 
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
@@ -97,6 +100,7 @@ import InviteModal from 'modals/InviteModal/messages';
 import UniversalChartModal from 'modals/UniversalChartModal/messages';
 import ConfirmRescheduleModal from 'modals/ConfirmRescheduleModal/messages';
 import SupplierModal from 'modals/SupplierModal/messages';
+import TecDocInfoModal from 'modals/TecDocInfoModal/messages'
 
 // components
 import StatusIcons from 'components/StatusIcons/messages';
@@ -110,6 +114,7 @@ import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages
 import ChangeStatusDropdown from 'components/ChangeStatusDropdown/messages';
 import ClientFeedbackTab from 'components/ClientFeedbackTab/messages';
 import ClientOrdersTab from 'components/ClientOrdersTab/messages';
+import ClientMRDsTab from 'components/ClientMRDsTab/messages';
 import EmployeeFeedback from 'components/EmployeeFeedback/messages';
 import EmployeeStatistics from 'components/EmployeeStatistics/messages';
 import ReviewsTable from 'components/ReviewsTable/messages';
@@ -146,6 +151,7 @@ const messages = merge.all([
     RolePage,
     PackagePage,
     ClientsPage,
+    CashClientsDebtsPage,
     EmployeesPage,
     AddEmployeePage,
     ChartPage,
@@ -157,6 +163,7 @@ const messages = merge.all([
     DiagnosticPatternsPage,
     AgreementPage,
     AvailabilitiesPage,
+    RequisiteSettingPage,
     // containers
     OrdersContainer,
     OrdersFilterContainer,
@@ -171,6 +178,7 @@ const messages = merge.all([
     ClientContainer,
     ClientRequisitesContainer,
     ReviewsContainer,
+    StorageDocumentsContainer,
     // forms
     ProfileForm,
     UniversalFiltersForm,
@@ -205,6 +213,7 @@ const messages = merge.all([
     UniversalChartModal,
     ConfirmRescheduleModal,
     SupplierModal,
+    TecDocInfoModal,
     // components
     StatusIcons,
     OrderFormTables,
@@ -222,6 +231,7 @@ const messages = merge.all([
     ChangeStatusDropdown,
     ClientFeedbackTab,
     ClientOrdersTab,
+    ClientMRDsTab,
     EmployeeFeedback,
     EmployeeStatistics,
     ReviewsTable,

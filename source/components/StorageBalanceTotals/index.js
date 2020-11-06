@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { DatePicker, Skeleton } from 'antd';
+import { DatePicker, Skeleton, Checkbox, Select } from 'antd';
 import moment from 'moment';
 import styled from 'styled-components';
 import _ from 'lodash';
@@ -14,6 +14,7 @@ import {
     setStoreBalanceFilters,
 } from 'core/storage/storeBalance';
 
+import { WarehouseSelect } from 'components';
 import { StoreProductsSelect } from 'forms/_formkit';
 import { numeralFormatter } from 'utils';
 
@@ -23,10 +24,9 @@ const mapStateToProps = state => ({
     filters:   selectStoreBalanceFilters(state),
 });
 
-export const StorageBalanceTotals = connect(
-    mapStateToProps,
-    { setStoreBalanceFilters },
-)(props => {
+export const StorageBalanceTotals = connect(mapStateToProps, {
+    setStoreBalanceFilters,
+})(props => {
     // const total = _.get(props, 'balance.total[0]');
     const { filters, total, collapsed } = props;
     const onPickDate = date => props.setStoreBalanceFilters({ date });
@@ -36,10 +36,10 @@ export const StorageBalanceTotals = connect(
     );
 
     const renderTotalData = (label, data) => (
-        <span>
+        <div>
             <FormattedMessage id={ `storage.${label}` } />
             :&nbsp;<Highlighted>{ numeralFormatter(data) }</Highlighted>
-        </span>
+        </div>
     );
 
     return (
@@ -56,8 +56,17 @@ export const StorageBalanceTotals = connect(
                         filters={ props.filters }
                     />
                 </FilterSpace>
+                <WarehouseSelect
+                    style={{margin: '0 0 0 24px'}}
+                    onChange={ (warehouseId) => props.setStoreBalanceFilters({warehouseId: warehouseId}) }
+                />
             </FiltersRow>
-            <DataRow>
+            <DataRow
+                style={{
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                }}
+            >
                 <DataWrapper>
                     { !_.isEmpty(total)
                         ? renderTotalData('in_stock', total.remaining)
@@ -78,7 +87,32 @@ export const StorageBalanceTotals = connect(
                 </DataWrapper>
                 <DataWrapper>
                     { !_.isEmpty(total)
-                        ? renderTotalData('sum', total.sum)
+                        ? renderTotalData('ordered', total.countInStoreOrders)
+                        : SkeletonLoader }
+                </DataWrapper>
+                <DataWrapper
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-end',
+                    }}
+                >
+                    <div
+                        style={{
+                            fontSize: 12
+                        }}
+                    >
+                        <FormattedMessage id='in_stock' />
+                        <Checkbox
+                            defaultChecked
+                            style={{marginLeft: 5}}
+                            onChange={(event)=>{
+                                props.setStoreBalanceFilters({inStock: event.target.checked, page: 1})
+                            }}
+                        />
+                    </div>
+                    { !_.isEmpty(total)
+                        ? renderTotalData('sum', Math.round(total.sum*10)/10)
                         : SkeletonLoader }
                 </DataWrapper>
             </DataRow>
