@@ -715,8 +715,11 @@ class DocProductsTable extends React.Component {
                 dataIndex: 'stockPrice',
                 render:     (data, elem)=>{
                     const price = this.props.sellingPrice ? elem.sellingPrice : data;
+                    let strVal = Number(price).toFixed(2);
                     return (
-                        price || <FormattedMessage id='long_dash' />
+                        <div style={{textAlign: 'right'}}>
+                            {price ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : <FormattedMessage id='long_dash' />}
+                        </div>
                     )
                 }
             },
@@ -726,7 +729,9 @@ class DocProductsTable extends React.Component {
                 dataIndex: 'quantity',
                 render:     (data, elem)=>{
                     return (
-                        data || <FormattedMessage id='long_dash' />
+                        <div style={{textAlign: 'right'}}>
+                            {data || <FormattedMessage id='long_dash' />}
+                        </div>
                     )
                 }
             },
@@ -736,8 +741,11 @@ class DocProductsTable extends React.Component {
                 dataIndex: 'sum',
                 render:     (data, elem)=>{
                     const sum = this.props.sellingPrice ? elem.sellingSum : data;
+                    let strVal = Number(sum).toFixed(2);
                     return (
-                        sum ? Math.round(sum*10)/10 : <FormattedMessage id='long_dash' />
+                        <div style={{textAlign: 'right'}}>
+                            {sum ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : <FormattedMessage id='long_dash' />}
+                        </div>
                     )
                 }
             },
@@ -769,7 +777,9 @@ class DocProductsTable extends React.Component {
             dataIndex: 'purchasePrice',
             render:     (data, elem)=>{
                 return (
-                    data || <FormattedMessage id='long_dash' />
+                    <div style={{textAlign: 'right'}}>
+                        {data ?`${data}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : <FormattedMessage id='long_dash' />}
+                    </div>
                 )
             }
         };
@@ -1218,6 +1228,7 @@ class AddProductModal extends React.Component {
 
     componentDidUpdate(prevProps) {
         if(!prevProps.visible && this.props.visible) {
+            this.getStorageProducts();
             const { product } = this.props;
             if(product) {
                 this.setState({
@@ -1259,7 +1270,7 @@ class AddProductModal extends React.Component {
                 tradeCode: product.tradeCode,
                 stockPrice: Math.round(product.stockPrice*10)/10 || 0,
                 sellingPrice: product.salePrice || Math.round(product.stockPrice * 10 *((product.priceGroup && product.priceGroup.multiplier) || 1.4))/10 || 0,
-                quantity: product.quantity,
+                quantity: product.quantity || 1,
             })
         }
     }
