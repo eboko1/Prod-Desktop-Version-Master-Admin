@@ -619,6 +619,8 @@ class DetailsTable extends Component {
         const callback = (data) => {
             data.orderDetails.map((elem, index) => {
                 elem.key = index;
+                elem.brandId = elem.supplierBrandId || undefined;
+                elem.brandName = elem.supplierBrandName;
             });
             this.setState({
                 dataSource: data.orderDetails,
