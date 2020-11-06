@@ -19,7 +19,6 @@ import {
 } from "core/reports/duck";
 
 import { Layout, Paper, Spinner, StyledButton, Catcher } from "commons";
-import { UniversalFiltersForm } from "forms";
 import { CashReportTable } from "components";
 import { isForbidden, permissions } from "utils";
 
@@ -56,7 +55,6 @@ export default class CashClientsDebtsPage extends Component {
     }
 
     componentDidMount() {
-        //this.props.fetchReport(this.props.filters);
         this.props.fetchReport();
     }
 
@@ -64,21 +62,10 @@ export default class CashClientsDebtsPage extends Component {
         const {
             isFetching,
             collapsed,
-            stats,
-            modal,
-            modalProps,
-            setCashOrdersPage,
-            cashOrders,
-            filters,
-            user,
             fetchExcelFileReport,
             report,
         } = this.props;
 
-        // console.log("report: ", report);
-        // console.log("tableData from page: ",report.tableData);
-
-        
         
         return (
             <Layout
@@ -118,8 +105,6 @@ export default class CashClientsDebtsPage extends Component {
                     stats={report.stats}
                     reportFetching={isFetching}
                     />
-
-                    {/* There must be a client table */}
                 </Paper>
             </Layout>
         );

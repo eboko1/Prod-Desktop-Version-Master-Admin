@@ -92,9 +92,10 @@ export default class ClientMRDsTab extends Component {
                                                 {element.orderNum}
                                             </Link>
                                         </Col>
-                                        <Col span={6}>{<FormattedMessage id='client_mrds_tab.amoun'/>}: {element.amount}</Col>
-                                        <Col span={6}><FormattedMessage id='client_mrds_tab.due_amount'/>: {element.dueAmount}</Col>
-                                        <Col span={6}>{element.orderDatetime}</Col>
+                                        <Col span={6}>{<FormattedMessage id='client_mrds_tab.amoun_with_taxes'/>}: {element.amountWithTaxes}</Col>
+                                        <Col span={6}><FormattedMessage id='client_mrds_tab.due_amount_with_taxes'/>: {element.dueAmountWithTaxes}</Col>
+                                        <Col span={2}> </Col>
+                                        <Col span={4}>{element.orderDatetime}</Col>
                                     </Row>
                                 }
                                 key = {element.orderId}

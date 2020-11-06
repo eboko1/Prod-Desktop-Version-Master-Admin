@@ -102,7 +102,6 @@ export class EditClientVehicleForm extends Component {
             setSelectedVehicle,
             setEditVehicle,
         } = this.props;
-        console.log("Client entity: ", clientEntity);
         const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
         const isEditForbidden = isForbidden(user, CREATE_EDIT_DELETE_CLIENTS);
 

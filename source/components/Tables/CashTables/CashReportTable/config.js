@@ -1,6 +1,5 @@
 // vendor
 import React from 'react';
-import { Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
@@ -12,13 +11,19 @@ import book from 'routes/book';
 export function columnsConfig() {
 
     const clientNameCol = {
-        title:     <FormattedMessage id="cash_clients_debts_page.client_name" />,
+        title:     <FormattedMessage id="cash_report_table.client_name" />,
         dataIndex: 'clientName',
         key: 'clientName',
         width:     '10%',
         render:    (clientName, report) => {             
             if(clientName) {return (
-                <Link to={ `${book.client}/${report.id}` }>
+                <Link to={{ 
+                        pathname: `${book.client}/${report.id}`,
+                        state: {
+                            specificTab: 'clientDebt'
+                        }
+                    }}
+                >
                     {clientName}
                 </Link>
             )} else "<NAME MISSING>";
@@ -26,7 +31,7 @@ export function columnsConfig() {
     };
 
     const clientPhoneCol = {
-        title:     <FormattedMessage id="cash_clients_debts_page.phone" />,
+        title:     <FormattedMessage id="cash_report_table.phone" />,
         dataIndex: 'phones',
         key: 'phones',
         width:     '10%',
@@ -36,7 +41,7 @@ export function columnsConfig() {
     };
 
     const clientPaymentRespite = {
-        title:     <FormattedMessage id="cash_clients_debts_page.payment_respite" />,
+        title:     <FormattedMessage id="cash_report_table.payment_respite" />,
         dataIndex: 'paymentRespite',
         key: 'paymentRespite',
         width:     '10%',
@@ -46,7 +51,7 @@ export function columnsConfig() {
     };
 
     const clientCurrentDebtCol = {
-        title:     <FormattedMessage id="cash_clients_debts_page.current_debt" />,
+        title:     <FormattedMessage id="cash_report_table.current_debt" />,
         dataIndex: 'currentDebt',
         key: 'currentDebt',
         width:     '10%',
