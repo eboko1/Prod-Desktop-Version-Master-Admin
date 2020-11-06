@@ -633,9 +633,11 @@ class DetailsTable extends Component {
                 return response.json();
             })
             .then(function(data) {
+                console.log(data)
                 data.details.map((elem, index) => {
                     elem.key = index;
                     elem.brandId = elem.supplierBrandId || undefined;
+                    elem.brandName = elem.supplierBrandName;
                 });
                 that.setState({
                     dataSource: data.details,
@@ -743,7 +745,11 @@ class DetailsTable extends Component {
     componentDidMount() {
         this.fetchData();
         let tmp = [ ...this.props.orderDetails ];
-        tmp.map((elem, i) => elem.key = i);
+        tmp.map((elem, i) => {
+            elem.key = i;
+            elem.brandId = elem.supplierBrandId || undefined;
+            elem.brandName = elem.supplierBrandName;
+        });
         this.setState({
             dataSource: tmp,
         });
@@ -872,7 +878,9 @@ class QuickEditModal extends React.Component {
                             } }
                             onSelect={ (value, option) => {
                                 elem.brandName = value;
+                                elem.supplierBrandId = option.props.brand_id;
                                 elem.brandId = option.props.brand_id;
+                                elem.productId = undefined;
                                 this.setState({
                                     update: true,
                                 });
@@ -1066,9 +1074,9 @@ class QuickEditModal extends React.Component {
     }
 
     handleOk = () => {
+        console.log(this.state.dataSource[ 0 ])
         this.props.onConfirm(this.props.tableKey, {
             ...this.state.dataSource[ 0 ],
-            brandId: this.state.brandId,
         });
         this.handleCancel();
     };

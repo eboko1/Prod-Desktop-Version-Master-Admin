@@ -1218,6 +1218,7 @@ class AddProductModal extends React.Component {
 
     componentDidUpdate(prevProps) {
         if(!prevProps.visible && this.props.visible) {
+            this.getStorageProducts();
             const { product } = this.props;
             if(product) {
                 this.setState({
