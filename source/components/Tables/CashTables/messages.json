@@ -15,7 +15,13 @@
     "cash-table.activity": "Increase / Decrease",
     "cash-table.comment": "Comment",
     "cash-table.tag": "Analytics",
-    "cash-table_icon.unremovable": "Cashbox can't be deleted because it has already contain some cash orders"
+    "cash-table_icon.unremovable": "Cashbox can't be deleted because it has already contain some cash orders",
+    "cash_report_table.client_name": "Client name",
+    "cash_report_table.phone": "Phone",
+    "cash_report_table.payment_respite": "Payment term",
+    "cash_report_table.current_debt": "Current debt",
+    "cash-table.overdue_debt": "Overdue debt",
+    "cash-table.not_overdue_debt": "Not overdue debt"
   },
   "ru": {
     "cash-table.name": "Наименование Кассы",
@@ -34,7 +40,13 @@
     "cash-table.activity": "Приход / Расход",
     "cash-table.comment": "Комментарий",
     "cash-table.tag": "Аналитика",
-    "cash-table_icon.unremovable": "Касса не может быть удалена, поскольку уже содержит кассовые ордера"
+    "cash-table_icon.unremovable": "Касса не может быть удалена, поскольку уже содержит кассовые ордера",
+    "cash_report_table.client_name": "Имя клиента",
+    "cash_report_table.phone": "Тел.",
+    "cash_report_table.payment_respite": "Отсрочка",
+    "cash_report_table.current_debt": "Задолженность",
+    "cash-table.overdue_debt": "Просроченная задолженность",
+    "cash-table.not_overdue_debt": "Не просрочена задолженность"
   },
   "uk": {
     "cash-table.name": "Назва Каси",
@@ -53,6 +65,12 @@
     "cash-table.activity": "Прибуток / Витрата",
     "cash-table.comment": "Коментар",
     "cash-table.tag": "Аналітика",
-    "cash-table_icon.unremovable": "Каса не може бути видалена, тому що вже містить касові ордери"
+    "cash-table_icon.unremovable": "Каса не може бути видалена, тому що вже містить касові ордери",
+    "cash_report_table.client_name": "Ім'я клієнта",
+    "cash_report_table.phone": "Тел.",
+    "cash_report_table.payment_respite": "Відстрочка",
+    "cash_report_table.current_debt": "Заборгованість",
+    "cash-table.overdue_debt": "Прострочена заборгованість",
+    "cash-table.not_overdue_debt": "Не прострочена заборгованість"
   }
 }

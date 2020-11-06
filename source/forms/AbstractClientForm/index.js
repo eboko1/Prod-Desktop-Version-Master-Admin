@@ -9,6 +9,7 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import {
     DecoratedSelect,
     DecoratedInput,
+    DecoratedInputNumber,
     DecoratedDatePicker,
 } from "forms/DecoratedFields";
 
@@ -222,6 +223,27 @@ export class AbstractClientForm extends Component {
                                     }
                                     format="YYYY-MM-DD"
                                     cnStyles={Styles.datePicker}
+                                />
+                            </Col>
+                        </Row>
+
+                        <Row gutter={24} type="flex">
+                            <Col span={8}>
+                                <DecoratedInputNumber
+                                    field="paymentRespite"
+                                    label={
+                                        <FormattedMessage id="add_client_form.payment_respite" />
+                                    }
+                                    formItem
+                                    initialValue={_.get(client, "paymentRespite", 0)}
+                                    min={0}
+                                    max={1000}
+                                    getFieldDecorator={getFieldDecorator}
+                                    rules={[
+                                        {
+                                            required: false,
+                                        },
+                                    ]}
                                 />
                             </Col>
                         </Row>

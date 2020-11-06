@@ -1,0 +1,18 @@
+{
+    "en": {
+        "cash_clients_debts_page.filter_placeholder": "Search",
+        "cash_clients_debts_page.get_excel_file": "Download full report"
+
+        
+    },
+    "ru": {
+        "cash_clients_debts_page.filter_placeholder": "Поиск",
+        "cash_clients_debts_page.get_excel_file": "Загрузить отчет"
+
+    },
+    "uk": {
+        "cash_clients_debts_page.filter_placeholder": "Пошук",
+        "cash_clients_debts_page.get_excel_file": "Завантажити повний звіт"
+
+    }
+}

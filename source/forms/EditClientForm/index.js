@@ -60,6 +60,7 @@ export class EditClientForm extends Component {
                                         surname: clientFormData.surname,
                                         sex: clientFormData.sex,
                                         status: clientFormData.status,
+                                        paymentRespite: clientFormData.paymentRespite,
                                         phones: clientFormData.phones
                                             .filter(
                                                 phone =>
