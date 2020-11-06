@@ -1270,7 +1270,7 @@ class AddProductModal extends React.Component {
                 tradeCode: product.tradeCode,
                 stockPrice: Math.round(product.stockPrice*10)/10 || 0,
                 sellingPrice: product.salePrice || Math.round(product.stockPrice * 10 *((product.priceGroup && product.priceGroup.multiplier) || 1.4))/10 || 0,
-                quantity: product.quantity,
+                quantity: product.quantity || 1,
             })
         }
     }
