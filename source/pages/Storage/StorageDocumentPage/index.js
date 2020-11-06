@@ -126,6 +126,7 @@ class StorageDocumentPage extends Component {
             const newProducts = [],
                   warningProducts = [];
 
+            console.log(docProduct)
             docProduct.map((product)=>{
                 product.sum = Math.round(product.sum*10)/10;
                 this.state.formData.sum += product.sum;
@@ -361,7 +362,7 @@ class StorageDocumentPage extends Component {
             if(elem.productId) {
                 createData.docProducts.push({
                     productId: elem.productId,
-                    quantity: elem.quantity,
+                    quantity: elem.quantity || 1,
                     stockPrice: formData.type == EXPENSE ? elem.sellingPrice : elem.stockPrice,
                     sellingPrice: elem.sellingPrice,
                 })
@@ -382,9 +383,12 @@ class StorageDocumentPage extends Component {
                     name: elem.detailName || elem.detailCode,
                     brandId: elem.brandId,
 
-                    quantity: elem.quantity,
+                    quantity: elem.quantity || 1,
                     stockPrice: elem.stockPrice,
                 })
+                if(elem.storeDocProductId) {
+                    createData.docProducts[createData.docProducts.length-1].storeDocProductId = elem.storeDocProductId;
+                }
             }
         })
         if(productsError) {

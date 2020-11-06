@@ -248,8 +248,8 @@ class DetailProductModal extends React.Component{
                                 setSupplier={this.setSupplier}
                                 brandFilter={elem.brandName}
                                 supplierId={elem.supplierId}
-                                codeFilter={elem.brandId == 8000 ? undefined : elem.detailCode}
-                                brandId={elem.brandId}
+                                codeFilter={elem.detailCode}
+                                brandId={elem.brandId == 8000 ? undefined : elem.brandId}
                                 defaultBrandName={this.state.defaultBrandName}
                                 stockMode={this.state.radioValue == 5}
                             /> :
