@@ -526,39 +526,21 @@ class ServicesTable extends Component {
     }
 
     updateDataSource() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/orders/${this.props.orderId}/labors`;
-        url += params;
-        fetch(url, {
-            method:  'GET',
-            headers: {
-                Authorization: token,
-            },
-        })
-            .then(function(response) {
-                if (response.status !== 200) {
-                    return Promise.reject(new Error(response.statusText));
-                }
-
-                return Promise.resolve(response);
+        if(this.state.fetched) {
+            this.setState({
+                fetched: false,
             })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                data.labors.map((elem, index) => {
-                    elem.key = index;
-                });
-                that.setState({
-                    dataSource: data.labors,
-                });
-                that.props.reloadOrderForm();
-            })
-            .catch(function(error) {
-                console.log('error', error);
+        }
+        const callback = (data) => {
+            data.orderServices.map((elem, index) => {
+                elem.key = index;
             });
+            this.setState({
+                dataSource: data.orderServices,
+                fetched: true,
+            });
+        }
+        this.props.reloadOrderForm(callback);
     }
 
     async updateLabor(key, labor) {

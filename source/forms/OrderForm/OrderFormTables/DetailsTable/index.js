@@ -611,41 +611,23 @@ class DetailsTable extends Component {
     }
 
     updateDataSource() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/orders/${this.props.orderId}/details`;
-        url += params;
-        fetch(url, {
-            method:  'GET',
-            headers: {
-                Authorization: token,
-            },
-        })
-            .then(function(response) {
-                if (response.status !== 200) {
-                    return Promise.reject(new Error(response.statusText));
-                }
-
-                return Promise.resolve(response);
+        if(this.state.fetched) {
+            this.setState({
+                fetched: false,
             })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                data.details.map((elem, index) => {
-                    elem.key = index;
-                    elem.brandId = elem.supplierBrandId || undefined;
-                });
-                that.setState({
-                    dataSource: data.details,
-                    fetched: true,
-                });
-                that.props.reloadOrderForm();
-            })
-            .catch(function(error) {
-                console.log('error', error);
+        }
+        const callback = (data) => {
+            data.orderDetails.map((elem, index) => {
+                elem.key = index;
+                elem.brandId = elem.supplierBrandId || undefined;
+                elem.brandName = elem.supplierBrandName;
             });
+            this.setState({
+                dataSource: data.orderDetails,
+                fetched: true,
+            });
+        }
+        this.props.reloadOrderForm(callback);
     }
 
     async updateDetail(key, detail) {
@@ -743,7 +725,11 @@ class DetailsTable extends Component {
     componentDidMount() {
         this.fetchData();
         let tmp = [ ...this.props.orderDetails ];
-        tmp.map((elem, i) => elem.key = i);
+        tmp.map((elem, i) => {
+            elem.key = i;
+            elem.brandId = elem.supplierBrandId || undefined;
+            elem.brandName = elem.supplierBrandName;
+        });
         this.setState({
             dataSource: tmp,
         });
@@ -872,7 +858,9 @@ class QuickEditModal extends React.Component {
                             } }
                             onSelect={ (value, option) => {
                                 elem.brandName = value;
+                                elem.supplierBrandId = option.props.brand_id;
                                 elem.brandId = option.props.brand_id;
+                                elem.productId = undefined;
                                 this.setState({
                                     update: true,
                                 });
@@ -1066,9 +1054,9 @@ class QuickEditModal extends React.Component {
     }
 
     handleOk = () => {
+        console.log(this.state.dataSource[ 0 ])
         this.props.onConfirm(this.props.tableKey, {
             ...this.state.dataSource[ 0 ],
-            brandId: this.state.brandId,
         });
         this.handleCancel();
     };
