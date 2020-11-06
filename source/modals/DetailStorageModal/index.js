@@ -966,7 +966,7 @@ class DetailWarehousesCountModal extends React.Component {
                             {this.state.code}
                         </div>
                     </div>
-                    <div className={Styles.detailWarehousesCountModalLine}>
+                    <div className={Styles.detailWarehousesCountModalLine} style={{marginBottom: 18}}>
                         <div>
                             <FormattedMessage id="order_form_table.brand" />
                         </div>
@@ -975,7 +975,7 @@ class DetailWarehousesCountModal extends React.Component {
                         </div>
                     </div>
                     {this.state.countsOnWarehouses.map((warehouse, key)=>(
-                        <div className={Styles.detailWarehousesCountModalLine}>
+                        <div className={Styles.detailWarehousesCountModalLine} key={key}>
                             <div>
                                 {warehouse.name}
                             </div>
