@@ -76,21 +76,22 @@ export default props => {
         }),
         key:    'docNum',
         render: (key, data) => {
-            const docId = _.get(data, 'doc.id');
+            const docId = _.get(data, 'doc.id'),
+                  documentNumber = _.get(data, 'doc.documentNumber');
 
-            return docId ? (
+            return data.order && data.order.id ? (
+                <Link
+                    to={ `${book.order}/${data.order.id}` }
+                    style={ { color: 'var(--link)', fontWeight: 'bold' } }
+                >
+                    { data.order.id }
+                </Link>
+            ) : (
                 <Link
                     to={ `${book.storageDocument}/${docId}` }
                     style={ { color: 'var(--link)', fontWeight: 'bold' } }
                 >
-                    { docId }
-                </Link>
-            ) : (
-                <Link
-                    to={ `${book.order}/${data.orderId}` }
-                    style={ { color: 'var(--link)', fontWeight: 'bold' } }
-                >
-                    { data.orderId }
+                    { documentNumber }
                 </Link>
             );
         },

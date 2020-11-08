@@ -42,7 +42,7 @@ class FavouriteDetailsModal extends React.Component{
                             className={Styles.groupsTreeSelect}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
-                            style={{maxWidth: 160}}
+                            style={{maxWidth: 160, color: 'black'}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.props.treeData}
@@ -72,9 +72,9 @@ class FavouriteDetailsModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <Input
-                            disabled={elem.storeGroupId == null}
+                            disabled
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
-                            style={{minWidth: 150}}
+                            style={{minWidth: 150, color: 'black'}}
                             value={data}
                             onChange={(event)=>{
                                 this.state.dataSource[elem.key].detailName = event.target.value;
@@ -98,7 +98,6 @@ class FavouriteDetailsModal extends React.Component{
                     }
                     return (
                         <CommentaryButton
-                            disabled={elem.storeGroupId == null}
                             commentary={
                                 data || 
                                 {
@@ -131,10 +130,10 @@ class FavouriteDetailsModal extends React.Component{
                     return (
                         <Select
                             showSearch
-                            disabled={elem.storeGroupId == null}
+                            disabled
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
                             value={data ? data : undefined}
-                            style={{maxWidth: 180, minWidth: 100}}
+                            style={{maxWidth: 180, minWidth: 100, color: 'black'}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             filterOption={(input, option) => {
                                 return (
@@ -195,6 +194,7 @@ class FavouriteDetailsModal extends React.Component{
                     return (
                         <div style={{display: "flex"}}>
                             <Input
+                                disabled
                                 style={{minWidth: 80, color: 'black'}}
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={data}
@@ -209,7 +209,7 @@ class FavouriteDetailsModal extends React.Component{
                                 user={this.props.user}
                                 tableKey={elem.key}
                                 onSelect={this.setCode}
-                                disabled={elem.storeGroupId == null}
+                                disabled
                                 tecdocId={this.props.tecdocId}
                                 storeGroupId={this.state.dataSource[elem.key].storeGroupId}
                                 setSupplier={this.setSupplier}
@@ -240,7 +240,7 @@ class FavouriteDetailsModal extends React.Component{
                             <DetailSupplierModal
                                 user={this.props.user}
                                 tableKey={elem.key}
-                                disabled={elem.storeGroupId == null || !(elem.detailCode) || !(elem.brandName)}
+                                disabled
                                 onSelect={this.setSupplier}
                                 storeGroupId={elem.storeGroupId}
                                 brandId={elem.brandId}
