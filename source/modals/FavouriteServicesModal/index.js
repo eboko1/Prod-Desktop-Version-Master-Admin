@@ -52,10 +52,10 @@ class FavouriteServicesModal extends React.Component{
                     return (
                         <TreeSelect
                             className={Styles.groupsTreeSelect}
-                            disabled={this.state.editing}
+                            disabled
                             showSearch
                             placeholder='ID'
-                            style={{maxWidth: 220}}
+                            style={{maxWidth: 220, color: 'black'}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.props.laborsTreeData}
@@ -86,10 +86,10 @@ class FavouriteServicesModal extends React.Component{
                     return (
                         <TreeSelect
                             className={Styles.groupsTreeSelect}
-                            disabled={this.state.editing}
+                            disabled
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
-                            style={{maxWidth: 220}}
+                            style={{maxWidth: 220, color: 'black'}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.storeGroupsTreeData}
@@ -155,8 +155,9 @@ class FavouriteServicesModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <Input
+                            disabled
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
-                            style={{minWidth: 150}}
+                            style={{minWidth: 150, color: 'black'}}
                             value={data}
                             onChange={(event)=>{
                                 this.state.dataSource[elem.key].serviceName = event.target.value;
@@ -165,38 +166,6 @@ class FavouriteServicesModal extends React.Component{
                                 })
                             }}
                         />
-                    )
-                }
-            },
-            {
-                title:  <FormattedMessage id="order_form_table.master" />,
-                key:       'employeeId',
-                dataIndex: 'employeeId',
-                width:     '10%',
-                render: (data, elem)=>{
-                    return (
-                        <Select
-                            allowClear
-                            showSearch
-                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.master'})}
-                            value={data}
-                            style={{maxWidth: 180, minWidth: 100}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                            filterOption={(input, option) => {
-                                return (
-                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
-                                )
-                            }}
-                            onSelect={(value, option)=>{
-                                this.state.dataSource[elem.key].employeeId = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        >
-                            {this.employeeOptions}
-                        </Select>
                     )
                 }
             },

@@ -23,7 +23,7 @@ const StoreProductsSelect = injectIntl(
         const handleSelect = productId =>
             props.setFilters({ productId, page: 1 });
 
-        props.setStoreProductsSearchQuery();
+        if(!props.storeProducts.length) props.setStoreProductsSearchQuery();
         
         return (
             <Select
