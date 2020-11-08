@@ -404,7 +404,12 @@ class AddWarehousesModal extends Component {
                             width: '100%',
                         }}
                         value={this.state.attribute}
-                        disabled={this.state.attribute == MAIN || this.state.attribute == RESERVE}
+                        disabled={
+                            this.state.attribute == MAIN && isMain || 
+                            this.state.attribute == RESERVE && isReserve ||
+                            this.state.attribute == TOOL && isTool ||
+                            this.state.attribute == REPAIR_AREA && isRepairArea
+                        }
                         defaultActiveFirstOption
                         dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                         onChange={(value)=>{

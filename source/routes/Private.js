@@ -210,8 +210,10 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
-                    component={ ProductsTrackingPage }
                     path={ book.productsTracking }
+                    render={ props => (
+                        <ProductsTrackingPage type={ props.location.type } { ...props } />
+                    ) }
                 />
                 { /* Statistics */ }
                 <Route

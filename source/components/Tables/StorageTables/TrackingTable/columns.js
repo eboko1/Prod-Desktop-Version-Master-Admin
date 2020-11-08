@@ -31,7 +31,6 @@ export default props => {
             id: 'storage.product_code',
         }),
         dataIndex: 'code',
-        width:     '10%',
         render:    (code, { product }) => (
             <div
                 onClick={ () =>
@@ -54,7 +53,6 @@ export default props => {
             id: 'storage.operation_type',
         }),
         key:    'type',
-        width:  '5%',
         render: (key, data) => {
             const type = _.get(data, 'doc.type');
 
@@ -74,16 +72,15 @@ export default props => {
 
     const docNum = {
         title: props.intl.formatMessage({
-            id: 'storage.document_number',
+            id: 'storage.document',
         }),
         key:    'docNum',
-        width:  '7.5%',
         render: (key, data) => {
             const docId = _.get(data, 'doc.id');
 
             return docId ? (
                 <Link
-                    to={ `${book.storageIncomeDoc}/${docId}` }
+                    to={ `${book.storageDocument}/${docId}` }
                     style={ { color: 'var(--link)', fontWeight: 'bold' } }
                 >
                     { docId }
@@ -104,7 +101,6 @@ export default props => {
             id: 'storage.date',
         }),
         dataIndex: 'datetime',
-        width:     '10%',
         render:    datetime => <DatetimeFormatter datetime={ datetime } />,
     };
 
@@ -113,7 +109,6 @@ export default props => {
             id: 'storage.counterparty',
         }),
         dataIndex: 'doc',
-        width:     '10%',
         render:    (doc, data) => {
             const income = Boolean(doc);
             const isCounterpartyExists =
@@ -145,7 +140,6 @@ export default props => {
             id: 'storage.responsible',
         }),
         dataIndex: 'order',
-        width:     '10%',
         render:    (order, data) => {
             const expense = Boolean(order);
             const isManagerExists =
@@ -181,7 +175,6 @@ export default props => {
             id: 'storage.quantity',
         }),
         dataIndex: 'quantity',
-        width:     '7.5%',
         render:    (quantity, data) => {
             return (
                 <>
@@ -200,7 +193,6 @@ export default props => {
             id: 'storage.purchase_price',
         }),
         dataIndex: 'purchasePrice',
-        width:     '10%',
         render:    purchasePrice => (
             <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
                 { purchasePrice }
@@ -213,7 +205,6 @@ export default props => {
             id: 'storage.purchase_sum',
         }),
         dataIndex: 'purchaseSum',
-        width:     '10%',
         render:    (purchaseSum, data) => {
             return (
                 <>
@@ -233,7 +224,6 @@ export default props => {
             id: 'storage.selling_price',
         }),
         dataIndex: 'sellingPrice',
-        width:     '10%',
         render:    sellingPrice => (
             <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
                 { sellingPrice }
@@ -246,7 +236,6 @@ export default props => {
             id: 'storage.selling_sum',
         }),
         dataIndex: 'sellingSum',
-        width:     '10%',
         render:    (sellingSum, data) => {
             return (
                 <>

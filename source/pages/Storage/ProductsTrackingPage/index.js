@@ -63,6 +63,7 @@ export const ProductsTrackingPage = withRouter(
         mapStateToProps,
         { setTrackingFilters },
     )(props => {
+        const type = props.type || "tracking";
         const { filters } = props;
         const [ period, setPeriod ] = useState('month');
 
@@ -100,7 +101,7 @@ export const ProductsTrackingPage = withRouter(
 
         return (
             <Layout
-                title={ <FormattedMessage id='navigation.products_tracking' /> }
+                title={ <FormattedMessage id={`navigation.products_${type}`} /> }
                 controls={ renderFilters }
                 paper={ false }
             >
@@ -125,6 +126,7 @@ export const ProductsTrackingPage = withRouter(
                     <TrackingTable
                         filters={ props.filters }
                         loading={ props.loading }
+                        type={ type } 
                     />
                 </TrackingTableWrapper>
                 <StoreProductModal visible={ props.modal } />
