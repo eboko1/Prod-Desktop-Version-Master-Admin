@@ -558,3 +558,96 @@ export class WarehouseSelect extends React.Component {
         )
     }
 }
+
+@injectIntl
+export class BrandSelect extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            brands: [],
+            searchValue: "",
+        };
+    }
+
+    getBrands() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + '/brands';
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            data.map((brand, i)=>{
+                brand.key = i;
+            })
+            that.setState({
+                brands: data,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    componentDidMount() {
+        this.getBrands();
+    }
+
+    render() {
+        const { intl: { formatMessage }, style, onSelect } = this.props;
+        const { brands, searchValue } = this.state;
+        const options = brands.map((brand, key)=>(
+            <Option 
+                key={key}
+                value={brand.brandId}
+            >
+                {brand.brandName}
+            </Option>
+        ))
+        return (
+            <div className={Styles.warehouseSelect} style={style} >
+                <Select
+                    showSearch
+                    allowClear
+                    style={{ minWidth: 220 }}
+                    dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                    placeholder={formatMessage({id: 'order_form_table.brand'})}
+                    filterOption={(input, option) => {
+                        return (
+                            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                            String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                        )
+                    }}
+                    onSelect={(value)=>{
+                        onSelect(value);
+                        
+                    }}
+                    onSearch={(input)=>{
+                        this.setState({
+                            searchValue: input,
+                        })
+                    }}
+                    onBlur={()=>{
+                        this.setState({
+                            searchValue: "",
+                        })
+                    }}
+                >
+                    {searchValue.length > 1 ? options : []}
+                </Select>
+            </div>
+        )
+    }
+}

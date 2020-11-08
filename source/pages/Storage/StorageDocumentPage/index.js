@@ -1683,6 +1683,22 @@ class AutomaticOrderCreationModal extends React.Component {
                     )
                 }
             },
+            {
+                key:       'switch',
+                width:     'auto',
+                render:     (elem)=>{
+                    const checked = elem.checked;
+                    return (
+                        <Checkbox
+                            checked={checked}
+                            onChange={(event)=>{
+                                elem.checked = event.target.checked;
+                                this.setState({update: true})
+                            }}
+                        />
+                    )
+                }
+            }
         ];
 
         this.incomeColumns = [
@@ -1868,7 +1884,13 @@ class AutomaticOrderCreationModal extends React.Component {
 
     handleOk() {
         if(this.props.type == ORDER && this.props.documentType == SUPPLIER) {
-            this.props.addDocProduct(this.state.dataSource, true);
+            const result = [];
+            this.state.dataSource.map((elem)=>{
+                if(elem.checked) {
+                    result.push(elem);
+                }
+            })
+            this.props.addDocProduct(result, true);
         }
         else if(this.props.type == ORDER && this.props.documentType == ORDERINCOME) {
             const result = [];
@@ -1921,6 +1943,7 @@ class AutomaticOrderCreationModal extends React.Component {
                     elem.detailCode = elem.code;
                     elem.sum = Math.round( ((elem.quantity * elem.stockPrice) || 0)*10 ) / 10;
                     elem.groupId = elem.storeGroupId;
+                    elem.checked = true;
                 })
                 that.setState({
                     dataSource: data,
