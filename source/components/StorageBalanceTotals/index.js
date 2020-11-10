@@ -14,14 +14,16 @@ import {
     setStoreBalanceFilters,
 } from 'core/storage/storeBalance';
 
-import { WarehouseSelect } from 'components';
+import { WarehouseSelect, BrandSelect } from 'components';
 import { StoreProductsSelect } from 'forms/_formkit';
 import { numeralFormatter } from 'utils';
+import { DetailStorageModal } from "modals";
 
 const mapStateToProps = state => ({
     collapsed: state.ui.collapsed,
     total:     selectStoreBalanceTotal(state),
     filters:   selectStoreBalanceFilters(state),
+    user:      state.auth,
 });
 
 export const StorageBalanceTotals = connect(mapStateToProps, {
@@ -50,16 +52,32 @@ export const StorageBalanceTotals = connect(mapStateToProps, {
                     onChange={ onPickDate }
                     defaultValue={ moment(filters.date) }
                 />
+                <WarehouseSelect
+                    style={{margin: '0 0 0 24px'}}
+                    onChange={ (warehouseId) => props.setStoreBalanceFilters({warehouseId: warehouseId}) }
+                />
+                <BrandSelect
+                    style={{margin: '0 0 0 24px'}}
+                    onSelect={ (brandId) => props.setStoreBalanceFilters({brandId: brandId}) }
+                />
                 <FilterSpace>
                     <StoreProductsSelect
                         setFilters={ props.setStoreBalanceFilters }
                         filters={ props.filters }
                     />
                 </FilterSpace>
-                <WarehouseSelect
-                    style={{margin: '0 0 0 24px'}}
-                    onChange={ (warehouseId) => props.setStoreBalanceFilters({warehouseId: warehouseId}) }
-                />
+                <div style={{margin: '0 0 0 24px'}}>
+                    <DetailStorageModal
+                        stockMode={true}
+                        user={props.user}
+                        selectProduct={(productId)=>{
+                            props.setStoreBalanceFilters({
+                                productId: productId,
+                                page: 1
+                            })
+                        }}
+                    />
+                </div>
             </FiltersRow>
             <DataRow
                 style={{

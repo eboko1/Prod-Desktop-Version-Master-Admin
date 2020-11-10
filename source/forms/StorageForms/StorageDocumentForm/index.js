@@ -501,7 +501,7 @@ class StorageDocumentForm extends Component {
                                         })}
                                         nullText="0"
                                     >
-                                        {status == DONE ? sum : 0}
+                                        {0}
                                     </Numeral>
                                 </div>
                             </div>
@@ -531,7 +531,7 @@ class StorageDocumentForm extends Component {
                                             id: "currency",
                                         })}
                                     >
-                                        {status == DONE ? 0 : sum}
+                                        {sum}
                                     </Numeral>
                                 </p>
                             </div>
@@ -710,7 +710,7 @@ class DocProductsTable extends React.Component {
                 }
             },
             {
-                title:     <FormattedMessage id='order_form_table.price' />,
+                title:     <div style={{textAlign: 'right'}}><FormattedMessage id='order_form_table.price' /></div>,
                 key:       'stockPrice',
                 dataIndex: 'stockPrice',
                 render:     (data, elem)=>{
@@ -724,7 +724,7 @@ class DocProductsTable extends React.Component {
                 }
             },
             {
-                title:     <FormattedMessage id='order_form_table.count' />,
+                title:     <div style={{textAlign: 'right'}}><FormattedMessage id='order_form_table.count' /></div>,
                 key:       'quantity',
                 dataIndex: 'quantity',
                 render:     (data, elem)=>{
@@ -736,7 +736,7 @@ class DocProductsTable extends React.Component {
                 }
             },
             {
-                title:     <FormattedMessage id='order_form_table.sum' />,
+                title:     <div style={{textAlign: 'right'}}><FormattedMessage id='order_form_table.sum' /></div>,
                 key:       'sum',
                 dataIndex: 'sum',
                 render:     (data, elem)=>{
