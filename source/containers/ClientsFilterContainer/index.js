@@ -58,8 +58,8 @@ export default class OrdersFilterContainer extends Component {
                             id: "orders-filter.search_placeholder",
                         })}
                         onChange={({ target: { value } }) =>{
-                            const replacedValue = value.replace(/\W+/g,'');
-                            if(replacedValue) this.handleClientsSearch(replacedValue);
+                            const replacedValue = value.replace(/\^[а-яА-ЯёЁa-zA-Z0-9]+$/g,'');
+                            this.handleClientsSearch(replacedValue);
                         }}
                     />
                 </div>
