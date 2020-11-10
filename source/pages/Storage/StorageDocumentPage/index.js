@@ -130,6 +130,10 @@ class StorageDocumentPage extends Component {
             docProduct.map((product)=>{
                 product.sum = Math.round(product.sum*10)/10;
                 this.state.formData.sum += product.sum;
+                if(!product.brandId && product.brandName) {
+                    const brand = this.state.brands.find((elem)=>elem.brandName == product.brandName);
+                    product.brandId = brand ? brand.brandId : undefined;
+                }
                 if(product.quantity) {
                     if(!product.productId) {
                         warningProducts.push(product);
@@ -1987,6 +1991,7 @@ class AutomaticOrderCreationModal extends React.Component {
                     elem.sum = Math.round( ((elem.quantity * elem.stockPrice) || 0)*10 ) / 10;
                     elem.orderedSum = elem.sum;
                     elem.groupId = elem.storeGroupId;
+                    elem.checked = true;
                 })
                 that.setState({
                     dataSource: data,
