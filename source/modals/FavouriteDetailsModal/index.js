@@ -130,7 +130,7 @@ class FavouriteDetailsModal extends React.Component{
                     return (
                         <Select
                             showSearch
-                            disabled
+                            disabled={elem.storeGroupId == null}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
                             value={data ? data : undefined}
                             style={{maxWidth: 180, minWidth: 100, color: 'black'}}
@@ -209,7 +209,7 @@ class FavouriteDetailsModal extends React.Component{
                                 user={this.props.user}
                                 tableKey={elem.key}
                                 onSelect={this.setCode}
-                                disabled
+                                disabled={elem.storeGroupId == null}
                                 tecdocId={this.props.tecdocId}
                                 storeGroupId={this.state.dataSource[elem.key].storeGroupId}
                                 setSupplier={this.setSupplier}
@@ -240,7 +240,7 @@ class FavouriteDetailsModal extends React.Component{
                             <DetailSupplierModal
                                 user={this.props.user}
                                 tableKey={elem.key}
-                                disabled
+                                disabled={elem.storeGroupId == null}
                                 onSelect={this.setSupplier}
                                 storeGroupId={elem.storeGroupId}
                                 brandId={elem.brandId}
@@ -446,10 +446,13 @@ class FavouriteDetailsModal extends React.Component{
     };
 
 
-    setCode(code, brandId, storeId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber) {
+    setCode(code, brandId, productId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber) {
+        this.unsetSupplier(key);
+        const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         this.state.dataSource[key].detailCode = code;
         this.state.dataSource[key].brandId = brandId;
-        this.state.dataSource[key].storeId = storeId;
+        this.state.dataSource[key].brandName = brand.brandName;
+        this.state.dataSource[key].productId = productId;
         this.state.dataSource[key].supplierOriginalCode = supplierOriginalCode;
         this.state.dataSource[key].supplierProductNumber = supplierProductNumber;
         this.setState({
@@ -468,17 +471,38 @@ class FavouriteDetailsModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId) {
-        this.state.mainTableSource[key].supplierId = supplierId;
-        this.state.mainTableSource[key].supplierName = supplierName;
-        this.state.mainTableSource[key].supplierBrandId = supplierBrandId;
-        this.state.mainTableSource[key].purchasePrice = purchasePrice;
-        this.state.mainTableSource[key].price = price;
-        this.state.mainTableSource[key].store = store;
-        this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
-        this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
-        this.state.mainTableSource[key].isFromStock = isFromStock;
-        this.state.mainTableSource[key].defaultWarehouseId = defaultWarehouseId;
+     setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId, productId, brandId) {
+        this.state.dataSource[key].supplierId = supplierId;
+        this.state.dataSource[key].supplierName = supplierName;
+        this.state.dataSource[key].supplierBrandId = supplierBrandId;
+        this.state.dataSource[key].purchasePrice = purchasePrice;
+        this.state.dataSource[key].price = price;
+        this.state.dataSource[key].store = store;
+        this.state.dataSource[key].supplierOriginalCode = supplierOriginalCode;
+        this.state.dataSource[key].supplierProductNumber = supplierProductNumber;
+        this.state.dataSource[key].isFromStock = isFromStock;
+        this.state.dataSource[key].reservedFromWarehouseId = defaultWarehouseId;
+        this.state.dataSource[key].productId = isFromStock ? productId : undefined;
+        const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
+        if(brand) {
+            this.state.dataSource[key].brandId = brandId;
+            this.state.dataSource[key].brandName = brand && brand.brandName;
+        }
+        this.setState({
+            update: true
+        })
+    }
+
+    unsetSupplier(key = 0) {
+        this.state.dataSource[key].productId = undefined;
+        this.state.dataSource[key].isFromStock = false;
+        this.state.dataSource[key].supplierId = null;
+        this.state.dataSource[key].supplierName = undefined;
+        this.state.dataSource[key].supplierBrandId = undefined;
+        this.state.dataSource[key].supplierOriginalCode = undefined;
+        this.state.dataSource[key].supplierProductNumber = undefined;
+        this.state.dataSource[key].store = undefined;
+        this.state.dataSource[key].reservedFromWarehouseId = undefined;
         this.setState({
             update: true
         })
