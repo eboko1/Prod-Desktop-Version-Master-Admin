@@ -627,7 +627,7 @@ class DetailsTable extends Component {
                 fetched: true,
             });
         }
-        this.props.reloadOrderForm(callback);
+        this.props.reloadOrderForm(callback, 'details');
     }
 
     async updateDetail(key, detail) {
