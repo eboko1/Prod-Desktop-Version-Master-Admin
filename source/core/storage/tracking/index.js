@@ -39,6 +39,8 @@ const ReducerState = {
         startDate: moment().subtract(30, 'days'),
         endDate:   moment(),
         productId: void 0,
+        showOnlyOrders: false,
+        showOnlyReserves: false,
     },
 };
 
@@ -143,8 +145,15 @@ export function* redirectToTrackingSaga() {
     while (true) {
         try {
             const { payload } = yield take(REDIRECT_TO_TRACKING);
-            yield put(push(book.productsTracking));
-            yield put(setTrackingFilters({ productId: payload.id }));
+            yield put(push({
+                pathname: book.productsTracking,
+                type: payload.type,
+            }));
+            yield put(setTrackingFilters({
+                productId: payload.id,
+                showOnlyOrders: payload.type == "orders",
+                showOnlyReserves: payload.type == "reserves",
+            }));
             yield put(setStoreProductsSearchQuery(payload.code));
         } catch (error) {
             yield put(emitError(error));

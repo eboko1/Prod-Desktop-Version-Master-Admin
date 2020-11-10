@@ -540,7 +540,7 @@ class ServicesTable extends Component {
                 fetched: true,
             });
         }
-        this.props.reloadOrderForm(callback);
+        this.props.reloadOrderForm(callback, 'labors');
     }
 
     async updateLabor(key, labor) {

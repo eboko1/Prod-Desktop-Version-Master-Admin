@@ -41,6 +41,8 @@ const TrackingTableComponent = memo(props => {
         },
     };
 
+    console.log(props);
+
     return (
         <StyledTable
             size='small'

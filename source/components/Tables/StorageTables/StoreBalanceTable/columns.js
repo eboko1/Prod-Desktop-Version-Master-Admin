@@ -74,6 +74,7 @@ export default props => {
                             id:   data.id,
                             name: data.name,
                             code: data.code,
+                            type: "reserves",
                         })
                     }}
                 >
@@ -125,6 +126,7 @@ export default props => {
                             id:   data.id,
                             name: data.name,
                             code: data.code,
+                            type: "orders",
                         })
                     }}
                 >

@@ -627,7 +627,7 @@ class DetailsTable extends Component {
                 fetched: true,
             });
         }
-        this.props.reloadOrderForm(callback);
+        this.props.reloadOrderForm(callback, 'details');
     }
 
     async updateDetail(key, detail) {
@@ -676,7 +676,6 @@ class DetailsTable extends Component {
                 positions: [],
             },
         }
-        console.log(detail, newDetail);
         const data = {
             updateMode: true,
             details:    [
@@ -707,16 +706,14 @@ class DetailsTable extends Component {
             });
             const result = await response.json();
             if (result.success) {
-                this.props.reloadOrderForm();
+                this.updateDataSource();
             } else {
                 console.log('BAD', result);
             }
         } catch (error) {
             console.error('ERROR:', error);
         }
-
-        await this.updateDataSource();
-
+        
         this.setState({
             update: true,
         });
@@ -876,7 +873,7 @@ class QuickEditModal extends React.Component {
                                 });
                             } }
                         >
-                            { this.state.brandSearchValue.length > 2 ? 
+                            { this.state.brandSearchValue.length > 1 ? 
                                 this.props.brands.map((elem, index) => (
                                     <Option
                                         key={ index }
@@ -1054,7 +1051,6 @@ class QuickEditModal extends React.Component {
     }
 
     handleOk = () => {
-        console.log(this.state.dataSource[ 0 ])
         this.props.onConfirm(this.props.tableKey, {
             ...this.state.dataSource[ 0 ],
         });
@@ -1197,7 +1193,7 @@ class ReserveButton extends React.Component {
             ],
             warehouseId: !detail.reserved ? detail.reservedFromWarehouseId || mainWarehouseId : reserveWarehouseId,
             counterpartWarehouseId: !detail.reserved ? reserveWarehouseId : detail.reservedFromWarehouseId || mainWarehouseId,
-            orderId: this.props.orderId,
+            orderId: orderId,
         };
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');

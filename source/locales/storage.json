@@ -1,6 +1,7 @@
 {
   "en": {
     "storage": "Storage",
+    "storage.document": "Document",
     "storage.new_document": "New document",
     "storage.product_group": "Product Group",
     "storage.system_wide": "System wide",
@@ -96,6 +97,7 @@
   },
   "ru": {
     "storage": "Склад",
+    "storage.document": "Документ",
     "storage.new_document": "Новый документ",
     "storage.product_group": "Группа товаров",
     "storage.system_wide": "Системная",
@@ -192,6 +194,7 @@
   },
   "uk": {
     "storage": "Склад",
+    "storage.document": "Документ",
     "storage.new_document": "Новий документ",
     "storage.product_group": "Група товару",
     "storage.system_wide": "Системна",

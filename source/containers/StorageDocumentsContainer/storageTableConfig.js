@@ -186,7 +186,7 @@ export function columnsConfig(
         render:    (_, document) => {
             return (
                 <div>
-                    <FormattedMessage id={`storage_document.docType.${isOrder ? ORDER : document.type}.${isOrder && document.type == INCOME ? ORDERINCOME : document.documentType}`}/>
+                    <FormattedMessage id={`storage_document.docType.${isOrder ? ORDER : document.type}.${isOrder && document.type == EXPENSE && document.documentType == SUPPLIER ? ORDERINCOME : document.documentType}`}/>
                 </div>
             )
         }
