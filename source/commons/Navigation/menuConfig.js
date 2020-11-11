@@ -11,6 +11,13 @@ export default {
             name:     'navigation.operations',
             items:    [
                 {
+                    key:      '/new-document',
+                    link:     book.newDocumentPage,
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_DASHBOARD),
+                    name: 'navigation.new_document',
+                },
+                {
                     key:      '/dashboard',
                     link:     book.dashboard,
                     disabled: user =>
@@ -186,7 +193,7 @@ export default {
                 {
                     key:      '/storage-inventory',
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE),
+                        isForbidden(user, permissions.VIEW_STORE) || true,
                     link: book.storageInventory,
                     name: 'navigation.inventory',
                 },

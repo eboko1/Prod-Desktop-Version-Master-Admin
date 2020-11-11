@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Tag } from 'antd';
 import _ from 'lodash';
+import moment from 'moment';
 
 // proj
 import { MODALS } from 'core/modals/duck';
@@ -102,6 +103,13 @@ export default props => {
             id: 'storage.date',
         }),
         dataIndex: 'datetime',
+        sorter:    (a, b) =>
+            moment(a.datetime).isAfter(b.datetime)
+                ? 1
+                : moment(b.datetime).isAfter(a.datetime)
+                    ? -1
+                    : 0,
+        defaultSortOrder: 'descend',
         render:    datetime => <DatetimeFormatter datetime={ datetime } />,
     };
 
