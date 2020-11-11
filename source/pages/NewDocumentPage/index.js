@@ -21,32 +21,32 @@ const struct = [
             {
                 itemName:         'order',
                 disabled:         false,
-                newDocumentLink:  book.addOrder,
-                allDocumentsLink: book.dashboard,
+                formLink:  book.addOrder,
+                catalogueLink: book.ordersAppointments,
             },
             {
-                itemName:         'record',
+                itemName:         'approve',
                 disabled:         true,
-                newDocumentLink:  book.exception,
-                allDocumentsLink: book.exception,
+                formLink:  book.exception,
+                catalogueLink: `${book.orders}/approve`,
             },
             {
                 itemName:         'repair',
                 disabled:         true,
-                newDocumentLink:  book.exception,
-                allDocumentsLink: book.exception,
+                formLink:  book.exception,
+                catalogueLink: `${book.orders}/progress`,
             },
             {
                 itemName:         'done',
                 disabled:         true,
-                newDocumentLink:  book.exception,
-                allDocumentsLink: book.exception,
+                formLink:  book.exception,
+                catalogueLink: `${book.orders}/success`,
             },
             {
                 itemName:         'refuse',
                 disabled:         true,
-                newDocumentLink:  book.exception,
-                allDocumentsLink: book.exception,
+                formLink:  book.exception,
+                catalogueLink: `${book.orders}/cancel`,
             },
             {
                 emptyItem: true,
@@ -54,14 +54,14 @@ const struct = [
             {
                 itemName:         'invitation',
                 disabled:         true,
-                newDocumentLink:  book.exception,
-                allDocumentsLink: book.exception,
+                formLink:  book.exception,
+                catalogueLink: `${book.orders}/invitations`,
             },
             {
                 itemName:         'feedback',
                 disabled:         true,
-                newDocumentLink:  book.feedback,
-                allDocumentsLink: book.feedback,
+                formLink:  book.feedback,
+                catalogueLink: `${book.orders}/reviews`,
             }
         ],
     },
@@ -70,18 +70,60 @@ const struct = [
         items: [
             {
                 itemName:         'order-to-supplier',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageOrders,
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageOrders,
+                formLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'ORDER',
+                        documentType: 'SUPPLIER',
+                    }
+                },
+                catalogueLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'ORDER',
+                        documentType: 'SUPPLIER',
+                    }
+                },
             },
             {
                 itemName:         'incoming-by-order',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageOrders,
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageOrders,
+                formLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'ORDER',
+                        documentType: 'ORDERINCOME',
+                    }
+                },
+                catalogueLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'ORDER',
+                        documentType: 'ORDERINCOME',
+                    }
+                },
             },
             {
                 itemName:         'order-correction',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageOrders,
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageOrders,
+                formLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'ORDER',
+                        documentType: 'ADJUSTMENT',
+                    }
+                },
+                catalogueLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'ORDER',
+                        documentType: 'ADJUSTMENT',
+                    }
+                },
             },
             {
                emptyItem: true,
@@ -91,72 +133,214 @@ const struct = [
             },
             {
                 itemName:         'income',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageIncomes,
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageIncomes,
+                formLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'INCOME',
+                        documentType: 'SUPPLIER',
+                    }
+                },
+                catalogueLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'INCOME',
+                        documentType: 'SUPPLIER',
+                    }
+                },
             },
             {
                 itemName:         'expense',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageExpenses,
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageExpenses,
+                formLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'EXPENSE',
+                        documentType: 'CLIENT',
+                    }
+                },
+                catalogueLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'EXPENSE',
+                        documentType: 'CLIENT',
+                    }
+                },
             },
             {
                 itemName:         'transfer',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageTransfers,
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageTransfers,
+                formLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'TRANSFER',
+                        documentType: 'TRANSFER',
+                    }
+                },
+                catalogueLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'TRANSFER',
+                        documentType: 'TRANSFER',
+                    }
+                },
             },
             {
                 itemName:         'write-off',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageExpenses,
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageExpenses,
+                formLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'EXPENSE',
+                        documentType: 'OWN_CONSUMPTION',
+                    }
+                },
+                catalogueLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'EXPENSE',
+                        documentType: 'OWN_CONSUMPTION',
+                    }
+                },
             },
             {
                 emptyItem: true,
             },
             {
                 itemName:         'customer-return',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageIncomes,
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageIncomes,
+                formLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'INCOME',
+                        documentType: 'CLIENT',
+                    }
+                },
+                catalogueLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'INCOME',
+                        documentType: 'CLIENT',
+                    }
+                },
             },
             {
                 itemName:         'return-to-supplier',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageExpenses,
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageExpenses,
+                formLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'EXPENSE',
+                        documentType: 'SUPPLIER',
+                    }
+                },
+                catalogueLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'EXPENSE',
+                        documentType: 'SUPPLIER',
+                    }
+                },
             },
             {
                 emptyItem: true,
             },
             {
                 itemName:         'for-storage',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageIncomes,
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageIncomes,
+                disabled: true,
             },
             {
                 itemName:         'product-delivery',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageExpenses,
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageExpenses,
+                disabled: true,
             },
             {
                 itemName:         'tool-issuance',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageTransfers,
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageTransfers,
+                formLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'TRANSFER',
+                        documentType: 'TOOL',
+                    }
+                },
+                catalogueLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'TRANSFER',
+                        documentType: 'TOOL',
+                    }
+                },
             },
             {
                 itemName:         'tool-return',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageTransfers,
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageTransfers,
+                formLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'TRANSFER',
+                        documentType: 'REPAIR_AREA',
+                    }
+                },
+                catalogueLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'TRANSFER',
+                        documentType: 'REPAIR_AREA',
+                    }
+                },
             },
             {
                 emptyItem: true,
             },
             {
-                itemName:         'minus-invent',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageExpenses,
+                itemName:         'lack',
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageExpenses,
+                formLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'EXPENSE',
+                        documentType: 'INVENTORY',
+                    }
+                },
+                catalogueLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'EXPENSE',
+                        documentType: 'INVENTORY',
+                    }
+                },
             },
             {
-                itemName:         'pluss-invent',
-                newDocumentLink:  book.storageDocument,
-                allDocumentsLink: book.storageIncomes,
+                itemName:         'excess',
+                formLink:  book.storageDocument,
+                catalogueLink: book.storageIncomes,
+                formLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'INCOME',
+                        documentType: 'INVENTORY',
+                    }
+                },
+                catalogueLinkState : { 
+                    showForm: true,
+                    formData: {
+                        type: 'INCOME',
+                        documentType: 'INVENTORY',
+                    }
+                },
             },
         ],
     },
@@ -165,8 +349,9 @@ const struct = [
         items: [
             {
                 itemName:         'cash-order',
-                newDocumentLink:  book.cashFlowPage,
-                allDocumentsLink: book.cashFlowPage,
+                formLink:  book.cashFlowPage,
+                catalogueLink: book.cashFlowPage,
+                formLinkState : { showForm: true },
             },
         ],
     },
@@ -175,66 +360,75 @@ const struct = [
         items: [
             {
                 itemName:         'client',
-                newDocumentLink:  book.clients,
-                allDocumentsLink: book.clients,
+                formLink:  book.clients,
+                catalogueLink: book.clients,
+                formLinkState : { showForm: true },
             },
             {
                 itemName:         'supplier',
-                newDocumentLink:  book.suppliersPage,
-                allDocumentsLink: book.suppliersPage,
+                formLink:  book.suppliersPage,
+                catalogueLink: book.suppliersPage,
+                formLinkState : { showForm: true },
             },
             {
                 itemName:         'product',
-                newDocumentLink:  book.products,
-                allDocumentsLink: book.products,
+                formLink:  book.products,
+                catalogueLink: book.products,
+                formLinkState : { showForm: true },
             },
             {
                 itemName:         'labor',
-                newDocumentLink:  book.laborsPage,
-                allDocumentsLink: book.laborsPage,
+                formLink:  book.laborsPage,
+                catalogueLink: book.laborsPage,
+                formLinkState : { showForm: true },
             },
             {
                 itemName:         'diagnostics',
-                newDocumentLink:  book.diagnosticPatterns,
-                allDocumentsLink: book.diagnosticPatterns,
+                formLink:  book.diagnosticPatterns,
+                catalogueLink: book.diagnosticPatterns,
+                formLinkState : { showForm: true },
             },
             {
                 itemName:         'employee',
-                newDocumentLink:  book.addEmployee,
-                allDocumentsLink: book.employeesPage,
+                formLink:  book.addEmployee,
+                catalogueLink: book.employeesPage,
             },
             {
                 itemName:         'warehouse',
-                newDocumentLink:  book.warehouses,
-                allDocumentsLink: book.warehouses,
+                formLink:  book.warehouses,
+                catalogueLink: book.warehouses,
+                formLinkState : { showForm: true },
             },
             {
                 itemName:         'cashbox',
-                newDocumentLink:  book.cashFlowPage,
-                allDocumentsLink: book.cashFlowPage,
+                formLink:  book.cashSettingsPage,
+                catalogueLink: book.cashSettingsPage,
             },
             {
                 itemName:         'requisites',
-                newDocumentLink:  book.requisites,
-                allDocumentsLink: book.requisites,
+                formLink:  book.requisites,
+                catalogueLink: book.requisites,
+                formLinkState : { showForm: true },
             },
             {
                 emptyItem: true,
             },
             {
                 itemName:         'store-group',
-                newDocumentLink:  book.productsGroups,
-                allDocumentsLink: book.productsGroups,
+                formLink:  book.productsGroups,
+                catalogueLink: book.productsGroups,
+                formLinkState : { showForm: true },
             },
             {
                 itemName:         'markup-group',
-                newDocumentLink:  book.priceGroups,
-                allDocumentsLink: book.priceGroups,
+                formLink:  book.priceGroups,
+                catalogueLink: book.priceGroups,
             },
             {
                 itemName:         'units',
-                newDocumentLink:  book.products,
-                allDocumentsLink: book.products,
+                formLink:  book.products,
+                catalogueLink: book.products,
+                disabled: true,
             },
         ],
     },
@@ -260,15 +454,27 @@ class NewDocumentPage extends Component {
         )
     };
 
-    _renderItem = (blockTitle, {itemName, newDocumentLink, allDocumentsLink, disabled, emptyItem}, key) => {
+    _renderItem = (blockTitle, {itemName, formLink, formLinkState, catalogueLink, catalogueLinkState, disabled, emptyItem}, key) => {
         return !emptyItem ? (
             <div key={ key } className={ disabled ? Styles.disabledItem + " " + Styles.item : Styles.item }>
-                <Link to={ newDocumentLink }>
-                    <Button disabled={disabled} className={Styles.itemButton + " " + Styles[blockTitle]}>
+                <Link
+                    className={Styles.buttonLink}
+                    to={ {
+                        pathname: formLink,
+                        state:    formLinkState,
+                    } }
+                >
+                    <Button className={Styles.itemButton + " " + Styles[blockTitle]}>
                         <FormattedMessage id={`new-document-page.item.${itemName}`} />
                     </Button>
                 </Link>
-                <Link to={ allDocumentsLink }>
+                <Link
+                    className={Styles.folderLink}
+                    to={ {
+                        pathname: catalogueLink,
+                        state:    catalogueLinkState,
+                    } }
+                >
                     <Icon type="folder-open" />
                 </Link>
             </div>

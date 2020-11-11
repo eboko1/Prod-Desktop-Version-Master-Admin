@@ -31,6 +31,8 @@ const AddButton = styled(StyledButton)`
 `;
 
 const StoreProducts = withErrorMessage()(props => {
+    if(props.location.state && props.location.state.showForm) props.setModal(MODALS.STORE_PRODUCT);
+
     return (
         <Layout
             title={ <FormattedMessage id='navigation.products' /> }

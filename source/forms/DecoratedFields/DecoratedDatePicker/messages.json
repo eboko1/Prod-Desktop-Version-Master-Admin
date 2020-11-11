@@ -11,6 +11,7 @@
         "datepicker.tomorrow": "Tomorrow",
         "datepicker.now": "Now",
         "datepicker.next": "Next",
+        "datepicker.next_week": "Next",
         "datepicker.back_to_today": "Back To Today",
         "datepicker.ok": "Ok",
         "datepicker.clear": "Clear",
@@ -30,7 +31,9 @@
         "datepicker.prev_year": "Previous Year",
         "datepicker.next_year": "Next Year",
         "datepicker.current": "Current",
+        "datepicker.current_week": "Current",
         "datepicker.previous": "Previous",
+        "datepicker.previous_week": "Previous",
         "datepicker.month_before": "month before",
         "datepicker.quarters_before": "quarters before"
     },
@@ -46,6 +49,7 @@
         "datepicker.tomorrow": "Завтра",
         "datepicker.now": "Сейчас",
         "datepicker.next": "Следующий",
+        "datepicker.next_week": "Следующая",
         "datepicker.back_to_today": "Назад к сегодняшнему дню",
         "datepicker.ok": "Ок",
         "datepicker.clear": "Очистить",
@@ -65,9 +69,11 @@
         "datepicker.prev_year": "Предыдущий год",
         "datepicker.next_year": "Следующий год",
         "datepicker.current": "Текущий",
-        "datepicker.previous": "Преведущий",
-        "datepicker.month_before": "месяца тому",
-        "datepicker.quarters_before": "квартала тому"
+        "datepicker.current_week": "Текущая",
+        "datepicker.previous": "Предыдущий",
+        "datepicker.previous_week": "Предыдущая",
+        "datepicker.month_before": "месяца назад",
+        "datepicker.quarters_before": "квартала назад"
     },
     "uk": {
         "date": "Дата",
@@ -81,6 +87,7 @@
         "datepicker.tomorrow": "Завтра",
         "datepicker.now": "Зараз",
         "datepicker.next": "Наступий",
+        "datepicker.next_week": "Наступий",
         "datepicker.back_to_today": "Повернутися на поточний день",
         "datepicker.ok": "Ок",
         "datepicker.clear": "Очистити",
@@ -100,7 +107,9 @@
         "datepicker.prev_year": "Минулий Рік",
         "datepicker.next_year": "Наступний Рік",
         "datepicker.current": "Поточний",
+        "datepicker.current_week": "Поточний",
         "datepicker.previous": "Попередній",
+        "datepicker.previous_week": "Попередній",
         "datepicker.month_before": "місяці тому",
         "datepicker.quarters_before": "квартали тому"
     }
