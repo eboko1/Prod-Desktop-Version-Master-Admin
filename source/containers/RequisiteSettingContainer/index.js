@@ -10,7 +10,6 @@ import { Table, Button, Icon } from 'antd';
 
 // proj
 import { RequisiteSettingFormModal } from "forms";
-import { deleteRequisite } from "core/requisiteSettings/saga";
 // own
 
 export default class RequisiteSettingContainer extends Component {
@@ -82,7 +81,7 @@ export default class RequisiteSettingContainer extends Component {
                             <Button
                                 disabled={elem.used}
                                 onClick={()=>{
-                                    deleteRequisite(elem.id, this.props.updateDataSource);
+                                    this.props.deleteRequisite(elem.id, this.props.updateDataSource);
                                 }}
                             >
                                 <Icon style={{color: 'var(--danger)'}} type='delete'/>
@@ -102,7 +101,7 @@ export default class RequisiteSettingContainer extends Component {
     }
 
     render() {
-        const { modalVisible, showModal, hideModal, requisiteData, dataSource } = this.props;
+        const { modalVisible, showModal, hideModal, requisiteData, dataSource, postRequisite, updateRequisite } = this.props;
         const { fetched } = this.state;
         return (
             <div>
@@ -122,6 +121,8 @@ export default class RequisiteSettingContainer extends Component {
                     modalVisible={ modalVisible }
                     hideModal={ hideModal }
                     requisiteData={ requisiteData }
+                    postRequisite={postRequisite}
+                    updateRequisite={updateRequisite}
                 />
             </div>
         );

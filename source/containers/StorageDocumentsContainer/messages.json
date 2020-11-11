@@ -136,7 +136,7 @@
         "storage_document.docType.EXPENSE.OWN_CONSUMPTION": "Списання товару",
         "storage_document.docType.ORDER.SUPPLIER": "Замовлення постачальнику",
         "storage_document.docType.ORDER.ADJUSTMENT": "Коригування замовлення",
-        "storage_document.docType.ORDER.ORDERINCOME": "Прихід на замовлення",
+        "storage_document.docType.ORDER.ORDERINCOME": "Прихід за замовленням",
         "storage_document.docType.EXPENSE.TRANSFER": "Переміщення",
         "storage_document.docType.TRANSFER.RESERVE": "Резерв",
         "storage_document.docType.TRANSFER.TRANSFER": "Переміщення",

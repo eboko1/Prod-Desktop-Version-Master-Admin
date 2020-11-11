@@ -10,7 +10,7 @@ import { Button } from 'antd';
 
 // proj
 import { Layout, Spinner } from "commons";
-import { getData } from "core/requisiteSettings/saga";
+import { getData, deleteRequisite, postRequisite, updateRequisite } from "core/requisiteSettings/saga";
 import { RequisiteSettingContainer } from "containers";
 // own
 
@@ -86,6 +86,9 @@ export default class RequisiteSettingPage extends Component {
                     requisiteData={requisiteData}
                     dataSource={dataSource}
                     updateDataSource={this.updateDataSource}
+                    deleteRequisite={deleteRequisite}
+                    postRequisite={postRequisite}
+                    updateRequisite={updateRequisite}
                 />
             </Layout>
         );

@@ -59,7 +59,6 @@ export default class OrdersFilterContainer extends Component {
                         })}
                         onChange={({ target: { value } }) =>{
                             const replacedValue = value.replace(/[+()]/g,'');
-                            console.log(replacedValue);
                             this.handleClientsSearch(replacedValue);
                         }}
                     />

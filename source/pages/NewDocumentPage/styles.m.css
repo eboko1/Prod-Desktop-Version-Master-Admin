@@ -1,0 +1,67 @@
+.block {
+	padding: 12px 22px;
+    border: 1px solid var(--text);
+    margin: 12px 0;
+}
+
+.blockTitle {
+	font-size: 20px;
+	font-weight: 500;
+	margin: 8px 0 14px 0;
+}
+
+.blockItems {
+	display: flex;
+	flex: 1 1 auto;
+	flex-wrap: wrap;
+}
+
+.item {
+	width: 20%;
+	margin: 8px 0;
+
+	& a {
+		margin: 0 4px;
+	}
+
+	& button {
+		width: 80%;
+	}
+}
+
+.itemButton {
+	font-weight: 500;
+
+	&:hover {
+		color: var(--text);
+		border-color: var(--text);
+	}
+
+	&.repairs {
+		background-color: var(--db_progress);
+
+	}
+	&.storage {
+		background-color: var(--db_reserve);
+	}
+	&.accounting {
+		background-color: var(--db_required);
+	}
+	&.catalogue {
+		background-color: var(--db_approve);
+	}
+}
+
+.disabledItem {
+	cursor: not-allowed;
+	
+
+	& * {
+		pointer-events: none;
+		color: var(--text2);
+	}
+}
+
+.emptyItem {
+	display: block;
+}

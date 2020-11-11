@@ -1,6 +1,7 @@
 {
   "en": {
     "navigation.operations": "Operations",
+    "navigation.new_document": "New Document",
     "navigation.planner": "Workload Planner",
     "navigation.workflow": "Workflow",
     "navigation.tasks": "Tasks",
@@ -64,6 +65,7 @@
   },
   "ru": {
     "navigation.operations": "Операции",
+    "navigation.new_document": "Новый документ",
     "navigation.planner": "Планировщик",
     "navigation.workflow": "Обращения",
     "navigation.tasks": "Задачи",
@@ -127,6 +129,7 @@
   },
   "uk": {
     "navigation.operations": "Операції",
+    "navigation.new_document": "Новий документ",
     "navigation.planner": "Планувальник",
     "navigation.workflow": "Звернення",
     "navigation.tasks": "Задачі",
