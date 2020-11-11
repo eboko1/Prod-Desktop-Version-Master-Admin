@@ -9,16 +9,16 @@ import _ from "lodash";
 import {
     setCreateClientRequisiteForm,
     setEditClientRequisiteId,
-    createClientRequisite,
-    updateClientRequisite,
-    deleteClientRequisite,
+    //createClientRequisite,
+    //updateClientRequisite,
+    //deleteClientRequisite,
     hideForms,
 } from "core/clientRequisite/duck";
 
 import { Catcher } from "commons";
 import { RequisiteForm, AddRequisiteForm } from "forms";
 import { RequisiteSettingContainer } from "containers";
-import { getData } from "core/requisiteSettings/saga";
+import { getClientData, deleteClientRequisite, postClientRequisite, updateClientRequisite } from "core/requisiteSettings/saga";
 
 // own
 import Styles from "./styles.m.css";
@@ -31,9 +31,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     setCreateClientRequisiteForm,
     setEditClientRequisiteId,
-    createClientRequisite,
-    updateClientRequisite,
-    deleteClientRequisite,
+    //createClientRequisite,
+    //updateClientRequisite,
+    //deleteClientRequisite,
     hideForms,
 };
 
@@ -46,6 +46,7 @@ export default class ClientRequisitesContainer extends Component {
             modalVisible: false,
             requisiteData: undefined,
             dataSource: [],
+            loading: true,
         };
 
         this.setDataSource = this.setDataSource.bind(this);
@@ -78,11 +79,15 @@ export default class ClientRequisitesContainer extends Component {
         });
         this.setState({
             dataSource: data,
+            loading: false,
         })
     }
 
     async updateDataSource() {
-        await getData(this.setDataSource);
+        await this.setState({
+            loading: true,
+        })
+        await getClientData(this.props.clientId, this.setDataSource);
         await this.setState({
             modalVisible: false,
             requisiteData: undefined,
@@ -95,24 +100,13 @@ export default class ClientRequisitesContainer extends Component {
             requisites,
             createClientRequisiteForm,
             editClientRequisiteId,
-            updateClientRequisite,
-            createClientRequisite,
+            //updateClientRequisite,
+            //createClientRequisite,
+            //deleteClientRequisite
             clientId,
         } = this.props;
 
-        const { modalVisible, dataSource, requisiteData } = this.state;
-
-        const requisitesRows = requisites.map((item, index) => ({
-            ...item,
-            key: index,
-        }));
-
-        console.log(requisitesRows)
-
-        const initClientRequisite =
-            editClientRequisiteId &&
-            _.find(requisites, { id: editClientRequisiteId });
-
+        const { modalVisible, dataSource, requisiteData, loading } = this.state;
         return (
             <Catcher>
                 <Row
@@ -138,16 +132,18 @@ export default class ClientRequisitesContainer extends Component {
 
 
                 <RequisiteSettingContainer
+                    loading={loading}
                     modalVisible={modalVisible}
                     showModal={this.showModal}
                     hideModal={this.hideModal}
                     requisiteData={requisiteData}
-                    dataSource={requisitesRows}
+                    dataSource={dataSource}
                     
                     updateDataSource={this.updateDataSource}
-                    /*deleteRequisite={deleteRequisite}
-                    postRequisite={postRequisite}
-                    updateRequisite={updateRequisite}*/
+                    deleteRequisite={deleteClientRequisite}
+                    postRequisite={postClientRequisite}
+                    updateRequisite={updateClientRequisite}
+                    clientId={clientId}
                 />
             </Catcher>
         );

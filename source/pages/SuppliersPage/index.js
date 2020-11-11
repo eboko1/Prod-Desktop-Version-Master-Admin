@@ -26,6 +26,10 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class SuppliersPage extends Component {
+    componentDidMount() {
+        if(this.props.location.state && this.props.location.state.showForm) this.props.setModal(MODALS.SUPPLIER);
+    }
+
     render() {
         const { setModal, modalProps } = this.props;
 

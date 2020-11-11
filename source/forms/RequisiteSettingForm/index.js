@@ -51,7 +51,7 @@ export class RequisiteSettingForm extends Component {
                 if(id) {
                     updateRequisite(id, values, this.props.hideModal);
                 } else {
-                    postRequisite(values, this.props.hideModal);
+                    postRequisite(values, this.props.hideModal, this.props.clientId);
                 }
             }
         });
@@ -259,7 +259,7 @@ export class RequisiteSettingFormModal extends Component {
     }
 
     render() {
-        const { buttonMode, modalVisible, requisiteData, hideModal, postRequisite, updateRequisite } = this.props;
+        const { buttonMode, modalVisible, requisiteData, hideModal, postRequisite, updateRequisite, clientId } = this.props;
         const { visible } = this.state;
         return (
             <div>
@@ -292,6 +292,7 @@ export class RequisiteSettingFormModal extends Component {
                         visible = { buttonMode ? visible : modalVisible }
                         postRequisite={postRequisite}
                         updateRequisite={updateRequisite}
+                        clientId={clientId}
                     />
                 </Modal>
             </div>

@@ -17,11 +17,12 @@ class ExpensesPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            documentFilters: undefined,
         };
     }
-
-
+    
     render() {
+        const { documentFilters } = this.state;
         return (
             <StorageDocumentsContainer
                 listType = 'EXPENSE'

@@ -72,7 +72,7 @@ export default class RequisiteSettingContainer extends Component {
                 key:    'actions',
                 render: (elem) => {
                     return (
-                        <div>
+                        <div style={{textAlign: 'end'}}>
                             <Button
                                 onClick={()=>this.props.showModal(elem)}
                             >
@@ -101,12 +101,12 @@ export default class RequisiteSettingContainer extends Component {
     }
 
     render() {
-        const { modalVisible, showModal, hideModal, requisiteData, dataSource, postRequisite, updateRequisite } = this.props;
+        const { modalVisible, showModal, hideModal, requisiteData, dataSource, postRequisite, updateRequisite, clientId, loading } = this.props;
         const { fetched } = this.state;
         return (
             <div>
                 <Table
-                    loading={ !fetched }
+                    loading={ loading }
                     columns={ this.columns }
                     dataSource={ dataSource }
                     onRow={ (record, rowIndex) => {
@@ -123,6 +123,7 @@ export default class RequisiteSettingContainer extends Component {
                     requisiteData={ requisiteData }
                     postRequisite={postRequisite}
                     updateRequisite={updateRequisite}
+                    clientId={clientId}
                 />
             </div>
         );

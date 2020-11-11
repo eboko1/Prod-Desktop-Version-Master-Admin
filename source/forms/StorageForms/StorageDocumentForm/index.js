@@ -292,7 +292,9 @@ class StorageDocumentForm extends Component {
                             }}
                             //optionFilterProp={'children'}
                             filterOption={(input, option) => {
-                                return option.props.children.toLowerCase().replace(/[^a-zA_Z0-9]/gim,'').indexOf(input.toLowerCase()) >= 0;
+                                const searchValue = option.props.children.toLowerCase().replace(/[+()]/g,'');
+                                const inputValue = input.toLowerCase();
+                                return searchValue.indexOf(inputValue) >= 0;
                             }}
                             onSearch={(input)=>{
                                 this.setState({
@@ -589,6 +591,7 @@ class StorageDocumentForm extends Component {
                         warning={warning}
                         user={user}
                         sellingPrice={type == EXPENSE}
+                        maxOrdered={type == ORDER && documentType == ADJUSTMENT}
                     /> 
                 : null}
             </div>
@@ -1025,7 +1028,7 @@ class AddProductModal extends React.Component {
     }
 
     getProductId(detailCode, brandId, productId) {
-        const { storageProducts, storageBalance, detailName, quantity } = this.state;
+        const { storageProducts, storageBalance, detailName, quantity, tradeCode } = this.state;
         var storageProduct;
         if(productId) {
             storageProduct = storageProducts.find((elem)=>elem.id==productId);
@@ -1069,7 +1072,6 @@ class AddProductModal extends React.Component {
                 groupId: undefined,
                 productId: undefined,
                 detailName: this.props.warning ? detailName : undefined,
-                tradeCode: undefined,
                 quantity: quantity || 1,
             })
             return false;
@@ -1320,6 +1322,7 @@ class AddProductModal extends React.Component {
                             onChange={(value)=>{
                                 this.setState({
                                     detailCode: value,
+                                    tradeCode: undefined,
                                     detailCodeSearch: value,
                                 });
                                 this.getProductId(value, brandId);
@@ -1403,6 +1406,7 @@ class AddProductModal extends React.Component {
                                 this.getOptions(value)
                                 this.setState({
                                     brandId: value,
+                                    tradeCode: undefined,
                                     brandName: option.props.children,
                                 })
                             }}
@@ -1462,7 +1466,7 @@ class AddProductModal extends React.Component {
                     <div className={Styles.addProductItemWrap}>
                         <div><FormattedMessage id='order_form_table.price' /></div>
                         <InputNumber
-                            disabled={this.props.priceDisabled}
+                            disabled={this.props.priceDisabled || this.props.maxOrdered}
                             value={this.props.sellingPrice ? sellingPrice : stockPrice}
                             style={{
                                 //marginLeft: 10,
@@ -1489,6 +1493,7 @@ class AddProductModal extends React.Component {
                                 //marginLeft: 10,
                             }}
                             min={1}
+                            max={this.props.maxOrdered ? storageBalance[3].count : undefined}
                             onChange={(value)=>{
                                 this.setState({
                                     quantity: value

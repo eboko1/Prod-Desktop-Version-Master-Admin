@@ -7,7 +7,7 @@
     "new-document-page.block.catalogue": "Catalogue",
 
     "new-document-page.item.order": "Order",
-    "new-document-page.item.record": "Record",
+    "new-document-page.item.approve": "Approve",
     "new-document-page.item.repair": "Repair",
     "new-document-page.item.done": "Done",
     "new-document-page.item.refuse": "Refuse",
@@ -27,8 +27,8 @@
     "new-document-page.item.product-delivery": "Product delivery",
     "new-document-page.item.tool-issuance": "Tool issuance",
     "new-document-page.item.tool-return": "Tool return",
-    "new-document-page.item.minus-invent": "Minus on invent.",
-    "new-document-page.item.pluss-invent": "Pluss on invent.",
+    "new-document-page.item.lack": "Lack",
+    "new-document-page.item.excess": "Excess",
 
     "new-document-page.item.cash-order": "Cash Order",
 
@@ -52,8 +52,8 @@
     "new-document-page.block.accounting": "Бухгалтерия",
     "new-document-page.block.catalogue": "Справочник",
 
-    "new-document-page.item.order": "Наряд-заказ",
-    "new-document-page.item.record": "Запись",
+    "new-document-page.item.order": "Новый",
+    "new-document-page.item.approve": "Запись",
     "new-document-page.item.repair": "Ремонт",
     "new-document-page.item.done": "Выполнено",
     "new-document-page.item.refuse": "Отказ",
@@ -73,8 +73,8 @@
     "new-document-page.item.product-delivery": "Выдача хранения",
     "new-document-page.item.tool-issuance": "Выдача инструмента",
     "new-document-page.item.tool-return": "Возврат инструмента",
-    "new-document-page.item.minus-invent": "Минус по инвент.",
-    "new-document-page.item.pluss-invent": "Плюс по инвент.",
+    "new-document-page.item.lack": "Недостача",
+    "new-document-page.item.excess": "Излишек",
 
     "new-document-page.item.cash-order": "Кассовый ордер",
 
@@ -98,8 +98,8 @@
     "new-document-page.block.accounting": "Бухгалтерія",
     "new-document-page.block.catalogue": "Довідник",
 
-    "new-document-page.item.order": "Наряд-замовлення",
-    "new-document-page.item.record": "Запис",
+    "new-document-page.item.order": "Новий",
+    "new-document-page.item.approve": "Запис",
     "new-document-page.item.repair": "Ремонт",
     "new-document-page.item.done": "Виконано",
     "new-document-page.item.refuse": "Відмова",
@@ -119,8 +119,8 @@
     "new-document-page.item.roduct-delivery": "Видача зберігання",
     "new-document-page.item.tool-issuance": "Видача інструменту",
     "new-document-page.item.tool-return": "Повернення інструменту",
-    "new-document-page.item.minus-invent": "Мінус по інвент.",
-    "new-document-page.item.pluss-invent": "Плюс по інвент.",
+    "new-document-page.item.lack": "Нехватка",
+    "new-document-page.item.excess": "Надлишок",
 
     "new-document-page.item.cash-order": "Касове замовлення",
 

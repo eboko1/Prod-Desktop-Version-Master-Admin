@@ -52,14 +52,14 @@
 	}
 }
 
-.disabledItem {
+.disabledItem, .disabledItem .buttonLink *{
 	cursor: not-allowed;
-	
+	pointer-events: none;
+	color: var(--text2);
+}
 
-	& * {
-		pointer-events: none;
-		color: var(--text2);
-	}
+.folderLink {
+	pointer-events: all;
 }
 
 .emptyItem {
