@@ -66,7 +66,7 @@ export default class ClientRequisitesContainer extends Component {
             modalVisible: false,
             requisiteData: undefined,
         })
-        this.updateDataSource();
+        //this.updateDataSource();
     }
 
     componentDidMount() {
@@ -105,7 +105,6 @@ export default class ClientRequisitesContainer extends Component {
             //deleteClientRequisite
             clientId,
         } = this.props;
-
         const { modalVisible, dataSource, requisiteData, loading } = this.state;
         return (
             <Catcher>
