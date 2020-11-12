@@ -1,8 +1,8 @@
 // vendor
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Button } from 'antd';
-import { injectIntl } from 'react-intl';
+import { Form, Select, Button, Checkbox, InputNumber } from 'antd';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import styled from 'styled-components';
 
@@ -25,6 +25,7 @@ import {
     DecoratedAutoComplete,
     DecoratedTreeSelect,
     DecoratedSelect,
+    DecoratedCheckbox,
 } from 'forms/DecoratedFields';
 import { MeasureUnitSelect, PriceGroupSelect } from 'forms/_formkit';
 
@@ -59,7 +60,10 @@ const ProductForm = props => {
         intl: { formatMessage },
     } = props;
 
-    
+    const [storeInWarehouse, setStoreInWarehouse] = useState(false);
+    const [multiplicity, setMultiplicity] = useState(1);
+    const [min, setMin] = useState(1);
+    const [max, setMax] = useState(1);
 
     useEffect(() => {
         props.fetchProduct(_.get(props, 'modalProps.id'));
@@ -69,6 +73,13 @@ const ProductForm = props => {
         props.fetchStoreGroups();
         props.fetchPriceGroups();
     }, []);
+
+    useEffect(() => {
+        console.log(props);
+        setStoreInWarehouse(Boolean(_.get(props, 'product.min')));
+        setMin(_.get(props, 'product.min') || 1);
+        setMax(_.get(props, 'product.max') || 1);
+    }, [_.get(props, 'product')]);
 
     
 
@@ -104,6 +115,10 @@ const ProductForm = props => {
             if (!err) {
                 if (values.brandName && values.brandId) {
                     _.set(values, 'brandId', void 0);
+                }
+                if(storeInWarehouse) {
+                    values.min = min*multiplicity;
+                    values.max = max*multiplicity;
                 }
                 props.editing
                     ? props.updateProduct({
@@ -154,39 +169,6 @@ const ProductForm = props => {
                     },
                 ] }
                 initialValue={ _.get(props, 'product.code') }
-            />
-            <DecoratedTreeSelect
-                formItem
-                formItemLayout={ formItemLayout }
-                label={ formatMessage({ id: 'storage.product_group' }) }
-                fields={ {} }
-                getFieldDecorator={ form.getFieldDecorator }
-                getPopupContainer={ trigger => trigger.parentNode }
-                field='groupId'
-                rules={ [
-                    {
-                        required: true,
-                        message:  formatMessage({ id: 'required_field' }),
-                    },
-                ] }
-                onSelect={ e => onSelectProductGroup(e) }
-                treeDataNodes={ props.storeGroups }
-                initialValue={ _.get(props, 'product.groupId') }
-            />
-            <DecoratedInput
-                formItem
-                formItemLayout={ formItemLayout }
-                label={ formatMessage({ id: 'storage.product_name' }) }
-                fields={ {} }
-                field='name'
-                getFieldDecorator={ form.getFieldDecorator }
-                rules={ [
-                    {
-                        required: true,
-                        message:  formatMessage({ id: 'required_field' }),
-                    },
-                ] }
-                initialValue={ _.get(props, 'product.name') }
             />
             <>
                 <DecoratedAutoComplete
@@ -249,6 +231,39 @@ const ProductForm = props => {
                     field='brandName'
                 />
             </>
+            <DecoratedTreeSelect
+                formItem
+                formItemLayout={ formItemLayout }
+                label={ formatMessage({ id: 'storage.product_group' }) }
+                fields={ {} }
+                getFieldDecorator={ form.getFieldDecorator }
+                getPopupContainer={ trigger => trigger.parentNode }
+                field='groupId'
+                rules={ [
+                    {
+                        required: true,
+                        message:  formatMessage({ id: 'required_field' }),
+                    },
+                ] }
+                onSelect={ e => onSelectProductGroup(e) }
+                treeDataNodes={ props.storeGroups }
+                initialValue={ _.get(props, 'product.groupId') }
+            />
+            <DecoratedInput
+                formItem
+                formItemLayout={ formItemLayout }
+                label={ formatMessage({ id: 'storage.product_name' }) }
+                fields={ {} }
+                field='name'
+                getFieldDecorator={ form.getFieldDecorator }
+                rules={ [
+                    {
+                        required: true,
+                        message:  formatMessage({ id: 'required_field' }),
+                    },
+                ] }
+                initialValue={ _.get(props, 'product.name') }
+            />
             <MeasureUnitSelect
                 field={ 'measureUnit' }
                 formItem
@@ -304,6 +319,53 @@ const ProductForm = props => {
                 getFieldDecorator={ form.getFieldDecorator }
                 initialValue={ _.get(props, 'product.certificate') }
             />
+            <div style={{margin: '0 0 16px 0'}}>
+                <FormattedMessage id='storage_document.store_in_warehouse' />
+                <Checkbox
+                    style={{marginLeft: 5}}
+                    checked={storeInWarehouse}
+                    onChange={()=>{
+                        setStoreInWarehouse(!storeInWarehouse);
+                    }}
+                />
+            </div>
+            {storeInWarehouse &&
+                <div style={{display: 'flex', justifyContent: 'space-between', margin: '0 0 16px 0'}}>
+                    <div>
+                        <span style={{marginRight: 8}}><FormattedMessage id='storage_document.multiplicity'/></span>
+                        <InputNumber
+                            value={multiplicity}
+                            step={1}
+                            min={1}
+                            onChange={(value)=>{
+                                setMultiplicity(value);
+                            }}
+                        />
+                    </div>
+                    <div>
+                        <span style={{marginRight: 8}}><FormattedMessage id='storage.min'/></span>
+                        <InputNumber
+                            value={min*multiplicity}
+                            step={multiplicity}
+                            min={0}
+                            onChange={(value)=>{
+                                setMin(Math.floor(value/multiplicity));
+                            }}
+                        />
+                    </div>
+                    <div>
+                        <span style={{marginRight: 8}}><FormattedMessage id='storage.max'/></span>
+                        <InputNumber
+                            value={max*multiplicity}
+                            step={multiplicity}
+                            min={min*multiplicity}
+                            onChange={(value)=>{
+                                setMax(Math.floor(value/multiplicity));
+                            }}
+                        />
+                    </div>
+                </div>
+            }
             <ButtonGroup>
                 { props.editing ? (
                     <DeleteButton
