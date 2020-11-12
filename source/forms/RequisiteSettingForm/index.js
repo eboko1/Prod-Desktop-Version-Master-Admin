@@ -53,9 +53,11 @@ export class RequisiteSettingForm extends Component {
                 } else {
                     postRequisite(values, this.props.hideModal, this.props.clientId);
                 }
+                //window.location.reload();
             }
         });
-        this.props.hideModal();
+        await this.props.hideModal();
+        await window.location.reload();
     };
 
     componentDidUpdate(prevProps) {

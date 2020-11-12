@@ -80,12 +80,12 @@ export default props => {
             const docId = _.get(data, 'doc.id'),
                   documentNumber = _.get(data, 'doc.documentNumber');
 
-            return data.order && data.order.id ? (
+            return data.orderId ? (
                 <Link
-                    to={ `${book.order}/${data.order.id}` }
+                    to={ `${book.order}/${data.orderId}` }
                     style={ { color: 'var(--link)', fontWeight: 'bold' } }
                 >
-                    { data.order.id }
+                    { data.orderId }
                 </Link>
             ) : (
                 <Link
