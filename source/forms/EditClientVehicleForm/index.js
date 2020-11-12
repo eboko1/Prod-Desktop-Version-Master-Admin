@@ -432,7 +432,7 @@ class ClientVehicleTransfer extends Component {
                                     this.setState({
                                         clientId: value,
                                         vehicles: option.props.vehicles,
-                                        vehicleId: option.props.vehicles.length ? option.props.vehicles[0] : undefined,
+                                        vehicleId: option.props.vehicles.length ? option.props.vehicles[0].id : undefined,
                                     })
                                 }}
                             >
