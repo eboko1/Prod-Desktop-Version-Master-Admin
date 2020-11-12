@@ -1846,39 +1846,6 @@ export class AddStoreProductModal extends React.Component {
                         </AutoComplete>
                     </div>
                     <div>
-                        <FormattedMessage id='order_form_table.store_group'/>{requiredField()}
-                        <TreeSelect
-                            showSearch
-                            value={groupId}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={storeGroupsTree}
-                            filterTreeNode={(input, node) => {
-                                return (
-                                    node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                    String(node.props.value).indexOf(input.toLowerCase()) >= 0
-                                )
-                            }}
-                            onSelect={(value, option)=>{
-                                this.setState({
-                                    groupId: value,
-                                    detailName: detailName ? detailName : option.props.name,
-                                    priceGroupNumber: option.props.priceGroup || undefined,
-                                })
-                            }}
-                        />
-                    </div>
-                    <div>
-                        <FormattedMessage id='order_form_table.detail_name' />{requiredField()}
-                        <Input
-                            value={detailName}
-                            onChange={(event)=>{
-                                this.setState({
-                                    detailName: event.target.value,
-                                })
-                            }}
-                        />
-                    </div>
-                    <div>
                         <FormattedMessage id='order_form_table.brand' />{requiredField()}
                         <Select
                             showSearch
@@ -1921,6 +1888,39 @@ export class AddStoreProductModal extends React.Component {
                                     []
                             }
                         </Select>
+                    </div>
+                    <div>
+                        <FormattedMessage id='order_form_table.store_group'/>{requiredField()}
+                        <TreeSelect
+                            showSearch
+                            value={groupId}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            treeData={storeGroupsTree}
+                            filterTreeNode={(input, node) => {
+                                return (
+                                    node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(node.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.setState({
+                                    groupId: value,
+                                    detailName: detailName ? detailName : option.props.name,
+                                    priceGroupNumber: option.props.priceGroup || undefined,
+                                })
+                            }}
+                        />
+                    </div>
+                    <div>
+                        <FormattedMessage id='order_form_table.detail_name' />{requiredField()}
+                        <Input
+                            value={detailName}
+                            onChange={(event)=>{
+                                this.setState({
+                                    detailName: event.target.value,
+                                })
+                            }}
+                        />
                     </div>
                     <div>
                         <FormattedMessage id='storage.measure_units' />
