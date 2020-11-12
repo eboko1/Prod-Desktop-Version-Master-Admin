@@ -667,6 +667,7 @@ class DetailsTable extends Component {
             supplierBrandId: detail.supplierBrandId || detail.brandId,
             supplierOriginalCode: detail.supplierOriginalCode,
             supplierProductNumber: detail.supplierProductNumber,
+            supplierPartNumber: detail.supplierPartNumber,
             purchasePrice:
                 Math.round(detail.purchasePrice * 10) / 10 || 0,
             count:   detail.count,

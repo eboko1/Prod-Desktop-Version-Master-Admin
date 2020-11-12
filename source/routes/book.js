@@ -16,6 +16,7 @@ const book = Object.freeze({
     profile:                  '/profile',
     dashboard:                '/dashboard',
     myTasksPage:              '/mytasks',
+    newDocumentPage:          '/new-document',
     //
     // Orders
     //

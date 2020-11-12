@@ -67,6 +67,47 @@ class StorageDocumentsFilters extends Component {
         isTransfer = pathname == '/storage-transfers';
     }
 
+    componentDidUpdate(prevProps) {
+        if(!prevProps.isFetched && this.props.isFetched && this.props.location.state && this.props.location.state.showForm) {
+
+            const {
+                dateRange,
+                dateFormat,
+                onDateChange,
+                typeFilter,
+                documentTypeFilter,
+                documentStatusFilter,
+                type,
+            } = this.props;
+            const {
+                documentType
+            } = this.state;
+
+            const value = this.props.location.state.formData.documentType;
+            console.log(value)
+            if(type == ORDER) {
+                if(value == null) {
+                    typeFilter(null);
+                    documentTypeFilter(null);
+                } else if(value == ORDERINCOME) {
+                    typeFilter(EXPENSE);
+                    documentTypeFilter(SUPPLIER);
+                } else if(value == SUPPLIER) {
+                    typeFilter(INCOME);
+                    documentTypeFilter(value);
+                } else {
+                    typeFilter(null);
+                    documentTypeFilter(value);
+                }
+            } else {
+                documentTypeFilter(value);
+            }
+            this.setState({
+                documentType: value,
+            })
+        }
+    }
+
     render() {
         const {
             dateRange,
@@ -80,6 +121,8 @@ class StorageDocumentsFilters extends Component {
         const {
             documentType
         } = this.state;
+
+        console.log(this);
 
         return (
             <div className={ Styles.filtersWrap }>
@@ -96,10 +139,10 @@ class StorageDocumentsFilters extends Component {
                                             typeFilter(null);
                                             documentTypeFilter(null);
                                         } else if(value == ORDERINCOME) {
-                                            typeFilter(INCOME);
+                                            typeFilter(EXPENSE);
                                             documentTypeFilter(SUPPLIER);
                                         } else if(value == SUPPLIER) {
-                                            typeFilter(EXPENSE);
+                                            typeFilter(INCOME);
                                             documentTypeFilter(value);
                                         } else {
                                             typeFilter(null);
@@ -112,7 +155,11 @@ class StorageDocumentsFilters extends Component {
                                         documentType: event.target.value
                                     })
                                 } }
-                                defaultValue={ null }
+                                defaultValue={
+                                    this.props.location.state && this.props.location.state.showForm ? 
+                                    this.props.location.state.formData.documentType :
+                                    null 
+                                }
                             >
                                 <Radio.Button value={ null }>
                                     <FormattedMessage id='storage_document.all' />
@@ -176,7 +223,7 @@ class StorageDocumentsFilters extends Component {
 export default StorageDocumentsFilters;
 
 
-
+@injectIntl
 export class StorageDateFilter extends React.Component {
     constructor(props) {
         super(props);
@@ -212,6 +259,7 @@ export class StorageDateFilter extends React.Component {
             minimize,
             autoMinimize,
             style,
+            intl: { formatMessage }
         } = this.props;
 
         const maxWidth = typeof autoMinimize == "number" ? autoMinimize : 1440;
@@ -295,7 +343,7 @@ export class StorageDateFilter extends React.Component {
                                         ]);
                                     }}
                                 >
-                                    <FormattedMessage id='datepicker.current' />
+                                    <FormattedMessage id='datepicker.current_week' />
                                 </Menu.Item>
                                 <Menu.Item
                                     onClick={()=>{
@@ -305,7 +353,7 @@ export class StorageDateFilter extends React.Component {
                                         ]);
                                     }}
                                 >
-                                    <FormattedMessage id='datepicker.previous' />
+                                    <FormattedMessage id='datepicker.previous_week' />
                                 </Menu.Item>
                                 <Menu.Item
                                     onClick={()=>{
@@ -315,7 +363,7 @@ export class StorageDateFilter extends React.Component {
                                         ]);
                                     }}
                                 >
-                                    <FormattedMessage id='datepicker.next' />
+                                    <FormattedMessage id='datepicker.next_week' />
                                 </Menu.Item>
                             </Menu>
                         }
@@ -470,10 +518,10 @@ export class StorageDateFilter extends React.Component {
         )
 
         return minimizeMode ? (
-            <div className={Styles.minimized} style={style}>
+            <div className={Styles.minimized} style={style} title={formatMessage({id: 'date'})}>
                 <Popover content={datePicker} trigger="click">
                     <Button>
-                        <Icon type='calendar' />
+                        <Icon style={{fontSize: 16}} type='calendar' />
                     </Button>
                 </Popover>
             </div>

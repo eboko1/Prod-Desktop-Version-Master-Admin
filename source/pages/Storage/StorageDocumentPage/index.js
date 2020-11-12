@@ -486,7 +486,8 @@ class StorageDocumentPage extends Component {
         })
         .then(function (warehouses) {
             console.log(warehouses)
-            const type = that.props.location.type;
+            const type = that.props.location.state && that.props.location.state.formData.type;
+            const documentType = that.props.location.state && that.props.location.state.formData.documentType;
             var mainWarehouseId, reserveWarehouseId, toolWarehouseId, repairAreaWarehouseId;
             warehouses.map((warehouse)=>{
                 switch(warehouse.attribute) {
@@ -524,7 +525,11 @@ class StorageDocumentPage extends Component {
                         incomeWarehouseId = mainWarehouseId;
                 }
                 that.state.formData.type = type || INCOME;
-                that.state.formData.documentType = type ? typeToDocumentType[type.toLowerCase()].documentType[0] : SUPPLIER;
+                that.state.formData.documentType =  documentType ? 
+                                                    documentType : 
+                                                        type ? 
+                                                        typeToDocumentType[type.toLowerCase()].documentType[0] : 
+                                                        SUPPLIER;
                 that.state.formData.incomeWarehouseId = incomeWarehouseId;
                 that.state.formData.expenseWarehouseId = expenseWarehouseId;
             } 
@@ -565,6 +570,7 @@ class StorageDocumentPage extends Component {
             data.map((elem)=>{
                 elem.phone = `+38(${elem.phone.substring(2, 5)}) ${elem.phone.substring(5, 8)}-${elem.phone.substring(8, 10)}-${elem.phone.substring(10)}`;
             })
+            data = data.filter((elem)=>!elem.disabled);
             that.setState({
                 employees: data,
             })
@@ -779,12 +785,21 @@ class StorageDocumentPage extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        const { id, location: { type } } = this.props;
-        if(this._isMounted) this.getWarehouses();
+        const { id } = this.props;
+
+        if(this._isMounted) {
+            if(this._isMounted && this.props.location.state && this.props.location.state.showForm) {
+                this.updateFormData(this.props.location.state.formData);
+                console.log(this);
+            }
+            this.getWarehouses();
+        }
+
         this.getBrands();
         this.getClientList();
         this.getCounterpartSupplier();
         this.getEmployees();
+
         if(id) this.getStorageDocument();
     }
 
@@ -859,7 +874,7 @@ class StorageDocumentPage extends Component {
                         : null}
                         {formData.status != DONE && (
                             <div style={{display: 'flex'}}>
-                                {formData.type == ORDER && (formData.documentType == SUPPLIER || formData.documentType == ORDERINCOME) &&
+                                {formData.type == ORDER &&
                                     <AutomaticOrderCreationModal
                                         supplierId={formData.counterpartId}
                                         addDocProduct={this.addDocProduct}
@@ -1511,6 +1526,8 @@ class AutomaticOrderCreationModal extends React.Component {
                 render:     (data, elem)=>{
                     return (
                         <InputNumber
+                            disabled={this.props.documentType == ADJUSTMENT}
+                            style={{color: 'var(--text)'}}
                             value={data}
                             min={0}
                             onChange={(value)=>{
@@ -1662,6 +1679,7 @@ class AutomaticOrderCreationModal extends React.Component {
                         <InputNumber
                             value={data}
                             min={0}
+                            max={this.props.documentType == ADJUSTMENT ? elem.toOrder : undefined}
                             onChange={(value)=>{
                                 elem.quantity = value;
                                 elem.sum = value * elem.stockPrice;
@@ -1887,7 +1905,7 @@ class AutomaticOrderCreationModal extends React.Component {
     }
 
     handleOk() {
-        if(this.props.type == ORDER && this.props.documentType == SUPPLIER) {
+        if(this.props.documentType == SUPPLIER || this.props.documentType == ADJUSTMENT) {
             const result = [];
             this.state.dataSource.map((elem)=>{
                 if(elem.checked) {
@@ -1896,7 +1914,7 @@ class AutomaticOrderCreationModal extends React.Component {
             })
             this.props.addDocProduct(result, true);
         }
-        else if(this.props.type == ORDER && this.props.documentType == ORDERINCOME) {
+        else if(this.props.documentType == ORDERINCOME) {
             const result = [];
             this.state.dataSource.map((elem)=>{
                 if(elem.checked) {
@@ -1920,7 +1938,7 @@ class AutomaticOrderCreationModal extends React.Component {
     fetchData() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        if(this.props.type == ORDER && this.props.documentType == SUPPLIER) {
+        if(this.props.documentType == SUPPLIER || this.props.documentType == ADJUSTMENT) {
             let url = __API_URL__ + `/store_orders/recommended_products?businessSupplierId=${this.props.supplierId}`;
             fetch(url, {
                 method: "GET",
@@ -1947,7 +1965,9 @@ class AutomaticOrderCreationModal extends React.Component {
                     elem.detailCode = elem.code;
                     elem.sum = Math.round( ((elem.quantity * elem.stockPrice) || 0)*10 ) / 10;
                     elem.groupId = elem.storeGroupId;
-                    elem.checked = true;
+                    elem.tradeCode = elem.supplierPartNumber;
+                    elem.checked = that.props.documentType == SUPPLIER;
+                    console.log(elem)
                 })
                 that.setState({
                     dataSource: data,
@@ -1958,7 +1978,7 @@ class AutomaticOrderCreationModal extends React.Component {
                 console.log("error", error);
             });
         }
-        else if(this.props.type == ORDER && this.props.documentType == ORDERINCOME) {
+        else if(this.props.documentType == ORDERINCOME) {
             let url = __API_URL__ + `/store_orders/ordered_products?businessSupplierId=${this.props.supplierId}`;
             fetch(url, {
                 method: "GET",
@@ -1991,6 +2011,7 @@ class AutomaticOrderCreationModal extends React.Component {
                     elem.sum = Math.round( ((elem.quantity * elem.stockPrice) || 0)*10 ) / 10;
                     elem.orderedSum = elem.sum;
                     elem.groupId = elem.storeGroupId;
+                    elem.tradeCode = elem.supplierPartNumber;
                     elem.checked = true;
                 })
                 that.setState({
@@ -2035,9 +2056,9 @@ class AutomaticOrderCreationModal extends React.Component {
                 >
                     <Table
                         columns={
-                            this.props.type == ORDER && this.props.documentType == SUPPLIER ? 
-                            this.orderColumns : 
-                            this.incomeColumns
+                            this.props.documentType == ORDERINCOME ? 
+                            this.incomeColumns : 
+                            this.orderColumns
                         }
                         dataSource={dataSource}
                         pagination={{pageSize: 6}}

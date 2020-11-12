@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
-import { Form, Button, Icon } from "antd";
+import { Form, Button, Icon, Modal } from "antd";
 import moment from "moment";
 import _ from "lodash";
 
@@ -40,6 +40,7 @@ const formItemLayout = {
     },
     colon: false,
 };
+const { confirm } = Modal;
 
 @injectIntl
 @withReduxForm2({
@@ -273,7 +274,14 @@ export class EmployeeForm extends Component {
                                     this.props.user,
                                     permissions.CREATE_EDIT_DELETE_EMPLOYEES,
                                 )}
-                                onClick={() => fireEmployee()}
+                                onClick={() => {
+                                    confirm({
+                                        title: `${formatMessage({id: "employee.fire_confirm"})}`,
+                                        onOk() {
+                                            fireEmployee()
+                                        },
+                                    });
+                                }}
                             >
                                 <FormattedMessage id="employee.fire_employee" />
                             </Button>

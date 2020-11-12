@@ -21,7 +21,8 @@
     "employee.password.placeholder": "Enter new password",
     "employee.password.lenght": "Minimum 6 symbols",
     "employee.manager_access": "Manager access",
-    "employee.is_mechanic": "Mechanic"
+    "employee.is_mechanic": "Mechanic",
+    "employee.fire_confirm": "Are you sure you want to fire the employee?"
   },
   "ru": {
     "employee.phone_placeholder": "Введите телефон",
@@ -45,7 +46,8 @@
     "employee.password.placeholder": "Введите новый пароль",
     "employee.password.lenght": "Минимум 6 символов",
     "employee.manager_access": "Менеджерский доступ",
-    "employee.is_mechanic": "Механик"
+    "employee.is_mechanic": "Механик",
+    "employee.fire_confirm": "Вы действительно хотите уволить сотрудника?"
   },
   "uk": {
     "employee.phone_placeholder": "Введіть телефон",
@@ -69,6 +71,7 @@
     "employee.password.placeholder": "Вкажіть новий пароль",
     "employee.password.lenght": "Мінімум 6 символів",
     "employee.manager_access": "Менеджерській доступ",
-    "employee.is_mechanic": "Механік"
+    "employee.is_mechanic": "Механік",
+    "employee.fire_confirm": "Ви дійсно хочете звільнити працівника?"
   }
 }

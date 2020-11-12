@@ -17,11 +17,12 @@ class StorageTransferPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            documentFilters: undefined,
         };
     }
 
-
     render() {
+        const { documentFilters } = this.state;
         return (
             <StorageDocumentsContainer
                 listType = 'TRANSFER'

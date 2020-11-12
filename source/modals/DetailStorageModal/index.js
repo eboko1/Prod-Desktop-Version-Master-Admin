@@ -336,6 +336,7 @@ class DetailStorageModal extends React.Component{
                     var name = elem.storeGroupId == 1000000 ? elem.description : elem.storeGroupName;
                     var supplierOriginalCode = elem.price ? elem.price.supplierOriginalCode : undefined;
                     var supplierProductNumber = elem.price ? elem.price.supplierProductNumber : undefined;
+                    var supplierPartNumber = elem.price ? elem.price.supplierPartNumber : undefined;
                     var isFromStock = elem.price ? elem.price.isFromStock : undefined;
                     var defaultWarehouseId = elem.price ? elem.price.defaultWarehouseId : undefined;
                     return (
@@ -352,7 +353,8 @@ class DetailStorageModal extends React.Component{
                                         elem.storeGroupId,
                                         name,
                                         supplierOriginalCode,
-                                        supplierProductNumber
+                                        supplierProductNumber,
+                                        supplierPartNumber,
                                     );
                                 }
                                 if(this.props.setSupplier) {
@@ -364,6 +366,7 @@ class DetailStorageModal extends React.Component{
                                         elem.store,
                                         supplierOriginalCode,
                                         supplierProductNumber,
+                                        supplierPartNumber,
                                         this.props.tableKey,
                                         isFromStock,
                                         defaultWarehouseId,

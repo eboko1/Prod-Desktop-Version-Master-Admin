@@ -18,7 +18,7 @@
         "orders-page.tomorrow": "На Завтра",
         "orders-page.week": "На Этой неделе",
         "orders-page.month": "В Этом месяце",
-        "orders-page.add_appointment": "Добавить Обращение",
+        "orders-page.add_appointment": "Добавить Ремонт",
         "orders-page.invite_to_service": "Пригласить на СТО"
     },
     "uk": {
@@ -29,7 +29,7 @@
         "orders-page.tomorrow": "На Завтра",
         "orders-page.week": "Цього Тижня",
         "orders-page.month": "Цього Місяця",
-        "orders-page.add_appointment": "Додати Звернення",
+        "orders-page.add_appointment": "Додати Ремонт",
         "orders-page.invite_to_service": "Запросити на СТО"
     }
 }
