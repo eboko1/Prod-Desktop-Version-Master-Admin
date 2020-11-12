@@ -1905,24 +1905,13 @@ class AutomaticOrderCreationModal extends React.Component {
     }
 
     handleOk() {
-        if(this.props.documentType == SUPPLIER || this.props.documentType == ADJUSTMENT) {
-            const result = [];
-            this.state.dataSource.map((elem)=>{
-                if(elem.checked) {
-                    result.push(elem);
-                }
-            })
-            this.props.addDocProduct(result, true);
-        }
-        else if(this.props.documentType == ORDERINCOME) {
-            const result = [];
-            this.state.dataSource.map((elem)=>{
-                if(elem.checked) {
-                    result.push(elem);
-                }
-            })
-            this.props.addDocProduct(result, true);
-        }
+        const result = [];
+        this.state.dataSource.map((elem)=>{
+            if(elem.checked) {
+                result.push(elem);
+            }
+        })
+        this.props.addDocProduct(result, true);
         this.handleCancel();
 
     }
@@ -1938,7 +1927,7 @@ class AutomaticOrderCreationModal extends React.Component {
     fetchData() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        if(this.props.documentType == SUPPLIER || this.props.documentType == ADJUSTMENT) {
+        if(this.props.documentType == SUPPLIER) {
             let url = __API_URL__ + `/store_orders/recommended_products?businessSupplierId=${this.props.supplierId}`;
             fetch(url, {
                 method: "GET",
@@ -1978,7 +1967,7 @@ class AutomaticOrderCreationModal extends React.Component {
                 console.log("error", error);
             });
         }
-        else if(this.props.documentType == ORDERINCOME) {
+        else if(this.props.documentType == ORDERINCOME || this.props.documentType == ADJUSTMENT) {
             let url = __API_URL__ + `/store_orders/ordered_products?businessSupplierId=${this.props.supplierId}`;
             fetch(url, {
                 method: "GET",

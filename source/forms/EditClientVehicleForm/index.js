@@ -316,6 +316,7 @@ class ClientVehicleTransfer extends Component {
             newOwnerId: undefined,
             vehicles: [],
             vehicleId: undefined,
+            searchValue: "",
         }
     }
 
@@ -392,7 +393,7 @@ class ClientVehicleTransfer extends Component {
     }
 
     render() {
-        const { visible, clients, vehicles, newOwnerId, clientId, vehicleId } = this.state;
+        const { visible, clients, vehicles, newOwnerId, clientId, vehicleId, searchValue } = this.state;
         return (
             <>
                 <Icon
@@ -425,9 +426,10 @@ class ClientVehicleTransfer extends Component {
                             <span style={{fontWeight: 500}}>От</span>
                             <Select
                                 showSearch
+                                disabled
                                 value={clientId}
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                                optionFilterProp={"children"}
+                                style={{color: 'var(--text)'}}
                                 onChange={(value, option)=>{
                                     this.setState({
                                         clientId: value,
@@ -446,6 +448,8 @@ class ClientVehicleTransfer extends Component {
                             </Select>
                             <Select
                                 showSearch
+                                disabled
+                                style={{color: 'var(--text)'}}
                                 value={vehicleId}
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                                 onChange={(value, option)=>{
@@ -474,13 +478,30 @@ class ClientVehicleTransfer extends Component {
                                         newOwnerId: value,
                                     })
                                 }}
+                                onSearch={(input)=>{
+                                    this.setState({
+                                        searchValue: input,
+                                    })
+                                }}
+                                onBlur={()=>{
+                                    this.setState({
+                                        searchValue: "",
+                                    })
+                                }}
+                                filterOption={(input, option) => {
+                                    const searchValue = String(option.props.children).toLowerCase().replace(/[+\-()., ]/g,'');
+                                    const inputValue = input.toLowerCase();
+                                    return searchValue.indexOf(inputValue) >= 0;
+                                }}
                             >
                                 {
+                                    searchValue.length > 3 ?
                                     clients.map(({clientId, name, surname, phones}, key)=>
                                         <Option value={clientId} key={key}>
                                             {name} {surname} {phones[0]}
                                         </Option>
-                                    )    
+                                    ) :
+                                    []
                                 }
                             </Select>
                         </div>
