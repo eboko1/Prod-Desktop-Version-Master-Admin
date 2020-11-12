@@ -570,6 +570,7 @@ class StorageDocumentPage extends Component {
             data.map((elem)=>{
                 elem.phone = `+38(${elem.phone.substring(2, 5)}) ${elem.phone.substring(5, 8)}-${elem.phone.substring(8, 10)}-${elem.phone.substring(10)}`;
             })
+            data = data.filter((elem)=>!elem.disabled);
             that.setState({
                 employees: data,
             })

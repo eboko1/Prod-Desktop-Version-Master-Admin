@@ -275,6 +275,19 @@ export class EditClientVehicleForm extends Component {
                                 <Col span={3}>
                                     {!isEditForbidden ? (
                                         <Icon
+                                            type="sync"
+                                            className={Styles.carTransferIcon}
+                                            onClick={() =>
+                                                this.props.setEditableItem(
+                                                    index,
+                                                )
+                                            }
+                                        />
+                                    ) : null}
+                                </Col>
+                                <Col span={3}>
+                                    {!isEditForbidden ? (
+                                        <Icon
                                             type="delete"
                                             className={Styles.deleteIcon}
                                             onClick={() =>
