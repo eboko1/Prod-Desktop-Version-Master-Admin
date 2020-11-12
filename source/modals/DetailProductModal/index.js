@@ -530,6 +530,7 @@ class DetailProductModal extends React.Component{
                         supplierBrandId: element.supplierBrandId || element.brandId,
                         supplierOriginalCode: element.supplierOriginalCode,
                         supplierProductNumber: element.supplierProductNumber,
+                        supplierPartNumber: element.supplierPartNumber,
                         reservedFromWarehouseId: element.reservedFromWarehouseId || null,
                         purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                         count: element.count ? element.count : 1,
@@ -622,6 +623,7 @@ class DetailProductModal extends React.Component{
                     that.state.mainTableSource[0].count = 1;
                     that.state.mainTableSource[0].supplierOriginalCode = result.price ? result.price.supplierOriginalCode : undefined;
                     that.state.mainTableSource[0].supplierProductNumber = result.price ? result.price.supplierProductNumber : undefined;
+                    that.state.mainTableSource[0].supplierPartNumber = result.price ? result.price.supplierPartNumber : undefined;
                     that.state.mainTableSource[0].isFromStock = result.price ? result.price.isFromStock : undefined;
                     that.state.mainTableSource[0].reservedFromWarehouseId = result.price ? result.price.defaultWarehouseId : undefined;
                 }
@@ -634,7 +636,7 @@ class DetailProductModal extends React.Component{
         }
     }
 
-    setCode(code, brandId, productId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber) {
+    setCode(code, brandId, productId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber, supplierPartNumber) {
         this.unsetSupplier(key);
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         this.state.mainTableSource[key].detailCode = code;
@@ -643,6 +645,7 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].productId = productId;
         this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
         this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
+        this.state.mainTableSource[key].supplierPartNumber = supplierPartNumber;
         if(this.state.radioValue == 3 || this.state.radioValue == 4 || this.state.radioValue == 5) {
             this.state.mainTableSource[key].storeGroupId = storeGroupId;
             this.state.mainTableSource[key].detailName = String(storeGroupName);
@@ -663,7 +666,7 @@ class DetailProductModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId, productId, brandId) {
+    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, supplierPartNumber, key, isFromStock, defaultWarehouseId, productId, brandId) {
         this.state.mainTableSource[key].supplierId = supplierId;
         this.state.mainTableSource[key].supplierName = supplierName;
         this.state.mainTableSource[key].supplierBrandId = supplierBrandId;
@@ -672,6 +675,7 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].store = store;
         this.state.mainTableSource[key].supplierOriginalCode = supplierOriginalCode;
         this.state.mainTableSource[key].supplierProductNumber = supplierProductNumber;
+        this.state.mainTableSource[key].supplierPartNumber = supplierPartNumber;
         this.state.mainTableSource[key].isFromStock = isFromStock;
         this.state.mainTableSource[key].reservedFromWarehouseId = defaultWarehouseId;
         this.state.mainTableSource[key].productId = isFromStock ? productId : undefined;
@@ -697,6 +701,7 @@ class DetailProductModal extends React.Component{
             this.state.mainTableSource[key].supplierBrandId = undefined;
             this.state.mainTableSource[key].supplierOriginalCode = undefined;
             this.state.mainTableSource[key].supplierProductNumber = undefined;
+            this.state.mainTableSource[key].supplierPartNumber = undefined;
             this.state.mainTableSource[key].store = undefined;
             this.state.mainTableSource[key].reservedFromWarehouseId = undefined;
         }

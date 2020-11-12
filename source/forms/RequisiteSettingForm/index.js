@@ -9,7 +9,8 @@ import moment from 'moment';
 import { Form, Modal, Button, Input, InputNumber, Radio, Checkbox, Icon, Row, Col } from 'antd';
 
 // proj
-import { postRequisite, updateRequisite } from "core/requisiteSettings/saga";
+
+
 // own
 const FormItem = Form.Item;
 
@@ -41,6 +42,7 @@ export class RequisiteSettingForm extends Component {
 
     handleSubmit = async (e) => {
         const id = this.props.requisiteData && this.props.requisiteData.id;
+        const { updateRequisite, postRequisite } = this.props;
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
@@ -49,11 +51,13 @@ export class RequisiteSettingForm extends Component {
                 if(id) {
                     updateRequisite(id, values, this.props.hideModal);
                 } else {
-                    postRequisite(values, this.props.hideModal);
+                    postRequisite(values, this.props.hideModal, this.props.clientId);
                 }
+                //window.location.reload();
             }
         });
-        this.props.hideModal();
+        await this.props.hideModal();
+        await window.location.reload();
     };
 
     componentDidUpdate(prevProps) {
@@ -257,7 +261,7 @@ export class RequisiteSettingFormModal extends Component {
     }
 
     render() {
-        const { buttonMode, modalVisible, requisiteData, hideModal } = this.props;
+        const { buttonMode, modalVisible, requisiteData, hideModal, postRequisite, updateRequisite, clientId } = this.props;
         const { visible } = this.state;
         return (
             <div>
@@ -288,6 +292,9 @@ export class RequisiteSettingFormModal extends Component {
                         requisiteData = { requisiteData }
                         hideModal = { hideModal }
                         visible = { buttonMode ? visible : modalVisible }
+                        postRequisite={postRequisite}
+                        updateRequisite={updateRequisite}
+                        clientId={clientId}
                     />
                 </Modal>
             </div>

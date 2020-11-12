@@ -295,10 +295,17 @@ export class UniversalFiltersForm extends Component {
                                 getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
-                                options={managers}
-                                optionValue="id"
-                                optionLabel="managerSurname"
-                            />
+                            >
+                                {
+                                    managers.map(({id, managerName, managerSurname}, key)=>{
+                                        return (
+                                            <Option key={key} value={id}>
+                                                {managerName} {managerSurname}
+                                            </Option>
+                                        )
+                                    })
+                                }
+                            </DecoratedSelect>
                         </FormItem>
                     </Col>
                     <Col span={6}>
@@ -319,10 +326,17 @@ export class UniversalFiltersForm extends Component {
                                 getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
-                                options={employees}
-                                optionValue="id"
-                                optionLabel="surname"
-                            />
+                            >
+                                {
+                                    employees.map(({id, name, surname}, key)=>{
+                                        return (
+                                            <Option key={key} value={id}>
+                                                {name} {surname}
+                                            </Option>
+                                        )
+                                    })
+                                }
+                            </DecoratedSelect>
                         </FormItem>
                     </Col>
                 </Row>

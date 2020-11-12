@@ -134,10 +134,10 @@ class DetailSupplierModal extends React.Component{
                             type="primary"
                             onClick={()=>{
                                 if(this.props.onSelect) {
-                                    this.props.onSelect(elem.businessSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.purchasePrice, price, store, elem.supplierOriginalCode, elem.supplierProductNumber, this.props.tableKey, elem.isFromStock, elem.defaultWarehouseId, elem.id, elem.brandId);
+                                    this.props.onSelect(elem.businessSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.purchasePrice, price, store, elem.supplierOriginalCode, elem.supplierProductNumber, elem.supplierPartNumber, this.props.tableKey, elem.isFromStock, elem.defaultWarehouseId, elem.id, elem.brandId);
                                 }
                                 else {
-                                    this.props.setStoreSupplier(elem.businessSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.purchasePrice, price, store, elem.supplierOriginalCode, elem.supplierProductNumber, this.props.keyValue, elem.isFromStock, elem.defaultWarehouseId, elem.id);
+                                    this.props.setStoreSupplier(elem.businessSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.purchasePrice, price, store, elem.supplierOriginalCode, elem.supplierProductNumber, elem.supplierPartNumber, this.props.keyValue, elem.isFromStock, elem.defaultWarehouseId, elem.id);
                                 }
                                 this.handleCancel();
                             }}

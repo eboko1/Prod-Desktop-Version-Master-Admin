@@ -20,6 +20,16 @@
     }
 }
 
+.carTransferIcon {
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--link);
+
+    &:hover {
+        color: var(--paletteColor4);
+    }
+}
+
 .saveIcon {
     font-size: 24px;
     cursor: pointer;

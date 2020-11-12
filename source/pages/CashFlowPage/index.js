@@ -56,6 +56,8 @@ export default class CashFlowPage extends Component {
 
     componentDidMount() {
         this.props.fetchCashOrders(this.props.cashFlowFilters);
+
+        if(this.props.location.state && this.props.location.state.showForm) this._onOpenCashOrderModal();
     }
 
     _onOpenCashOrderModal = () => {

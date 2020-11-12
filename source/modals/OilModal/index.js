@@ -483,13 +483,14 @@ class OilModal extends React.Component{
                     var name = elem.storeGroupId == 1000000 ? elem.productName : elem.storeGroupName;
                     var supplierOriginalCode = elem.price ? elem.price.supplierOriginalCode : undefined;
                     var supplierProductNumber = elem.price ? elem.price.supplierProductNumber : undefined;
+                    var supplierPartNumber = elem.price ? elem.price.supplierPartNumber : undefined;
                     console.log(elem)
                     return (
                         <Button
                             type="primary"
                             onClick={()=>{
-                                this.props.onSelect(elem.partNumber, brandId, elem.storeId, this.props.tableKey, elem.storeGroupId, name, supplierOriginalCode, supplierProductNumber);
-                                this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, supplierOriginalCode, supplierProductNumber, this.props.tableKey);
+                                this.props.onSelect(elem.partNumber, brandId, elem.storeId, this.props.tableKey, elem.storeGroupId, name, supplierOriginalCode, supplierProductNumber, supplierPartNumber);
+                                this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, supplierOriginalCode, supplierProductNumber, supplierPartNumber, this.props.tableKey);
                                 this.handleCancel();
                             }}
                         >
@@ -501,7 +502,7 @@ class OilModal extends React.Component{
         ];
     }
 
-    setSupplier(supplierId, businessSupplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key) {
+    setSupplier(supplierId, businessSupplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, supplierPartNumber, key) {
         this.state.dataSource[key].businessSupplierId = supplierId;
         this.state.dataSource[key].businessSupplierName = businessSupplierName;
         this.state.dataSource[key].purchasePrice = purchasePrice;
@@ -510,6 +511,7 @@ class OilModal extends React.Component{
         this.state.dataSource[key].store = store;
         this.state.dataSource[key].price.supplierOriginalCode = supplierOriginalCode;
         this.state.dataSource[key].price.supplierProductNumber = supplierProductNumber;
+        this.state.dataSource[key].price.supplierPartNumber = supplierPartNumber;
         this.setState({
             update: true
         })

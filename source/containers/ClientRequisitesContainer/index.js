@@ -9,14 +9,16 @@ import _ from "lodash";
 import {
     setCreateClientRequisiteForm,
     setEditClientRequisiteId,
-    createClientRequisite,
-    updateClientRequisite,
-    deleteClientRequisite,
+    //createClientRequisite,
+    //updateClientRequisite,
+    //deleteClientRequisite,
     hideForms,
 } from "core/clientRequisite/duck";
 
 import { Catcher } from "commons";
 import { RequisiteForm, AddRequisiteForm } from "forms";
+import { RequisiteSettingContainer } from "containers";
+import { getClientData, deleteClientRequisite, postClientRequisite, updateClientRequisite } from "core/requisiteSettings/saga";
 
 // own
 import Styles from "./styles.m.css";
@@ -29,9 +31,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     setCreateClientRequisiteForm,
     setEditClientRequisiteId,
-    createClientRequisite,
-    updateClientRequisite,
-    deleteClientRequisite,
+    //createClientRequisite,
+    //updateClientRequisite,
+    //deleteClientRequisite,
     hideForms,
 };
 
@@ -40,112 +42,57 @@ const mapDispatchToProps = {
 export default class ClientRequisitesContainer extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            modalVisible: false,
+            requisiteData: undefined,
+            dataSource: [],
+            loading: true,
+        };
 
-        this.columns = [
-            {
-                title: (
-                    <FormattedMessage id="client_requisites_container.index" />
-                ),
-                dataIndex: "index",
-                width: "auto",
-                render: field => field + 1,
-            },
-            {
-                title: (
-                    <FormattedMessage id="client_requisites_container.enabled" />
-                ),
-                dataIndex: "enabled",
-                width: "11%",
-                render: record => {
-                    return (
-                        <div className={Styles.statusIconContainer}>
-                            {record ? (
-                                <Icon
-                                    className={Styles.enabledIcon}
-                                    type="check-circle"
-                                />
-                            ) : (
-                                <Icon
-                                    className={Styles.disabledIcon}
-                                    type="close-circle"
-                                />
-                            )}
-                        </div>
-                    );
-                },
-            },
-            {
-                title: (
-                    <FormattedMessage id="client_requisites_container.name" />
-                ),
-                dataIndex: "name",
-                width: "15%",
-            },
-            {
-                title: (
-                    <FormattedMessage id="client_requisites_container.address" />
-                ),
-                dataIndex: "address",
-                width: "10%",
-            },
-            {
-                title: (
-                    <FormattedMessage id="client_requisites_container.bank" />
-                ),
-                dataIndex: "bank",
-                width: "15%",
-            },
-            {
-                title: (
-                    <FormattedMessage id="client_requisites_container.ifi" />
-                ),
-                dataIndex: "ifi",
-                width: "15%",
-            },
-            {
-                title: <FormattedMessage id="client_requisites_container.ca" />,
-                dataIndex: "ca",
-                width: "15%",
-            },
-            {
-                title: (
-                    <FormattedMessage id="client_requisites_container.itn" />
-                ),
-                dataIndex: "itn",
-                width: "15%",
-            },
+        this.setDataSource = this.setDataSource.bind(this);
+        this.updateDataSource = this.updateDataSource.bind(this);
+        this.hideModal = this.hideModal.bind(this);
+    }
 
-            {
-                // title:  <FormattedMessage id='ClientRequisite-container.edit' />,
-                width: "12%",
-                render: record => (
-                    <Icon
-                        className={Styles.editClientRequisiteIcon}
-                        color="red"
-                        onClick={() =>
-                            this.props.setEditClientRequisiteId(record.id)
-                        }
-                        type="edit"
-                    />
-                ),
-            },
-            {
-                // title:  <FormattedMessage id='ClientRequisite-container.delete' />,
-                width: "12%",
-                render: record => (
-                    <Icon
-                        className={Styles.deleteClientRequisiteIcon}
-                        onClick={() =>
-                            this.props.deleteClientRequisite(
-                                this.props.clientId,
-                                record.id,
-                            )
-                        }
-                        type="delete"
-                    />
-                ),
-            },
-        ];
+    showModal = (requisiteData = undefined) => {
+        this.setState({
+            modalVisible: true,
+            requisiteData: requisiteData,
+        })
+    }
+
+    hideModal() {
+        this.setState({
+            modalVisible: false,
+            requisiteData: undefined,
+        })
+        //this.updateDataSource();
+    }
+
+    componentDidMount() {
+        this.updateDataSource();
+    }
+
+    setDataSource(data) {
+        data.map((elem, i)=>{
+            elem.key=i;
+        });
+        this.setState({
+            dataSource: data,
+            loading: false,
+        })
+    }
+
+    async updateDataSource() {
+        await this.setState({
+            loading: true,
+        })
+        await getClientData(this.props.clientId, this.setDataSource);
+        await this.setState({
+            modalVisible: false,
+            requisiteData: undefined,
+        })
+        await this.forceUpdate();
     }
 
     render() {
@@ -153,21 +100,12 @@ export default class ClientRequisitesContainer extends Component {
             requisites,
             createClientRequisiteForm,
             editClientRequisiteId,
-            updateClientRequisite,
-            createClientRequisite,
+            //updateClientRequisite,
+            //createClientRequisite,
+            //deleteClientRequisite
             clientId,
         } = this.props;
-
-        const requisitesRows = requisites.map((item, index) => ({
-            ...item,
-            index,
-            key: item.id,
-        }));
-
-        const initClientRequisite =
-            editClientRequisiteId &&
-            _.find(requisites, { id: editClientRequisiteId });
-
+        const { modalVisible, dataSource, requisiteData, loading } = this.state;
         return (
             <Catcher>
                 <Row
@@ -183,57 +121,28 @@ export default class ClientRequisitesContainer extends Component {
                     </Col>
                     <Col span={6}>
                         <Button
-                            className={Styles.addClientRequisiteButton}
-                            type="primary"
-                            onClick={() =>
-                                this.props.setCreateClientRequisiteForm(true)
-                            }
+                            type='primary'
+                            onClick={()=>this.showModal()}
                         >
-                            <FormattedMessage id="client_requisites_container.create" />
+                            <FormattedMessage id='client_requisites_container.create' />
                         </Button>
                     </Col>
                 </Row>
 
-                <Modal
-                    title={
-                        editClientRequisiteId ? (
-                            <FormattedMessage id="client_requisites_container.edit_title" />
-                        ) : (
-                            <FormattedMessage id="client_requisites_container.create_title" />
-                        )
-                    }
-                    visible={editClientRequisiteId || createClientRequisiteForm}
-                    onCancel={() => this.props.hideForms()}
-                    footer={null}
-                >
-                    {(editClientRequisiteId && (
-                        <RequisiteForm
-                            editClientRequisiteId={editClientRequisiteId}
-                            requisite={initClientRequisite}
-                            updateRequisite={updateClientRequisite.bind(
-                                null,
-                                clientId,
-                            )}
-                        />
-                    )) ||
-                        (createClientRequisiteForm && (
-                            <AddRequisiteForm
-                                createRequisite={createClientRequisite.bind(
-                                    null,
-                                    clientId,
-                                )}
-                            />
-                        ))}
-                </Modal>
 
-                <Table
-                    pagination={{
-                        hideOnSinglePage: true,
-                        size: "large",
-                    }}
-                    size="small"
-                    dataSource={requisitesRows}
-                    columns={this.columns}
+                <RequisiteSettingContainer
+                    loading={loading}
+                    modalVisible={modalVisible}
+                    showModal={this.showModal}
+                    hideModal={this.hideModal}
+                    requisiteData={requisiteData}
+                    dataSource={dataSource}
+                    
+                    updateDataSource={this.updateDataSource}
+                    deleteRequisite={deleteClientRequisite}
+                    postRequisite={postClientRequisite}
+                    updateRequisite={updateClientRequisite}
+                    clientId={clientId}
                 />
             </Catcher>
         );

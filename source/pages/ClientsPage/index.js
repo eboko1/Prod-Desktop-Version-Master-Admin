@@ -43,6 +43,10 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class ClientsPage extends Component {
+    componentDidMount() {
+        if(this.props.location.state && this.props.location.state.showForm) this.props.setModal(MODALS.ADD_CLIENT);
+    }
+
     render() {
         const {
             modal,

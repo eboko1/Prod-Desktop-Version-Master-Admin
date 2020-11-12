@@ -426,6 +426,7 @@ class FavouriteDetailsModal extends React.Component{
             purchasePrice: this.state.dataSource[index].purchasePrice || 0,
             supplierOriginalCode: this.state.dataSource[index].supplierOriginalCode,
             supplierProductNumber: this.state.dataSource[index].supplierProductNumber,
+            supplierPartNumber: this.state.dataSource[index].supplierPartNumber,
             count: this.state.dataSource[index].count ? this.state.dataSource[index].count : 1,
             reservedFromWarehouseId: this.state.dataSource[index].defaultWarehouseId || null,
             price: this.state.dataSource[index].price || 1,
@@ -446,7 +447,7 @@ class FavouriteDetailsModal extends React.Component{
     };
 
 
-    setCode(code, brandId, productId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber) {
+    setCode(code, brandId, productId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber, supplierPartNumber) {
         this.unsetSupplier(key);
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         this.state.dataSource[key].detailCode = code;
@@ -455,6 +456,7 @@ class FavouriteDetailsModal extends React.Component{
         this.state.dataSource[key].productId = productId;
         this.state.dataSource[key].supplierOriginalCode = supplierOriginalCode;
         this.state.dataSource[key].supplierProductNumber = supplierProductNumber;
+        this.state.dataSource[key].supplierPartNumber = supplierPartNumber;
         this.setState({
             update: true
         })
@@ -471,7 +473,7 @@ class FavouriteDetailsModal extends React.Component{
         })
     }
 
-     setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, key, isFromStock, defaultWarehouseId, productId, brandId) {
+     setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, supplierPartNumber, key, isFromStock, defaultWarehouseId, productId, brandId) {
         this.state.dataSource[key].supplierId = supplierId;
         this.state.dataSource[key].supplierName = supplierName;
         this.state.dataSource[key].supplierBrandId = supplierBrandId;
@@ -480,6 +482,7 @@ class FavouriteDetailsModal extends React.Component{
         this.state.dataSource[key].store = store;
         this.state.dataSource[key].supplierOriginalCode = supplierOriginalCode;
         this.state.dataSource[key].supplierProductNumber = supplierProductNumber;
+        this.state.dataSource[key].supplierPartNumber = supplierPartNumber;
         this.state.dataSource[key].isFromStock = isFromStock;
         this.state.dataSource[key].reservedFromWarehouseId = defaultWarehouseId;
         this.state.dataSource[key].productId = isFromStock ? productId : undefined;
@@ -501,6 +504,7 @@ class FavouriteDetailsModal extends React.Component{
         this.state.dataSource[key].supplierBrandId = undefined;
         this.state.dataSource[key].supplierOriginalCode = undefined;
         this.state.dataSource[key].supplierProductNumber = undefined;
+        this.state.dataSource[key].supplierPartNumber = undefined;
         this.state.dataSource[key].store = undefined;
         this.state.dataSource[key].reservedFromWarehouseId = undefined;
         this.setState({
@@ -572,6 +576,7 @@ class FavouriteDetailsModal extends React.Component{
                     elem.sum = elem.price;
                     elem.supplierOriginalCode = elem.pricelist[0].supplierOriginalCode;
                     elem.supplierProductNumber = elem.pricelist[0].supplierProductNumber;
+                    elem.supplierPartNumber = elem.pricelist[0].supplierPartNumber;
                 }
                 else {
                     elem.supplierName = undefined;

@@ -798,7 +798,7 @@ export default class OrderFormHeader extends Component {
                             })}
                             nullText="0"
                         >
-                            {remainPrice}
+                            {remainPrice || 0}
                         </Numeral>
                     </div>
                 </FormItem>

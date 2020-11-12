@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Tag } from 'antd';
 import _ from 'lodash';
+import moment from 'moment';
 
 // proj
 import { MODALS } from 'core/modals/duck';
@@ -79,12 +80,12 @@ export default props => {
             const docId = _.get(data, 'doc.id'),
                   documentNumber = _.get(data, 'doc.documentNumber');
 
-            return data.order && data.order.id ? (
+            return data.orderId ? (
                 <Link
-                    to={ `${book.order}/${data.order.id}` }
+                    to={ `${book.order}/${data.orderId}` }
                     style={ { color: 'var(--link)', fontWeight: 'bold' } }
                 >
-                    { data.order.id }
+                    { data.orderId }
                 </Link>
             ) : (
                 <Link
@@ -102,6 +103,13 @@ export default props => {
             id: 'storage.date',
         }),
         dataIndex: 'datetime',
+        sorter:    (a, b) =>
+            moment(a.datetime).isAfter(b.datetime)
+                ? 1
+                : moment(b.datetime).isAfter(a.datetime)
+                    ? -1
+                    : 0,
+        defaultSortOrder: 'descend',
         render:    datetime => <DatetimeFormatter datetime={ datetime } />,
     };
 
