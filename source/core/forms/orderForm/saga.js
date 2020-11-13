@@ -125,7 +125,9 @@ export function* fetchOrderFormSaga() {
                     handleErrorInternally: true,
                 },
             );
-
+            if(data.client && data.vehicle && data.client.vehicles.findIndex((elem)=>elem.id == data.vehicle.id) == -1) {
+                data.client.vehicles.push(data.vehicle);
+            }
             yield put(fetchOrderFormSuccess(data));
         } catch (error) {
             yield put(setErrorMessage(error));
