@@ -20,6 +20,7 @@ import { permissions, isForbidden } from "utils";
 // own
 import Styles from "./styles.m.css";
 const Option = Select.Option;
+const { confirm } = Modal;
 
 const openNotificationWithIcon = (type, message, description) => {
     notification[type]({
@@ -103,7 +104,6 @@ export class EditClientVehicleForm extends Component {
             setSelectedVehicle,
             setEditVehicle,
         } = this.props;
-        console.log(this);
         const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
         const isEditForbidden = isForbidden(user, CREATE_EDIT_DELETE_CLIENTS);
 
@@ -306,6 +306,7 @@ export class EditClientVehicleForm extends Component {
     }
 }
 
+@injectIntl
 class ClientVehicleTransfer extends Component {
     constructor(props) {
         super(props);
@@ -334,32 +335,36 @@ class ClientVehicleTransfer extends Component {
 
     handleOk = () => {
         var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/clients/vehicles/${this.state.vehicleId}`;
-        fetch(url, {
-            method: "PUT",
-            headers: {
-                Authorization: token,
+        confirm({
+            title: `${that.props.intl.formatMessage({id: 'clients-page.vehicle_transfer_confirm'})}   `,
+            onOk() {
+                let token = localStorage.getItem('_my.carbook.pro_token');
+                let url = __API_URL__ + `/clients/vehicles/${that.state.vehicleId}`;
+                fetch(url, {
+                    method: "PUT",
+                    headers: {
+                        Authorization: token,
+                    },
+                    body: JSON.stringify({clientId: that.state.newOwnerId})
+                })
+                .then(function(response) {
+                    if (response.status !== 200) {
+                        return Promise.reject(new Error(response.statusText));
+                    }
+                    return Promise.resolve(response);
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    window.location.reload();
+                })
+                .catch(function(error) {
+                    console.log("error", error);
+                });
+                that.handleCancel();
             },
-            body: JSON.stringify({clientId: this.state.newOwnerId})
-        })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            console.log(data);
-            window.location.reload();
-        })
-        .catch(function(error) {
-            console.log("error", error);
         });
-        this.handleCancel();
     }
 
     fetchData() {
@@ -382,7 +387,6 @@ class ClientVehicleTransfer extends Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             that.setState({
                 clients: data.clients,
             })
@@ -495,7 +499,7 @@ class ClientVehicleTransfer extends Component {
                                 }}
                             >
                                 {
-                                    searchValue.length > 3 ?
+                                    searchValue.length > 2 ?
                                     clients.map(({clientId, name, surname, phones}, key)=>
                                         <Option value={clientId} key={key}>
                                             {name} {surname} {phones[0]}

@@ -31,17 +31,17 @@ export class SuppliersTable extends Component {
         this.columns = [
             {
                 title: "№",
+                key: "id",
                 dataIndex: "id",
-                width: "25%",
             },
             {
                 title: <FormattedMessage id="name" />,
                 dataIndex: "name",
-                width: "25%",
+                key: "name",
             },
             {
-                width: "auto",
                 dataIndex: "delete",
+                key: "delete",
                 render: (key, { id, name }) => (
                     <div className={Styles.actions}>
                         <Icon

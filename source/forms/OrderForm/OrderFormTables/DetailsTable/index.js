@@ -1233,7 +1233,7 @@ class ReserveButton extends React.Component {
             else {
                 const availableCount = response.notAvailableProducts[0].available;
                 confirm({
-                    title: `${formatMessage({id: 'storage_document.error.available'})} ${formatMessage({id: 'storage_document.warning.continue'})}`,
+                    title: `${formatMessage({id: 'storage_document.error.available'})}. ${formatMessage({id: 'storage_document.warning.continue'})}`,
                     content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} ${formatMessage({id: 'pc'})}`,
                     okButtonProps: {disabled: !availableCount},
                     onOk() {

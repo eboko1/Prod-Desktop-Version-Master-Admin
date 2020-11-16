@@ -386,6 +386,7 @@ class StorageDocumentPage extends Component {
                     code: elem.detailCode,
                     name: elem.detailName || elem.detailCode,
                     brandId: elem.brandId,
+                    //tradeCode: elem.tradeCode,
 
                     quantity: elem.quantity || 1,
                     stockPrice: elem.stockPrice,
