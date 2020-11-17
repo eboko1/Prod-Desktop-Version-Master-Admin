@@ -7,6 +7,8 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_CLIENT_MRDS = `${prefix}/FETCH_CLIENT_MRDS`;
 export const FETCH_CLIENT_MRDS_SUCCESS = `${prefix}/FETCH_CLIENT_MRDS_SUCCESS`;
 
+export const SET_CLIENT_MRDS_PAGE = `${prefix}/SET_CLIENT_MRDS_PAGE`;
+
 export const SET_FILTER_DATE = `${prefix}/SET_FILTER_DATE`;
 
 /**
@@ -15,6 +17,7 @@ export const SET_FILTER_DATE = `${prefix}/SET_FILTER_DATE`;
 
 const ReducerState = {
     mrds: [],
+    stats: {},
     filter:     {
         page: 1,
         MRDsUntilDate: undefined
@@ -30,9 +33,11 @@ export default function reducer(state = ReducerState, action) {
 
     switch (type) {
         case FETCH_CLIENT_MRDS_SUCCESS:
+            const {mrds, stats} = payload;
             return {
                 ...state,
-                mrds: payload,
+                mrds: mrds? mrds: state.mrds,
+                stats: stats? stats: state.stats
             };
         
         case SET_FILTER_DATE:
@@ -41,6 +46,15 @@ export default function reducer(state = ReducerState, action) {
                 filter:{
                     ...state.filter,
                     MRDsUntilDate: payload
+                }
+            };
+
+        case SET_CLIENT_MRDS_PAGE: 
+            return {
+                ...state,
+                filter:{
+                    ...state.filter,
+                    page: payload
                 }
             };
 
@@ -55,9 +69,14 @@ export const fetchClientMRDs = ({clientId}) => ({
     payload: { clientId },
 });
 
-export const fetchClientMRDsSuccess = clientMRDs => ({
+export const fetchClientMRDsSuccess = ({mrds, stats}) => ({
     type:    FETCH_CLIENT_MRDS_SUCCESS,
-    payload: clientMRDs,
+    payload: {mrds, stats},
+});
+
+export const setClientMRDsPage = (page) => ({ 
+    type:    SET_CLIENT_MRDS_PAGE,
+    payload: page
 });
 
 export const setFilterDate = MRDDate => ({
