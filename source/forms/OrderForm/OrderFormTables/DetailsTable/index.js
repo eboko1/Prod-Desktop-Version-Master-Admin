@@ -627,7 +627,7 @@ class DetailsTable extends Component {
                 fetched: true,
             });
         }
-        this.props.reloadOrderForm(callback);
+        this.props.reloadOrderForm(callback, 'details');
     }
 
     async updateDetail(key, detail) {
@@ -667,6 +667,7 @@ class DetailsTable extends Component {
             supplierBrandId: detail.supplierBrandId || detail.brandId,
             supplierOriginalCode: detail.supplierOriginalCode,
             supplierProductNumber: detail.supplierProductNumber,
+            supplierPartNumber: detail.supplierPartNumber,
             purchasePrice:
                 Math.round(detail.purchasePrice * 10) / 10 || 0,
             count:   detail.count,
@@ -1232,7 +1233,7 @@ class ReserveButton extends React.Component {
             else {
                 const availableCount = response.notAvailableProducts[0].available;
                 confirm({
-                    title: `${formatMessage({id: 'storage_document.error.available'})} ${formatMessage({id: 'storage_document.warning.continue'})}`,
+                    title: `${formatMessage({id: 'storage_document.error.available'})}. ${formatMessage({id: 'storage_document.warning.continue'})}`,
                     content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} ${formatMessage({id: 'pc'})}`,
                     okButtonProps: {disabled: !availableCount},
                     onOk() {

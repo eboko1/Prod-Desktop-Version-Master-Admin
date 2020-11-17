@@ -14,9 +14,9 @@ import {
 } from 'core/storage/tracking';
 
 import { Layout, ResponsiveView } from 'commons';
-import { TrackingTable, DatePickerGroup, StorageDateFilter, WarehouseSelect } from 'components';
+import { TrackingTable, DatePickerGroup, StorageDateFilter, WarehouseSelect, BrandSelect } from 'components';
 import { StoreProductsSelect } from 'forms/_formkit';
-import { StoreProductModal } from 'modals';
+import { StoreProductModal, DetailStorageModal } from 'modals';
 import { BREAKPOINTS } from 'utils';
 
 import { media } from 'theme/media';
@@ -56,6 +56,7 @@ const mapStateToProps = state => ({
     collapsed: state.ui.collapsed,
     filters:   selectTrackingFilters(state),
     loading:   selectTrackingLoading(state),
+    user:      state.auth,
 });
 
 export const ProductsTrackingPage = withRouter(
@@ -82,19 +83,36 @@ export const ProductsTrackingPage = withRouter(
         const renderFilters = (
             <Filters>
                 <ResponsiveView view={ { min: BREAKPOINTS.xxl.min, max: null } }>
-                    <StoreProductsSelect
-                        setFilters={ props.setTrackingFilters }
-                        filters={ props.filters }
+                    <StorageDateFilter
+                        minimize
+                        dateRange={[moment(filters.startDate), moment(filters.endDate)]}
+                        onDateChange={ setDaterange }
+                        style={{margin: '0 8px 0 0'}}
+                    />
+                    <BrandSelect
+                        style={{margin: '0 8px 0 8px'}}
+                        onSelect={ (brandId) => props.setTrackingFilters({brandId: brandId}) }
                     />
                     <WarehouseSelect 
                         style={{margin: '0 8px 0 8px'}}
                         onChange={ (warehouseId) => props.setTrackingFilters({warehouseId: warehouseId})}
                     />
-                    <StorageDateFilter
-                        minimize
-                        dateRange={[moment(filters.startDate), moment(filters.endDate)]}
-                        onDateChange={ setDaterange }
+                    <StoreProductsSelect
+                        setFilters={ props.setTrackingFilters }
+                        filters={ props.filters }
                     />
+                    <div style={{margin: '0 0 0 8px'}}>
+                        <DetailStorageModal
+                            stockMode={true}
+                            user={props.user}
+                            selectProduct={(productId)=>{
+                                props.setTrackingFilters({
+                                    productId: productId,
+                                    page: 1
+                                })
+                            }}
+                        />
+                    </div>
                 </ResponsiveView>
             </Filters>
         );
@@ -107,19 +125,36 @@ export const ProductsTrackingPage = withRouter(
             >
                 <ResponsiveView view={ { min: null, max: BREAKPOINTS.xl.max } }>
                     <FiltersSubPanel collapsed={ props.collapsed }>
-                        <StoreProductsSelect
-                            setFilters={ props.setTrackingFilters }
-                            filters={ props.filters }
+                        <StorageDateFilter
+                            minimize
+                            dateRange={[moment(filters.startDate), moment(filters.endDate)]}
+                            onDateChange={ setDaterange }
+                            style={{margin: '0 8px 0 0'}}
+                        />
+                        <BrandSelect
+                            style={{margin: '0 8px 0 8px'}}
+                            onSelect={ (brandId) => props.setTrackingFilters({brandId: brandId}) }
                         />
                         <WarehouseSelect 
                             style={{margin: '0 8px 0 8px'}}
                             onChange={ (warehouseId) => props.setTrackingFilters({warehouseId: warehouseId})}
                         />
-                        <StorageDateFilter
-                            minimize
-                            dateRange={[moment(filters.startDate), moment(filters.endDate)]}
-                            onDateChange={ setDaterange }
+                        <StoreProductsSelect
+                            setFilters={ props.setTrackingFilters }
+                            filters={ props.filters }
                         />
+                        <div style={{margin: '0 0 0 8px'}}>
+                            <DetailStorageModal
+                                stockMode={true}
+                                user={props.user}
+                                selectProduct={(productId)=>{
+                                    props.setTrackingFilters({
+                                        productId: productId,
+                                        page: 1
+                                    })
+                                }}
+                            />
+                        </div>
                     </FiltersSubPanel>
                 </ResponsiveView>
                 <TrackingTableWrapper>

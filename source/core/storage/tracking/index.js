@@ -118,21 +118,32 @@ export const setTrackingLoading = isLoading => ({
 export function* fetchTrackingSaga() {
     while (true) {
         try {
-            yield take([ FETCH_TRACKING, SET_TRACKING_FILTERS ]);
+            const { payload } = yield take([ FETCH_TRACKING, SET_TRACKING_FILTERS ]);
             yield put(setTrackingLoading(true));
             const filters = yield select(selectTrackingFilters);
-            const response = yield call(
-                fetchAPI,
-                'GET',
-                '/store_doc_products',
-                {
-                    ...filters,
-                    startDate: moment(filters.startDate).format('YYYY-MM-DD'),
-                    endDate:   moment(filters.endDate).format('YYYY-MM-DD'),
-                },
-            );
-
-            yield put(fetchTrackingSuccess(response));
+            if(payload.showOnlyReserves) {
+                const response = yield call(
+                    fetchAPI,
+                    'GET',
+                    '/store_doc_products/reserve',
+                    {
+                        productId: filters.productId,
+                    },
+                );
+                yield put(fetchTrackingSuccess(response));
+            } else {
+                const response = yield call(
+                    fetchAPI,
+                    'GET',
+                    '/store_doc_products',
+                    {
+                        ...filters,
+                        startDate: moment(filters.startDate).format('YYYY-MM-DD'),
+                        endDate:   moment(filters.endDate).format('YYYY-MM-DD'),
+                    },
+                );
+                yield put(fetchTrackingSuccess(response));
+            }
         } catch (error) {
             yield put(emitError(error));
         } finally {

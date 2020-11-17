@@ -10,7 +10,7 @@ import { Button } from 'antd';
 
 // proj
 import { Layout, Spinner } from "commons";
-import { getData } from "core/requisiteSettings/saga";
+import { getData, deleteRequisite, postRequisite, updateRequisite } from "core/requisiteSettings/saga";
 import { RequisiteSettingContainer } from "containers";
 // own
 
@@ -21,6 +21,7 @@ export default class RequisiteSettingPage extends Component {
             modalVisible: false,
             requisiteData: undefined,
             dataSource: [],
+            loading: true,
         };
 
         this.setDataSource = this.setDataSource.bind(this);
@@ -43,8 +44,13 @@ export default class RequisiteSettingPage extends Component {
         this.updateDataSource();
     }
 
-    componentDidMount() {
-        this.updateDataSource();
+    async componentDidMount() {
+        await this.updateDataSource();
+        if(this.props.location.state && this.props.location.state.showForm) {
+            this.setState({
+                modalVisible: true,
+            })
+        }
     }
 
     setDataSource(data) {
@@ -53,10 +59,14 @@ export default class RequisiteSettingPage extends Component {
         });
         this.setState({
             dataSource: data,
+            loading: false,
         })
     }
 
     async updateDataSource() {
+        await this.setState({
+            loading: true,
+        })
         await getData(this.setDataSource);
         await this.setState({
             modalVisible: false,
@@ -66,7 +76,7 @@ export default class RequisiteSettingPage extends Component {
     }
 
     render() {
-        const { modalVisible, requisiteData, dataSource } = this.state;
+        const { modalVisible, requisiteData, dataSource, loading } = this.state;
         return (
             <Layout
                 title={ <FormattedMessage id='navigation.requisites' /> }
@@ -80,12 +90,16 @@ export default class RequisiteSettingPage extends Component {
                 ]}
             >
                 <RequisiteSettingContainer
+                    loading={loading}
                     modalVisible={modalVisible}
                     showModal={this.showModal}
                     hideModal={this.hideModal}
                     requisiteData={requisiteData}
                     dataSource={dataSource}
                     updateDataSource={this.updateDataSource}
+                    deleteRequisite={deleteRequisite}
+                    postRequisite={postRequisite}
+                    updateRequisite={updateRequisite}
                 />
             </Layout>
         );

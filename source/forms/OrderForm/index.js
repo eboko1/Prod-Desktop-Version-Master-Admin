@@ -157,11 +157,11 @@ export class OrderForm extends React.PureComponent {
         });
     };
 
-    _reloadOrderForm = (callback) => {
+    _reloadOrderForm = (callback, type) => {
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
         let url = API_URL;
-        let params = `/orders/${this.props.orderId}?onlyDetailsAndLabors=true`;
+        let params = `/orders/${this.props.orderId}?${type == 'details' ? 'onlyDetails' : 'onlyLabors'}=true`;
         url += params;
         fetch(url, {
             method: "GET",
@@ -180,8 +180,11 @@ export class OrderForm extends React.PureComponent {
             })
             .then(function(data) {
                 console.log(data);
-                that.orderServices = data.orderServices;
-                that.orderDetails = data.orderDetails;
+                if(type == 'details') {
+                    that.orderDetails = data.orderDetails;
+                } else {
+                    that.orderServices = data.orderServices;
+                }
                 that.totalSumWithTax = data.order.totalSumWithTax;
                 callback(data);
                 that.forceUpdate();
@@ -258,6 +261,7 @@ export class OrderForm extends React.PureComponent {
     componentDidMount() {
         // TODO in order to fix late getFieldDecorator invoke for services
         //this.setState({ initialized: true });
+        //this.props.selectedClient.vehicles.push(this.props.vehicle);
         this._isMounted = true;
         if (this._isMounted && this.props.allDetails.brands.length) {
             this._fetchLaborsAndDetails();

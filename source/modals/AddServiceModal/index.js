@@ -47,7 +47,7 @@ class AddServiceModal extends React.Component{
                     return (
                         <TreeSelect
                             className={Styles.groupsTreeSelect}
-                            disabled={this.state.editing || elem.masterLaborId}
+                            disabled={this.state.editing || Boolean(elem.masterLaborId)}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.store_group'})}
                             style={{maxWidth: 180, minWidth: 100}}
@@ -83,7 +83,7 @@ class AddServiceModal extends React.Component{
                     return (
                         <TreeSelect
                             className={Styles.groupsTreeSelect}
-                            disabled={this.state.editing || elem.storeGroupId}
+                            disabled={this.state.editing || Boolean(elem.storeGroupId)}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
                             style={{maxWidth: 180, minWidth: 100}}
@@ -602,7 +602,7 @@ class AddServiceModal extends React.Component{
         this.servicesOptions = [...servicesOptions];
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.fetchData();
     }
 

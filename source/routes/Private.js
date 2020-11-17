@@ -53,6 +53,7 @@ import {
     AgreementPage,
     WarehousesPage,
     RequisiteSettingPage,
+    NewDocumentPage,
 } from 'pages';
 import book from './book';
 
@@ -61,6 +62,11 @@ export default class Private extends Component {
         return (
             <Switch>
                 { /* Operations */ }
+                <Route
+                    exact
+                    render={ props => <NewDocumentPage { ...props } /> }
+                    path={ book.newDocumentPage }
+                />
                 <Route
                     exact
                     render={ props => <DashboardPage { ...props } /> }

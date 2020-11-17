@@ -27,6 +27,7 @@ class WarehousesPage extends Component {
             isReserve: false,
             isTool: false,
             isRepairArea: false,
+            modalVisible: false,
         }
 
         this.getWarehouses = this.getWarehouses.bind(this);
@@ -199,11 +200,16 @@ class WarehousesPage extends Component {
 
     componentDidMount() {
         this.getWarehouses()
+        if(this.props.location.state && this.props.location.state.showForm) {
+            this.setState({
+                modalVisible: true,
+            })
+        }
     }
 
-
     render() {
-        const { warehouses, isMain, isReserve, isTool, isRepairArea, editMode, warehouse } = this.state;
+        const { warehouses, isMain, isReserve, isTool, isRepairArea, editMode, warehouse, modalVisible } = this.state;
+        console.log(this);
         return (
             <Layout
                 title={ <FormattedMessage id='navigation.warehouses' /> }
@@ -214,6 +220,7 @@ class WarehousesPage extends Component {
                         isReserve={isReserve}
                         isTool={isTool}
                         isRepairArea={isRepairArea}
+                        modalVisible={modalVisible}
 
                         editMode={editMode}
                         warehouse={warehouse}
@@ -221,6 +228,12 @@ class WarehousesPage extends Component {
                             this.setState({
                                 editMode: false,
                                 warehouse: undefined,
+                            })
+                        }}
+
+                        unsetVisible={()=>{
+                            this.setState({
+                                modalVisible: false,
                             })
                         }}
                     />
@@ -348,6 +361,12 @@ class AddWarehousesModal extends Component {
                 attribute: warehouse.attribute,
                 considerQuantity: warehouse.considerQuantity,
             })
+        } 
+        if(this.props.modalVisible) {
+            this.setState({
+                visible: true,
+            });
+            this.props.unsetVisible();
         }
     }
 

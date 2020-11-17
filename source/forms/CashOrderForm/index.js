@@ -1194,11 +1194,14 @@ export class CashOrderForm extends Component {
                 className={this._hiddenFormItemStyles(isActive)}
             >
                 {!_.isEmpty(counterpartyList)
-                    ? counterpartyList.map(({ id, name, disabled }) => (
-                          <Option value={id} key={id} disabled={disabled}>
-                              {name}
-                          </Option>
-                      ))
+                    ? counterpartyList.map(({ id, name, surname, disabled }) => {
+                        if(!disabled)
+                            return (
+                              <Option value={id} key={id} disabled={disabled}>
+                                  {name} {surname}
+                              </Option>
+                            )
+                    })
                     : []}
             </DecoratedSelect>
         );

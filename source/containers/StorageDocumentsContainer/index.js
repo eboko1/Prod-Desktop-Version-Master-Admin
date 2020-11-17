@@ -292,6 +292,7 @@ class StorageDocumentsContainer extends Component {
                 controls={
                     <>
                         <StorageDocumentsFilters
+                            isFetched={Boolean(filtredDocumentsList.length)}
                             type={this.props.newDocType}
                             dateRange={ dateRange }
                             dateFormat={ dateFormat }
@@ -303,7 +304,11 @@ class StorageDocumentsContainer extends Component {
                         <Link
                             to={{
                                 pathname: book.storageDocument,
-                                type: this.props.newDocType
+                                state:    {
+                                    formData: {
+                                        type: this.props.newDocType,
+                                    }
+                                },
                             }}
                         >
                             <Button type='primary'>

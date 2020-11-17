@@ -18,7 +18,8 @@ import {
     notification,
     message,
     Switch,
-    TreeSelect
+    TreeSelect,
+    Pagination,
 } from 'antd';
 import { Layout, Spinner } from 'commons';
 const { Option } = Select;
@@ -36,6 +37,7 @@ export default class LaborsPage extends Component {
             filterDetail: null,
             filterDefaultName: null,
             filterName: null,
+            currentPage: 1,
         }
         this.treeData = [];
         this.columns = [
@@ -211,6 +213,7 @@ export default class LaborsPage extends Component {
                     const key = elem.key;
                     return (
                         <Input
+                            ref={(input) => { this.nameInput = input; }} 
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                             value={elem.name?elem.name:null}
                             onChange={(event)=>{
@@ -442,13 +445,15 @@ export default class LaborsPage extends Component {
             })
             that.setState({
                 labors: data.labors,
+                currentPage: that.props.location.state && that.props.location.state.showForm ? Math.ceil(data.labors.length / 10) : 1,
             });
+            if(that.props.location.state && that.props.location.state.showForm) that.nameInput.focus();
         })
         .catch(function (error) {
             console.log('error', error)
         });
 
-        params = `/labors/master?keepFlat=true`;
+        params = `/labors/master`;
         url = API_URL + params;
         fetch(url, {
             method: 'GET',
@@ -547,7 +552,7 @@ export default class LaborsPage extends Component {
     }
 
     render() {
-        const { labors, filterCode, filterId, filterDetail, filterDefaultName, filterName } = this.state;
+        const { labors, filterCode, filterId, filterDetail, filterDefaultName, filterName, currentPage } = this.state;
         if(labors.length && 
             (labors[labors.length-1].defaultName != "" || labors[labors.length-1].masterLaborId != "")) {
             labors.push({
@@ -605,6 +610,18 @@ export default class LaborsPage extends Component {
                     locale={{
                         emptyText: <FormattedMessage id='no_data' />,
                     }}
+                    pagination={
+                        {
+                            pageSize: 10,
+                            hideOnSinglePage: true,
+                            current: currentPage,
+                            onChange: page => {
+                                this.setState({
+                                    currentPage: page,
+                                })
+                            }
+                        }
+                    }
                 />
             </Layout>
         );

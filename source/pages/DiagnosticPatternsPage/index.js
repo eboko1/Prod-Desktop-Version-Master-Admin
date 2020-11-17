@@ -41,6 +41,7 @@ class DiagnosticPatternsPage extends Component {
             filterGroup: null,
             filterName: null,
             filterCode: null,
+            currentPage: 1,
         };
         this.columns = [
             {
@@ -76,6 +77,7 @@ class DiagnosticPatternsPage extends Component {
                     const key = elem.key;
                     return (
                         <Input
+                            ref={(input) => { this.planInput = input; }} 
                             style={{minWidth: "100px"}}
                             placeholder={this.props.intl.formatMessage({id: 'diagnostic-page.plan'})}
                             value={data}
@@ -383,7 +385,9 @@ class DiagnosticPatternsPage extends Component {
             data.diagnosticParts.map((elem, index)=>elem.key=index);
             that.setState({
                 diagnosticParts: data.diagnosticParts,
+                currentPage: that.props.location.state && that.props.location.state.showForm ? Math.ceil(data.diagnosticParts.length / 10) : 1,
             });
+            if(that.props.location.state && that.props.location.state.showForm) that.planInput.focus();
         })
         .catch(function (error) {
             console.log('error', error)
@@ -419,7 +423,7 @@ class DiagnosticPatternsPage extends Component {
     }
 
     render() {
-        const { diagnosticParts, masterDiagnosticParts, filterPlan, filterGroup, filterCode, filterName } = this.state;
+        const { diagnosticParts, masterDiagnosticParts, filterPlan, filterGroup, filterCode, filterName, currentPage } = this.state;
         if(diagnosticParts.length && 
             (diagnosticParts[diagnosticParts.length-1].diagnosticTemplateTitle != "" || diagnosticParts[diagnosticParts.length-1].groupTitle != "")) {
                 diagnosticParts.push({
@@ -472,7 +476,18 @@ class DiagnosticPatternsPage extends Component {
                     locale={{
                         emptyText: <FormattedMessage id='no_data' />,
                     }}
-                    //pagination={false}
+                    pagination={
+                        {
+                            pageSize: 10,
+                            hideOnSinglePage: true,
+                            current: currentPage,
+                            onChange: page => {
+                                this.setState({
+                                    currentPage: page,
+                                })
+                            }
+                        }
+                    }
                     scroll={{ y: 680 }}
                 />
                 <Modal
