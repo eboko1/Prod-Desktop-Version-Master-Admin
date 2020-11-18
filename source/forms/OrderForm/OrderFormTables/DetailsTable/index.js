@@ -1189,7 +1189,7 @@ class ReserveButton extends React.Component {
                 {
                     productId: detail.productId,
                     quantity: !detail.reserved ? detail.count : detail.reservedCount,
-                    stockPrice: detail.purchasePrice,
+                    stockPrice: detail.purchasePrice || 0,
                 }
             ],
             warehouseId: !detail.reserved ? detail.reservedFromWarehouseId || mainWarehouseId : reserveWarehouseId,
