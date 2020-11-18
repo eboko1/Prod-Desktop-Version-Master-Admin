@@ -1,0 +1,7 @@
+.generalInfo {
+	margin: 0 20%;
+
+	& .generalInfoItem {
+		margin: 8px 0;
+	}
+}

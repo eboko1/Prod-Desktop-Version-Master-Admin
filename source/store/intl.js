@@ -38,10 +38,11 @@ import CallsPage from 'pages/CallsPage/messages';
 import BusinessPackagePage from 'pages/BusinessPackagePage/messages';
 import ManagerRolePage from 'pages/ManagerRolePage/messages';
 import DiagnosticPatternsPage from 'pages/DiagnosticPatternsPage/messages';
-import AgreementPage from 'pages/AgreementPage/messages'
-import AvailabilitiesPage from 'pages/AvailabilitiesPage/messages'
-import RequisiteSettingPage from 'pages/RequisiteSettingPage/messages'
-import NewDocumentPage from 'pages/NewDocumentPage/messages'
+import AgreementPage from 'pages/AgreementPage/messages';
+import AvailabilitiesPage from 'pages/AvailabilitiesPage/messages';
+import RequisiteSettingPage from 'pages/RequisiteSettingPage/messages';
+import NewDocumentPage from 'pages/NewDocumentPage/messages';
+import SupplierPage from 'pages/SupplierPage/messages';
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
@@ -164,6 +165,7 @@ const messages = merge.all([
     AvailabilitiesPage,
     RequisiteSettingPage,
     NewDocumentPage,
+    SupplierPage,
     // containers
     OrdersContainer,
     OrdersFilterContainer,

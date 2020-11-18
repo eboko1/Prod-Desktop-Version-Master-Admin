@@ -45,6 +45,8 @@ const book = Object.freeze({
     editEmployee:             '/employees/:id',
     // Suppliers
     suppliersPage:            '/suppliers',
+    supplierPage:             '/supplier/:id',
+    supplier:                 '/supplier',
     //
     // Catalogue
     //
