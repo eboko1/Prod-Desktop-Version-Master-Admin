@@ -369,8 +369,10 @@ class StorageDocumentPage extends Component {
                     quantity: elem.quantity || 1,
                     stockPrice: formData.type == EXPENSE ? elem.sellingPrice : elem.stockPrice,
                     sellingPrice: elem.sellingPrice,
-                    supplierPartNumber: elem.tradeCode,
                 })
+                if(elem.tradeCode) {
+                    createData.docProducts[createData.docProducts.length-1].supplierPartNumber = elem.tradeCode;
+                }
                 if(elem.storeDocProductId) {
                     createData.docProducts[createData.docProducts.length-1].storeDocProductId = elem.storeDocProductId;
                 }

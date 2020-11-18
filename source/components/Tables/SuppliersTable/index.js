@@ -82,7 +82,7 @@ export class SuppliersTable extends Component {
             },
             {
                 title: <FormattedMessage id="supplier.orders" />,
-                dataIndex: "orders",
+                dataIndex: "incomeOrderDocsCount",
                 key: "orders",
                 render: (orders, {id}) => {
                     return (
@@ -99,7 +99,7 @@ export class SuppliersTable extends Component {
             },
             {
                 title: <FormattedMessage id="supplier.supply" />,
-                dataIndex: "supply",
+                dataIndex: "expenseOrderDocsCount",
                 key: "supply",
                 render: (supply, {id}) => {
                     return (
