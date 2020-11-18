@@ -216,3 +216,85 @@ export function updateClientRequisite(id, data, func) {
         console.log('error', error)
     });
 }
+
+export function deleteSupplierRequisite(id, func) {
+    let url = __API_URL__ + `/business_suppliers/requisites/${id}`;
+    fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': token,
+        }
+    })
+    .then(function (response) {
+        if (response.status !== 200) {
+        return Promise.reject(new Error(response.statusText))
+        }
+        return Promise.resolve(response)
+    })
+    .then(function (response) {
+        return response.json()
+    })
+    .then(function (data) {
+        console.log(data);
+        func();
+    })
+    .catch(function (error) {
+        console.log('error', error)
+    });
+}
+
+export function postSupplierRequisite(data, func, id) {
+    console.log(data);
+    let url = __API_URL__ + `/business_suppliers/${id}/requisites`;
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Authorization': token,
+        },
+        body: JSON.stringify(data)
+    })
+    .then(function (response) {
+        if (response.status !== 200) {
+        return Promise.reject(new Error(response.statusText))
+        }
+        return Promise.resolve(response)
+    })
+    .then(function (response) {
+        return response.json()
+    })
+    .then(function (data) {
+        console.log(data);
+        func();
+    })
+    .catch(function (error) {
+        console.log('error', error)
+    });
+}
+
+export function updateSupplierRequisite(id, data, func) {
+    console.log(data);
+    let url = __API_URL__ + `/business_suppliers/requisites/${id}`;
+    fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Authorization': token,
+        },
+        body: JSON.stringify(data)
+    })
+    .then(function (response) {
+        if (response.status !== 200) {
+        return Promise.reject(new Error(response.statusText))
+        }
+        return Promise.resolve(response)
+    })
+    .then(function (response) {
+        return response.json()
+    })
+    .then(function (data) {
+        console.log(data);
+        func();
+    })
+    .catch(function (error) {
+        console.log('error', error)
+    });
+}

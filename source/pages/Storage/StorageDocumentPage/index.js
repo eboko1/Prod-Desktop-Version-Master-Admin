@@ -370,6 +370,9 @@ class StorageDocumentPage extends Component {
                     stockPrice: formData.type == EXPENSE ? elem.sellingPrice : elem.stockPrice,
                     sellingPrice: elem.sellingPrice,
                 })
+                if(elem.tradeCode) {
+                    createData.docProducts[createData.docProducts.length-1].supplierPartNumber = elem.tradeCode;
+                }
                 if(elem.storeDocProductId) {
                     createData.docProducts[createData.docProducts.length-1].storeDocProductId = elem.storeDocProductId;
                 }
@@ -584,7 +587,7 @@ class StorageDocumentPage extends Component {
     getCounterpartSupplier() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + '/business_suppliers?super=true';
+        let url = __API_URL__ + '/business_suppliers?all=true';
         fetch(url, {
             method: 'GET',
             headers: {
@@ -712,7 +715,7 @@ class StorageDocumentPage extends Component {
                 elem.detailCode = elem.product.code;
                 elem.detailName = elem.product.name;
                 elem.groupId = elem.product.groupId;
-                elem.tradeCode = elem.product.tradeCode;
+                elem.tradeCode = elem.product.tradeCode || elem.supplierPartNumber;
                 elem.sum = elem.stockPrice * elem.quantity;
                 elem.key = key;
                 elem.sellingSum = elem.sellingPrice * elem.quantity;

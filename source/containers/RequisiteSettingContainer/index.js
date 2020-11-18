@@ -101,7 +101,7 @@ export default class RequisiteSettingContainer extends Component {
     }
 
     render() {
-        const { modalVisible, showModal, hideModal, requisiteData, dataSource, postRequisite, updateRequisite, clientId, loading } = this.props;
+        const { modalVisible, showModal, hideModal, requisiteData, dataSource, postRequisite, updateRequisite, id, loading } = this.props;
         const { fetched } = this.state;
         return (
             <div>
@@ -123,7 +123,7 @@ export default class RequisiteSettingContainer extends Component {
                     requisiteData={ requisiteData }
                     postRequisite={postRequisite}
                     updateRequisite={updateRequisite}
-                    clientId={clientId}
+                    id={id}
                 />
             </div>
         );

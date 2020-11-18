@@ -99,7 +99,7 @@ export default class StoreProductsContainer extends Component {
                 console.log("error", error);
             });
 
-        url = __API_URL__ + "/business_suppliers?super=true";
+        url = __API_URL__ + "/business_suppliers?all=true";
 
         fetch(url, {
             method: "GET",
