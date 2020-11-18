@@ -46,6 +46,7 @@ class TecDocInfoModal extends React.Component{
                             <FormattedMessage id="info_modal.parameter" />
                             <Input
                                 allowClear
+                                value={this.state.parameterFilter}
                                 onChange={(event)=>{
                                     const { value } = event.target;
                                     this.setState({
@@ -67,6 +68,7 @@ class TecDocInfoModal extends React.Component{
                             <FormattedMessage id="info_modal.value" />
                             <Input
                                 allowClear
+                                value={this.state.valueFilter}
                                 onChange={(event)=>{
                                     const { value } = event.target;
                                     this.setState({
@@ -88,6 +90,7 @@ class TecDocInfoModal extends React.Component{
                             <FormattedMessage id="info_modal.units" />
                             <Input
                                 allowClear
+                                value={this.state.unitsFilter}
                                 onChange={(event)=>{
                                     const { value } = event.target;
                                     this.setState({
@@ -109,6 +112,7 @@ class TecDocInfoModal extends React.Component{
                             <FormattedMessage id="comment" /> 1
                            <Input
                                 allowClear
+                                value={this.state.firstCommentFilter}
                                 onChange={(event)=>{
                                     const { value } = event.target;
                                     this.setState({
@@ -130,6 +134,7 @@ class TecDocInfoModal extends React.Component{
                             <FormattedMessage id="comment" /> 2
                             <Input
                                 allowClear
+                                value={this.state.secondCommentFilter}
                                 onChange={(event)=>{
                                     const { value } = event.target;
                                     this.setState({
@@ -185,6 +190,11 @@ class TecDocInfoModal extends React.Component{
         this.setState({
             visible: false,
             fetched: false,
+            parameterFilter: undefined,
+            valueFilter: undefined,
+            unitsFilter: undefined,
+            firstCommentFilter: undefined,
+            secondCommentFilter: undefined,
         })
     };
 

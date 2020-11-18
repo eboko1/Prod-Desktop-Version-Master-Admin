@@ -54,6 +54,7 @@ import {
     WarehousesPage,
     RequisiteSettingPage,
     NewDocumentPage,
+    SupplierPage,
 } from 'pages';
 import book from './book';
 
@@ -139,6 +140,13 @@ export default class Private extends Component {
                     exact
                     component={ DiagnosticPatternsPage }
                     path={ book.diagnosticPatterns }
+                />
+                <Route 
+                    exact
+                    path={ book.supplierPage }
+                     render={ props => (
+                        <SupplierPage id={ props.match.params.id } { ...props } />
+                    ) }
                 />
                 { /* Cash */ }
                 <Route

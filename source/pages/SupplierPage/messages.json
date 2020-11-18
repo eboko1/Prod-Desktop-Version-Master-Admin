@@ -1,0 +1,29 @@
+{
+    "en": {
+        "supplier.contact": "Contact",
+        "supplier.phone": "Phone",
+        "supplier.debt": "Debt",
+        "supplier.orders": "Orders",
+        "supplier.supply": "Supply",
+        "supplier.paymentRespite": "Payment respite",
+        "supplier.error.email": "Incorrect E-mail"
+    },
+    "ru": {
+        "supplier.contact": "Контакт",
+        "supplier.phone": "Телефон",
+        "supplier.debt": "Долг",
+        "supplier.orders": "Заказы",
+        "supplier.supply": "Поставки",
+        "supplier.paymentRespite": "Отстрочка",
+        "supplier.error.email": "Неправильный E-mail"
+    },
+    "uk": {
+        "supplier.contact": "Контакт",
+        "supplier.phone": "Телефон",
+        "supplier.debt": "Борг",
+        "supplier.orders": "Замовлення",
+        "supplier.supply": "Поставки",
+        "supplier.paymentRespite": "Відстрочка",
+        "supplier.error.email": "Невірний E-mail"
+    }
+}

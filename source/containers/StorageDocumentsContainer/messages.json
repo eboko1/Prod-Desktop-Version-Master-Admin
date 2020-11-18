@@ -147,7 +147,7 @@
         "storage_document.error.required_fields": "Заповніть всі необхідні поля",
         "storage_document.error.confirm_all": "Немає підтверджених позицій, які можна зарезервувати",
         "storage_document.error.available": "Недостатньо товару",
-        "storage document.warning.continue": "Продовжити?",
+        "storage_document.warning.continue": "Продовжити?",
         "storage_document.notification.available_from_warehouse": "Доступно зі складу {name}",
         "storage_document.notification.reserved": "Зарезервовано {count} од. товару",
         "storage_document.notification.reserve_canceled": "Резерв скасовано"

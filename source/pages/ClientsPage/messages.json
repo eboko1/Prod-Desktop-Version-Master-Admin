@@ -3,18 +3,21 @@
         "clients-page.title": "Clients",
         "clients-page.description": "Manage your customer data",
         "clients-page.invite_to_service": "Invite",
-        "clients-page.add_client": "Add client"
+        "clients-page.add_client": "Add client",
+        "clients-page.vehicle_transfer_confirm": "Are you sure you want to change the customer who owns the car?"
     },
     "ru": {
         "clients-page.title": "Клиенты",
         "clients-page.description": "Управление данными Ваших клиентов",
         "clients-page.invite_to_service": "Пригласить на СТО",
-        "clients-page.add_client": "Добавить клиента"
+        "clients-page.add_client": "Добавить клиента",
+        "clients-page.vehicle_transfer_confirm": "Вы действительно хотите поменять клиента, которому принадлежит автомобиль?"
     },
     "uk": {
         "clients-page.title": "Клієнти",
         "clients-page.description": "Керування даними Ваших клієнтів",
         "clients-page.invite_to_service": "Invite",
-        "clients-page.add_client": "Додати клієнта"
+        "clients-page.add_client": "Додати клієнта",
+        "clients-page.vehicle_transfer_confirm": "Ви дійсно хочете змінити клієнта, якому належить автомобіль?"
     }
 }

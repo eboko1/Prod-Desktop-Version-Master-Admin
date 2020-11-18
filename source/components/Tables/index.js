@@ -1,6 +1,8 @@
 export { EditableTable } from './EditableTable';
 export { SuppliersTable } from './SuppliersTable';
 
+export { ClientMRDsTable } from './ClientMRDsTable';
+
 export { CashboxesTable } from './CashTables/CashboxesTable';
 export { CashOrdersTable } from './CashTables/CashOrdersTable';
 export { CashReportTable } from './CashTables/CashReportTable';
