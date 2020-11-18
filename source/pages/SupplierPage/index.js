@@ -118,7 +118,7 @@ export default class SupplierPage extends Component {
             emails: generalInfo.emails || [],
             paymentRespite: generalInfo.paymentRespite || 0,
         }
-        if(generalInfo.emails && !re.test(generalInfo.emails[0])) {
+        if(generalInfo.emails && generalInfo.emails.length && !re.test(generalInfo.emails[0])) {
             notification.error({
                 message: formatMessage({id: 'supplier.error.email'}),
             });
@@ -204,7 +204,7 @@ export default class SupplierPage extends Component {
                                     <FormattedMessage id='supplier.phone'/>
                                     <InputNumber
                                         style={{display: 'block', width: '100%'}}
-                                        value={generalInfo.phones && Number(generalInfo.phones[0])}
+                                        value={generalInfo.phones && Number(generalInfo.phones[0]) || null}
                                         onChange={(value)=>{
                                             generalInfo.phones = [String(value)];
                                             this.setState({});
