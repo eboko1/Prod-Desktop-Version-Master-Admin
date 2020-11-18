@@ -671,7 +671,7 @@ class DetailsTable extends Component {
             purchasePrice:
                 Math.round(detail.purchasePrice * 10) / 10 || 0,
             count:   detail.count,
-            price:   Math.round(detail.price * 10) / 10,
+            price:   detail.price ? Math.round(detail.price * 10) / 10 : 1,
             comment: detail.comment || {
                 comment:   undefined,
                 positions: [],
