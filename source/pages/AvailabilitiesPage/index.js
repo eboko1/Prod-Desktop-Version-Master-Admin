@@ -365,7 +365,7 @@ class AvailabilitiesPage extends Component {
             console.log('error', error)
         })
 
-        params = `/business_suppliers?super=true`;
+        params = `/business_suppliers?all=true`;
         url = __API_URL__ + params;
     
         fetch(url, {

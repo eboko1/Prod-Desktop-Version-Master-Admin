@@ -32,6 +32,7 @@ class AgreementPage extends Component {
         this.detailsTotal = 0;
         this.servicesDiscount = 0;
         this.detailsDiscount = 0;
+        this.taxRate = 1;
         this.updateData = this.updateData.bind(this);
         this.onSwitchService = this.onSwitchService.bind(this);
         this.onSwitchDetail = this.onSwitchDetail.bind(this);
@@ -76,18 +77,21 @@ class AgreementPage extends Component {
     }
 
     updateData(data) {
+        if(data.stats.isTaxPayer) {
+            this.taxRate = 1 + data.stats.taxRate/100;
+        }
         this.state.servicesList = data.labors.map((elem)=>{
             elem.checked = elem.agreement != 'REJECTED' ? true : false;
             elem.comment = elem.comment; //"**description**";
             elem.discount = data.servicesDiscount ? data.servicesDiscount/100 : 0;
-            elem.price = Math.round(elem.price*(1-elem.discount)*10)/10;
+            elem.price = Math.round(elem.price*(1-elem.discount)*10*this.taxRate)/10;
             elem.sum = elem.price * elem.count;
             return elem;
         });
         this.state.detailsList = data.details.map((elem)=>{
             elem.checked = elem.agreement != 'REJECTED' ? true : false;
             elem.discount = data.detailsDiscount ? data.detailsDiscount/100 : 0;
-            elem.price = Math.round(elem.price*(1-elem.discount)*10)/10;
+            elem.price = Math.round(elem.price*(1-elem.discount)*10*this.taxRate)/10;
             elem.sum = elem.price * elem.count;
             return elem;
         });
@@ -123,7 +127,6 @@ class AgreementPage extends Component {
         this.lang = urlParams.get('lang');
         var localeLang = getLocale();
         if(localeLang == 'uk') localeLang = 'ua';
-        console.log(localeLang, this.lang);
         if(localeLang != this.lang) {
             setLocale(this.lang);
             window.location.reload();

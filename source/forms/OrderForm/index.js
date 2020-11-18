@@ -261,6 +261,7 @@ export class OrderForm extends React.PureComponent {
     componentDidMount() {
         // TODO in order to fix late getFieldDecorator invoke for services
         //this.setState({ initialized: true });
+        //this.props.selectedClient.vehicles.push(this.props.vehicle);
         this._isMounted = true;
         if (this._isMounted && this.props.allDetails.brands.length) {
             this._fetchLaborsAndDetails();

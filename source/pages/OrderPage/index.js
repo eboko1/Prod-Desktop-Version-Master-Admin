@@ -605,7 +605,7 @@ class OrderPage extends Component {
                             :
                             <></>
                         }
-                        {!isForbidden(user, permissions.ACCESS_AGREEMENT) && !isMobile ? 
+                        {!isForbidden(user, permissions.ACCESS_AGREEMENT) && !isMobile && !isClosedStatus ? 
                             <div title={this.props.intl.formatMessage({id: "order-page.send_agreement"})}>
                                 <Popconfirm
                                     title={

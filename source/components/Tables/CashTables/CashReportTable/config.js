@@ -15,6 +15,7 @@ export function columnsConfig() {
         dataIndex: 'clientName',
         key: 'clientName',
         width:     '10%',
+        align: 'right',
         render:    (clientName, report) => {             
             if(clientName) {return (
                 <Link to={{ 
@@ -35,6 +36,7 @@ export function columnsConfig() {
         dataIndex: 'phones',
         key: 'phones',
         width:     '10%',
+        align: 'right',
         render:    phones => {
             return _.get(phones, '0', '<PHONE MISSING>');
         }
@@ -45,6 +47,7 @@ export function columnsConfig() {
         dataIndex: 'paymentRespite',
         key: 'paymentRespite',
         width:     '10%',
+        align: 'right',
         render:    paymentRespite => {
             return <Numeral>{paymentRespite}</Numeral>;
         }
@@ -55,9 +58,19 @@ export function columnsConfig() {
         dataIndex: 'currentDebt',
         key: 'currentDebt',
         width:     '10%',
-        render:    currentDebt => {
-            return <Numeral>{currentDebt}</Numeral>;
-        }
+        align: 'right',
+        render: currentDebt => {
+            let strVal = Number(currentDebt).toFixed(2);
+
+            return (
+                <span>
+                    { currentDebt ? 
+                        `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                        : 0
+                    }
+                </span>
+            );
+        },
     };
 
     const clientOverdueDebtCol = {
@@ -65,9 +78,19 @@ export function columnsConfig() {
         dataIndex: 'overdueDebt',
         key: 'overdueDebt',
         width:     '10%',
-        render:    overdueDebt => {
-            return <Numeral>{overdueDebt}</Numeral>;
-        }
+        align: 'right',
+        render: overdueDebt => {
+            let strVal = Number(overdueDebt).toFixed(2);
+
+            return (
+                <span>
+                    { overdueDebt ? 
+                        `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                        : 0
+                    }
+                </span>
+            );
+        },
     };
 
     const clientNotOverdueDebtCol = {
@@ -75,9 +98,20 @@ export function columnsConfig() {
         dataIndex: 'overdueDebt',
         key: 'notOverdueDebt',
         width:     '10%',
-        render:    (overdueDebt, report) => {
-            return <Numeral>{(report.currentDebt ? report.currentDebt: 0) - overdueDebt}</Numeral>;
-        }
+        align: 'right',
+        render: (overdueDebt, report) => {
+            const notOverdueDebt = (report.currentDebt ? report.currentDebt: 0) - overdueDebt;
+            let strVal = Number(notOverdueDebt).toFixed(2);
+
+            return (
+                <span>
+                    { notOverdueDebt ? 
+                        `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                        : 0
+                    }
+                </span>
+            );
+        },
     };
 
     return [

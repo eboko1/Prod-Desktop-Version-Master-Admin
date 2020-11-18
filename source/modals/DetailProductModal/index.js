@@ -759,7 +759,7 @@ class DetailProductModal extends React.Component{
         this.labors = this.props.labors;
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url =  __API_URL__ + '/business_suppliers?super=true';
+        let url =  __API_URL__ + '/business_suppliers?all=true';
         fetch(url, {
             method: 'GET',
             headers: {

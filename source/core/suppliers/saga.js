@@ -22,7 +22,7 @@ export function* fetchSuppliersSaga() {
             yield take(FETCH_SUPPLIERS);
             yield nprogress.start();
 
-            const data = yield call(fetchAPI, 'GET', 'business_suppliers');
+            const data = yield call(fetchAPI, 'GET', 'business_suppliers', {all: true});
 
             yield put(fetchSuppliersSuccess(data));
         } catch (error) {
