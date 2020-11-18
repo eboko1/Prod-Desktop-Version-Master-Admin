@@ -713,6 +713,7 @@ class DetailsTable extends Component {
             }
         } catch (error) {
             console.error('ERROR:', error);
+            this.updateDataSource();
         }
         
         this.setState({
