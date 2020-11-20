@@ -653,6 +653,9 @@ class DetailsTable extends Component {
             reservedCount: detail.reservedCount,
             supplierBrandId: detail.supplierBrandId || detail.brandId,
             supplierId: detail.supplierId,
+            supplierOriginalCode: detail.supplierOriginalCode,
+            supplierProductNumber: detail.supplierProductNumber,
+            supplierPartNumber: detail.supplierPartNumber,
             comment: detail.comment || {
                 comment: undefined,
                 positions: [],
@@ -671,7 +674,7 @@ class DetailsTable extends Component {
             purchasePrice:
                 Math.round(detail.purchasePrice * 10) / 10 || 0,
             count:   detail.count,
-            price:   Math.round(detail.price * 10) / 10,
+            price:   detail.price ? Math.round(detail.price * 10) / 10 : 1,
             comment: detail.comment || {
                 comment:   undefined,
                 positions: [],
@@ -713,6 +716,7 @@ class DetailsTable extends Component {
             }
         } catch (error) {
             console.error('ERROR:', error);
+            this.updateDataSource();
         }
         
         this.setState({
@@ -1189,7 +1193,7 @@ class ReserveButton extends React.Component {
                 {
                     productId: detail.productId,
                     quantity: !detail.reserved ? detail.count : detail.reservedCount,
-                    stockPrice: detail.purchasePrice,
+                    stockPrice: detail.purchasePrice || 0,
                 }
             ],
             warehouseId: !detail.reserved ? detail.reservedFromWarehouseId || mainWarehouseId : reserveWarehouseId,
