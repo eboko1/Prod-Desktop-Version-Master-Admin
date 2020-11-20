@@ -164,7 +164,6 @@ export default class WorkshopTable extends Component {
                     dataSource={ dataSource }
                     pagination={ false }
                     rowClassName={(record)=>{
-                        console.log(record)
                         const stage = record.stage;
                         return Styles[stage];
                     }}
@@ -178,27 +177,31 @@ class LaborStageButtonsGroup extends Component {
     render() {
         const { stage, onClick } = this.props;
         return (
-            <div>
+            <div className={Styles.laborStageButtonsGroup}>
                 <Button
-                    className={Styles.IN_PROGRESS}
+                    className={Styles.greenButton}
                     disabled={stage == IN_PROGRESS || stage == CANCELED}
                     onClick={ () => onClick(IN_PROGRESS) }
                 >
                     Старт
                 </Button>
                 <Button
+                    className={Styles.greenButton}
                     disabled={stage == INACTIVE || stage == DONE || stage == CANCELED}
                     onClick={ () => onClick(DONE) }
                 >
                     Финиш
                 </Button>
                 <Button
+                    className={Styles.redButton}
+                    type='danger'
                     disabled={stage == STOPPED || stage == DONE || stage == CANCELED}
                     onClick={ () => onClick(STOPPED) }
                 >
                     Стоп !!!
                 </Button>
                 <Button
+                    className={Styles.yellowButton}
                     disabled={stage == DONE || stage == CANCELED}
                     onClick={ () => onClick(CANCELED) }
                 >
