@@ -163,6 +163,11 @@ export default class WorkshopTable extends Component {
                     columns={ this.columns }
                     dataSource={ dataSource }
                     pagination={ false }
+                    rowClassName={(record)=>{
+                        console.log(record)
+                        const stage = record.stage;
+                        return Styles[stage];
+                    }}
                 />
             </Catcher>
         );
@@ -175,6 +180,7 @@ class LaborStageButtonsGroup extends Component {
         return (
             <div>
                 <Button
+                    className={Styles.IN_PROGRESS}
                     disabled={stage == IN_PROGRESS || stage == CANCELED}
                     onClick={ () => onClick(IN_PROGRESS) }
                 >

@@ -1,0 +1,15 @@
+.STOPPED {
+	background-color: var(--db_not_complete);
+}
+
+.IN_PROGRESS {
+	background-color: var(--db_progress);
+}
+
+.DONE {
+	background-color: var(--db_success);
+}
+
+.CANCELED {
+	background-color: var(--db_cancel);
+}
