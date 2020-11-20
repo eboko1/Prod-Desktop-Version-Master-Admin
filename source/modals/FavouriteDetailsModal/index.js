@@ -512,6 +512,7 @@ class FavouriteDetailsModal extends React.Component{
     }
 
     async addDetailsAndLabors(data) {
+        console.log(data);
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__;
         let params = `/orders/${this.props.orderId}`;

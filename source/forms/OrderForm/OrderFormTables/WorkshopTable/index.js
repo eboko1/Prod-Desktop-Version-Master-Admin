@@ -33,8 +33,8 @@ export default class WorkshopTable extends Component {
             },
             {
                 title:     'Расчет',
-                key:       'hours',
-                dataIndex: 'hours',
+                key:       'count',
+                dataIndex: 'count',
                 render:    data => {
                     return (
                         <span>
@@ -142,8 +142,8 @@ export default class WorkshopTable extends Component {
         });
     }
 
-    componentDidUpdate() {
-        if(this.props.activeKey != 'services') {
+    componentDidUpdate(prevProps) {
+        if(prevProps.activeKey != 'workshop' && this.props.activeKey == 'workshop') {
             let tmp = [ ...this.props.orderServices ];
             tmp = tmp.filter((elem)=>elem.id)
             tmp.map((elem, i) => elem.key = i);
