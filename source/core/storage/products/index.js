@@ -337,7 +337,7 @@ const normalizeFile = file =>
             groupId:     product.groupId ? Number(product.groupId) : void 0,
             groupName:   product.groupName ? String(product.groupName) : void 0,
             brandId:     product.brandId ? Number(product.brandId) : void 0,
-            brandName:   product.brandName ? String(product.brandName) : void 0,
+            //brandName:   product.brandName ? String(product.brandName) : void 0,
             measureUnit: product.measureUnit
                 ? String(product.measureUnit)
                 : void 0,

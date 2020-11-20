@@ -8,6 +8,7 @@ import TasksTable from './TasksTable';
 import CallsTable from './CallsTable';
 import StationsTable from './StationsTable';
 import DiagnosticTable from './DiagnosticTable';
+import WorkshopTable from './WorkshopTable';
 
 export {
     DetailsTable,
@@ -20,4 +21,5 @@ export {
     StationsTable,
     ClientsVehiclesTable,
     DiagnosticTable,
+    WorkshopTable,
 };

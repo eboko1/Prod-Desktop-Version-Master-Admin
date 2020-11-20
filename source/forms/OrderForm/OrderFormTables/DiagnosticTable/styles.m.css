@@ -24,15 +24,15 @@
 /* Diagnostic Table */
 
 .tableRowStatus1 {
-    background-color: rgb(200,225,180);
+    background-color: var(--db_progress);
 }
 
 .tableRowStatus2 {
-    background-color: rgb(255,240,180);
+    background-color: var(--db_approve);
 }
 
 .tableRowStatus3 {
-    background-color: rgb(250,175,175);
+    background-color: var(--db_not_complete);
 }
 
 .diagnosticTableDisabled td *{
@@ -86,6 +86,11 @@
 .diagnostic_status_button{
     width: 30%;
     padding: 0;
+
+    &:hover {
+        color: var(--text3);
+        border-color: var(--text3);
+    }
 }
 
 .diagnostic_status_button_edit{
