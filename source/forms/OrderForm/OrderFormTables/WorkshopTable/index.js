@@ -36,18 +36,44 @@ export default class WorkshopTable extends Component {
                 key:       'hours',
                 dataIndex: 'hours',
                 render:    data => {
-                    return data ? data : <FormattedMessage id='long_dash' />;
+                    return (
+                        <span>
+                            {data || 0} <FormattedMessage id='order_form_table.hours_short' />
+                        </span>
+                    );
                 },
             },
             {
                 title:     'Реал.',
                 key:       'workingTime',
                 dataIndex: 'workingTime',
+                render:    data => {
+                    return (
+                        <span>
+                            {data || 0} <FormattedMessage id='order_form_table.hours_short' />
+                        </span>
+                    );
+                },
             },
             {
                 title:     <FormattedMessage id='order_form_table.status' />,
                 key:       'stage',
                 dataIndex: 'stage',
+            },
+            {
+                key:       'actions',
+                dataIndex: 'stage',
+                render: (stage, elem)=>{
+                    return (
+                        <LaborStageButtonsGroup
+                            stage={stage}
+                            onClick={(value)=>{
+                                elem.stage = value;
+                                this.updateLabor(elem.key, elem);
+                            }}
+                        />
+                    )
+                }
             },
         ];
     }
@@ -76,35 +102,16 @@ export default class WorkshopTable extends Component {
             updateMode: true,
             services:   [
                 {
-                    id:            labor.id,
-                    serviceId:     labor.laborId,
-                    serviceName:   labor.serviceName,
-                    employeeId:    labor.employeeId,
-                    serviceHours:  labor.hours,
-                    purchasePrice: Math.round(labor.purchasePrice * 10) / 10,
-                    count:         labor.count,
-                    servicePrice:  Math.round(labor.price * 10) / 10,
-                    comment:       labor.comment || {
-                        comment:   undefined,
-                        positions: [],
-                        problems:  [],
-                    },
+                    id: labor.id,
+                    stage: labor.stage,
                 },
             ],
         };
-        if (
-            !isForbidden(
-                this.props.user,
-                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
-            )
-        ) {
-            data.services[ 0 ].agreement = labor.agreement;
-        }
+
+        console.log(data);
 
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/orders/${this.props.orderId}`;
-        url += params;
+        let url = __API_URL__ + `/orders/${this.props.orderId}`;
         try {
             const response = await fetch(url, {
                 method:  'PUT',
@@ -135,6 +142,17 @@ export default class WorkshopTable extends Component {
         });
     }
 
+    componentDidUpdate() {
+        if(this.props.activeKey != 'services') {
+            let tmp = [ ...this.props.orderServices ];
+            tmp = tmp.filter((elem)=>elem.id)
+            tmp.map((elem, i) => elem.key = i);
+            this.setState({
+                dataSource: tmp,
+            });
+        }
+    }
+
     render() {
         const { dataSource, loading } = this.state;
 
@@ -151,3 +169,36 @@ export default class WorkshopTable extends Component {
     }
 }
 
+class LaborStageButtonsGroup extends Component {
+    render() {
+        const { stage, onClick } = this.props;
+        return (
+            <div>
+                <Button
+                    disabled={stage == IN_PROGRESS || stage == CANCELED}
+                    onClick={ () => onClick(IN_PROGRESS) }
+                >
+                    Старт
+                </Button>
+                <Button
+                    disabled={stage == INACTIVE || stage == DONE || stage == CANCELED}
+                    onClick={ () => onClick(DONE) }
+                >
+                    Финиш
+                </Button>
+                <Button
+                    disabled={stage == STOPPED || stage == DONE || stage == CANCELED}
+                    onClick={ () => onClick(STOPPED) }
+                >
+                    Стоп !!!
+                </Button>
+                <Button
+                    disabled={stage == DONE || stage == CANCELED}
+                    onClick={ () => onClick(CANCELED) }
+                >
+                    Отмена
+                </Button>
+            </div>
+        )
+    }
+}

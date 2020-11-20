@@ -653,6 +653,9 @@ class DetailsTable extends Component {
             reservedCount: detail.reservedCount,
             supplierBrandId: detail.supplierBrandId || detail.brandId,
             supplierId: detail.supplierId,
+            supplierOriginalCode: detail.supplierOriginalCode,
+            supplierProductNumber: detail.supplierProductNumber,
+            supplierPartNumber: detail.supplierPartNumber,
             comment: detail.comment || {
                 comment: undefined,
                 positions: [],

@@ -378,6 +378,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             orderId={orderId}
                             orderServices={orderServices}
                             reloadOrderForm={this.props.reloadOrderForm}
+                            activeKey={this.state.activeKey}
                         />
                     </TabPane>
                 )}

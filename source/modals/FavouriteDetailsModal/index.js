@@ -422,7 +422,6 @@ class FavouriteDetailsModal extends React.Component{
             productCode: this.state.dataSource[index].detailCode,
             supplierId: this.state.dataSource[index].supplierId,
             supplierBrandId: this.state.dataSource[index].supplierBrandId,
-            brandName: this.state.dataSource[index].brandName,
             purchasePrice: this.state.dataSource[index].purchasePrice || 0,
             supplierOriginalCode: this.state.dataSource[index].supplierOriginalCode,
             supplierProductNumber: this.state.dataSource[index].supplierProductNumber,
