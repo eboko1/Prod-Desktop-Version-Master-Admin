@@ -440,7 +440,7 @@ class OrderPage extends Component {
                         productCode: detail.detailCode ? detail.detailCode : null,
                         supplierId: detail.supplierId ? detail.supplierId : null,
                         supplierBrandId: detail.supplierBrandId ? detail.supplierBrandId : null,
-                        brandName: detail.brandName ? detail.brandName : null,
+                        //brandName: detail.brandName ? detail.brandName : null,
                         purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
                         count: detail.count ? detail.count : 1,
                         price: Math.round(detail.price*10)/10,
