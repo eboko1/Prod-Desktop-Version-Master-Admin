@@ -8,20 +8,26 @@ import { FormattedDatetime } from 'components';
 import book from "routes/book";
 
 
-export default function columnsConfig() {
+export default function columnsConfig({fetchCashOrderEntity, openPrint}) {
     
     const orderNumCol = {
         title:     'order number',
         dataIndex: 'id',
         width:     '10%',
         align: 'right',
-        render:    (orderNum, mrd) => (
-            <Link
-                to={`${book.order}/${mrd.orderId}`}
-            >
-                {orderNum}
-            </Link>
-        ),
+        render:    (orderNum, mrd) => {
+            return (
+                // <button onClick={() => {fetchCashOrderEntity(50954); openPrint();}}>{orderNum}</button>
+                // {orderNum}
+                // <a onClick={() => {fetchCashOrderEntity(orderNum); openPrint();}}>{orderNum}</a>
+                <a onClick={async () => {await openPrint(orderNum);}}>{orderNum}</a>
+                // <Link
+                //     to={`${book.order}/${mrd.orderId}`}
+                // >
+                //     {orderNum}
+                // </Link>
+            )
+        },
     };
 
     const amountCol = {

@@ -9,7 +9,7 @@ import { Loader } from "commons";
 //own
 import columnsConfig from './tableConfig';
 import Style from './style.m.css';
-import nestedCashOrdersTable from './NestedCashOrdersTable';
+import NestedCashOrdersTable from './NestedCashOrdersTable';
 
 
 export default class ClientMRDsTable extends Component {
@@ -19,13 +19,15 @@ export default class ClientMRDsTable extends Component {
 
     render() {
         const {
+            fetchMRDs,
+            fetchCashOrderEntity,
             isFetching,
             mrds,
             stats,
             setMRDsPage,
-            fetchMRDs,
             clientMRDsPage,
             clientId,
+            openPrint,
             } = this.props
 
         const pagination = {
@@ -56,7 +58,8 @@ export default class ClientMRDsTable extends Component {
                 rowClassName={(record) => {
                     if(record.isOverdue) return Style.overdueMRD;
                 }}
-                expandedRowRender={record => {return nestedCashOrdersTable(record.cashOrders)}}
+                // expandedRowRender={record => {return nestedCashOrdersTable(record.cashOrders)}}
+                expandedRowRender={record => {return <NestedCashOrdersTable nestedCashOrders={record.cashOrders} fetchCashOrderEntity={fetchCashOrderEntity} openPrint={openPrint}/>}}
                 locale={ {
                     emptyText: (<FormattedMessage id="client-mrds-table.data_missing"/>),
                 } }
