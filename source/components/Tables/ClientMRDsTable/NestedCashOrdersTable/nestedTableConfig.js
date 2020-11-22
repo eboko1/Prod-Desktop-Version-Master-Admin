@@ -24,6 +24,16 @@ export default function columnsConfig() {
         ),
     };
 
+    const orderDatetimeCol = {
+        title:     'date',
+        dataIndex: 'datetime',
+        width:     '10%',
+        align: 'right',
+        render:    date => (
+            <FormattedDatetime datetime={ date } format={ 'DD.MM.YYYY' } />
+        ),
+    };
+
     const amountCol = {
         title:     'amount',
         dataIndex: 'amount',
@@ -43,19 +53,9 @@ export default function columnsConfig() {
         },
     };
 
-    const orderDatetimeCol = {
-        title:     'date',
-        dataIndex: 'datetime',
-        width:     '10%',
-        align: 'right',
-        render:    date => (
-            <FormattedDatetime datetime={ date } format={ 'DD.MM.YYYY HH:mm:ss' } />
-        ),
-    };
-
     return [
         orderNumCol,
+        orderDatetimeCol,
         amountCol,
-        orderDatetimeCol
     ];
 }
