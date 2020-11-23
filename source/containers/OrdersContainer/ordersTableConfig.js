@@ -9,7 +9,7 @@ import _ from 'lodash';
 
 // proj
 import { Numeral } from 'commons';
-import { OrderStatusIcon } from 'components';
+import { OrderStatusIcon, RepairMapIndicator } from 'components';
 import { permissions, isForbidden } from 'utils';
 import book from 'routes/book';
 
@@ -221,11 +221,18 @@ export function columnsConfig(
         width:     190,
         render:    (_, order) => {
             if (order.managerName) {
-                return `${order.managerName} ${order.managerSurname &&
-                    order.managerSurname}`;
+                return (
+                    <div>
+                        {order.managerName} {order.managerSurname && order.managerSurname}
+                        <RepairMapIndicator data={order.repairMapIndicator}/>
+                    </div>
+                );
             }
 
-            return <FormattedMessage id='orders.not_assigned' />;
+            return  <div>
+                        <FormattedMessage id='orders.not_assigned' />
+                        <RepairMapIndicator data={order.repairMapIndicator}/>
+                    </div>;
         },
     };
 
