@@ -7,11 +7,14 @@ import { fetchAPI } from 'utils';
 
 // own
 import {
-    fetchClientMRDsSuccess
+    fetchClientMRDsSuccess,
+    fetchCashOrderEntitySuccess,
+    setCashOrderEntityIsFetching
 } from './duck';
 
 import {
     FETCH_CLIENT_MRDS,
+    FETCH_CASH_ORDER_ENTITY
 } from './duck';
 
 const selectFilter = ({ clientMRDs: { filter, sort } }) => ({
@@ -44,6 +47,24 @@ export function* fetchClientMRDsSaga() {
     }
 }
 
+export function* fetchCashOrderEntitySaga() {
+    while (true) {
+        try {
+            const {payload: cashOrderId } = yield take(FETCH_CASH_ORDER_ENTITY);
+            put(setCashOrderEntityIsFetching(true));
+
+            const cashOrderEntity = yield call(
+                fetchAPI,
+                'GET',
+                `/cash_orders/${cashOrderId}`,
+            );
+            yield put(fetchCashOrderEntitySuccess(cashOrderEntity));
+        } finally {
+            put(setCashOrderEntityIsFetching(false));
+        }
+    }
+}
+
 export function* saga() {
-    yield all([ call(fetchClientMRDsSaga)]);
+    yield all([ call(fetchClientMRDsSaga), call(fetchCashOrderEntitySaga)]);
 }

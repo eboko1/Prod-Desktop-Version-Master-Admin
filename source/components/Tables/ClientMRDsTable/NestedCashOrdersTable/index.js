@@ -9,14 +9,19 @@ import columnsConfig from './nestedTableConfig';
 import Style from './style.m.css';
 
 
-export default function nestedCashOrdersTable(nestedCashOrders) {
+export default function nestedCashOrdersTable(props) {
+    const {
+        fetchCashOrderEntity,
+        nestedCashOrders,
+        openPrint
+    } = props;
 
     if(!nestedCashOrders) return <p>Nothing!!!(use formated message)</p>
 
     return <div className={Style.nestedTableContainer}>
         <Table
             size='small'
-            columns={ columnsConfig() }
+            columns={ columnsConfig({fetchCashOrderEntity, openPrint}) }
             dataSource={ nestedCashOrders }
             locale={ {
                 emptyText: "No date(use formated message here!!!)",
