@@ -103,23 +103,23 @@ export default class ClientMRDsTab extends Component {
     };
 
     _loadPrintModal = async (orderId) => {
-        // const {cashOrderEntity, cashOrderEntityIsFetching, fetchCashOrderEntity, setCashOrderEntityIsFetching, selectCashOrderEntityIsFetching} = this.props;
+        const {cashOrderEntity, cashOrderEntityIsFetching, fetchCashOrderEntity, setCashOrderEntityIsFetching, selectCashOrderEntityIsFetching} = this.props;
         // new Promise((resolve) => resolve(fetchCashOrderEntity(orderId)))
         //     .then(() => {
         //         this._onOpenPrintCashOrderModal(cashOrderEntity);
         //     });
-        // fetchCashOrderEntity(orderId);
-        // setCashOrderEntityIsFetching(true)
+        fetchCashOrderEntity(orderId);
+        setCashOrderEntityIsFetching(true)
 
-        const cashOrderEntity = await this.fetchCashOrderEntity_hardCode(orderId);
-        this._onOpenPrintCashOrderModal(cashOrderEntity);
+        // const cashOrderEntity = await this.fetchCashOrderEntity_hardCode(orderId);
+        // this._onOpenPrintCashOrderModal(cashOrderEntity);
         // console.log(cashOrderEntity);
-        // if(selectCashOrderEntityIsFetching()) {
-        //     console.log("Yes, it is fetching!");
-        //     <Loader />
-        // } else {
-        //     // this._onOpenPrintCashOrderModal(cashOrderEntity);
-        // }
+        if(cashOrderEntityIsFetching) {
+            console.log("Yes, it is fetching!");
+            <Loader />
+        } else {
+            this._onOpenPrintCashOrderModal(cashOrderEntity);
+        }
     }
 
     render() {

@@ -125,16 +125,16 @@ export const setFilterDate = MRDDate => ({
     payload: MRDDate
 });
 
-export const setCashOrderEntityIsFetchingX = cashOrderEntityIsFetching => ({
+export const setCashOrderEntityIsFetching = cashOrderEntityIsFetching => ({
     type: SET_CASH_ORDER_ENTITY_IS_FETCHING,
     payload: cashOrderEntityIsFetching
 });
 
-export const setCashOrderEntityIsFetching = cashOrderEntityIsFetching => {
-    return (dispatch, getState) => {
-        dispatch(setCashOrderEntityIsFetchingX(cashOrderEntityIsFetching))
-    }
-};
+// export const setCashOrderEntityIsFetching = cashOrderEntityIsFetching => {
+//     return (dispatch, getState) => {
+//         dispatch(setCashOrderEntityIsFetchingX(cashOrderEntityIsFetching))
+//     }
+// };
 
 export const setCashOrderModalMounted = (isCashOrderModalMounted) => ({ 
     type:    SET_CASH_ORDER_MODAL_MOUNTED,
