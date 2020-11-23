@@ -20,6 +20,7 @@ import {
     StationsTable,
     DiagnosticTable,
     WorkshopTable,
+    StockTable,
 } from "../OrderFormTables";
 import Styles from "./styles.m.css";
 
@@ -43,7 +44,7 @@ export default class OrderFormTabs extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            activeKey: 'diagnostic',
+            activeKey: 'map',
         }
         this._localizationMap = {};
         this.commentsRules = [
@@ -207,6 +208,15 @@ export default class OrderFormTabs extends React.PureComponent {
                     })
                 }}
             >
+                {!addOrderForm && (
+                    <TabPane
+                        forceRender
+                        tab={'Карта'}
+                        key="map"
+                    >
+                        
+                    </TabPane>
+                )}
                 {!addOrderForm && (
                     <TabPane
                         forceRender
@@ -377,6 +387,20 @@ export default class OrderFormTabs extends React.PureComponent {
                         <WorkshopTable
                             orderId={orderId}
                             orderServices={orderServices}
+                            reloadOrderForm={this.props.reloadOrderForm}
+                            activeKey={this.state.activeKey}
+                        />
+                    </TabPane>
+                )}
+                {!addOrderForm && (
+                    <TabPane
+                        forceRender
+                        tab={`Склад`}
+                        key="stock"
+                    >
+                        <StockTable
+                            orderId={orderId}
+                            orderDetails={orderDetails}
                             reloadOrderForm={this.props.reloadOrderForm}
                             activeKey={this.state.activeKey}
                         />
