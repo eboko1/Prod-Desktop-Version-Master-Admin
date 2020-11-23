@@ -50,7 +50,7 @@ export default class WorkshopTable extends Component {
                 render:    data => {
                     return (
                         <span>
-                            {data || 0} <FormattedMessage id='order_form_table.hours_short' />
+                            {data ? Math.abs(data.toFixed(2)) : 0} <FormattedMessage id='order_form_table.hours_short' />
                         </span>
                     );
                 },
@@ -123,15 +123,15 @@ export default class WorkshopTable extends Component {
             });
             const result = await response.json();
             if (result.success) {
-                this.props.reloadOrderForm();
+                
             } else {
                 console.log('BAD', result);
             }
+            this.updateDataSource();
         } catch (error) {
             console.error('ERROR:', error);
+            this.updateDataSource();
         }
-
-        await this.updateDataSource();
     }
 
     componentDidMount() {

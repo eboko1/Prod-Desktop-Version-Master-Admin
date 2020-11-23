@@ -589,15 +589,15 @@ class ServicesTable extends Component {
             });
             const result = await response.json();
             if (result.success) {
-                this.props.reloadOrderForm();
+                
             } else {
                 console.log('BAD', result);
             }
+            this.updateDataSource();
         } catch (error) {
             console.error('ERROR:', error);
+            this.updateDataSource();
         }
-
-        await this.updateDataSource();
     }
 
     fetchLaborsTree() {
