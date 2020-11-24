@@ -65,7 +65,6 @@ class ServicesTable extends Component {
                         />
                     );
                 },
-                width:     '8%',
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {
@@ -145,7 +144,6 @@ class ServicesTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.service_type' />,
-                width:     '15%',
                 key:       'defaultName',
                 dataIndex: 'defaultName',
                 render:    data => {
@@ -154,7 +152,6 @@ class ServicesTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.detail_name' />,
-                width:     '15%',
                 key:       'serviceName',
                 dataIndex: 'serviceName',
                 render:    data => {
@@ -163,7 +160,6 @@ class ServicesTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.master' />,
-                width:     '10%',
                 key:       'employeeId',
                 dataIndex: 'employeeId',
                 render:    data => {
@@ -183,7 +179,6 @@ class ServicesTable extends Component {
                             <FormattedMessage id='services_table.norm_hours' />
                         </div>,
                 className: Styles.numberColumn,
-                width:     '8%',
                 key:       'hours',
                 dataIndex: 'hours',
                 render:    data => {
@@ -205,7 +200,6 @@ class ServicesTable extends Component {
                             <FormattedMessage id='order_form_table.prime_cost' />
                         </div>,
                 className: Styles.numberColumn,
-                width:     '8%',
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
                 render:    data => {
@@ -237,7 +231,6 @@ class ServicesTable extends Component {
                             </p>
                         </div>,
                 className: Styles.numberColumn,
-                width:     '8%',
                 key:       'price',
                 dataIndex: 'price',
                 render:    data => {
@@ -262,7 +255,6 @@ class ServicesTable extends Component {
                             <FormattedMessage id='order_form_table.count' />
                         </div>,
                 className: Styles.numberColumn,
-                width:     '5%',
                 key:       'count',
                 dataIndex: 'count',
                 render:    data => {
@@ -288,7 +280,6 @@ class ServicesTable extends Component {
                             </p>
                         </div>,
                 className: Styles.numberColumn,
-                width:     '8%',
                 key:       'sum',
                 dataIndex: 'sum',
                 render:    data => {
@@ -310,7 +301,6 @@ class ServicesTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.status' />,
-                width:     '10%',
                 key:       'agreement',
                 dataIndex: 'agreement',
                 render:    (data, elem) => {
@@ -338,6 +328,7 @@ class ServicesTable extends Component {
                             value={ confirmed }
                             onChange={ value => {
                                 elem.agreement = value.toUpperCase();
+                                elem.stage = value == 'rejected' ? 'CANCELED' : 'INACTIVE';
                                 this.updateLabor(key, elem);
                             } }
                         >
@@ -363,7 +354,6 @@ class ServicesTable extends Component {
                 },
             },
             {
-                width:  '2%',
                 key:    'favourite',
                 render: elem => {
                     return (
@@ -432,7 +422,6 @@ class ServicesTable extends Component {
                 },
             },
             {
-                width:  '3%',
                 key:    'delete',
                 render: elem => {
                     const confirmed = elem.agreement.toLowerCase();
@@ -562,6 +551,7 @@ class ServicesTable extends Component {
                         positions: [],
                         problems:  [],
                     },
+                    stage: labor.stage,
                 },
             ],
         };
@@ -589,15 +579,15 @@ class ServicesTable extends Component {
             });
             const result = await response.json();
             if (result.success) {
-                this.props.reloadOrderForm();
+                
             } else {
                 console.log('BAD', result);
             }
+            this.updateDataSource();
         } catch (error) {
             console.error('ERROR:', error);
+            this.updateDataSource();
         }
-
-        await this.updateDataSource();
     }
 
     fetchLaborsTree() {

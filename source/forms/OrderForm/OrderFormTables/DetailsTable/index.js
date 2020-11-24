@@ -60,7 +60,6 @@ class DetailsTable extends Component {
 
         this.columns = [
             {
-                width:     '8%',
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {
@@ -136,7 +135,6 @@ class DetailsTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.detail_name' />,
-                width:     '15%',
                 key:       'detail',
                 dataIndex: 'detailName',
                 render:    data => {
@@ -145,7 +143,6 @@ class DetailsTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.brand' />,
-                width:     '10%',
                 key:       'brand',
                 dataIndex: 'brandName',
                 render:    data => {
@@ -154,7 +151,6 @@ class DetailsTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.detail_code' />,
-                width:     '10%',
                 key:       'code',
                 dataIndex: 'detailCode',
                 render:    data => {
@@ -163,7 +159,6 @@ class DetailsTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.supplier' />,
-                width:     '8%',
                 key:       'supplierName',
                 dataIndex: 'supplierName',
                 render:    data => {
@@ -180,7 +175,6 @@ class DetailsTable extends Component {
                         <FormattedMessage id='order_form_table.AI' />
                     </div>
                 ),
-                width:     '3%',
                 key:       'AI',
                 dataIndex: 'store',
                 render:    store => {
@@ -194,7 +188,6 @@ class DetailsTable extends Component {
                     </div>
                 ),
                 className: Styles.numberColumn,
-                width:     '5%',
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
                 render:    data => {
@@ -227,7 +220,6 @@ class DetailsTable extends Component {
                     </div>
                 ),
                 className: Styles.numberColumn,
-                width:     '7%',
                 key:       'price',
                 dataIndex: 'price',
                 render:    data => {
@@ -254,7 +246,6 @@ class DetailsTable extends Component {
                     </div>
                 ),
                 className: Styles.numberColumn,
-                width:     '5%',
                 key:       'count',
                 dataIndex: 'count',
                 render:    data => {
@@ -278,7 +269,6 @@ class DetailsTable extends Component {
                     </div>
                 ),
                 className: Styles.numberColumn,
-                width:     'auto',
                 key:       'reserve',
                 render:    elem => {
                     const disabled = this.props.disabled || !elem.id;
@@ -319,7 +309,6 @@ class DetailsTable extends Component {
                     </div>
                 ),
                 className: Styles.numberColumn,
-                width:     '8%',
                 key:       'sum',
                 dataIndex: 'sum',
                 render:    data => {
@@ -341,7 +330,6 @@ class DetailsTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.status' />,
-                width:     '10%',
                 key:       'agreement',
                 dataIndex: 'agreement',
                 render:    (data, elem) => {
@@ -394,7 +382,6 @@ class DetailsTable extends Component {
                 },
             },
             {
-                width:  '2%',
                 key:    'favourite',
                 render: elem => {
                     return (
@@ -451,7 +438,6 @@ class DetailsTable extends Component {
                 },
             },
             {
-                width:  '3%',
                 key:    'delete',
                 render: elem => {
                     const confirmed = elem.agreement.toLowerCase();
@@ -653,6 +639,9 @@ class DetailsTable extends Component {
             reservedCount: detail.reservedCount,
             supplierBrandId: detail.supplierBrandId || detail.brandId,
             supplierId: detail.supplierId,
+            supplierOriginalCode: detail.supplierOriginalCode,
+            supplierProductNumber: detail.supplierProductNumber,
+            supplierPartNumber: detail.supplierPartNumber,
             comment: detail.comment || {
                 comment: undefined,
                 positions: [],

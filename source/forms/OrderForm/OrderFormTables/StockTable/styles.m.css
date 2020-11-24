@@ -1,0 +1,85 @@
+.AGREED {
+	background-color: var(--db_approve);
+}
+
+.ORDERED {
+	background-color: var(--db_approve);
+}
+
+.ACCEPTED {
+	background-color: var(--db_reserve);
+}
+
+.RESERVED {
+	background-color: var(--db_reserve);
+}
+
+.GIVEN {
+	background-color: var(--db_progress);
+}
+
+.INSTALLED {
+	background-color: var(--db_success);
+}
+
+.NO_SPARE_PART {
+	background-color: var(--db_not_complete);
+}
+
+.RETURNED {
+	background-color: var(--db_cancel);
+}
+
+.CANCELED {
+	background-color: var(--db_cancel);
+}
+
+.detailStageButtonsGroup {
+	& > * > * {
+		margin: 1px 2px;
+	}
+}
+
+.buttonsRow {
+	display: flex;
+	& > * {
+    	width: 33%;
+	}
+}
+
+.greenButton {
+	color: var(--text3);
+	background-color: var(--green);
+	border-color: transparent;
+	&:hover {
+		color: var(--text3);
+		background-color: var(--green);
+		border-color: var(--text3);
+	}
+}
+
+.redButton {
+	color: var(--text3);
+	background-color: var(--db_not_complete);
+	border-color: transparent;
+	&:hover {
+		color: var(--text3);
+		background-color: var(--db_not_complete);
+		border-color: var(--text3);
+	}
+}
+
+.yellowButton {
+	color: var(--text3);
+	background-color: rgb(255, 255, 0);
+	border-color: transparent;
+	&:hover {
+		color: var(--text3);
+		background-color: rgb(255, 255, 0);
+		border-color: var(--text3);
+	}
+}
+
+.numberColumn {
+    text-align: right;
+}

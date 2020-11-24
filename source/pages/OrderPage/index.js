@@ -32,7 +32,7 @@ import {setModal, resetModal, MODALS} from 'core/modals/duck';
 
 import {Layout, Spinner, MobileView, ResponsiveView, StyledButton} from 'commons';
 import {OrderForm, MobileRecordForm} from 'forms';
-import {ReportsDropdown, ChangeStatusDropdown} from 'components';
+import {ReportsDropdown, ChangeStatusDropdown, RepairMapIndicator} from 'components';
 import {
     CancelReasonModal,
     ConfirmOrderExitModal,
@@ -433,23 +433,48 @@ class OrderPage extends Component {
                     this.props.user,
                 )};
 
-                copyData.details = details.map((detail)=>(
+                copyData.details = details.map((detail)=>{
+                    return  detail.productId ? 
                     {
+                        id: detail.id,
                         storeGroupId: detail.storeGroupId,
                         name: detail.detailName,
-                        productCode: detail.detailCode ? detail.detailCode : null,
-                        supplierId: detail.supplierId ? detail.supplierId : null,
-                        supplierBrandId: detail.supplierBrandId ? detail.supplierBrandId : null,
-                        brandName: detail.brandName ? detail.brandName : null,
+                        productId: detail.storeId || detail.productId,
+                        productCode: detail.detailCode,
                         purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
                         count: detail.count ? detail.count : 1,
-                        price: Math.round(detail.price*10)/10,
+                        price: detail.price ? Math.round(detail.price*10)/10  : 1,
+                        reservedFromWarehouseId: detail.reservedFromWarehouseId,
+                        supplierBrandId: detail.supplierBrandId || detail.brandId,
+                        supplierId: detail.supplierId,
+                        supplierOriginalCode: detail.supplierOriginalCode,
+                        supplierProductNumber: detail.supplierProductNumber,
+                        supplierPartNumber: detail.supplierPartNumber,
                         comment: detail.comment || {
                             comment: undefined,
                             positions: [],
                         },
+                    } : 
+                    {
+                        id:              detail.id,
+                        storeGroupId:    detail.storeGroupId,
+                        name:            detail.detailName,
+                        productCode:     detail.detailCode ? detail.detailCode : null,
+                        supplierId:      detail.supplierId,
+                        supplierBrandId: detail.supplierBrandId || detail.brandId,
+                        supplierOriginalCode: detail.supplierOriginalCode,
+                        supplierProductNumber: detail.supplierProductNumber,
+                        supplierPartNumber: detail.supplierPartNumber,
+                        purchasePrice:
+                            Math.round(detail.purchasePrice * 10) / 10 || 0,
+                        count:   detail.count,
+                        price:   detail.price ? Math.round(detail.price * 10) / 10 : 1,
+                        comment: detail.comment || {
+                            comment:   undefined,
+                            positions: [],
+                        },
                     }
-                ));
+                });
                 copyData.services = services.map((labor)=>(
                     {
                         serviceId: labor.laborId,
@@ -557,8 +582,10 @@ class OrderPage extends Component {
             user,
             initialOrderTask,
         } = this.props;
-        const {num, status, datetime, diagnosis} = this.props.order;
+        const {num, status, datetime, diagnosis, repairMapIndicator} = this.props.order;
         const {id} = this.props.match.params;
+
+        console.log(this);
 
         const {
             isClosedStatus,
@@ -582,6 +609,7 @@ class OrderPage extends Component {
                                 id={ `order-status.${status || 'order'}` }
                             />
                             { ` ${num}` }
+                            <RepairMapIndicator data={repairMapIndicator} style={{display: 'inline-flex', margin: '0 0 0 48px'}}/>
                         </>
 
                 }

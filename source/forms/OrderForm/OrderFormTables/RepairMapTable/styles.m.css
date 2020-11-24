@@ -1,0 +1,43 @@
+.mapBlock {
+
+}
+
+.mapBlockTitle {
+	font-size: 16px;
+	font-weight: 500;
+	border-bottom: 1px solid #e8e8e8;
+	padding: 5px;
+}
+
+.mapChildsBlock {
+	margin: 6px 24px;
+}
+
+.childBlock {
+	padding: 2px 8px;
+	margin: 1px 0;
+	border-bottom: 1px solid #e8e8e8;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	&:hover {
+		background-color: #f3e6f5;
+	}
+}
+
+.BLANK {
+	background-color: white;
+}
+
+.RED {
+	background-color: var(--db_not_complete);
+}
+
+.YELLOW {
+	background-color: var(--db_approve);
+}
+
+.GREEN {
+	background-color: var(--db_progress);
+}

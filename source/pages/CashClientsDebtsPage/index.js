@@ -6,7 +6,7 @@ Also it provides basic search and print button.
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import {Input} from 'antd';
+import {Input, Checkbox} from 'antd';
 import _ from "lodash";
 
 const Search = Input.Search;
@@ -15,7 +15,8 @@ const Search = Input.Search;
 import {
     fetchReport,
     fetchExcelFileReport,
-    setReportQuery
+    setReportQuery,
+    setReportOverdueOnly,
 } from "core/reports/duck";
 
 import { Layout, Paper, Spinner, StyledButton, Catcher } from "commons";
@@ -35,7 +36,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchReport,
     fetchExcelFileReport,
-    setReportQuery
+    setReportQuery,
+    setReportOverdueOnly
 };
 
 @connect(
@@ -63,7 +65,9 @@ export default class CashClientsDebtsPage extends Component {
             isFetching,
             collapsed,
             fetchExcelFileReport,
+            fetchReport,
             report,
+            setReportOverdueOnly,
         } = this.props;
 
         
@@ -95,6 +99,14 @@ export default class CashClientsDebtsPage extends Component {
                                     this.handleReportsSearch(value)
                                 }
                             />
+                        </div>
+                        <div>
+                            <Checkbox onChange={e => {
+                                setReportOverdueOnly(e.target.checked);
+                                fetchReport();
+                            }}>
+                                <FormattedMessage id="cash_clients_debts_page.overdue_only" />
+                            </Checkbox>
                         </div>
                     </Catcher>
                 </section>

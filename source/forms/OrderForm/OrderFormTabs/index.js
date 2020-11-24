@@ -19,6 +19,9 @@ import {
     CallsTable,
     StationsTable,
     DiagnosticTable,
+    WorkshopTable,
+    StockTable,
+    RepairMapTable,
 } from "../OrderFormTables";
 import Styles from "./styles.m.css";
 
@@ -42,7 +45,7 @@ export default class OrderFormTabs extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            activeKey: '1',
+            activeKey: 'map',
         }
         this._localizationMap = {};
         this.commentsRules = [
@@ -70,7 +73,7 @@ export default class OrderFormTabs extends React.PureComponent {
     componentDidUpdate(prevProps) {
         if(!prevProps.showOilModal && this.props.showOilModal) {
             this.setState({
-                activeKey: '3',
+                activeKey: 'details',
             })
         }
     }
@@ -142,6 +145,7 @@ export default class OrderFormTabs extends React.PureComponent {
             showOilModal,
             oilModalData,
             clearOilData,
+            repairMap,
         } = this.props;
 
         const {
@@ -209,11 +213,24 @@ export default class OrderFormTabs extends React.PureComponent {
                 {!addOrderForm && (
                     <TabPane
                         forceRender
+                        tab={'Карта'}
+                        key="map"
+                    >
+                        <RepairMapTable
+                            user={user}
+                            orderId={orderId}
+                            repairMap={repairMap}
+                        />
+                    </TabPane>
+                )}
+                {!addOrderForm && (
+                    <TabPane
+                        forceRender
                         disabled={areDiagnosticForbidden}
                         tab={formatMessage({
                             id: "order_form_table.diagnostic",
                         })}
-                        key="1"
+                        key="diagnostic"
                     >
                         <DiagnosticTable
                             disabled={
@@ -245,7 +262,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             id: "add_order_form.services",
                             defaultMessage: "Services",
                         })} (${orderServices.length})`}
-                        key="2"
+                        key="services"
                     >
                         <ServicesTable
                             disabled={clodedEditing}
@@ -298,7 +315,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             id: "add_order_form.details",
                             defaultMessage: "Details",
                         })} (${orderDetails.length})`}
-                        key="3"
+                        key="details"
                     >
                         <DetailsTable
                             disabled={clodedEditing}
@@ -367,9 +384,39 @@ export default class OrderFormTabs extends React.PureComponent {
                         />
                     </TabPane>
                 )}
+                {!addOrderForm && (
+                    <TabPane
+                        forceRender
+                        tab={`Цех`}
+                        key="workshop"
+                    >
+                        <WorkshopTable
+                            user={user}
+                            orderId={orderId}
+                            orderServices={orderServices}
+                            reloadOrderForm={this.props.reloadOrderForm}
+                            activeKey={this.state.activeKey}
+                        />
+                    </TabPane>
+                )}
+                {!addOrderForm && (
+                    <TabPane
+                        forceRender
+                        tab={`Склад`}
+                        key="stock"
+                    >
+                        <StockTable
+                            user={user}
+                            orderId={orderId}
+                            orderDetails={orderDetails}
+                            reloadOrderForm={this.props.reloadOrderForm}
+                            activeKey={this.state.activeKey}
+                        />
+                    </TabPane>
+                )}
                 <TabPane
                     forceRender
-                    key="4"
+                    key="comments"
                     tab={
                         formatMessage({
                             id: "add_order_form.comments",
@@ -472,7 +519,7 @@ export default class OrderFormTabs extends React.PureComponent {
                                 ? ""
                                 : ` (${orderHistory.orders.length})`)
                         }
-                        key="5"
+                        key="history"
                     >
                         <HistoryTable
                             orderHistory={orderHistory}
@@ -492,7 +539,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             }) +
                             (areCallsForbidden ? "" : ` (${orderCalls.length})`)
                         }
-                        key="6"
+                        key="calls"
                     >
                         <CallsTable orderCalls={orderCalls} />
                     </TabPane>
@@ -505,7 +552,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             id: "order_form_table.station",
                         }) + ` (${stationsCount ? stationsCount.length : 0})`
                     }
-                    key="7"
+                    key="station"
                 >
                     <StationsTable
                         errors={errors}

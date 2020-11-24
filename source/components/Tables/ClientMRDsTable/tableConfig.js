@@ -24,6 +24,16 @@ export default function columnsConfig() {
         ),
     };
 
+    const orderDatetimeCol = {
+        title:     <FormattedMessage id="client-mrds-table.date"/>,
+        dataIndex: 'orderDatetime',
+        width:     '10%',
+        align: 'right',
+        render:    date => (
+            <FormattedDatetime datetime={ date } format={ 'DD.MM.YYYY' } />
+        ),
+    };
+
     const amountWithTaxesCol = {
         title:     <FormattedMessage id="client-mrds-table.amount"/>,
         dataIndex: 'amountWithTaxes',
@@ -62,20 +72,10 @@ export default function columnsConfig() {
         },
     };
 
-    const orderDatetimeCol = {
-        title:     <FormattedMessage id="client-mrds-table.date"/>,
-        dataIndex: 'orderDatetime',
-        width:     '10%',
-        align: 'right',
-        render:    date => (
-            <FormattedDatetime datetime={ date } format={ 'DD.MM.YYYY' } />
-        ),
-    };
-
     return [
         orderNumCol,
+        orderDatetimeCol,
         amountWithTaxesCol,
         dueAmountWithTaxesCol,
-        orderDatetimeCol
     ];
 }
