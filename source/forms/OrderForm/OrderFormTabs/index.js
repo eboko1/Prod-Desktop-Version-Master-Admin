@@ -21,6 +21,7 @@ import {
     DiagnosticTable,
     WorkshopTable,
     StockTable,
+    RepairMapTable,
 } from "../OrderFormTables";
 import Styles from "./styles.m.css";
 
@@ -144,6 +145,7 @@ export default class OrderFormTabs extends React.PureComponent {
             showOilModal,
             oilModalData,
             clearOilData,
+            repairMap,
         } = this.props;
 
         const {
@@ -214,7 +216,11 @@ export default class OrderFormTabs extends React.PureComponent {
                         tab={'Карта'}
                         key="map"
                     >
-                        
+                        <RepairMapTable
+                            user={user}
+                            orderId={orderId}
+                            repairMap={repairMap}
+                        />
                     </TabPane>
                 )}
                 {!addOrderForm && (

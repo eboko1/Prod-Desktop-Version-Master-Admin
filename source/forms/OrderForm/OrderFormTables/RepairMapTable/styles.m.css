@@ -1,0 +1,33 @@
+.mapBlock {
+
+}
+
+.mapBlockTitle {
+	font-size: 18px;
+	font-weight: 500;
+}
+
+.mapChildsBlock {
+	margin: 6px 24px;
+}
+
+.childBlock {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.BLANK {
+	background-color: white;
+}
+
+.RED {
+	background-color: var(--db_not_complete);
+}
+
+.YELLOW {
+	background-color: var(--db_approve);
+}
+
+.GREEN {
+	background-color: var(--db_progress);
+}
