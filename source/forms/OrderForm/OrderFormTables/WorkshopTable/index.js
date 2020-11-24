@@ -1,14 +1,16 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Button, Icon, Table } from 'antd';
+import { Button, Icon, Table, Select } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
 // proj
 import { Catcher } from 'commons';
+import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
+const Option = Select.Option;
 
 const INACTIVE = 'INACTIVE',
       IN_PROGRESS = 'IN_PROGRESS',
@@ -56,9 +58,63 @@ export default class WorkshopTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.status' />,
+                title:     "Этап",
                 key:       'stage',
                 dataIndex: 'stage',
+            },
+            {
+                title: <FormattedMessage id='order_form_table.status' />,
+                key:       'agreement',
+                dataIndex: 'agreement',
+                 render:    (data, elem) => {
+                    const key = elem.key;
+                    const confirmed = data.toLowerCase();
+                    let color;
+                    switch (confirmed) {
+                        case 'rejected':
+                            color = 'rgb(255, 126, 126)';
+                            break;
+                        case 'agreed':
+                            color = 'var(--green)';
+                            break;
+                        default:
+                            color = null;
+                    }
+
+                    return (
+                        <Select
+                            disabled={ isForbidden(
+                                this.props.user,
+                                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
+                            ) }
+                            style={ { color: color } }
+                            value={ confirmed }
+                            onChange={ value => {
+                                elem.agreement = value.toUpperCase();
+                                elem.stage = value == 'rejected' ? CANCELED : INACTIVE;
+                                this.updateLabor(key, elem);
+                            } }
+                        >
+                            <Option key={ 0 } value={ 'undefined' }>
+                                <FormattedMessage id='status.undefined' />
+                            </Option>
+                            <Option
+                                key={ 1 }
+                                value={ 'agreed' }
+                                style={ { color: 'var(--green)' } }
+                            >
+                                <FormattedMessage id='status.agreed' />
+                            </Option>
+                            <Option
+                                key={ 2 }
+                                value={ 'rejected' }
+                                style={ { color: 'rgb(255, 126, 126)' } }
+                            >
+                                <FormattedMessage id='status.rejected' />
+                            </Option>
+                        </Select>
+                    );
+                },
             },
             {
                 key:       'actions',
@@ -108,7 +164,14 @@ export default class WorkshopTable extends Component {
             ],
         };
 
-        console.log(data);
+        if (
+            !isForbidden(
+                this.props.user,
+                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
+            )
+        ) {
+            data.services[ 0 ].agreement = labor.agreement;
+        }
 
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/orders/${this.props.orderId}`;

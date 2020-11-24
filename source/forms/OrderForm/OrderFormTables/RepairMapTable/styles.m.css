@@ -3,8 +3,10 @@
 }
 
 .mapBlockTitle {
-	font-size: 18px;
+	font-size: 16px;
 	font-weight: 500;
+	border-bottom: 1px solid #e8e8e8;
+	padding: 5px;
 }
 
 .mapChildsBlock {
@@ -12,10 +14,16 @@
 }
 
 .childBlock {
-	text-decoration: underline;
-	cursor: pointer;
 	padding: 2px 8px;
-	margin: 4px 0;
+	margin: 1px 0;
+	border-bottom: 1px solid #e8e8e8;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	&:hover {
+		background-color: #f3e6f5;
+	}
 }
 
 .BLANK {

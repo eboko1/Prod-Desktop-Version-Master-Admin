@@ -394,7 +394,12 @@ export function columnsConfig(
     };
 
     const editCol = {
-        title:  '',
+        title:  <Button
+                    type={'primary'}
+                    onClick={()=>window.location.reload()}
+                >
+                    Обновить статусы
+                </Button>,
         key:    'editAction',
         // fixed:  'right',
         width:  'auto',

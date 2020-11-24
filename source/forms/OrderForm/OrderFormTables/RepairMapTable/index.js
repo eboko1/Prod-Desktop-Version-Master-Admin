@@ -16,6 +16,26 @@ export default class RepairMapTable extends Component {
         console.log(repairMap)
         return (
             <div>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                    }}
+                >
+                    <span style={{
+                        fontSize: 18,
+                        fontWeight: 500,
+                    }}>
+                    Технологическая карта ремонта</span>
+                    <Button
+                        type='primary'
+                        onClick={()=>{
+                            window.location.reload();
+                        }}
+                    >
+                        Обновить карту
+                    </Button>
+                </div>
                 {repairMap.map((elem, key)=>{
                     return (
                         <div
@@ -30,7 +50,13 @@ export default class RepairMapTable extends Component {
                                             key={key}
                                             className={Styles[child.color] + " " + Styles.childBlock}
                                         >
-                                            {child.name}
+                                            <span>{child.name}</span>
+                                            <Button
+                                                type='primary'
+                                                disabled
+                                            >
+                                                Перейти
+                                            </Button>
                                         </div>
                                     )
                                 })}
