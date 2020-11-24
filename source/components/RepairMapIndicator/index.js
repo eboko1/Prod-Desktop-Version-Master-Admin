@@ -15,7 +15,7 @@ export default class RepairMapIndicator extends Component {
         const { data, style } = this.props;
         return (
             <div className={Styles.repairMapIndicator} style={style}>
-                {data.map((elem, key)=>{
+                {data && data.map((elem, key)=>{
                     return (
                         <div
                             key={key}
