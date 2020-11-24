@@ -391,6 +391,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="workshop"
                     >
                         <WorkshopTable
+                            user={user}
                             orderId={orderId}
                             orderServices={orderServices}
                             reloadOrderForm={this.props.reloadOrderForm}
@@ -405,6 +406,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="stock"
                     >
                         <StockTable
+                            user={user}
                             orderId={orderId}
                             orderDetails={orderDetails}
                             reloadOrderForm={this.props.reloadOrderForm}

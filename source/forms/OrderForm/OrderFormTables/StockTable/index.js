@@ -40,28 +40,125 @@ export default class StockTable extends Component {
                 title:     <FormattedMessage id='order_form_table.brand' />,
                 key:       'brandName',
                 dataIndex: 'brandName',
+                render:    data => {
+                    return data ? data : <FormattedMessage id='long_dash' />;
+                },
             },
             {
                 title:     <FormattedMessage id='order_form_table.detail_code' />,
                 key:       'detailCode',
                 dataIndex: 'detailCode',
+                render:    data => {
+                    return data ? data : <FormattedMessage id='long_dash' />;
+                },
             },
             {
-                title:     <FormattedMessage id='order_form_table.count' />,
-                key:       'count',
-                dataIndex: 'count',
+                title:     <FormattedMessage id='order_form_table.supplier' />,
+                key:       'supplierName',
+                dataIndex: 'supplierName',
                 render:    data => {
-                    return (
-                        <span>
-                            {data || 0} <FormattedMessage id='pc' />
-                        </span>
-                    );
+                    return data ? data : <FormattedMessage id='long_dash' />;
                 },
             },
             {
                 title:     <FormattedMessage id='order_form_table.status' />,
                 key:       'stage',
                 dataIndex: 'stage',
+            },
+            {
+                title: (
+                    <div className={ Styles.numberColumn }>
+                        <FormattedMessage id='storage.RESERVE' />
+                    </div>
+                ),
+                className: Styles.numberColumn,
+                key:       'reserve',
+                render:    elem => {
+                    return (
+                        <span>{elem.reservedCount || 0} <FormattedMessage id='pc' /></span>
+                    );
+                },
+            },
+            {
+                title: (
+                    <div className={ Styles.numberColumn }>
+                        <FormattedMessage id='order_form_table.purchasePrice' />
+                    </div>
+                ),
+                className: Styles.numberColumn,
+                key:       'purchasePrice',
+                dataIndex: 'purchasePrice',
+                render:    data => {
+                    let strVal = Number(data).toFixed(2);
+
+                    return (
+                        <span>
+                            { data ? 
+                                `${strVal}`.replace(
+                                    /\B(?=(\d{3})+(?!\d))/g,
+                                    ' ',
+                                ) : (
+                                    <FormattedMessage id='long_dash' />
+                                ) }
+                        </span>
+                    );
+                },
+            },
+            {
+                title: (
+                    <div className={ Styles.numberColumn }>
+                        <FormattedMessage id='order_form_table.price' />
+                        <p style={{
+                            color: 'var(--text2)',
+                            fontSize: 12,
+                            fontWeight: 400,
+                        }}>
+                            <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
+                        </p>
+                    </div>
+                ),
+                className: Styles.numberColumn,
+                key:       'price',
+                dataIndex: 'price',
+                render:    data => {
+                    let strVal = Number(data).toFixed(2);
+
+                    return (
+                        <span>
+                            { data ? 
+                                `${strVal}`.replace(
+                                    /\B(?=(\d{3})+(?!\d))/g,
+                                    ' ',
+                                )
+                                : (
+                                    <FormattedMessage id='long_dash' />
+                                ) }
+                        </span>
+                    );
+                },
+            },
+            {
+                title: (
+                    <div className={ Styles.numberColumn }>
+                        <FormattedMessage id='order_form_table.count' />
+                    </div>
+                ),
+                className: Styles.numberColumn,
+                key:       'count',
+                dataIndex: 'count',
+                render:    data => {
+                    return (
+                        <span>
+                            { data
+                                ? `${data}`.replace(
+                                    /\B(?=(\d{3})+(?!\d))/g,
+                                    ' ',
+                                )
+                                : 0 }{ ' ' }
+                            <FormattedMessage id='pc' />
+                        </span>
+                    );
+                },
             },
             {
                 key:       'actions',

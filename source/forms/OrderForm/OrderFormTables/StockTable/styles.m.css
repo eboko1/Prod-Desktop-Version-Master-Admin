@@ -79,3 +79,7 @@
 		border-color: var(--text3);
 	}
 }
+
+.numberColumn {
+    text-align: right;
+}
