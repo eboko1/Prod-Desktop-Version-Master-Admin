@@ -13,6 +13,7 @@ import Styles from './styles.m.css';
 export default class RepairMapTable extends Component {
     render() {
         const { repairMap } = this.props;
+
         console.log(repairMap)
         return (
             <div>
@@ -36,7 +37,7 @@ export default class RepairMapTable extends Component {
                         Обновить карту
                     </Button>
                 </div>
-                {repairMap.map((elem, key)=>{
+                {repairMap && repairMap.map((elem, key)=>{
                     return (
                         <div
                             key={key}
