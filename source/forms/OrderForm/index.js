@@ -397,9 +397,8 @@ export class OrderForm extends React.PureComponent {
             user,
             location,
             errors,
-
+            repairMap,
         } = this.props;
-
         const formFieldsValues = form.getFieldsValue();
 
         const { totalHours } = servicesStats(
@@ -670,6 +669,8 @@ export class OrderForm extends React.PureComponent {
             showOilModal,
             oilModalData,
             clearOilData,
+
+            repairMap,
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
@@ -767,9 +768,10 @@ export class OrderForm extends React.PureComponent {
                 reloadOrderPageComponents={this.props.reloadOrderPageComponents}
                 reloadOrderForm={this._reloadOrderForm}
                 clientVehicleVin={this.props.order.clientVehicleVin}
-                showOilModal= { showOilModal }
+                showOilModal = { showOilModal }
                 oilModalData = { oilModalData }
                 clearOilData = { clearOilData }
+                repairMap = { repairMap }
             />
         );
     };

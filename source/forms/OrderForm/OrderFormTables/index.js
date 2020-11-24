@@ -10,6 +10,7 @@ import StationsTable from './StationsTable';
 import DiagnosticTable from './DiagnosticTable';
 import WorkshopTable from './WorkshopTable';
 import StockTable from './StockTable';
+import RepairMapTable from './RepairMapTable';
 
 export {
     DetailsTable,
@@ -24,4 +25,5 @@ export {
     DiagnosticTable,
     WorkshopTable,
     StockTable,
+    RepairMapTable,
 };
