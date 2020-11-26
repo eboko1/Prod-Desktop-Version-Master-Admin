@@ -140,26 +140,18 @@ export default class WorkshopTable extends Component {
                 dataIndex: 'serviceName',
             },
             {
-                title:     'Расчет',
+                title:      <div>
+                                <p>Расчет</p>
+                                <p>Реал.</p>
+                            </div>,
                 key:       'count',
                 dataIndex: 'count',
-                render:    data => {
+                render:    (data, row) => {
                     return (
-                        <span>
-                            {data || 0} <FormattedMessage id='order_form_table.hours_short' />
-                        </span>
-                    );
-                },
-            },
-            {
-                title:     'Реал.',
-                key:       'workingTime',
-                dataIndex: 'workingTime',
-                render:    data => {
-                    return (
-                        <span>
-                            {data ? Math.abs(data.toFixed(2)) : 0} <FormattedMessage id='order_form_table.hours_short' />
-                        </span>
+                        <div>
+                            <p>{data || 0} <FormattedMessage id='order_form_table.hours_short' /></p>
+                            <p>{row.workingTime ? Math.abs(row.workingTime.toFixed(2)) : 0} <FormattedMessage id='order_form_table.hours_short' /></p>
+                        </div>
                     );
                 },
             },
@@ -174,6 +166,7 @@ export default class WorkshopTable extends Component {
                 render: (stage, elem)=>{
                     return (
                         <LaborStageButtonsGroup
+                            buttonStyle={{width: '100%', margin: '1px 0'}}
                             stage={stage}
                             onClick={(value)=>{
                                 elem.stage = value;
@@ -306,10 +299,11 @@ export default class WorkshopTable extends Component {
 
 class LaborStageButtonsGroup extends Component {
     render() {
-        const { stage, onClick } = this.props;
+        const { stage, onClick, buttonStyle } = this.props;
         return (
             <div className={Styles.laborStageButtonsGroup}>
                 <Button
+                    style={buttonStyle}
                     className={Styles.greenButton}
                     disabled={stage == IN_PROGRESS || stage == CANCELED}
                     onClick={ () => onClick(IN_PROGRESS) }
@@ -317,6 +311,7 @@ class LaborStageButtonsGroup extends Component {
                     Старт
                 </Button>
                 <Button
+                    style={buttonStyle}
                     className={Styles.greenButton}
                     disabled={stage == INACTIVE || stage == DONE || stage == CANCELED}
                     onClick={ () => onClick(DONE) }
@@ -324,6 +319,7 @@ class LaborStageButtonsGroup extends Component {
                     Финиш
                 </Button>
                 <Button
+                    style={buttonStyle}
                     className={Styles.redButton}
                     type='danger'
                     disabled={stage == STOPPED || stage == DONE || stage == CANCELED}
@@ -332,6 +328,7 @@ class LaborStageButtonsGroup extends Component {
                     Стоп !!!
                 </Button>
                 <Button
+                    style={buttonStyle}
                     className={Styles.yellowButton}
                     disabled={stage == DONE || stage == CANCELED}
                     onClick={ () => onClick(CANCELED) }
