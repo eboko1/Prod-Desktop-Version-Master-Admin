@@ -149,7 +149,7 @@ export default class WorkshopTable extends Component {
                 fetched: true,
             });
         }
-        this.props.reloadOrderForm(callback, 'labors');
+        if(this.props.reloadOrderForm) this.props.reloadOrderForm(callback, 'labors');
     }
 
     async updateLabor(key, labor) {
@@ -222,6 +222,7 @@ export default class WorkshopTable extends Component {
         return (
             <Catcher>
                 <Table
+                    style={{overflowX: 'scroll'}}
                     loading={ loading }
                     columns={ this.columns }
                     dataSource={ dataSource }

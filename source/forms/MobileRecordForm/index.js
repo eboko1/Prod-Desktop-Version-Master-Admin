@@ -43,6 +43,7 @@ import {
 } from "forms/DecoratedFields";
 
 import { ConfirmDiagnosticModal } from "modals";
+import { StockTable, WorkshopTable } from "../OrderForm/OrderFormTables"
 
 import { withReduxForm } from "utils";
 import { permissions, isForbidden } from "utils";
@@ -78,6 +79,39 @@ const formItemLayout = {
     },
 })
 export class MobileRecordForm extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            workshopModalVisible: false,
+            stockModalVisible: false,
+        };
+    }
+
+    showStockModal() {
+        this.setState({
+            stockModalVisible: true,
+        })
+    }
+
+    hideStockModal() {
+        this.setState({
+            stockModalVisible: false,
+        })
+    }
+
+    showWorkshopModal() {
+        this.setState({
+            workshopModalVisible: true,
+        })
+    }
+
+    hideWorkshopModal() {
+        this.setState({
+            workshopModalVisible: false,
+        })
+    }
+
     render() {
         const {
             selectedClient,
@@ -88,6 +122,8 @@ export class MobileRecordForm extends Component {
         } = this.props;
         const { getFieldDecorator, getFieldsValue } = this.props.form;
         const { formatMessage } = this.props.intl;
+
+        console.log(this);
 
         const isDurationDisabled = _.every(
             getFieldsValue([
@@ -394,8 +430,54 @@ export class MobileRecordForm extends Component {
                         vehicle={this.props.selectedClient.vehicles[0]}
                     />
                 ) : (
-                    <></>
+                    null
                 )}
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        margin: '12px 0',
+                    }}
+                >
+                    <Button
+                        type='primary'
+                        style={{width: '49%'}}
+                        onClick={()=>this.showWorkshopModal()}
+                    >
+                        Цех
+                    </Button>
+                    <Button
+                        type='primary'
+                        style={{width: '49%'}}
+                        onClick={()=>this.showStockModal()}
+                    >
+                        Склад
+                    </Button>    
+                </div>
+                <Modal
+                    visible={this.state.workshopModalVisible}
+                    onCancel={()=>this.hideWorkshopModal()}
+                    onOk={()=>this.hideWorkshopModal()}
+                    style={{overflow: 'scroll'}}
+                >
+                    <WorkshopTable
+                        user={this.props.user}
+                        orderId={this.props.orderId}
+                        orderServices={this.props.orderServices}
+                    />
+                </Modal>
+                <Modal
+                    visible={this.state.stockModalVisible}
+                    onCancel={()=>this.hideStockModal()}
+                    onOk={()=>this.hideStockModal()}
+                    style={{overflow: 'scroll'}}
+                >
+                    <StockTable
+                        user={this.props.user}
+                        orderId={this.props.orderId}
+                        orderDetails={this.props.orderDetails}
+                    />
+                </Modal>
             </Form>
         );
     }
