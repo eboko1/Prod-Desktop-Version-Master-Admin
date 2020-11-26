@@ -179,22 +179,25 @@ export default class StockTable extends Component {
 
         this.mobileColumns = [
             {
-                title:     <FormattedMessage id='order_form_table.detail_name' />,
+                title:      <div>
+                                <p><FormattedMessage id='order_form_table.detail_name' /></p>
+                                <p><FormattedMessage id='order_form_table.detail_code' /></p>
+                            </div>,
                 key:       'detailName',
                 dataIndex: 'detailName',
+                render:    (data, row) => {
+                    return (
+                        <div>
+                            <p>{data}</p>
+                            <p>{row.detailCode}</p>
+                        </div>
+                    );
+                },
             },
             {
                 title:     <FormattedMessage id='order_form_table.brand' />,
                 key:       'brandName',
                 dataIndex: 'brandName',
-                render:    data => {
-                    return data ? data : <FormattedMessage id='long_dash' />;
-                },
-            },
-            {
-                title:     <FormattedMessage id='order_form_table.detail_code' />,
-                key:       'detailCode',
-                dataIndex: 'detailCode',
                 render:    data => {
                     return data ? data : <FormattedMessage id='long_dash' />;
                 },

@@ -585,8 +585,6 @@ class OrderPage extends Component {
         const {num, status, datetime, diagnosis, repairMapIndicator} = this.props.order;
         const {id} = this.props.match.params;
 
-        console.log(this);
-
         const {
             isClosedStatus,
             hideEditButton,
@@ -609,7 +607,7 @@ class OrderPage extends Component {
                                 id={ `order-status.${status || 'order'}` }
                             />
                             { ` ${num}` }
-                            <RepairMapIndicator data={repairMapIndicator} style={{display: 'inline-flex', margin: '0 0 0 48px'}}/>
+                            <RepairMapIndicator data={repairMapIndicator} style={window.innerWidth > 1199 ? {display: 'inline-flex', margin: '0 0 0 48px'} : {}}/>
                         </>
 
                 }
