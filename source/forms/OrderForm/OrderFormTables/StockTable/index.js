@@ -259,6 +259,7 @@ export default class StockTable extends Component {
         return (
             <Catcher>
                 <Table
+                    style={{overflowX: 'scroll'}}
                     loading={ loading }
                     columns={ this.columns }
                     dataSource={ dataSource }
