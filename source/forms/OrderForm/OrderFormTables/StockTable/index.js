@@ -176,9 +176,53 @@ export default class StockTable extends Component {
                 }
             },
         ];
+
+        this.mobileColumns = [
+            {
+                title:     <FormattedMessage id='order_form_table.detail_name' />,
+                key:       'detailName',
+                dataIndex: 'detailName',
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.brand' />,
+                key:       'brandName',
+                dataIndex: 'brandName',
+                render:    data => {
+                    return data ? data : <FormattedMessage id='long_dash' />;
+                },
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.detail_code' />,
+                key:       'detailCode',
+                dataIndex: 'detailCode',
+                render:    data => {
+                    return data ? data : <FormattedMessage id='long_dash' />;
+                },
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.status' />,
+                key:       'stage',
+                dataIndex: 'stage',
+            },
+            {
+                key:       'actions',
+                dataIndex: 'stage',
+                render: (stage, elem)=>{
+                    return (
+                        <DetailsStageButtonsGroup
+                            stage={stage}
+                            onClick={(value)=>{
+                                elem.stage = value;
+                                this.updateLabor(elem.key, elem);
+                            }}
+                        />
+                    )
+                }
+            },
+        ];
     }
 
-    updateDataSource() {
+    async updateDataSource() {
         if(this.state.fetched) {
             this.setState({
                 fetched: false,
@@ -193,7 +237,27 @@ export default class StockTable extends Component {
                 fetched: true,
             });
         }
-        this.props.reloadOrderForm(callback, 'details');
+
+        if(this.props.reloadOrderForm) this.props.reloadOrderForm(callback, 'details');
+        else {
+            let token = localStorage.getItem('_my.carbook.pro_token');
+            let url = __API_URL__ + `/orders/${this.props.orderId}/details`;
+            try {
+                const response = await fetch(url, {
+                    method:  'GET',
+                    headers: {
+                        Authorization:  token,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const result = await response.json();
+                this.setState({
+                    dataSource: result.details,
+                })
+            } catch (error) {
+                console.error('ERROR:', error);
+            }
+        }
     }
 
     async updateLabor(key, detail) {
@@ -255,13 +319,14 @@ export default class StockTable extends Component {
 
     render() {
         const { dataSource, loading } = this.state;
+        const { isMobile } = this.props;
 
         return (
             <Catcher>
                 <Table
                     style={{overflowX: 'scroll'}}
                     loading={ loading }
-                    columns={ this.columns }
+                    columns={ isMobile ? this.mobileColumns : this.columns }
                     dataSource={ dataSource }
                     pagination={ false }
                     rowClassName={(record)=>{
@@ -312,7 +377,7 @@ class DetailsStageButtonsGroup extends Component {
                     </Button>
                     <Button
                         className={Styles.greenButton}
-                        disabled={!(stage == INACTIVE || stage == AGREED || stage == NO_SPARE_PART || stage == ORDERED || stage == ACCEPTED)}
+                        disabled={!(stage == INACTIVE || stage == AGREED || stage == NO_SPARE_PART || stage == RESERVED || stage == ORDERED || stage == ACCEPTED)}
                         onClick={ () => onClick(GIVEN) }
                     >
                         Получить
