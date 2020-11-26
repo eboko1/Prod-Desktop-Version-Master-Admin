@@ -464,6 +464,7 @@ export class MobileRecordForm extends Component {
                         user={this.props.user}
                         orderId={this.props.orderId}
                         orderServices={this.props.orderServices}
+                        isMobile={true}
                     />
                 </Modal>
                 <Modal
@@ -476,6 +477,7 @@ export class MobileRecordForm extends Component {
                         user={this.props.user}
                         orderId={this.props.orderId}
                         orderDetails={this.props.orderDetails}
+                        isMobile={true}
                     />
                 </Modal>
             </Form>

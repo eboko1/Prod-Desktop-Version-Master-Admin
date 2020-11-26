@@ -132,14 +132,61 @@ export default class WorkshopTable extends Component {
                 }
             },
         ];
+
+        this.mobileColumns = [
+            {
+                title:     <FormattedMessage id='order_form_table.detail_name' />,
+                key:       'serviceName',
+                dataIndex: 'serviceName',
+            },
+            {
+                title:     'Расчет',
+                key:       'count',
+                dataIndex: 'count',
+                render:    data => {
+                    return (
+                        <span>
+                            {data || 0} <FormattedMessage id='order_form_table.hours_short' />
+                        </span>
+                    );
+                },
+            },
+            {
+                title:     'Реал.',
+                key:       'workingTime',
+                dataIndex: 'workingTime',
+                render:    data => {
+                    return (
+                        <span>
+                            {data ? Math.abs(data.toFixed(2)) : 0} <FormattedMessage id='order_form_table.hours_short' />
+                        </span>
+                    );
+                },
+            },
+            {
+                title:     "Этап",
+                key:       'stage',
+                dataIndex: 'stage',
+            },
+            {
+                key:       'actions',
+                dataIndex: 'stage',
+                render: (stage, elem)=>{
+                    return (
+                        <LaborStageButtonsGroup
+                            stage={stage}
+                            onClick={(value)=>{
+                                elem.stage = value;
+                                this.updateLabor(elem.key, elem);
+                            }}
+                        />
+                    )
+                }
+            },
+        ];
     }
 
-    updateDataSource() {
-        if(this.state.fetched) {
-            this.setState({
-                fetched: false,
-            })
-        }
+    async updateDataSource() {
         const callback = (data) => {
             data.orderServices.map((elem, index) => {
                 elem.key = index;
@@ -150,6 +197,25 @@ export default class WorkshopTable extends Component {
             });
         }
         if(this.props.reloadOrderForm) this.props.reloadOrderForm(callback, 'labors');
+        else {
+            let token = localStorage.getItem('_my.carbook.pro_token');
+            let url = __API_URL__ + `/orders/${this.props.orderId}/labors`;
+            try {
+                const response = await fetch(url, {
+                    method:  'GET',
+                    headers: {
+                        Authorization:  token,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const result = await response.json();
+                this.setState({
+                    dataSource: result.labors,
+                })
+            } catch (error) {
+                console.error('ERROR:', error);
+            }
+        }
     }
 
     async updateLabor(key, labor) {
@@ -218,13 +284,14 @@ export default class WorkshopTable extends Component {
 
     render() {
         const { dataSource, loading } = this.state;
+        const { isMobile } = this.props;
 
         return (
             <Catcher>
                 <Table
                     style={{overflowX: 'scroll'}}
                     loading={ loading }
-                    columns={ this.columns }
+                    columns={ isMobile ? this.mobileColumns : this.columns }
                     dataSource={ dataSource }
                     pagination={ false }
                     rowClassName={(record)=>{
