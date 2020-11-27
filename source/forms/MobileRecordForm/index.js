@@ -123,7 +123,9 @@ export class MobileRecordForm extends Component {
         const { getFieldDecorator, getFieldsValue } = this.props.form;
         const { formatMessage } = this.props.intl;
 
-        console.log(this);
+        const vehicle = selectedClient.vehicles.find((vehicle)=>vehicle.id == this.props.order.clientVehicleId) || undefined;
+
+        console.log(this, vehicle);
 
         const isDurationDisabled = _.every(
             getFieldsValue([
@@ -427,7 +429,7 @@ export class MobileRecordForm extends Component {
                         user={this.props.user}
                         orderId={this.props.orderId}
                         orderDiagnostic={this.props.orderDiagnostic}
-                        vehicle={this.props.selectedClient.vehicles[0]}
+                        vehicle={vehicle}
                     />
                 ) : (
                     null
@@ -461,12 +463,22 @@ export class MobileRecordForm extends Component {
                     onOk={()=>this.hideWorkshopModal()}
                     style={{overflow: 'scroll'}}
                 >
+                    {vehicle &&
+                        <div>
+                            {vehicle.number} {vehicle.make} {vehicle.model} {vehicle.modification}
+                        </div>}
                     <WorkshopTable
                         user={this.props.user}
                         orderId={this.props.orderId}
                         orderServices={this.props.orderServices}
                         isMobile={true}
                     />
+                    <Button
+                        type='primary'
+                        style={{margin: '12px 0 0 0', width: '100%'}}
+                    >
+                        <FormattedMessage id="end" />
+                    </Button>
                 </Modal>
                 <Modal
                     cancelButtonProps={{style: {display: 'none'}}}

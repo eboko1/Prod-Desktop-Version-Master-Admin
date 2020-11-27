@@ -383,7 +383,7 @@ export default class WorkshopTable extends Component {
             <Catcher>
                 {!isMobile && 
                     <div style={{display: 'flex', justifyContent: 'space-between', margin: '12px 0'}}>
-                        <div style={{width: '74%'}}>
+                        <div style={{width: '70%'}}>
                             <Input
                                 allowClear
                                 onChange={({target: {value}})=>{
@@ -393,7 +393,7 @@ export default class WorkshopTable extends Component {
                                 }}
                             />
                         </div>
-                        <div style={{width: '25%'}}>
+                        <div style={{width: '20%'}}>
                             <Select
                                 allowClear
                                 showSearch
@@ -414,6 +414,16 @@ export default class WorkshopTable extends Component {
                                     )
                                 })}
                             </Select>
+                        </div>
+                        <div>
+                            <Button
+                                type='primary'
+                                onClick={ () => {
+
+                                } }
+                            >
+                                <FormattedMessage id="end" />
+                            </Button>
                         </div>
                     </div>
                 }

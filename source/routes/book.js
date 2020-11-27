@@ -77,6 +77,7 @@ const book = Object.freeze({
     productsTracking:         '/tracking',
     storageIncomeDoc:         '/income-document',
     storageIncomeDocId:       '/income-document/:id',
+    repairMapSetting:         '/repair-map',
     //
     // Statistics
     //
