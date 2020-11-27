@@ -328,7 +328,7 @@ class ServicesTable extends Component {
                             value={ confirmed }
                             onChange={ value => {
                                 elem.agreement = value.toUpperCase();
-                                elem.stage = value == 'rejected' ? 'CANCELED' : 'INACTIVE';
+                                //elem.stage = value == 'rejected' ? 'CANCELED' : 'INACTIVE';
                                 this.updateLabor(key, elem);
                             } }
                         >
@@ -551,7 +551,7 @@ class ServicesTable extends Component {
                         positions: [],
                         problems:  [],
                     },
-                    stage: labor.stage,
+                    //stage: labor.stage,
                 },
             ],
         };

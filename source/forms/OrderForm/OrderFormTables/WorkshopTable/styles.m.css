@@ -1,17 +1,49 @@
 .STOPPED {
 	background-color: var(--db_not_complete);
+
+	& > td {
+		background-color: var(--db_not_complete) !important;
+	}
+
+	&:hover > td {
+		background-color: #f3e6f5 !important;
+	}
 }
 
 .IN_PROGRESS {
 	background-color: var(--db_progress);
+
+	& > td {
+		background-color: var(--db_progress) !important;
+	}
+
+	&:hover > td {
+		background-color: #f3e6f5 !important;
+	}
 }
 
 .DONE {
 	background-color: var(--db_success);
+
+	& > td {
+		background-color: var(--db_success) !important;
+	}
+
+	&:hover > td {
+		background-color: #f3e6f5 !important;
+	}
 }
 
 .CANCELED {
 	background-color: var(--db_cancel);
+
+	& > td {
+		background-color: var(--db_cancel) !important;
+	}
+
+	&:hover > td {
+		background-color: #f3e6f5 !important;
+	}
 }
 
 .laborStageButtonsGroup {
