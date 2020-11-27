@@ -1,14 +1,16 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Button, Icon, Table } from 'antd';
+import { Button, Icon, Table, Select, Popover, Input } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
 // proj
+import { permissions, isForbidden } from 'utils';
 import { Catcher } from 'commons';
 // own
 import Styles from './styles.m.css';
+const Option = Select.Option;
 
 const INACTIVE = 'INACTIVE',
       AGREED = 'AGREED',
@@ -19,7 +21,9 @@ const INACTIVE = 'INACTIVE',
       INSTALLED = 'INSTALLED',
       NO_SPARE_PART = 'NO_SPARE_PART',
       RETURNED = 'RETURNED',
-      CANCELED = 'CANCELED';
+      CANCELED = 'CANCELED',
+      ALL = 'ALL';
+const stageArr = [INACTIVE, AGREED, ORDERED, ACCEPTED, RESERVED, GIVEN, INSTALLED, NO_SPARE_PART, RETURNED, CANCELED];
 
 export default class StockTable extends Component {
     constructor(props) {
@@ -28,6 +32,9 @@ export default class StockTable extends Component {
         this.state = {
             loading: false,
             dataSource: [],
+            stageFilter: undefined,
+            fieldsFilter: undefined,
+            selectedRows: [],
         };
 
         this.columns = [
@@ -59,11 +66,6 @@ export default class StockTable extends Component {
                 render:    data => {
                     return data ? data : <FormattedMessage id='long_dash' />;
                 },
-            },
-            {
-                title:     <FormattedMessage id='order_form_table.status' />,
-                key:       'stage',
-                dataIndex: 'stage',
             },
             {
                 title: (
@@ -161,6 +163,83 @@ export default class StockTable extends Component {
                 },
             },
             {
+                title:     <FormattedMessage id='order_form_table.status' />,
+                key:       'agreement',
+                dataIndex: 'agreement',
+                render:    (data, elem) => {
+                    const key = elem.key;
+                    const confirmed = data.toLowerCase();
+                    let color;
+                    switch (confirmed) {
+                        case 'rejected':
+                            color = 'rgb(255, 126, 126)';
+                            break;
+                        case 'agreed':
+                            color = 'var(--green)';
+                            break;
+                        default:
+                            color = null;
+                    }
+
+                    return (
+                        <Select
+                            disabled={ isForbidden(
+                                this.props.user,
+                                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
+                            ) }
+                            style={ { color: color } }
+                            value={ confirmed }
+                            onChange={ value => {
+                                elem.agreement = value.toUpperCase();
+                                this.updateDetail(key, elem);
+                            } }
+                        >
+                            <Option key={ 0 } value={ 'undefined' }>
+                                <FormattedMessage id='status.undefined' />
+                            </Option>
+                            <Option
+                                key={ 1 }
+                                value={ 'agreed' }
+                                style={ { color: 'var(--green)' } }
+                            >
+                                <FormattedMessage id='status.agreed' />
+                            </Option>
+                            <Option
+                                key={ 2 }
+                                value={ 'rejected' }
+                                style={ { color: 'rgb(255, 126, 126)' } }
+                            >
+                                <FormattedMessage id='status.rejected' />
+                            </Option>
+                        </Select>
+                    );
+                },
+            },
+            {
+                title:     'Этап',
+                key:       'stage',
+                dataIndex: 'stage',
+            },
+            {
+                title:      <Popover
+                                overlayStyle={{zIndex: 9999}}
+                                content={
+                                    <DetailsStageButtonsGroup
+                                        stage={ALL}
+                                        onClick={(value)=>{
+                                            this.multipleChangeState(value);
+                                        }}
+                                    />
+                                }
+                                trigger="click"
+                            >
+                                <Button
+                                    type='primary'
+                                    style={{width: '100%', margin: 1}}
+                                >
+                                    Остальные
+                                </Button>
+                            </Popover>,
                 key:       'actions',
                 dataIndex: 'stage',
                 render: (stage, elem)=>{
@@ -169,7 +248,7 @@ export default class StockTable extends Component {
                             stage={stage}
                             onClick={(value)=>{
                                 elem.stage = value;
-                                this.updateLabor(elem.key, elem);
+                                this.updateDetail(elem.key, elem);
                             }}
                         />
                     )
@@ -195,42 +274,118 @@ export default class StockTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.brand' />,
+                title:     <div>
+                                <p><FormattedMessage id='order_form_table.brand' /></p>
+                                <p>Этап</p>
+                            </div>,
                 key:       'brandName',
                 dataIndex: 'brandName',
-                render:    data => {
-                    return data ? data : <FormattedMessage id='long_dash' />;
+                render:    (data, row) => {
+                    return (
+                        <div>
+                            <p>{data || <FormattedMessage id='long_dash' />}</p>
+                            <p>{row.stage}</p>
+                        </div>
+                    );
                 },
-            },
-            {
-                title:     <FormattedMessage id='order_form_table.status' />,
-                key:       'stage',
-                dataIndex: 'stage',
             },
             {
                 key:       'actions',
                 dataIndex: 'stage',
                 render: (stage, elem)=>{
                     return (
-                        <DetailsStageButtonsGroup
-                            stage={stage}
-                            onClick={(value)=>{
-                                elem.stage = value;
-                                this.updateLabor(elem.key, elem);
-                            }}
-                        />
+                        <div>
+                            <Button
+                                style={{width: '100%', margin: 1}}
+                                className={Styles.greenButton}
+                                disabled={!(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
+                                onClick={ () => {
+                                    elem.stage = INSTALLED;
+                                    this.updateDetail(elem.key, elem);
+                                } }
+                            >
+                                Установить
+                            </Button>
+                            <Button
+                                style={{width: '100%', margin: 1}}
+                                className={Styles.redButton}
+                                disabled={!(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
+                                onClick={ () => {
+                                    elem.stage = NO_SPARE_PART;
+                                    this.updateDetail(elem.key, elem);
+                                } }
+                            >
+                                Нет з/ч
+                            </Button>
+                            <Popover
+                                overlayStyle={{zIndex: 9999}}
+                                content={
+                                    <DetailsStageButtonsGroup
+                                        stage={stage}
+                                        onClick={(value)=>{
+                                            elem.stage = value;
+                                            this.updateDetail(elem.key, elem);
+                                        }}
+                                    />
+                                }
+                                trigger="click"
+                            >
+                                <Button
+                                    type='primary'
+                                    style={{width: '100%', margin: 1}}
+                                >
+                                    Остальные
+                                </Button>
+                            </Popover>
+                        </div>
                     )
                 }
             },
         ];
     }
 
-    async updateDataSource() {
-        if(this.state.fetched) {
-            this.setState({
-                fetched: false,
-            })
+    async multipleChangeState(value) {
+        const {selectedRows, dataSource} = this.state;
+        const data = {
+            updateMode: true,
+            details:   [],
+        };
+
+       selectedRows.map((key)=>{
+            dataSource[key].stage == value;
+            data.details.push(
+                {
+                    id: dataSource[key].id,
+                    stage: value,
+                },
+            )
+        });
+
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/orders/${this.props.orderId}`;
+        try {
+            const response = await fetch(url, {
+                method:  'PUT',
+                headers: {
+                    Authorization:  token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            const result = await response.json();
+            if (result.success) {
+                
+            } else {
+                console.log('BAD', result);
+            }
+            this.updateDataSource();
+        } catch (error) {
+            console.error('ERROR:', error);
+            this.updateDataSource();
         }
+    }
+
+    async updateDataSource() {
         const callback = (data) => {
             data.orderDetails.map((elem, index) => {
                 elem.key = index;
@@ -263,7 +418,7 @@ export default class StockTable extends Component {
         }
     }
 
-    async updateLabor(key, detail) {
+    async updateDetail(key, detail) {
         this.state.dataSource[ key ] = detail;
         const data = {
             updateMode: true,
@@ -274,6 +429,15 @@ export default class StockTable extends Component {
                 },
             ],
         };
+
+        if (
+            !isForbidden(
+                this.props.user,
+                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
+            )
+        ) {
+            data.details[ 0 ].agreement = detail.agreement;
+        }
 
         console.log(data);
 
@@ -316,26 +480,89 @@ export default class StockTable extends Component {
             tmp.map((elem, i) => elem.key = i);
             this.setState({
                 dataSource: tmp,
+                stageFilter: undefined,
+                fieldsFilter: undefined,
+                selectedRows: [],
             });
         }
     }
 
     render() {
-        const { dataSource, loading } = this.state;
+        const { dataSource, loading, fieldsFilter, stageFilter } = this.state;
         const { isMobile } = this.props;
+        var filteredData = [...dataSource];
+        if(fieldsFilter) {
+            filteredData = dataSource.filter((elem)=>(
+                String(elem.detailName).toLowerCase().includes(fieldsFilter.toLowerCase()) ||
+                String(elem.brandName).toLowerCase().includes(fieldsFilter.toLowerCase()) ||
+                String(elem.detailCode).toLowerCase().includes(fieldsFilter.toLowerCase()) ||
+                String(elem.supplierName).toLowerCase().includes(fieldsFilter.toLowerCase())
+            ))
+        }
+
+        if(stageFilter) {
+            filteredData = dataSource.filter((elem)=>(
+                elem.stage == stageFilter
+            ))
+        }
+
+        const rowSelection = {
+            onChange: (selectedRowKeys, selectedRows) => {
+                this.setState({
+                    selectedRows: selectedRowKeys,
+                })
+            },
+        };
 
         return (
             <Catcher>
+                {!isMobile && 
+                    <div style={{display: 'flex', justifyContent: 'space-between', margin: '12px 0'}}>
+                        <div style={{width: '74%'}}>
+                            <Input
+                                allowClear
+                                onChange={({target: {value}})=>{
+                                    this.setState({
+                                        fieldsFilter: value,
+                                    })
+                                }}
+                            />
+                        </div>
+                        <div style={{width: '25%'}}>
+                            <Select
+                                allowClear
+                                showSearch
+                                onChange={(value)=>{
+                                    this.setState({
+                                        stageFilter: value,
+                                    })
+                                }}
+                            >
+                                {stageArr.map((value, key)=>{
+                                    return (
+                                        <Option
+                                            value={value}
+                                            key={key}
+                                        >
+                                            {value}
+                                        </Option>
+                                    )
+                                })}
+                            </Select>
+                        </div>
+                    </div>
+                }
                 <Table
                     style={{overflowX: 'scroll'}}
                     loading={ loading }
                     columns={ isMobile ? this.mobileColumns : this.columns }
-                    dataSource={ dataSource }
+                    dataSource={ filteredData }
                     pagination={ false }
                     rowClassName={(record)=>{
                         const stage = record.stage;
                         return Styles[stage];
                     }}
+                    rowSelection={isMobile ? null : rowSelection}
                 />
             </Catcher>
         );
@@ -350,21 +577,21 @@ class DetailsStageButtonsGroup extends Component {
                 <div className={Styles.buttonsRow}>
                     <Button
                         type='primary'
-                        disabled={stage != INACTIVE}
+                        disabled={stage != ALL && stage != INACTIVE}
                         onClick={ () => onClick(AGREED) }
                     >
                         Согласовать
                     </Button>
                     <Button
                         type='primary'
-                        disabled={!(stage == AGREED || stage == NO_SPARE_PART)}
+                        disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART)}
                         onClick={ () => onClick(ORDERED) }
                     >
                         Заказать
                     </Button>
                     <Button
                         type='primary'
-                        disabled={!(stage == AGREED || stage == NO_SPARE_PART || stage == ORDERED)}
+                        disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART || stage == ORDERED)}
                         onClick={ () => onClick(ACCEPTED) }
                     >
                         Принять
@@ -373,21 +600,21 @@ class DetailsStageButtonsGroup extends Component {
                 <div className={Styles.buttonsRow}>
                     <Button
                         className={Styles.greenButton}
-                        disabled={!(stage == AGREED || stage == NO_SPARE_PART || stage == ORDERED || stage == ACCEPTED)}
+                        disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART || stage == ORDERED || stage == ACCEPTED)}
                         onClick={ () => onClick(RESERVED) }
                     >
                         Резерв
                     </Button>
                     <Button
                         className={Styles.greenButton}
-                        disabled={!(stage == INACTIVE || stage == AGREED || stage == NO_SPARE_PART || stage == RESERVED || stage == ORDERED || stage == ACCEPTED)}
+                        disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == NO_SPARE_PART || stage == RESERVED || stage == ORDERED || stage == ACCEPTED)}
                         onClick={ () => onClick(GIVEN) }
                     >
                         Получить
                     </Button>
                     <Button
                         className={Styles.greenButton}
-                        disabled={!(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
+                        disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
                         onClick={ () => onClick(INSTALLED) }
                     >
                         Установить
@@ -396,14 +623,14 @@ class DetailsStageButtonsGroup extends Component {
                 <div className={Styles.buttonsRow}>
                     <Button
                         className={Styles.redButton}
-                        disabled={!(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
+                        disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
                         onClick={ () => onClick(NO_SPARE_PART) }
                     >
                         Нет з/ч
                     </Button>
                     <Button
                         className={Styles.yellowButton}
-                        disabled={!(stage == GIVEN || stage == CANCELED)}
+                        disabled={stage != ALL && !(stage == GIVEN || stage == CANCELED)}
                         onClick={ () => onClick(RETURNED) }
                     >
                         Вернуть

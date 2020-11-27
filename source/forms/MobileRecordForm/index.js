@@ -455,6 +455,7 @@ export class MobileRecordForm extends Component {
                     </Button>    
                 </div>
                 <Modal
+                    cancelButtonProps={{style: {display: 'none'}}}
                     visible={this.state.workshopModalVisible}
                     onCancel={()=>this.hideWorkshopModal()}
                     onOk={()=>this.hideWorkshopModal()}
@@ -468,6 +469,7 @@ export class MobileRecordForm extends Component {
                     />
                 </Modal>
                 <Modal
+                    cancelButtonProps={{style: {display: 'none'}}}
                     visible={this.state.stockModalVisible}
                     onCancel={()=>this.hideStockModal()}
                     onOk={()=>this.hideStockModal()}

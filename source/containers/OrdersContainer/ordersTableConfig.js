@@ -74,6 +74,7 @@ export function columnsConfig(
                         <div>{ order.cancelStatusOwnReason }</div>
                     </div>
                 ) }
+                <RepairMapIndicator data={order.repairMapIndicator}/>
             </>
         ),
     };
@@ -224,14 +225,12 @@ export function columnsConfig(
                 return (
                     <div>
                         {order.managerName} {order.managerSurname && order.managerSurname}
-                        <RepairMapIndicator data={order.repairMapIndicator}/>
                     </div>
                 );
             }
 
             return  <div>
                         <FormattedMessage id='orders.not_assigned' />
-                        <RepairMapIndicator data={order.repairMapIndicator}/>
                     </div>;
         },
     };

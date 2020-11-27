@@ -14,7 +14,6 @@ export default class RepairMapTable extends Component {
     render() {
         const { repairMap } = this.props;
 
-        console.log(repairMap)
         return (
             <div>
                 <div
