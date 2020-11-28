@@ -26,11 +26,36 @@ export default class RepairMapTable extends Component {
                         fontSize: 18,
                         fontWeight: 500,
                     }}>
-                    Технологическая карта ремонта</span>
+                        Технологическая карта ремонта
+                    </span>
                     <Button
                         type='primary'
                         onClick={()=>{
-                            window.location.reload();
+                            var that = this;
+                            let token = localStorage.getItem('_my.carbook.pro_token');
+                            let url = __API_URL__ + `/orders/${this.props.orderId}/repair_map?update=true`;
+                            fetch(url, {
+                                method:  'GET',
+                                headers: {
+                                    Authorization: token,
+                                },
+                            })
+                            .then(function(response) {
+                                if (response.status !== 200) {
+                                    return Promise.reject(new Error(response.statusText));
+                                }
+                                return Promise.resolve(response);
+                            })
+                            .then(function(response) {
+                                return response.json();
+                            })
+                            .then(function(data) {
+                                window.location.reload();
+                                console.log(data);
+                            })
+                            .catch(function(error) {
+                                console.log('error', error);
+                            });
                         }}
                     >
                         Обновить карту
