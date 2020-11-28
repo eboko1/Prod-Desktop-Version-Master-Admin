@@ -395,6 +395,7 @@ export function columnsConfig(
     const editCol = {
         title:  <Button
                     type={'primary'}
+                    disabled
                     onClick={()=>window.location.reload()}
                 >
                     Обновить статусы
