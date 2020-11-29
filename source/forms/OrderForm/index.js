@@ -539,7 +539,9 @@ export class OrderForm extends React.PureComponent {
                     createOrder={this.props.createOrder}
                     createStatus={this.props.createStatus}
                 />
-                {tabs}
+                <div id="OrderTabs">
+                    {tabs}
+                </div>
                 <AddClientModal
                     searchQuery={searchClientQuery}
                     wrappedComponentRef={this._saveFormRef}
@@ -671,6 +673,8 @@ export class OrderForm extends React.PureComponent {
             clearOilData,
 
             repairMap,
+            modals,
+            download
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
@@ -772,6 +776,9 @@ export class OrderForm extends React.PureComponent {
                 oilModalData = { oilModalData }
                 clearOilData = { clearOilData }
                 repairMap = { repairMap }
+                setModal={ setModal }
+                modals={ modals }
+                download={ download }
             />
         );
     };

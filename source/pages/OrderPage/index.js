@@ -837,6 +837,8 @@ class OrderPage extends Component {
                         showOilModal= { showOilModal }
                         oilModalData = { oilModalData }
                         clearOilData = { this._clearOilData }
+                        modals={ MODALS }
+                        download={ this.props.getReport }
                     />
                 </ResponsiveView>
                 <CancelReasonModal
