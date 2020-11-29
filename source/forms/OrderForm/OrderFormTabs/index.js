@@ -57,6 +57,7 @@ export default class OrderFormTabs extends React.PureComponent {
             },
         ];
         this.commentsAutoSize = { minRows: 2, maxRows: 6 };
+        this._setActiveTab = this._setActiveTab.bind(this);
     }
 
     // TODO: move into utils
@@ -68,6 +69,12 @@ export default class OrderFormTabs extends React.PureComponent {
         }
 
         return this._localizationMap[key];
+    }
+
+    _setActiveTab(tab) {
+        this.setState({
+            activeKey: tab,
+        })
     }
 
     componentDidUpdate(prevProps) {
@@ -146,6 +153,8 @@ export default class OrderFormTabs extends React.PureComponent {
             oilModalData,
             clearOilData,
             repairMap,
+            modals,
+            download
         } = this.props;
 
         const {
@@ -220,6 +229,10 @@ export default class OrderFormTabs extends React.PureComponent {
                             user={user}
                             orderId={orderId}
                             repairMap={repairMap}
+                            setActiveTab={this._setActiveTab}
+                            setModal={ setModal }
+                            modals={ modals }
+                            download={ download }
                         />
                     </TabPane>
                 )}
@@ -230,7 +243,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         tab={formatMessage({
                             id: "order_form_table.diagnostic",
                         })}
-                        key="diagnostic"
+                        key='diagnostic'
                     >
                         <DiagnosticTable
                             disabled={

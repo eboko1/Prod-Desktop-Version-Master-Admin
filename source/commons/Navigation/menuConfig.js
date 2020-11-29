@@ -113,11 +113,7 @@ export default {
                 },
                 {
                     key:      '/repair-map',
-                    disabled: user =>
-                        isForbidden(
-                            user,
-                            permissions.ACCESS_DIAGNOSTIC_CATALOGUE,
-                        ),
+                    disabled: ()=>true,
                     link: book.repairMapSetting,
                     name: 'navigation.repair_map',
                 },

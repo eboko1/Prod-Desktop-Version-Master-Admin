@@ -395,8 +395,32 @@ export function columnsConfig(
     const editCol = {
         title:  <Button
                     type={'primary'}
-                    disabled
-                    onClick={()=>window.location.reload()}
+                    onClick={()=>{
+                        let token = localStorage.getItem('_my.carbook.pro_token');
+                        let url = __API_URL__ + `/orders/repair_map?update=true`;
+                        fetch(url, {
+                            method:  'PUT',
+                            headers: {
+                                Authorization: token,
+                            },
+                        })
+                        .then(function(response) {
+                            if (response.status !== 200) {
+                                return Promise.reject(new Error(response.statusText));
+                            }
+                            return Promise.resolve(response);
+                        })
+                        .then(function(response) {
+                            return response.json();
+                        })
+                        .then(function(data) {
+                            window.location.reload();
+                            console.log(data);
+                        })
+                        .catch(function(error) {
+                            console.log('error', error);
+                        });
+                    }}
                 >
                     Обновить статусы
                 </Button>,
