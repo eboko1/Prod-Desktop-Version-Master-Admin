@@ -225,6 +225,7 @@ export function convertFieldsValuesToDbEntity(
         businessComment:  _.get(orderFields, 'businessComment'),
         comment:          _.get(orderFields, 'comment'),
         insertMode:       true,
+        updateRepairMap:  true,
     };
 
     const orderClearedFields = _.mapValues(order, value =>
