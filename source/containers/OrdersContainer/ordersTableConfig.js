@@ -422,7 +422,7 @@ export function columnsConfig(
                         });
                     }}
                 >
-                    Обновить статусы
+                    <FormattedMessage id='orders.update_stage' />
                 </Button>,
         key:    'editAction',
         // fixed:  'right',

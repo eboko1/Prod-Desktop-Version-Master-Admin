@@ -222,7 +222,9 @@ export default class OrderFormTabs extends React.PureComponent {
                 {!addOrderForm && (
                     <TabPane
                         forceRender
-                        tab={'Карта'}
+                        tab={formatMessage({
+                            id: "order_tabs.map",
+                        })}
                         key="map"
                     >
                         <RepairMapTable
@@ -400,7 +402,9 @@ export default class OrderFormTabs extends React.PureComponent {
                 {!addOrderForm && (
                     <TabPane
                         forceRender
-                        tab={`Цех`}
+                        tab={formatMessage({
+                            id: "order_tabs.workshop",
+                        })}
                         key="workshop"
                     >
                         <WorkshopTable
@@ -415,7 +419,9 @@ export default class OrderFormTabs extends React.PureComponent {
                 {!addOrderForm && (
                     <TabPane
                         forceRender
-                        tab={`Склад`}
+                        tab={formatMessage({
+                            id: "order_tabs.stock",
+                        })}
                         key="stock"
                     >
                         <StockTable

@@ -446,14 +446,14 @@ export class MobileRecordForm extends Component {
                         style={{width: '49%'}}
                         onClick={()=>this.showWorkshopModal()}
                     >
-                        Цех
+                        <FormattedMessage id='order_tabs.workshop' />
                     </Button>
                     <Button
                         type='primary'
                         style={{width: '49%'}}
                         onClick={()=>this.showStockModal()}
                     >
-                        Склад
+                        <FormattedMessage id='order_tabs.stock' />
                     </Button>    
                 </div>
                 <Modal
