@@ -216,9 +216,14 @@ export default class StockTable extends Component {
                 },
             },
             {
-                title:     'Этап',
+                title:     <FormattedMessage id='order_form_table.stage' />,
                 key:       'stage',
                 dataIndex: 'stage',
+                render:    (data) => {
+                    return (
+                        <FormattedMessage id={`stock_table.${data}`}/>
+                    );
+                },
             },
             {
                 title:      <Popover
@@ -237,7 +242,7 @@ export default class StockTable extends Component {
                                     type='primary'
                                     style={{width: '100%', margin: 1}}
                                 >
-                                    Остальные
+                                    <FormattedMessage id='order_form_table.other' />
                                 </Button>
                             </Popover>,
                 key:       'actions',
@@ -276,7 +281,7 @@ export default class StockTable extends Component {
             {
                 title:     <div>
                                 <p><FormattedMessage id='order_form_table.brand' /></p>
-                                <p>Этап</p>
+                                <p><FormattedMessage id='order_form_table.stage' /></p>
                             </div>,
                 key:       'brandName',
                 dataIndex: 'brandName',
@@ -284,7 +289,7 @@ export default class StockTable extends Component {
                     return (
                         <div>
                             <p>{data || <FormattedMessage id='long_dash' />}</p>
-                            <p>{row.stage}</p>
+                            <p><FormattedMessage id={`stock_table.${row.stage}`}/></p>
                         </div>
                     );
                 },
@@ -304,7 +309,7 @@ export default class StockTable extends Component {
                                     this.updateDetail(elem.key, elem);
                                 } }
                             >
-                                Установить
+                                <FormattedMessage id='stock_table.button.install' />
                             </Button>
                             <Button
                                 style={{width: '100%', margin: 1}}
@@ -315,7 +320,7 @@ export default class StockTable extends Component {
                                     this.updateDetail(elem.key, elem);
                                 } }
                             >
-                                Нет з/ч
+                                <FormattedMessage id='stock_table.button.no_spare_part' />
                             </Button>
                             <Popover
                                 overlayStyle={{zIndex: 9999}}
@@ -334,7 +339,7 @@ export default class StockTable extends Component {
                                     type='primary'
                                     style={{width: '100%', margin: 1}}
                                 >
-                                    Остальные
+                                    <FormattedMessage id='order_form_table.other' />
                                 </Button>
                             </Popover>
                         </div>
@@ -580,21 +585,21 @@ class DetailsStageButtonsGroup extends Component {
                         disabled={stage != ALL && stage != INACTIVE}
                         onClick={ () => onClick(AGREED) }
                     >
-                        Согласовать
+                        <FormattedMessage id='stock_table.button.agree' />
                     </Button>
                     <Button
                         type='primary'
                         disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART)}
                         onClick={ () => onClick(ORDERED) }
                     >
-                        Заказать
+                        <FormattedMessage id='stock_table.button.order' />
                     </Button>
                     <Button
                         type='primary'
                         disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART || stage == ORDERED)}
                         onClick={ () => onClick(ACCEPTED) }
                     >
-                        Принять
+                        <FormattedMessage id='stock_table.button.accept' />
                     </Button>
                 </div>
                 <div className={Styles.buttonsRow}>
@@ -603,21 +608,21 @@ class DetailsStageButtonsGroup extends Component {
                         disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART || stage == ORDERED || stage == ACCEPTED)}
                         onClick={ () => onClick(RESERVED) }
                     >
-                        Резерв
+                        <FormattedMessage id='stock_table.button.reserve' />
                     </Button>
                     <Button
                         className={Styles.greenButton}
                         disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == NO_SPARE_PART || stage == RESERVED || stage == ORDERED || stage == ACCEPTED)}
                         onClick={ () => onClick(GIVEN) }
                     >
-                        Получить
+                        <FormattedMessage id='stock_table.button.get' />
                     </Button>
                     <Button
                         className={Styles.greenButton}
                         disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
                         onClick={ () => onClick(INSTALLED) }
                     >
-                        Установить
+                        <FormattedMessage id='stock_table.button.install' />
                     </Button>
                 </div>
                 <div className={Styles.buttonsRow}>
@@ -626,20 +631,20 @@ class DetailsStageButtonsGroup extends Component {
                         disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
                         onClick={ () => onClick(NO_SPARE_PART) }
                     >
-                        Нет з/ч
+                        <FormattedMessage id='stock_table.button.no_spare_part' />
                     </Button>
                     <Button
                         className={Styles.yellowButton}
                         disabled={stage != ALL && !(stage == GIVEN || stage == CANCELED)}
                         onClick={ () => onClick(RETURNED) }
                     >
-                        Вернуть
+                        <FormattedMessage id='stock_table.button.return' />
                     </Button>
                     <Button
                         className={Styles.yellowButton}
                         onClick={ () => onClick(CANCELED) }
                     >
-                        Омена
+                        <FormattedMessage id='stock_table.button.cancel' />
                     </Button>
                 </div>
             </div>

@@ -47,7 +47,7 @@ export default class WorkshopTable extends Component {
                 dataIndex: 'serviceName',
             },
             {
-                title:     'Расчет',
+                title:     <FormattedMessage id='order_form_table.calculation' />,
                 key:       'count',
                 dataIndex: 'count',
                 render:    data => {
@@ -59,7 +59,7 @@ export default class WorkshopTable extends Component {
                 },
             },
             {
-                title:     'Реал.',
+                title:     <FormattedMessage id='order_form_table.workingTime' />,
                 key:       'workingTime',
                 dataIndex: 'workingTime',
                 render:    data => {
@@ -125,9 +125,14 @@ export default class WorkshopTable extends Component {
                 },
             },
             {
-                title:     "Этап",
+                title:     <FormattedMessage id='order_form_table.stage' />,
                 key:       'stage',
                 dataIndex: 'stage',
+                render:    (data) => {
+                    return (
+                        <FormattedMessage id={`workshop_table.${data}`}/>
+                    );
+                },
             },
             {
                 title:      <Popover
@@ -146,7 +151,7 @@ export default class WorkshopTable extends Component {
                                     type='primary'
                                     style={{width: '100%', margin: 1}}
                                 >
-                                    Остальные
+                                    <FormattedMessage id='order_form_table.other' />
                                 </Button>
                             </Popover>,
                 key:       'actions',
@@ -174,8 +179,8 @@ export default class WorkshopTable extends Component {
             },
             {
                 title:      <div>
-                                <p>Расчет</p>
-                                <p>Реал.</p>
+                                <p><FormattedMessage id='order_form_table.calculation' /></p>
+                                <p><FormattedMessage id='order_form_table.workingTime' /></p>
                             </div>,
                 key:       'count',
                 dataIndex: 'count',
@@ -189,9 +194,14 @@ export default class WorkshopTable extends Component {
                 },
             },
             {
-                title:     "Этап",
+                title:     <FormattedMessage id='order_form_table.stage' />,
                 key:       'stage',
                 dataIndex: 'stage',
+                render:    (data) => {
+                    return (
+                        <FormattedMessage id={`workshop_table.${data}`}/>
+                    );
+                },
             },
             {
                 key:       'actions',
@@ -455,7 +465,7 @@ class LaborStageButtonsGroup extends Component {
                     disabled={stage != ALL && (stage == IN_PROGRESS || stage == CANCELED)}
                     onClick={ () => onClick(IN_PROGRESS) }
                 >
-                    Старт
+                    <FormattedMessage id='workshop_table.button.start'/>
                 </Button>
                 <Button
                     style={buttonStyle}
@@ -463,7 +473,7 @@ class LaborStageButtonsGroup extends Component {
                     disabled={stage != ALL && (stage == INACTIVE || stage == DONE || stage == CANCELED)}
                     onClick={ () => onClick(DONE) }
                 >
-                    Финиш
+                    <FormattedMessage id='workshop_table.button.finish'/>
                 </Button>
                 <Button
                     style={buttonStyle}
@@ -472,7 +482,7 @@ class LaborStageButtonsGroup extends Component {
                     disabled={stage != ALL && (stage == STOPPED || stage == DONE || stage == CANCELED)}
                     onClick={ () => onClick(STOPPED) }
                 >
-                    Стоп !!!
+                    <FormattedMessage id='workshop_table.button.stop'/>
                 </Button>
                 <Button
                     style={buttonStyle}
@@ -480,7 +490,7 @@ class LaborStageButtonsGroup extends Component {
                     disabled={stage != ALL && (stage == DONE || stage == CANCELED)}
                     onClick={ () => onClick(CANCELED) }
                 >
-                    Отмена
+                    <FormattedMessage id='workshop_table.button.cancel'/>
                 </Button>
             </div>
         )

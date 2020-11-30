@@ -18,14 +18,6 @@ import {
 // own
 import Styles from './styles.m.css';
 
-const ACT_OF_ACCEPTANCE_REPORT = 'actOfAcceptanceReport'; // actOfAcceptanceReport -> акт приема работ
-const BUSINESS_ORDER_REPORT = 'businessOrderReport'; // businessOrderReport -> наряд заказ в цех
-const CALCULATION_REPORT = 'calculationReport'; // calculationReport - калькуляция
-const CLIENT_ORDER_REPORT = 'clientOrderReport'; // clientOrderReport -> наряд заказ
-const COMPLETED_WORK_REPORT = 'completedWorkReport'; // completedWorkReport -> акт выполненых работ
-const DIAGNOSTICS_ACT_REPORT = 'diagnosticsActReport'; // diagnosticsActReport -> акт диагностики
-const INVOICE_REPORT = 'invoiceReport'; // invoiceReport -> счет-фактура
-
 const   HEADER_CLIENT_SEARCH = 'HEADER_CLIENT_SEARCH',
         HEADER_STATION = 'HEADER_STATION',
         HEADER_EMPLOYEE = 'HEADER_EMPLOYEE',
@@ -218,7 +210,7 @@ export default class RepairMapTable extends Component {
                         fontSize: 18,
                         fontWeight: 500,
                     }}>
-                        Технологическая карта ремонта
+                        <FormattedMessage id="repair_map_table.repair_map"/>
                     </span>
                     <Button
                         type='primary'
@@ -250,7 +242,7 @@ export default class RepairMapTable extends Component {
                             });
                         }}
                     >
-                        Обновить карту
+                        <FormattedMessage id="repair_map_table.repair_map"/>
                     </Button>
                 </div>
                 {repairMap && repairMap.map((elem, key)=>{
@@ -275,7 +267,7 @@ export default class RepairMapTable extends Component {
                                                     this.repairMapAction(child.operation)
                                                 }}
                                             >
-                                                Перейти
+                                                <FormattedMessage id="repair_map_table.goto"/>
                                             </Button>
                                         </div>
                                     )
