@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Button, Icon, Table, Select, Popover, Input } from 'antd';
+import { Button, Icon, Table, Select, Popover, Input, notification } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -20,6 +20,7 @@ const INACTIVE = 'INACTIVE',
       ALL = 'ALL';
 const stageArr = [INACTIVE, IN_PROGRESS, STOPPED, DONE, CANCELED];
 
+@injectIntl
 export default class WorkshopTable extends Component {
     constructor(props) {
         super(props);
@@ -341,6 +342,37 @@ export default class WorkshopTable extends Component {
         }
     }
 
+    sendSms() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/orders/${this.props.orderId}/send_message?type=finish_labors`;
+        fetch(url, {
+            method:  'GET',
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            notification.success({
+                message: that.props.intl.formatMessage({
+                    id: `message_sent`,
+                }),
+            });
+        })
+        .catch(function(error) {
+            console.log('error', error);
+        });
+    }
+
     componentDidMount() {
         let tmp = [ ...this.props.orderServices ];
         tmp.map((elem, i) => elem.key = i);
@@ -396,6 +428,7 @@ export default class WorkshopTable extends Component {
                         <div style={{width: '70%'}}>
                             <Input
                                 allowClear
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.fields_filter'})}
                                 onChange={({target: {value}})=>{
                                     this.setState({
                                         fieldsFilter: value,
@@ -407,6 +440,7 @@ export default class WorkshopTable extends Component {
                             <Select
                                 allowClear
                                 showSearch
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.stage'})}
                                 onChange={(value)=>{
                                     this.setState({
                                         stageFilter: value,
@@ -429,7 +463,7 @@ export default class WorkshopTable extends Component {
                             <Button
                                 type='primary'
                                 onClick={ () => {
-
+                                    this.sendSms()
                                 } }
                             >
                                 <FormattedMessage id="end" />

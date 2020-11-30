@@ -140,6 +140,10 @@ export default class RepairMapTable extends Component {
                 setActiveTab('stock');
                 break;
             case PRINT_ACT_OF_ACCEPTANCE:
+                download({
+                    link: `/orders/reports/actOfAcceptanceReport/${orderId}`,
+                    name: 'actOfAcceptanceReport'
+                });
                 break;
             case STOCK_BUTTON_GIVEN:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
@@ -158,6 +162,10 @@ export default class RepairMapTable extends Component {
                 });
                 break;
             case PRINT_BUSINESS_ORDER:
+                download({
+                    link: `/orders/reports/businessOrderReport/${orderId}`,
+                    name: 'businessOrderReport'
+                });
                 break;
             case WORKSHOP:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
