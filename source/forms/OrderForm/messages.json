@@ -118,7 +118,8 @@
         "stock_table.button.install": "Install",
         "stock_table.button.no_spare_part": "No spare part",
         "stock_table.button.return": "Return",
-        "stock_table.button.cancel": "Cancel"
+        "stock_table.button.cancel": "Cancel",
+        "order_form_table.fields_filter": "Fields filter"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -239,7 +240,8 @@
         "stock_table.button.install": "Установить",
         "stock_table.button.no_spare_part": "Нет з/ч!",
         "stock_table.button.return": "Вернуть",
-        "stock_table.button.cancel": "Отменить"
+        "stock_table.button.cancel": "Отменить",
+        "order_form_table.fields_filter": "Фильтр полей"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -360,6 +362,7 @@
         "stock_table.button.install": "Встановити",
         "stock_table.button.no_spare_part": "Нема з/ч!",
         "stock_table.button.return": "Повернути",
-        "stock_table.button.cancel": "Скасувати"
+        "stock_table.button.cancel": "Скасувати",
+        "order_form_table.fields_filter": "Фільтр значень"
     }
 }

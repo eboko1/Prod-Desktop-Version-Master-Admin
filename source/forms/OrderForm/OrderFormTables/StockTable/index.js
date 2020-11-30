@@ -25,6 +25,7 @@ const INACTIVE = 'INACTIVE',
       ALL = 'ALL';
 const stageArr = [INACTIVE, AGREED, ORDERED, ACCEPTED, RESERVED, GIVEN, INSTALLED, NO_SPARE_PART, RETURNED, CANCELED];
 
+@injectIntl
 export default class StockTable extends Component {
     constructor(props) {
         super(props);
@@ -526,6 +527,7 @@ export default class StockTable extends Component {
                         <div style={{width: '74%'}}>
                             <Input
                                 allowClear
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.fields_filter'})}
                                 onChange={({target: {value}})=>{
                                     this.setState({
                                         fieldsFilter: value,
@@ -537,6 +539,7 @@ export default class StockTable extends Component {
                             <Select
                                 allowClear
                                 showSearch
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.stage'})}
                                 onChange={(value)=>{
                                     this.setState({
                                         stageFilter: value,
