@@ -29,6 +29,16 @@ import Styles from './styles.m.css';
 import { value } from 'numeral';
 const Option = Select.Option;
 const { confirm, warning } = Modal;
+const INACTIVE = 'INACTIVE',
+      AGREED = 'AGREED',
+      ORDERED = 'ORDERED',
+      ACCEPTED = 'ACCEPTED',
+      RESERVED = 'RESERVED',
+      GIVEN = 'GIVEN',
+      INSTALLED = 'INSTALLED',
+      NO_SPARE_PART = 'NO_SPARE_PART',
+      RETURNED = 'RETURNED',
+      CANCELED = 'CANCELED';
 
 @injectIntl
 class DetailsTable extends Component {
@@ -64,7 +74,7 @@ class DetailsTable extends Component {
                 dataIndex: 'key',
                 render:    (data, elem) => {
                     const confirmed = elem.agreement.toLowerCase();
-
+                    const stageDisabled = elem.stage == AGREED || elem.stage == ORDERED || elem.stage == ACCEPTED || elem.stage == RESERVED || elem.stage == GIVEN || elem.stage == INSTALLED;
                     return (
                         <div
                             style={ {
@@ -77,7 +87,8 @@ class DetailsTable extends Component {
                                 disabled={
                                     confirmed != 'undefined' ||
                                     this.props.disabled ||
-                                    elem.reserved
+                                    elem.reserved ||
+                                    stageDisabled
                                 }
                                 onClick={ () => {
                                     this.showDetailProductModal(data);
@@ -93,7 +104,8 @@ class DetailsTable extends Component {
                                         backgroundColor:
                                             confirmed != 'undefined' ||
                                             this.props.disabled ||
-                                            elem.reserved
+                                            elem.reserved ||
+                                            stageDisabled
                                                 ? 'black'
                                                 : 'white',
                                         mask:       `url(${images.pistonIcon}) no-repeat center / contain`,
@@ -121,7 +133,7 @@ class DetailsTable extends Component {
                                     treeData={ this.treeData }
                                     brands={ this.props.allDetails.brands }
                                     disabled={
-                                        !elem.detailName || this.props.disabled || elem.reserved
+                                        !elem.detailName || this.props.disabled || elem.reserved || stageDisabled
                                     }
                                     confirmed={ confirmed != 'undefined' }
                                     detail={ elem }
@@ -441,12 +453,13 @@ class DetailsTable extends Component {
                 key:    'delete',
                 render: elem => {
                     const confirmed = elem.agreement.toLowerCase();
+                    const stageDisabled = elem.stage == AGREED || elem.stage == ORDERED || elem.stage == ACCEPTED || elem.stage == RESERVED || elem.stage == GIVEN || elem.stage == INSTALLED;
                     const disabled =
                         confirmed != 'undefined' || this.props.disabled || elem.reserved;
 
                     return (
                         <Popconfirm
-                            disabled={ disabled }
+                            disabled={ disabled || stageDisabled }
                             title={
                                 <FormattedMessage id='add_order_form.delete_confirm' />
                             }
@@ -480,7 +493,7 @@ class DetailsTable extends Component {
                             <Icon
                                 type='delete'
                                 className={
-                                    disabled
+                                    disabled || stageDisabled
                                         ? Styles.disabledIcon
                                         : Styles.deleteIcon
                                 }

@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Button, Icon, Table, Select, Popover, Input, notification } from 'antd';
+import { Button, Icon, InputNumber, Table, Select, Popover, Input, notification } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -72,6 +72,19 @@ export default class WorkshopTable extends Component {
                 },
             },
             {
+                title:     <FormattedMessage id='order_form_table.stoppedTime' />,
+                key:       'stoppedTime',
+                dataIndex: 'stoppedTime',
+                render:    data => {
+                    console.log(data)
+                    return (
+                        <span>
+                            <span style={{fontWeight: 700}}>{/*data ? Math.abs(data.toFixed(2)) : 0*/}</span> <FormattedMessage id='order_form_table.hours_short' />
+                        </span>
+                    );
+                },
+            },
+            {
                 title: <FormattedMessage id='order_form_table.status' />,
                 key:       'agreement',
                 dataIndex: 'agreement',
@@ -136,25 +149,12 @@ export default class WorkshopTable extends Component {
                 },
             },
             {
-                title:      <Popover
-                                overlayStyle={{zIndex: 9999}}
-                                content={
-                                    <LaborStageButtonsGroup
-                                        stage={ALL}
-                                        onClick={(value)=>{
-                                            this.multipleChangeState(value);
-                                        }}
-                                    />
-                                }
-                                trigger="click"
-                            >
-                                <Button
-                                    type='primary'
-                                    style={{width: '100%', margin: 1}}
-                                >
-                                    <FormattedMessage id='order_form_table.other' />
-                                </Button>
-                            </Popover>,
+                title:  <LaborStageButtonsGroup
+                            stage={ALL}
+                            onClick={(value)=>{
+                                this.multipleChangeState(value);
+                            }}
+                        />,                        
                 key:       'actions',
                 dataIndex: 'stage',
                 width: 'fit-content',
@@ -182,6 +182,7 @@ export default class WorkshopTable extends Component {
                 title:      <div>
                                 <p><FormattedMessage id='order_form_table.calculation' /></p>
                                 <p><FormattedMessage id='order_form_table.workingTime' /></p>
+                                <p><FormattedMessage id='order_form_table.stoppedTime' /></p>
                             </div>,
                 key:       'count',
                 dataIndex: 'count',
@@ -190,6 +191,7 @@ export default class WorkshopTable extends Component {
                         <div>
                             <p>{data || 0} <FormattedMessage id='order_form_table.hours_short' /></p>
                             <p>{row.workingTime ? Math.abs(row.workingTime.toFixed(2)) : 0} <FormattedMessage id='order_form_table.hours_short' /></p>
+                            <span style={{fontWeight: 700}}>{row.stoppedTime ? Math.abs(row.stoppedTime.toFixed(2)) : 0}</span> <FormattedMessage id='order_form_table.hours_short' />
                         </div>
                     );
                 },
@@ -200,7 +202,7 @@ export default class WorkshopTable extends Component {
                 dataIndex: 'stage',
                 render:    (data) => {
                     return (
-                        <FormattedMessage id={`workshop_table.${data}`}/>
+                        this.props.intl.formatMessage({id: `workshop_table.${data}`}).substring(0, 5) + "."
                     );
                 },
             },
@@ -398,6 +400,12 @@ export default class WorkshopTable extends Component {
     render() {
         const { dataSource, loading, fieldsFilter, stageFilter } = this.state;
         const { isMobile } = this.props;
+        var calcTime = 0, realTime = 0, stoppedTime = 0;
+        dataSource.map((elem)=>{
+            if(elem.count) calcTime += elem.count;
+            if(elem.workingTime) realTime += elem.workingTime;
+            if(elem.stoppedTime) calcTime += elem.stoppedTime;
+        })
 
         var filteredData = [...dataSource];
         if(fieldsFilter) {
@@ -453,7 +461,7 @@ export default class WorkshopTable extends Component {
                                             value={value}
                                             key={key}
                                         >
-                                            {value}
+                                            <FormattedMessage id={`workshop_table.${value}`}/>
                                         </Option>
                                     )
                                 })}
@@ -483,6 +491,21 @@ export default class WorkshopTable extends Component {
                     }}
                     rowSelection={isMobile ? null : rowSelection}
                 />
+                <div
+                    style={{
+                        textAlign: 'end',
+                    }}
+                >
+                    <span style={{marginLeft: 24, fontWeight: 500}}>
+                        <FormattedMessage id='workshop_table.footer.calculationTime' /> <InputNumber value={calcTime} disabled style={{color: 'black', marginLeft: 6}}/>
+                    </span>
+                    <span style={{marginLeft: 24, fontWeight: 500}}>
+                        <FormattedMessage id='workshop_table.footer.realTime' /> <InputNumber value={realTime.toFixed(2)} disabled style={{color: 'black', marginLeft: 6}}/>
+                    </span>
+                    <span style={{marginLeft: 24, fontWeight: 500}}>
+                        <FormattedMessage id='workshop_table.footer.stoppedTime' /> <InputNumber value={stoppedTime} disabled style={{color: 'black', marginLeft: 6}}/>
+                    </span>
+                </div>
             </Catcher>
         );
     }
@@ -493,39 +516,50 @@ class LaborStageButtonsGroup extends Component {
         const { stage, onClick, buttonStyle, isMobile } = this.props;
         return (
             <div className={Styles.laborStageButtonsGroup} style={!isMobile ? {display: 'flex'} : {}}>
-                <Button
-                    style={buttonStyle}
-                    className={Styles.greenButton}
-                    disabled={stage != ALL && (stage == IN_PROGRESS || stage == CANCELED)}
-                    onClick={ () => onClick(IN_PROGRESS) }
-                >
-                    <FormattedMessage id='workshop_table.button.start'/>
-                </Button>
-                <Button
-                    style={buttonStyle}
-                    className={Styles.greenButton}
-                    disabled={stage != ALL && (stage == INACTIVE || stage == DONE || stage == CANCELED)}
-                    onClick={ () => onClick(DONE) }
-                >
-                    <FormattedMessage id='workshop_table.button.finish'/>
-                </Button>
-                <Button
-                    style={buttonStyle}
-                    className={Styles.redButton}
-                    type='danger'
-                    disabled={stage != ALL && (stage == STOPPED || stage == DONE || stage == CANCELED)}
-                    onClick={ () => onClick(STOPPED) }
-                >
-                    <FormattedMessage id='workshop_table.button.stop'/>
-                </Button>
-                <Button
-                    style={buttonStyle}
-                    className={Styles.yellowButton}
-                    disabled={stage != ALL && (stage == DONE || stage == CANCELED)}
-                    onClick={ () => onClick(CANCELED) }
-                >
-                    <FormattedMessage id='workshop_table.button.cancel'/>
-                </Button>
+                {stage == CANCELED || stage == DONE ?
+                    <Button
+                        type='primary'
+                        style={{width: '100%'}}
+                        onClick={ () => onClick(INACTIVE) }
+                    >
+                        <FormattedMessage id='workshop_table.button.change' />
+                    </Button> :
+                    <>
+                        <Button
+                            style={buttonStyle}
+                            className={Styles.greenButton}
+                            disabled={stage != ALL && (stage == IN_PROGRESS || stage == CANCELED)}
+                            onClick={ () => onClick(IN_PROGRESS) }
+                        >
+                            <FormattedMessage id='workshop_table.button.start'/>
+                        </Button>
+                        <Button
+                            style={buttonStyle}
+                            className={Styles.greenButton}
+                            disabled={stage != ALL && (stage == INACTIVE || stage == DONE || stage == CANCELED)}
+                            onClick={ () => onClick(DONE) }
+                        >
+                            <FormattedMessage id='workshop_table.button.finish'/>
+                        </Button>
+                        <Button
+                            style={buttonStyle}
+                            className={Styles.redButton}
+                            type='danger'
+                            disabled={stage != ALL && (stage == STOPPED || stage == DONE || stage == CANCELED)}
+                            onClick={ () => onClick(STOPPED) }
+                        >
+                            <FormattedMessage id='workshop_table.button.stop'/>
+                        </Button>
+                        <Button
+                            style={buttonStyle}
+                            className={Styles.yellowButton}
+                            disabled={stage != ALL && (stage == DONE || stage == CANCELED)}
+                            onClick={ () => onClick(CANCELED) }
+                        >
+                            <FormattedMessage id='workshop_table.button.cancel'/>
+                        </Button>
+                    </>
+                }
             </div>
         )
     }

@@ -552,7 +552,7 @@ export default class StockTable extends Component {
                                             value={value}
                                             key={key}
                                         >
-                                            {value}
+                                            <FormattedMessage id={`stock_table.${value}`}/>
                                         </Option>
                                     )
                                 })}
@@ -585,7 +585,7 @@ class DetailsStageButtonsGroup extends Component {
                 <div className={Styles.buttonsRow}>
                     <Button
                         type='primary'
-                        disabled={stage != ALL && stage != INACTIVE}
+                        disabled={stage != ALL && !(stage == INACTIVE || stage == NO_SPARE_PART)}
                         onClick={ () => onClick(AGREED) }
                     >
                         <FormattedMessage id='stock_table.button.agree' />
