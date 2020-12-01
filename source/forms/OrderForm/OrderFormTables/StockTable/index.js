@@ -300,50 +300,13 @@ export default class StockTable extends Component {
                 dataIndex: 'stage',
                 render: (stage, elem)=>{
                     return (
-                        <div>
-                            <Button
-                                style={{width: '100%', margin: 1}}
-                                className={Styles.greenButton}
-                                disabled={!(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
-                                onClick={ () => {
-                                    elem.stage = INSTALLED;
-                                    this.updateDetail(elem.key, elem);
-                                } }
-                            >
-                                <FormattedMessage id='stock_table.button.install' />
-                            </Button>
-                            <Button
-                                style={{width: '100%', margin: 1}}
-                                className={Styles.redButton}
-                                disabled={!(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
-                                onClick={ () => {
-                                    elem.stage = NO_SPARE_PART;
-                                    this.updateDetail(elem.key, elem);
-                                } }
-                            >
-                                <FormattedMessage id='stock_table.button.no_spare_part' />
-                            </Button>
-                            <Popover
-                                overlayStyle={{zIndex: 9999}}
-                                content={
-                                    <DetailsStageButtonsGroup
-                                        stage={stage}
-                                        onClick={(value)=>{
-                                            elem.stage = value;
-                                            this.updateDetail(elem.key, elem);
-                                        }}
-                                    />
-                                }
-                                trigger="click"
-                            >
-                                <Button
-                                    type='primary'
-                                    style={{width: '100%', margin: 1}}
-                                >
-                                    <FormattedMessage id='order_form_table.other' />
-                                </Button>
-                            </Popover>
-                        </div>
+                        <MobileDetailsStageButtonsGroup
+                            stage={stage}
+                            onClick={(value)=>{
+                                elem.stage = value;
+                                this.updateDetail(elem.key, elem);
+                            }}
+                        />
                     )
                 }
             },
@@ -584,41 +547,11 @@ class DetailsStageButtonsGroup extends Component {
             <div className={Styles.detailStageButtonsGroup}>
                 <div className={Styles.buttonsRow}>
                     <Button
-                        type='primary'
+                        className={Styles.greenButton}
                         disabled={stage != ALL && !(stage == INACTIVE || stage == NO_SPARE_PART)}
                         onClick={ () => onClick(AGREED) }
                     >
                         <FormattedMessage id='stock_table.button.agree' />
-                    </Button>
-                    <Button
-                        type='primary'
-                        disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART)}
-                        onClick={ () => onClick(ORDERED) }
-                    >
-                        <FormattedMessage id='stock_table.button.order' />
-                    </Button>
-                    <Button
-                        type='primary'
-                        disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART || stage == ORDERED)}
-                        onClick={ () => onClick(ACCEPTED) }
-                    >
-                        <FormattedMessage id='stock_table.button.accept' />
-                    </Button>
-                </div>
-                <div className={Styles.buttonsRow}>
-                    <Button
-                        className={Styles.greenButton}
-                        disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART || stage == ORDERED || stage == ACCEPTED)}
-                        onClick={ () => onClick(RESERVED) }
-                    >
-                        <FormattedMessage id='stock_table.button.reserve' />
-                    </Button>
-                    <Button
-                        className={Styles.greenButton}
-                        disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == NO_SPARE_PART || stage == RESERVED || stage == ORDERED || stage == ACCEPTED)}
-                        onClick={ () => onClick(GIVEN) }
-                    >
-                        <FormattedMessage id='stock_table.button.get' />
                     </Button>
                     <Button
                         className={Styles.greenButton}
@@ -630,25 +563,150 @@ class DetailsStageButtonsGroup extends Component {
                 </div>
                 <div className={Styles.buttonsRow}>
                     <Button
+                        className={Styles.greenButton}
+                        disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART || stage == ORDERED || stage == ACCEPTED)}
+                        onClick={ () => onClick(RESERVED) }
+                    >
+                        <FormattedMessage id='stock_table.button.reserve' />
+                    </Button>
+                    <Button
                         className={Styles.redButton}
                         disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
                         onClick={ () => onClick(NO_SPARE_PART) }
                     >
                         <FormattedMessage id='stock_table.button.no_spare_part' />
                     </Button>
-                    <Button
-                        className={Styles.yellowButton}
-                        disabled={stage != ALL && !(stage == GIVEN || stage == CANCELED)}
-                        onClick={ () => onClick(RETURNED) }
+                </div>
+                <div className={Styles.buttonsRow}>
+                    <Popover
+                        overlayStyle={{zIndex: 9999}}
+                        content={
+                            <div className={Styles.popoverBlock}>
+                                <Button
+                                    type='primary'
+                                    disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART)}
+                                    onClick={ () => onClick(ORDERED) }
+                                >
+                                    <FormattedMessage id='stock_table.button.order' />
+                                </Button>
+                                <Button
+                                    type='primary'
+                                    disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART || stage == ORDERED)}
+                                    onClick={ () => onClick(ACCEPTED) }
+                                >
+                                    <FormattedMessage id='stock_table.button.accept' />
+                                </Button>
+                            </div>
+                        }
+                        trigger="click"
                     >
-                        <FormattedMessage id='stock_table.button.return' />
-                    </Button>
-                    <Button
-                        className={Styles.yellowButton}
-                        onClick={ () => onClick(CANCELED) }
+                        <Button
+                            type='primary'
+                        >
+                            <FormattedMessage id='order_tabs.stock' />
+                        </Button>
+                    </Popover>
+                    <Popover
+                        overlayStyle={{zIndex: 9999}}
+                        content={
+                            <div className={Styles.popoverBlock}>
+                                <Button
+                                    className={Styles.greenButton}
+                                    disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == NO_SPARE_PART || stage == RESERVED || stage == ORDERED || stage == ACCEPTED)}
+                                    onClick={ () => onClick(GIVEN) }
+                                >
+                                    <FormattedMessage id='stock_table.button.get' />
+                                </Button>
+                                <Button
+                                    className={Styles.greenButton}
+                                    disabled={stage != ALL && !(stage == GIVEN || stage == CANCELED)}
+                                    onClick={ () => onClick(RETURNED) }
+                                >
+                                    <FormattedMessage id='stock_table.button.return' />
+                                </Button>
+                                <Button
+                                    className={Styles.yellowButton}
+                                    onClick={ () => onClick(CANCELED) }
+                                >
+                                    <FormattedMessage id='stock_table.button.cancel' />
+                                </Button>
+                            </div>
+                        }
+                        trigger="click"
                     >
-                        <FormattedMessage id='stock_table.button.cancel' />
+                        <Button
+                            type='primary'
+                        >
+                            <FormattedMessage id='order_tabs.workshop' />
+                        </Button>
+                    </Popover>
+                </div>
+            </div>
+        )
+    }
+}
+
+class MobileDetailsStageButtonsGroup extends Component {
+    render() {
+        const { stage, onClick } = this.props;
+        return (
+            <div className={Styles.detailStageButtonsGroup}>
+                <div>
+                    <Button
+                        className={Styles.greenButton}
+                        disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
+                        onClick={ () => onClick(INSTALLED) }
+                        style={{width: '100%'}}
+                    >
+                        <FormattedMessage id='stock_table.button.install' />
                     </Button>
+                </div>
+                <div>
+                    <Button
+                        className={Styles.redButton}
+                        disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
+                        onClick={ () => onClick(NO_SPARE_PART) }
+                        style={{width: '100%'}}
+                    >
+                        <FormattedMessage id='stock_table.button.no_spare_part' />
+                    </Button>
+                </div>
+                <div>
+                    <Popover
+                        overlayStyle={{zIndex: 9999}}
+                        content={
+                            <div className={Styles.popoverBlock}>
+                                <Button
+                                    className={Styles.greenButton}
+                                    disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == NO_SPARE_PART || stage == RESERVED || stage == ORDERED || stage == ACCEPTED)}
+                                    onClick={ () => onClick(GIVEN) }
+                                >
+                                    <FormattedMessage id='stock_table.button.get' />
+                                </Button>
+                                <Button
+                                    className={Styles.greenButton}
+                                    disabled={stage != ALL && !(stage == GIVEN || stage == CANCELED)}
+                                    onClick={ () => onClick(RETURNED) }
+                                >
+                                    <FormattedMessage id='stock_table.button.return' />
+                                </Button>
+                                <Button
+                                    className={Styles.yellowButton}
+                                    onClick={ () => onClick(CANCELED) }
+                                >
+                                    <FormattedMessage id='stock_table.button.cancel' />
+                                </Button>
+                            </div>
+                        }
+                        trigger="click"
+                    >
+                        <Button
+                            type='primary'
+                            style={{width: '100%'}}
+                        >
+                            <FormattedMessage id='order_tabs.workshop' />
+                        </Button>
+                    </Popover>
                 </div>
             </div>
         )

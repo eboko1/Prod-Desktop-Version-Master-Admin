@@ -115,7 +115,16 @@
 .buttonsRow {
 	display: flex;
 	& > * {
-    	width: 32%;
+    	width: 49%;
+	}
+}
+
+.popoverBlock {
+	display: flex;
+	flex-direction: column;
+
+	& > button {
+		margin: 1px;
 	}
 }
 
