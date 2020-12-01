@@ -195,6 +195,7 @@ class AddServiceModal extends React.Component{
                     return (
                         <Input
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
+                            disabled={elem.stage != 'INACTIVE'}
                             style={{minWidth: 120}}
                             value={data}
                             onChange={(event)=>{

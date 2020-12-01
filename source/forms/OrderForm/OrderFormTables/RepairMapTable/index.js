@@ -250,7 +250,7 @@ export default class RepairMapTable extends Component {
                             });
                         }}
                     >
-                        <FormattedMessage id="repair_map_table.repair_map"/>
+                        <FormattedMessage id="repair_map_table.update_map"/>
                     </Button>
                 </div>
                 {repairMap && repairMap.map((elem, key)=>{

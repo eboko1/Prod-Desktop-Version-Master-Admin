@@ -27,6 +27,11 @@ import {
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
+const INACTIVE = 'INACTIVE',
+      IN_PROGRESS = 'IN_PROGRESS',
+      STOPPED = 'STOPPED',
+      DONE = 'DONE',
+      CANCELED = 'CANCELED';
 
 @injectIntl
 class ServicesTable extends Component {
@@ -70,6 +75,7 @@ class ServicesTable extends Component {
                 render:    (data, elem) => {
                     const confirmed = elem.agreement.toLowerCase(),
                           backgroundColor = confirmed != 'undefined' || this.props.disabled ? 'black' : 'white';
+                    const stageDisabled = elem.stage != INACTIVE;
 
                     return (
                         <div
@@ -136,6 +142,7 @@ class ServicesTable extends Component {
                                     employees={ this.props.employees }
                                     user={ this.props.user }
                                     tecdocId={ this.props.tecdocId }
+                                    stageDisabled={stageDisabled}
                                 />
                             ) }
                         </div>
@@ -427,10 +434,11 @@ class ServicesTable extends Component {
                     const confirmed = elem.agreement.toLowerCase();
                     const disabled =
                         confirmed != 'undefined' || this.props.disabled;
+                    const stageDisabled = elem.stage != INACTIVE;
 
                     return (
                         <Popconfirm
-                            disabled={ disabled }
+                            disabled={ disabled || stageDisabled }
                             title={
                                 <FormattedMessage id='add_order_form.delete_confirm' />
                             }
@@ -464,7 +472,7 @@ class ServicesTable extends Component {
                             <Icon
                                 type='delete'
                                 className={
-                                    disabled
+                                    disabled || stageDisabled
                                         ? Styles.disabledIcon
                                         : Styles.deleteIcon
                                 }
@@ -753,7 +761,7 @@ class QuickEditModal extends React.Component {
                     return (
                         <Input
                             value={ data }
-                            disabled={ this.props.confirmed }
+                            disabled={ this.props.confirmed || this.props.stageDisabled }
                             onChange={ event => {
                                 this.state.dataSource[ 0 ].serviceName =
                                     event.target.value;

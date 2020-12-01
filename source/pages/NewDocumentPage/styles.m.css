@@ -31,6 +31,8 @@
 
 .itemButton {
 	font-weight: 500;
+	white-space: break-spaces;
+    height: auto;
 
 	&:hover {
 		color: var(--text);

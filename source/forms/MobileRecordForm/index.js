@@ -461,7 +461,6 @@ export class MobileRecordForm extends Component {
                     visible={this.state.workshopModalVisible}
                     onCancel={()=>this.hideWorkshopModal()}
                     onOk={()=>this.hideWorkshopModal()}
-                    style={{overflow: 'scroll'}}
                 >
                     {vehicle &&
                         <div>
