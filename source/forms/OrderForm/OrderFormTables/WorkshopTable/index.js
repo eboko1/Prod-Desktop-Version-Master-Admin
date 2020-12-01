@@ -79,7 +79,7 @@ export default class WorkshopTable extends Component {
                     console.log(data)
                     return (
                         <span>
-                            <span style={{fontWeight: 700}}>{/*data ? Math.abs(data.toFixed(2)) : 0*/}</span> <FormattedMessage id='order_form_table.hours_short' />
+                            <span style={{fontWeight: 700}}>{data ? Math.abs(data.toFixed(2)) : 0}</span> <FormattedMessage id='order_form_table.hours_short' />
                         </span>
                     );
                 },
