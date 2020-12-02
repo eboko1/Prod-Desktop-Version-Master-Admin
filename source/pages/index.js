@@ -39,6 +39,7 @@ import AvailabilitiesPage from './AvailabilitiesPage';
 import RequisiteSettingPage from './RequisiteSettingPage';
 import NewDocumentPage from './NewDocumentPage';
 import SupplierPage from './SupplierPage';
+import RportOrdersPage from './ReportOrdersPage';
 
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
@@ -86,4 +87,5 @@ export {
     RequisiteSettingPage,
     NewDocumentPage,
     SupplierPage,
+    RportOrdersPage,
 };

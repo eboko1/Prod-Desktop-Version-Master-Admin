@@ -199,7 +199,7 @@ export default {
                 },
             ],
         },
-        /* Statistics submenu */
+        /* Statistics and reports submenu */
         {
             key:      'reports',
             iconType: 'line-chart',
@@ -228,6 +228,14 @@ export default {
                         !isAdmin(user),
                     link: book.calls,
                     name: 'navigation.call_statistics',
+                },
+                {
+                    key:      '/report/orders',
+                    disabled: user =>
+                        isForbidden(user, permissions.SHOW_ORDERS) &&
+                        !isAdmin(user),
+                    link: book.reportOrders,
+                    name: 'navigation.report_orders',
                 },
             ],
         },
