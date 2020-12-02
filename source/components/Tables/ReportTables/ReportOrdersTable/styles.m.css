@@ -1,0 +1,20 @@
+.table th {
+    word-break: keep-all;
+}
+
+.printIcon {
+    font-size: 24px;
+    color: var(--primary);
+}
+.editIcon {
+    font-size: 24px;
+    color: var(--secondary);
+}
+
+.breakWord {
+    word-break: break-word;
+}
+
+.noBreak {
+    word-break: keep-all;
+}

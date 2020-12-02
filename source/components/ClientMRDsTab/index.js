@@ -61,7 +61,7 @@ export default class ClientMRDsTab extends Component {
     constructor(props) {
         super(props);
         
-        this.onDatePicker.bind(this);
+        this.onDatePicker = this.onDatePicker.bind(this);
     }
 
     componentDidMount() {
@@ -85,8 +85,11 @@ export default class ClientMRDsTab extends Component {
     }
 
     //This opens modal with cash order
-    _onOpenPrintCashOrderModal = cashOrderEntity => {
-        this.props.setModal(MODALS.CASH_ORDER, {
+    _onOpenPrintCashOrderModal = async (orderId) => {
+        const cashOrderEntity = await fetchCashOrderEntity(orderId);
+        await this._onOpenPrintCashOrderModal(cashOrderEntity);
+        // await setCashOrderEntityIsFetching(true);
+        await this.props.setModal(MODALS.CASH_ORDER, {
             printMode: true,
             editMode: false,
             cashOrderEntity: cashOrderEntity,
@@ -103,23 +106,25 @@ export default class ClientMRDsTab extends Component {
     };
 
     _loadPrintModal = async (orderId) => {
-        const {cashOrderEntity, cashOrderEntityIsFetching, fetchCashOrderEntity, setCashOrderEntityIsFetching, selectCashOrderEntityIsFetching} = this.props;
+        await this._onOpenPrintCashOrderModal(orderId);
+        // const {cashOrderEntity, cashOrderEntityIsFetching, fetchCashOrderEntity, setCashOrderEntityIsFetching, selectCashOrderEntityIsFetching} = this.props;
         // new Promise((resolve) => resolve(fetchCashOrderEntity(orderId)))
         //     .then(() => {
         //         this._onOpenPrintCashOrderModal(cashOrderEntity);
         //     });
-        fetchCashOrderEntity(orderId);
-        setCashOrderEntityIsFetching(true)
+        // await fetchCashOrderEntity(orderId);
+        // await this._onOpenPrintCashOrderModal(cashOrderEntity);
+        // await setCashOrderEntityIsFetching(true);
 
         // const cashOrderEntity = await this.fetchCashOrderEntity_hardCode(orderId);
         // this._onOpenPrintCashOrderModal(cashOrderEntity);
         // console.log(cashOrderEntity);
-        if(cashOrderEntityIsFetching) {
-            console.log("Yes, it is fetching!");
-            <Loader />
-        } else {
-            this._onOpenPrintCashOrderModal(cashOrderEntity);
-        }
+        // if(cashOrderEntityIsFetching) {
+        //     console.log("Yes, it is fetching!");
+        //     <Loader />
+        // } else {
+            
+        // }
     }
 
     render() {
