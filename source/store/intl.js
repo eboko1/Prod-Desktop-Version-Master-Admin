@@ -129,6 +129,7 @@ import VehicleNumberHistory from 'components/VehicleNumberHistory/messages';
 import CashTables from 'components/Tables/CashTables/messages';
 import SubscriptionTables from 'components/Tables/SubscriptionTables/messages';
 import ClientMRDsTable from 'components/Tables/ClientMRDsTable/messages';
+import ReportOrdersTable from 'components/Tables/ReportTables/messages';
 import SubscribeForm from 'forms/SubscribeForm/messages';
 
 //commons
@@ -248,6 +249,7 @@ const messages = merge.all([
     VehicleNumberHistory,
     CashTables,
     ClientMRDsTable,
+    ReportOrdersTable,
     SubscriptionTables,
 ]);
 /* eslint-enable array-element-newline */

@@ -1,0 +1,47 @@
+{
+  "en": {
+    "report-clients-table.client_name": "Client",
+    "report-clients-table.no": "№",
+    "report-clients-table.order_num": "Number",
+    "report-clients-table.status": "Status",
+    "report-clients-table.date": "Date",
+    "report-clients-table.creation_date": "Creation",
+    "report-clients-table.appointment_date": "Appointment",
+    "report-clients-table.done_date": "Done",
+    "report-clients-table.sum": "Sum",
+    "report-clients-table.labors": "Labors",
+    "report-clients-table.spare_parts": "Spare parts",
+    "report-clients-table.total": "Total",
+    "report-clients-table.profit": "Profit"
+  },
+  "ru": {
+    "report-clients-table.client_name": "Client",
+    "report-clients-table.no": "№",
+    "report-clients-table.order_num": "Number",
+    "report-clients-table.status": "Status",
+    "report-clients-table.date": "Date",
+    "report-clients-table.creation_date": "Creation",
+    "report-clients-table.appointment_date": "Appointment",
+    "report-clients-table.done_date": "Done",
+    "report-clients-table.sum": "Sum",
+    "report-clients-table.labors": "Labors",
+    "report-clients-table.spare_parts": "Spare parts",
+    "report-clients-table.total": "Total",
+    "report-clients-table.profit": "Profit"
+  },
+  "uk": {
+    "report-clients-table.client_name": "Client",
+    "report-clients-table.no": "№",
+    "report-clients-table.order_num": "Number",
+    "report-clients-table.status": "Status",
+    "report-clients-table.date": "Date",
+    "report-clients-table.creation_date": "Creation",
+    "report-clients-table.appointment_date": "Appointment",
+    "report-clients-table.done_date": "Done",
+    "report-clients-table.sum": "Sum",
+    "report-clients-table.labors": "Labors",
+    "report-clients-table.spare_parts": "Spare parts",
+    "report-clients-table.total": "Total",
+    "report-clients-table.profit": "Profit"
+  }
+}

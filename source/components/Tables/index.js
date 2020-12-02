@@ -3,6 +3,9 @@ export { SuppliersTable } from './SuppliersTable';
 
 export { ClientMRDsTable } from './ClientMRDsTable';
 
+//Reports
+export { ReportOrdersTable } from './ReportTables/ReportOrdersTable'
+
 export { CashboxesTable } from './CashTables/CashboxesTable';
 export { CashOrdersTable } from './CashTables/CashOrdersTable';
 export { CashReportTable } from './CashTables/CashReportTable';
