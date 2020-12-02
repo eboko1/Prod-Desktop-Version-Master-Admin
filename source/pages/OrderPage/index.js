@@ -32,7 +32,7 @@ import {setModal, resetModal, MODALS} from 'core/modals/duck';
 
 import {Layout, Spinner, MobileView, ResponsiveView, StyledButton} from 'commons';
 import {OrderForm, MobileRecordForm} from 'forms';
-import {ReportsDropdown, ChangeStatusDropdown} from 'components';
+import {ReportsDropdown, ChangeStatusDropdown, RepairMapIndicator} from 'components';
 import {
     CancelReasonModal,
     ConfirmOrderExitModal,
@@ -582,7 +582,7 @@ class OrderPage extends Component {
             user,
             initialOrderTask,
         } = this.props;
-        const {num, status, datetime, diagnosis} = this.props.order;
+        const {num, status, datetime, diagnosis, repairMapIndicator} = this.props.order;
         const {id} = this.props.match.params;
 
         const {
@@ -607,6 +607,7 @@ class OrderPage extends Component {
                                 id={ `order-status.${status || 'order'}` }
                             />
                             { ` ${num}` }
+                            <RepairMapIndicator data={repairMapIndicator} style={window.innerWidth > 1199 ? {display: 'inline-flex', margin: '0 0 0 48px'} : {}}/>
                         </>
 
                 }
@@ -836,6 +837,8 @@ class OrderPage extends Component {
                         showOilModal= { showOilModal }
                         oilModalData = { oilModalData }
                         clearOilData = { this._clearOilData }
+                        modals={ MODALS }
+                        download={ this.props.getReport }
                     />
                 </ResponsiveView>
                 <CancelReasonModal

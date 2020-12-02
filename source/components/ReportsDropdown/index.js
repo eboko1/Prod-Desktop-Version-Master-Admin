@@ -76,7 +76,7 @@ class ReportsDropdown extends React.Component {
 
     render() {
         const { isMobile, orderId } = this.props;
-
+        console.log(this.reports)
         const menu = (
             <Menu>
                 { this.reports.map((item, index) => (

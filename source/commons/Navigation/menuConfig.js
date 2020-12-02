@@ -111,6 +111,12 @@ export default {
                     link: book.diagnosticPatterns,
                     name: 'navigation.diagnostic_patterns',
                 },
+                {
+                    key:      '/repair-map',
+                    disabled: ()=>true,
+                    link: book.repairMapSetting,
+                    name: 'navigation.repair_map',
+                },
             ],
         },
         /* Accounting */

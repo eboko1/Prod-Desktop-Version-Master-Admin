@@ -354,7 +354,7 @@ export default class OrderFormHeader extends Component {
         const duration = this._renderDuration();
 
         return (
-            <div className={Styles.formHeader}>
+            <div className={Styles.formHeader} id='OrderFormHeader'>
                 <div className={Styles.headerColumns}>
                     {dateBlock} {masterBlock} {totalBlock}
                 </div>

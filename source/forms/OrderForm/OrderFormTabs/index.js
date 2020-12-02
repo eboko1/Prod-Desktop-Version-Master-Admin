@@ -21,6 +21,7 @@ import {
     DiagnosticTable,
     WorkshopTable,
     StockTable,
+    RepairMapTable,
 } from "../OrderFormTables";
 import Styles from "./styles.m.css";
 
@@ -56,6 +57,7 @@ export default class OrderFormTabs extends React.PureComponent {
             },
         ];
         this.commentsAutoSize = { minRows: 2, maxRows: 6 };
+        this._setActiveTab = this._setActiveTab.bind(this);
     }
 
     // TODO: move into utils
@@ -67,6 +69,12 @@ export default class OrderFormTabs extends React.PureComponent {
         }
 
         return this._localizationMap[key];
+    }
+
+    _setActiveTab(tab) {
+        this.setState({
+            activeKey: tab,
+        })
     }
 
     componentDidUpdate(prevProps) {
@@ -144,6 +152,9 @@ export default class OrderFormTabs extends React.PureComponent {
             showOilModal,
             oilModalData,
             clearOilData,
+            repairMap,
+            modals,
+            download
         } = this.props;
 
         const {
@@ -211,10 +222,20 @@ export default class OrderFormTabs extends React.PureComponent {
                 {!addOrderForm && (
                     <TabPane
                         forceRender
-                        tab={'Карта'}
+                        tab={formatMessage({
+                            id: "order_tabs.map",
+                        })}
                         key="map"
                     >
-                        
+                        <RepairMapTable
+                            user={user}
+                            orderId={orderId}
+                            repairMap={repairMap}
+                            setActiveTab={this._setActiveTab}
+                            setModal={ setModal }
+                            modals={ modals }
+                            download={ download }
+                        />
                     </TabPane>
                 )}
                 {!addOrderForm && (
@@ -224,7 +245,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         tab={formatMessage({
                             id: "order_form_table.diagnostic",
                         })}
-                        key="diagnostic"
+                        key='diagnostic'
                     >
                         <DiagnosticTable
                             disabled={
@@ -381,10 +402,13 @@ export default class OrderFormTabs extends React.PureComponent {
                 {!addOrderForm && (
                     <TabPane
                         forceRender
-                        tab={`Цех`}
+                        tab={formatMessage({
+                            id: "order_tabs.workshop",
+                        })}
                         key="workshop"
                     >
                         <WorkshopTable
+                            user={user}
                             orderId={orderId}
                             orderServices={orderServices}
                             reloadOrderForm={this.props.reloadOrderForm}
@@ -395,10 +419,13 @@ export default class OrderFormTabs extends React.PureComponent {
                 {!addOrderForm && (
                     <TabPane
                         forceRender
-                        tab={`Склад`}
+                        tab={formatMessage({
+                            id: "order_tabs.stock",
+                        })}
                         key="stock"
                     >
                         <StockTable
+                            user={user}
                             orderId={orderId}
                             orderDetails={orderDetails}
                             reloadOrderForm={this.props.reloadOrderForm}

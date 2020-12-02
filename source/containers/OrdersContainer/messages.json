@@ -50,7 +50,8 @@
     "orders.cb24": "CB24",
     "orders.business_1s": "1C",
     "orders.not_provided": "Not Provided",
-    "orders.sum_without_VAT": "Sum without VAT"
+    "orders.sum_without_VAT": "Sum without VAT",
+    "orders.update_stage": "Update stages"
   },
   "ru": {
     "currency": "грн.",
@@ -98,7 +99,8 @@
     "orders.business_1s": "1C",
     "orders.cb24": "CB24",
     "orders.not_provided": "Не указан",
-    "orders.sum_without_VAT": "Сумма без НДС"
+    "orders.sum_without_VAT": "Сумма без НДС",
+    "orders.update_stage": "Обновить статусы"
   },
   "uk": {
     "currency": "грн.",
@@ -146,6 +148,7 @@
     "orders.business_1s": "1C",
     "orders.cb24": "CB24",
     "orders.not_provided": "Не вказанний",
-    "orders.sum_without_VAT": "Сума без ПДВ"
+    "orders.sum_without_VAT": "Сума без ПДВ",
+    "orders.update_stage": "Оновити статуси"
   }
 }

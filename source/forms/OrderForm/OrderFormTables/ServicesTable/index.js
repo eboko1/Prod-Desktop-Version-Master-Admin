@@ -27,6 +27,11 @@ import {
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
+const INACTIVE = 'INACTIVE',
+      IN_PROGRESS = 'IN_PROGRESS',
+      STOPPED = 'STOPPED',
+      DONE = 'DONE',
+      CANCELED = 'CANCELED';
 
 @injectIntl
 class ServicesTable extends Component {
@@ -65,12 +70,12 @@ class ServicesTable extends Component {
                         />
                     );
                 },
-                width:     '8%',
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {
                     const confirmed = elem.agreement.toLowerCase(),
                           backgroundColor = confirmed != 'undefined' || this.props.disabled ? 'black' : 'white';
+                    const stageDisabled = elem.stage != INACTIVE;
 
                     return (
                         <div
@@ -137,6 +142,7 @@ class ServicesTable extends Component {
                                     employees={ this.props.employees }
                                     user={ this.props.user }
                                     tecdocId={ this.props.tecdocId }
+                                    stageDisabled={stageDisabled}
                                 />
                             ) }
                         </div>
@@ -145,7 +151,6 @@ class ServicesTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.service_type' />,
-                width:     '15%',
                 key:       'defaultName',
                 dataIndex: 'defaultName',
                 render:    data => {
@@ -154,7 +159,6 @@ class ServicesTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.detail_name' />,
-                width:     '15%',
                 key:       'serviceName',
                 dataIndex: 'serviceName',
                 render:    data => {
@@ -163,7 +167,6 @@ class ServicesTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.master' />,
-                width:     '10%',
                 key:       'employeeId',
                 dataIndex: 'employeeId',
                 render:    data => {
@@ -183,7 +186,6 @@ class ServicesTable extends Component {
                             <FormattedMessage id='services_table.norm_hours' />
                         </div>,
                 className: Styles.numberColumn,
-                width:     '8%',
                 key:       'hours',
                 dataIndex: 'hours',
                 render:    data => {
@@ -205,7 +207,6 @@ class ServicesTable extends Component {
                             <FormattedMessage id='order_form_table.prime_cost' />
                         </div>,
                 className: Styles.numberColumn,
-                width:     '8%',
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
                 render:    data => {
@@ -237,7 +238,6 @@ class ServicesTable extends Component {
                             </p>
                         </div>,
                 className: Styles.numberColumn,
-                width:     '8%',
                 key:       'price',
                 dataIndex: 'price',
                 render:    data => {
@@ -262,7 +262,6 @@ class ServicesTable extends Component {
                             <FormattedMessage id='order_form_table.count' />
                         </div>,
                 className: Styles.numberColumn,
-                width:     '5%',
                 key:       'count',
                 dataIndex: 'count',
                 render:    data => {
@@ -288,7 +287,6 @@ class ServicesTable extends Component {
                             </p>
                         </div>,
                 className: Styles.numberColumn,
-                width:     '8%',
                 key:       'sum',
                 dataIndex: 'sum',
                 render:    data => {
@@ -310,7 +308,6 @@ class ServicesTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.status' />,
-                width:     '10%',
                 key:       'agreement',
                 dataIndex: 'agreement',
                 render:    (data, elem) => {
@@ -338,6 +335,7 @@ class ServicesTable extends Component {
                             value={ confirmed }
                             onChange={ value => {
                                 elem.agreement = value.toUpperCase();
+                                //elem.stage = value == 'rejected' ? 'CANCELED' : 'INACTIVE';
                                 this.updateLabor(key, elem);
                             } }
                         >
@@ -363,7 +361,6 @@ class ServicesTable extends Component {
                 },
             },
             {
-                width:  '2%',
                 key:    'favourite',
                 render: elem => {
                     return (
@@ -432,16 +429,16 @@ class ServicesTable extends Component {
                 },
             },
             {
-                width:  '3%',
                 key:    'delete',
                 render: elem => {
                     const confirmed = elem.agreement.toLowerCase();
                     const disabled =
                         confirmed != 'undefined' || this.props.disabled;
+                    const stageDisabled = elem.stage != INACTIVE;
 
                     return (
                         <Popconfirm
-                            disabled={ disabled }
+                            disabled={ disabled || stageDisabled }
                             title={
                                 <FormattedMessage id='add_order_form.delete_confirm' />
                             }
@@ -475,7 +472,7 @@ class ServicesTable extends Component {
                             <Icon
                                 type='delete'
                                 className={
-                                    disabled
+                                    disabled || stageDisabled
                                         ? Styles.disabledIcon
                                         : Styles.deleteIcon
                                 }
@@ -562,6 +559,7 @@ class ServicesTable extends Component {
                         positions: [],
                         problems:  [],
                     },
+                    //stage: labor.stage,
                 },
             ],
         };
@@ -763,7 +761,7 @@ class QuickEditModal extends React.Component {
                     return (
                         <Input
                             value={ data }
-                            disabled={ this.props.confirmed }
+                            disabled={ this.props.confirmed || this.props.stageDisabled }
                             onChange={ event => {
                                 this.state.dataSource[ 0 ].serviceName =
                                     event.target.value;
