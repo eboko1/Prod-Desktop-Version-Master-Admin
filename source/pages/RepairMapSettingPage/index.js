@@ -89,11 +89,13 @@ export default class RepairMapSettingPage extends Component {
                 title:     'Position',
                 key:       'level2ShowPosition',
                 dataIndex: 'level2ShowPosition',
+                width: 'min-content', 
                 render: (position, row) => {
                     const key = position - 1;
                     return (
                         <InputNumber
                             value={position}
+                            style={{width: '100px'}}
                             onChange={(value)=>{
                                 if(position > value) {
                                     if(this.state.dataSource[row.parentKey].childs.length > position) {
@@ -119,6 +121,7 @@ export default class RepairMapSettingPage extends Component {
                 title:     'Name',
                 key:       'name',
                 dataIndex: 'name',
+                width: '45%',
                 render: (name, row) => {
                     return (
                         <Input
@@ -126,6 +129,9 @@ export default class RepairMapSettingPage extends Component {
                             onChange={(event)=>{
                                 const value = event.target.value;
                                 row.name = value;
+                                this.setState({})
+                            }}
+                            onBlur={()=>{
                                 this.updateChild(row);
                             }}
                         />
@@ -136,22 +142,12 @@ export default class RepairMapSettingPage extends Component {
                 title:     'No color',
                 key:       'noColor',
                 dataIndex: 'noColor',
+                width: 'min-content',
                 render: (data, row)=>{
-                    let color;
-                    switch (data) {
-                        case 'YELLOW':
-                            color = 'var(--orange)';
-                            break;
-                        case 'RED':
-                            color = 'var(--disabled)';
-                            break;
-                        default:
-                            color = null;
-                    }
                     return (
                         <Select
                             value={data}
-                            style={ { color: color } }
+                            style={{width: '150px'}}
                             onChange={(value)=>{
                                 row.noColor = value;
                                 this.updateChild(row);
@@ -159,14 +155,14 @@ export default class RepairMapSettingPage extends Component {
                         >
                             <Option
                                 value={ 'YELLOW' }
-                                style={ { color: 'var(--orange)' } }
                             >
+                                <div style={{border: "1px solid black", backgroundColor: "yellow", height: '12px', width: '12px', display: 'inline-block', marginRight: '10px'}}></div>
                                 YELLOW
                             </Option>
                             <Option
                                 value={ 'RED' }
-                                style={ { color: 'var(--disabled)' } }
                             >
+                                <div style={{border: "1px solid black", backgroundColor: "red", height: '12px', width: '12px', display: 'inline-block', marginRight: '10px'}}></div>
                                 RED
                             </Option>
                         </Select>
@@ -174,43 +170,10 @@ export default class RepairMapSettingPage extends Component {
                 }
             },
             {
-                title:     'Show',
-                key:       'show',
-                dataIndex: 'show',
-                render: (data, row)=>{
-                    return (
-                        <Switch
-                            disabled={!this.state.dataSource[row.parentKey].show}
-                            checked={data}
-                            onChange={(value)=>{
-                                row.show = value;
-                                this.updateChild(row);
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:     'Block',
-                key:       'block',
-                dataIndex: 'block',
-                render: (data, row)=>{
-                    return (
-                        <Checkbox
-                            checked={data}
-                            onChange={(event)=>{
-                                const value = event.target.checked;
-                                row.block = value;
-                                this.updateChild(row);
-                            }}
-                        />
-                    )
-                }
-            },
-            {
                 title:     'Operation',
                 key:       'operation',
                 dataIndex: 'operation',
+                width: '35%',
                 render: (operation, row)=>{
                     return (
                         <Select
@@ -240,13 +203,51 @@ export default class RepairMapSettingPage extends Component {
                 }
             },
             {
-                title: 'Reset',
+                title:     'Block',
+                key:       'block',
+                dataIndex: 'block',
+                width: 'min-content',
+                render: (data, row)=>{
+                    return (
+                        <Checkbox
+                            checked={data}
+                            style={{width: '50px'}}
+                            onChange={(event)=>{
+                                const value = event.target.checked;
+                                row.block = value;
+                                this.updateChild(row);
+                            }}
+                        />
+                    )
+                }
+            },
+            {
                 key: 'toDefault',
+                width: 'min-content',
                 render: (row) => {
                     return (
                         <Icon
+                        style={{width: '30px'}}
                             type='redo'
                             onClick={()=>this.importDefault(row.id)}
+                        />
+                    )
+                }
+            },
+            {
+                key:       'show',
+                dataIndex: 'show',
+                width: 'min-content',
+                render: (data, row)=>{
+                    return (
+                        <Switch
+                        style={{width: '50px'}}
+                            disabled={!this.state.dataSource[row.parentKey].show}
+                            checked={data}
+                            onChange={(value)=>{
+                                row.show = value;
+                                this.updateChild(row);
+                            }}
                         />
                     )
                 }
