@@ -25,26 +25,18 @@ import {
 } from 'core/reportOrders/duck';
 
 import { Layout, Paper, Spinner, StyledButton, Catcher } from "commons";
-import { ReportOrdersTable } from "components";
+import { ReportOrdersTable, ReportOrdersFilter } from "components";
 import { isForbidden, permissions } from "utils";
 
 // own
 import Styles from "./styles.m.css";
 
 const mapStateToProps = state => ({
-    // stats: state.cash.stats,
-    // user: state.auth,
-    // report: state.reports.report,
-    // isFetching: state.ui.reportFetching,
     tableData: state.reportOrders.tableData,
     includeServicesDiscount: state.reportOrders.options.includeServicesDiscount,
 });
 
 const mapDispatchToProps = {
-    // fetchReport,
-    // fetchExcelFileReport,
-    // setReportQuery,
-    // setReportOverdueOnly,
     fetchReportOrders,
     setReportOrdersIncludeServicesDiscount,
 
@@ -67,7 +59,7 @@ export default class CashClientsDebtsPage extends Component {
     }
 
     componentDidMount() {
-        // this.props.fetchReport();
+        this.props.fetchReportOrders();
     }
 
     render() {
@@ -115,7 +107,10 @@ export default class CashClientsDebtsPage extends Component {
                         </div>
                     </Catcher>
                 </section> */}
-                <button onClick={() => fetchReportOrders()}>Press me</button>
+
+                <ReportOrdersFilter />
+
+                {/* <button onClick={() => fetchReportOrders()}>Press me</button> */}
                 <ReportOrdersTable 
                     totalCount={10}
                     tableData={tableData}

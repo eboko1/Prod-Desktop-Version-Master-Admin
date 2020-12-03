@@ -12,7 +12,8 @@
     "report-clients-table.labors": "Labors",
     "report-clients-table.spare_parts": "Spare parts",
     "report-clients-table.total": "Total",
-    "report-clients-table.profit": "Profit"
+    "report-clients-table.profit": "Profit",
+    "report-clients-table.margin": "Margin %"
   },
   "ru": {
     "report-clients-table.client_name": "Client",
@@ -27,7 +28,8 @@
     "report-clients-table.labors": "Labors",
     "report-clients-table.spare_parts": "Spare parts",
     "report-clients-table.total": "Total",
-    "report-clients-table.profit": "Profit"
+    "report-clients-table.profit": "Profit",
+    "report-clients-table.margin": "Маржа %"
   },
   "uk": {
     "report-clients-table.client_name": "Client",
@@ -42,6 +44,7 @@
     "report-clients-table.labors": "Labors",
     "report-clients-table.spare_parts": "Spare parts",
     "report-clients-table.total": "Total",
-    "report-clients-table.profit": "Profit"
+    "report-clients-table.profit": "Profit",
+    "report-clients-table.margin": "Маржа %"
   }
 }
