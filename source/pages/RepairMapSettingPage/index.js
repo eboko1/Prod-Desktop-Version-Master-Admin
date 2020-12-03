@@ -93,27 +93,35 @@ export default class RepairMapSettingPage extends Component {
                 render: (position, row) => {
                     const key = position - 1;
                     return (
-                        <InputNumber
-                            value={position}
-                            style={{width: '100px'}}
-                            onChange={(value)=>{
-                                if(position > value) {
-                                    if(this.state.dataSource[row.parentKey].childs.length > position) {
-                                        row.level2ShowPosition = position + 1;
-                                        this.state.dataSource[row.parentKey].childs[key+1].level2ShowPosition = position;
-                                        this.updateChild(row);
-                                        this.updateChild(this.state.dataSource[row.parentKey].childs[key+1]);
-                                    }
-                                } else {
+                        <div
+                            style={{width: '70px'}}
+                        >
+                            <Icon
+                                className={position>1 ? Styles.arrowUp : Styles.arrowDisabled}
+                                type="up-square"
+                                onClick={() => {
                                     if(position > 1) {
                                         row.level2ShowPosition = position - 1;
                                         this.state.dataSource[row.parentKey].childs[key-1].level2ShowPosition = position;
                                         this.updateChild(row);
                                         this.updateChild(this.state.dataSource[row.parentKey].childs[key-1]);
                                     }
-                                }
-                            }}
-                        />
+                                }}
+                            />
+                            <Icon
+                                className={this.state.dataSource[row.parentKey].childs.length > position ? Styles.arrowDown : Styles.arrowDisabled}
+                                type="down-square"
+                                onClick={() => {
+                                    if(this.state.dataSource[row.parentKey].childs.length > position) {
+                                        row.level2ShowPosition = position + 1;
+                                        this.state.dataSource[row.parentKey].childs[key+1].level2ShowPosition = position;
+                                        this.updateChild(row);
+                                        this.updateChild(this.state.dataSource[row.parentKey].childs[key+1]);
+                                    }
+                                }}
+                            />
+                            {position}
+                        </div>
                     )
                 }
             },
