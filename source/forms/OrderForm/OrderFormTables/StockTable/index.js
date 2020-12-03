@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Button, Icon, Table, Select, Popover, Input } from 'antd';
+import { Button, Icon, Table, Select, Popover, Input, notification, Modal } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -10,6 +10,7 @@ import { permissions, isForbidden } from 'utils';
 import { Catcher } from 'commons';
 // own
 import Styles from './styles.m.css';
+const { confirm, warning } = Modal;
 const Option = Select.Option;
 
 const INACTIVE = 'INACTIVE',
@@ -36,7 +37,13 @@ export default class StockTable extends Component {
             stageFilter: undefined,
             fieldsFilter: undefined,
             selectedRows: [],
+            reserveWarehouseId: undefined,
+            mainWarehouseId: undefined,
         };
+
+        this.updateDetail = this.updateDetail.bind(this);
+        this.updateDataSource = this.updateDataSource.bind(this);
+        this.orderOrAcceptDetails = this.orderOrAcceptDetails.bind(this);
 
         this.columns = [
             {
@@ -66,20 +73,6 @@ export default class StockTable extends Component {
                 dataIndex: 'supplierName',
                 render:    data => {
                     return data ? data : <FormattedMessage id='long_dash' />;
-                },
-            },
-            {
-                title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='storage.RESERVE' />
-                    </div>
-                ),
-                className: Styles.numberColumn,
-                key:       'reserve',
-                render:    elem => {
-                    return (
-                        <span>{elem.reservedCount || 0} <FormattedMessage id='pc' /></span>
-                    );
                 },
             },
             {
@@ -164,6 +157,20 @@ export default class StockTable extends Component {
                 },
             },
             {
+                title: (
+                    <div className={ Styles.numberColumn }>
+                        <FormattedMessage id='storage.RESERVE' />
+                    </div>
+                ),
+                className: Styles.numberColumn,
+                key:       'reserve',
+                render:    elem => {
+                    return (
+                        <span>{elem.reservedCount || 0} <FormattedMessage id='pc' /></span>
+                    );
+                },
+            },
+            {
                 title:     <FormattedMessage id='order_form_table.status' />,
                 key:       'agreement',
                 dataIndex: 'agreement',
@@ -232,8 +239,8 @@ export default class StockTable extends Component {
                                 content={
                                     <DetailsStageButtonsGroup
                                         stage={ALL}
-                                        onClick={(value)=>{
-                                            this.multipleChangeState(value);
+                                        onClick={(stage)=>{
+                                            this.multipleChangeState(stage);
                                         }}
                                     />
                                 }
@@ -256,6 +263,15 @@ export default class StockTable extends Component {
                                 elem.stage = value;
                                 this.updateDetail(elem.key, elem);
                             }}
+                            agreedAction={(value)=>{
+                                elem.agreement=value,
+                                this.updateDetail(elem.key, elem);
+                            }}
+                            detail={elem}
+                            updateDetail={this.updateDetail}
+                            mainWarehouseId={this.state.mainWarehouseId}
+                            reserveWarehouseId={this.state.reserveWarehouseId}
+                            orderOrAcceptDetails={this.orderOrAcceptDetails}
                         />
                     )
                 }
@@ -300,8 +316,13 @@ export default class StockTable extends Component {
                 dataIndex: 'stage',
                 render: (stage, elem)=>{
                     return (
-                        <MobileDetailsStageButtonsGroup
+                        <DetailsStageButtonsGroup
                             stage={stage}
+                            isMobile
+                            detail={elem}
+                            updateDetail={this.updateDetail}
+                            mainWarehouseId={this.state.mainWarehouseId}
+                            reserveWarehouseId={this.state.reserveWarehouseId}
                             onClick={(value)=>{
                                 elem.stage = value;
                                 this.updateDetail(elem.key, elem);
@@ -313,23 +334,31 @@ export default class StockTable extends Component {
         ];
     }
 
-    async multipleChangeState(value) {
+    async multipleChangeState(stage) {
         const {selectedRows, dataSource} = this.state;
         const data = {
             updateMode: true,
             details:   [],
         };
 
+        const toReserve = [], toUnreserve = [];
+
        selectedRows.map((key)=>{
-            dataSource[key].stage == value;
+            dataSource[key].stage == stage || dataSource[key].stage;
             data.details.push(
                 {
                     id: dataSource[key].id,
-                    stage: value,
+                    stage: stage,
                 },
-            )
+            );
+            if(stage == RESERVED || stage == GIVEN) {
+                toReserve.push(dataSource[key].id);
+            }
+            if(stage == CANCELED || stage == RETURNED) {
+                toUnreserve.push(dataSource[key].id);
+            }
         });
-
+        console.log(data);
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/orders/${this.props.orderId}`;
         try {
@@ -351,6 +380,41 @@ export default class StockTable extends Component {
         } catch (error) {
             console.error('ERROR:', error);
             this.updateDataSource();
+        }
+
+        if(toReserve.length) {
+            url = __API_URL__ + `/store_docs/reserve_all_possible?ordersAppurtenanciesIds=[${toReserve}]`;
+            try {
+                const response = await fetch(url, {
+                    method:  'POST',
+                    headers: {
+                        Authorization:  token,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+                const result = await response.json();
+                this.updateDataSource();
+            } catch (error) {
+                console.error('ERROR:', error);
+            }
+        }
+        if(toUnreserve.length) {
+            url = __API_URL__ + `/store_docs/unreserve_all_possible?ordersAppurtenanciesIds=[${toUnreserve}]`;
+            try {
+                const response = await fetch(url, {
+                    method:  'POST',
+                    headers: {
+                        Authorization:  token,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+                const result = await response.json();
+                this.updateDataSource();
+            } catch (error) {
+                console.error('ERROR:', error);
+            }
         }
     }
 
@@ -387,6 +451,106 @@ export default class StockTable extends Component {
         }
     }
 
+    orderOrAcceptDetails(supplierId, supplierName, stage, operation) {
+        const { orderId, intl:{formatMessage} } = this.props;
+        const { dataSource, mainWarehouseId } = this.state;
+        const { updateDataSource } = this;
+        const resultData = {
+            updateMode: true,
+            details:   [],
+        };
+
+        const orderData = {
+            status: "DONE",
+            context: "ORDER",
+            type: operation == 'ORDER' ? "INCOME" : "EXPENSE",
+            documentType: "SUPPLIER",
+            supplierDocNumber: orderId,
+            payUntilDatetime: null,
+            docProducts:[],
+            orderId: orderId,
+            warehouseId: mainWarehouseId,
+            counterpartBusinessSupplierId: supplierId,
+        };
+
+        dataSource.map((elem)=>{
+            if(elem.supplierId == supplierId) {
+                resultData.details.push({
+                    id: elem.id,
+                    stage: stage,
+                });
+                if(elem.productId) {
+                    orderData.docProducts.push({
+                        productId: elem.productId,
+                        quantity: elem.count,
+                        stockPrice: elem.purchasePrice,
+                    })
+                } else {
+                    orderData.docProducts.push({
+                        addToStore: true,
+                        groupId: elem.storeGroupId,
+                        code: elem.detailCode,
+                        name: elem.detailName || elem.detailCode,
+                        brandId: elem.supplierBrandId,
+                        quantity: elem.quantity || 1,
+                        stockPrice: elem.purchasePrice,
+                    })
+                }
+            }
+        })
+
+        console.log(orderData);
+
+        confirm({
+            title: operation == 'ORDER' ? 
+                    `${formatMessage({id: 'stock_table.create_order_to_supplier'}, {name: supplierName})}` :
+                    `${formatMessage({id: 'stock_table.create_order_income'}, {name: supplierName})}`,
+            content: ``,
+            async onOk() {
+                let token = localStorage.getItem('_my.carbook.pro_token');
+                let url = __API_URL__ + `/orders/${orderId}`;
+                try {
+                    const response = await fetch(url, {
+                        method:  'PUT',
+                        headers: {
+                            Authorization:  token,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(resultData),
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        
+                    } else {
+                        console.log('BAD', result);
+                    }
+                    updateDataSource();
+                } catch (error) {
+                    console.error('ERROR:', error);
+                    updateDataSource();
+                }
+
+                url = __API_URL__ + `/store_docs`;
+                try {
+                    const response = await fetch(url, {
+                        method:  'POST',
+                        headers: {
+                            Authorization:  token,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(orderData),
+                    });
+                    const result = await response.json();
+                } catch (error) {
+                    console.error('ERROR:', error);
+                }
+            },
+            onCancel() {
+
+            }
+        });
+    }
+
     async updateDetail(key, detail) {
         this.state.dataSource[ key ] = detail;
         const data = {
@@ -395,6 +559,8 @@ export default class StockTable extends Component {
                 {
                     id: detail.id,
                     stage: detail.stage,
+                    reservedCount: detail.reservedCount,
+                    reserved: detail.reserved,
                 },
             ],
         };
@@ -434,7 +600,48 @@ export default class StockTable extends Component {
         }
     }
 
+    fetchData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/warehouses`;
+        fetch(url, {
+            method:  'GET',
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            const warehousesData = {};
+            data.map((warehouse)=>{
+                if(warehouse.attribute == 'MAIN') {
+                    warehousesData.main = warehouse.id;
+                }
+                if(warehouse.attribute == 'RESERVE') {
+                    warehousesData.reserve = warehouse.id;
+                }
+            })
+            that.setState({
+                mainWarehouseId: warehousesData.main,
+                reserveWarehouseId: warehousesData.reserve,
+                fetched: true,
+            })
+        })
+        .catch(function(error) {
+            console.log('error', error);
+        });
+    }
+
     componentDidMount() {
+        this.fetchData();
         let tmp = [ ...this.props.orderDetails ];
         tmp.map((elem, i) => elem.key = i);
         this.setState({
@@ -524,7 +731,7 @@ export default class StockTable extends Component {
                     </div>
                 }
                 <Table
-                    style={{overflowX: 'scroll'}}
+                    style={isMobile ? {} : {overflowX: 'scroll'}}
                     loading={ loading }
                     columns={ isMobile ? this.mobileColumns : this.columns }
                     dataSource={ filteredData }
@@ -540,175 +747,479 @@ export default class StockTable extends Component {
     }
 }
 
+@injectIntl
 class DetailsStageButtonsGroup extends Component {
-    render() {
-        const { stage, onClick } = this.props;
-        return (
-            <div className={Styles.detailStageButtonsGroup}>
-                <div className={Styles.buttonsRow}>
-                    <Button
-                        className={Styles.greenButton}
-                        disabled={stage != ALL && !(stage == INACTIVE || stage == NO_SPARE_PART)}
-                        onClick={ () => onClick(AGREED) }
-                    >
-                        <FormattedMessage id='stock_table.button.agree' />
-                    </Button>
-                    <Button
-                        className={Styles.greenButton}
-                        disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
-                        onClick={ () => onClick(INSTALLED) }
-                    >
-                        <FormattedMessage id='stock_table.button.install' />
-                    </Button>
-                </div>
-                <div className={Styles.buttonsRow}>
-                    <Button
-                        className={Styles.greenButton}
-                        disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART || stage == ORDERED || stage == ACCEPTED)}
-                        onClick={ () => onClick(RESERVED) }
-                    >
-                        <FormattedMessage id='stock_table.button.reserve' />
-                    </Button>
-                    <Button
-                        className={Styles.redButton}
-                        disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
-                        onClick={ () => onClick(NO_SPARE_PART) }
-                    >
-                        <FormattedMessage id='stock_table.button.no_spare_part' />
-                    </Button>
-                </div>
-                <div className={Styles.buttonsRow}>
-                    <Popover
-                        overlayStyle={{zIndex: 9999}}
-                        content={
-                            <div className={Styles.popoverBlock}>
-                                <Button
-                                    type='primary'
-                                    disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART)}
-                                    onClick={ () => onClick(ORDERED) }
-                                >
-                                    <FormattedMessage id='stock_table.button.order' />
-                                </Button>
-                                <Button
-                                    type='primary'
-                                    disabled={stage != ALL && !(stage == AGREED || stage == NO_SPARE_PART || stage == ORDERED)}
-                                    onClick={ () => onClick(ACCEPTED) }
-                                >
-                                    <FormattedMessage id='stock_table.button.accept' />
-                                </Button>
-                            </div>
-                        }
-                        trigger="click"
-                    >
-                        <Button
-                            type='primary'
-                        >
-                            <FormattedMessage id='order_tabs.stock' />
-                        </Button>
-                    </Popover>
-                    <Popover
-                        overlayStyle={{zIndex: 9999}}
-                        content={
-                            <div className={Styles.popoverBlock}>
-                                <Button
-                                    className={Styles.greenButton}
-                                    disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == NO_SPARE_PART || stage == RESERVED || stage == ORDERED || stage == ACCEPTED)}
-                                    onClick={ () => onClick(GIVEN) }
-                                >
-                                    <FormattedMessage id='stock_table.button.get' />
-                                </Button>
-                                <Button
-                                    className={Styles.greenButton}
-                                    disabled={stage != ALL && !(stage == GIVEN || stage == CANCELED)}
-                                    onClick={ () => onClick(RETURNED) }
-                                >
-                                    <FormattedMessage id='stock_table.button.return' />
-                                </Button>
-                                <Button
-                                    className={Styles.yellowButton}
-                                    onClick={ () => onClick(CANCELED) }
-                                >
-                                    <FormattedMessage id='stock_table.button.cancel' />
-                                </Button>
-                            </div>
-                        }
-                        trigger="click"
-                    >
-                        <Button
-                            type='primary'
-                        >
-                            <FormattedMessage id='order_tabs.workshop' />
-                        </Button>
-                    </Popover>
-                </div>
-            </div>
-        )
-    }
-}
+    getStoreProduct = (detailCode, brandId) => {
+        const { detail, updateDetail } = this.props;
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_products?all=true`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
 
-class MobileDetailsStageButtonsGroup extends Component {
+            const product = data.list.find((product)=>product.code == detailCode && product.brandId == brandId);
+            if(product) {
+                detail.productId = product.id;
+                detail.defaultWarehouseId = product.defaultWarehouseId;
+                updateDetail(detail.key, detail);
+            }
+        })
+        .catch(function(error) {
+            console.log("error", error);
+            that.setState({
+                fetched: true,
+                codeFilter: that.props.codeFilter,
+            })
+        });
+    }
+
+    reserveProduct = (stage) => {
+        const { detail, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, intl:{formatMessage} } = this.props;
+        if(detail.reserved) {
+            detail.stage = stage;
+            updateDetail(detail.key, detail);
+            return;
+        }
+        const data = {
+            status: "DONE",
+            documentType: "TRANSFER",
+            type: "EXPENSE",
+            supplierDocNumber: orderId,
+            payUntilDatetime: null,
+            docProducts:[
+                {
+                    productId: detail.productId,
+                    quantity: detail.count,
+                    stockPrice: detail.purchasePrice || 0,
+                }
+            ],
+            warehouseId: detail.reservedFromWarehouseId || mainWarehouseId,
+            counterpartWarehouseId: reserveWarehouseId,
+            orderId: orderId,
+        };
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_docs`;
+        fetch(url, {
+            method:  'POST',
+            headers: {
+                Authorization: token,
+            },
+            body: JSON.stringify(data),
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(response) {
+            if(response.created) {
+                notification.success({
+                    message: formatMessage({id: 'storage_document.notification.reserved'}, {count: data.docProducts[0].quantity}),
+                    description: `${formatMessage({id: 'storage'})} ${detail.reservedFromWarehouseName}`,
+                });
+                detail.reservedCount = detail.count;
+                if(!detail.reserved) {
+                    detail.supplierId = 0;
+                }
+                detail.reserved = true;
+                detail.stage = stage;
+                updateDetail(detail.key, detail);
+            }
+            else {
+                const availableCount = response.notAvailableProducts[0].available;
+                confirm({
+                    title: `${formatMessage({id: 'storage_document.error.available'})}. ${formatMessage({id: 'storage_document.warning.continue'})}`,
+                    content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} ${formatMessage({id: 'pc'})}`,
+                    okButtonProps: {disabled: !availableCount},
+                    onOk() {
+                        data.docProducts[0].quantity = availableCount;
+                        fetch(url, {
+                            method:  'POST',
+                            headers: {
+                                Authorization: token,
+                            },
+                            body: JSON.stringify(data),
+                        })
+                        .then(function(response) {
+                            if (response.status !== 200) {
+                                return Promise.reject(new Error(response.statusText));
+                            }
+                            return Promise.resolve(response);
+                        })
+                        .then(function(response) {
+                            return response.json();
+                        })
+                        .then(function(response) {
+                            if(response.created) {
+                                detail.reservedCount = availableCount;
+                                detail.reserved = true;
+                                updateDetail(detail.key, detail);
+                                notification.success({
+                                    message: `Зарезервировано ${data.docProducts[0].quantity} товаров со склада ${detail.reservedFromWarehouseName}`,
+                                });
+                            }
+                        })
+                        .catch(function(error) {
+                            console.log('error', error);
+                        });
+                    },
+                });
+            }
+        })
+        .catch(function(error) {
+            console.log('error', error);
+        });
+    }
+
+    unreserveProduct = (stage) => {
+        const { detail, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, intl:{formatMessage} } = this.props;
+        if(!detail.reserved) {
+            detail.stage = stage;
+            updateDetail(detail.key, detail);
+            return;
+        }
+        const data = {
+            status: "DONE",
+            documentType: "TRANSFER",
+            type: "EXPENSE",
+            supplierDocNumber: orderId,
+            payUntilDatetime: null,
+            docProducts:[
+                {
+                    productId: detail.productId,
+                    quantity: detail.reservedCount,
+                    stockPrice: detail.purchasePrice || 0,
+                }
+            ],
+            warehouseId: reserveWarehouseId,
+            counterpartWarehouseId: detail.reservedFromWarehouseId || mainWarehouseId,
+            orderId: orderId,
+        };
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_docs`;
+        fetch(url, {
+            method:  'POST',
+            headers: {
+                Authorization: token,
+            },
+            body: JSON.stringify(data),
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(response) {
+            if(response.created) {
+                notification.success({
+                    message: formatMessage({id: 'storage_document.notification.reserve_canceled'}),
+                    description: `${formatMessage({id: 'storage'})} ${detail.reservedFromWarehouseName}`,
+                });
+                detail.reservedCount = 0;
+                detail.reserved = false;
+                detail.stage = stage;
+                updateDetail(detail.key, detail);
+            }
+        })
+        .catch(function(error) {
+            console.log('error', error);
+        });
+    }
+
+    addProduct = () => {
+        const { detail, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, intl:{formatMessage} } = this.props;
+        console.log(detail)
+        var that = this;
+        confirm({
+            title: formatMessage({id: 'storage_document.error.product_not_found'}),
+            onOk() {
+                const postData = {
+                    name: detail.detailName,
+                    groupId: detail.storeGroupId,
+                    code: detail.detailCode,
+                    brandId: detail.brandId || detail.supplierBrandId,
+                    measureUnit: 'PIECE',
+                    defaultWarehouseId: mainWarehouseId,
+                }
+                let token = localStorage.getItem('_my.carbook.pro_token');
+                let url = __API_URL__ + `/store_products`;
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        Authorization: token,
+                    },
+                    body: JSON.stringify(postData)
+                })
+                .then(function(response) {
+                    if (response.status !== 200) {
+                        return Promise.reject(new Error(response.statusText));
+                    }
+                    return Promise.resolve(response);
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    if(data.created) {
+                        updateDetail(detail.key, {...detail, productId: data.id});
+                    }
+                    
+                })
+                .catch(function(error) {
+                    console.log("error", error);
+                    that.getStoreProduct(detail.detailCode, detail.brandId);
+                });
+            }
+        });
+    }
+
     render() {
-        const { stage, onClick } = this.props;
+        const { stage, onClick, agreedAction, detail, updateDetail, orderOrAcceptDetails, isMobile } = this.props;
         return (
-            <div className={Styles.detailStageButtonsGroup}>
-                <div>
-                    <Button
-                        className={Styles.greenButton}
-                        disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
-                        onClick={ () => onClick(INSTALLED) }
-                        style={{width: '100%'}}
-                    >
-                        <FormattedMessage id='stock_table.button.install' />
-                    </Button>
-                </div>
-                <div>
-                    <Button
-                        className={Styles.redButton}
-                        disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
-                        onClick={ () => onClick(NO_SPARE_PART) }
-                        style={{width: '100%'}}
-                    >
-                        <FormattedMessage id='stock_table.button.no_spare_part' />
-                    </Button>
-                </div>
-                <div>
-                    <Popover
-                        overlayStyle={{zIndex: 9999}}
-                        content={
-                            <div className={Styles.popoverBlock}>
-                                <Button
-                                    className={Styles.greenButton}
-                                    disabled={stage != ALL && !(stage == INACTIVE || stage == AGREED || stage == NO_SPARE_PART || stage == RESERVED || stage == ORDERED || stage == ACCEPTED)}
-                                    onClick={ () => onClick(GIVEN) }
-                                >
-                                    <FormattedMessage id='stock_table.button.get' />
-                                </Button>
-                                <Button
-                                    className={Styles.greenButton}
-                                    disabled={stage != ALL && !(stage == GIVEN || stage == CANCELED)}
-                                    onClick={ () => onClick(RETURNED) }
-                                >
-                                    <FormattedMessage id='stock_table.button.return' />
-                                </Button>
-                                <Button
-                                    className={Styles.yellowButton}
-                                    onClick={ () => onClick(CANCELED) }
-                                >
-                                    <FormattedMessage id='stock_table.button.cancel' />
-                                </Button>
-                            </div>
-                        }
-                        trigger="click"
-                    >
+            !isMobile ?
+                <div className={Styles.detailStageButtonsGroup}>
+                    <div className={Styles.buttonsRow}>
                         <Button
-                            type='primary'
+                            className={Styles.greenButton}
+                            disabled={stage != ALL && !(stage == INACTIVE || stage == NO_SPARE_PART)}
+                            onClick={ () => {
+                                if(stage != ALL) agreedAction('AGREED');
+                                else onClick(undefined, 'AGREED');
+                            } }
+                        >
+                            <FormattedMessage id='stock_table.button.agree' />
+                        </Button>
+                        <Button
+                            className={Styles.greenButton}
+                            disabled={stage != ALL && !(stage == INACTIVE || detail.agreement == AGREED && stage == INACTIVE || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
+                            onClick={ () => {
+                                if(stage != ALL) {
+                                    detail.stage = INSTALLED;
+                                    updateDetail(detail.key, detail);
+                                } else {
+                                    onClick(INSTALLED);
+                                }
+                            } }
+                        >
+                            <FormattedMessage id='stock_table.button.install' />
+                        </Button>
+                    </div>
+                    <div className={Styles.buttonsRow}>
+                        <Button
+                            className={Styles.greenButton}
+                            disabled={detail && detail.reserved || (stage != ALL && !(detail.agreement == AGREED && stage == INACTIVE || stage == NO_SPARE_PART || stage == ORDERED || stage == ACCEPTED))}
+                            onClick={ () => {
+                                if(stage != ALL) {
+                                    if(detail.productId) {
+                                        this.reserveProduct(RESERVED);
+                                    }
+                                    else {
+                                        this.addProduct();
+                                    } 
+                                } else {
+                                    onClick(RESERVED);
+                                }
+                            } }
+                        >
+                            <FormattedMessage id='stock_table.button.reserve' />
+                        </Button>
+                        <Button
+                            className={Styles.redButton}
+                            disabled={stage != ALL && !(stage == INACTIVE || detail.agreement == AGREED && stage == INACTIVE || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
+                            onClick={ () => {
+                                if(stage != ALL) {
+                                    detail.stage = NO_SPARE_PART;
+                                    updateDetail(detail.key, detail);
+                                } else {
+                                    onClick(NO_SPARE_PART);
+                                }
+                            } }
+                        >
+                            <FormattedMessage id='stock_table.button.no_spare_part' />
+                        </Button>
+                    </div>
+                    <div className={Styles.buttonsRow}>
+                        <Popover
+                            overlayStyle={{zIndex: 9999}}
+                            content={
+                                <div className={Styles.popoverBlock}>
+                                    <Button
+                                        className={Styles.greenButton}
+                                        disabled={stage == ALL || detail && detail.supplierId == 0 || !(detail.agreement == AGREED && stage == INACTIVE || stage == NO_SPARE_PART)}
+                                        onClick={ () => {
+                                            orderOrAcceptDetails(detail.supplierId, detail.supplierName, ORDERED, 'ORDER')
+                                        } }
+                                    >
+                                        <FormattedMessage id='stock_table.button.order' />
+                                    </Button>
+                                    <Button
+                                        className={Styles.greenButton}
+                                        disabled={stage == ALL || detail && detail.supplierId == 0 || !(detail.agreement == AGREED && stage == INACTIVE || stage == NO_SPARE_PART || stage == ORDERED)}
+                                        onClick={ () => {
+                                            orderOrAcceptDetails(detail.supplierId, detail.supplierName, ACCEPTED, 'ACCEPT')
+                                        } }
+                                    >
+                                        <FormattedMessage id='stock_table.button.accept' />
+                                    </Button>
+                                </div>
+                            }
+                            trigger="click"
+                        >
+                            <Button
+                                type='primary'
+                            >
+                                <FormattedMessage id='order_tabs.stock' />
+                            </Button>
+                        </Popover>
+                        <Popover
+                            overlayStyle={{zIndex: 9999}}
+                            content={
+                                <div className={Styles.popoverBlock}>
+                                    <Button
+                                        className={Styles.greenButton}
+                                        disabled={stage != ALL && !(stage == INACTIVE || detail.agreement == AGREED && stage == INACTIVE || stage == NO_SPARE_PART || stage == RESERVED || stage == ORDERED || stage == ACCEPTED)}
+                                        onClick={ () => {
+                                            if(stage != ALL) {
+                                                this.reserveProduct(GIVEN);
+                                            } else {
+                                                onClick(GIVEN);
+                                            }
+                                        } }
+                                    >
+                                        <FormattedMessage id='stock_table.button.get' />
+                                    </Button>
+                                    <Button
+                                        className={Styles.greenButton}
+                                        disabled={stage != ALL && !(stage == GIVEN || stage == CANCELED)}
+                                        onClick={ () => {
+                                            if(stage != ALL) {
+                                                this.unreserveProduct(RETURNED);
+                                            } else {
+                                                onClick(RETURNED);
+                                            }
+                                        } }
+                                    >
+                                        <FormattedMessage id='stock_table.button.return' />
+                                    </Button>
+                                    <Button
+                                        className={Styles.yellowButton}
+                                        onClick={ () => {
+                                            if(stage != ALL) {
+                                                this.unreserveProduct(CANCELED);
+                                            } else {
+                                                onClick(CANCELED);
+                                            }
+                                        } }
+                                    >
+                                        <FormattedMessage id='stock_table.button.cancel' />
+                                    </Button>
+                                </div>
+                            }
+                            trigger="click"
+                        >
+                            <Button
+                                type='primary'
+                            >
+                                <FormattedMessage id='order_tabs.workshop' />
+                            </Button>
+                        </Popover>
+                    </div>
+                </div> : //MOBILE
+                <div className={Styles.detailStageButtonsGroup}>
+                    <div>
+                        <Button
+                            className={Styles.greenButton}
+                            disabled={stage != ALL && !(stage == INACTIVE || detail.agreement == AGREED && stage == INACTIVE || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
+                            onClick={ () => {
+                                detail.stage = INSTALLED;
+                                updateDetail(detail.key, detail);
+                            } }
                             style={{width: '100%'}}
                         >
-                            <FormattedMessage id='order_tabs.workshop' />
+                            <FormattedMessage id='stock_table.button.install' />
                         </Button>
-                    </Popover>
+                    </div>
+                    <div>
+                        <Button
+                            className={Styles.redButton}
+                            disabled={stage != ALL && !(stage == INACTIVE || detail.agreement == AGREED && stage == INACTIVE || stage == ORDERED || stage == ACCEPTED || stage == GIVEN || stage == RESERVED)}
+                            onClick={ () => {
+                                detail.stage = NO_SPARE_PART;
+                                updateDetail(detail.key, detail);
+                            } }
+                            style={{width: '100%'}}
+                        >
+                            <FormattedMessage id='stock_table.button.no_spare_part' />
+                        </Button>
+                    </div>
+                    <div>
+                        <Popover
+                            overlayStyle={{zIndex: 9999}}
+                            content={
+                                <div className={Styles.popoverBlock}>
+                                    <Button
+                                        className={Styles.greenButton}
+                                        disabled={stage != ALL && !(stage == INACTIVE || detail.agreement == AGREED && stage == INACTIVE || stage == NO_SPARE_PART || stage == RESERVED || stage == ORDERED || stage == ACCEPTED)}
+                                        onClick={ () => {
+                                            this.reserveProduct(GIVEN);
+                                        } }
+                                    >
+                                        <FormattedMessage id='stock_table.button.get' />
+                                    </Button>
+                                    <Button
+                                        className={Styles.greenButton}
+                                        disabled={stage != ALL && !(stage == GIVEN || stage == CANCELED)}
+                                        onClick={ () => {
+                                            this.unreserveProduct(RETURNED);
+                                        } }
+                                    >
+                                        <FormattedMessage id='stock_table.button.return' />
+                                    </Button>
+                                    <Button
+                                        className={Styles.yellowButton}
+                                        onClick={ () => {
+                                            this.unreserveProduct(CANCELED);
+                                        } }
+                                    >
+                                        <FormattedMessage id='stock_table.button.cancel' />
+                                    </Button>
+                                </div>
+                            }
+                            trigger="click"
+                        >
+                            <Button
+                                type='primary'
+                                style={{width: '100%'}}
+                            >
+                                <FormattedMessage id='order_tabs.workshop' />
+                            </Button>
+                        </Popover>
+                    </div>
                 </div>
-            </div>
         )
     }
 }

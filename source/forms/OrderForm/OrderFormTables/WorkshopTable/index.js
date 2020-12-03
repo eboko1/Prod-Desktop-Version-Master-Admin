@@ -76,7 +76,6 @@ export default class WorkshopTable extends Component {
                 key:       'stoppedTime',
                 dataIndex: 'stoppedTime',
                 render:    data => {
-                    console.log(data)
                     return (
                         <span>
                             <span style={{fontWeight: 700}}>{data ? Math.abs(data.toFixed(2)) : 0}</span> <FormattedMessage id='order_form_table.hours_short' />
@@ -480,7 +479,7 @@ export default class WorkshopTable extends Component {
                     </div>
                 }
                 <Table
-                    style={{overflowX: 'scroll'}}
+                    style={isMobile ? {} : {overflowX: 'scroll'}}
                     loading={ loading }
                     columns={ isMobile ? this.mobileColumns : this.columns }
                     dataSource={ filteredData }
@@ -492,18 +491,26 @@ export default class WorkshopTable extends Component {
                     rowSelection={isMobile ? null : rowSelection}
                 />
                 <div
-                    style={{
-                        textAlign: 'end',
-                    }}
+                    style={isMobile ? 
+                        {
+                            textAlign: 'end',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            margin: '8px 0 0 0',
+                        } :
+                        {
+                            textAlign: 'end',
+                        }
+                    }
                 >
                     <span style={{marginLeft: 24, fontWeight: 500}}>
-                        <FormattedMessage id='workshop_table.footer.calculationTime' /> <InputNumber value={calcTime} disabled style={{color: 'black', marginLeft: 6}}/>
+                        <FormattedMessage id='workshop_table.footer.calculationTime' /> <InputNumber value={calcTime.toFixed(2)} disabled style={{color: 'black', marginLeft: 6}}/>
                     </span>
                     <span style={{marginLeft: 24, fontWeight: 500}}>
                         <FormattedMessage id='workshop_table.footer.realTime' /> <InputNumber value={realTime.toFixed(2)} disabled style={{color: 'black', marginLeft: 6}}/>
                     </span>
                     <span style={{marginLeft: 24, fontWeight: 500}}>
-                        <FormattedMessage id='workshop_table.footer.stoppedTime' /> <InputNumber value={stoppedTime} disabled style={{color: 'black', marginLeft: 6}}/>
+                        <FormattedMessage id='workshop_table.footer.stoppedTime' /> <InputNumber value={stoppedTime.toFixed(2)} disabled style={{color: 'black', marginLeft: 6}}/>
                     </span>
                 </div>
             </Catcher>

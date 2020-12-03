@@ -283,7 +283,7 @@ class DetailsTable extends Component {
                 className: Styles.numberColumn,
                 key:       'reserve',
                 render:    elem => {
-                    const disabled = this.props.disabled || !elem.id;
+                    const disabled = this.props.disabled || !elem.id || elem.stage == INSTALLED && elem.agreement != 'REJECTED';
                     return (
                         <ReserveButton
                             detail={elem}
@@ -743,6 +743,17 @@ class DetailsTable extends Component {
                 productModalKey: this.state.dataSource.length ? this.state.dataSource.length-1 : 0,
             })
         }
+        if(prevProps.activeKey != 'details' && this.props.activeKey == 'details') {
+            let tmp = [ ...this.props.orderDetails ];
+            tmp.map((elem, i) => {
+                elem.key = i;
+                elem.brandId = elem.supplierBrandId || undefined;
+                elem.brandName = elem.supplierBrandName;
+            });
+            this.setState({
+                dataSource: tmp,
+            });
+        }
     }
 
     render() {
@@ -1132,7 +1143,7 @@ class QuickEditModal extends React.Component {
 
 
 @injectIntl
-class ReserveButton extends React.Component {
+export class ReserveButton extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
