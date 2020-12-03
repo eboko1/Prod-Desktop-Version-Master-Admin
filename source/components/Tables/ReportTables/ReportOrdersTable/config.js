@@ -16,15 +16,10 @@ import Styles from './styles.m.css';
 /* eslint-disable complexity */
 export function columnsConfig(props) {
 
-    const {
-        setIncludeServicesDiscount,
-        includeServicesDiscount
-    } = props;
-
     const noCol = {
         title:     <FormattedMessage id='report-clients-table.no' />,
-        // dataIndex: 'orderNum',
-        render: (empty1, empty2, index) => ( <h3>{index}</h3>)
+        width: '4%',
+        render: (empty1, empty2, index) => ( <h4>{index+1}</h4>)
     };
 
     const orderNumCol = {
@@ -51,17 +46,17 @@ export function columnsConfig(props) {
             {
                 title: <FormattedMessage id='report-clients-table.creation_date' />,
                 dataIndex: 'orderDatetime',
-                render: (orderDatetime) => ( <h3>{orderDatetime}</h3>)
+                render: (orderDatetime) => (<FormattedDatetime datetime={ orderDatetime } format={ 'DD.MM.YY HH:mm' } />)
             },
             {
                 title: <FormattedMessage id='report-clients-table.appointment_date' />,
                 dataIndex: 'orderBeginDatetime',
-                render: (orderBeginDatetime) => ( <h3>{orderBeginDatetime}</h3>)
+                render: (orderBeginDatetime) => (<FormattedDatetime datetime={ orderBeginDatetime } format={ 'DD.MM.YY HH:mm' } />)
             },
             {
                 title: <FormattedMessage id='report-clients-table.done_date' />,
                 dataIndex: 'orderSuccessDatetime',
-                render: (orderSuccessDatetime) => ( <h3>{orderSuccessDatetime}</h3>)
+                render: (orderSuccessDatetime) => (<FormattedDatetime datetime={ orderSuccessDatetime } format={ 'DD.MM.YY HH:mm' } />)
             },
         ]
     };
@@ -70,15 +65,8 @@ export function columnsConfig(props) {
         title:     <FormattedMessage id='report-clients-table.sum' />,
         children: [
             {
-                // title: <FormattedMessage id='report-clients-table.labors' />,
-                title: () => {
-                    return <div>
-                        <div><FormattedMessage id='report-clients-table.labors' /></div>
-                        <div><Checkbox defaultChecked={includeServicesDiscount} onChange={(e) => setIncludeServicesDiscount(e.target.checked)}/></div>
-                    </div>
-                },
+                title: <FormattedMessage id='report-clients-table.labors' />,
                 dataIndex: 'orderServicesSum',
-                //setIncludeServicesDiscount, Checkbox
                 render: (orderServicesSum) => ( <h3>{orderServicesSum}</h3>)
             },
             {
@@ -109,12 +97,59 @@ export function columnsConfig(props) {
             },
             {
                 title: <FormattedMessage id='report-clients-table.total' />,
-                // dataIndex: 'unknown',
                 render: (empty, elem) => ( <h3>{elem.profitServicesSum + elem.profitAppurtenanciesSum}</h3>)
             },
         ]
     };
 
+    //percentage
+    const marginCol = {
+        title:     <FormattedMessage id='report-clients-table.margin' />,
+        children: [
+            {
+                title: <FormattedMessage id='report-clients-table.labors' />,
+                render: (empty, elem) => {
+                    if(!elem.orderServicesSum || !elem.profitServicesSum) return "-";
+
+                    const val = (elem.profitServicesSum * 100)/elem.orderServicesSum;
+                    return  <span>
+                        { val ? 
+                            Number(val).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            : 0
+                        }
+                    </span>
+                }
+            },
+            {
+                title: <FormattedMessage id='report-clients-table.spare_parts' />,
+                render: (empty, elem) => {
+                    if(!elem.orderAppurtenanciesSum || !elem.profitAppurtenanciesSum) return "-";
+
+                    const val = (elem.profitAppurtenanciesSum * 100)/elem.orderAppurtenanciesSum;
+                    return  <span>
+                        { val ? 
+                            Number(val).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            : 0
+                        }
+                    </span>
+                }
+            },
+            {
+                title: <FormattedMessage id='report-clients-table.total' />,
+                render: (empty, elem) => {
+                    if((!elem.orderAppurtenanciesSum || !elem.profitAppurtenanciesSum) && (!elem.orderServicesSum || !elem.profitServicesSum)) return "-";
+
+                    const val = ((elem.profitAppurtenanciesSum + elem.profitServicesSum) * 100)/(elem.orderServicesSum + elem.orderAppurtenanciesSum);
+                    return <span>
+                        { val ? 
+                            Number(val).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            : 0
+                        }
+                    </span>
+                }
+            },
+        ]
+    };
    
     return [
         noCol,
@@ -124,5 +159,6 @@ export function columnsConfig(props) {
         dateCol,
         sumCol,
         profitCol,
+        marginCol
     ];
 }
