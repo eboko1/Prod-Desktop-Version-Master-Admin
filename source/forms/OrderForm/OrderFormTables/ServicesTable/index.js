@@ -678,6 +678,16 @@ class ServicesTable extends Component {
         });
     }
 
+    componentDidUpdate(prevProps) {
+        if(prevProps.activeKey != 'services' && this.props.activeKey == 'services') {
+            let tmp = [ ...this.props.orderServices ];
+            tmp.map((elem, i) => elem.key = i);
+            this.setState({
+                dataSource: tmp,
+            });
+        }
+    }
+
     render() {
         if (
             this.state.dataSource.length == 0 ||

@@ -337,10 +337,11 @@ class AddServiceModal extends React.Component{
                 dataIndex: 'count',
                 width:     '3%',
                 render: (data, elem)=>{
+                    const value = data ? data.toFixed(2) : 1;
                     return (
                         <InputNumber
                             className={Styles.serviceNumberInput}
-                            value={data || 1}
+                            value={value}
                             min={0.1}
                             step={0.1}
                             formatter={ value =>
