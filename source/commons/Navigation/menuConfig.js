@@ -113,7 +113,6 @@ export default {
                 },
                 {
                     key:      '/repair-map',
-                    disabled: ()=>true,
                     link: book.repairMapSetting,
                     name: 'navigation.repair_map',
                 },
@@ -148,6 +147,13 @@ export default {
             name:     'navigation.storage',
             items:    [
                 {
+                    key:      '/storage-balance',
+                    disabled: user =>
+                        isForbidden(user, permissions.VIEW_STORE),
+                    link: book.storageBalance,
+                    name: 'navigation.storage_balance',
+                },
+                {
                     key:      '/storage-orders',
                     disabled: user =>
                         isForbidden(user, permissions.VIEW_STORE),
@@ -174,13 +180,6 @@ export default {
                         isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageTransfers,
                     name: 'navigation.transfers',
-                },
-                {
-                    key:      '/storage-balance',
-                    disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE),
-                    link: book.storageBalance,
-                    name: 'navigation.storage_balance',
                 },
                 {
                     key:      '/storage-movement',
