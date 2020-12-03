@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Table, Button, Checkbox, Select, Modal, Icon, Input, InputNumber } from 'antd';
+import { Table, Button, Checkbox, Select, Modal, Icon, Input, InputNumber, Switch } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
 // proj
 import {Layout} from 'commons';
 // own
+import Styles from './styles.m.css';
 const Option = Select.Option;
 const { confirm } = Modal;
 const   HEADER_CLIENT_SEARCH = 'HEADER_CLIENT_SEARCH',
@@ -42,6 +43,7 @@ const   HEADER_CLIENT_SEARCH = 'HEADER_CLIENT_SEARCH',
         CREATE_DOC_TOR = 'CREATE_DOC_TOR',
         ORDER_CHECK = 'ORDER_CHECK',
         PRINT_COMPLETED_WORK = 'PRINT_COMPLETED_WORK';
+
 const OPERATIONS = [
     HEADER_CLIENT_SEARCH,
     HEADER_STATION,
@@ -95,31 +97,15 @@ export default class RepairMapSettingPage extends Component {
                             onChange={(value)=>{
                                 if(position > value) {
                                     if(this.state.dataSource[row.parentKey].childs.length > position) {
-                                        this.state.dataSource[row.parentKey].childs[key] = {
-                                            ...this.state.dataSource[row.parentKey].childs[key+1],
-                                            level2ShowPosition: position,
-                                            key: key,
-                                        };
-                                        this.state.dataSource[row.parentKey].childs[key+1] = {
-                                            ...row,
-                                            level2ShowPosition: this.state.dataSource[row.parentKey].childs[key+1].level2ShowPosition,
-                                            key: this.state.dataSource[row.parentKey].childs[key+1].key,
-                                        };
+                                        row.level2ShowPosition = position + 1;
+                                        this.state.dataSource[row.parentKey].childs[key+1].level2ShowPosition = position;
                                         this.updateChild(row);
                                         this.updateChild(this.state.dataSource[row.parentKey].childs[key+1]);
                                     }
                                 } else {
                                     if(position > 1) {
-                                        this.state.dataSource[row.parentKey].childs[key] = {
-                                            ...this.state.dataSource[row.parentKey].childs[key-1],
-                                            level2ShowPosition: position,
-                                            key: key,
-                                        };
-                                        this.state.dataSource[row.parentKey].childs[key-1] = {
-                                            ...row,
-                                            level2ShowPosition: this.state.dataSource[row.parentKey].childs[key-1].level2ShowPosition,
-                                            key: this.state.dataSource[row.parentKey].childs[key-1].key,
-                                        };
+                                        row.level2ShowPosition = position - 1;
+                                        this.state.dataSource[row.parentKey].childs[key-1].level2ShowPosition = position;
                                         this.updateChild(row);
                                         this.updateChild(this.state.dataSource[row.parentKey].childs[key-1]);
                                     }
@@ -130,7 +116,7 @@ export default class RepairMapSettingPage extends Component {
                 }
             },
             {
-                title:     <FormattedMessage id='order_form_table.detail_name' />,
+                title:     'Name',
                 key:       'name',
                 dataIndex: 'name',
                 render: (name, row) => {
@@ -193,10 +179,10 @@ export default class RepairMapSettingPage extends Component {
                 dataIndex: 'show',
                 render: (data, row)=>{
                     return (
-                        <Checkbox
+                        <Switch
+                            disabled={!this.state.dataSource[row.parentKey].show}
                             checked={data}
-                            onChange={(event)=>{
-                                const value = event.target.checked;
+                            onChange={(value)=>{
                                 row.show = value;
                                 this.updateChild(row);
                             }}
@@ -268,7 +254,7 @@ export default class RepairMapSettingPage extends Component {
         ]
     }
 
-    async updateChild(child) {
+    async updateChild(child, dontUpdate = false) {
         const updateData = {
             id: child.id,
             show: child.show,
@@ -277,6 +263,7 @@ export default class RepairMapSettingPage extends Component {
             level2ShowPosition: child.level2ShowPosition,
             noColor: child.noColor,
             block: child.block,
+            //parentId: child.parentId,
         };
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/repair_map`;
@@ -290,7 +277,7 @@ export default class RepairMapSettingPage extends Component {
                 body: JSON.stringify(updateData),
             });
             const result = await response.json();
-            this.fetchData()
+            if(!dontUpdate) this.fetchData()
         } catch (error) {
             console.error('ERROR:', error);
         }
@@ -349,6 +336,17 @@ export default class RepairMapSettingPage extends Component {
         });
     }
 
+    changeGroupShow(key, show) {
+        this.state.dataSource[key].show = show;
+        this.state.dataSource[key].childs.map((child)=>{
+            child.show = show;
+        });
+        this.setState({});
+        this.state.dataSource[key].childs.map((child)=>{
+            this.updateChild(child, true);
+        });
+    }
+
     componentDidMount() {
         this.fetchData();
     }
@@ -361,6 +359,7 @@ export default class RepairMapSettingPage extends Component {
                 controls={
                     <div>
                         <Button
+                            type='primary'
                             style={{marginRight: 10}}
                             onClick={ () =>
                                 this.importDefault()
@@ -368,18 +367,25 @@ export default class RepairMapSettingPage extends Component {
                         >
                             <FormattedMessage id='diagnostic-page.import_default' />
                         </Button>
-                        <Button
-                            type='primary'
-                        >
-                            <FormattedMessage id='save' />
-                        </Button>
                     </div>
                 }
             >
                 {dataSource.map((mapGroup, key)=>{
                     return (
                         <div key={key}>
-                            <div>{mapGroup.name}</div>
+                            <div className={Styles.groupTitle}>
+                                <div>
+                                    {mapGroup.name}
+                                </div>
+                                <div>
+                                    <Switch
+                                        checked={mapGroup.show}
+                                        onChange={(value)=>{
+                                            this.changeGroupShow(key, value)
+                                        }}
+                                    />
+                                </div>  
+                            </div>
                             <Table
                                 style={{overflowX: 'scroll'}}
                                 columns={this.columns}

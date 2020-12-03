@@ -254,35 +254,38 @@ export default class RepairMapTable extends Component {
                     </Button>
                 </div>
                 {repairMap && repairMap.map((elem, key)=>{
-                    return (
-                        <div
-                            key={key}
-                            className={Styles.mapBlock}
-                        >
-                            <div className={Styles[elem.color] + " " + Styles.mapBlockTitle}>{elem.name}</div>
-                            <div className={Styles.mapChildsBlock}>
-                                {elem.childs.map((child, key)=>{
-                                    return (
-                                        <div
-                                            key={key}
-                                            className={Styles[child.color] + " " + Styles.childBlock}
-                                        >
-                                            <span>{child.name}</span>
-                                            <Button
-                                                type='primary'
-                                                disabled={!child.operation}
-                                                onClick={()=>{
-                                                    this.repairMapAction(child.operation)
-                                                }}
+                    console.log(elem);
+                    if(elem.childs && elem.childs.length) {
+                        return (
+                            <div
+                                key={key}
+                                className={Styles.mapBlock}
+                            >
+                                <div className={Styles[elem.color] + " " + Styles.mapBlockTitle}>{elem.name}</div>
+                                <div className={Styles.mapChildsBlock}>
+                                    {elem.childs.map((child, key)=>{
+                                        return (
+                                            <div
+                                                key={key}
+                                                className={Styles[child.color] + " " + Styles.childBlock}
                                             >
-                                                <FormattedMessage id="repair_map_table.goto"/>
-                                            </Button>
-                                        </div>
-                                    )
-                                })}
+                                                <span>{child.name}</span>
+                                                <Button
+                                                    type='primary'
+                                                    disabled={!child.operation}
+                                                    onClick={()=>{
+                                                        this.repairMapAction(child.operation)
+                                                    }}
+                                                >
+                                                    <FormattedMessage id="repair_map_table.goto"/>
+                                                </Button>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
                             </div>
-                        </div>
-                    )
+                        )
+                    }
                 })}
             </div>
         )
