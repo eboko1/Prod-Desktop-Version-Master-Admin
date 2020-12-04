@@ -46,6 +46,7 @@ export default class OrderFormTabs extends React.PureComponent {
         super(props);
         this.state = {
             activeKey: 'map',
+            action: undefined,
         }
         this._localizationMap = {};
         this.commentsRules = [
@@ -71,9 +72,10 @@ export default class OrderFormTabs extends React.PureComponent {
         return this._localizationMap[key];
     }
 
-    _setActiveTab(tab) {
+    _setActiveTab(tab, action) {
         this.setState({
             activeKey: tab,
+            action: action,
         })
     }
 
@@ -216,6 +218,7 @@ export default class OrderFormTabs extends React.PureComponent {
                 onTabClick={(key)=>{
                     this.setState({
                         activeKey: key,
+                        action: undefined,
                     })
                 }}
             >
@@ -235,6 +238,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             setModal={ setModal }
                             modals={ modals }
                             download={ download }
+                            activeKey={this.state.activeKey}
                         />
                     </TabPane>
                 )}
@@ -267,6 +271,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             reloadOrderPageComponents={
                                 this.props.reloadOrderPageComponents
                             }
+                            action={this.state.action}
                         />
                     </TabPane>
                 )}
@@ -308,6 +313,7 @@ export default class OrderFormTabs extends React.PureComponent {
                                     : null
                             }
                             reloadOrderForm={this.props.reloadOrderForm}
+                            activeKey={this.state.activeKey}
                         />
                         <DiscountPanel
                             fields={discountTabFieldsProps}
@@ -384,6 +390,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             showOilModal= { showOilModal }
                             oilModalData = { oilModalData }
                             clearOilData = { clearOilData }
+                            activeKey={this.state.activeKey}
                         />
                         <DiscountPanel
                             orderDetails={orderDetails}

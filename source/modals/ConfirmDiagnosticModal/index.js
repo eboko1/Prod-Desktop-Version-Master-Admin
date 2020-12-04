@@ -172,6 +172,11 @@ class ConfirmDiagnosticModal extends React.Component{
         if(this.state.allDetails != null && this.detailsOptions == null) {
             this.detailsOptions = this.getDetailsOptions();
         }
+        if(prevProps.action != 'DIAGNOSTICS_COMPLETE' && this.props.action == 'DIAGNOSTICS_COMPLETE') {
+            this.setState({
+                visible: true,
+            })
+        }
     }
 
     fetchOptionsSourceData() {
