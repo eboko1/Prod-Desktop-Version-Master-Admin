@@ -54,6 +54,10 @@ class ServicesTable extends Component {
             {
                 title: ()=>(
                             <div style={{textAlign: 'center'}}>
+                                <ComplexesModal
+                                    disabled={this.props.disabled || true}
+                                    tecdocId={this.props.tecdocId}
+                                />
                                 <InputNumber
                                     title='Коэффициент норматива'
                                     style={ { fontWeight: 700 } }
@@ -68,10 +72,6 @@ class ServicesTable extends Component {
                                     title={ this.props.intl.formatMessage({
                                         id: 'labors_table.mark_up',
                                     }) }
-                                />
-                                <ComplexesModal
-                                    disabled={this.props.disabled || true}
-                                    tecdocId={this.props.tecdocId}
                                 />
                             </div>
                             
