@@ -59,7 +59,6 @@ export default class RepairMapTable extends Component {
 
     repairMapAction(operation) {
         const { orderId, setActiveTab, history, setModal, modals, download } = this.props;
-        console.log(operation, this);
         switch(operation) {
             case HEADER_CLIENT_SEARCH:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
@@ -243,7 +242,6 @@ export default class RepairMapTable extends Component {
                             })
                             .then(function(data) {
                                 window.location.reload();
-                                console.log(data);
                             })
                             .catch(function(error) {
                                 console.log('error', error);
@@ -254,7 +252,6 @@ export default class RepairMapTable extends Component {
                     </Button>
                 </div>
                 {repairMap && repairMap.map((elem, key)=>{
-                    console.log(elem);
                     if(elem.childs && elem.childs.length) {
                         return (
                             <div
