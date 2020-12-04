@@ -48,6 +48,7 @@ import deliveryTruckIcon from 'theme/images/icons/delivery-truck.svg';
 import oilIcon from 'theme/images/icons/oil.svg';
 import gridIcon from 'theme/images/icons/grid.svg';
 import listIcon from 'theme/images/icons/list.svg';
+import complexesIcon from 'theme/images/icons/complexes.svg';
 
 export default {
     // Exceptions
@@ -99,4 +100,5 @@ export default {
     oilIcon,
     gridIcon,
     listIcon,
+    complexesIcon,
 };
