@@ -47,6 +47,7 @@ export default class OrderFormTabs extends React.PureComponent {
         this.state = {
             activeKey: 'map',
             action: undefined,
+            detailsTreeData: [],
         }
         this._localizationMap = {};
         this.commentsRules = [
@@ -59,6 +60,58 @@ export default class OrderFormTabs extends React.PureComponent {
         ];
         this.commentsAutoSize = { minRows: 2, maxRows: 6 };
         this._setActiveTab = this._setActiveTab.bind(this);
+    }
+
+    buildStoreGroupsTree() {
+        var treeData = [];
+        for (let i = 0; i < this.props.details.length; i++) {
+            const parentGroup = this.props.details[ i ];
+            treeData.push({
+                title:      `${parentGroup.name} (#${parentGroup.id})`,
+                name:       parentGroup.name,
+                value:      parentGroup.id,
+                className:  Styles.groupTreeOption,
+                key:        `${i}`,
+                selectable: false,
+                children:   [],
+            });
+            for (let j = 0; j < parentGroup.childGroups.length; j++) {
+                const childGroup = parentGroup.childGroups[ j ];
+                treeData[ i ].children.push({
+                    title:      `${childGroup.name} (#${childGroup.id})`,
+                    name:       childGroup.name,
+                    value:      childGroup.id,
+                    className:  Styles.groupTreeOption,
+                    key:        `${i}-${j}`,
+                    selectable: false,
+                    children:   [],
+                });
+                for (let k = 0; k < childGroup.childGroups.length; k++) {
+                    const lastNode = childGroup.childGroups[ k ];
+                    treeData[ i ].children[ j ].children.push({
+                        title:     `${lastNode.name} (#${lastNode.id})`,
+                        name:      lastNode.name,
+                        value:     lastNode.id,
+                        className: Styles.groupTreeOption,
+                        key:       `${i}-${j}-${k}`,
+                        children:  [],
+                    });
+                    for (let l = 0; l < lastNode.childGroups.length; l++) {
+                        const elem = lastNode.childGroups[ l ];
+                        treeData[ i ].children[ j ].children[ k ].children.push({
+                            title:     `${elem.name} (#${elem.id})`,
+                            name:      elem.name,
+                            value:     elem.id,
+                            className: Styles.groupTreeOption,
+                            key:       `${i}-${j}-${k}-${l}`,
+                        });
+                    }
+                }
+            }
+        }
+        this.setState({
+            detailsTreeData: treeData,
+        })
     }
 
     // TODO: move into utils
@@ -79,11 +132,21 @@ export default class OrderFormTabs extends React.PureComponent {
         })
     }
 
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps) {
         if(!prevProps.showOilModal && this.props.showOilModal) {
             this.setState({
                 activeKey: 'details',
             })
+        }
+        if(this.props.scrollToMapId) {
+            this.setState({
+                activeKey: 'map',
+            });
+            await document.getElementById(this.props.scrollToMapId).scrollIntoView({behavior: "smooth", block: "center"});
+            await this.props.scrollToMap(undefined);
+        }
+        if(!this.state.detailsTreeData.length) {
+            this.buildStoreGroupsTree();
         }
     }
 
@@ -314,6 +377,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             }
                             reloadOrderForm={this.props.reloadOrderForm}
                             activeKey={this.state.activeKey}
+                            detailsTreeData={this.state.detailsTreeData}
                         />
                         <DiscountPanel
                             fields={discountTabFieldsProps}
@@ -391,6 +455,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             oilModalData = { oilModalData }
                             clearOilData = { clearOilData }
                             activeKey={this.state.activeKey}
+                            detailsTreeData={this.state.detailsTreeData}
                         />
                         <DiscountPanel
                             orderDetails={orderDetails}

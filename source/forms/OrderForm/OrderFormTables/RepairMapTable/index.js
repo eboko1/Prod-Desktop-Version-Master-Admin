@@ -62,6 +62,7 @@ export default class RepairMapTable extends Component {
     }
 
     repairMapAction(operation) {
+        alert(operation);
         const { orderId, setActiveTab, history, setModal, modals, download } = this.props;
         switch(operation) {
             case HEADER_CLIENT_SEARCH:
@@ -132,8 +133,7 @@ export default class RepairMapTable extends Component {
                 this.fetchData();
                 break;
             case HEADER_PAY:
-                document.getElementById('OrderFormHeader').scrollIntoView({block: "end"});
-                setModal(modals.TO_SUCCESS);
+                document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
                 break;
             case STOCK_BUTTON_ORDERED:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
@@ -292,6 +292,7 @@ export default class RepairMapTable extends Component {
                             <div
                                 key={key}
                                 className={Styles.mapBlock}
+                                id={elem.abbreviature}
                             >
                                 <div className={Styles[elem.color] + " " + Styles.mapBlockTitle}>{elem.name}</div>
                                 <div className={Styles.mapChildsBlock}>

@@ -156,6 +156,7 @@ class OrderPage extends Component {
     state = {
         errors: void 0,
         showOilModal: false,
+        scrollToMapId: undefined,
     };
 
     componentDidMount() {
@@ -184,6 +185,12 @@ class OrderPage extends Component {
         this.props.fetchAddClientForm();
         this.props.setModal(MODALS.ADD_CLIENT);
     };
+
+    _scrollToMap = (id) => {
+        this.setState({
+            scrollToMapId: id,
+        })
+    }
 
     _showOilModal = (oem, oeCode, acea, api, sae) => {
         this.setState({
@@ -607,7 +614,11 @@ class OrderPage extends Component {
                                 id={ `order-status.${status || 'order'}` }
                             />
                             { ` ${num}` }
-                            <RepairMapIndicator data={repairMapIndicator} style={window.innerWidth > 1199 ? {display: 'inline-flex', margin: '0 0 0 48px'} : {}}/>
+                            <RepairMapIndicator
+                                data={repairMapIndicator}
+                                style={window.innerWidth > 1199 ? {display: 'inline-flex', margin: '0 0 0 48px'} : {}}
+                                scrollToId={this._scrollToMap}
+                            />
                         </>
 
                 }
@@ -839,6 +850,8 @@ class OrderPage extends Component {
                         clearOilData = { this._clearOilData }
                         modals={ MODALS }
                         download={ this.props.getReport }
+                        scrollToMapId={ this.state.scrollToMapId }
+                        scrollToMap={ this._scrollToMap }
                     />
                 </ResponsiveView>
                 <CancelReasonModal
