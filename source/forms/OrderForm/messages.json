@@ -126,7 +126,8 @@
         "stock_table.button.cancel": "Cancel",
         "order_form_table.fields_filter": "Fields filter",
         "stock_table.create_order_to_supplier": "Create and record an order to supplier {name} for this order?",
-        "stock_table.create_order_income": "Accept delivery from {name} to the warehouse for this order?"
+        "stock_table.create_order_income": "Accept delivery from {name} to the warehouse for this order?",
+        "services_table.complexes": "Complexes"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -255,7 +256,8 @@
         "stock_table.button.cancel": "Отменить",
         "order_form_table.fields_filter": "Фильтр полей",
         "stock_table.create_order_to_supplier": "Створити і врахувати замовлення постачальнику {name} по цьому н/з?",
-        "stock_table.create_order_income": "Прийняти на склад поставку від {name} по цьому н/з?"
+        "stock_table.create_order_income": "Прийняти на склад поставку від {name} по цьому н/з?",
+        "services_table.complexes": "Комплексы"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -384,6 +386,7 @@
         "stock_table.button.cancel": "Скасувати",
         "order_form_table.fields_filter": "Фільтр значень",
         "stock_table.create_order_to_supplier": "Создать и учесть заказ поставщику {name} по данному н/з?",
-        "stock_table.create_order_income": "Принять на склад поставку от {name} по данному н/з?"
+        "stock_table.create_order_income": "Принять на склад поставку от {name} по данному н/з?",
+        "services_table.complexes": "Комплекси"
     }
 }

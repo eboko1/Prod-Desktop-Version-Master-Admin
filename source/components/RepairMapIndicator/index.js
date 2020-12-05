@@ -12,7 +12,7 @@ import Styles from './styles.m.css';
 
 export default class RepairMapIndicator extends Component {
     render() {
-        const { data, style } = this.props;
+        const { data, style, scrollToId } = this.props;
         return (
             <div className={Styles.repairMapIndicator} style={style}>
                 {data && data.map((elem, key)=>{
@@ -21,6 +21,9 @@ export default class RepairMapIndicator extends Component {
                             key={key}
                             title={elem.name}
                             className={Styles[elem.color] + " " + Styles.indicatorElement}
+                            onClick={()=>{
+                                if(scrollToId) scrollToId(elem.abbreviature);
+                            }}
                         >
                             {elem.abbreviature}
                         </div>

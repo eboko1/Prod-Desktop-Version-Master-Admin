@@ -55,8 +55,13 @@ class ServicesTable extends Component {
                 title: ()=>(
                             <div style={{textAlign: 'center'}}>
                                 <ComplexesModal
-                                    disabled={this.props.disabled || true}
+                                    disabled={this.props.disabled}
                                     tecdocId={this.props.tecdocId}
+                                    labors={this.props.labors}
+                                    details={this.props.details}
+                                    detailsTreeData={this.props.detailsTreeData}
+                                    orderId={this.props.orderId}
+                                    reloadOrderForm={this.props.reloadOrderForm}
                                 />
                                 <InputNumber
                                     title='Коэффициент норматива'
@@ -686,7 +691,10 @@ class ServicesTable extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if(prevProps.activeKey != 'services' && this.props.activeKey == 'services') {
+        if(
+            prevProps.activeKey != 'services' && this.props.activeKey == 'services' ||
+            prevProps.orderServices != this.props.orderServices
+        ) {
             let tmp = [ ...this.props.orderServices ];
             tmp.map((elem, i) => elem.key = i);
             this.setState({
@@ -744,6 +752,7 @@ class ServicesTable extends Component {
                     laborsTreeData={ this.laborsTreeData }
                     labors={ this.props.labors }
                     details={ this.props.details }
+                    detailsTreeData={this.props.detailsTreeData}
                 />
             </Catcher>
         );

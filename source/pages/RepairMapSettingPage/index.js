@@ -268,7 +268,6 @@ export default class RepairMapSettingPage extends Component {
                 },
             });
             const result = await response.json();
-            console.log(result);
             result.map((elem, parentKey)=>{
                 if(elem.childs) {
                     elem.childs.map((child, key)=>{
@@ -305,7 +304,6 @@ export default class RepairMapSettingPage extends Component {
                     });
                 await this.fetchData();
             },
-            onCancel: ()=>{console.log('Canceled')},
         });
     }
 
@@ -360,7 +358,6 @@ export default class RepairMapSettingPage extends Component {
                                 </div>  
                             </div>
                             <Table
-                                style={{overflowX: 'scroll'}}
                                 columns={this.columns}
                                 pagination={ false }
                                 dataSource={ mapGroup.childs }
