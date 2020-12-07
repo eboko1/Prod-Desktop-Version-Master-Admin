@@ -837,9 +837,6 @@ class DetailsStageButtonsGroup extends Component {
                     description: `${formatMessage({id: 'storage'})} ${detail.reservedFromWarehouseName}`,
                 });
                 detail.reservedCount = detail.count;
-                if(!detail.reserved) {
-                    detail.supplierId = 0;
-                }
                 detail.reserved = true;
                 detail.stage = stage;
                 updateDetail(detail.key, detail);
