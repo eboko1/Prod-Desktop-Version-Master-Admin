@@ -1190,9 +1190,6 @@ export class ReserveButton extends React.Component {
                     description: `${formatMessage({id: 'storage'})} ${detail.reservedFromWarehouseName}`,
                 });
                 detail.reservedCount = detail.reserved ? 0 : detail.count;
-                if(!detail.reserved) {
-                    detail.supplierId = 0;
-                }
                 detail.reserved = !detail.reserved;
                 updateDetail(detail.key, detail);
             }
