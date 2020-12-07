@@ -1,0 +1,26 @@
+.groupTitle {
+	display: flex;
+	justify-content: space-between;
+	padding: 22px 0 12px 0;
+	border-bottom: solid 1px #e8e8e8;
+	margin-bottom: 15px;
+}
+
+.arrowUp, .arrowDown{
+	margin-right: 5px;
+	font-size: 20px;
+	vertical-align: sub;
+	color: var(--primary);
+
+	&:hover {
+		color: var(--secondary);
+	}
+}
+
+.arrowDisabled {
+	cursor: not-allowed !important;
+	margin-right: 5px;
+	font-size: 20px;
+	vertical-align: sub;
+	color: var(--text2);
+}

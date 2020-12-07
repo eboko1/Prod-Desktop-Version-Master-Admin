@@ -1327,6 +1327,7 @@ class DiagnosticTable extends Component {
                     }
                     labors={ this.props.labors }
                     details={ this.props.details }
+                    action={ this.props.action }
                 />
                 <Table
                     loading={false}
@@ -1468,6 +1469,7 @@ class DiagnosticTableHeader extends React.Component {
                         }
                         labors={ this.props.labors }
                         details={ this.props.details }
+                        action={ this.props.action }
                     />
                 </div>
                 <div style={ { width: '10%' } }>

@@ -429,7 +429,7 @@ class StorageDocumentPage extends Component {
                 that.getStorageDocument();
             } else {
                 const availableInfo = [];
-                data.notAvailableProducts.map(({available, productId: {product}})=>{
+                data.notAvailableProducts.map(({available, reservedCount, productId: {product}})=>{
                     availableInfo.push(
                         <span style={{
                             display: 'flex',
@@ -438,7 +438,7 @@ class StorageDocumentPage extends Component {
                             fontSize: 14,
                         }}>
                             <span style={{fontWeight: 500}}>{product.name} ({product.code})</span>
-                            <span style={{padding: '0 0 0 12'}}>{formatMessage({id:'storage.available'})} { available } {formatMessage({id: 'pc'})}</span>
+                            <span style={{padding: '0 0 0 12'}}>{formatMessage({id:'storage.available'})} { available } / {available - reservedCount} {formatMessage({id: 'pc'})}</span>
                         </span>
                     );
                 })
@@ -528,6 +528,13 @@ class StorageDocumentPage extends Component {
                     default:
                         incomeWarehouseId = mainWarehouseId;
                 }
+                if(documentType == TOOL) {
+                    expenseWarehouseId = toolWarehouseId;
+                    incomeWarehouseId = repairAreaWarehouseId;
+                } else if(documentType == REPAIR_AREA) {
+                    expenseWarehouseId = repairAreaWarehouseId;
+                    incomeWarehouseId = toolWarehouseId;
+                }
                 that.state.formData.type = type || INCOME;
                 that.state.formData.documentType =  documentType ? 
                                                     documentType : 
@@ -543,8 +550,9 @@ class StorageDocumentPage extends Component {
                 reserveWarehouseId: reserveWarehouseId,
                 toolWarehouseId: toolWarehouseId,
                 repairAreaWarehouseId: repairAreaWarehouseId,
-                fetched: true,
+                fetched: !Boolean(that.props.id),
             })
+            if(that.props.id) that.getStorageDocument();
         })
         .catch(function (error) {
             console.log('error', error)
@@ -691,7 +699,6 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data)
             const INC = 'INC',
                   CRT = 'CRT',
                   STP = 'STP',
@@ -743,11 +750,11 @@ class StorageDocumentPage extends Component {
                     break;
                 case TOL:
                     data.type = TRANSFER;
-                    data.documentType = TOOL;
+                    data.documentType = REPAIR_AREA;
                     break;
                 case TOR:
                     data.type = TRANSFER;
-                    data.documentType = REPAIR_AREA;
+                    data.documentType = TOOL;
                     break;
                 case ORD:
                 case BOR:
@@ -779,7 +786,9 @@ class StorageDocumentPage extends Component {
             that.setState({
                 formData: data,
                 loading: false,
+                fetched: true,
             })
+            console.log(that);
         })
         .catch(function (error) {
             console.log('error', error);
@@ -790,7 +799,7 @@ class StorageDocumentPage extends Component {
     componentDidMount() {
         this._isMounted = true;
         const { id } = this.props;
-
+        
         if(this._isMounted) {
             if(this._isMounted && this.props.location.state && this.props.location.state.showForm) {
                 this.updateFormData(this.props.location.state.formData);
@@ -804,7 +813,7 @@ class StorageDocumentPage extends Component {
         this.getCounterpartSupplier();
         this.getEmployees();
 
-        if(id) this.getStorageDocument();
+        
     }
 
     componentWillUnmount() {
