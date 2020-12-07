@@ -158,6 +158,7 @@ export default class ComplexesModal extends React.Component{
             }
         });
         this.addDetailsAndLabors(data);
+        this.handleCancel();
     };
 
     componentDidUpdate() {
