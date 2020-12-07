@@ -19,6 +19,9 @@ import {
     CallsTable,
     StationsTable,
     DiagnosticTable,
+    WorkshopTable,
+    StockTable,
+    RepairMapTable,
 } from "../OrderFormTables";
 import Styles from "./styles.m.css";
 
@@ -42,7 +45,9 @@ export default class OrderFormTabs extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            activeKey: '1',
+            activeKey: 'map',
+            action: undefined,
+            detailsTreeData: [],
         }
         this._localizationMap = {};
         this.commentsRules = [
@@ -54,6 +59,59 @@ export default class OrderFormTabs extends React.PureComponent {
             },
         ];
         this.commentsAutoSize = { minRows: 2, maxRows: 6 };
+        this._setActiveTab = this._setActiveTab.bind(this);
+    }
+
+    buildStoreGroupsTree() {
+        var treeData = [];
+        for (let i = 0; i < this.props.details.length; i++) {
+            const parentGroup = this.props.details[ i ];
+            treeData.push({
+                title:      `${parentGroup.name} (#${parentGroup.id})`,
+                name:       parentGroup.name,
+                value:      parentGroup.id,
+                className:  Styles.groupTreeOption,
+                key:        `${i}`,
+                selectable: false,
+                children:   [],
+            });
+            for (let j = 0; j < parentGroup.childGroups.length; j++) {
+                const childGroup = parentGroup.childGroups[ j ];
+                treeData[ i ].children.push({
+                    title:      `${childGroup.name} (#${childGroup.id})`,
+                    name:       childGroup.name,
+                    value:      childGroup.id,
+                    className:  Styles.groupTreeOption,
+                    key:        `${i}-${j}`,
+                    selectable: false,
+                    children:   [],
+                });
+                for (let k = 0; k < childGroup.childGroups.length; k++) {
+                    const lastNode = childGroup.childGroups[ k ];
+                    treeData[ i ].children[ j ].children.push({
+                        title:     `${lastNode.name} (#${lastNode.id})`,
+                        name:      lastNode.name,
+                        value:     lastNode.id,
+                        className: Styles.groupTreeOption,
+                        key:       `${i}-${j}-${k}`,
+                        children:  [],
+                    });
+                    for (let l = 0; l < lastNode.childGroups.length; l++) {
+                        const elem = lastNode.childGroups[ l ];
+                        treeData[ i ].children[ j ].children[ k ].children.push({
+                            title:     `${elem.name} (#${elem.id})`,
+                            name:      elem.name,
+                            value:     elem.id,
+                            className: Styles.groupTreeOption,
+                            key:       `${i}-${j}-${k}-${l}`,
+                        });
+                    }
+                }
+            }
+        }
+        this.setState({
+            detailsTreeData: treeData,
+        })
     }
 
     // TODO: move into utils
@@ -67,11 +125,28 @@ export default class OrderFormTabs extends React.PureComponent {
         return this._localizationMap[key];
     }
 
-    componentDidUpdate(prevProps) {
+    _setActiveTab(tab, action) {
+        this.setState({
+            activeKey: tab,
+            action: action,
+        })
+    }
+
+    async componentDidUpdate(prevProps) {
         if(!prevProps.showOilModal && this.props.showOilModal) {
             this.setState({
-                activeKey: '3',
+                activeKey: 'details',
             })
+        }
+        if(this.props.scrollToMapId) {
+            this.setState({
+                activeKey: 'map',
+            });
+            await document.getElementById(this.props.scrollToMapId).scrollIntoView({behavior: "smooth", block: "center"});
+            await this.props.scrollToMap(undefined);
+        }
+        if(!this.state.detailsTreeData.length) {
+            this.buildStoreGroupsTree();
         }
     }
 
@@ -142,6 +217,11 @@ export default class OrderFormTabs extends React.PureComponent {
             showOilModal,
             oilModalData,
             clearOilData,
+            repairMap,
+            modals,
+            download,
+            repairMapData,
+            fetchRepairMapData
         } = this.props;
 
         const {
@@ -203,9 +283,32 @@ export default class OrderFormTabs extends React.PureComponent {
                 onTabClick={(key)=>{
                     this.setState({
                         activeKey: key,
+                        action: undefined,
                     })
                 }}
             >
+                {!addOrderForm && (
+                    <TabPane
+                        forceRender
+                        tab={formatMessage({
+                            id: "order_tabs.map",
+                        })}
+                        key="map"
+                    >
+                        <RepairMapTable
+                            user={user}
+                            orderId={orderId}
+                            repairMap={repairMap}
+                            setActiveTab={this._setActiveTab}
+                            setModal={ setModal }
+                            modals={ modals }
+                            download={ download }
+                            activeKey={this.state.activeKey}
+                            repairMapData={repairMapData}
+                            fetchRepairMapData={fetchRepairMapData}
+                        />
+                    </TabPane>
+                )}
                 {!addOrderForm && (
                     <TabPane
                         forceRender
@@ -213,7 +316,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         tab={formatMessage({
                             id: "order_form_table.diagnostic",
                         })}
-                        key="1"
+                        key='diagnostic'
                     >
                         <DiagnosticTable
                             disabled={
@@ -235,6 +338,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             reloadOrderPageComponents={
                                 this.props.reloadOrderPageComponents
                             }
+                            action={this.state.action}
                         />
                     </TabPane>
                 )}
@@ -245,7 +349,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             id: "add_order_form.services",
                             defaultMessage: "Services",
                         })} (${orderServices.length})`}
-                        key="2"
+                        key="services"
                     >
                         <ServicesTable
                             disabled={clodedEditing}
@@ -276,6 +380,8 @@ export default class OrderFormTabs extends React.PureComponent {
                                     : null
                             }
                             reloadOrderForm={this.props.reloadOrderForm}
+                            activeKey={this.state.activeKey}
+                            detailsTreeData={this.state.detailsTreeData}
                         />
                         <DiscountPanel
                             fields={discountTabFieldsProps}
@@ -298,7 +404,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             id: "add_order_form.details",
                             defaultMessage: "Details",
                         })} (${orderDetails.length})`}
-                        key="3"
+                        key="details"
                     >
                         <DetailsTable
                             disabled={clodedEditing}
@@ -352,6 +458,8 @@ export default class OrderFormTabs extends React.PureComponent {
                             showOilModal= { showOilModal }
                             oilModalData = { oilModalData }
                             clearOilData = { clearOilData }
+                            activeKey={this.state.activeKey}
+                            detailsTreeData={this.state.detailsTreeData}
                         />
                         <DiscountPanel
                             orderDetails={orderDetails}
@@ -367,9 +475,43 @@ export default class OrderFormTabs extends React.PureComponent {
                         />
                     </TabPane>
                 )}
+                {!addOrderForm && (
+                    <TabPane
+                        forceRender
+                        tab={formatMessage({
+                            id: "order_tabs.workshop",
+                        })}
+                        key="workshop"
+                    >
+                        <WorkshopTable
+                            user={user}
+                            orderId={orderId}
+                            orderServices={orderServices}
+                            reloadOrderForm={this.props.reloadOrderForm}
+                            activeKey={this.state.activeKey}
+                        />
+                    </TabPane>
+                )}
+                {!addOrderForm && (
+                    <TabPane
+                        forceRender
+                        tab={formatMessage({
+                            id: "order_tabs.stock",
+                        })}
+                        key="stock"
+                    >
+                        <StockTable
+                            user={user}
+                            orderId={orderId}
+                            orderDetails={orderDetails}
+                            reloadOrderForm={this.props.reloadOrderForm}
+                            activeKey={this.state.activeKey}
+                        />
+                    </TabPane>
+                )}
                 <TabPane
                     forceRender
-                    key="4"
+                    key="comments"
                     tab={
                         formatMessage({
                             id: "add_order_form.comments",
@@ -472,7 +614,7 @@ export default class OrderFormTabs extends React.PureComponent {
                                 ? ""
                                 : ` (${orderHistory.orders.length})`)
                         }
-                        key="5"
+                        key="history"
                     >
                         <HistoryTable
                             orderHistory={orderHistory}
@@ -492,7 +634,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             }) +
                             (areCallsForbidden ? "" : ` (${orderCalls.length})`)
                         }
-                        key="6"
+                        key="calls"
                     >
                         <CallsTable orderCalls={orderCalls} />
                     </TabPane>
@@ -505,7 +647,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             id: "order_form_table.station",
                         }) + ` (${stationsCount ? stationsCount.length : 0})`
                     }
-                    key="7"
+                    key="station"
                 >
                     <StationsTable
                         errors={errors}

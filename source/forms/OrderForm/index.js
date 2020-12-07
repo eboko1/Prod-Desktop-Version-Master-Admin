@@ -158,10 +158,12 @@ export class OrderForm extends React.PureComponent {
     };
 
     _reloadOrderForm = (callback, type) => {
+        const onlyLabors = type == 'labors' || type == 'all',
+              onlyDetails = type == 'details' || type == 'all';
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
         let url = API_URL;
-        let params = `/orders/${this.props.orderId}?${type == 'details' ? 'onlyDetails' : 'onlyLabors'}=true`;
+        let params = `/orders/${this.props.orderId}?onlyLabors=${onlyLabors}&onlyDetails=${onlyDetails}`;
         url += params;
         fetch(url, {
             method: "GET",
@@ -180,13 +182,14 @@ export class OrderForm extends React.PureComponent {
             })
             .then(function(data) {
                 console.log(data);
-                if(type == 'details') {
+                if(onlyDetails) {
                     that.orderDetails = data.orderDetails;
-                } else {
+                }
+                if(onlyLabors) {
                     that.orderServices = data.orderServices;
                 }
                 that.totalSumWithTax = data.order.totalSumWithTax;
-                callback(data);
+                if(callback) callback(data);
                 that.forceUpdate();
             })
             .catch(function(error) {
@@ -397,9 +400,8 @@ export class OrderForm extends React.PureComponent {
             user,
             location,
             errors,
-
+            repairMap,
         } = this.props;
-
         const formFieldsValues = form.getFieldsValue();
 
         const { totalHours } = servicesStats(
@@ -540,7 +542,9 @@ export class OrderForm extends React.PureComponent {
                     createOrder={this.props.createOrder}
                     createStatus={this.props.createStatus}
                 />
-                {tabs}
+                <div id="OrderTabs">
+                    {tabs}
+                </div>
                 <AddClientModal
                     searchQuery={searchClientQuery}
                     wrappedComponentRef={this._saveFormRef}
@@ -670,6 +674,14 @@ export class OrderForm extends React.PureComponent {
             showOilModal,
             oilModalData,
             clearOilData,
+
+            repairMap,
+            modals,
+            download,
+            scrollToMapId,
+            scrollToMap,
+            repairMapData,
+            fetchRepairMapData
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
@@ -767,9 +779,17 @@ export class OrderForm extends React.PureComponent {
                 reloadOrderPageComponents={this.props.reloadOrderPageComponents}
                 reloadOrderForm={this._reloadOrderForm}
                 clientVehicleVin={this.props.order.clientVehicleVin}
-                showOilModal= { showOilModal }
+                showOilModal = { showOilModal }
                 oilModalData = { oilModalData }
                 clearOilData = { clearOilData }
+                repairMap = { repairMap }
+                setModal={ setModal }
+                modals={ modals }
+                download={ download }
+                scrollToMapId={ scrollToMapId }
+                scrollToMap={ scrollToMap }
+                repairMapData={repairMapData}
+                fetchRepairMapData={fetchRepairMapData}
             />
         );
     };

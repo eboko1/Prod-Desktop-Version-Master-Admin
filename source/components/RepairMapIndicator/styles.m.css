@@ -1,0 +1,35 @@
+.repairMapIndicator {
+	display: flex;
+	cursor: pointer;
+}
+
+.indicatorElement {
+	padding: 5px;
+	font-size: 14px;
+	font-weight: 500;
+	border: 1px solid black;
+	word-break: keep-all;
+}
+
+@media screen and (max-width: 1199px) {
+	.indicatorElement {
+		font-size: 10px;
+		font-weight: 500;
+	}
+}
+
+.BLANK {
+	background-color: white;
+}
+
+.RED {
+	background-color: var(--db_not_complete);
+}
+
+.YELLOW {
+	background-color: var(--db_approve);
+}
+
+.GREEN {
+	background-color: var(--db_progress);
+}

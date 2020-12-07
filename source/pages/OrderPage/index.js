@@ -32,7 +32,7 @@ import {setModal, resetModal, MODALS} from 'core/modals/duck';
 
 import {Layout, Spinner, MobileView, ResponsiveView, StyledButton} from 'commons';
 import {OrderForm, MobileRecordForm} from 'forms';
-import {ReportsDropdown, ChangeStatusDropdown} from 'components';
+import {ReportsDropdown, ChangeStatusDropdown, RepairMapIndicator} from 'components';
 import {
     CancelReasonModal,
     ConfirmOrderExitModal,
@@ -152,11 +152,19 @@ const mapDispatchToProps = {
 @withErrorMessage()
 @injectIntl
 class OrderPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            errors: void 0,
+            showOilModal: false,
+            scrollToMapId: undefined,
+            repairMapData: [],
+        };
 
-    state = {
-        errors: void 0,
-        showOilModal: false,
-    };
+        this._fetchRepairMapData = this._fetchRepairMapData.bind(this);
+    }
+
+    
 
     componentDidMount() {
         const {fetchOrderForm, fetchOrderTask, match: {params: {id}}, user} = this.props;
@@ -166,6 +174,8 @@ class OrderPage extends Component {
         if (viewTasks) {
             fetchOrderTask(id);
         }
+
+        this._fetchRepairMapData();
     }
 
     saveFormRef = formRef => {
@@ -184,6 +194,43 @@ class OrderPage extends Component {
         this.props.fetchAddClientForm();
         this.props.setModal(MODALS.ADD_CLIENT);
     };
+
+    _scrollToMap = (id) => {
+        this.setState({
+            scrollToMapId: id,
+        })
+    }
+
+    _fetchRepairMapData() {
+        const {id} = this.props.match.params;
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/orders/${id}/repair_map?update=true`;
+        fetch(url, {
+            method:  'GET',
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+            that.setState({
+                repairMapData: data,
+            })
+        })
+        .catch(function(error) {
+            console.log('error', error);
+        });
+    }
 
     _showOilModal = (oem, oeCode, acea, api, sae) => {
         this.setState({
@@ -433,23 +480,48 @@ class OrderPage extends Component {
                     this.props.user,
                 )};
 
-                copyData.details = details.map((detail)=>(
+                copyData.details = details.map((detail)=>{
+                    return  detail.productId ? 
                     {
+                        id: detail.id,
                         storeGroupId: detail.storeGroupId,
                         name: detail.detailName,
-                        productCode: detail.detailCode ? detail.detailCode : null,
-                        supplierId: detail.supplierId ? detail.supplierId : null,
-                        supplierBrandId: detail.supplierBrandId ? detail.supplierBrandId : null,
-                        brandName: detail.brandName ? detail.brandName : null,
+                        productId: detail.storeId || detail.productId,
+                        productCode: detail.detailCode,
                         purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
                         count: detail.count ? detail.count : 1,
-                        price: Math.round(detail.price*10)/10,
+                        price: detail.price ? Math.round(detail.price*10)/10  : 1,
+                        reservedFromWarehouseId: detail.reservedFromWarehouseId,
+                        supplierBrandId: detail.supplierBrandId || detail.brandId,
+                        supplierId: detail.supplierId,
+                        supplierOriginalCode: detail.supplierOriginalCode,
+                        supplierProductNumber: detail.supplierProductNumber,
+                        supplierPartNumber: detail.supplierPartNumber,
                         comment: detail.comment || {
                             comment: undefined,
                             positions: [],
                         },
+                    } : 
+                    {
+                        id:              detail.id,
+                        storeGroupId:    detail.storeGroupId,
+                        name:            detail.detailName,
+                        productCode:     detail.detailCode ? detail.detailCode : null,
+                        supplierId:      detail.supplierId,
+                        supplierBrandId: detail.supplierBrandId || detail.brandId,
+                        supplierOriginalCode: detail.supplierOriginalCode,
+                        supplierProductNumber: detail.supplierProductNumber,
+                        supplierPartNumber: detail.supplierPartNumber,
+                        purchasePrice:
+                            Math.round(detail.purchasePrice * 10) / 10 || 0,
+                        count:   detail.count,
+                        price:   detail.price ? Math.round(detail.price * 10) / 10 : 1,
+                        comment: detail.comment || {
+                            comment:   undefined,
+                            positions: [],
+                        },
                     }
-                ));
+                });
                 copyData.services = services.map((labor)=>(
                     {
                         serviceId: labor.laborId,
@@ -539,7 +611,7 @@ class OrderPage extends Component {
 
     /* eslint-disable complexity*/
     render() {
-        const {showOilModal, oilModalData } = this.state;
+        const {showOilModal, oilModalData, repairMapData } = this.state;
         const {
             fetchOrderForm,
             fetchOrderTask,
@@ -557,7 +629,7 @@ class OrderPage extends Component {
             user,
             initialOrderTask,
         } = this.props;
-        const {num, status, datetime, diagnosis} = this.props.order;
+        const {num, status, datetime, diagnosis, repairMapIndicator} = this.props.order;
         const {id} = this.props.match.params;
 
         const {
@@ -582,6 +654,11 @@ class OrderPage extends Component {
                                 id={ `order-status.${status || 'order'}` }
                             />
                             { ` ${num}` }
+                            <RepairMapIndicator
+                                data={repairMapData}
+                                style={window.innerWidth > 1199 ? {display: 'inline-flex', margin: '0 0 0 48px'} : {}}
+                                scrollToId={this._scrollToMap}
+                            />
                         </>
 
                 }
@@ -811,6 +888,12 @@ class OrderPage extends Component {
                         showOilModal= { showOilModal }
                         oilModalData = { oilModalData }
                         clearOilData = { this._clearOilData }
+                        modals={ MODALS }
+                        download={ this.props.getReport }
+                        scrollToMapId={ this.state.scrollToMapId }
+                        scrollToMap={ this._scrollToMap }
+                        repairMapData={repairMapData}
+                        fetchRepairMapData={this._fetchRepairMapData}
                     />
                 </ResponsiveView>
                 <CancelReasonModal

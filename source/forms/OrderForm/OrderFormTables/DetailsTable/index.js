@@ -29,6 +29,16 @@ import Styles from './styles.m.css';
 import { value } from 'numeral';
 const Option = Select.Option;
 const { confirm, warning } = Modal;
+const INACTIVE = 'INACTIVE',
+      AGREED = 'AGREED',
+      ORDERED = 'ORDERED',
+      ACCEPTED = 'ACCEPTED',
+      RESERVED = 'RESERVED',
+      GIVEN = 'GIVEN',
+      INSTALLED = 'INSTALLED',
+      NO_SPARE_PART = 'NO_SPARE_PART',
+      RETURNED = 'RETURNED',
+      CANCELED = 'CANCELED';
 
 @injectIntl
 class DetailsTable extends Component {
@@ -45,7 +55,6 @@ class DetailsTable extends Component {
         };
 
         this.storeGroups = [];
-        this.treeData = [];
 
         this.updateDetail = this.updateDetail.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
@@ -60,12 +69,11 @@ class DetailsTable extends Component {
 
         this.columns = [
             {
-                width:     '8%',
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {
                     const confirmed = elem.agreement.toLowerCase();
-
+                    const stageDisabled = elem.stage == AGREED || elem.stage == ORDERED || elem.stage == ACCEPTED || elem.stage == RESERVED || elem.stage == GIVEN || elem.stage == INSTALLED;
                     return (
                         <div
                             style={ {
@@ -78,7 +86,8 @@ class DetailsTable extends Component {
                                 disabled={
                                     confirmed != 'undefined' ||
                                     this.props.disabled ||
-                                    elem.reserved
+                                    elem.reserved ||
+                                    stageDisabled
                                 }
                                 onClick={ () => {
                                     this.showDetailProductModal(data);
@@ -94,7 +103,8 @@ class DetailsTable extends Component {
                                         backgroundColor:
                                             confirmed != 'undefined' ||
                                             this.props.disabled ||
-                                            elem.reserved
+                                            elem.reserved ||
+                                            stageDisabled
                                                 ? 'black'
                                                 : 'white',
                                         mask:       `url(${images.pistonIcon}) no-repeat center / contain`,
@@ -104,7 +114,7 @@ class DetailsTable extends Component {
                             </Button>
                             { !elem.detailName ? (
                                 <FavouriteDetailsModal
-                                    treeData={ this.treeData }
+                                    treeData={ this.props.detailsTreeData }
                                     disabled={ this.props.disabled || elem.reserved }
                                     user={ this.props.user }
                                     tecdocId={ this.props.tecdocId }
@@ -119,10 +129,10 @@ class DetailsTable extends Component {
                                 />
                             ) : (
                                 <QuickEditModal
-                                    treeData={ this.treeData }
+                                    treeData={ this.props.detailsTreeData }
                                     brands={ this.props.allDetails.brands }
                                     disabled={
-                                        !elem.detailName || this.props.disabled || elem.reserved
+                                        !elem.detailName || this.props.disabled || elem.reserved || stageDisabled
                                     }
                                     confirmed={ confirmed != 'undefined' }
                                     detail={ elem }
@@ -136,7 +146,6 @@ class DetailsTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.detail_name' />,
-                width:     '15%',
                 key:       'detail',
                 dataIndex: 'detailName',
                 render:    data => {
@@ -145,7 +154,6 @@ class DetailsTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.brand' />,
-                width:     '10%',
                 key:       'brand',
                 dataIndex: 'brandName',
                 render:    data => {
@@ -154,7 +162,6 @@ class DetailsTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.detail_code' />,
-                width:     '10%',
                 key:       'code',
                 dataIndex: 'detailCode',
                 render:    data => {
@@ -163,7 +170,6 @@ class DetailsTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.supplier' />,
-                width:     '8%',
                 key:       'supplierName',
                 dataIndex: 'supplierName',
                 render:    data => {
@@ -180,7 +186,6 @@ class DetailsTable extends Component {
                         <FormattedMessage id='order_form_table.AI' />
                     </div>
                 ),
-                width:     '3%',
                 key:       'AI',
                 dataIndex: 'store',
                 render:    store => {
@@ -194,7 +199,6 @@ class DetailsTable extends Component {
                     </div>
                 ),
                 className: Styles.numberColumn,
-                width:     '5%',
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
                 render:    data => {
@@ -227,7 +231,6 @@ class DetailsTable extends Component {
                     </div>
                 ),
                 className: Styles.numberColumn,
-                width:     '7%',
                 key:       'price',
                 dataIndex: 'price',
                 render:    data => {
@@ -254,7 +257,6 @@ class DetailsTable extends Component {
                     </div>
                 ),
                 className: Styles.numberColumn,
-                width:     '5%',
                 key:       'count',
                 dataIndex: 'count',
                 render:    data => {
@@ -278,10 +280,9 @@ class DetailsTable extends Component {
                     </div>
                 ),
                 className: Styles.numberColumn,
-                width:     'auto',
                 key:       'reserve',
                 render:    elem => {
-                    const disabled = this.props.disabled || !elem.id;
+                    const disabled = this.props.disabled || !elem.id || elem.stage == INSTALLED && elem.agreement != 'REJECTED';
                     return (
                         <ReserveButton
                             detail={elem}
@@ -319,7 +320,6 @@ class DetailsTable extends Component {
                     </div>
                 ),
                 className: Styles.numberColumn,
-                width:     '8%',
                 key:       'sum',
                 dataIndex: 'sum',
                 render:    data => {
@@ -341,7 +341,6 @@ class DetailsTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.status' />,
-                width:     '10%',
                 key:       'agreement',
                 dataIndex: 'agreement',
                 render:    (data, elem) => {
@@ -394,7 +393,6 @@ class DetailsTable extends Component {
                 },
             },
             {
-                width:  '2%',
                 key:    'favourite',
                 render: elem => {
                     return (
@@ -451,16 +449,16 @@ class DetailsTable extends Component {
                 },
             },
             {
-                width:  '3%',
                 key:    'delete',
                 render: elem => {
                     const confirmed = elem.agreement.toLowerCase();
+                    const stageDisabled = elem.stage == AGREED || elem.stage == ORDERED || elem.stage == ACCEPTED || elem.stage == RESERVED || elem.stage == GIVEN || elem.stage == INSTALLED;
                     const disabled =
                         confirmed != 'undefined' || this.props.disabled || elem.reserved;
 
                     return (
                         <Popconfirm
-                            disabled={ disabled }
+                            disabled={ disabled || stageDisabled }
                             title={
                                 <FormattedMessage id='add_order_form.delete_confirm' />
                             }
@@ -494,7 +492,7 @@ class DetailsTable extends Component {
                             <Icon
                                 type='delete'
                                 className={
-                                    disabled
+                                    disabled || stageDisabled
                                         ? Styles.disabledIcon
                                         : Styles.deleteIcon
                                 }
@@ -557,59 +555,9 @@ class DetailsTable extends Component {
             console.log('error', error);
         });
         this.storeGroups = this.props.details;
-        this.buildStoreGroupsTree();
     }
 
-    buildStoreGroupsTree() {
-        var treeData = [];
-        for (let i = 0; i < this.storeGroups.length; i++) {
-            const parentGroup = this.storeGroups[ i ];
-            treeData.push({
-                title:      `${parentGroup.name} (#${parentGroup.id})`,
-                name:       parentGroup.name,
-                value:      parentGroup.id,
-                className:  Styles.groupTreeOption,
-                key:        `${i}`,
-                selectable: false,
-                children:   [],
-            });
-            for (let j = 0; j < parentGroup.childGroups.length; j++) {
-                const childGroup = parentGroup.childGroups[ j ];
-                treeData[ i ].children.push({
-                    title:      `${childGroup.name} (#${childGroup.id})`,
-                    name:       childGroup.name,
-                    value:      childGroup.id,
-                    className:  Styles.groupTreeOption,
-                    key:        `${i}-${j}`,
-                    selectable: false,
-                    children:   [],
-                });
-                for (let k = 0; k < childGroup.childGroups.length; k++) {
-                    const lastNode = childGroup.childGroups[ k ];
-                    treeData[ i ].children[ j ].children.push({
-                        title:     `${lastNode.name} (#${lastNode.id})`,
-                        name:      lastNode.name,
-                        value:     lastNode.id,
-                        className: Styles.groupTreeOption,
-                        key:       `${i}-${j}-${k}`,
-                        children:  [],
-                    });
-                    for (let l = 0; l < lastNode.childGroups.length; l++) {
-                        const elem = lastNode.childGroups[ l ];
-                        treeData[ i ].children[ j ].children[ k ].children.push({
-                            title:     `${elem.name} (#${elem.id})`,
-                            name:      elem.name,
-                            value:     elem.id,
-                            className: Styles.groupTreeOption,
-                            key:       `${i}-${j}-${k}-${l}`,
-                        });
-                    }
-                }
-            }
-        }
-        this.treeData = treeData;
-    }
-
+    
     updateDataSource() {
         if(this.state.fetched) {
             this.setState({
@@ -653,6 +601,9 @@ class DetailsTable extends Component {
             reservedCount: detail.reservedCount,
             supplierBrandId: detail.supplierBrandId || detail.brandId,
             supplierId: detail.supplierId,
+            supplierOriginalCode: detail.supplierOriginalCode,
+            supplierProductNumber: detail.supplierProductNumber,
+            supplierPartNumber: detail.supplierPartNumber,
             comment: detail.comment || {
                 comment: undefined,
                 positions: [],
@@ -741,6 +692,20 @@ class DetailsTable extends Component {
                 productModalKey: this.state.dataSource.length ? this.state.dataSource.length-1 : 0,
             })
         }
+        if(
+            prevProps.activeKey != 'details' && this.props.activeKey == 'details' ||
+            prevProps.orderDetails != this.props.orderDetails
+        ) {
+            let tmp = [ ...this.props.orderDetails ];
+            tmp.map((elem, i) => {
+                elem.key = i;
+                elem.brandId = elem.supplierBrandId || undefined;
+                elem.brandName = elem.supplierBrandName;
+            });
+            this.setState({
+                dataSource: tmp,
+            });
+        }
     }
 
     render() {
@@ -786,7 +751,7 @@ class DetailsTable extends Component {
                 />
                 <DetailProductModal
                     labors={ this.props.labors }
-                    treeData={ this.treeData }
+                    treeData={ this.props.detailsTreeData }
                     user={ this.props.user }
                     tecdocId={ this.props.tecdocId }
                     visible={ this.state.productModalVisible }
@@ -1130,7 +1095,7 @@ class QuickEditModal extends React.Component {
 
 
 @injectIntl
-class ReserveButton extends React.Component {
+export class ReserveButton extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -1225,17 +1190,16 @@ class ReserveButton extends React.Component {
                     description: `${formatMessage({id: 'storage'})} ${detail.reservedFromWarehouseName}`,
                 });
                 detail.reservedCount = detail.reserved ? 0 : detail.count;
-                if(!detail.reserved) {
-                    detail.supplierId = 0;
-                }
                 detail.reserved = !detail.reserved;
                 updateDetail(detail.key, detail);
             }
             else {
-                const availableCount = response.notAvailableProducts[0].available;
+                const availableCount = response.notAvailableProducts[0].available,
+                      reservedCount = response.notAvailableProducts[0].reservedCount;
+                console.log(response);
                 confirm({
                     title: `${formatMessage({id: 'storage_document.error.available'})}. ${formatMessage({id: 'storage_document.warning.continue'})}`,
-                    content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} ${formatMessage({id: 'pc'})}`,
+                    content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} / ${availableCount - reservedCount} ${formatMessage({id: 'pc'})}`,
                     okButtonProps: {disabled: !availableCount},
                     onOk() {
                         data.docProducts[0].quantity = availableCount;

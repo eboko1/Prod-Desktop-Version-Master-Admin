@@ -55,6 +55,8 @@ import {
     RequisiteSettingPage,
     NewDocumentPage,
     SupplierPage,
+    RepairMapSettingPage,
+    RportOrdersPage,
 } from 'pages';
 import book from './book';
 
@@ -235,7 +237,12 @@ export default class Private extends Component {
                         <ProductsTrackingPage type={ props.location.type } { ...props } />
                     ) }
                 />
-                { /* Statistics */ }
+                <Route
+                    exact
+                    path={ book.repairMapSetting }
+                    render={ props => <RepairMapSettingPage { ...props } /> }
+                />
+                { /* Statistics and reports */ }
                 <Route
                     exact
                     component={ ChartPage }
@@ -255,6 +262,11 @@ export default class Private extends Component {
                     exact
                     component={ CallsPage }
                     path={ book.calls }
+                />
+                <Route
+                    exact
+                    component={ RportOrdersPage }
+                    path={ book.reportOrders }
                 />
                 { /* Payment */ }
                 <Route

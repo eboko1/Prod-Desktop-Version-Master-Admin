@@ -9,7 +9,7 @@ import _ from 'lodash';
 
 // proj
 import { Numeral } from 'commons';
-import { OrderStatusIcon } from 'components';
+import { OrderStatusIcon, RepairMapIndicator } from 'components';
 import { permissions, isForbidden } from 'utils';
 import book from 'routes/book';
 
@@ -74,6 +74,7 @@ export function columnsConfig(
                         <div>{ order.cancelStatusOwnReason }</div>
                     </div>
                 ) }
+                <RepairMapIndicator data={order.repairMapIndicator}/>
             </>
         ),
     };
@@ -221,11 +222,16 @@ export function columnsConfig(
         width:     190,
         render:    (_, order) => {
             if (order.managerName) {
-                return `${order.managerName} ${order.managerSurname &&
-                    order.managerSurname}`;
+                return (
+                    <div>
+                        {order.managerName} {order.managerSurname && order.managerSurname}
+                    </div>
+                );
             }
 
-            return <FormattedMessage id='orders.not_assigned' />;
+            return  <div>
+                        <FormattedMessage id='orders.not_assigned' />
+                    </div>;
         },
     };
 
@@ -387,7 +393,37 @@ export function columnsConfig(
     };
 
     const editCol = {
-        title:  '',
+        title:  <Button
+                    type={'primary'}
+                    onClick={()=>{
+                        let token = localStorage.getItem('_my.carbook.pro_token');
+                        let url = __API_URL__ + `/orders/repair_map?update=true`;
+                        fetch(url, {
+                            method:  'PUT',
+                            headers: {
+                                Authorization: token,
+                            },
+                        })
+                        .then(function(response) {
+                            if (response.status !== 200) {
+                                return Promise.reject(new Error(response.statusText));
+                            }
+                            return Promise.resolve(response);
+                        })
+                        .then(function(response) {
+                            return response.json();
+                        })
+                        .then(function(data) {
+                            window.location.reload();
+                            console.log(data);
+                        })
+                        .catch(function(error) {
+                            console.log('error', error);
+                        });
+                    }}
+                >
+                    <FormattedMessage id='orders.update_stage' />
+                </Button>,
         key:    'editAction',
         // fixed:  'right',
         width:  'auto',

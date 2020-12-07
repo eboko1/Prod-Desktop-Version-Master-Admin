@@ -1,0 +1,166 @@
+.AGREED {
+	background-color: var(--db_approve);
+
+	& > td {
+		background-color: var(--db_approve) !important;
+	}
+
+	&:hover > td {
+		background-color: #f3e6f5 !important;
+	}
+}
+
+.ORDERED {
+	background-color: var(--db_approve);
+
+	& > td {
+		background-color: var(--db_approve) !important;
+	}
+
+	&:hover > td {
+		background-color: #f3e6f5 !important;
+	}
+}
+
+.ACCEPTED {
+	background-color: var(--db_reserve);
+
+	& > td {
+		background-color: var(--db_reserve) !important;
+	}
+
+	&:hover > td {
+		background-color: #f3e6f5 !important;
+	}
+}
+
+.RESERVED {
+	background-color: var(--db_reserve);
+
+	& > td {
+		background-color: var(--db_reserve) !important;
+	}
+
+	&:hover > td {
+		background-color: #f3e6f5 !important;
+	}
+}
+
+.GIVEN {
+	background-color: var(--db_progress);
+
+	& > td {
+		background-color: var(--db_progress) !important;
+	}
+
+	&:hover > td {
+		background-color: #f3e6f5 !important;
+	}
+}
+
+.INSTALLED {
+	background-color: var(--db_success);
+
+	& > td {
+		background-color: var(--db_success) !important;
+	}
+
+	&:hover > td {
+		background-color: #f3e6f5 !important;
+	}
+}
+
+.NO_SPARE_PART {
+	background-color: var(--db_not_complete);
+
+	& > td {
+		background-color: var(--db_not_complete) !important;
+	}
+
+	&:hover > td {
+		background-color: #f3e6f5 !important;
+	}
+}
+
+.RETURNED {
+	background-color: var(--db_cancel);
+
+	& > td {
+		background-color: var(--db_cancel) !important;
+	}
+
+	&:hover > td {
+		background-color: #f3e6f5 !important;
+	}
+}
+
+.CANCELED {
+	background-color: var(--db_cancel);
+
+	& > td {
+		background-color: var(--db_cancel) !important;
+	}
+
+	&:hover > td {
+		background-color: #f3e6f5 !important;
+	}
+}
+
+.detailStageButtonsGroup {
+	& > * > * {
+		margin: 1px 2px;
+	}
+}
+
+.buttonsRow {
+	display: flex;
+	& > * {
+    	width: 49%;
+	}
+}
+
+.popoverBlock {
+	display: flex;
+	flex-direction: column;
+
+	& > button {
+		margin: 1px;
+	}
+}
+
+.greenButton {
+	color: var(--text3);
+	background-color: var(--green);
+	border-color: transparent;
+	&:hover {
+		color: var(--text3);
+		background-color: var(--green);
+		border-color: var(--text3);
+	}
+}
+
+.redButton {
+	color: var(--text3);
+	background-color: var(--db_not_complete);
+	border-color: transparent;
+	&:hover {
+		color: var(--text3);
+		background-color: var(--db_not_complete);
+		border-color: var(--text3);
+	}
+}
+
+.yellowButton {
+	color: var(--text3);
+	background-color: rgb(255, 255, 0);
+	border-color: transparent;
+	&:hover {
+		color: var(--text3);
+		background-color: rgb(255, 255, 0);
+		border-color: var(--text3);
+	}
+}
+
+.numberColumn {
+    text-align: right;
+}

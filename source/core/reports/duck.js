@@ -16,6 +16,7 @@ export const FETCH_EXCEL_FILE_REPORT_SUCCESS = `${prefix}/FETCH_EXCEL_FILE_REPOR
 
 export const SET_REPORT_PAGE = `${prefix}/SET_REPORT_PAGE`;
 export const SET_REPORT_QUERY = `${prefix}/SET_REPORT_QUERY`;
+export const SET_REPORT_OVERDUE_ONLY = `${prefix}/SET_REPORT_OVERDUE_ONLY`;
 
 /**
  * Reducer
@@ -59,6 +60,15 @@ export default function reducer(state = ReducerState, action) {
                 filter: {
                     ...state.filter,
                     page: payload,
+                },
+            };
+
+        case SET_REPORT_OVERDUE_ONLY:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    overdueOnly: payload,
                 },
             };
 
@@ -109,5 +119,10 @@ export const setReportPage = (page) => ({
 export const setReportQuery = (query) => ({
     type:    SET_REPORT_QUERY,
     payload: query,
+});
+
+export const setReportOverdueOnly = (overdueOnly) => ({
+    type:    SET_REPORT_OVERDUE_ONLY,
+    payload: overdueOnly,
 });
 

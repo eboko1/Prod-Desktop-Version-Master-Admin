@@ -44,6 +44,7 @@ import AvailabilitiesPage from 'pages/AvailabilitiesPage/messages';
 import RequisiteSettingPage from 'pages/RequisiteSettingPage/messages';
 import NewDocumentPage from 'pages/NewDocumentPage/messages';
 import SupplierPage from 'pages/SupplierPage/messages';
+import RepairMapSettingPage from 'pages/RepairMapSettingPage/messages';
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
@@ -129,6 +130,7 @@ import VehicleNumberHistory from 'components/VehicleNumberHistory/messages';
 import CashTables from 'components/Tables/CashTables/messages';
 import SubscriptionTables from 'components/Tables/SubscriptionTables/messages';
 import ClientMRDsTable from 'components/Tables/ClientMRDsTable/messages';
+import ReportOrdersTable from 'components/Tables/ReportTables/messages';
 import SubscribeForm from 'forms/SubscribeForm/messages';
 
 //commons
@@ -169,6 +171,7 @@ const messages = merge.all([
     RequisiteSettingPage,
     NewDocumentPage,
     SupplierPage,
+    RepairMapSettingPage,
     // containers
     OrdersContainer,
     OrdersFilterContainer,
@@ -248,6 +251,7 @@ const messages = merge.all([
     VehicleNumberHistory,
     CashTables,
     ClientMRDsTable,
+    ReportOrdersTable,
     SubscriptionTables,
 ]);
 /* eslint-enable array-element-newline */
