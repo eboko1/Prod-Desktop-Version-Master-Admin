@@ -16,18 +16,20 @@ export default class RepairMapIndicator extends Component {
         return (
             <div className={Styles.repairMapIndicator} style={style}>
                 {data && data.map((elem, key)=>{
-                    return (
-                        <div
-                            key={key}
-                            title={elem.name}
-                            className={Styles[elem.color] + " " + Styles.indicatorElement}
-                            onClick={()=>{
-                                if(scrollToId) scrollToId(elem.abbreviature);
-                            }}
-                        >
-                            {elem.abbreviature}
-                        </div>
-                    )
+                    if(elem.abbreviature) {
+                        return (
+                            <div
+                                key={key}
+                                title={elem.name}
+                                className={Styles[elem.color] + " " + Styles.indicatorElement}
+                                onClick={()=>{
+                                    if(scrollToId) scrollToId(elem.abbreviature);
+                                }}
+                            >
+                                {elem.abbreviature}
+                            </div>
+                        )
+                    }
                 })}
             </div>
         )

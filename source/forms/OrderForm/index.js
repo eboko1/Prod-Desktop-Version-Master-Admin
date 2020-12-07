@@ -679,7 +679,9 @@ export class OrderForm extends React.PureComponent {
             modals,
             download,
             scrollToMapId,
-            scrollToMap
+            scrollToMap,
+            repairMapData,
+            fetchRepairMapData
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
@@ -786,6 +788,8 @@ export class OrderForm extends React.PureComponent {
                 download={ download }
                 scrollToMapId={ scrollToMapId }
                 scrollToMap={ scrollToMap }
+                repairMapData={repairMapData}
+                fetchRepairMapData={fetchRepairMapData}
             />
         );
     };

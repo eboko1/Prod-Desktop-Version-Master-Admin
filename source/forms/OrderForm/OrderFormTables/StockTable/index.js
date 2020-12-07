@@ -845,10 +845,11 @@ class DetailsStageButtonsGroup extends Component {
                 updateDetail(detail.key, detail);
             }
             else {
-                const availableCount = response.notAvailableProducts[0].available;
+                const availableCount = response.notAvailableProducts[0].available,
+                      reservedCount = response.notAvailableProducts[0].reservedCount;
                 confirm({
                     title: `${formatMessage({id: 'storage_document.error.available'})}. ${formatMessage({id: 'storage_document.warning.continue'})}`,
-                    content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} ${formatMessage({id: 'pc'})}`,
+                    content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} / ${availableCount - reservedCount} ${formatMessage({id: 'pc'})}`,
                     okButtonProps: {disabled: !availableCount},
                     onOk() {
                         data.docProducts[0].quantity = availableCount;

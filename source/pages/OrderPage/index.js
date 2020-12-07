@@ -152,12 +152,19 @@ const mapDispatchToProps = {
 @withErrorMessage()
 @injectIntl
 class OrderPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            errors: void 0,
+            showOilModal: false,
+            scrollToMapId: undefined,
+            repairMapData: [],
+        };
 
-    state = {
-        errors: void 0,
-        showOilModal: false,
-        scrollToMapId: undefined,
-    };
+        this._fetchRepairMapData = this._fetchRepairMapData.bind(this);
+    }
+
+    
 
     componentDidMount() {
         const {fetchOrderForm, fetchOrderTask, match: {params: {id}}, user} = this.props;
@@ -167,6 +174,8 @@ class OrderPage extends Component {
         if (viewTasks) {
             fetchOrderTask(id);
         }
+
+        this._fetchRepairMapData();
     }
 
     saveFormRef = formRef => {
@@ -190,6 +199,37 @@ class OrderPage extends Component {
         this.setState({
             scrollToMapId: id,
         })
+    }
+
+    _fetchRepairMapData() {
+        const {id} = this.props.match.params;
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/orders/${id}/repair_map?update=true`;
+        fetch(url, {
+            method:  'GET',
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+            that.setState({
+                repairMapData: data,
+            })
+        })
+        .catch(function(error) {
+            console.log('error', error);
+        });
     }
 
     _showOilModal = (oem, oeCode, acea, api, sae) => {
@@ -571,7 +611,7 @@ class OrderPage extends Component {
 
     /* eslint-disable complexity*/
     render() {
-        const {showOilModal, oilModalData } = this.state;
+        const {showOilModal, oilModalData, repairMapData } = this.state;
         const {
             fetchOrderForm,
             fetchOrderTask,
@@ -615,7 +655,7 @@ class OrderPage extends Component {
                             />
                             { ` ${num}` }
                             <RepairMapIndicator
-                                data={repairMapIndicator}
+                                data={repairMapData}
                                 style={window.innerWidth > 1199 ? {display: 'inline-flex', margin: '0 0 0 48px'} : {}}
                                 scrollToId={this._scrollToMap}
                             />
@@ -852,6 +892,8 @@ class OrderPage extends Component {
                         download={ this.props.getReport }
                         scrollToMapId={ this.state.scrollToMapId }
                         scrollToMap={ this._scrollToMap }
+                        repairMapData={repairMapData}
+                        fetchRepairMapData={this._fetchRepairMapData}
                     />
                 </ResponsiveView>
                 <CancelReasonModal

@@ -62,7 +62,6 @@ export default class RepairMapTable extends Component {
     }
 
     repairMapAction(operation) {
-        alert(operation);
         const { orderId, setActiveTab, history, setModal, modals, download } = this.props;
         switch(operation) {
             case HEADER_CLIENT_SEARCH:
@@ -115,6 +114,7 @@ export default class RepairMapTable extends Component {
                             id: `message_sent`,
                         }),
                     });
+                    this.props.fetchRepairMapData();
                 };
                 const errorFunc = ()=>{
                     notification.error({
@@ -130,7 +130,6 @@ export default class RepairMapTable extends Component {
                     link: `/orders/reports/invoiceReport/${orderId}`,
                     name: 'invoiceReport'
                 });
-                this.fetchData();
                 break;
             case HEADER_PAY:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
@@ -152,7 +151,6 @@ export default class RepairMapTable extends Component {
                     link: `/orders/reports/actOfAcceptanceReport/${orderId}`,
                     name: 'actOfAcceptanceReport'
                 });
-                this.fetchData();
                 break;
             case STOCK_BUTTON_GIVEN:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
@@ -175,7 +173,6 @@ export default class RepairMapTable extends Component {
                     link: `/orders/reports/businessOrderReport/${orderId}`,
                     name: 'businessOrderReport'
                 });
-                this.fetchData();
                 break;
             case WORKSHOP:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
@@ -213,7 +210,6 @@ export default class RepairMapTable extends Component {
                     link: `/orders/reports/completedWorkReport/${orderId}`,
                     name: 'completedWorkReport'
                 });
-                this.fetchData();
                 break;
         }
     }
@@ -250,16 +246,12 @@ export default class RepairMapTable extends Component {
 
     componentDidUpdate(prevProps) {
         if(prevProps.activeKey != 'map' && this.props.activeKey == 'map') {
-            this.fetchData();
+            this.props.fetchRepairMapData();
         }
     }
 
-    componentDidMount() {
-        this.fetchData();
-    }
-
     render() {
-        const { dataSource } = this.state;
+        const { repairMapData, fetchRepairMapData } = this.props;
 
         return (
             <div>
@@ -279,14 +271,14 @@ export default class RepairMapTable extends Component {
                     <Button
                         type='primary'
                         onClick={()=>{
-                            this.fetchData();
+                            fetchRepairMapData();
                             window.location.reload();
                         }}
                     >
                         <FormattedMessage id="repair_map_table.update_map"/>
                     </Button>
                 </div>
-                {dataSource && dataSource.map((elem, key)=>{
+                {repairMapData && repairMapData.map((elem, key)=>{
                     if(elem.childs && elem.childs.length) {
                         return (
                             <div
@@ -308,6 +300,7 @@ export default class RepairMapTable extends Component {
                                                     disabled={!child.operation}
                                                     onClick={async ()=>{
                                                         await this.repairMapAction(child.operation);
+                                                        await fetchRepairMapData();
                                                     }}
                                                 >
                                                     <FormattedMessage id="repair_map_table.goto"/>

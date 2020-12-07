@@ -429,7 +429,7 @@ class StorageDocumentPage extends Component {
                 that.getStorageDocument();
             } else {
                 const availableInfo = [];
-                data.notAvailableProducts.map(({available, productId: {product}})=>{
+                data.notAvailableProducts.map(({available, reservedCount, productId: {product}})=>{
                     availableInfo.push(
                         <span style={{
                             display: 'flex',
@@ -438,7 +438,7 @@ class StorageDocumentPage extends Component {
                             fontSize: 14,
                         }}>
                             <span style={{fontWeight: 500}}>{product.name} ({product.code})</span>
-                            <span style={{padding: '0 0 0 12'}}>{formatMessage({id:'storage.available'})} { available } {formatMessage({id: 'pc'})}</span>
+                            <span style={{padding: '0 0 0 12'}}>{formatMessage({id:'storage.available'})} { available } / {available - reservedCount} {formatMessage({id: 'pc'})}</span>
                         </span>
                     );
                 })
