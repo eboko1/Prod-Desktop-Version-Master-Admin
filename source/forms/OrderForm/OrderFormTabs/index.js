@@ -219,7 +219,9 @@ export default class OrderFormTabs extends React.PureComponent {
             clearOilData,
             repairMap,
             modals,
-            download
+            download,
+            repairMapData,
+            fetchRepairMapData
         } = this.props;
 
         const {
@@ -302,6 +304,8 @@ export default class OrderFormTabs extends React.PureComponent {
                             modals={ modals }
                             download={ download }
                             activeKey={this.state.activeKey}
+                            repairMapData={repairMapData}
+                            fetchRepairMapData={fetchRepairMapData}
                         />
                     </TabPane>
                 )}
