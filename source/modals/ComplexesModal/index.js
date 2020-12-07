@@ -492,7 +492,6 @@ export default class ComplexesModal extends React.Component{
                                         )
                                     }}
                                     onChange={(value, label, {triggerNode})=>{
-                                        console.log(labors)
                                         const labors = triggerNode.props.labors.map((elem)=>{
                                             elem.checked = true;
                                             elem.id = elem.laborId,
