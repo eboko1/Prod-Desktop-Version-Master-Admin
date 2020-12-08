@@ -45,6 +45,7 @@ import RequisiteSettingPage from 'pages/RequisiteSettingPage/messages';
 import NewDocumentPage from 'pages/NewDocumentPage/messages';
 import SupplierPage from 'pages/SupplierPage/messages';
 import ReportOrdersPage from 'pages/ReportOrdersPage/messages';
+import RepairMapSettingPage from 'pages/RepairMapSettingPage/messages';
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
@@ -172,6 +173,7 @@ const messages = merge.all([
     NewDocumentPage,
     SupplierPage,
     ReportOrdersPage,
+    RepairMapSettingPage,
     // containers
     OrdersContainer,
     OrdersFilterContainer,

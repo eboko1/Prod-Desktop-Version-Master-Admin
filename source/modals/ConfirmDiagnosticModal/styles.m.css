@@ -15,7 +15,7 @@
 }
 
 .delete_diagnostic_button:hover{
-    color: rgb(255, 77, 79);
+    color: var(--disabled);
 }
 
 .diagnostic_status_button_wrap {
@@ -43,8 +43,8 @@
 .confirm_diagnostic_modal_element{
     width: 33%;
     padding: 5px;
-    border-right: 1px solid #e8e8e8;
-    border-left: 1px solid #e8e8e8;
+    border-right: 1px solid var(--text4);
+    border-left: 1px solid var(--text4);
 }
 
 #diagnosticModalServices, #diagnosticModalDetails{
@@ -52,7 +52,7 @@
 }
 
 .confirm_diagnostic_modal_element_title{
-    font-size: 15px;
+    font-size: 16px;
     width: 100%;
     background-color: gainsboro;
     font-weight: bold;
@@ -69,7 +69,7 @@
 }
 
 .confirm_diagnostic_modal_row_title{
-    font-size: 15px;
+    font-size: 14px;
     font-weight: bold;
     margin: 5px 0;
 }
@@ -99,7 +99,7 @@
 
 /* Commentary Button */
 .commentaryButtonIcon svg *{
-    color: rgba(0, 0, 0, 0.65);
+    color: var(--text3);
 }
 
 .commentaryContentWrap > div {

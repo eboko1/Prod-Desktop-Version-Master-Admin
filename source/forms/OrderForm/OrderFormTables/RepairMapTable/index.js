@@ -46,6 +46,7 @@ const   HEADER_CLIENT_SEARCH = 'HEADER_CLIENT_SEARCH',
         STOCK_BUTTON_RETURNED = 'STOCK_BUTTON_RETURNED',
         CREATE_DOC_TOR = 'CREATE_DOC_TOR',
         ORDER_CHECK = 'ORDER_CHECK',
+        ORDER_CLOSE = 'ORDER_CLOSE',
         PRINT_COMPLETED_WORK = 'PRINT_COMPLETED_WORK';
 
 @withRouter
@@ -53,13 +54,15 @@ const   HEADER_CLIENT_SEARCH = 'HEADER_CLIENT_SEARCH',
 export default class RepairMapTable extends Component {
     constructor(props) {
         super(props);
+        this.state={
+            dataSource: [],
+        }
 
         this.repairMapAction = this.repairMapAction.bind(this);
     }
 
     repairMapAction(operation) {
         const { orderId, setActiveTab, history, setModal, modals, download } = this.props;
-        console.log(operation, this);
         switch(operation) {
             case HEADER_CLIENT_SEARCH:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
@@ -80,9 +83,13 @@ export default class RepairMapTable extends Component {
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
                 setActiveTab('diagnostic');
                 break;
-            case DIAGNOSTICS_COMPLETE:
+            case DIAGNOSTICS_ELEMENTS: 
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
                 setActiveTab('diagnostic');
+                break;
+            case DIAGNOSTICS_COMPLETE:
+                document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
+                setActiveTab('diagnostic', DIAGNOSTICS_COMPLETE);
                 break;
             case LABORS:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
@@ -107,6 +114,7 @@ export default class RepairMapTable extends Component {
                             id: `message_sent`,
                         }),
                     });
+                    this.props.fetchRepairMapData();
                 };
                 const errorFunc = ()=>{
                     notification.error({
@@ -124,8 +132,7 @@ export default class RepairMapTable extends Component {
                 });
                 break;
             case HEADER_PAY:
-                document.getElementById('OrderFormHeader').scrollIntoView({block: "end"});
-                setModal(modals.TO_SUCCESS);
+                document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
                 break;
             case STOCK_BUTTON_ORDERED:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
@@ -192,6 +199,11 @@ export default class RepairMapTable extends Component {
                 });
                 break;
             case ORDER_CHECK:
+                document.getElementById('OrderFormHeader').scrollIntoView({block: "end"});
+                break;
+            case ORDER_CLOSE:
+                document.getElementById('OrderFormHeader').scrollIntoView({block: "end"});
+                setModal(modals.TO_SUCCESS);
                 break;
             case PRINT_COMPLETED_WORK:
                 download({
@@ -202,8 +214,44 @@ export default class RepairMapTable extends Component {
         }
     }
 
+    async fetchData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/orders/${this.props.orderId}/repair_map?update=true`;
+        fetch(url, {
+            method:  'GET',
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+            that.setState({
+                dataSource: data,
+            })
+        })
+        .catch(function(error) {
+            console.log('error', error);
+        });
+    }
+
+    componentDidUpdate(prevProps) {
+        if(prevProps.activeKey != 'map' && this.props.activeKey == 'map') {
+            this.props.fetchRepairMapData();
+        }
+    }
+
     render() {
-        const { repairMap } = this.props;
+        const { repairMapData, fetchRepairMapData } = this.props;
 
         return (
             <div>
@@ -223,43 +271,20 @@ export default class RepairMapTable extends Component {
                     <Button
                         type='primary'
                         onClick={()=>{
-                            var that = this;
-                            let token = localStorage.getItem('_my.carbook.pro_token');
-                            let url = __API_URL__ + `/orders/${this.props.orderId}/repair_map?update=true`;
-                            fetch(url, {
-                                method:  'GET',
-                                headers: {
-                                    Authorization: token,
-                                },
-                            })
-                            .then(function(response) {
-                                if (response.status !== 200) {
-                                    return Promise.reject(new Error(response.statusText));
-                                }
-                                return Promise.resolve(response);
-                            })
-                            .then(function(response) {
-                                return response.json();
-                            })
-                            .then(function(data) {
-                                window.location.reload();
-                                console.log(data);
-                            })
-                            .catch(function(error) {
-                                console.log('error', error);
-                            });
+                            fetchRepairMapData();
+                            window.location.reload();
                         }}
                     >
                         <FormattedMessage id="repair_map_table.update_map"/>
                     </Button>
                 </div>
-                {repairMap && repairMap.map((elem, key)=>{
-                    console.log(elem);
+                {repairMapData && repairMapData.map((elem, key)=>{
                     if(elem.childs && elem.childs.length) {
                         return (
                             <div
                                 key={key}
                                 className={Styles.mapBlock}
+                                id={elem.abbreviature}
                             >
                                 <div className={Styles[elem.color] + " " + Styles.mapBlockTitle}>{elem.name}</div>
                                 <div className={Styles.mapChildsBlock}>
@@ -273,8 +298,9 @@ export default class RepairMapTable extends Component {
                                                 <Button
                                                     type='primary'
                                                     disabled={!child.operation}
-                                                    onClick={()=>{
-                                                        this.repairMapAction(child.operation)
+                                                    onClick={async ()=>{
+                                                        await this.repairMapAction(child.operation);
+                                                        await fetchRepairMapData();
                                                     }}
                                                 >
                                                     <FormattedMessage id="repair_map_table.goto"/>

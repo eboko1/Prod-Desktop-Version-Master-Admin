@@ -22,6 +22,7 @@ import {
     FavouriteServicesModal,
     AddServiceModal,
     LaborsNormHourModal,
+    ComplexesModal,
 } from 'modals';
 
 // own
@@ -51,25 +52,35 @@ class ServicesTable extends Component {
 
         this.columns = [
             {
-                title: () => {
-                    return (
-                        <InputNumber
-                            title='Коэффициент норматива'
-                            style={ { fontWeight: 700 } }
-                            defaultValue={ this.props.laborTimeMultiplier || 1 }
-                            step={ 0.1 }
-                            min={ 0 }
-                            formatter={ value => `${Math.round(value * 100)}%` }
-                            parser={ value =>
-                                Math.round(value.replace('%', '') / 100)
-                            }
-                            onChange={ value => this.updateTimeMultiplier(value) }
-                            title={ this.props.intl.formatMessage({
-                                id: 'labors_table.mark_up',
-                            }) }
-                        />
-                    );
-                },
+                title: ()=>(
+                            <div style={{textAlign: 'center'}}>
+                                <ComplexesModal
+                                    disabled={this.props.disabled}
+                                    tecdocId={this.props.tecdocId}
+                                    labors={this.props.labors}
+                                    details={this.props.details}
+                                    detailsTreeData={this.props.detailsTreeData}
+                                    orderId={this.props.orderId}
+                                    reloadOrderForm={this.props.reloadOrderForm}
+                                />
+                                <InputNumber
+                                    title='Коэффициент норматива'
+                                    style={ { fontWeight: 700 } }
+                                    defaultValue={ this.props.laborTimeMultiplier || 1 }
+                                    step={ 0.1 }
+                                    min={ 0 }
+                                    formatter={ value => `${Math.round(value * 100)}%` }
+                                    parser={ value =>
+                                        Math.round(value.replace('%', '') / 100)
+                                    }
+                                    onChange={ value => this.updateTimeMultiplier(value) }
+                                    title={ this.props.intl.formatMessage({
+                                        id: 'labors_table.mark_up',
+                                    }) }
+                                />
+                            </div>
+                            
+                        ),
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {
@@ -184,6 +195,7 @@ class ServicesTable extends Component {
             {
                 title:  <div className={ Styles.numberColumn }>
                             <FormattedMessage id='services_table.norm_hours' />
+                            
                         </div>,
                 className: Styles.numberColumn,
                 key:       'hours',
@@ -679,7 +691,10 @@ class ServicesTable extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if(prevProps.activeKey != 'services' && this.props.activeKey == 'services') {
+        if(
+            prevProps.activeKey != 'services' && this.props.activeKey == 'services' ||
+            prevProps.orderServices != this.props.orderServices
+        ) {
             let tmp = [ ...this.props.orderServices ];
             tmp.map((elem, i) => elem.key = i);
             this.setState({
@@ -737,6 +752,7 @@ class ServicesTable extends Component {
                     laborsTreeData={ this.laborsTreeData }
                     labors={ this.props.labors }
                     details={ this.props.details }
+                    detailsTreeData={this.props.detailsTreeData}
                 />
             </Catcher>
         );

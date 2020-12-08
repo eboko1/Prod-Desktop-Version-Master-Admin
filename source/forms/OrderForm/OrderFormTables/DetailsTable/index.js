@@ -55,7 +55,6 @@ class DetailsTable extends Component {
         };
 
         this.storeGroups = [];
-        this.treeData = [];
 
         this.updateDetail = this.updateDetail.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
@@ -115,7 +114,7 @@ class DetailsTable extends Component {
                             </Button>
                             { !elem.detailName ? (
                                 <FavouriteDetailsModal
-                                    treeData={ this.treeData }
+                                    treeData={ this.props.detailsTreeData }
                                     disabled={ this.props.disabled || elem.reserved }
                                     user={ this.props.user }
                                     tecdocId={ this.props.tecdocId }
@@ -130,7 +129,7 @@ class DetailsTable extends Component {
                                 />
                             ) : (
                                 <QuickEditModal
-                                    treeData={ this.treeData }
+                                    treeData={ this.props.detailsTreeData }
                                     brands={ this.props.allDetails.brands }
                                     disabled={
                                         !elem.detailName || this.props.disabled || elem.reserved || stageDisabled
@@ -556,59 +555,9 @@ class DetailsTable extends Component {
             console.log('error', error);
         });
         this.storeGroups = this.props.details;
-        this.buildStoreGroupsTree();
     }
 
-    buildStoreGroupsTree() {
-        var treeData = [];
-        for (let i = 0; i < this.storeGroups.length; i++) {
-            const parentGroup = this.storeGroups[ i ];
-            treeData.push({
-                title:      `${parentGroup.name} (#${parentGroup.id})`,
-                name:       parentGroup.name,
-                value:      parentGroup.id,
-                className:  Styles.groupTreeOption,
-                key:        `${i}`,
-                selectable: false,
-                children:   [],
-            });
-            for (let j = 0; j < parentGroup.childGroups.length; j++) {
-                const childGroup = parentGroup.childGroups[ j ];
-                treeData[ i ].children.push({
-                    title:      `${childGroup.name} (#${childGroup.id})`,
-                    name:       childGroup.name,
-                    value:      childGroup.id,
-                    className:  Styles.groupTreeOption,
-                    key:        `${i}-${j}`,
-                    selectable: false,
-                    children:   [],
-                });
-                for (let k = 0; k < childGroup.childGroups.length; k++) {
-                    const lastNode = childGroup.childGroups[ k ];
-                    treeData[ i ].children[ j ].children.push({
-                        title:     `${lastNode.name} (#${lastNode.id})`,
-                        name:      lastNode.name,
-                        value:     lastNode.id,
-                        className: Styles.groupTreeOption,
-                        key:       `${i}-${j}-${k}`,
-                        children:  [],
-                    });
-                    for (let l = 0; l < lastNode.childGroups.length; l++) {
-                        const elem = lastNode.childGroups[ l ];
-                        treeData[ i ].children[ j ].children[ k ].children.push({
-                            title:     `${elem.name} (#${elem.id})`,
-                            name:      elem.name,
-                            value:     elem.id,
-                            className: Styles.groupTreeOption,
-                            key:       `${i}-${j}-${k}-${l}`,
-                        });
-                    }
-                }
-            }
-        }
-        this.treeData = treeData;
-    }
-
+    
     updateDataSource() {
         if(this.state.fetched) {
             this.setState({
@@ -743,7 +692,10 @@ class DetailsTable extends Component {
                 productModalKey: this.state.dataSource.length ? this.state.dataSource.length-1 : 0,
             })
         }
-        if(prevProps.activeKey != 'details' && this.props.activeKey == 'details') {
+        if(
+            prevProps.activeKey != 'details' && this.props.activeKey == 'details' ||
+            prevProps.orderDetails != this.props.orderDetails
+        ) {
             let tmp = [ ...this.props.orderDetails ];
             tmp.map((elem, i) => {
                 elem.key = i;
@@ -799,7 +751,7 @@ class DetailsTable extends Component {
                 />
                 <DetailProductModal
                     labors={ this.props.labors }
-                    treeData={ this.treeData }
+                    treeData={ this.props.detailsTreeData }
                     user={ this.props.user }
                     tecdocId={ this.props.tecdocId }
                     visible={ this.state.productModalVisible }
@@ -1238,17 +1190,16 @@ export class ReserveButton extends React.Component {
                     description: `${formatMessage({id: 'storage'})} ${detail.reservedFromWarehouseName}`,
                 });
                 detail.reservedCount = detail.reserved ? 0 : detail.count;
-                if(!detail.reserved) {
-                    detail.supplierId = 0;
-                }
                 detail.reserved = !detail.reserved;
                 updateDetail(detail.key, detail);
             }
             else {
-                const availableCount = response.notAvailableProducts[0].available;
+                const availableCount = response.notAvailableProducts[0].available,
+                      reservedCount = response.notAvailableProducts[0].reservedCount;
+                console.log(response);
                 confirm({
                     title: `${formatMessage({id: 'storage_document.error.available'})}. ${formatMessage({id: 'storage_document.warning.continue'})}`,
-                    content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} ${formatMessage({id: 'pc'})}`,
+                    content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} / ${availableCount - reservedCount} ${formatMessage({id: 'pc'})}`,
                     okButtonProps: {disabled: !availableCount},
                     onOk() {
                         data.docProducts[0].quantity = availableCount;

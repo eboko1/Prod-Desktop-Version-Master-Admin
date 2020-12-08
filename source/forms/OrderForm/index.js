@@ -158,10 +158,12 @@ export class OrderForm extends React.PureComponent {
     };
 
     _reloadOrderForm = (callback, type) => {
+        const onlyLabors = type == 'labors' || type == 'all',
+              onlyDetails = type == 'details' || type == 'all';
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
         let url = API_URL;
-        let params = `/orders/${this.props.orderId}?${type == 'details' ? 'onlyDetails' : 'onlyLabors'}=true`;
+        let params = `/orders/${this.props.orderId}?onlyLabors=${onlyLabors}&onlyDetails=${onlyDetails}`;
         url += params;
         fetch(url, {
             method: "GET",
@@ -180,13 +182,14 @@ export class OrderForm extends React.PureComponent {
             })
             .then(function(data) {
                 console.log(data);
-                if(type == 'details') {
+                if(onlyDetails) {
                     that.orderDetails = data.orderDetails;
-                } else {
+                }
+                if(onlyLabors) {
                     that.orderServices = data.orderServices;
                 }
                 that.totalSumWithTax = data.order.totalSumWithTax;
-                callback(data);
+                if(callback) callback(data);
                 that.forceUpdate();
             })
             .catch(function(error) {
@@ -674,7 +677,11 @@ export class OrderForm extends React.PureComponent {
 
             repairMap,
             modals,
-            download
+            download,
+            scrollToMapId,
+            scrollToMap,
+            repairMapData,
+            fetchRepairMapData
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
@@ -779,6 +786,10 @@ export class OrderForm extends React.PureComponent {
                 setModal={ setModal }
                 modals={ modals }
                 download={ download }
+                scrollToMapId={ scrollToMapId }
+                scrollToMap={ scrollToMap }
+                repairMapData={repairMapData}
+                fetchRepairMapData={fetchRepairMapData}
             />
         );
     };

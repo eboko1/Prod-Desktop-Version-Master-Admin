@@ -86,7 +86,7 @@ export default class RepairMapSettingPage extends Component {
 
         this.columns = [
             {
-                title:     'Position',
+                title:     <FormattedMessage id='repair_map_setting.position' />,
                 key:       'level2ShowPosition',
                 dataIndex: 'level2ShowPosition',
                 width: 'min-content', 
@@ -126,10 +126,9 @@ export default class RepairMapSettingPage extends Component {
                 }
             },
             {
-                title:     'Name',
+                title:     <FormattedMessage id='repair_map_setting.name' />,
                 key:       'name',
                 dataIndex: 'name',
-                width: '45%',
                 render: (name, row) => {
                     return (
                         <Input
@@ -147,7 +146,7 @@ export default class RepairMapSettingPage extends Component {
                 }
             },
             {
-                title:     'No color',
+                title:     <FormattedMessage id='repair_map_setting.color' />,
                 key:       'noColor',
                 dataIndex: 'noColor',
                 width: 'min-content',
@@ -155,7 +154,7 @@ export default class RepairMapSettingPage extends Component {
                     return (
                         <Select
                             value={data}
-                            style={{width: '150px'}}
+                            style={{width: 180}}
                             onChange={(value)=>{
                                 row.noColor = value;
                                 this.updateChild(row);
@@ -165,61 +164,27 @@ export default class RepairMapSettingPage extends Component {
                                 value={ 'YELLOW' }
                             >
                                 <div style={{border: "1px solid black", backgroundColor: "yellow", height: '12px', width: '12px', display: 'inline-block', marginRight: '10px'}}></div>
-                                YELLOW
+                                <FormattedMessage id='repair_map_setting.yellow' />
                             </Option>
                             <Option
                                 value={ 'RED' }
                             >
                                 <div style={{border: "1px solid black", backgroundColor: "red", height: '12px', width: '12px', display: 'inline-block', marginRight: '10px'}}></div>
-                                RED
+                                <FormattedMessage id='repair_map_setting.red' />
                             </Option>
                         </Select>
                     )
                 }
             },
             {
-                title:     'Operation',
-                key:       'operation',
-                dataIndex: 'operation',
-                width: '35%',
-                render: (operation, row)=>{
-                    return (
-                        <Select
-                            value={operation}
-                            onChange={(value)=>{
-                                row.operation = value;
-                                this.updateChild(row);
-                            }}
-                        >
-                            {OPERATIONS.map((operation, key)=>{
-                                return (
-                                    <Option
-                                        key={key}
-                                        value={ operation }
-                                    >
-                                        {operation}
-                                    </Option>
-                                )
-                            })}
-                            <Option
-                                value={ null }
-                            >
-                                <FormattedMessage id='long_dash' />
-                            </Option>
-                        </Select>
-                    )
-                }
-            },
-            {
-                title:     'Block',
+                title:     <FormattedMessage id='repair_map_setting.block' />,
                 key:       'block',
                 dataIndex: 'block',
-                width: 'min-content',
+                width:      120,
                 render: (data, row)=>{
                     return (
                         <Checkbox
                             checked={data}
-                            style={{width: '50px'}}
                             onChange={(event)=>{
                                 const value = event.target.checked;
                                 row.block = value;
@@ -235,7 +200,7 @@ export default class RepairMapSettingPage extends Component {
                 render: (row) => {
                     return (
                         <Icon
-                        style={{width: '30px'}}
+                            style={{width: '30px'}}
                             type='redo'
                             onClick={()=>this.importDefault(row.id)}
                         />
@@ -272,7 +237,6 @@ export default class RepairMapSettingPage extends Component {
             level2ShowPosition: child.level2ShowPosition,
             noColor: child.noColor,
             block: child.block,
-            //parentId: child.parentId,
         };
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/repair_map`;
@@ -304,7 +268,6 @@ export default class RepairMapSettingPage extends Component {
                 },
             });
             const result = await response.json();
-            console.log(result);
             result.map((elem, parentKey)=>{
                 if(elem.childs) {
                     elem.childs.map((child, key)=>{
@@ -341,7 +304,6 @@ export default class RepairMapSettingPage extends Component {
                     });
                 await this.fetchData();
             },
-            onCancel: ()=>{console.log('Canceled')},
         });
     }
 
@@ -396,7 +358,6 @@ export default class RepairMapSettingPage extends Component {
                                 </div>  
                             </div>
                             <Table
-                                style={{overflowX: 'scroll'}}
                                 columns={this.columns}
                                 pagination={ false }
                                 dataSource={ mapGroup.childs }

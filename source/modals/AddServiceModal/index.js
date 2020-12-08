@@ -27,7 +27,6 @@ class AddServiceModal extends React.Component{
         this.labors = [];
         this.masterLabors = [];
         this.storeGroups = [];
-        this.storeGroupsTreeData = [];
         this.laborsTreeData = [];
         this.brandOptions = [];
         this.servicesOptions = [];
@@ -53,7 +52,7 @@ class AddServiceModal extends React.Component{
                             style={{maxWidth: 180, minWidth: 100}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.storeGroupsTreeData}
+                            treeData={this.props.detailsTreeData}
                             filterTreeNode={(input, node) => {
                                 return (
                                     node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -195,7 +194,7 @@ class AddServiceModal extends React.Component{
                     return (
                         <Input
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
-                            disabled={elem.stage != 'INACTIVE'}
+                            disabled={this.state.editing && elem.stage != 'INACTIVE'}
                             style={{minWidth: 120}}
                             value={data}
                             onChange={(event)=>{
@@ -337,7 +336,7 @@ class AddServiceModal extends React.Component{
                 dataIndex: 'count',
                 width:     '3%',
                 render: (data, elem)=>{
-                    const value = data ? data.toFixed(2) : 1;
+                    const value = data ? Number(data).toFixed(2) : 1;
                     return (
                         <InputNumber
                             className={Styles.serviceNumberInput}
@@ -529,58 +528,7 @@ class AddServiceModal extends React.Component{
         this.masterLabors = this.props.masterLabors;
         this.labors = this.props.labors;
         this.storeGroups = this.props.details;
-        this.buildStoreGroupsTree();
         this.getOptions();
-    }
-
-    buildStoreGroupsTree() {
-        var treeData = [];
-        for(let i = 0; i < this.storeGroups.length; i++) {
-            const parentGroup = this.storeGroups[i];
-            treeData.push({
-                title: `${parentGroup.name} (#${parentGroup.id})`,
-                name: parentGroup.name,
-                value: parentGroup.id,
-                className: Styles.groupTreeOption,
-                key: `${i}`,
-                selectable: false,
-                children: [],
-            })
-            for(let j = 0; j < parentGroup.childGroups.length; j++) {
-                const childGroup = parentGroup.childGroups[j];
-                treeData[i].children.push({
-                    title: `${childGroup.name} (#${childGroup.id})`,
-                    name: childGroup.name,
-                    value: childGroup.id,
-                    className: Styles.groupTreeOption,
-                    key: `${i}-${j}`,
-                    selectable: false,
-                    children: [],
-                })
-                for(let k = 0; k < childGroup.childGroups.length; k++) {
-                    const lastNode = childGroup.childGroups[k];
-                    treeData[i].children[j].children.push({
-                        title: `${lastNode.name} (#${lastNode.id})`,
-                        name: lastNode.name,
-                        value: lastNode.id,
-                        className: Styles.groupTreeOption,
-                        key: `${i}-${j}-${k}`,
-                        children: [],
-                    })
-                    for(let l = 0; l < lastNode.childGroups.length; l++) {
-                        const elem = lastNode.childGroups[l];
-                        treeData[i].children[j].children[k].children.push({
-                            title: `${elem.name} (#${elem.id})`,
-                            name: elem.name,
-                            value: elem.id,
-                            className: Styles.groupTreeOption,
-                            key: `${i}-${j}-${k}-${l}`,
-                        })
-                    }
-                }
-            }
-        }
-        this.storeGroupsTreeData = treeData;
     }
 
     getOptions() {
