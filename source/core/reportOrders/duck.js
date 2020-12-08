@@ -1,3 +1,7 @@
+/*
+It is very importnant to use this ('YYYY/MM/DD') date format when fetching from server!!!
+*/
+
 /**
  * Constants
  * */
@@ -7,15 +11,23 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_REPORT_ORDERS = `${prefix}/FETCH_REPORT_ORDERS`;
 export const FETCH_REPORT_ORDERS_SUCCESS = `${prefix}/FETCH_REPORT_ORDERS_SUCCESS`;
 
-// export const FETCH_CASH_ORDER_ENTITY = `${prefix}/FETCH_CASH_ORDER_ENTITY`;
-// export const FETCH_CASH_ORDER_ENTITY_SUCCESS = `${prefix}/FETCH_CASH_ORDER_ENTITY_SUCCESS`;
+export const SET_REPORT_ORDERS_PAGE = `${prefix}/SET_REPORT_ORDERS_PAGE`;
+
+export const SET_REPORT_ORDERS_QUERY = `${prefix}/SET_REPORT_ORDERS_QUERY`;
+
+export const SET_REPORT_ORDERS_STATUS = `${prefix}/SET_REPORT_ORDERS_STATUS`;
 
 export const SET_REPORT_ORDERS_INCLUDE_SERVICES_DISCOUNT = `${prefix}/SET_REPORT_ORDERS_INCLUDE_SERVICES_DISCOUNT`;
 export const SET_REPORT_ORDERS_INCLUDE_APPURTENANCIES_DISCOUNT = `${prefix}/SET_REPORT_ORDERS_INCLUDE_APPURTENANCIES_DISCOUNT`;
-export const SET_REPORT_ORDERS_PAGE = `${prefix}/SET_REPORT_ORDERS_PAGE`;
-// export const SET_CASH_ORDER_ENTITY_IS_FETCHING = `${prefix}/SET_CASH_ORDER_ENTITY_IS_FETCHING`;
-// export const SET_CASH_ORDER_MODAL_MOUNTED = `${prefix}/SET_CASH_ORDER_MODAL_MOUNTED`;
-// export const SET_FILTER_DATE = `${prefix}/SET_FILTER_DATE`;
+
+export const SET_REPORT_ORDERS_CREATION_FROM_DATE = `${prefix}/SET_REPORT_ORDERS_CREATION_FROM_DATE`;
+export const SET_REPORT_ORDERS_CREATION_TO_DATE = `${prefix}/SET_REPORT_ORDERS_CREATION_TO_DATE`;
+
+export const SET_REPORT_ORDERS_APPOINTMENT_FROM_DATE = `${prefix}/SET_REPORT_ORDERS_APPOINTMENT_FROM_DATE`;
+export const SET_REPORT_ORDERS_APPOINTMENT_TO_DATE = `${prefix}/SET_REPORT_ORDERS_APPOINTMENT_TO_DATE`;
+
+export const SET_REPORT_ORDERS_DONE_FROM_DATE = `${prefix}/SET_REPORT_ORDERS_DONE_FROM_DATE`;
+export const SET_REPORT_ORDERS_DONE_TO_DATE = `${prefix}/SET_REPORT_ORDERS_DONE_TO_DATE`;
 
 /**
  * Reducer
@@ -24,12 +36,16 @@ export const SET_REPORT_ORDERS_PAGE = `${prefix}/SET_REPORT_ORDERS_PAGE`;
 const ReducerState = {
     tableData: [],
     stats: {},
-    // cashOrderEntity: {},
-    // cashOrderEntityIsFetching: false,
-    // cashOrderModalMounted: false,
     filter:     {
         page: 1,
-        // MRDsUntilDate: undefined,
+        query: undefined,
+        status: undefined,
+        creationFromDate: undefined,
+        creationToDate: undefined,
+        appointmentFromDate: undefined,
+        appointmentToDate: undefined,
+        doneFromDate: undefined,
+        doneToDate: undefined,
     },
     options: {
         includeServicesDiscount: true,
@@ -46,13 +62,15 @@ export default function reducer(state = ReducerState, action) {
 
     switch (type) {
         case FETCH_REPORT_ORDERS_SUCCESS:
-            const {tableData} = payload;
+            const {tableData, stats} = payload;
             return {
                 ...state,
                 tableData: tableData? tableData: state.tableData,
+                stats: stats? stats: state.stats
                 // stats: stats? stats: state.stats
             };
 
+        //Filter-------------------------------------------------------------------------------------------------
         case SET_REPORT_ORDERS_PAGE: 
             return {
                 ...state,
@@ -61,6 +79,81 @@ export default function reducer(state = ReducerState, action) {
                     page: payload
                 }
             };
+
+        case SET_REPORT_ORDERS_QUERY: 
+            return {
+                ...state,
+                filter:{
+                    ...state.filter,
+                    query: payload
+                }
+            };
+
+        case SET_REPORT_ORDERS_STATUS:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    status: payload
+                }
+            };
+
+
+        case SET_REPORT_ORDERS_CREATION_FROM_DATE:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    creationFromDate: payload
+                }
+            };
+
+        case SET_REPORT_ORDERS_CREATION_TO_DATE:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    creationToDate: payload
+                }
+            };
+
+        case SET_REPORT_ORDERS_APPOINTMENT_FROM_DATE:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    appointmentFromDate: payload
+                }
+            };
+
+        case SET_REPORT_ORDERS_APPOINTMENT_TO_DATE:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    appointmentToDate: payload
+                }
+            };
+
+        case SET_REPORT_ORDERS_DONE_FROM_DATE:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    doneFromDate: payload
+                }
+            };
+
+        case SET_REPORT_ORDERS_DONE_TO_DATE:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    doneToDate: payload
+                }
+            };
+                                                                                    
+        //--------------------------------------------------------------------------------------------------------
 
         case SET_REPORT_ORDERS_INCLUDE_SERVICES_DISCOUNT: 
             return {
@@ -89,15 +182,58 @@ export const fetchReportOrders = () => ({
     type:    FETCH_REPORT_ORDERS,
 });
 
-export const fetchReportOrdersSuccess = ({tableData}) => ({
+export const fetchReportOrdersSuccess = ({tableData, stats}) => ({
     type:    FETCH_REPORT_ORDERS_SUCCESS,
-    payload: {tableData},
+    payload: {tableData, stats},
 });
 
+//Filter-------------------------------------------------------------------------------------------------
 export const setReportOrdersPage = (page) => ({ 
     type:    SET_REPORT_ORDERS_PAGE,
     payload: page
 });
+
+export const setReportOrdersQuery = (query) => ({ 
+    type:    SET_REPORT_ORDERS_QUERY,
+    payload: query
+});
+
+export const setReportOrdersStatus = (status) => ({ 
+    type:    SET_REPORT_ORDERS_STATUS,
+    payload: status
+});
+
+export const setReportOrdersCreationFromDate = (creationFromDate) => ({ 
+    type:    SET_REPORT_ORDERS_CREATION_FROM_DATE,
+    payload: creationFromDate
+});
+
+export const setReportOrdersCreationToDate = (creationToDate) => ({ 
+    type:    SET_REPORT_ORDERS_CREATION_TO_DATE,
+    payload: creationToDate
+});
+
+export const setReportOrdersAppointmentFromDate = (appointmentFromDate) => ({ 
+    type:    SET_REPORT_ORDERS_APPOINTMENT_FROM_DATE,
+    payload: appointmentFromDate
+});
+
+export const setReportOrdersAppointmentToDate = (appointmentToDate) => ({ 
+    type:    SET_REPORT_ORDERS_APPOINTMENT_TO_DATE,
+    payload: appointmentToDate
+});
+
+export const setReportOrdersDoneFromDate = (doneFromDate) => ({ 
+    type:    SET_REPORT_ORDERS_DONE_FROM_DATE,
+    payload: doneFromDate
+});
+
+export const setReportOrdersDoneToDate = (doneToDate) => ({ 
+    type:    SET_REPORT_ORDERS_DONE_TO_DATE,
+    payload: doneToDate
+});
+
+//-------------------------------------------------------------------------------------------------------
 
 export const setReportOrdersIncludeServicesDiscount = (val) => ({ 
     type:    SET_REPORT_ORDERS_INCLUDE_SERVICES_DISCOUNT,
