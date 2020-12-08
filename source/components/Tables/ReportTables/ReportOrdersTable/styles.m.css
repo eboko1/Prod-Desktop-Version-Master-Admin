@@ -1,20 +1,18 @@
-.table th {
-    word-break: keep-all;
+.filter_column_header_wrap{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 95px;
+    width: 100%;
 }
 
-.printIcon {
-    font-size: 24px;
-    color: var(--primary);
-}
-.editIcon {
-    font-size: 24px;
-    color: var(--secondary);
+.statusDropdown {
+    width: 100%;
 }
 
-.breakWord {
-    word-break: break-word;
-}
-
-.noBreak {
-    word-break: keep-all;
+.clientName {
+    color: #001529;
+    /* white-space: nowrap; */
+    /* overflow: hidden; */
+    /* text-overflow: ellipsis; */
 }

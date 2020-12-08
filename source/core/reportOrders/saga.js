@@ -2,7 +2,6 @@
 import { call, put, all, take, select } from 'redux-saga/effects';
 
 //proj
-// import { setClientMRDsFetchingState } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
 // own
@@ -14,9 +13,10 @@ import {
     FETCH_REPORT_ORDERS,
 } from './duck';
 
-const selectFilter = ({ reportOrders: { filter, sort } }) => ({
+const selectFilter = ({ reportOrders: { filter, sort, options } }) => ({
     sort,
     filter,
+    options
 });
 
 export function* fetchReportOrdersSaga() {
@@ -26,15 +26,15 @@ export function* fetchReportOrdersSaga() {
             // yield put(setClientMRDsFetchingState(true));
 
             const {
-                filter
+                filter,
+                options
             } = yield select(selectFilter);
-            const filters = { ...filter};
 
             const data = yield call(
                 fetchAPI,
                 'GET',
                 `/report/orders`,
-                {filters},
+                {filters: {...filter}, options},
             );
             yield put(fetchReportOrdersSuccess(data));
         } finally {

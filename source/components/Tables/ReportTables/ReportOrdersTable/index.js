@@ -16,37 +16,39 @@ export class ReportOrdersTable extends Component {
 
         const {
             setIncludeServicesDiscount,
-            includeServicesDiscount
+            includeServicesDiscount,
+            filterControls,
+            filter,
         } = props;
 
         this.columns = columnsConfig({
             setIncludeServicesDiscount,
             includeServicesDiscount,
-            // openPrint: props.openPrint,
-            // openEdit:  props.openEdit,
-            // cashOrderEntity: this.state.cashOrderEntity,
+            filterControls,
+            filter
         });
     }
 
     _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
 
     render() {
-        // const { cashOrders, cashOrdersFetching, totalCount } = this.props;
         const {
             tableData,
+            stats,
+            filter,
+            filterControls
         } = this.props;
 
         const pagination = {
             pageSize:         25,
             size:             'large',
-            // total:            Math.ceil(this.props.totalCount / 25) * 25,
-            total:            100,
+            total:            Math.ceil(stats.totalRowsCount / 25) * 25,
             hideOnSinglePage: true,
-            // current:          this.props.filters.page,
-            // onChange:         page => {
-            //     this.props.setCashOrdersPage({ page });
-            //     this.props.fetchCashOrders();
-            // },
+            current:          filter.page,
+            onChange:         page => {
+                filterControls.setReportOrdersPage(page);
+                filterControls.fetchReportOrders();
+            },
         };
 
         return (
@@ -56,7 +58,6 @@ export class ReportOrdersTable extends Component {
                 columns={ this.columns }
                 pagination={ pagination }
                 dataSource={ tableData }
-                // loading={ cashOrdersFetching }
                 locale={ {
                     emptyText: <FormattedMessage id='no_data' />,
                 } }

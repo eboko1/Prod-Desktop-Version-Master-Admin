@@ -1,60 +1,282 @@
 // vendor
 import React from 'react';
-import { Icon, Checkbox } from 'antd';
+import { Input, Icon, Checkbox, DatePicker, Menu, Dropdown, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import moment from 'moment';
 
 // proj
 import { Numeral } from 'commons';
-import { FormattedDatetime } from 'components';
+import { FormattedDatetime, StorageDateFilter } from 'components';
 import book from 'routes/book';
 
 // own
 import Styles from './styles.m.css';
+import { start } from 'nprogress';
+
+const DEF_DATE_FORMAT = 'YYYY/MM/DD';
+const DEF_UI_DATE_FORMAT = 'DD/MM/YYYY';
+
+const statuses = {
+    required: 'transfer_required',
+    reserve: 'transfer_reserve',
+    not_complete: 'transfer_not_complete',
+    approve: 'transfer_approve',
+    progress: 'transfer_progress',
+    success: 'transfer_success',
+}
 
 
 /* eslint-disable complexity */
 export function columnsConfig(props) {
 
+    const {
+        filterControls,
+        filter,
+    } = props;
+
+    const {
+        fetchReportOrders,
+
+        setReportOrdersIncludeServicesDiscount,
+        setReportOrdersIncludeAppurtenanciesDiscount,
+        includeServicesDiscount,
+        includeAppurtenanciesDiscount,
+
+        setReportOrdersQuery,
+        setReportOrdersStatus,
+        setReportOrdersCreationFromDate,
+        setReportOrdersCreationToDate,
+        setReportOrdersAppointmentFromDate,
+        setReportOrdersAppointmentToDate,
+        setReportOrdersDoneFromDate,
+        setReportOrdersDoneToDate,
+    } = filterControls;
+
+    //Handlers---------------------------------------------------------------
+    function onIncludeLaborsDiscountChanged(e) {
+        setReportOrdersIncludeServicesDiscount(e.target.checked);
+        fetchReportOrders();
+    }
+
+    function onIncludeAppurtenanciesDiscountChanged(e) {
+        setReportOrdersIncludeAppurtenanciesDiscount(e.target.checked);
+        fetchReportOrders();
+    }
+
+    function onSearchInput(e) {
+        setReportOrdersQuery(e.target.value.toLowerCase().trim());
+        fetchReportOrders();
+    }
+
+    function onCreationFromDateChanged(date) {
+        setReportOrdersCreationFromDate(date? date.format(DEF_DATE_FORMAT): undefined);
+        fetchReportOrders();
+    }
+
+    function onCreationToDateChanged(date) {
+        setReportOrdersCreationToDate(date? date.format(DEF_DATE_FORMAT): undefined);
+        fetchReportOrders();
+    }
+
+    function onAppointmentFromDateChanged(date) {
+        setReportOrdersAppointmentFromDate(date? date.format(DEF_DATE_FORMAT): undefined);
+        fetchReportOrders();
+    }
+
+    function onAppointmentToDateChanged(date) {
+        setReportOrdersAppointmentToDate(date? date.format(DEF_DATE_FORMAT): undefined);
+        fetchReportOrders();
+    }
+
+    function onDoneFromDateChanged(date) {
+        setReportOrdersDoneFromDate(date? date.format(DEF_DATE_FORMAT): undefined);
+        fetchReportOrders();
+    }
+
+    function onDoneToDateChanged(date) {
+        setReportOrdersDoneToDate(date? date.format(DEF_DATE_FORMAT): undefined);
+        fetchReportOrders();
+    }
+
+    const setCreationDaterange = daterange => {
+        const [ startDate, endDate ] = daterange;
+        onCreationFromDateChanged(startDate);
+        onCreationToDateChanged(endDate);
+    };
+
+    const setAppointmentDaterange = daterange => {
+        const [ startDate, endDate ] = daterange;
+        onAppointmentFromDateChanged(startDate);
+        onAppointmentToDateChanged(endDate);
+    };
+
+    const setDoneDaterange = daterange => {
+        const [ startDate, endDate ] = daterange;
+        onDoneFromDateChanged(startDate);
+        onDoneToDateChanged(endDate);
+    };
+
+    const onSelectStatus = e => {
+        setReportOrdersStatus((e.key != 'reset')? e.key: undefined);
+        fetchReportOrders();
+    }
+
+    //-----------------------------------------------------------------------
+
+    const menu = (
+        <Menu onClick={onSelectStatus}>
+            <Menu.Item key="required">
+                <FormattedMessage id={statuses.required} />
+            </Menu.Item>
+            <Menu.Item key="reserve">
+                <FormattedMessage id={statuses.reserve} />
+            </Menu.Item>
+            <Menu.Item key="not_complete">
+                <FormattedMessage id={statuses.not_complete} />
+            </Menu.Item>
+            <Menu.Item key="approve">
+                <FormattedMessage id={statuses.approve} />
+            </Menu.Item>
+            <Menu.Item key="progress">
+                <FormattedMessage id={statuses.progress} />
+            </Menu.Item>
+            <Menu.Item key="success">
+                <FormattedMessage id={statuses.success} />
+            </Menu.Item>
+            <Menu.Item key="reset">
+                <FormattedMessage id='report-orders-table.reset' />
+            </Menu.Item>
+        </Menu>
+      );
+
+
     const noCol = {
-        title:     <FormattedMessage id='report-clients-table.no' />,
-        width: '4%',
-        render: (empty1, empty2, index) => ( <h4>{index+1}</h4>)
+        children: [
+            {
+                title:     <FormattedMessage id='report-orders-table.no' />,
+                align: 'left',
+                key: 'no',
+                width: '4%',
+                render: (empty1, empty2, index) => ( <h4>{index+1}</h4>)
+            }
+        ]
     };
 
     const orderNumCol = {
-        title:     <FormattedMessage id='report-clients-table.order_num' />,
-        dataIndex: 'orderNum',
-        render: (orderNum) => ( <h3>{orderNum}</h3>)
+        children: [
+            {
+                title:     <FormattedMessage id='report-orders-table.order_num' />,
+                align: 'left',
+                key: 'order_num',
+                dataIndex: 'orderNum',
+                render: (orderNum, elem) => ( <h3>
+                    <Link
+                        to={ `${book.order}/${elem.orderId}` }
+                    >
+                        {orderNum}
+                    </Link>
+                    
+                </h3>)
+            }
+        ]
     };
     
     const clientNameCol = {
-        title:     <FormattedMessage id='report-clients-table.client_name' />,
-        dataIndex: 'clientName',
-        render: (clientName) => ( <h3>{clientName}</h3>)
+        children: [
+            {
+                title:  <div className={Styles.filter_column_header_wrap}>
+                            <FormattedMessage id='report-orders-table.client_name' />
+                            <Input onChange={onSearchInput} placeholder="Search"/>
+                        </div>,
+                align: 'left',
+                // width: '20%',
+                key: 'client_name',
+                dataIndex: 'clientName',
+                render: (clientName, elem) => ( 
+                    <Link
+                        className={ Styles.clientName }
+                        to={`${book.client}/${elem.orderClientId}`}
+                    > {clientName} </Link>
+                )
+            }
+        ]
     };
     
     const statusCol = {
-        title:     <FormattedMessage id='report-clients-table.status' />,
-        dataIndex: 'orderStatus',
-        render: (orderStatus) => ( <h3>{orderStatus}</h3>)
+        children: [
+            {
+                title: <div className={Styles.filter_column_header_wrap}>
+                    <FormattedMessage id='report-orders-table.status' />
+                    <br />
+                    <Dropdown className={Styles.statusDropdown} overlay={menu}>
+                        <Button onClick={() => {console.log('click')}}>
+                            Status <Icon type="down" />
+                        </Button>
+                    </Dropdown>
+                </div>,
+                align: 'left',
+                key: 'status',
+                dataIndex: 'orderStatus',
+                render: (orderStatus) => ( <h3>{orderStatus}</h3>)
+            }
+        ]
     };
 
     const dateCol = {
-        title:     <FormattedMessage id='report-clients-table.date' />,
+        title:     <FormattedMessage id='report-orders-table.date' />,
+        key: 'date',
         children: [
             {
-                title: <FormattedMessage id='report-clients-table.creation_date' />,
+                // title: <FormattedMessage id='report-orders-table.creation_date' />,
+                title: <div  className={Styles.filter_column_header_wrap}>
+                    <FormattedMessage id='report-orders-table.creation_date' />
+                    <br />
+                    <div style={{display: 'flex', justifyContent: 'center'}}>
+                        <StorageDateFilter
+                            minimize
+                            dateRange={[moment(filter.creationFromDate), moment(filter.creationToDate)]}
+                            onDateChange={ setCreationDaterange }
+                        />
+                    </div>
+                </div>,
+                align: 'right',
+                key: 'creation_date',
                 dataIndex: 'orderDatetime',
                 render: (orderDatetime) => (<FormattedDatetime datetime={ orderDatetime } format={ 'DD.MM.YY HH:mm' } />)
             },
             {
-                title: <FormattedMessage id='report-clients-table.appointment_date' />,
+                // title: <FormattedMessage id='report-orders-table.appointment_date' />,
+                title: <div  className={Styles.filter_column_header_wrap}>
+                    <FormattedMessage id='report-orders-table.appointment_date' />
+                    <br />
+                    <div style={{display: 'flex', justifyContent: 'center'}}>
+                        <StorageDateFilter
+                            minimize
+                            dateRange={[moment(filter.appointmentFromDate), moment(filter.appointmentToDate)]}
+                            onDateChange={ setAppointmentDaterange }
+                        />
+                    </div>
+                </div>,
+                align: 'right',
+                key: 'appointment_date',
                 dataIndex: 'orderBeginDatetime',
                 render: (orderBeginDatetime) => (<FormattedDatetime datetime={ orderBeginDatetime } format={ 'DD.MM.YY HH:mm' } />)
             },
             {
-                title: <FormattedMessage id='report-clients-table.done_date' />,
+                title: <div  className={Styles.filter_column_header_wrap}>
+                    <FormattedMessage id='report-orders-table.done_date' />
+                    <br />
+                    <div style={{display: 'flex', justifyContent: 'center'}}>
+                        <StorageDateFilter
+                            minimize
+                            dateRange={[moment(filter.doneFromDate), moment(filter.doneToDate)]}
+                            onDateChange={ setDoneDaterange }
+                        />
+                    </div>
+                </div>,
+                align: 'right',
+                key: 'done_date',
                 dataIndex: 'orderSuccessDatetime',
                 render: (orderSuccessDatetime) => (<FormattedDatetime datetime={ orderSuccessDatetime } format={ 'DD.MM.YY HH:mm' } />)
             },
@@ -62,52 +284,93 @@ export function columnsConfig(props) {
     };
     
     const sumCol = {
-        title:     <FormattedMessage id='report-clients-table.sum' />,
+        title:     <FormattedMessage id='report-orders-table.sum' />,
         children: [
             {
-                title: <FormattedMessage id='report-clients-table.labors' />,
+                title: <div  className={Styles.filter_column_header_wrap}>
+                    <FormattedMessage id='report-orders-table.labors' />
+                    <br />
+                    <Checkbox defaultChecked={includeServicesDiscount} onChange={onIncludeLaborsDiscountChanged} />
+                </div>,
+                align: 'right',
+                key: 'labors',
                 dataIndex: 'orderServicesSum',
-                render: (orderServicesSum) => ( <h3>{orderServicesSum}</h3>)
+                render: (orderServicesSum) => ( <h3>{Number(orderServicesSum).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</h3>)
             },
             {
-                title: <FormattedMessage id='report-clients-table.spare_parts' />,
+                title: <div  className={Styles.filter_column_header_wrap}>
+                    <FormattedMessage id='report-orders-table.spare_parts' />
+                    <br />
+                    <Checkbox defaultChecked={includeAppurtenanciesDiscount} onChange={onIncludeAppurtenanciesDiscountChanged}/>
+                </div>,
+                align: 'right',
+                key: 'spare_parts',
                 dataIndex: 'orderAppurtenanciesSum',
-                render: (orderAppurtenanciesSum) => ( <h3>{orderAppurtenanciesSum}</h3>)
+                render: (orderAppurtenanciesSum) => ( <h3>{Number(orderAppurtenanciesSum).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</h3>)
             },
             {
-                title: <FormattedMessage id='report-clients-table.total' />,
-                // dataIndex: 'orderServicesSum',
-                render: (empty, elem) => ( <h3>{elem.orderServicesSum + elem.orderAppurtenanciesSum}</h3>)
+                title: <div  className={Styles.filter_column_header_wrap}>
+                    <FormattedMessage id='report-orders-table.total' />
+                    <br />
+                    <FormattedMessage id='report-orders-table.discount_filter' />
+                </div>,
+                align: 'right',
+                key: 'total',
+                render: (empty, elem) => ( <h3>{Number(elem.orderServicesSum + elem.orderAppurtenanciesSum).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</h3>)
             },
         ]
     };
 
     const profitCol = {
-        title:     <FormattedMessage id='report-clients-table.profit' />,
+        title:     <FormattedMessage id='report-orders-table.profit' />,
+        key: 'profit',
         children: [
             {
-                title: <FormattedMessage id='report-clients-table.labors' />,
+                title: <div   className={Styles.filter_column_header_wrap}>
+                    <FormattedMessage id='report-orders-table.labors' />
+                    <br />
+                    <Checkbox disabled/>
+                </div>,
+                align: 'right',
+                key: 'labors2',
                 dataIndex: 'profitServicesSum',
-                render: (profitServicesSum) => ( <h3>{profitServicesSum}</h3>)
+                render: (profitServicesSum) => ( <h3>{Number(profitServicesSum).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</h3>)
             },
             {
-                title: <FormattedMessage id='report-clients-table.spare_parts' />,
+                title: <div   className={Styles.filter_column_header_wrap}>
+                    <FormattedMessage id='report-orders-table.spare_parts' />
+                    <br />
+                    <Checkbox disabled/>
+                </div>,
+                align: 'right',
+                key: 'spare_parts2',
                 dataIndex: 'profitAppurtenanciesSum',
-                render: (profitAppurtenanciesSum) => ( <h3>{profitAppurtenanciesSum}</h3>)
+                render: (profitAppurtenanciesSum) => ( <h3>{Number(profitAppurtenanciesSum).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</h3>)
             },
             {
-                title: <FormattedMessage id='report-clients-table.total' />,
-                render: (empty, elem) => ( <h3>{elem.profitServicesSum + elem.profitAppurtenanciesSum}</h3>)
+                title: <div   className={Styles.filter_column_header_wrap}>
+                    <FormattedMessage id='report-orders-table.total' />
+                    <br />
+                    <FormattedMessage id='report-orders-table.salaries_filter' />
+                </div>,
+                align: 'right',
+                key: 'total2',
+                render: (empty, elem) => ( <h3>{Number(elem.profitServicesSum + elem.profitAppurtenanciesSum).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</h3>)
             },
         ]
     };
 
     //percentage
     const marginCol = {
-        title:     <FormattedMessage id='report-clients-table.margin' />,
+        title:     <FormattedMessage id='report-orders-table.margin' />,
+        key: 'margin',
         children: [
             {
-                title: <FormattedMessage id='report-clients-table.labors' />,
+                title: <div>
+                    <FormattedMessage id='report-orders-table.labors' />
+                </div>,
+                align: 'right',
+                key: 'labors3',
                 render: (empty, elem) => {
                     if(!elem.orderServicesSum || !elem.profitServicesSum) return "-";
 
@@ -121,7 +384,11 @@ export function columnsConfig(props) {
                 }
             },
             {
-                title: <FormattedMessage id='report-clients-table.spare_parts' />,
+                title: <div>
+                    <FormattedMessage id='report-orders-table.spare_parts' />
+                </div>,
+                align: 'right',
+                key: 'spare_parts3',
                 render: (empty, elem) => {
                     if(!elem.orderAppurtenanciesSum || !elem.profitAppurtenanciesSum) return "-";
 
@@ -135,7 +402,11 @@ export function columnsConfig(props) {
                 }
             },
             {
-                title: <FormattedMessage id='report-clients-table.total' />,
+                title: <div>
+                    <FormattedMessage id='report-orders-table.total' />
+                </div>,
+                align: 'right',
+                key: 'total3',
                 render: (empty, elem) => {
                     if((!elem.orderAppurtenanciesSum || !elem.profitAppurtenanciesSum) && (!elem.orderServicesSum || !elem.profitServicesSum)) return "-";
 
