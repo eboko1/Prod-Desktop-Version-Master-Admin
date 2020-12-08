@@ -138,7 +138,7 @@ export default class ComplexesModal extends React.Component{
                         element.name,
                     serviceId: element.id,
                     count: element.count,
-                    servicePrice: element.price,
+                    servicePrice: element.price ? Number(element.price) || 0,
                     serviceHours: element.normHours || 0,
                     comment: element.commentary,
                 })
