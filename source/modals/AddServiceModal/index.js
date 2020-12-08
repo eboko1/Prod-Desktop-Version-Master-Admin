@@ -194,7 +194,7 @@ class AddServiceModal extends React.Component{
                     return (
                         <Input
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
-                            disabled={elem.stage != 'INACTIVE'}
+                            disabled={this.state.editing && elem.stage != 'INACTIVE'}
                             style={{minWidth: 120}}
                             value={data}
                             onChange={(event)=>{
@@ -336,7 +336,7 @@ class AddServiceModal extends React.Component{
                 dataIndex: 'count',
                 width:     '3%',
                 render: (data, elem)=>{
-                    const value = data ? data.toFixed(2) : 1;
+                    const value = data ? Number(data).toFixed(2) : 1;
                     return (
                         <InputNumber
                             className={Styles.serviceNumberInput}
