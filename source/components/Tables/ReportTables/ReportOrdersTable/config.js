@@ -100,20 +100,23 @@ export function columnsConfig(props) {
 
     const setCreationDaterange = daterange => {
         const [ startDate, endDate ] = daterange;
-        onCreationFromDateChanged(startDate);
-        onCreationToDateChanged(endDate);
+        setReportOrdersCreationFromDate(startDate? startDate.format(DEF_DATE_FORMAT): undefined);
+        setReportOrdersCreationToDate(endDate? endDate.format(DEF_DATE_FORMAT): undefined);
+        fetchReportOrders();
     };
 
     const setAppointmentDaterange = daterange => {
         const [ startDate, endDate ] = daterange;
-        onAppointmentFromDateChanged(startDate);
-        onAppointmentToDateChanged(endDate);
+        setReportOrdersAppointmentFromDate(startDate? startDate.format(DEF_DATE_FORMAT): undefined);
+        setReportOrdersAppointmentToDate(endDate? endDate.format(DEF_DATE_FORMAT): undefined);
+        fetchReportOrders();
     };
 
     const setDoneDaterange = daterange => {
         const [ startDate, endDate ] = daterange;
-        onDoneFromDateChanged(startDate);
-        onDoneToDateChanged(endDate);
+        setReportOrdersDoneFromDate(startDate? startDate.format(DEF_DATE_FORMAT): undefined);
+        setReportOrdersDoneToDate(endDate? endDate.format(DEF_DATE_FORMAT): undefined);
+        fetchReportOrders();
     };
 
     const onSelectStatus = e => {
