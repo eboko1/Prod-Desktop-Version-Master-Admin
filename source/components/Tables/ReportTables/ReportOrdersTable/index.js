@@ -13,31 +13,27 @@ import Styles from './styles.m.css';
 export class ReportOrdersTable extends Component {
     constructor(props) {
         super(props);
-
-        const {
-            setIncludeServicesDiscount,
-            includeServicesDiscount,
-            filterControls,
-            filter,
-        } = props;
-
-        this.columns = columnsConfig({
-            setIncludeServicesDiscount,
-            includeServicesDiscount,
-            filterControls,
-            filter
-        });
     }
 
     _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
 
     render() {
         const {
+            setIncludeServicesDiscount,
+            includeServicesDiscount,
             tableData,
             stats,
             filter,
             filterControls
         } = this.props;
+
+        //We need to upade props (needed for child components)
+        this.columns = columnsConfig({
+            setIncludeServicesDiscount,
+            includeServicesDiscount,
+            filterControls,
+            filter: filter
+        });
 
         const pagination = {
             pageSize:         25,
