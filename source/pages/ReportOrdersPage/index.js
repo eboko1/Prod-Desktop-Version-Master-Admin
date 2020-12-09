@@ -84,11 +84,11 @@ export default class CashClientsDebtsPage extends Component {
 
         const totalSum = (parseInt(totalServicesSum) + parseInt(totalAppurtenanciesSum));
         const totalProfit = (parseInt(totalServicesProfit) + parseInt(totalAppurtenanciesProfit));
-        const totalLaborsMargin = ((totalServicesProfit*100.0)/totalServicesSum).toFixed(2);
-        const totalAppurtenanciesMargin = ((totalAppurtenanciesProfit*100.0)/totalAppurtenanciesSum).toFixed(2);
-        const totalMargin = (((totalProfit)/(totalSum))* 100.0).toFixed(2);
+        const totalLaborsMargin = ((totalServicesProfit*100.0)/totalServicesSum).toFixed(1);
+        const totalAppurtenanciesMargin = ((totalAppurtenanciesProfit*100.0)/totalAppurtenanciesSum).toFixed(1);
+        const totalMargin = (((totalProfit)/(totalSum))* 100.0).toFixed(1);
 
-        return <div>
+        return <div className={Styles.statsMainCont}>
             <div className={Styles.statsCont}>
                 <div className={Styles.statsBlock}>
                     <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.labors_sum'} /></div>
@@ -190,7 +190,9 @@ export default class CashClientsDebtsPage extends Component {
                 title={<FormattedMessage id="navigation.report_orders" />}
                 paper={false}
             >
-                {this.showStats(stats)}
+                <section>
+                    {this.showStats(stats)}
+                </section>
 
                 <ReportOrdersTable
                     stats={stats}

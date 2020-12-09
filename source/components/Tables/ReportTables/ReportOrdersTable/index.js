@@ -52,19 +52,22 @@ export class ReportOrdersTable extends Component {
         };
 
         return (
-            <Table
-                size='small'
-                className={ Styles.table }
-                columns={ this.columns }
-                pagination={ pagination }
-                dataSource={ tableData }
-                locale={ {
-                    emptyText: <FormattedMessage id='no_data' />,
-                } }
-                scroll={ { x: 1000 } }
-                rowKey={ record => record.id }
-                bordered
-            />
+            <div className={Styles.paper}>
+                <Table
+                    size='middle'
+                    // className={ Styles.table }
+                    columns={ this.columns }
+                    pagination={ pagination }
+                    dataSource={ tableData }
+                    locale={ {
+                        emptyText: <FormattedMessage id='no_data' />,
+                    } }
+                    scroll={ { x: 1000 } }
+                    // scroll={ { x: true, y: 'max-content' } }
+                    rowKey={ record => record.id }
+                    bordered
+                />
+            </div>
         );
     }
 }

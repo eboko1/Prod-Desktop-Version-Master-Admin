@@ -12,7 +12,6 @@ import book from 'routes/book';
 
 // own
 import Styles from './styles.m.css';
-import { start } from 'nprogress';
 
 const DEF_DATE_FORMAT = 'YYYY/MM/DD';
 const DEF_UI_DATE_FORMAT = 'DD/MM/YYYY';
@@ -228,7 +227,6 @@ export function columnsConfig(props) {
         key: 'date',
         children: [
             {
-                // title: <FormattedMessage id='report-orders-table.creation_date' />,
                 title: <div  className={Styles.filter_column_header_wrap}>
                     <FormattedMessage id='report-orders-table.creation_date' />
                     <br />
@@ -285,6 +283,7 @@ export function columnsConfig(props) {
     
     const sumCol = {
         title:     <FormattedMessage id='report-orders-table.sum' />,
+        key: 'sum',
         children: [
             {
                 title: <div  className={Styles.filter_column_header_wrap}>
@@ -295,7 +294,7 @@ export function columnsConfig(props) {
                 align: 'right',
                 key: 'labors',
                 dataIndex: 'orderServicesSum',
-                render: (orderServicesSum) => ( <h3>{Number(orderServicesSum).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</h3>)
+                render: (orderServicesSum) => ( <Numeral>{orderServicesSum}</Numeral>)
             },
             {
                 title: <div  className={Styles.filter_column_header_wrap}>
@@ -306,7 +305,7 @@ export function columnsConfig(props) {
                 align: 'right',
                 key: 'spare_parts',
                 dataIndex: 'orderAppurtenanciesSum',
-                render: (orderAppurtenanciesSum) => ( <h3>{Number(orderAppurtenanciesSum).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</h3>)
+                render: (orderAppurtenanciesSum) => ( <Numeral>{orderAppurtenanciesSum}</Numeral>)
             },
             {
                 title: <div  className={Styles.filter_column_header_wrap}>
@@ -316,7 +315,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'total',
-                render: (empty, elem) => ( <h3>{Number(elem.orderServicesSum + elem.orderAppurtenanciesSum).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</h3>)
+                render: (empty, elem) => ( <Numeral>{(elem.orderServicesSum + elem.orderAppurtenanciesSum)}</Numeral>)
             },
         ]
     };
@@ -334,7 +333,7 @@ export function columnsConfig(props) {
                 align: 'right',
                 key: 'labors2',
                 dataIndex: 'profitServicesSum',
-                render: (profitServicesSum) => ( <h3>{Number(profitServicesSum).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</h3>)
+                render: (profitServicesSum) => ( <Numeral>{profitServicesSum}</Numeral>)
             },
             {
                 title: <div   className={Styles.filter_column_header_wrap}>
@@ -345,7 +344,7 @@ export function columnsConfig(props) {
                 align: 'right',
                 key: 'spare_parts2',
                 dataIndex: 'profitAppurtenanciesSum',
-                render: (profitAppurtenanciesSum) => ( <h3>{Number(profitAppurtenanciesSum).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</h3>)
+                render: (profitAppurtenanciesSum) => ( <Numeral>{profitAppurtenanciesSum}</Numeral>)
             },
             {
                 title: <div   className={Styles.filter_column_header_wrap}>
@@ -355,7 +354,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'total2',
-                render: (empty, elem) => ( <h3>{Number(elem.profitServicesSum + elem.profitAppurtenanciesSum).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</h3>)
+                render: (empty, elem) => (<Numeral>{(elem.profitServicesSum + elem.profitAppurtenanciesSum)}</Numeral>)
             },
         ]
     };
@@ -377,7 +376,7 @@ export function columnsConfig(props) {
                     const val = (elem.profitServicesSum * 100)/elem.orderServicesSum;
                     return  <span>
                         { val ? 
-                            Number(val).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            Number(val).toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             : 0
                         }
                     </span>
@@ -395,7 +394,7 @@ export function columnsConfig(props) {
                     const val = (elem.profitAppurtenanciesSum * 100)/elem.orderAppurtenanciesSum;
                     return  <span>
                         { val ? 
-                            Number(val).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            Number(val).toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             : 0
                         }
                     </span>
@@ -413,7 +412,7 @@ export function columnsConfig(props) {
                     const val = ((elem.profitAppurtenanciesSum + elem.profitServicesSum) * 100)/(elem.orderServicesSum + elem.orderAppurtenanciesSum);
                     return <span>
                         { val ? 
-                            Number(val).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            Number(val).toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             : 0
                         }
                     </span>

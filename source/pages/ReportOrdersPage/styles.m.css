@@ -1,25 +1,35 @@
-.buttonGroup {
-    display: flex;
-    align-items: center;
-
-    & > button {
-        margin: 0 4px;
-    }
+.mainCont {
+    background-color: white;
 }
 
-.printIcon {
-    font-size: 32px;
-    color: var(--primary);
-    cursor: pointer;
+.statsMainCont {
+    /* position: relative; */
+    background-color: white;
+    height: 120px;
+    width: 100%;
 }
 
-.filters {
+.statsCont{
     display: flex;
-    position: fixed;
-    flex-direction: column;
+    flex-direction: row;
+    background-color: white;
     justify-content: space-between;
+    position: fixed;
+    z-index: 210;
+    min-width: calc(100% - 256px);
+    /* height: 95px; */
+    /* width: 100%; */
+
     overflow: initial;
     box-sizing: border-box;
+    /* padding: 16px; */
+    margin-bottom: 24px;
+
+    /* display: flex;
+    position: fixed;
+    flex-direction: row;
+    justify-content: space-between;
+    
     background-color: rgb(255, 255, 255);
     padding: 16px;
     margin-bottom: 24px;
@@ -29,40 +39,7 @@
         rgba(0, 0, 0, 0.23) 0px 3px 10px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     /* width: calc(100% - 310px); */
-    top: 128px;
-}
-
-.filtersCollapsed {
-    width: calc(100% - 80px);
-}
-
-@media screen and (max-width: 1199px) {
-    .filtersCollapsed {
-        width: 100%;
-    }
-}
-
-.content {
-    margin: 172px 16px 0;
-}
-
-.filter {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-}
-
-.search {
-    flex: 0 1 40%;
-    margin-bottom: 20px;
-}
-
-.statsCont{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    /* height: 95px; */
-    /* width: 100%; */
+    /* top: 128px; */
 }
 
 .statsBlock{
