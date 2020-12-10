@@ -209,7 +209,6 @@ class WarehousesPage extends Component {
 
     render() {
         const { warehouses, isMain, isReserve, isTool, isRepairArea, editMode, warehouse, modalVisible } = this.state;
-        console.log(this);
         return (
             <Layout
                 title={ <FormattedMessage id='navigation.warehouses' /> }

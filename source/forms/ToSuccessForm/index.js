@@ -231,7 +231,7 @@ export class ToSuccessForm extends Component {
                             initialValue={
                                 getFieldValue("withPayment")
                                     ? void 0
-                                    : remainPrice
+                                    : Math.round(remainPrice*100)/100
                             }
                             rules={[
                                 {

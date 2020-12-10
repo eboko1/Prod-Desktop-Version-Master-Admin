@@ -109,7 +109,6 @@ class AddOrderPage extends Component {
                 );*/
 
                 const redirectToDashboard = false;
-
                 this.props.createOrder({
                     order: convertFieldsValuesToDbEntity(
                         orderFormEntity,

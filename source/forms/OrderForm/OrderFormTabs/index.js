@@ -129,10 +129,10 @@ export default class OrderFormTabs extends React.PureComponent {
         this.setState({
             activeKey: tab,
             action: action,
-        })
+        });
     }
 
-    async componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps, prevState) {
         if(!prevProps.showOilModal && this.props.showOilModal) {
             this.setState({
                 activeKey: 'details',
@@ -147,6 +147,9 @@ export default class OrderFormTabs extends React.PureComponent {
         }
         if(!this.state.detailsTreeData.length) {
             this.buildStoreGroupsTree();
+        }
+        if(prevState.action) {
+            this.setState({action: undefined});
         }
     }
 
@@ -224,6 +227,12 @@ export default class OrderFormTabs extends React.PureComponent {
             fetchRepairMapData
         } = this.props;
 
+        var orderServicesSize = 0,
+            orderDetailsSize = 0;
+
+        orderServices.map((x)=>{if(x.id) orderServicesSize++});
+        orderDetails.map((x)=>{if(x.id) orderDetailsSize++});
+
         const {
             ACCESS_ORDER_HISTORY,
             ACCESS_ORDER_CALLS,
@@ -284,7 +293,7 @@ export default class OrderFormTabs extends React.PureComponent {
                     this.setState({
                         activeKey: key,
                         action: undefined,
-                    })
+                    });
                 }}
             >
                 {!addOrderForm && (
@@ -348,7 +357,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         tab={`${formatMessage({
                             id: "add_order_form.services",
                             defaultMessage: "Services",
-                        })} (${orderServices.length})`}
+                        })} (${orderServicesSize})`}
                         key="services"
                     >
                         <ServicesTable
@@ -403,7 +412,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         tab={`${formatMessage({
                             id: "add_order_form.details",
                             defaultMessage: "Details",
-                        })} (${orderDetails.length})`}
+                        })} (${orderDetailsSize})`}
                         key="details"
                     >
                         <DetailsTable
