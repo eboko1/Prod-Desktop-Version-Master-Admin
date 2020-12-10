@@ -319,6 +319,41 @@ export class AbstractClientForm extends Component {
                                     }
                                 />
                             </Col>
+                            <Col span={8}>
+                                <DecoratedSelect
+                                    field="source"
+                                    initialValue={_.get(client, "source")}
+                                    formItem
+                                    hasFeedback
+                                    getFieldDecorator={getFieldDecorator}
+                                    getPopupContainer={trigger =>
+                                        trigger.parentNode
+                                    }
+                                    label={
+                                        <FormattedMessage id="add_client_form.source" />
+                                    }
+                                    options={[
+                                        {
+                                            id: "CAR_BOOK",
+                                            title: "CarBook",
+                                        },
+                                        {
+                                            id: "GOOGLE",
+                                            title: "Google",
+                                        },
+                                        {
+                                            id: "FACEBOOK",
+                                            title: "Facebook",
+                                        },
+                                        {
+                                            id: "OTHER",
+                                            title: this.props.intl.formatMessage({id:"other"}),
+                                        },
+                                    ]}
+                                    optionValue="id"
+                                    optionLabel="title"
+                                />
+                            </Col>
                         </Row>
                     </>
                 ) : (

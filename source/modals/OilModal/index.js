@@ -600,7 +600,6 @@ class OilModal extends React.Component{
                 brandOptions.sort((a, b) => a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
                 productNameOptions.sort((a, b) => a < b ? -1 : (a > b ? 1 : 0));
                 codeOptions.sort((a, b) => a < b ? -1 : (a > b ? 1 : 0));
-                console.log(data, productNameOptions);
                 that.setState({
                     codeOptions: codeOptions,
                     brandOptions: brandOptions,
