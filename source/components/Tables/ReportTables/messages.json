@@ -16,7 +16,8 @@
     "report-orders-table.margin": "Margin %",
     "report-orders-table.discount_filter": "discount",
     "report-orders-table.salaries_filter": "salaries",
-    "report-orders-table.reset": "Reset"
+    "report-orders-table.reset": "Reset",
+    "report-orders-table.unknown_status": "UNKNOWN"
   },
   "ru": {
     "report-orders-table.client_name": "Клиент",
@@ -35,7 +36,8 @@
     "report-orders-table.margin": "Маржа %",
     "report-orders-table.discount_filter": "скидки",
     "report-orders-table.salaries_filter": "зарплаты",
-    "report-orders-table.reset": "Сбросить"
+    "report-orders-table.reset": "Сбросить",
+    "report-orders-table.unknown_status": "НЕИЗВЕСТНЫЙ"
   },
   "uk": {
     "report-orders-table.client_name": "Клієнт",
@@ -54,6 +56,7 @@
     "report-orders-table.margin": "Маржа %",
     "report-orders-table.discount_filter": "знижки",
     "report-orders-table.salaries_filter": "зарплати",
-    "report-orders-table.reset": "Скинути"
+    "report-orders-table.reset": "Скинути",
+    "report-orders-table.unknown_status": "НЕВІДОМИЙ"
   }
 }
