@@ -55,6 +55,10 @@ import {
     NewDocumentPage,
     SupplierPage,
     RepairMapSettingPage,
+    LocationSettingsPage,
+    LocationsDocumentPage,
+    LocationsVehiclesPage,
+    LocationsMovementPage
 } from 'pages';
 import book from './book';
 
@@ -234,6 +238,27 @@ export default class Private extends Component {
                     exact
                     path={ book.repairMapSetting }
                     render={ props => <RepairMapSettingPage { ...props } /> }
+                />
+                { /* Locations */ }
+                <Route
+                    exact
+                    component={ LocationSettingsPage }
+                    path={ book.locationSettings }
+                />
+                <Route
+                    exact
+                    component={ LocationsDocumentPage }
+                    path={ book.locationsDocument }
+                />
+                <Route
+                    exact
+                    component={ LocationsVehiclesPage }
+                    path={ book.locationsVehicles }
+                />
+                <Route
+                    exact
+                    component={ LocationsMovementPage }
+                    path={ book.locationsMovement }
                 />
                 { /* Statistics */ }
                 <Route

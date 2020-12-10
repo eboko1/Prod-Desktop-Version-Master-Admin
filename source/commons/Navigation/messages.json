@@ -62,7 +62,12 @@
     "navigation.subscription_history": "Subscription History",
     "navigation.diagnostic_patterns": "Diagnostic patterns",
     "navigation.availabilities": "Availability settings",
-    "navigation.repair_map": "Repair map"
+    "navigation.repair_map": "Repair map",
+    "navigation.locations": "Locations",
+    "navigation.locations_settings": "Locations Settings",
+    "navigation.locations_document": "Locations Documents",
+    "navigation.locations_vehicles": "Locations Vehicles",
+    "navigation.locations_movement": "Vehicles Movement"
   },
   "ru": {
     "navigation.operations": "Операции",
@@ -127,7 +132,12 @@
     "navigation.subscription_history": "История подписок",
     "navigation.diagnostic_patterns": "Шаблоны диагностики",
     "navigation.availabilities": "Настройки наличия",
-    "navigation.repair_map": "Технологическая карта"
+    "navigation.repair_map": "Технологическая карта",
+    "navigation.locations": "Локации",
+    "navigation.locations_settings": "Настройки локаций",
+    "navigation.locations_document": "Документы локаций",
+    "navigation.locations_vehicles": "Авто на локациях",
+    "navigation.locations_movement": "Движение Авто по локациям"
   },
   "uk": {
     "navigation.operations": "Операції",
@@ -192,6 +202,11 @@
     "navigation.subscription_history": "Історія підписок",
     "navigation.diagnostic_patterns": "Шаблони діагностики",
     "navigation.availabilities": "Налаштування наявності",
-    "navigation.repair_map": "Карта ремонту"
+    "navigation.repair_map": "Карта ремонту",
+    "navigation.locations": "Локації",
+    "navigation.locations_settings": "Налаштування локацій",
+    "navigation.locations_document": "Документи локацій",
+    "navigation.locations_vehicles": "Авто по локаціям",
+    "navigation.locations_movement": "Рух Авто по локаціям"
   }
 }

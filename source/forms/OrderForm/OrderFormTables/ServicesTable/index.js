@@ -706,8 +706,7 @@ class ServicesTable extends Component {
     render() {
         if (
             this.state.dataSource.length == 0 ||
-            this.state.dataSource[ this.state.dataSource.length - 1 ]
-                .serviceName != undefined
+            this.state.dataSource[ this.state.dataSource.length - 1 ].serviceName != undefined 
         ) {
             this.state.dataSource.push({
                 key:         this.state.dataSource.length,

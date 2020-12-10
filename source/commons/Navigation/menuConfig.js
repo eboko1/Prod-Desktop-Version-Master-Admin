@@ -197,6 +197,34 @@ export default {
                 },
             ],
         },
+        /* Locations */
+        {
+            key:      'locations',
+            iconType: 'heat-map',
+            name:     'navigation.locations',
+            items:    [
+                {
+                    key:      '/location-settings',
+                    link: book.locationSettings,
+                    name: 'navigation.locations_settings',
+                },
+                {
+                    key:      '/location-document',
+                    link: book.locationsDocument,
+                    name: 'navigation.locations_document',
+                },
+                {
+                    key:      '/location-vehicles',
+                    link: book.locationsVehicles,
+                    name: 'navigation.locations_vehicles',
+                },
+                {
+                    key:      '/location-movement',
+                    link: book.locationsMovement,
+                    name: 'navigation.locations_movement',
+                },
+            ],
+        },
         /* Statistics submenu */
         {
             key:      'reports',

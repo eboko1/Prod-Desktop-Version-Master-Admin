@@ -292,8 +292,21 @@ export const requiredFieldsOnStatuses = values => {
             'services',
             'details', 
         ],
-        not_complete: [ 'manager', 'services', 'details' ],
-        required:     [ 'manager', 'services', 'details' ],
+        not_complete: [ 
+            'manager',
+            'services',
+            'details',
+            'station',
+            'stationLoads[0].beginDate',
+            'stationLoads[0].beginTime', 
+        ],
+        required:     [ 
+            'manager', 
+            'services', 
+            'details', 
+            'stationLoads[0].beginDate',
+            'stationLoads[0].beginTime', 
+        ],
         reserve:      [
             'stationLoads[0].beginDate',
             'stationLoads[0].beginTime',

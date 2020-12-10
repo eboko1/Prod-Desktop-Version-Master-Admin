@@ -81,7 +81,7 @@ export default class RepairMapTable extends Component {
                 break;
             case DIAGNOSTICS_ADD:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
-                setActiveTab('diagnostic');
+                setActiveTab('diagnostic', DIAGNOSTICS_ADD);
                 break;
             case DIAGNOSTICS_ELEMENTS: 
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
@@ -148,7 +148,7 @@ export default class RepairMapTable extends Component {
                 break;
             case PRINT_ACT_OF_ACCEPTANCE:
                 download({
-                    link: `/orders/reports/actOfAcceptanceReport/${orderId}`,
+                    link: `/orders/reports/actOfAcceptanceReport/${orderId}?reverse=true`,
                     name: 'actOfAcceptanceReport'
                 });
                 break;

@@ -79,6 +79,13 @@ const book = Object.freeze({
     storageIncomeDocId:       '/income-document/:id',
     repairMapSetting:         '/repair-map',
     //
+    // Locations
+    //
+    locationSettings:         '/location-settings',
+    locationsDocument:        '/location-document',
+    locationsVehicles:        '/location-vehicles',
+    locationsMovement:        '/location-movement',
+    //
     // Statistics
     //
     chart:                    '/chart',
