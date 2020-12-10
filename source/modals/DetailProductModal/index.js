@@ -830,7 +830,7 @@ class DetailProductModal extends React.Component{
         this.setState({});
     }
 
-    setVinDetail(code, name) {
+    setVinDetail(code, name, key, related) {
         this.state.mainTableSource[0].detailName = name;
         this.state.mainTableSource[0].detailCode = code;
         
