@@ -14,13 +14,13 @@
     flex-direction: row;
     background-color: white;
     justify-content: space-between;
-    position: fixed;
-    z-index: 210;
-    min-width: calc(100% - 256px);
+    /* position: fixed; */
+    /* z-index: 210; */
+    /* min-width: calc(100% - 256px); */
     /* height: 95px; */
     /* width: 100%; */
 
-    overflow: initial;
+    /* overflow: initial; */
     box-sizing: border-box;
     /* padding: 16px; */
     margin-bottom: 24px;
