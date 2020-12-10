@@ -51,13 +51,14 @@ export class ReportOrdersTable extends Component {
             <div className={Styles.paper}>
                 <Table
                     size='middle'
+                    className={Styles.table}
                     columns={ this.columns }
                     pagination={ pagination }
                     dataSource={ tableData }
                     locale={ {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
-                    scroll={ { y: '50vh' } }
+                    scroll={ { x: '1000', y: '50vh' } }
                     rowKey={ record => record.id }
                     bordered
                 />
