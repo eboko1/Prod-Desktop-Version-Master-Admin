@@ -1,0 +1,42 @@
+.modalTitle {
+	font-size: 16px;
+	font-weight: 500;
+	text-align: center;
+    padding: 12px 0;
+}
+
+.modalContent {
+	margin: 8px 0 24px;
+
+	& > div {
+		margin: 8px 0;
+	}
+}
+
+.locationPrintWrapper {
+	display: flex;
+	justify-content: space-between;	
+	align-items: center;
+}
+
+.locationWrapper {
+	display: flex;
+	align-items: center;
+
+	& > div {
+		min-width: 140px;
+		margin-left: 8px;
+	}
+}
+
+.printWrapper {
+	text-align: end;
+}
+
+.modalButton {
+	text-align: center;
+
+	& > button {
+		width: 60%;
+	}
+}

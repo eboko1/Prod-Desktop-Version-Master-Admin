@@ -32,6 +32,11 @@ export default {
                     name: 'navigation.workflow',
                 },
                 {
+                    key:      '/locations',
+                    link:      book.locationsPage,
+                    name:      'navigation.locations',
+                },
+                {
                     key:      '/mytasks',
                     link:     book.myTasksPage,
                     disabled: user => isForbidden(user, permissions.GET_TASKS),
@@ -115,6 +120,11 @@ export default {
                     key:      '/repair-map',
                     link: book.repairMapSetting,
                     name: 'navigation.repair_map',
+                },
+                {
+                    key:      '/location-settings',
+                    link: book.locationSettings,
+                    name: 'navigation.locations_settings',
                 },
             ],
         },
@@ -204,17 +214,12 @@ export default {
                 },
             ],
         },
-        /* Locations */
+        /* Locations 
         {
             key:      'locations',
             iconType: 'heat-map',
             name:     'navigation.locations',
             items:    [
-                {
-                    key:      '/location-settings',
-                    link: book.locationSettings,
-                    name: 'navigation.locations_settings',
-                },
                 {
                     key:      '/location-document',
                     link: book.locationsDocument,
