@@ -51,3 +51,11 @@
 .clientName {
     color: #001529;
 }
+
+.clientVehicle {
+    color: var(--text4);
+}
+
+.clientPhone {
+    color: var(--link);
+}

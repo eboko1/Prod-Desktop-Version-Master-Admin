@@ -235,11 +235,27 @@ export function columnsConfig(props) {
                 key: 'client_name',
                 width: defWidth.client_name,
                 dataIndex: 'clientName',
-                render: (clientName, elem) => ( 
-                    <Link
-                        className={ Styles.clientName }
-                        to={`${book.client}/${elem.orderClientId}`}
-                    > {clientName} </Link>
+                render: (clientName, elem) => (
+                    <div>
+                        <div className={ Styles.clientName }>
+                            <Link
+                                className={ Styles.clientName }
+                                to={`${book.client}/${elem.orderClientId}`}
+                            > {clientName} </Link>
+                        </div>
+                        <div className={ Styles.clientVehicle }>
+                            { `${elem.vehicleMake ||
+                                '-'} ${elem.vehicleModel ||
+                                '-'} ${elem.vehicleYear || '-'}` }
+                        </div>
+                        <a
+                            className={ Styles.clientPhone }
+                            href={ `tel:${elem.clientPhone}` }
+                        >
+                            { elem.clientPhone || '-' }
+                        </a>
+                    </div>
+                    
                 )
             }
         ]
