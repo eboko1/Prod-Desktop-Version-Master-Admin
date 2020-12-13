@@ -1,6 +1,17 @@
 .table {
     background-color: white;
-    
+    min-width: 0 !important;
+}
+
+.table :global(.ant-table-header) {
+    text-transform: uppercase;
+    min-width: 0 !important;
+}
+
+.table :global(.ant-pagination) {
+    float: none;
+    justify-content: center;
+    display: flex;
 }
 
 .paper {
@@ -17,12 +28,18 @@
     flex-direction: column;
 }
 
-.filter_column_header_wrap{
+.filterColumnHeaderWrap{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 95px;
     width: 100%;
+}
+
+.filterColumnText {
+    text-transform: lowercase;
+    color: rgba(0, 0, 0, 0.5);
+    align-self: flex-start;
 }
 
 .statusDropdown {
@@ -31,7 +48,4 @@
 
 .clientName {
     color: #001529;
-    /* white-space: nowrap; */
-    /* overflow: hidden; */
-    /* text-overflow: ellipsis; */
 }

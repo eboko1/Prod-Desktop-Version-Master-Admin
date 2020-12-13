@@ -200,7 +200,7 @@ export function columnsConfig(props) {
     const clientNameCol = {
         children: [
             {
-                title:  <div className={Styles.filter_column_header_wrap}>
+                title:  <div className={Styles.filterColumnHeaderWrap}>
                             <FormattedMessage id='report-orders-table.client_name' />
                             <Input onChange={onSearchInput} placeholder="Search"/>
                         </div>,
@@ -221,7 +221,7 @@ export function columnsConfig(props) {
     const statusCol = {
         children: [
             {
-                title: <div className={Styles.filter_column_header_wrap}>
+                title: <div className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.status' />
                     <br />
                     <Dropdown className={Styles.statusDropdown} overlay={menu}>
@@ -243,7 +243,7 @@ export function columnsConfig(props) {
         key: 'date',
         children: [
             {
-                title: <div  className={Styles.filter_column_header_wrap}>
+                title: <div  className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.creation_date' />
                     <br />
                     <div style={{display: 'flex', justifyContent: 'center'}}>
@@ -261,7 +261,7 @@ export function columnsConfig(props) {
             },
             {
                 // title: <FormattedMessage id='report-orders-table.appointment_date' />,
-                title: <div  className={Styles.filter_column_header_wrap}>
+                title: <div  className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.appointment_date' />
                     <br />
                     <div style={{display: 'flex', justifyContent: 'center'}}>
@@ -278,7 +278,7 @@ export function columnsConfig(props) {
                 render: (orderBeginDatetime) => (<FormattedDatetime datetime={ orderBeginDatetime } format={ 'DD.MM.YY HH:mm' } />)
             },
             {
-                title: <div  className={Styles.filter_column_header_wrap}>
+                title: <div  className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.done_date' />
                     <br />
                     <div style={{display: 'flex', justifyContent: 'center'}}>
@@ -302,7 +302,7 @@ export function columnsConfig(props) {
         key: 'sum',
         children: [
             {
-                title: <div  className={Styles.filter_column_header_wrap}>
+                title: <div  className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.labors' />
                     <br />
                     <Checkbox defaultChecked={includeServicesDiscount} onChange={onIncludeLaborsDiscountChanged} />
@@ -313,7 +313,7 @@ export function columnsConfig(props) {
                 render: (orderServicesSum) => ( <Numeral>{orderServicesSum}</Numeral>)
             },
             {
-                title: <div  className={Styles.filter_column_header_wrap}>
+                title: <div  className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.spare_parts' />
                     <br />
                     <Checkbox defaultChecked={includeAppurtenanciesDiscount} onChange={onIncludeAppurtenanciesDiscountChanged}/>
@@ -324,10 +324,10 @@ export function columnsConfig(props) {
                 render: (orderAppurtenanciesSum) => ( <Numeral>{orderAppurtenanciesSum}</Numeral>)
             },
             {
-                title: <div  className={Styles.filter_column_header_wrap}>
+                title: <div  className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.total' />
                     <br />
-                    <FormattedMessage id='report-orders-table.discount_filter' />
+                    <div className={Styles.filterColumnText}><FormattedMessage id='report-orders-table.discount_filter' /></div>
                 </div>,
                 align: 'right',
                 key: 'total',
@@ -341,7 +341,7 @@ export function columnsConfig(props) {
         key: 'profit',
         children: [
             {
-                title: <div   className={Styles.filter_column_header_wrap}>
+                title: <div   className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.labors' />
                     <br />
                     <Checkbox disabled/>
@@ -352,7 +352,7 @@ export function columnsConfig(props) {
                 render: (profitServicesSum) => ( <Numeral>{profitServicesSum}</Numeral>)
             },
             {
-                title: <div   className={Styles.filter_column_header_wrap}>
+                title: <div   className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.spare_parts' />
                     <br />
                     <Checkbox disabled/>
@@ -363,10 +363,10 @@ export function columnsConfig(props) {
                 render: (profitAppurtenanciesSum) => ( <Numeral>{profitAppurtenanciesSum}</Numeral>)
             },
             {
-                title: <div   className={Styles.filter_column_header_wrap}>
+                title: <div   className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.total' />
                     <br />
-                    <FormattedMessage id='report-orders-table.salaries_filter' />
+                    <div className={Styles.filterColumnText}><FormattedMessage id='report-orders-table.salaries_filter' /></div>
                 </div>,
                 align: 'right',
                 key: 'total2',
