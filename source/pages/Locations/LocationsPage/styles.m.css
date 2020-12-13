@@ -1,0 +1,27 @@
+.header {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 24px;
+}
+
+.headerBlock {
+	border: 1px solid var(--primary);
+	flex: 1 1 auto;
+	text-align: center;
+	padding: 16px;
+	line-height: 24px;
+}
+
+.dateBlock {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.numberColumn {
+	text-align: right;
+}
+
+.countLink {
+	text-decoration: underline;
+}

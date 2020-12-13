@@ -206,6 +206,7 @@ export default class OrdersPage extends Component {
             <StorageDateFilter
                 dateRange={this.props.daterange}
                 onDateChange={ this._setOrdersDaterange }
+                minimize
             />
         );
     };

@@ -4,10 +4,6 @@ import moment from 'moment';
 import styled from 'styled-components';
 
 const DashboardTimeline = ({ schedule }) => {
-    console.log(
-        "(", ~~moment().format('H'), '-', schedule.beginHour, '+', moment().format('m'), '/', 60, ")", '*', 60, '+', 50, "END",
-        (moment().format('H') - schedule.beginHour + moment().format('m') / 60) * 60 + 50
-        )
     if (
         ~~moment().format('H') >= schedule.beginHour &&
         ~~moment().format('H') <= schedule.endHour

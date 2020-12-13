@@ -10,14 +10,13 @@ import moment from 'moment';
 
 // proj
 import { Layout } from 'commons';
-import book from 'routes/book';
 import { StorageDateFilter } from 'components';
 import { VehicleLocationModal } from 'modals';
 // own
 const Option = Select.Option;
 
 @injectIntl
-export default class LocationsVehiclesPage extends Component {
+export default class LocationHistoryModal extends Component {
     constructor(props) {
         super(props);
         this.state={
@@ -26,10 +25,6 @@ export default class LocationsVehiclesPage extends Component {
             dataSource: [],
             loading: false,
             currentPage: 1,
-            paginationTotal: 0,
-            modalVisible: false,
-            modalVehicleId: undefined,
-            modalCurrentLocation: undefined,
         };
 
         this.columns = [
@@ -62,8 +57,8 @@ export default class LocationsVehiclesPage extends Component {
                 }
             },
             {
-                title:     <FormattedMessage id='locations.time'/>,
-                key:       'time',
+                title:     <FormattedMessage id='locations.arrival'/>,
+                key:       'arrival',
                 render:    (data, row)=> {
                     return (
                         moment().format('DD HH')
@@ -71,42 +66,20 @@ export default class LocationsVehiclesPage extends Component {
                 }
             },
             {
-                key:       'action',
-                width:     'min-content',
-                render: (data)=>{
+                title:     <FormattedMessage id='locations.departure'/>,
+                key:       'departure',
+                render:    (data, row)=> {
                     return (
-                        <Button
-                            type={'primary'}
-                            onClick={()=>{
-                                this.setState({
-                                    modalVisible: true,
-                                    modalVehicleId: data.id,
-                                    modalCurrentLocation: data.businessLocation.id,
-                                })
-                            }}
-                        >
-                            <FormattedMessage id='locations.action'/>
-                        </Button>
+                        moment().format('DD HH')
                     )
                 }
             },
             {
-                key:       'history',
-                width:     'min-content',
-                render: (row)=>{
+                title:     <FormattedMessage id='locations.duration'/>,
+                key:       'duration',
+                render:    (data, row)=> {
                     return (
-                        <Link
-                            to={ {
-                                pathname: book.locationsMovement,
-                                state:    {vehicleId: row.clientVehicleId},
-                            } }
-                        >
-                            <Button
-                                type={'primary'}
-                            >
-                                <FormattedMessage id='locations.history'/>
-                            </Button>
-                        </Link>
+                        moment().format('DD HH')
                     )
                 }
             },
@@ -180,20 +153,33 @@ export default class LocationsVehiclesPage extends Component {
         });
     }
 
+    handleCancel = () => {
+        this.setState({
+            locationId: undefined,
+            dataSource: [],
+            loading: false,
+            currentPage: 1,
+        });
+        this.props.hideModal();
+    }
+
     componentDidMount() {
         this.getLocations();
-        if(this.props.location.state) {
+    }
+
+    componentDidUpdate(prevProps) {
+        if(this.props.visible && !prevProps.visible) {
             this.setState({
-                locationId: this.props.location.state.locationId,
+                locationId: this.props.selectedLocation,
             });
-            this.fetchData(this.props.location.state.locationId);
-        } else {
-            this.fetchData();
+            this.fetchData(this.props.selectedLocation);
         }
     }
 
+
     render() {
-        const { loading, locations, locationId, dataSource, currentPage, paginationTotal, modalVisible, modalVehicleId, modalCurrentLocation } = this.state;
+        const { loading, dataSource, locations, locationId, currentPage, paginationTotal } = this.state;
+        const { visible, hideModal } = this.props;
 
         const pagination = {
             total: paginationTotal,
@@ -207,29 +193,20 @@ export default class LocationsVehiclesPage extends Component {
         }
 
         return (
-            <Layout
-                title={ <FormattedMessage id='navigation.locations_vehicles' /> }
-                description={
+            <Modal
+                visible={visible}
+                title={<FormattedMessage id='locations.vehicles_location_history'/>}
+                width={'80%'}
+                onCancel={this.handleCancel}
+            >
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 24}}>
                     <div>
-                        {moment().format('DD.MM.YY')}
-                    </div>
-                }
-                controls={
-                    <div style={{display: 'flex'}}>
-                    <div>
-                        
-                        <StorageDateFilter
-                            // dateRange={}
-                            // onDateChange={}
-                            minimize
-                            style={{margin: '0 8px'}}
-                        />
-                    </div>
                     <Select
                         showSearch
                         value={locationId}
                         style={{width: 220}}
                         placeholder={this.props.intl.formatMessage({id: 'location'})}
+                        dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                         onChange={(value)=>{
                             this.setState({
                                 locationId: value,
@@ -247,29 +224,19 @@ export default class LocationsVehiclesPage extends Component {
                             </Option>
                         )}
                     </Select>
+                    </div>
+                    <StorageDateFilter
+                        // dateRange={}
+                        // onDateChange={}
+                    />
                 </div>
-                }
-            >
                 <Table
                     loading={ loading }
                     columns={ this.columns }
                     dataSource={ dataSource }
                     pagination={ pagination }
                 />
-                <VehicleLocationModal
-                    visible={modalVisible}
-                    transferMode
-                    vehicleId={modalVehicleId}
-                    currentLocation={modalCurrentLocation}
-                    hideModal={()=>{
-                        this.setState({
-                            modalVisible: false,
-                            modalVehicleId: undefined,
-                            modalCurrentLocation: undefined,
-                        })
-                    }}
-                />
-            </Layout>
+            </Modal>
         );
     }
 }

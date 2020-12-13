@@ -25,6 +25,8 @@ import TecDocInfoModal from './TecDocInfoModal';
 import LaborsNormHourModal from './LaborsNormHourModal';
 import OilModal from './OilModal';
 import ComplexesModal from './ComplexesModal';
+import VehicleLocationModal from './VehicleLocationModal';
+import LocationHistoryModal from './LocationHistoryModal';
 
 export {
     UniversalFiltersModal,
@@ -54,4 +56,6 @@ export {
     LaborsNormHourModal,
     OilModal,
     ComplexesModal,
+    VehicleLocationModal,
+    LocationHistoryModal,
 };

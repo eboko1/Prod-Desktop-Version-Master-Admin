@@ -57,6 +57,7 @@ import {
     SupplierPage,
     RepairMapSettingPage,
     RportOrdersPage,
+    LocationsPage,
     LocationSettingsPage,
     LocationsDocumentPage,
     LocationsVehiclesPage,
@@ -247,6 +248,11 @@ export default class Private extends Component {
                     render={ props => <RepairMapSettingPage { ...props } /> }
                 />
                 { /* Locations */ }
+                <Route
+                    exact
+                    component={ LocationsPage }
+                    path={ book.locationsPage }
+                />
                 <Route
                     exact
                     component={ LocationSettingsPage }
