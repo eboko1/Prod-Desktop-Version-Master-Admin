@@ -198,7 +198,7 @@ export function columnsConfig(props) {
                 align: 'left',
                 key: 'no',
                 width: defWidth.no,
-                render: (empty1, empty2, index) => ( <h4>{index+1}</h4>)
+                render: (empty1, empty2, index) => ( <h4>{index+1+((filter.page-1)*25)}</h4>)
             }
         ]
     };
