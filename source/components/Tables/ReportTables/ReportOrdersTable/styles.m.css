@@ -5,7 +5,9 @@
 
 .table :global(.ant-table-header) {
     text-transform: uppercase;
-    min-width: 0 !important;
+    min-width: 0 !important; /*IMPORTANT it solves antd table issue when scrolling is added*/
+    font-size: 0.8em;
+    font-style: bold;
 }
 
 .table :global(.ant-pagination) {

@@ -25,6 +25,31 @@ const statuses = {
     success: 'transfer_success',
 }
 
+//Choose width for each col
+//It must be 100% of width in total!
+const defWidth = {
+    no: '4%',
+    client_name: 'auto',
+    order_num: '10%',
+    status: '6%',
+
+    date_created: '6%',
+    date_appointment: '6%',
+    date_done: '6%',
+
+    sum_labors: '5%',
+    sum_parts: '5%',
+    sum_total: '5%',
+
+    profit_labors: '5%',
+    profit_parts: '5%',
+    profit_total: '5%',
+
+    margin_labors: '5%',
+    margin_parts: '5%',
+    margin_total: '5%'
+}
+
 
 /* eslint-disable complexity */
 export function columnsConfig(props) {
@@ -172,7 +197,7 @@ export function columnsConfig(props) {
                 title:     <FormattedMessage id='report-orders-table.no' />,
                 align: 'left',
                 key: 'no',
-                width: '4%',
+                width: defWidth.no,
                 render: (empty1, empty2, index) => ( <h4>{index+1}</h4>)
             }
         ]
@@ -184,6 +209,7 @@ export function columnsConfig(props) {
                 title:     <FormattedMessage id='report-orders-table.order_num' />,
                 align: 'left',
                 key: 'order_num',
+                width: defWidth.order_num,
                 dataIndex: 'orderNum',
                 render: (orderNum, elem) => ( <h3>
                     <Link
@@ -207,6 +233,7 @@ export function columnsConfig(props) {
                 align: 'left',
                 // width: '20%',
                 key: 'client_name',
+                width: defWidth.client_name,
                 dataIndex: 'clientName',
                 render: (clientName, elem) => ( 
                     <Link
@@ -232,6 +259,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'left',
                 key: 'status',
+                width: defWidth.status,
                 dataIndex: 'orderStatus',
                 render: (orderStatus) => ( <h3>{statusLangMapper(orderStatus)}</h3>)
             }
@@ -256,6 +284,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'creation_date',
+                width: defWidth.date_created,
                 dataIndex: 'orderDatetime',
                 render: (orderDatetime) => (<FormattedDatetime datetime={ orderDatetime } format={ 'DD.MM.YY HH:mm' } />)
             },
@@ -274,6 +303,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'appointment_date',
+                width: defWidth.date_appointment,
                 dataIndex: 'orderBeginDatetime',
                 render: (orderBeginDatetime) => (<FormattedDatetime datetime={ orderBeginDatetime } format={ 'DD.MM.YY HH:mm' } />)
             },
@@ -291,6 +321,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'done_date',
+                width: defWidth.date_done,
                 dataIndex: 'orderSuccessDatetime',
                 render: (orderSuccessDatetime) => (<FormattedDatetime datetime={ orderSuccessDatetime } format={ 'DD.MM.YY HH:mm' } />)
             },
@@ -309,6 +340,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'labors',
+                width: defWidth.sum_labors,
                 dataIndex: 'orderServicesSum',
                 render: (orderServicesSum) => ( <Numeral>{orderServicesSum}</Numeral>)
             },
@@ -320,6 +352,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'spare_parts',
+                width: defWidth.sum_parts,
                 dataIndex: 'orderAppurtenanciesSum',
                 render: (orderAppurtenanciesSum) => ( <Numeral>{orderAppurtenanciesSum}</Numeral>)
             },
@@ -331,6 +364,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'total',
+                width: defWidth.sum_total,
                 render: (empty, elem) => ( <Numeral>{(elem.orderServicesSum + elem.orderAppurtenanciesSum)}</Numeral>)
             },
         ]
@@ -348,6 +382,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'labors2',
+                width: defWidth.profit_labors,
                 dataIndex: 'profitServicesSum',
                 render: (profitServicesSum) => ( <Numeral>{profitServicesSum}</Numeral>)
             },
@@ -359,6 +394,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'spare_parts2',
+                width: defWidth.profit_parts,
                 dataIndex: 'profitAppurtenanciesSum',
                 render: (profitAppurtenanciesSum) => ( <Numeral>{profitAppurtenanciesSum}</Numeral>)
             },
@@ -370,6 +406,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'total2',
+                width: defWidth.profit_total,
                 render: (empty, elem) => (<Numeral>{(elem.profitServicesSum + elem.profitAppurtenanciesSum)}</Numeral>)
             },
         ]
@@ -386,6 +423,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'labors3',
+                width: defWidth.margin_labors,
                 render: (empty, elem) => {
                     if(!elem.orderServicesSum || !elem.profitServicesSum) return "-";
 
@@ -404,6 +442,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'spare_parts3',
+                width: defWidth.margin_parts,
                 render: (empty, elem) => {
                     if(!elem.orderAppurtenanciesSum || !elem.profitAppurtenanciesSum) return "-";
 
@@ -422,6 +461,7 @@ export function columnsConfig(props) {
                 </div>,
                 align: 'right',
                 key: 'total3',
+                width: defWidth.margin_total,
                 render: (empty, elem) => {
                     if((!elem.orderAppurtenanciesSum || !elem.profitAppurtenanciesSum) && (!elem.orderServicesSum || !elem.profitServicesSum)) return "-";
 
