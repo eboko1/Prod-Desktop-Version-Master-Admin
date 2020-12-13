@@ -58,7 +58,7 @@ export class ReportOrdersTable extends Component {
                     locale={ {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
-                    scroll={ { x: '1000', y: '50vh' } }
+                    scroll={ { x: 1500, y: '50vh' } }
                     rowKey={ record => record.id }
                     bordered
                 />
