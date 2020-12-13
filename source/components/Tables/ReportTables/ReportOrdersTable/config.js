@@ -126,25 +126,38 @@ export function columnsConfig(props) {
 
     //-----------------------------------------------------------------------
 
+    //Get corresponging status value
+    const statusLangMapper = status => {
+        switch(status.toLowerCase()) {
+            case 'required': return <FormattedMessage id={statuses.required} />;
+            case 'reserve': return <FormattedMessage id={statuses.reserve} />;
+            case 'not_complete': return <FormattedMessage id={statuses.not_complete} />;
+            case 'approve': return <FormattedMessage id={statuses.approve} />;
+            case 'progress': return <FormattedMessage id={statuses.progress} />;
+            case 'success': return <FormattedMessage id={statuses.success} />;
+            default: return <FormattedMessage id="report-orders-table.unknown_status" />;
+        }
+    }
+
     const menu = (
         <Menu onClick={onSelectStatus}>
             <Menu.Item key="required">
-                <FormattedMessage id={statuses.required} />
+                {statusLangMapper('required')}
             </Menu.Item>
             <Menu.Item key="reserve">
-                <FormattedMessage id={statuses.reserve} />
+                {statusLangMapper('reserve')}
             </Menu.Item>
             <Menu.Item key="not_complete">
-                <FormattedMessage id={statuses.not_complete} />
+                {statusLangMapper('not_complete')}
             </Menu.Item>
             <Menu.Item key="approve">
-                <FormattedMessage id={statuses.approve} />
+                {statusLangMapper('approve')}
             </Menu.Item>
             <Menu.Item key="progress">
-                <FormattedMessage id={statuses.progress} />
+                {statusLangMapper('progress')}
             </Menu.Item>
             <Menu.Item key="success">
-                <FormattedMessage id={statuses.success} />
+                {statusLangMapper('success')}
             </Menu.Item>
             <Menu.Item key="reset">
                 <FormattedMessage id='report-orders-table.reset' />
@@ -213,14 +226,14 @@ export function columnsConfig(props) {
                     <br />
                     <Dropdown className={Styles.statusDropdown} overlay={menu}>
                         <Button onClick={() => {console.log('click')}}>
-                            Status <Icon type="down" />
+                            <FormattedMessage id="report-orders-table.status"/> <Icon type="down" />
                         </Button>
                     </Dropdown>
                 </div>,
                 align: 'left',
                 key: 'status',
                 dataIndex: 'orderStatus',
-                render: (orderStatus) => ( <h3>{orderStatus}</h3>)
+                render: (orderStatus) => ( <h3>{statusLangMapper(orderStatus)}</h3>)
             }
         ]
     };
