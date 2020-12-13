@@ -214,7 +214,7 @@ export default class RepairMapSettingPage extends Component {
                 render: (data, row)=>{
                     return (
                         <Switch
-                        style={{width: '50px'}}
+                            style={{width: '50px'}}
                             disabled={!this.state.dataSource[row.parentKey].show}
                             checked={data}
                             onChange={(value)=>{

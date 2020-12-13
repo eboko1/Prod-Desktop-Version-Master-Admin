@@ -81,6 +81,7 @@ const book = Object.freeze({
     //
     // Locations
     //
+    locationsPage:            '/locations',
     locationSettings:         '/location-settings',
     locationsDocument:        '/location-document',
     locationsVehicles:        '/location-vehicles',

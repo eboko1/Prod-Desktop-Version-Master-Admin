@@ -467,7 +467,7 @@ class ClientVehicleTransfer extends Component {
                                         <Option value={id} key={key}>
                                             {make} {model}
                                         </Option>
-                                    )    
+                                    )
                                 }
                             </Select>
                         </div>

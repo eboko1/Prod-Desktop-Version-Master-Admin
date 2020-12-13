@@ -44,6 +44,7 @@ import RequisiteSettingPage from 'pages/RequisiteSettingPage/messages';
 import NewDocumentPage from 'pages/NewDocumentPage/messages';
 import SupplierPage from 'pages/SupplierPage/messages';
 import RepairMapSettingPage from 'pages/RepairMapSettingPage/messages';
+import Locations from 'pages/Locations/messages';
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
@@ -103,6 +104,7 @@ import UniversalChartModal from 'modals/UniversalChartModal/messages';
 import ConfirmRescheduleModal from 'modals/ConfirmRescheduleModal/messages';
 import SupplierModal from 'modals/SupplierModal/messages';
 import TecDocInfoModal from 'modals/TecDocInfoModal/messages'
+import VehicleLocationModal from 'modals/VehicleLocationModal/messages'
 
 // components
 import StatusIcons from 'components/StatusIcons/messages';
@@ -168,6 +170,7 @@ const messages = merge.all([
     NewDocumentPage,
     SupplierPage,
     RepairMapSettingPage,
+    Locations,
     // containers
     OrdersContainer,
     OrdersFilterContainer,
@@ -218,6 +221,7 @@ const messages = merge.all([
     ConfirmRescheduleModal,
     SupplierModal,
     TecDocInfoModal,
+    VehicleLocationModal,
     // components
     StatusIcons,
     OrderFormTables,
