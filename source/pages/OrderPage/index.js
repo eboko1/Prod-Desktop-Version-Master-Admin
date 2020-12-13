@@ -160,7 +160,6 @@ class OrderPage extends Component {
             scrollToMapId: undefined,
             repairMapData: [],
         };
-
         this._fetchRepairMapData = this._fetchRepairMapData.bind(this);
     }
 
@@ -289,6 +288,7 @@ class OrderPage extends Component {
                     options,
                     redirectTo,
                 });
+                window.location.reload();
             } else {
                 this.setState({errors});
             }

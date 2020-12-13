@@ -29,6 +29,7 @@ export default class LocationsVehiclesPage extends Component {
             paginationTotal: 0,
             modalVisible: false,
             modalVehicleId: undefined,
+            modalCurrentLocation: undefined,
         };
 
         this.columns = [
@@ -80,6 +81,7 @@ export default class LocationsVehiclesPage extends Component {
                                 this.setState({
                                     modalVisible: true,
                                     modalVehicleId: data.id,
+                                    modalCurrentLocation: data.businessLocation.id,
                                 })
                             }}
                         >
@@ -191,7 +193,7 @@ export default class LocationsVehiclesPage extends Component {
     }
 
     render() {
-        const { loading, locations, locationId, dataSource, currentPage, paginationTotal, modalVisible, modalVehicleId } = this.state;
+        const { loading, locations, locationId, dataSource, currentPage, paginationTotal, modalVisible, modalVehicleId, modalCurrentLocation } = this.state;
 
         const pagination = {
             total: paginationTotal,
@@ -258,10 +260,12 @@ export default class LocationsVehiclesPage extends Component {
                     visible={modalVisible}
                     transferMode
                     vehicleId={modalVehicleId}
+                    currentLocation={modalCurrentLocation}
                     hideModal={()=>{
                         this.setState({
                             modalVisible: false,
-                            modalVehicleId: undefined
+                            modalVehicleId: undefined,
+                            modalCurrentLocation: undefined,
                         })
                     }}
                 />

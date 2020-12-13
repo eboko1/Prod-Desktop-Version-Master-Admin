@@ -88,7 +88,7 @@ export default class VehicleLocationModal extends Component {
     }
 
     postMovement() {
-        const { receiveMode, returnMode, transferMode } = this.props;
+        const { receiveMode, returnMode, transferMode, currentLocation } = this.props;
         const { selectedLocation, vehicleId } = this.state;
         const postData = {
             businessLocationId: selectedLocation,
@@ -100,9 +100,11 @@ export default class VehicleLocationModal extends Component {
             postData.type = 'INCOME';
             postData.documentType = 'CLIENT';
         } else if(returnMode) {
-
-        } else if( transferMode) {
-
+            
+        } else if(transferMode) {
+            postData.type = 'EXPENSE';
+            postData.documentType = 'TRANSFER';
+            postData.counterpartBusinessLocationId = currentLocation;
         }
 
         var that = this;

@@ -849,7 +849,7 @@ class DetailsStageButtonsGroup extends Component {
                     content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} / ${availableCount - reservedCount} ${formatMessage({id: 'pc'})}`,
                     okButtonProps: {disabled: !availableCount},
                     onOk() {
-                        data.docProducts[0].quantity = availableCount;
+                        data.docProducts[0].quantity = availableCount - reservedCount;
                         fetch(url, {
                             method:  'POST',
                             headers: {
@@ -868,7 +868,7 @@ class DetailsStageButtonsGroup extends Component {
                         })
                         .then(function(response) {
                             if(response.created) {
-                                detail.reservedCount = availableCount;
+                                detail.reservedCount = availableCount - reservedCount;
                                 detail.reserved = true;
                                 updateDetail(detail.key, detail);
                                 notification.success({
