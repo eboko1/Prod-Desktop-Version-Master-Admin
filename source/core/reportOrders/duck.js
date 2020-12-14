@@ -2,6 +2,8 @@
 It is very importnant to use this ('YYYY/MM/DD') date format when fetching from server!!!
 */
 
+import moment from 'moment';
+
 /**
  * Constants
  * */
@@ -29,6 +31,9 @@ export const SET_REPORT_ORDERS_APPOINTMENT_TO_DATE = `${prefix}/SET_REPORT_ORDER
 export const SET_REPORT_ORDERS_DONE_FROM_DATE = `${prefix}/SET_REPORT_ORDERS_DONE_FROM_DATE`;
 export const SET_REPORT_ORDERS_DONE_TO_DATE = `${prefix}/SET_REPORT_ORDERS_DONE_TO_DATE`;
 
+const DEF_DATE_FORMAT = 'YYYY/MM/DD';
+
+
 /**
  * Reducer
  * */
@@ -39,13 +44,13 @@ const ReducerState = {
     filter:     {
         page: 1,
         query: undefined,
-        status: undefined,
+        status: 'success', //Default status to search
         creationFromDate: undefined,
         creationToDate: undefined,
         appointmentFromDate: undefined,
         appointmentToDate: undefined,
-        doneFromDate: undefined,
-        doneToDate: undefined,
+        doneFromDate: moment().startOf('month').format(DEF_DATE_FORMAT), //Set default creation date filter to serch
+        doneToDate: moment().endOf('month').format(DEF_DATE_FORMAT), //Set default creation date filter to serch
     },
     options: {
         includeServicesDiscount: true,
