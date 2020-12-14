@@ -1,7 +1,7 @@
 export { EditableTable } from './EditableTable';
 export { SuppliersTable } from './SuppliersTable';
 
-export { ClientMRDsTable } from './ClientMRDsTable';
+//export { ClientMRDsTable } from './ClientMRDsTable';
 
 //Reports
 export { ReportOrdersTable } from './ReportTables/ReportOrdersTable'
@@ -27,3 +27,7 @@ export {
     StoreBalanceTable,
     StoreMovementTable,
 } from './StorageTables';
+
+
+import ClientMRDsTable from './ClientMRDsTable';
+export { ClientMRDsTable };
