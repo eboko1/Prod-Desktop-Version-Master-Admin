@@ -27,6 +27,7 @@ export const MODALS = {
     PDF_VIEWER:             'PDF_VIEWER',
     STORE_GROUP:            'STORE_GROUP',
     STORE_PRODUCT:          'STORE_PRODUCT',
+    REPORT_ORDERS_FILTER:   'REPORT_ORDERS_FILTER',
 };
 
 //

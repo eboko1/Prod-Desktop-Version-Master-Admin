@@ -9,6 +9,7 @@ import moment from 'moment';
 import { Numeral } from 'commons';
 import { FormattedDatetime, StorageDateFilter } from 'components';
 import book from 'routes/book';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 // own
 import Styles from './styles.m.css';
@@ -74,6 +75,8 @@ export function columnsConfig(props) {
         setReportOrdersAppointmentToDate,
         setReportOrdersDoneFromDate,
         setReportOrdersDoneToDate,
+
+        onOpenFilterModal,
     } = filterControls;
 
     
@@ -224,7 +227,10 @@ export function columnsConfig(props) {
     const orderNumCol = {
         children: [
             {
-                title:     <FormattedMessage id='report-orders-table.order_num' />,
+                title:  <div className={Styles.filterColumnHeaderWrap}>
+                            <FormattedMessage id='report-orders-table.order_num' />
+                            <Button onClick={onOpenFilterModal}> Click me</Button>
+                        </div>,
                 align: 'left',
                 key: 'order_num',
                 width: defWidth.order_num,
@@ -249,7 +255,6 @@ export function columnsConfig(props) {
                             <Input onChange={onSearchInput} placeholder="Search"/>
                         </div>,
                 align: 'left',
-                // width: '20%',
                 key: 'client_name',
                 width: defWidth.client_name,
                 dataIndex: 'clientName',

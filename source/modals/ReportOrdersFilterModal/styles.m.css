@@ -1,0 +1,13 @@
+.universalFiltersModal :global(.ant-modal-body) {
+    /* height: 50vh; */
+    height: 490px;
+    overflow: scroll;
+}
+
+.universalFiltersModal :global(.ant-modal-footer) {
+    text-align: center;
+}
+
+.universalFiltersModal :global(.ant-calendar-picker) {
+    flex: 0 1 100%;
+}

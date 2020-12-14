@@ -26,6 +26,8 @@ import {
     setReportOrdersDoneToDate,
     setReportOrdersPage,
 } from 'core/reportOrders/duck';
+import ReportOrdersFilterModal from 'modals/ReportOrdersFilterModal';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Layout, Numeral } from "commons";
 import { ReportOrdersTable, ReportOrdersFilter } from "components";
@@ -41,6 +43,7 @@ const mapStateToProps = state => ({
     filter: state.reportOrders.filter,
     page: state.reportOrders.filter.page,
     stats: state.reportOrders.stats,
+    modal: state.modals.modal,
 });
 
 const mapDispatchToProps = {
@@ -56,6 +59,9 @@ const mapDispatchToProps = {
     setReportOrdersAppointmentToDate,
     setReportOrdersDoneFromDate,
     setReportOrdersDoneToDate,
+
+    setModal,
+    resetModal,
 };
 
 @connect(
@@ -63,9 +69,12 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 @injectIntl
-export default class CashClientsDebtsPage extends Component {
+export default class ReportOrdersPage extends Component {
     constructor(props) {
         super(props);
+
+        this.onOpenFilterModal = this.onOpenFilterModal.bind(this);
+        this.onCloseFilterModal = this.onCloseFilterModal.bind(this);
     }
 
     componentDidMount() {
@@ -143,6 +152,14 @@ export default class CashClientsDebtsPage extends Component {
         </div>
     }
 
+    onOpenFilterModal() {
+        this.props.setModal(MODALS.REPORT_ORDERS_FILTER, {test: 'let\'s test this'});
+    }
+
+    onCloseFilterModal() {
+        this.props.resetModal();
+    }
+
     render() {
         const {
             fetchReportOrders,
@@ -163,11 +180,15 @@ export default class CashClientsDebtsPage extends Component {
             setReportOrdersAppointmentToDate,
             setReportOrdersDoneFromDate,
             setReportOrdersDoneToDate,
+
+            modal,
         } = this.props;
 
         //Transfer all filter methods in one object to easily manipulate data
         const filterControls = {
             fetchReportOrders,
+            onOpenFilterModal: () => this.onOpenFilterModal(),
+            onCloseFilterModal: this.onCloseFilterModal,
 
             setReportOrdersPage,
             setReportOrdersIncludeServicesDiscount,
@@ -202,6 +223,11 @@ export default class CashClientsDebtsPage extends Component {
                     tableData={tableData}
                     setIncludeServicesDiscount={setReportOrdersIncludeServicesDiscount}
                     includeServicesDiscount={includeServicesDiscount}
+                />
+                <ReportOrdersFilterModal 
+                    visible={modal}
+                    filter={filter}
+                    filterControls={filterControls}
                 />
             </Layout>
         );
