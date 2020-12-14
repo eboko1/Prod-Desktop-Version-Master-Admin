@@ -53,14 +53,14 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
         ),
     };
 
-    const currentDebt = {
+    const currentDebtWithTaxes = {
         title:     <FormattedMessage id='clients-table.debt' />,
         width:     100,
-        dataIndex: 'currentDebt',
-        key:       'currentDebt',
-        render:    (_, client) => {
+        dataIndex: 'totalDebtWithTaxes',
+        key:       'totalDebtWithTaxes',
+        render:    (totalDebtWithTaxes, client) => {
             
-            const debt = client.totalDebt ? client.totalDebt : 0;
+            const debt = totalDebtWithTaxes ? totalDebtWithTaxes : 0;
 
             return !isForbidden(user, permissions.GET_CLIENTS_BASIC_INFORMATION) ? (
                 
@@ -204,7 +204,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
     return [
         client,
         phone,
-        currentDebt,
+        currentDebtWithTaxes,
         vehicles,
         lastOrder,
         orders,

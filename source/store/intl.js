@@ -29,6 +29,7 @@ import DashboardPage from 'pages/DashboardPage/messages';
 import RolePage from 'pages/RolePage/messages';
 import PackagePage from 'pages/PackagePage/messages';
 import ClientsPage from 'pages/ClientsPage/messages';
+import CashClientsDebtsPage from 'pages/CashClientsDebtsPage/messages';
 import EmployeesPage from 'pages/EmployeesPage/messages';
 import AddEmployeePage from 'pages/AddEmployeePage/messages';
 import ChartPage from 'pages/ChartPage/messages';
@@ -43,6 +44,7 @@ import AvailabilitiesPage from 'pages/AvailabilitiesPage/messages';
 import RequisiteSettingPage from 'pages/RequisiteSettingPage/messages';
 import NewDocumentPage from 'pages/NewDocumentPage/messages';
 import SupplierPage from 'pages/SupplierPage/messages';
+import ReportOrdersPage from 'pages/ReportOrdersPage/messages';
 import RepairMapSettingPage from 'pages/RepairMapSettingPage/messages';
 import Locations from 'pages/Locations/messages';
 
@@ -130,6 +132,8 @@ import PartAttributes from 'components/PartAttributes/messages';
 import VehicleNumberHistory from 'components/VehicleNumberHistory/messages';
 import CashTables from 'components/Tables/CashTables/messages';
 import SubscriptionTables from 'components/Tables/SubscriptionTables/messages';
+import ClientMRDsTable from 'components/Tables/ClientMRDsTable/messages';
+import ReportOrdersTable from 'components/Tables/ReportTables/messages';
 import SubscribeForm from 'forms/SubscribeForm/messages';
 
 //commons
@@ -155,6 +159,7 @@ const messages = merge.all([
     RolePage,
     PackagePage,
     ClientsPage,
+    CashClientsDebtsPage,
     EmployeesPage,
     AddEmployeePage,
     ChartPage,
@@ -169,6 +174,7 @@ const messages = merge.all([
     RequisiteSettingPage,
     NewDocumentPage,
     SupplierPage,
+    ReportOrdersPage,
     RepairMapSettingPage,
     Locations,
     // containers
@@ -250,6 +256,8 @@ const messages = merge.all([
     PartAttributes,
     VehicleNumberHistory,
     CashTables,
+    ClientMRDsTable,
+    ReportOrdersTable,
     SubscriptionTables,
 ]);
 /* eslint-enable array-element-newline */

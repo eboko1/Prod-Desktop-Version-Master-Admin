@@ -57,6 +57,7 @@ const book = Object.freeze({
     //  Cash
     //
     cashFlowPage:             '/cash/flow',
+    cashClientsDebtsPage:     '/cash/clients-debts',
     cashSettingsPage:         '/cash/settings',
     cashBankPage:             '/cash/bank',
     //
@@ -87,12 +88,13 @@ const book = Object.freeze({
     locationsVehicles:        '/location-vehicles',
     locationsMovement:        '/location-movement',
     //
-    // Statistics
+    // Statistics and reports
     //
     chart:                    '/chart',
     feedback:                 '/feedback',
     feedbackId:               '/feedback/:id',
     calls:                    '/calls',
+    reportOrders:             '/report/orders',
     //
     // Payment
     //

@@ -1,0 +1,16 @@
+.nestedTableContainer {
+    width: 100%;
+}
+
+.payDoc {
+    margin: 0 2px 2px 0;
+    border-radius: 10em;
+} 
+
+.payPDoc {
+    background-color: rgba(0, 255, 0, 0.3);
+}
+
+.payMDoc {
+    background-color: rgba(255, 0, 0, 0.2);
+}

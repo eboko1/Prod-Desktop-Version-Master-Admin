@@ -1,0 +1,29 @@
+{
+    "en": {
+      "client-mrds-table.mrd_number": "Order",
+      "client-mrds-table.amount": "Amount",
+      "client-mrds-table.due_amount": "Due amount",
+      "client-mrds-table.date": "Date",
+      "client-mrds-table.order_number": "Cash order number",
+      "client-mrds-table.data_missing": "No data"
+
+      
+    },
+    "ru": {
+      "client-mrds-table.mrd_number": "Номер н/з",
+      "client-mrds-table.amount": "Сумма",
+      "client-mrds-table.due_amount": "Задолженность",
+      "client-mrds-table.date": "Дата",
+      "client-mrds-table.order_number": "Cash order number",
+      "client-mrds-table.data_missing": "Нет данных"
+    },
+    "uk": {
+      "client-mrds-table.mrd_number": "Номер н/з",
+      "client-mrds-table.amount": "Сума",
+      "client-mrds-table.due_amount": "Заборгованість",
+      "client-mrds-table.date": "Дата",
+      "client-mrds-table.order_number": "Cash order number",
+      "client-mrds-table.data_missing": "Немає даних"
+    }
+  }
+  

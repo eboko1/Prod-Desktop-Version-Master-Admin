@@ -142,6 +142,13 @@ export default {
                     name: 'navigation.flow_of_money',
                 },
                 {
+                    key:      '/cash/clients-debts',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_ACCOUNTING),
+                    link: book.cashClientsDebtsPage,
+                    name: 'navigation.clients_debts',
+                },
+                {
                     key:      '/cash/bank',
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_ACCOUNTING),
@@ -229,8 +236,8 @@ export default {
                     name: 'navigation.locations_movement',
                 },
             ],
-        },*/
-        /* Statistics submenu */
+        },
+        /* Statistics and reports submenu */
         {
             key:      'reports',
             iconType: 'line-chart',
@@ -259,6 +266,14 @@ export default {
                         !isAdmin(user),
                     link: book.calls,
                     name: 'navigation.call_statistics',
+                },
+                {
+                    key:      '/report/orders',
+                    disabled: user =>
+                        isForbidden(user, permissions.SHOW_ORDERS) &&
+                        !isAdmin(user),
+                    link: book.reportOrders,
+                    name: 'navigation.report_orders',
                 },
             ],
         },

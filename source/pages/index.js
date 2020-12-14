@@ -26,6 +26,7 @@ import ForgotPasswordPage from './ForgotPasswordPage';
 import NewPasswordPage from './NewPasswordPage';
 import CashSettingsPage from './CashSettingsPage';
 import CashFlowPage from './CashFlowPage';
+import CashClientsDebtsPage from './CashClientsDebtsPage'
 import CashBankPage from './CashBankPage';
 import SuppliersPage from './SuppliersPage';
 import PaymentPage from './PaymentPage';
@@ -39,6 +40,7 @@ import RequisiteSettingPage from './RequisiteSettingPage';
 import NewDocumentPage from './NewDocumentPage';
 import SupplierPage from './SupplierPage';
 import RepairMapSettingPage from './RepairMapSettingPage';
+import RportOrdersPage from './ReportOrdersPage';
 
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
@@ -74,6 +76,7 @@ export {
     NewPasswordPage,
     CashSettingsPage,
     CashFlowPage,
+    CashClientsDebtsPage,
     CashBankPage,
     SuppliersPage,
     PaymentPage,
@@ -87,4 +90,5 @@ export {
     NewDocumentPage,
     SupplierPage,
     RepairMapSettingPage,
+    RportOrdersPage,
 };

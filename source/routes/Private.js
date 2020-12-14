@@ -30,6 +30,7 @@ import {
     CashSettingsPage,
     CashBankPage,
     CashFlowPage,
+    CashClientsDebtsPage,
     SuppliersPage,
     PaymentPage,
     SubscriptionHistoryPage,
@@ -55,6 +56,7 @@ import {
     NewDocumentPage,
     SupplierPage,
     RepairMapSettingPage,
+    RportOrdersPage,
     LocationsPage,
     LocationSettingsPage,
     LocationsDocumentPage,
@@ -166,6 +168,11 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
+                    component={ CashClientsDebtsPage }
+                    path={ book.cashClientsDebtsPage }
+                />
+                <Route
+                    exact
                     component={ CashBankPage }
                     path={ book.cashBankPage }
                 />
@@ -266,7 +273,7 @@ export default class Private extends Component {
                     component={ LocationsMovementPage }
                     path={ book.locationsMovement }
                 />
-                { /* Statistics */ }
+                { /* Statistics and reports */ }
                 <Route
                     exact
                     component={ ChartPage }
@@ -286,6 +293,11 @@ export default class Private extends Component {
                     exact
                     component={ CallsPage }
                     path={ book.calls }
+                />
+                <Route
+                    exact
+                    component={ RportOrdersPage }
+                    path={ book.reportOrders }
                 />
                 { /* Payment */ }
                 <Route

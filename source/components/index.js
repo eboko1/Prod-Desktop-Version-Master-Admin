@@ -46,6 +46,7 @@ import { StorageFilters } from './StorageFilters';
 import StorageDocumentsFilters, { StorageDateFilter, WarehouseSelect, BrandSelect } from './StorageDocumentsFilters';
 import AvailabilityIndicator from './AvailabilityIndicator';
 import RepairMapIndicator from './RepairMapIndicator';
+import ReportOrdersFilter from './ReportFilters/ReportOrdersFilter';
 
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
@@ -104,4 +105,5 @@ export {
     WarehouseSelect,
     BrandSelect,
     RepairMapIndicator,
+    ReportOrdersFilter,
 };

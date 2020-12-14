@@ -1,42 +1,58 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Table, Rate, Row, Col, Collapse, DatePicker } from 'antd';
+import { DatePicker } from 'antd';
 import moment from 'moment';
-
-const { Panel } = Collapse;
 
 // proj
 import {
     fetchClientMRDs,
+    fetchCashOrderEntity,
     setFilterDate,
-    //setClientOrdersPageFilter,
+    setClientMRDsPage,
+    setCashOrderModalMounted,
+    setCashOrderEntityIsFetching,
+    selectCashOrderEntityIsFetching,
 } from 'core/clientMRDs/duck';
-
-import { Numeral, Loader } from 'commons';
-import { FormattedDatetime, OrderStatusIcon } from 'components';
+import { Loader } from "commons";
+import ClientMRDsTable from '../Tables/ClientMRDsTable'
+import { setModal, resetModal, MODALS } from "core/modals/duck";
+import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
+import { CashOrderModal } from "modals";
+import {fetchAPI} from 'utils';
 
 // own
-import book from 'routes/book';
 import Styles from './styles.m.css';
 
 const DEF_DATE_FORMAT = 'DD/MM/YYYY';
 
 const mapStateToProps = state => ({
     isFetching: state.ui.clientMRDsFetching,
-    MRDDate: state.clientMRDs.filter.MRDDate,
+    modal: state.modals.modal,
+    modalProps: state.modals.modalProps,
+    MRDsUntilDate: state.clientMRDs.filter.MRDsUntilDate,
+    cashOrderEntity: state.clientMRDs.cashOrderEntity,
+    clientMRDsPage: state.clientMRDs.filter.page,
     mrds: state.clientMRDs.mrds,
-    //filter:     state.clientOrders.filter,
+    stats: state.clientMRDs.stats,
+    cashOrderModalMounted: state.clientMRDs.cashOrderModalMounted,
+    cashOrderEntityIsFetching: state.clientMRDs.cashOrderEntityIsFetching,
 });
 
 const mapDispatchToProps = {
+    setModal,
+    resetModal,
     fetchClientMRDs,
+    fetchAPI,
+    setClientMRDsPage,
     setFilterDate,
+    setCashOrderModalMounted,
+    setCashOrderEntityIsFetching,
+    fetchCashOrderEntity,
+    clearCashOrderForm,
+    selectCashOrderEntityIsFetching,
 };
 
-@injectIntl
 @connect(
     mapStateToProps,
     mapDispatchToProps,
@@ -45,7 +61,7 @@ export default class ClientMRDsTab extends Component {
     constructor(props) {
         super(props);
         
-        this.onDatePicker.bind(this);
+        this.onDatePicker = this.onDatePicker.bind(this);
     }
 
     componentDidMount() {
@@ -53,10 +69,10 @@ export default class ClientMRDsTab extends Component {
         
         this.props.setFilterDate(moment().format(DEF_DATE_FORMAT));
         this.props.fetchClientMRDs({ clientId });
-        // console.log("=============", clientId);
         
     }
 
+    //Event: date was changed in datapicker
     onDatePicker(date) {
         const { clientId } = this.props;
 
@@ -64,67 +80,105 @@ export default class ClientMRDsTab extends Component {
         this.props.fetchClientMRDs({ clientId });
     }
 
+    fetchCashOrderEntity_hardCode(cashOrderId) {
+        const fetchedClientEntity = this.props.fetchAPI('GET', `/cash_orders/${cashOrderId}`);
+    }
+
+    //This opens modal with cash order
+    _onOpenPrintCashOrderModal = async (orderId) => {
+        const cashOrderEntity = await fetchCashOrderEntity(orderId);
+        await this._onOpenPrintCashOrderModal(cashOrderEntity);
+        // await setCashOrderEntityIsFetching(true);
+        await this.props.setModal(MODALS.CASH_ORDER, {
+            printMode: true,
+            editMode: false,
+            cashOrderEntity: cashOrderEntity,
+        });
+        // this.setState({ cashOrderModalMounted: true });
+        this.props.setCashOrderModalMounted(true);
+    };
+
+    _onCloseCashOrderModal = () => {
+        this.props.resetModal();
+        this.props.clearCashOrderForm();
+        // this.setState({ cashOrderModalMounted: false });
+        this.props.setCashOrderModalMounted(false);
+    };
+
+    _loadPrintModal = async (orderId) => {
+        await this._onOpenPrintCashOrderModal(orderId);
+        // const {cashOrderEntity, cashOrderEntityIsFetching, fetchCashOrderEntity, setCashOrderEntityIsFetching, selectCashOrderEntityIsFetching} = this.props;
+        // new Promise((resolve) => resolve(fetchCashOrderEntity(orderId)))
+        //     .then(() => {
+        //         this._onOpenPrintCashOrderModal(cashOrderEntity);
+        //     });
+        // await fetchCashOrderEntity(orderId);
+        // await this._onOpenPrintCashOrderModal(cashOrderEntity);
+        // await setCashOrderEntityIsFetching(true);
+
+        // const cashOrderEntity = await this.fetchCashOrderEntity_hardCode(orderId);
+        // this._onOpenPrintCashOrderModal(cashOrderEntity);
+        // console.log(cashOrderEntity);
+        // if(cashOrderEntityIsFetching) {
+        //     console.log("Yes, it is fetching!");
+        //     <Loader />
+        // } else {
+            
+        // }
+    }
+
     render() {
         const {
+            fetchClientMRDs,
+            fetchCashOrderEntity,
+            setClientMRDsPage,
             isFetching,
             mrds,
+            stats,
+            clientMRDsPage,
+            clientId,
+            cashOrderEntity,
+            cashOrderModalMounted,
+            modal,
+            modalProps,
         } = this.props;
+
         if (isFetching) {
             return <Loader loading={ isFetching } />;
         }
-        //console.log("MRDs from comp", mrds);
-        // if(mrds) mrds.forEach(element => {
-        //     console.log(element);
-
-        // })
-
-        //console.log(this.props.MRDDate);
 
         return (
             <>
                 <div className={Styles.headerContainer}>
                     <DatePicker
                         allowClear={false}
-                        defaultValue={moment(this.props.MRDDate, DEF_DATE_FORMAT)}
+                        defaultValue={moment(this.props.MRDsUntilDate, DEF_DATE_FORMAT)}
                         format={DEF_DATE_FORMAT}
                         onChange={date => this.onDatePicker(date)}></DatePicker
                     >
                 </div>
-                <Collapse>
-                    {mrds.map(element => {
-                        const {cashOrders} = element;
-                        return <Panel
-                                header={
-                                    <Row>
-                                        <Col span={6}>{element.documentType}</Col>
-                                        <Col span={6}>{<FormattedMessage id='client_mrds_tab.amoun'/>}: {element.amount}</Col>
-                                        <Col span={6}><FormattedMessage id='client_mrds_tab.due_amount'/>: {element.dueAmount}</Col>
-                                        <Col span={6}>{element.orderDatetime}</Col>
-                                    </Row>
-                                }
-                                key = {element.orderId}
-                                className={Styles.payDocsContainer}
-                                >
-                                    <div className={Styles.payDocsContainer} key={element.id}>
-                                        {cashOrders.map(item => {
-                                            return(
-                                                <Row
-                                                key={item.id}
-                                                className= {
-                                                    item.documentType.toString() == "PAY-P"
-                                                    ? [Styles.payDoc, Styles.payPDoc].join(' ')
-                                                    : [Styles.payDoc, Styles.payMDoc].join(' ')}
-                                                >
-                                                    <Col key='1' span={6}>{item.documentType}</Col>
-                                                    <Col key='2' span={6}>{item.amount}</Col>
-                                                    <Col key='3' span={6}>{item.datetime}</Col>
-                                                </Row>
-                                            )
-                                        })}
-                                    </div>
-                                </Panel>
-                    })}
-                </Collapse>
+
+                <ClientMRDsTable
+                    isFetching={isFetching}
+                    mrds={mrds}
+                    setMRDsPage={setClientMRDsPage}
+                    fetchMRDs={fetchClientMRDs}
+                    clientMRDsPage={clientMRDsPage}
+                    clientId={clientId}
+                    stats={stats}
+                    fetchCashOrderEntity={fetchCashOrderEntity}
+                    // openPrint={() => this._onOpenPrintCashOrderModal(cashOrderEntity)}
+                    openPrint={this._loadPrintModal}
+                />
+
+                {cashOrderModalMounted ? (
+                    <CashOrderModal
+                        resetModal={this._onCloseCashOrderModal}
+                        visible={modal}
+                        clearCashOrderForm={clearCashOrderForm}
+                        modalProps={modalProps}
+                    />
+                ) : null}
             </>
         );
     }

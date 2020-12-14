@@ -18,6 +18,7 @@ export const SET_CLIENT_FETCHING_STATE = `${prefix}/SET_CLIENT_FETCHING_STATE`;
 export const SET_CLIENTS_FETCHING_STATE = `${prefix}/SET_CLIENTS_FETCHING_STATE`;
 export const SET_CLIENT_ORDERS_FETCHING_STATE = `${prefix}/SET_CLIENT_ORDERS_FETCHING_STATE`;
 export const SET_CLIENT_MRDS_FETCHING_STATE = `${prefix}/SET_CLIENT_MRDS_FETCHING_STATE`;
+export const SET_REPORT_FETCHING_STATE = `${prefix}/SET_REPORT_FETCHING_STATE`;
 export const SET_REVIEWS_FETCHING_STATE = `${prefix}/SET_REVIEWS_FETCHING_STATE`;
 export const SET_REVIEW_FETCHING_STATE = `${prefix}/SET_REVIEW_FETCHING_STATE`;
 export const SET_CHART_FETCHING_STATE = `${prefix}/SET_CHART_FETCHING_STATE`;
@@ -69,6 +70,7 @@ const ReducerState = {
     myTasksFetching:            false,
     clientsFetching:            false,
     clientMRDsFetching:         false,
+    reportFetching:               false,
     clientFetching:             false,
     clientOrdersFetching:       false,
     reviewsFetching:            false,
@@ -162,6 +164,9 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_CLIENT_MRDS_FETCHING_STATE:
             return { ...state, clientMRDsFetching: payload };
+
+        case SET_REPORT_FETCHING_STATE:
+            return {...state, reportFetching: payload}
     
         case SET_REVIEWS_FETCHING_STATE:
             return { ...state, reviewsFetching: payload };
@@ -313,6 +318,11 @@ export const setClientOrdersFetchingState = state => ({
 
 export const setClientMRDsFetchingState = state => ({
     type:    SET_CLIENT_MRDS_FETCHING_STATE,
+    payload: state,
+});
+
+export const setReportFetchingState = state => ({
+    type:    SET_REPORT_FETCHING_STATE,
     payload: state,
 });
 
