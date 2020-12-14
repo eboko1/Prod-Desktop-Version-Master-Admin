@@ -10,7 +10,7 @@ import moment from 'moment';
 
 // proj
 import { Layout } from 'commons';
-import { StorageDateFilter } from 'components';
+import { DateRangePicker } from 'components';
 import { VehicleLocationModal } from 'modals';
 // own
 const Option = Select.Option;
@@ -25,13 +25,14 @@ export default class LocationsMovementPage extends Component {
             dataSource: [],
             loading: false,
             currentPage: 1,
+            fromDatetime: moment().startOf('month'),
+            toDatetime: moment(),
         };
 
         this.columns = [
             {
                 key:       'key',
                 dataIndex: 'key',
-                width:     'min-content',
                 render:    (data, row)=> {
                     return (
                         data + 1
@@ -61,7 +62,7 @@ export default class LocationsMovementPage extends Component {
                 key:       'arrival',
                 render:    (data, row)=> {
                     return (
-                        moment().format('DD HH')
+                        data
                     )
                 }
             },
@@ -70,7 +71,7 @@ export default class LocationsMovementPage extends Component {
                 key:       'departure',
                 render:    (data, row)=> {
                     return (
-                        moment().format('DD HH')
+                        data
                     )
                 }
             },
@@ -79,7 +80,7 @@ export default class LocationsMovementPage extends Component {
                 key:       'duration',
                 render:    (data, row)=> {
                     return (
-                        moment().format('DD HH')
+                        data
                     )
                 }
             },
@@ -87,10 +88,11 @@ export default class LocationsMovementPage extends Component {
     }
 
     fetchData(id, page = 1) {
+        const { clientVehicleId, fromDatetime, toDatetime } = this.state;
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/business_locations/movements?page=${page}`;
-        if(id) url += `&clientVehicleId=${id}`;
+        let url = __API_URL__ + `/business_locations/movements?fromDatetime=${fromDatetime.format('YYYY-MM-DD')}&toDatetime=${toDatetime.format('YYYY-MM-DD')}&page=${page}&pageSize=10`;
+        if(id || clientVehicleId) url += `&clientVehicleId=${id || clientVehicleId}`;
         fetch(url, {
             method: 'GET',
             headers: {
@@ -133,7 +135,7 @@ export default class LocationsMovementPage extends Component {
     }
 
     render() {
-        const { loading, dataSource, clientVehicleId, currentPage, paginationTotal } = this.state;
+        const { loading, dataSource, clientVehicleId, currentPage, paginationTotal, fromDatetime, toDatetime } = this.state;
 
         const pagination = {
             total: paginationTotal,
@@ -151,9 +153,18 @@ export default class LocationsMovementPage extends Component {
                 title={ <FormattedMessage id='navigation.locations_movement' /> }
                 controls={
                     <div style={{display: 'flex'}}>
-                        <StorageDateFilter
-                            // dateRange={}
-                            // onDateChange={}
+                        <DateRangePicker
+                            dateRange={[
+                                fromDatetime,
+                                toDatetime,
+                            ]}
+                            onDateChange={async ([fromDatetime, toDatetime])=>{
+                                await this.setState({
+                                    fromDatetime: fromDatetime,
+                                    toDatetime: toDatetime,
+                                });
+                                this.fetchData();
+                            }}
                         />
                     </div>
                 }

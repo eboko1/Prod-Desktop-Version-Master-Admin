@@ -88,7 +88,7 @@ export default class VehicleLocationModal extends Component {
     }
 
     postMovement() {
-        const { receiveMode, returnMode, transferMode, currentLocation } = this.props;
+        const { receiveMode, returnMode, transferMode, currentLocation, updateData } = this.props;
         const { selectedLocation, vehicleId } = this.state;
         const postData = {
             businessLocationId: selectedLocation,
@@ -100,7 +100,8 @@ export default class VehicleLocationModal extends Component {
             postData.type = 'INCOME';
             postData.documentType = 'CLIENT';
         } else if(returnMode) {
-            
+            postData.type = 'EXPENSE';
+            postData.documentType = 'CLIENT';
         } else if(transferMode) {
             postData.type = 'EXPENSE';
             postData.documentType = 'TRANSFER';
@@ -128,6 +129,9 @@ export default class VehicleLocationModal extends Component {
         })
         .then(function (data) {
             console.log(data);
+            if(updateData) {
+                updateData()
+            };
         })
         .catch(function (error) {
             console.log('error', error);
@@ -248,8 +252,10 @@ export default class VehicleLocationModal extends Component {
                 <div className={Styles.modalContent}>
                     <div>
                         <Select
-                            showSearch
+                            disabled
+                            style={{color: 'var(--text)'}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            value={vehicleId}
                         >
                             
                         </Select>
@@ -283,7 +289,8 @@ export default class VehicleLocationModal extends Component {
                 <div className={Styles.modalContent}>
                     <div>
                         <Select
-                            showSearch
+                            disabled
+                            style={{color: 'var(--text)'}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             value={vehicleId}
                         >

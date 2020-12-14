@@ -6,7 +6,7 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import { Row, Col, Menu, Checkbox, DatePicker, Input, Dropdown, Button, Icon } from 'antd';
 
 //proj
-import { StorageDateFilter } from 'components';
+import { DateRangePicker } from 'components';
 
 //own
 import Style from './style.m.css';
@@ -192,21 +192,21 @@ export default class ReportOrdersFilter extends Component {
                         <Col className={Style.rowContainer} span={7}>Creation</Col>
                         <Col className={Style.rowContainer} span={7}><DatePicker onChange={this.onCreationFromDateChanged} format={DEF_UI_DATE_FORMAT}/></Col>
                         <Col className={Style.rowContainer} span={7}><DatePicker onChange={this.onCreationToDateChanged} format={DEF_UI_DATE_FORMAT} /></Col>
-                        <Col className={Style.rowContainer} span={3}><StorageDateFilter minimize /></Col>
+                        <Col className={Style.rowContainer} span={3}><DateRangePicker minimize /></Col>
                     </Row>
 
                     <Row  className={Style.row}>
                         <Col className={Style.rowContainer} span={7}>Appointment</Col>
                         <Col className={Style.rowContainer} span={7}><DatePicker onChange={this.onAppointmentFromDateChanged} format={DEF_UI_DATE_FORMAT} /></Col>
                         <Col className={Style.rowContainer} span={7}><DatePicker onChange={this.onAppointmentToDateChanged} format={DEF_UI_DATE_FORMAT} /></Col>
-                        <Col className={Style.rowContainer} span={3}><StorageDateFilter minimize /></Col>
+                        <Col className={Style.rowContainer} span={3}><DateRangePicker minimize /></Col>
                     </Row>
 
                     <Row  className={Style.row}>
                         <Col className={Style.rowContainer} span={7}>Done</Col>
                         <Col className={Style.rowContainer} span={7}><DatePicker onChange={this.onDoneFromDateChanged} format={DEF_UI_DATE_FORMAT} /></Col>
                         <Col className={Style.rowContainer} span={7}><DatePicker onChange={this.onDoneToDateChanged} format={DEF_UI_DATE_FORMAT} /></Col>
-                        <Col className={Style.rowContainer} span={3}><StorageDateFilter minimize /></Col>
+                        <Col className={Style.rowContainer} span={3}><DateRangePicker minimize /></Col>
                     </Row>
                     
                     <Row  className={Style.row}><Col className={Style.rowContainer} span={25}></Col></Row>

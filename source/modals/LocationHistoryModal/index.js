@@ -10,7 +10,7 @@ import moment from 'moment';
 
 // proj
 import { Layout } from 'commons';
-import { StorageDateFilter } from 'components';
+import { DateRangePicker } from 'components';
 import { VehicleLocationModal } from 'modals';
 // own
 const Option = Select.Option;
@@ -25,6 +25,8 @@ export default class LocationHistoryModal extends Component {
             dataSource: [],
             loading: false,
             currentPage: 1,
+            fromDatetime: moment().startOf('month'),
+            toDatetime: moment(),
         };
 
         this.columns = [
@@ -119,10 +121,11 @@ export default class LocationHistoryModal extends Component {
     }
 
     fetchData(id, page = 1) {
+        const { locationId, fromDatetime, toDatetime } = this.state;
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/business_locations/movements?page=${page}`;
-        if(id) url += `&businessLocationId=${id}`;
+        let url = __API_URL__ + `/business_locations/movements?fromDatetime=${fromDatetime.format('YYYY-MM-DD')}&toDatetime=${toDatetime.format('YYYY-MM-DD')}&page=${page}&pageSize=10`;
+        if(id || locationId) url += `&businessLocationId=${id || locationId}`;
         fetch(url, {
             method: 'GET',
             headers: {
@@ -159,6 +162,8 @@ export default class LocationHistoryModal extends Component {
             dataSource: [],
             loading: false,
             currentPage: 1,
+            fromDatetime: moment().startOf('month'),
+            toDatetime: moment(),
         });
         this.props.hideModal();
     }
@@ -178,7 +183,7 @@ export default class LocationHistoryModal extends Component {
 
 
     render() {
-        const { loading, dataSource, locations, locationId, currentPage, paginationTotal } = this.state;
+        const { loading, dataSource, locations, locationId, currentPage, paginationTotal, fromDatetime, toDatetime } = this.state;
         const { visible, hideModal } = this.props;
 
         const pagination = {
@@ -201,33 +206,42 @@ export default class LocationHistoryModal extends Component {
             >
                 <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 24}}>
                     <div>
-                    <Select
-                        showSearch
-                        value={locationId}
-                        style={{width: 220}}
-                        placeholder={this.props.intl.formatMessage({id: 'location'})}
-                        dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                        onChange={(value)=>{
-                            this.setState({
-                                locationId: value,
-                                currentPage: 1,
-                            });
-                            this.fetchData(value);
-                        }}
-                    >
-                        {locations.map(({id, name}, key)=>
-                            <Option
-                                key={key}
-                                value={id}
-                            >
-                                {name}
-                            </Option>
-                        )}
-                    </Select>
+                        <Select
+                            showSearch
+                            value={locationId}
+                            style={{width: 220}}
+                            placeholder={this.props.intl.formatMessage({id: 'location'})}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            onChange={(value)=>{
+                                this.setState({
+                                    locationId: value,
+                                    currentPage: 1,
+                                });
+                                this.fetchData(value);
+                            }}
+                        >
+                            {locations.map(({id, name}, key)=>
+                                <Option
+                                    key={key}
+                                    value={id}
+                                >
+                                    {name}
+                                </Option>
+                            )}
+                        </Select>
                     </div>
-                    <StorageDateFilter
-                        // dateRange={}
-                        // onDateChange={}
+                    <DateRangePicker
+                        dateRange={[
+                            fromDatetime,
+                            toDatetime,
+                        ]}
+                        onDateChange={async ([fromDatetime, toDatetime])=>{
+                            await this.setState({
+                                fromDatetime: fromDatetime,
+                                toDatetime: toDatetime,
+                            });
+                            this.fetchData();
+                        }}
                     />
                 </div>
                 <Table

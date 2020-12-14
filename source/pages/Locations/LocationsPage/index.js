@@ -11,7 +11,7 @@ import moment from 'moment';
 // proj
 import { Layout } from 'commons';
 import book from 'routes/book';
-import { StorageDateFilter } from 'components';
+import { SingleDatePicker } from 'components';
 import { VehicleLocationModal, LocationHistoryModal } from 'modals';
 // own
 import Styles from './styles.m.css';
@@ -32,6 +32,7 @@ export default class LocationsPage extends Component {
             historyModalVisible: false,
             actionModalVisible: false,
             modalLocation: undefined,
+            toDatetime: moment(),
         };
 
         this.columns = [
@@ -68,8 +69,8 @@ export default class LocationsPage extends Component {
                     </div>
                 ),
                 className: Styles.numberColumn,
-                key:       'count',
-                dataIndex: 'count',
+                key:       'freeCount',
+                dataIndex: 'freeCount',
                 width:     'auto',
                 render: (data, row)=>{
                     return (
@@ -107,7 +108,7 @@ export default class LocationsPage extends Component {
                 key:       'percent',
                 width:     'auto',
                 render:    (row)=>{
-                    const percent = (row.count || 0) / row.volume;
+                    const percent = (row.freeCount || 0) / row.volume;
                     return (
                         Math.round(percent*100) + '%'
                     )
@@ -156,9 +157,10 @@ export default class LocationsPage extends Component {
 
     getLocations() {
         this.setState({loading: true})
+        const { toDatetime } = this.state;
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/business_locations`;
+        let url = __API_URL__ + `/business_locations?toDatetime=${toDatetime.format('YYYY-MM-DD')}`;
         fetch(url, {
             method: 'GET',
             headers: {
@@ -194,28 +196,33 @@ export default class LocationsPage extends Component {
     }
 
     render() {
-        const { dataSource, loading, includeExternal, historyModalVisible, actionModalVisible, modalLocation } = this.state;
+        const { dataSource, loading, includeExternal, historyModalVisible, actionModalVisible, modalLocation, toDatetime } = this.state;
         let totalCount = 0, totalVolume = 0;
         dataSource.map((elem)=>{
             if(includeExternal || elem.type != EXTERNAL_PARKING) {
-                totalCount += (elem.count || 0);
+                totalCount += (elem.freeCount || 0);
                 totalVolume += elem.volume;
             }
         })
         return (
             <Layout
                 title={ <FormattedMessage id='navigation.locations' /> }
-            >
-                <div className={Styles.header}>
-                    <div className={`${Styles.headerBlock} ${Styles.dateBlock}`}>
-                        <FormattedMessage id='locations.on'/> {moment().format('DD.MM.YY')}
-                        <StorageDateFilter
-                            // dateRange={}
-                            // onDateChange={}
-                            minimize
+                controls={
+                    <div>
+                        <SingleDatePicker
+                            date={toDatetime}
+                            onDateChange={async (date)=>{
+                                await this.setState({
+                                    toDatetime: date,
+                                });
+                                this.getLocations();
+                            }}
                             style={{margin: '0 8px'}}
                         />
                     </div>
+                }
+            >
+                <div className={Styles.header}>
                     <div className={Styles.headerBlock}>
                         <FormattedMessage id='locations.include_external_locations'/>
                         <div>
@@ -262,11 +269,13 @@ export default class LocationsPage extends Component {
                     columns={ this.columns }
                     dataSource={ dataSource }
                     pagination={ false }
+                    rowClassName={(row) => !includeExternal && row.type == EXTERNAL_PARKING ? Styles.disabledRow : null}
                 />
                 <VehicleLocationModal
                     visible={actionModalVisible}
                     receiveMode
                     selectedLocation={modalLocation}
+                    updateData={()=>this.getLocations()}
                     hideModal={()=>{
                         this.setState({
                             actionModalVisible: false,

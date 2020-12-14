@@ -7,7 +7,7 @@ import moment from 'moment';
 
 // proj
 import { Numeral } from 'commons';
-import { FormattedDatetime, StorageDateFilter } from 'components';
+import { FormattedDatetime, DateRangePicker } from 'components';
 import book from 'routes/book';
 
 // own
@@ -291,7 +291,7 @@ export function columnsConfig(props) {
                     <FormattedMessage id='report-orders-table.creation_date' />
                     <br />
                     <div style={{display: 'flex', justifyContent: 'center'}}>
-                        <StorageDateFilter
+                        <DateRangePicker
                             minimize
                             dateRange={[moment(filter.creationFromDate), moment(filter.creationToDate)]}
                             onDateChange={ setCreationDaterange }
@@ -310,7 +310,7 @@ export function columnsConfig(props) {
                     <FormattedMessage id='report-orders-table.appointment_date' />
                     <br />
                     <div style={{display: 'flex', justifyContent: 'center'}}>
-                        <StorageDateFilter
+                        <DateRangePicker
                             minimize
                             dateRange={[moment(filter.appointmentFromDate), moment(filter.appointmentToDate)]}
                             onDateChange={ setAppointmentDaterange }
@@ -328,7 +328,7 @@ export function columnsConfig(props) {
                     <FormattedMessage id='report-orders-table.done_date' />
                     <br />
                     <div style={{display: 'flex', justifyContent: 'center'}}>
-                        <StorageDateFilter
+                        <DateRangePicker
                             minimize
                             dateRange={[moment(filter.doneFromDate), moment(filter.doneToDate)]}
                             onDateChange={ setDoneDaterange }
