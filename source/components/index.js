@@ -43,10 +43,11 @@ import { ExcelReader } from './ExcelReader';
 import { StorageBalanceTotals } from './StorageBalanceTotals';
 import { StorageMovementTotals } from './StorageMovementTotals';
 import { StorageFilters } from './StorageFilters';
-import StorageDocumentsFilters, { StorageDateFilter, WarehouseSelect, BrandSelect } from './StorageDocumentsFilters';
+import StorageDocumentsFilters, { WarehouseSelect, BrandSelect } from './StorageDocumentsFilters';
 import AvailabilityIndicator from './AvailabilityIndicator';
 import RepairMapIndicator from './RepairMapIndicator';
 import ReportOrdersFilter from './ReportFilters/ReportOrdersFilter';
+import { DateRangePicker, SingleDatePicker } from './DatePicker';
 
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
@@ -101,9 +102,10 @@ export {
     StorageFilters,
     StorageDocumentsFilters,
     AvailabilityIndicator,
-    StorageDateFilter,
     WarehouseSelect,
     BrandSelect,
     RepairMapIndicator,
     ReportOrdersFilter,
+    DateRangePicker,
+    SingleDatePicker,
 };

@@ -276,7 +276,7 @@ export default class WorkshopTable extends Component {
                 fetched: true,
             });
         }
-        if(this.props.reloadOrderForm) this.props.reloadOrderForm(callback, 'labors');
+        if(this.props.reloadOrderForm) this.props.reloadOrderForm(callback, 'labors', true);
         else {
             let token = localStorage.getItem('_my.carbook.pro_token');
             let url = __API_URL__ + `/orders/${this.props.orderId}/labors`;

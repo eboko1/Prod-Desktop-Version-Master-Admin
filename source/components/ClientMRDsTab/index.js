@@ -12,7 +12,7 @@ import {
     setClientMRDsPage,
     setCashOrderModalMounted,
     setCashOrderEntityIsFetching,
-    selectCashOrderEntityIsFetching,
+    //selectCashOrderEntityIsFetching,
 } from 'core/clientMRDs/duck';
 import { Loader } from "commons";
 import ClientMRDsTable from '../Tables/ClientMRDsTable'
@@ -50,7 +50,7 @@ const mapDispatchToProps = {
     setCashOrderEntityIsFetching,
     fetchCashOrderEntity,
     clearCashOrderForm,
-    selectCashOrderEntityIsFetching,
+    //selectCashOrderEntityIsFetching,
 };
 
 @connect(

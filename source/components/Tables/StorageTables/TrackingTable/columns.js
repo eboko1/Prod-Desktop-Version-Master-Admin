@@ -81,19 +81,19 @@ export default props => {
                   documentNumber = _.get(data, 'doc.documentNumber');
 
             return data.orderId ? (
-                <Link
-                    to={ `${book.order}/${data.orderId}` }
+                <a
+                    href={ `${book.order}/${data.orderId}` }
                     style={ { color: 'var(--link)', fontWeight: 'bold' } }
                 >
                     { data.orderId }
-                </Link>
+                </a>
             ) : (
-                <Link
-                    to={ `${book.storageDocument}/${docId}` }
+                <a
+                    href={ `${book.storageDocument}/${docId}` }
                     style={ { color: 'var(--link)', fontWeight: 'bold' } }
                 >
                     { documentNumber }
-                </Link>
+                </a>
             );
         },
     };

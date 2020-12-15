@@ -17,7 +17,7 @@ import {
     StoreMovementTable,
     StorageMovementTotals,
     DatePickerGroup,
-    StorageDateFilter,
+    DateRangePicker,
     WarehouseSelect,
 } from 'components';
 
@@ -56,7 +56,7 @@ export const StorageMovementPage = connect(
                         style={{margin: '0 0 0 8px'}}
                         onChange={ (warehouseId) => props.setStoreMovementFilters({warehouseId: warehouseId})}
                     />
-                    <StorageDateFilter
+                    <DateRangePicker
                         dateRange={[moment(filters.startDate), moment(filters.endDate)]}
                         onDateChange={ setDaterange }
                         minimize

@@ -334,7 +334,7 @@ export class AbstractClientForm extends Component {
                                     }
                                     options={[
                                         {
-                                            id: "CAR_BOOK",
+                                            id: "CARBOOK",
                                             title: "CarBook",
                                         },
                                         {

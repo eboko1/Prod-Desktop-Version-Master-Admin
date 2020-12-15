@@ -14,7 +14,7 @@ import {
 } from 'core/storage/tracking';
 
 import { Layout, ResponsiveView } from 'commons';
-import { TrackingTable, DatePickerGroup, StorageDateFilter, WarehouseSelect, BrandSelect } from 'components';
+import { TrackingTable, DatePickerGroup, DateRangePicker, WarehouseSelect, BrandSelect } from 'components';
 import { StoreProductsSelect } from 'forms/_formkit';
 import { StoreProductModal, DetailStorageModal } from 'modals';
 import { BREAKPOINTS } from 'utils';
@@ -65,6 +65,7 @@ export const ProductsTrackingPage = withRouter(
         { setTrackingFilters },
     )(props => {
         const type = props.type || "tracking";
+        console.log(type);
         const { filters } = props;
         const [ period, setPeriod ] = useState('month');
 
@@ -83,7 +84,7 @@ export const ProductsTrackingPage = withRouter(
         const renderFilters = (
             <Filters>
                 <ResponsiveView view={ { min: BREAKPOINTS.xxl.min, max: null } }>
-                    <StorageDateFilter
+                    <DateRangePicker
                         minimize
                         dateRange={[moment(filters.startDate), moment(filters.endDate)]}
                         onDateChange={ setDaterange }
@@ -125,7 +126,7 @@ export const ProductsTrackingPage = withRouter(
             >
                 <ResponsiveView view={ { min: null, max: BREAKPOINTS.xl.max } }>
                     <FiltersSubPanel collapsed={ props.collapsed }>
-                        <StorageDateFilter
+                        <DateRangePicker
                             minimize
                             dateRange={[moment(filters.startDate), moment(filters.endDate)]}
                             onDateChange={ setDaterange }

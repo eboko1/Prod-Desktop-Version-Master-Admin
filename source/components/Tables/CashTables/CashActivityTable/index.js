@@ -17,7 +17,7 @@ import {
 import book from "routes/book";
 import { RangePickerField } from "forms/_formkit";
 import { ResponsiveView } from "commons";
-import { StorageDateFilter } from 'components';
+import { DateRangePicker } from 'components';
 import { BREAKPOINTS, linkTo } from "utils";
 
 // own
@@ -80,7 +80,7 @@ export class CashActivityTable extends Component {
                             <FormattedMessage id="cash-table.trace" />
                         </h3>
                     </ResponsiveView>
-                    <StorageDateFilter
+                    <DateRangePicker
                         dateRange={[
                             moment(_.get(filters, "startDate")),
                             moment( _.get(filters, "endDate"))

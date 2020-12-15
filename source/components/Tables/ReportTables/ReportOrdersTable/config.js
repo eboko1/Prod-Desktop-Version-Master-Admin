@@ -7,7 +7,7 @@ import moment from 'moment';
 
 // proj
 import { Numeral } from 'commons';
-import { FormattedDatetime, StorageDateFilter } from 'components';
+import { FormattedDatetime, DateRangePicker } from 'components';
 import book from 'routes/book';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
@@ -314,7 +314,7 @@ export function columnsConfig(props) {
                     <FormattedMessage id='report-orders-table.creation_date' />
                     <br />
                     <div className={Styles.storageDateFilter}>
-                        <StorageDateFilter
+                        <DateRangePicker
                             minimize
                             style={{margin: 0}}//prevent default space
                             dateRange={[moment(filter.creationFromDate), moment(filter.creationToDate)]}
@@ -338,7 +338,7 @@ export function columnsConfig(props) {
                     <FormattedMessage id='report-orders-table.appointment_date' />
                     <br />
                     <div className={Styles.storageDateFilter}>
-                        <StorageDateFilter
+                        <DateRangePicker
                             minimize
                             style={{margin: 0}}//prevent default space
                             dateRange={[moment(filter.appointmentFromDate), moment(filter.appointmentToDate)]}
@@ -362,7 +362,7 @@ export function columnsConfig(props) {
                     <FormattedMessage id='report-orders-table.done_date' />
                     <br />
                     <div className={Styles.storageDateFilter}>
-                        <StorageDateFilter
+                        <DateRangePicker
                             minimize
                             style={{margin: 0}}//prevent default space
                             dateRange={[moment(filter.doneFromDate), moment(filter.doneToDate)]}

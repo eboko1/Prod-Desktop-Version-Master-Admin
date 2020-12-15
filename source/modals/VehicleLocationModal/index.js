@@ -9,16 +9,26 @@ import _ from 'lodash';
 import moment from 'moment';
 
 // proj
-
+import {getReport} from 'core/order/duck';
+import { ClientSearchTable } from 'components';
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
 
+const mapDispatchToProps = {
+    getReport,
+};
+
+@connect(
+    void 0,
+    {getReport},
+)
 @injectIntl
 export default class VehicleLocationModal extends Component {
     constructor(props) {
         super(props);
         this.state={
+            visible: false,
             locations: [],
             clients: [],
             selectedLocation: undefined,
@@ -26,7 +36,9 @@ export default class VehicleLocationModal extends Component {
             clientId: undefined,
             vehicles: [],
             vehicleId: undefined,
+            clientSearchQuery: "",
         };
+        this._isMounted = false;
     }
 
     fetchClients() {
@@ -88,8 +100,9 @@ export default class VehicleLocationModal extends Component {
     }
 
     postMovement() {
-        const { receiveMode, returnMode, transferMode, currentLocation } = this.props;
-        const { selectedLocation, vehicleId } = this.state;
+        const { receiveMode, returnMode, transferMode, currentLocation, onConfirm, orderId, getReport } = this.props;
+        const { selectedLocation, vehicleId, clientId, printAct } = this.state;
+
         const postData = {
             businessLocationId: selectedLocation,
             clientVehicleId: vehicleId,
@@ -100,11 +113,20 @@ export default class VehicleLocationModal extends Component {
             postData.type = 'INCOME';
             postData.documentType = 'CLIENT';
         } else if(returnMode) {
-            
+            postData.type = 'EXPENSE';
+            postData.documentType = 'CLIENT';
         } else if(transferMode) {
             postData.type = 'EXPENSE';
             postData.documentType = 'TRANSFER';
-            postData.counterpartBusinessLocationId = currentLocation;
+            postData.businessLocationId = currentLocation;
+            postData.counterpartBusinessLocationId = selectedLocation;
+        }
+
+        if(printAct && orderId) {
+            getReport({
+                link: `/orders/reports/actOfAcceptanceReport/${orderId}?reverse=${Boolean(receiveMode)}`,
+                name: 'actOfAcceptanceReport'
+            });
         }
 
         var that = this;
@@ -128,6 +150,9 @@ export default class VehicleLocationModal extends Component {
         })
         .then(function (data) {
             console.log(data);
+            if(onConfirm) {
+                onConfirm(selectedLocation);
+            };
         })
         .catch(function (error) {
             console.log('error', error);
@@ -135,7 +160,7 @@ export default class VehicleLocationModal extends Component {
     }
 
     receiveModeContent() {
-        const { locations, clients, clientId, vehicles, vehicleId, selectedLocation, printAct } = this.state;
+        const { locations, clients, clientId, vehicles, vehicleId, selectedLocation, printAct, clientSearchQuery } = this.state;
         return (
             <div>
                 <div className={Styles.modalTitle}>
@@ -143,54 +168,88 @@ export default class VehicleLocationModal extends Component {
                 </div>
                 <div className={Styles.modalContent}>
                     <div>
-                        <Select
-                            showSearch
-                            value={clientId}
-                            placeholder={this.props.intl.formatMessage({id:'vehicle_location_modal.client'})}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                            filterOption={(input, option) => {
-                                const searchValue = String(option.props.children).toLowerCase().replace(/[+\-()., ]/g,'');
-                                const inputValue = input.toLowerCase();
-                                return searchValue.indexOf(inputValue) >= 0;
-                            }}
-                            onChange={(value, option)=>{
+                        <Input
+                            width={'100%'}
+                            value={clientSearchQuery}
+                            placeholder={this.props.intl.formatMessage({id: "add_order_form.search_client.placeholder"})}
+                            onChange={({target})=>{
                                 this.setState({
-                                    clientId: value,
-                                    vehicles: option.props.vehicles,
-                                    vehicleId: option.props.vehicles.length ? option.props.vehicles[0].id : undefined,
+                                    clientSearchQuery: target.value,
                                 })
                             }}
-                        >
-                            {clients.map(({clientId, name, surname, phones, vehicles}, key)=>
-                                <Option value={clientId} key={key} vehicles={vehicles}>
-                                    {name} {surname} {phones[0]}
-                                </Option>
-                            )}
-                        </Select>
+                        />
+                        <ClientSearchTable
+                            searchQuery={clientSearchQuery}
+                            visible={clientSearchQuery.length > 2}
+                            onSelect={({clientId, vehicles})=>{
+                                this.setState({
+                                    clientSearchQuery: "",
+                                    clientId: clientId,
+                                    vehicleId: vehicles.length && vehicles[0].id,
+                                    vehicles: vehicles,
+                                })
+                            }}
+                        />
+                    </div>  
+                    <div>
+                        {clientId && 
+                            <Select
+                                disabled
+                                style={{color: 'var(--text)'}}
+                                value={clientId}
+                                placeholder={this.props.intl.formatMessage({id:'vehicle_location_modal.client'})}
+                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                                filterOption={(input, option) => {
+                                    const searchValue = String(option.props.children).toLowerCase().replace(/[+\-()., ]/g,'');
+                                    const inputValue = input.toLowerCase();
+                                    // let matchClientVehicle = false;
+                                    // option.props.vehicles.map(({number, make, model, modification, year})=>{
+                                    //     const vehicleData = `${make} ${model} ${modification} (${year})`.toLowerCase().replace(/[+\-()., ]/g,'');
+                                    //     console.log(vehicleData);
+                                    // })
+                                    return searchValue.indexOf(inputValue) >= 0;
+                                }}
+                                onChange={(value, option)=>{
+                                    this.setState({
+                                        clientId: value,
+                                        vehicles: option.props.vehicles,
+                                        vehicleId: option.props.vehicles.length ? option.props.vehicles[0].id : undefined,
+                                    })
+                                }}
+                            >
+                                {clients.map(({clientId, name, surname, phones, vehicles}, key)=>
+                                    <Option value={clientId} key={key} vehicles={vehicles}>
+                                        {name} {surname} {phones[0]}
+                                    </Option>
+                                )}
+                            </Select>
+                        }
                     </div>
                     <div>
-                        <Select
-                            showSearch
-                            value={vehicleId}
-                            placeholder={this.props.intl.formatMessage({id:'vehicle_location_modal.vehicle'})}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                            filterOption={(input, option) => {
-                                const searchValue = String(option.props.children).toLowerCase().replace(/[+\-()., ]/g,'');
-                                const inputValue = input.toLowerCase();
-                                return searchValue.indexOf(inputValue) >= 0;
-                            }}
-                            onChange={(value, option)=>{
-                                this.setState({
-                                    vehicleId: value,
-                                })
-                            }}
-                        >
-                            {vehicles.map(({id, number, make, model, year}, key)=>
-                                <Option value={id} key={key}>
-                                    {number} {make} {model} ({year})
-                                </Option>
-                            )}
-                        </Select>
+                        {clientId && 
+                            <Select
+                                showSearch
+                                value={vehicleId}
+                                placeholder={this.props.intl.formatMessage({id:'vehicle_location_modal.vehicle'})}
+                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                                filterOption={(input, option) => {
+                                    const searchValue = String(option.props.children).toLowerCase().replace(/[+\-()., ]/g,'');
+                                    const inputValue = input.toLowerCase();
+                                    return searchValue.indexOf(inputValue) >= 0;
+                                }}
+                                onChange={(value, option)=>{
+                                    this.setState({
+                                        vehicleId: value,
+                                    })
+                                }}
+                            >
+                                {vehicles.map(({id, number, make, model, year}, key)=>
+                                    <Option value={id} key={key}>
+                                        {number} {make} {model} ({year})
+                                    </Option>
+                                )}
+                            </Select>
+                        }
                     </div>
                     <div className={Styles.locationPrintWrapper}>
                         <div className={Styles.locationWrapper}>
@@ -199,6 +258,7 @@ export default class VehicleLocationModal extends Component {
                                 showSearch
                                 value={selectedLocation}
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                                placeholder={this.props.intl.formatMessage({id:'location'})}
                                 onChange={(value)=>{
                                     this.setState({
                                         selectedLocation: value,
@@ -240,6 +300,7 @@ export default class VehicleLocationModal extends Component {
     }
 
     returnModeContent() {
+        const { locations, clients, clientId, vehicles, vehicleId, selectedLocation, printAct } = this.state;
         return (
             <div>
                 <div className={Styles.modalTitle}>
@@ -248,16 +309,26 @@ export default class VehicleLocationModal extends Component {
                 <div className={Styles.modalContent}>
                     <div>
                         <Select
-                            showSearch
+                            disabled
+                            style={{color: 'var(--text)'}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            value={vehicleId}
                         >
-                            
+                            {vehicles.map(({id, number, make, model, year}, key)=>
+                                <Option value={id} key={key}>
+                                    {number} {make} {model} ({year})
+                                </Option>
+                            )}
                         </Select>
                     </div>
                     <div className={Styles.printWrapper}>
                         <FormattedMessage id='vehicle_location_modal.print_act' />
                         <Checkbox
                             style={{marginLeft: 6}}
+                            checked={printAct}
+                            onChange={({target})=>{
+                                this.setState({printAct: target.checked})
+                            }}
                         />
                     </div>
                 </div>
@@ -274,6 +345,7 @@ export default class VehicleLocationModal extends Component {
     }
 
     transferModeContent() {
+        const { currentLocation } = this.props;
         const { locations, clients, clientId, vehicles, vehicleId, selectedLocation, printAct } = this.state;
         return (
             <div>
@@ -283,19 +355,43 @@ export default class VehicleLocationModal extends Component {
                 <div className={Styles.modalContent}>
                     <div>
                         <Select
-                            showSearch
+                            disabled
+                            style={{color: 'var(--text)'}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             value={vehicleId}
                         >
-                            
+                            {vehicles.map(({id, number, make, model, year}, key)=>
+                                <Option value={id} key={key}>
+                                    {number} {make} {model} ({year})
+                                </Option>
+                            )}
                         </Select>
                     </div>
-                    <div className={Styles.locationWrapper}>
-                            <FormattedMessage id='vehicle_location_modal.new_location'/>
+                    <div className={Styles.locationToLocationWrapper}>
+                        <div className={Styles.locationWrapper}>
+                            <FormattedMessage id='vehicle_location_modal.from'/>
+                             <Select
+                                disabled
+                                value={currentLocation}
+                                style={{color: 'var(--text)'}}
+                            >
+                                {locations.map(({id, name}, key)=>
+                                    <Option
+                                        key={key}
+                                        value={id}
+                                    >
+                                        {name}
+                                    </Option>
+                                )}
+                            </Select>
+                        </div>
+                        <div className={Styles.locationWrapper}>
+                            <FormattedMessage id='vehicle_location_modal.to'/>
                              <Select
                                 showSearch
                                 value={selectedLocation}
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                                placeholder={this.props.intl.formatMessage({id:'location'})}
                                 onChange={(value)=>{
                                     this.setState({
                                         selectedLocation: value,
@@ -312,6 +408,7 @@ export default class VehicleLocationModal extends Component {
                                 )}
                             </Select>
                         </div>
+                    </div>
                 </div>
                 <div className={Styles.modalButton}>
                     <Button
@@ -332,43 +429,71 @@ export default class VehicleLocationModal extends Component {
 
     handleCancel = () => {
         this.setState({
+            visible: false,
             selectedLocation: undefined,
             printAct: true,
             clientId: undefined,
             vehicles: [],
             vehicleId: undefined,
         });
-        this.props.hideModal();
+        this.props.hideModal(this.state.selectedLocation);
     }
 
-    componentDidUpdate(prevProps) {
-        if(this.props.visible && !prevProps.visible) {
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.modalVisible && !prevProps.modalVisible || this.state.visible && !prevState.visible) {
+            const { selectedLocation, vehicleId, clientId, orderId } = this.props;
+            const { clients } = this.state;
             this.setState({
-                selectedLocation: this.props.selectedLocation,
-                vehicleId: this.props.vehicleId,
+                selectedLocation: selectedLocation,
+                orderId: orderId,
+                clientId: clientId,
+                vehicleId: vehicleId,
+                vehicles: clientId ? clients.find((client)=>client.clientId == clientId).vehicles : [],
             })
         }
     }
 
     componentDidMount() {
-        this.fetchClients();
-        this.fetchLocations();
+        if(this._isMounted) {
+            this.fetchClients();
+            this.fetchLocations();
+        }
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
-        const { visible, hideModal, receiveMode, returnMode, transferMode } = this.props;
+        const { disabled, modalVisible, hideModal, receiveMode, returnMode, transferMode, showIcon, style } = this.props;
+        const { visible } = this.state;
         let content;
-        if(receiveMode) content = this.receiveModeContent();
         if(returnMode) content = this.returnModeContent();
         if(transferMode) content = this.transferModeContent();
+        if(receiveMode) content = this.receiveModeContent();
         return (
-            <Modal
-                visible={visible}
-                footer={null}
-                onCancel={this.handleCancel}
-            >
-                {content}
-            </Modal>
+            <div className={Styles.modalWrap} style={style}>
+                {showIcon && 
+                    <Icon
+                        type="double-right"
+                        className={`${Styles.modalIcon} ${disabled ? Styles.disabledIcon : null}`}
+                        onClick={()=>{
+                            this.setState({
+                                visible: true,
+                            })
+                        }}
+                    />
+                }
+                <Modal
+                    visible={modalVisible || visible}
+                    footer={null}
+                    onCancel={this.handleCancel}
+                    style={{minWidth: 840}}
+                >
+                    {content}
+                </Modal>
+            </div>
         );
     }
 }

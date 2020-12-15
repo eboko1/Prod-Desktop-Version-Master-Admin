@@ -32,6 +32,11 @@
     flex: 0 1 50%;
 }
 
+.location {
+    flex: 0 1 50%;
+    color: var(--text);
+}
+
 .clientSearchField {
     flex: 1 1 auto;
 }
@@ -61,6 +66,7 @@
     font-size: 16px;
     cursor: pointer;
     color: var(--link);
+    vertical-align: text-bottom;
 }
 
 .bodyColumn {
@@ -118,7 +124,7 @@
 }
 
 .odometr {
-    flex: 1 1 100%;
+    flex: 1 1 50%;
 }
 
 .odometr :global(.ant-input-number) {
