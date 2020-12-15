@@ -197,16 +197,20 @@ export class OrderForm extends React.PureComponent {
     }
 
     _updateOrderField = (field) => {
-        let hours = 0;
-        this.orderServices.map(elem => {
-            hours += elem.count;
-        });
+        if(field == 'duration') {
+            let hours = 0;
+            this.orderServices.map(elem => {
+                hours += elem.count;
+            });
 
-        if (hours > 8) {
-            message.warning("Количество часов превышает 8. ");
-            hours = 8;
+            if (hours > 8) {
+                message.warning("Количество часов превышает 8. ");
+                hours = 8;
+            }
+
+            field = {duration: hours};
         }
-
+        
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
         let url = API_URL;
@@ -218,10 +222,7 @@ export class OrderForm extends React.PureComponent {
                 Authorization: token,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                field,
-                duration: hours
-            }),
+            body: JSON.stringify(field),
         })
             .then(function(response) {
                 if (response.status !== 200) {

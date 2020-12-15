@@ -417,7 +417,7 @@ export default class OrderFormHeader extends Component {
                                     className={Styles.updateDurationIcon}
                                     type="redo"
                                     title="Пересчитать длительность"
-                                    onClick={() => this.props.updateOrderField({duration: 5})}
+                                    onClick={() => this.props.updateOrderField('duration')}
                                     title={this.props.intl.formatMessage({
                                         id: "duration.recalculate",
                                     })}

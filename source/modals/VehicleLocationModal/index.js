@@ -115,9 +115,10 @@ export default class VehicleLocationModal extends Component {
         } else if(transferMode) {
             postData.type = 'EXPENSE';
             postData.documentType = 'TRANSFER';
-            postData.counterpartBusinessLocationId = currentLocation;
+            postData.businessLocationId = currentLocation;
+            postData.counterpartBusinessLocationId = selectedLocation;
         }
-        console.log(postData);
+
         if(printAct && orderId) {
             getReport({
                 link: `/orders/reports/actOfAcceptanceReport/${orderId}?reverse=${Boolean(receiveMode)}`,
@@ -147,7 +148,7 @@ export default class VehicleLocationModal extends Component {
         .then(function (data) {
             console.log(data);
             if(onConfirm) {
-                onConfirm();
+                onConfirm(selectedLocation);
             };
         })
         .catch(function (error) {

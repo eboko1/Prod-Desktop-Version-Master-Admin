@@ -29,6 +29,7 @@ export default class LocationsVehiclesPage extends Component {
             paginationTotal: 0,
             modalVisible: false,
             modalVehicleId: undefined,
+            modalClientId: undefined,
             modalCurrentLocation: undefined,
             toDatetime: moment(),
         };
@@ -46,10 +47,22 @@ export default class LocationsVehiclesPage extends Component {
             {
                 title:     <FormattedMessage id='locations.number' />,
                 key:       'number',
+                dataIndex: 'clientsVehicle',
+                render:    ({number}, row)=> {
+                    return (
+                        number || <FormattedMessage id='long_dash'/>
+                    )
+                }
             },
             {
                 title:     <FormattedMessage id='locations.vehicle'/>,
                 key:       'vehicle',
+                dataIndex: 'clientsVehicle',
+                render:    ({make, model, modification, year}, row)=> {
+                    return (
+                        `${make} ${model} ${modification} (${year})`
+                    )
+                }
             },
             {
                 title:     <FormattedMessage id='location' />,
@@ -80,7 +93,8 @@ export default class LocationsVehiclesPage extends Component {
                             onClick={()=>{
                                 this.setState({
                                     modalVisible: true,
-                                    modalVehicleId: data.id,
+                                    modalVehicleId: data.clientsVehicle.id,
+                                    modalClientId: data.client.id,
                                     modalCurrentLocation: data.businessLocation.id,
                                 })
                             }}
@@ -194,7 +208,7 @@ export default class LocationsVehiclesPage extends Component {
     }
 
     render() {
-        const { loading, locations, locationId, dataSource, currentPage, paginationTotal, modalVisible, modalVehicleId, modalCurrentLocation, toDatetime } = this.state;
+        const { loading, locations, locationId, dataSource, currentPage, paginationTotal, modalVisible, modalVehicleId, modalClientId, modalCurrentLocation, toDatetime } = this.state;
 
         const pagination = {
             total: paginationTotal,
@@ -262,12 +276,14 @@ export default class LocationsVehiclesPage extends Component {
                     modalVisible={modalVisible}
                     transferMode
                     vehicleId={modalVehicleId}
+                    clientId={modalClientId}
                     currentLocation={modalCurrentLocation}
                     onConfirm={()=>this.fetchData()}
                     hideModal={()=>{
                         this.setState({
                             modalVisible: false,
                             modalVehicleId: undefined,
+                            modalClientId: undefined,
                             modalCurrentLocation: undefined,
                         })
                     }}

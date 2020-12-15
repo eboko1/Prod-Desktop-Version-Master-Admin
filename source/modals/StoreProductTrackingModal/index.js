@@ -55,6 +55,7 @@ export default class StoreProductTrackingModal extends Component {
         if(!prevProps.visible && this.props.visible) {
             setTrackingFilters({
                 productId: productId,
+                showOnlyReserves: true,
                 page: 1
             })
         }
@@ -67,7 +68,7 @@ export default class StoreProductTrackingModal extends Component {
         return (
             <Modal
                 visible={visible}
-                title={<FormattedMessage id='locations.vehicles_location_history'/>}
+                title={<FormattedMessage id='navigation.products_reserves'/>}
                 width={'80%'}
                 zIndex={9999}
                 onCancel={this.handleCancel}

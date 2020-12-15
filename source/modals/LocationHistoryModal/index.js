@@ -43,10 +43,22 @@ export default class LocationHistoryModal extends Component {
             {
                 title:     <FormattedMessage id='locations.number' />,
                 key:       'number',
+                dataIndex: 'clientsVehicle',
+                render:    ({number}, row)=> {
+                    return (
+                        number || <FormattedMessage id='long_dash'/>
+                    )
+                }
             },
             {
                 title:     <FormattedMessage id='locations.vehicle'/>,
                 key:       'vehicle',
+                dataIndex: 'clientsVehicle',
+                render:    ({make, model, modification, year}, row)=> {
+                    return (
+                        `${make} ${model} ${modification} (${year})`
+                    )
+                }
             },
             {
                 title:     <FormattedMessage id='location' />,
