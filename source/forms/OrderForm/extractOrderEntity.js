@@ -224,6 +224,7 @@ export function convertFieldsValuesToDbEntity(
         vehicleCondition: _.get(orderFields, 'vehicleCondition'),
         businessComment:  _.get(orderFields, 'businessComment'),
         comment:          _.get(orderFields, 'comment'),
+        businessLocationId:       _.get(orderFields, 'businessLocationId') || null,
         insertMode:       true,
         updateRepairMap:  true,
     };

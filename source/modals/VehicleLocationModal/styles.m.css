@@ -1,3 +1,23 @@
+.modalWrap {
+	display: inline-block;
+}
+
+.modalIcon {
+	font-size: 16px;
+    cursor: pointer;
+    color: var(--link);
+    vertical-align: text-bottom;
+
+	&:hover {
+		color: var(--primary);
+	}
+
+	&.disabledIcon {
+		pointer-events: none;
+		color: var(--text2);
+	}
+}
+
 .modalTitle {
 	font-size: 16px;
 	font-weight: 500;
@@ -17,6 +37,19 @@
 	display: flex;
 	justify-content: space-between;	
 	align-items: center;
+}
+
+.locationToLocationWrapper {
+	display: flex;
+	justify-content: space-between;	
+	align-items: center;
+	& > div.locationWrapper {
+		flex: 0 1 48%;
+
+		& > div {
+			width: 100%;
+		}
+	}
 }
 
 .locationWrapper {

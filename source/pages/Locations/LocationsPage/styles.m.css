@@ -18,6 +18,11 @@
     justify-content: center;
 }
 
+.disabledRow {
+	color: var(--text2);
+	background: var(--db_cancel);
+}
+
 .numberColumn {
 	text-align: right;
 }

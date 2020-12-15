@@ -7,7 +7,7 @@ import moment from 'moment';
 
 // proj
 import { Numeral } from 'commons';
-import { FormattedDatetime, StorageDateFilter } from 'components';
+import { FormattedDatetime, DateRangePicker } from 'components';
 import book from 'routes/book';
 
 // own
@@ -31,7 +31,7 @@ const defWidth = {
     no: '4%',
     client_name: 'auto',
     order_num: '10%',
-    status: '6%',
+    status: '8%',
 
     date_created: '6%',
     date_appointment: '6%',
@@ -49,7 +49,6 @@ const defWidth = {
     margin_parts: '5%',
     margin_total: '5%'
 }
-
 
 /* eslint-disable complexity */
 export function columnsConfig(props) {
@@ -76,6 +75,8 @@ export function columnsConfig(props) {
         setReportOrdersDoneFromDate,
         setReportOrdersDoneToDate,
     } = filterControls;
+
+    
 
     //Handlers---------------------------------------------------------------
     function onIncludeLaborsDiscountChanged(e) {
@@ -149,7 +150,23 @@ export function columnsConfig(props) {
         fetchReportOrders();
     }
 
+    const onClearDateCreatedFilter = () => {
+        setCreationDaterange([undefined, undefined]);
+    }
+
+    const onClearDateAppointmentFilter = () => {
+        setAppointmentDaterange([undefined, undefined]);
+    }
+
+    const onClearDateDoneFilter = () => {
+        setDoneDaterange([undefined, undefined]);
+    }
+
     //-----------------------------------------------------------------------
+
+    const activeCreationDateFilter = (filter.creationFromDate || filter.creationToDate); //Check if filter has value
+    const activeAppointmentDateFilter = (filter.appointmentFromDate || filter.appointmentToDate); //Check if filter has value
+    const activeDoneDateFilter = (filter.doneFromDate || filter.doneToDate); //Check if filter has value
 
     //Get corresponging status value
     const statusLangMapper = status => {
@@ -160,6 +177,7 @@ export function columnsConfig(props) {
             case 'approve': return <FormattedMessage id={statuses.approve} />;
             case 'progress': return <FormattedMessage id={statuses.progress} />;
             case 'success': return <FormattedMessage id={statuses.success} />;
+            case 'reset': return <FormattedMessage id='report-orders-table.reset' />;
             default: return <FormattedMessage id="report-orders-table.unknown_status" />;
         }
     }
@@ -185,7 +203,7 @@ export function columnsConfig(props) {
                 {statusLangMapper('success')}
             </Menu.Item>
             <Menu.Item key="reset">
-                <FormattedMessage id='report-orders-table.reset' />
+                {statusLangMapper('reset')}
             </Menu.Item>
         </Menu>
       );
@@ -268,8 +286,8 @@ export function columnsConfig(props) {
                     <FormattedMessage id='report-orders-table.status' />
                     <br />
                     <Dropdown className={Styles.statusDropdown} overlay={menu}>
-                        <Button onClick={() => {console.log('click')}}>
-                            <FormattedMessage id="report-orders-table.status"/> <Icon type="down" />
+                        <Button>
+                            {statusLangMapper(filter.status ? filter.status: "reset")} <Icon type="down" /> 
                         </Button>
                     </Dropdown>
                 </div>,
@@ -290,12 +308,18 @@ export function columnsConfig(props) {
                 title: <div  className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.creation_date' />
                     <br />
-                    <div style={{display: 'flex', justifyContent: 'center'}}>
-                        <StorageDateFilter
+                    <div className={Styles.storageDateFilter}>
+                        <DateRangePicker
                             minimize
+                            style={{margin: 0}}//prevent default space
                             dateRange={[moment(filter.creationFromDate), moment(filter.creationToDate)]}
                             onDateChange={ setCreationDaterange }
                         />
+                        {activeCreationDateFilter
+                            && <div className={Styles.clearIconCont}>
+                                <Icon onClick={onClearDateCreatedFilter} className={Styles.clearIcon} type="close-circle" />
+                            </div>
+                        }
                     </div>
                 </div>,
                 align: 'right',
@@ -305,16 +329,21 @@ export function columnsConfig(props) {
                 render: (orderDatetime) => (<FormattedDatetime datetime={ orderDatetime } format={ 'DD.MM.YY HH:mm' } />)
             },
             {
-                // title: <FormattedMessage id='report-orders-table.appointment_date' />,
                 title: <div  className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.appointment_date' />
                     <br />
-                    <div style={{display: 'flex', justifyContent: 'center'}}>
-                        <StorageDateFilter
+                    <div className={Styles.storageDateFilter}>
+                        <DateRangePicker
                             minimize
+                            style={{margin: 0}}//prevent default space
                             dateRange={[moment(filter.appointmentFromDate), moment(filter.appointmentToDate)]}
                             onDateChange={ setAppointmentDaterange }
                         />
+                        {activeAppointmentDateFilter
+                            && <div className={Styles.clearIconCont}>
+                                <Icon onClick={onClearDateAppointmentFilter} className={Styles.clearIcon} type="close-circle" />
+                            </div>
+                        }
                     </div>
                 </div>,
                 align: 'right',
@@ -327,12 +356,18 @@ export function columnsConfig(props) {
                 title: <div  className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.done_date' />
                     <br />
-                    <div style={{display: 'flex', justifyContent: 'center'}}>
-                        <StorageDateFilter
+                    <div className={Styles.storageDateFilter}>
+                        <DateRangePicker
                             minimize
+                            style={{margin: 0}}//prevent default space
                             dateRange={[moment(filter.doneFromDate), moment(filter.doneToDate)]}
                             onDateChange={ setDoneDaterange }
                         />
+                        {activeDoneDateFilter
+                            && <div className={Styles.clearIconCont}>
+                                <Icon onClick={onClearDateDoneFilter} className={Styles.clearIcon} type="close-circle" />
+                            </div>
+                        }
                     </div>
                 </div>,
                 align: 'right',
