@@ -100,6 +100,7 @@ class StorageDocumentsContainer extends Component {
                 documentWarehouseFilter: ["", ""],
             },
             dateRange: [],
+            documentType: undefined,
         };
 
         this.onDateChange = this.onDateChange.bind(this);
@@ -171,10 +172,11 @@ class StorageDocumentsContainer extends Component {
         this.filterDocumentList();
     }
 
-    documentTypeFilter(value) {
+    documentTypeFilter(value, documentType) {
         this.state.documentFilters.documentTypeFilter = value;
         this.setState({
             update: true,
+            documentType: documentType,
         });
         this.filterDocumentList();
     }
@@ -188,7 +190,6 @@ class StorageDocumentsContainer extends Component {
     }
 
     documentWarehouseFilter(warehouseInput) {
-        console.log(warehouseInput)
         this.state.documentFilters.documentWarehouseFilter = warehouseInput;
         this.setState({
             update: true,
@@ -280,8 +281,7 @@ class StorageDocumentsContainer extends Component {
     }
 
     render() {
-        const { dateRange, filtredDocumentsList, isFiltred } = this.state;
-
+        const { dateRange, filtredDocumentsList, documentFilters, documentType, isFiltred } = this.state;
         return (
             <Layout
                 title={ <FormattedMessage id={`navigation.${
@@ -307,6 +307,7 @@ class StorageDocumentsContainer extends Component {
                                 state:    {
                                     formData: {
                                         type: this.props.newDocType,
+                                        documentType: documentType || documentFilters.documentTypeFilter,
                                     }
                                 },
                             }}

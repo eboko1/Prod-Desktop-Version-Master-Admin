@@ -173,6 +173,7 @@ class DetailProductModal extends React.Component{
                     return (
                         <Select
                             showSearch
+                            allowClear
                             disabled={elem.storeGroupId == null && this.state.radioValue == 1}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
                             value={data ? data : undefined}
@@ -233,12 +234,17 @@ class DetailProductModal extends React.Component{
                     return (
                         <div style={{display: "flex"}}>
                             <Input
+                                allowClear
                                 style={{minWidth: 80, color: 'black'}}
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={data}
                                 disabled={elem.storeGroupId == null && this.state.radioValue == 1}
-                                onChange={(event)=>{
-                                    elem.detailCode = event.target.value;
+                                onChange={({target})=>{
+                                    const { value }= target;
+                                    elem.detailCode = value;
+                                    if(!value) {
+                                        this.unsetSupplier();
+                                    }
                                     this.unsetSupplier(elem.key, elem.related);
                                     this.setState({});
                                 }}

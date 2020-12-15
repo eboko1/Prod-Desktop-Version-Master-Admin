@@ -10,7 +10,7 @@ import moment from 'moment';
 
 // proj
 import { Catcher } from 'commons';
-
+import { DateRangePicker } from 'components';
 // own
 import Styles from './styles.m.css';
 const { RangePicker } = DatePicker;
@@ -91,7 +91,7 @@ class StorageDocumentsFilters extends Component {
                     documentTypeFilter(null);
                 } else if(value == ORDERINCOME) {
                     typeFilter(EXPENSE);
-                    documentTypeFilter(SUPPLIER);
+                    documentTypeFilter(SUPPLIER, ORDERINCOME);
                 } else if(value == SUPPLIER) {
                     typeFilter(INCOME);
                     documentTypeFilter(value);
@@ -122,8 +122,6 @@ class StorageDocumentsFilters extends Component {
             documentType
         } = this.state;
 
-        console.log(this);
-
         return (
             <div className={ Styles.filtersWrap }>
                <div className={ Styles.filterRadioButtonGroup }>
@@ -140,7 +138,7 @@ class StorageDocumentsFilters extends Component {
                                             documentTypeFilter(null);
                                         } else if(value == ORDERINCOME) {
                                             typeFilter(EXPENSE);
-                                            documentTypeFilter(SUPPLIER);
+                                            documentTypeFilter(SUPPLIER, ORDERINCOME);
                                         } else if(value == SUPPLIER) {
                                             typeFilter(INCOME);
                                             documentTypeFilter(value);

@@ -1,7 +1,8 @@
+import ClientSearchTable from './ClientSearchTable';
+import ClientMRDsTable from './ClientMRDsTable';
+
 export { EditableTable } from './EditableTable';
 export { SuppliersTable } from './SuppliersTable';
-
-//export { ClientMRDsTable } from './ClientMRDsTable';
 
 //Reports
 export { ReportOrdersTable } from './ReportTables/ReportOrdersTable'
@@ -28,6 +29,7 @@ export {
     StoreMovementTable,
 } from './StorageTables';
 
-
-import ClientMRDsTable from './ClientMRDsTable';
-export { ClientMRDsTable };
+export { 
+	ClientMRDsTable,
+	ClientSearchTable,
+};

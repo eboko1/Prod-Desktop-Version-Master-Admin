@@ -1233,11 +1233,14 @@ export class ReserveButton extends React.Component {
                 console.log(response);
 
                 confirm({
-                    title: (
-                        `${formatMessage({id: 'storage_document.error.available'})}. ${formatMessage({id: 'storage_document.warning.continue'})}`
-                    ),
+                    title: formatMessage({id: 'storage_document.not_enought_for_reserve'}),
                     content: (
                         <div>
+                            {formatMessage(
+                                {id: 'storage_document.in_stock_and_available_count', inStock: availableCount},
+                                {inStock: availableCount},
+                                {available: availableCount - reservedCount},
+                            )}
                             {`${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: `}
                             <span
                                 style={{color: 'var(--link)', textDecoration: 'underline', cursor: 'pointer'}}
