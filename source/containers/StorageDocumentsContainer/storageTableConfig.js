@@ -69,6 +69,9 @@ export function columnsConfig(
         case '/storage-transfers':
             isTransfer = true;
             break;
+        case '/supplier/:id':
+            isOrder = true;
+            break;
     }
 
     const sortOptions = {
@@ -354,6 +357,17 @@ export function columnsConfig(
                 documentStorageExpensesCol,
                 documentStorageIncomeCol,
                 deleteActionCol,
+            ];
+
+        case '/supplier/:id':
+            return [
+                indexCol,
+                orderCol,
+                datetimeCol,
+                counterpartyCol,
+                sumCol,
+                documentTypeCol,
+                documentStatusCol,
             ];
 
         default:

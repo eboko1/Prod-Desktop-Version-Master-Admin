@@ -32,7 +32,8 @@
         "add_client_form.search_query": "Search text",
         "add_client_form.invalid_phone_format": "Incorrect phone format",
         "add_client_form.payment_respite": "Payment term",
-        "add_client_form.source": "Source"
+        "add_client_form.source": "Source",
+        "add_client_form.recomendetion": "Recomendetion"
     },
     "ru": {
         "add_client_form.year": "Год",
@@ -67,7 +68,8 @@
         "add_client_form.search_query": "Строка поиска",
         "add_client_form.invalid_phone_format": "Неправильный формат номера",
         "add_client_form.payment_respite": "Отсрочка",
-        "add_client_form.source": "Источник"
+        "add_client_form.source": "Источник",
+        "add_client_form.recomendetion": "Рекомендация"
     },
     "uk": {
         "add_client_form.year": "Рік",
@@ -102,6 +104,7 @@
         "add_client_form.search_query": "Стрічка пошуку",
         "add_client_form.invalid_phone_format": "Неправильний формат номера",
         "add_client_form.payment_respite": "Відстрочка",
-        "add_client_form.source": "Джерело"
+        "add_client_form.source": "Джерело",
+        "add_client_form.recomendetion": "Рекомендація"
     }
 }

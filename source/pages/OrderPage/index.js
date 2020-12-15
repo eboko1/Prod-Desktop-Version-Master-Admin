@@ -174,7 +174,7 @@ class OrderPage extends Component {
         if (viewTasks) {
             fetchOrderTask(id);
         }
-
+        console.log(this);
         this._fetchRepairMapData();
     }
 

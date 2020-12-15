@@ -199,7 +199,7 @@ export class OrderForm extends React.PureComponent {
         if(field == 'duration') {
             let hours = 0;
             this.orderServices.map(elem => {
-                hours += elem.count;
+                if(elem.agreement != 'REJECTED') hours += elem.count;
             });
 
             if (hours > 8) {
