@@ -346,6 +346,14 @@ export class AbstractClientForm extends Component {
                                             title: "Facebook",
                                         },
                                         {
+                                            id: "INSTAGRAM",
+                                            title: "Instagram",
+                                        },
+                                        {
+                                            id: "RECOMENDATION",
+                                            title: this.props.intl.formatMessage({id:"add_client_form.recomendetion"}),
+                                        },
+                                        {
                                             id: "OTHER",
                                             title: this.props.intl.formatMessage({id:"other"}),
                                         },

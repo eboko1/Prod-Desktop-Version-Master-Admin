@@ -7,7 +7,7 @@ import { permissions, isForbidden } from "utils";
 
 // proj
 import { Layout, Catcher, Spinner } from 'commons';
-import { RequisiteSettingContainer } from "containers";
+import { RequisiteSettingContainer, StorageTable } from "containers";
 import { deleteSupplierRequisite, postSupplierRequisite, updateSupplierRequisite } from "core/requisiteSettings/saga";
 
 // own
@@ -29,6 +29,8 @@ export default class SupplierPage extends Component {
             requisitesDataSource: [],
             generalInfo: {},
             loading: true,
+            orders: [],
+            supplies: [],
         };
 
         this.setRequisitesDataSource = this.setRequisitesDataSource.bind(this);
@@ -72,6 +74,68 @@ export default class SupplierPage extends Component {
         await this.forceUpdate();
     }
 
+    fetchOrders() {
+        const that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_docs?types=["INCOME"]&documentTypes=["SUPPLIER"]&contexts=["ORDER"]&counterpartBusinessSupplierId=${this.props.id}`;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            },
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+            data.list.map((elem,key)=>{elem.key=key});
+            that.setState({
+                orders: data.list,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error);
+        });
+    }
+
+    fetchSupplies() {
+        const that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_docs?types=["EXPENSE"]&documentTypes=["SUPPLIER"]&contexts=["ORDER"]&counterpartBusinessSupplierId=${this.props.id}`;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            },
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+            data.list.map((elem,key)=>{elem.key=key});
+            that.setState({
+                supplies: data.list,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error);
+        });
+    }
+
     fetchData() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
@@ -113,11 +177,12 @@ export default class SupplierPage extends Component {
         const { intl: {formatMessage} } = this.props;
         const data = {
             name: generalInfo.name,
-            contactName: generalInfo.contactName,
+            //contactName: generalInfo.contactName || "",
             phones: generalInfo.phones || [],
             emails: generalInfo.emails || [],
             paymentRespite: generalInfo.paymentRespite || 0,
         }
+        if(generalInfo.contactName) data.contactName = generalInfo.contactName;
         if(generalInfo.emails && generalInfo.emails.length && !re.test(generalInfo.emails[0])) {
             notification.error({
                 message: formatMessage({id: 'supplier.error.email'}),
@@ -153,11 +218,13 @@ export default class SupplierPage extends Component {
 
     componentDidMount() {
         this.fetchData();
+        this.fetchOrders();
+        this.fetchSupplies();
     }
 
     render() {
         const { user, location, id, isMobile } = this.props;
-        const { generalInfo, requisitesModalVisible, requisiteData, requisitesDataSource, loading } = this.state;
+        const { generalInfo, requisitesModalVisible, requisiteData, requisitesDataSource, loading, orders, supplies } = this.state;
         return (
             <Layout
                 title={<FormattedMessage id="order_form_table.supplier" />}
@@ -285,9 +352,14 @@ export default class SupplierPage extends Component {
                                 <FormattedMessage id={"supplier.orders"} />
                             }
                             key="orders"
-                            disabled
                         >
-
+                            <StorageTable
+                                hideFilters
+                                documentsList={ orders }
+                                listType={ "ORDER" }
+                                docType={ "ORDER" }
+                                isOrder
+                            />
                         </TabPane>
                         <TabPane
                             tab={
@@ -296,9 +368,14 @@ export default class SupplierPage extends Component {
                                 />
                             }
                             key="supply"
-                            disabled
                         >
-
+                            <StorageTable
+                                hideFilters
+                                documentsList={ supplies }
+                                listType={ "ORDER" }
+                                docType={ "ORDER" }
+                                isOrder
+                            />
                         </TabPane>
                         
                         <TabPane

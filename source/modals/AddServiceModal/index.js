@@ -242,7 +242,7 @@ class AddServiceModal extends React.Component{
                                     String(option.props.value).indexOf(input.toLowerCase()) >= 0
                                 )
                             }}
-                            onSelect={(value, option)=>{
+                            onChange={(value, option)=>{
                                 elem.employeeId = value;
                                 this.setState({});
                             }}
