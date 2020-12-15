@@ -27,6 +27,7 @@ import OilModal from './OilModal';
 import ComplexesModal from './ComplexesModal';
 import VehicleLocationModal from './VehicleLocationModal';
 import LocationHistoryModal from './LocationHistoryModal';
+import StoreProductTrackingModal from './StoreProductTrackingModal';
 
 export {
     UniversalFiltersModal,
@@ -58,4 +59,5 @@ export {
     ComplexesModal,
     VehicleLocationModal,
     LocationHistoryModal,
+    StoreProductTrackingModal,
 };

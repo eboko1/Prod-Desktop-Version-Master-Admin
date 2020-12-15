@@ -20,7 +20,6 @@ export function* fetchOrderSaga({ payload: id }) {
     try {
         yield nprogress.start();
         const data = yield call(fetchAPI, 'GET', `orders/${id}`);
-
         yield put(fetchOrderSuccess(data));
     } catch (error) {
         yield put(fetchOrderFail(error));

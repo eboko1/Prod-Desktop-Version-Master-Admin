@@ -88,12 +88,13 @@ export default props => {
                     { data.orderId }
                 </Link>
             ) : (
-                <Link
-                    to={ `${book.storageDocument}/${docId}` }
+                <a
+                    href={ `${book.storageDocument}/${docId}` }
                     style={ { color: 'var(--link)', fontWeight: 'bold' } }
+                    onClick={() => window.location.reload()}
                 >
                     { documentNumber }
-                </Link>
+                </a>
             );
         },
     };

@@ -19,7 +19,7 @@ import _ from 'lodash';
 import { Catcher } from 'commons';
 import { permissions, isForbidden, images } from 'utils';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
-import { DetailProductModal, FavouriteDetailsModal } from 'modals';
+import { DetailProductModal, FavouriteDetailsModal, StoreProductTrackingModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
 import { StoreProductModal } from 'modals';
 import { MODALS, setModal } from 'core/modals/duck';
@@ -46,12 +46,14 @@ class DetailsTable extends Component {
         super(props);
 
         this.state = {
-            productModalVisible: false,
-            productModalKey:     0,
-            dataSource:          [],
-            reserveWarehouseId:  undefined,
-            mainWarehouseId:     undefined,
-            fetched:             false,
+            productModalVisible:  false,
+            productModalKey:      0,
+            dataSource:           [],
+            reserveWarehouseId:   undefined,
+            mainWarehouseId:      undefined,
+            fetched:              false,
+            reserveModalVisible: false,
+            reserveModalData: undefined,
         };
 
         this.storeGroups = [];
@@ -300,6 +302,12 @@ class DetailsTable extends Component {
                             onExit={()=>{
                                 this.setState({
                                     fetched: true,
+                                })
+                            }}
+                            showReserveModal={(productId)=>{
+                                this.setState({
+                                    reserveModalVisible: true,
+                                    reserveModalData: productId,
                                 })
                             }}
                         />
@@ -709,14 +717,29 @@ class DetailsTable extends Component {
     }
 
     render() {
+        const { 
+            detailsSuggestionsFetching,
+            suggestionsFetching,
+            labors,
+            detailsTreeData,
+            user,
+            tecdocId,
+            orderId,
+            allDetails,
+            clientVehicleVin,
+            showOilModal,
+            oilModalData,
+            clearOilData,
+        } = this.props;
+        const { fetched, dataSource, productModalVisible, productModalKey, reserveModalVisible, reserveModalData } = this.state;
+
         const columns = this.columns;
         if (
-            this.state.dataSource.length == 0 ||
-            this.state.dataSource[ this.state.dataSource.length - 1 ]
-                .detailName != undefined
+            dataSource.length == 0 ||
+            dataSource[ dataSource.length - 1 ].detailName != undefined
         ) {
-            this.state.dataSource.push({
-                key:          this.state.dataSource.length,
+            dataSource.push({
+                key:          dataSource.length,
                 id:           undefined,
                 storeGroupId: undefined,
                 detailId:     undefined,
@@ -741,33 +764,43 @@ class DetailsTable extends Component {
                 <Table
                     className={ Styles.detailsTable }
                     loading={
-                        this.props.detailsSuggestionsFetching ||
-                        this.props.suggestionsFetching ||
-                        !this.state.fetched
+                        detailsSuggestionsFetching ||
+                        suggestionsFetching ||
+                        !fetched
                     }
                     columns={ columns }
-                    dataSource={ this.state.dataSource }
+                    dataSource={ dataSource }
                     pagination={ false }
                 />
                 <DetailProductModal
-                    labors={ this.props.labors }
-                    treeData={ this.props.detailsTreeData }
-                    user={ this.props.user }
-                    tecdocId={ this.props.tecdocId }
-                    visible={ this.state.productModalVisible }
-                    orderId={ this.props.orderId }
+                    labors={ labors }
+                    treeData={ detailsTreeData }
+                    user={ user }
+                    tecdocId={ tecdocId }
+                    visible={ productModalVisible }
+                    orderId={ orderId }
                     hideModal={ () => {
                         this.hideDetailProductModal();
                     } }
-                    brands={ this.props.allDetails.brands }
-                    detail={ this.state.dataSource[ this.state.productModalKey ] }
-                    tableKey={ this.state.productModalKey }
+                    brands={ allDetails.brands }
+                    detail={ dataSource[ productModalKey ] }
+                    tableKey={ productModalKey }
                     updateDetail={ this.updateDetail }
                     updateDataSource={ this.updateDataSource }
-                    clientVehicleVin={ this.props.clientVehicleVin }
-                    showOilModal={ this.props.showOilModal }
-                    oilModalData={ this.props.oilModalData }
-                    clearOilData={ this.props.clearOilData }
+                    clientVehicleVin={ clientVehicleVin }
+                    showOilModal={ showOilModal }
+                    oilModalData={ oilModalData }
+                    clearOilData={ clearOilData }
+                />
+                <StoreProductTrackingModal
+                    visible={reserveModalVisible}
+                    productId={reserveModalData}
+                    hideModal={()=>{
+                        this.setState({
+                            reserveModalVisible: false,
+                            reserveModalData: undefined,
+                        })
+                    }}
                 />
             </Catcher>
         );
@@ -1144,7 +1177,7 @@ export class ReserveButton extends React.Component {
     }
 
     reserveProduct = () => {
-        const { detail, setModal, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, onExit, intl:{formatMessage} } = this.props;
+        const { detail, setModal, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, onExit, showReserveModal, intl:{formatMessage} } = this.props;
         const data = {
             status: "DONE",
             documentType: "TRANSFER",
@@ -1194,12 +1227,28 @@ export class ReserveButton extends React.Component {
                 updateDetail(detail.key, detail);
             }
             else {
-                const availableCount = response.notAvailableProducts[0].available,
+                const { productId } = response.notAvailableProducts[0].productId,
+                      availableCount = response.notAvailableProducts[0].available,
                       reservedCount = response.notAvailableProducts[0].reservedCount;
                 console.log(response);
+
                 confirm({
-                    title: `${formatMessage({id: 'storage_document.error.available'})}. ${formatMessage({id: 'storage_document.warning.continue'})}`,
-                    content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} / ${availableCount - reservedCount} ${formatMessage({id: 'pc'})}`,
+                    title: (
+                        `${formatMessage({id: 'storage_document.error.available'})}. ${formatMessage({id: 'storage_document.warning.continue'})}`
+                    ),
+                    content: (
+                        <div>
+                            {`${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: `}
+                            <span
+                                style={{color: 'var(--link)', textDecoration: 'underline', cursor: 'pointer'}}
+                                onClick={()=>showReserveModal(productId)}
+                            >
+                                {`${availableCount} / ${availableCount - reservedCount}`}
+                            </span>
+                            {` ${formatMessage({id: 'pc'})}`}
+                        </div>
+                    ),
+                    zIndex: 1000,
                     okButtonProps: {disabled: !availableCount},
                     onOk() {
                         data.docProducts[0].quantity = availableCount - reservedCount;

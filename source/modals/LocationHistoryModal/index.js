@@ -63,7 +63,7 @@ export default class LocationHistoryModal extends Component {
                 key:       'arrival',
                 render:    (data, row)=> {
                     return (
-                        moment().format('DD HH')
+                        data
                     )
                 }
             },
@@ -72,7 +72,7 @@ export default class LocationHistoryModal extends Component {
                 key:       'departure',
                 render:    (data, row)=> {
                     return (
-                        moment().format('DD HH')
+                        data
                     )
                 }
             },
@@ -81,7 +81,7 @@ export default class LocationHistoryModal extends Component {
                 key:       'duration',
                 render:    (data, row)=> {
                     return (
-                        moment().format('DD HH')
+                        data
                     )
                 }
             },

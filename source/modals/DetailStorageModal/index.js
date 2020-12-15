@@ -6,7 +6,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
 import { permissions, isForbidden } from "utils";
-import { DetailSupplierModal } from 'modals';
+import { DetailSupplierModal, StoreProductTrackingModal } from 'modals';
 import { AvailabilityIndicator, WarehouseSelect } from 'components';
 // own
 import Styles from './styles.m.css';
@@ -32,6 +32,8 @@ class DetailStorageModal extends React.Component{
             codeFilter: undefined,
             attributesFilters: [],
             inStock: false,
+            reserveModalVisible: false,
+            reserveModalData: undefined,
         }
 
         this.setSupplier = this.setSupplier.bind(this);
@@ -319,7 +321,15 @@ class DetailStorageModal extends React.Component{
                 render: (store, elem) => {
                     return this.props.stockMode ? 
                     (
-                        <span>{elem.countInWarehouses} / {elem.available}</span>
+                        <span
+                            style={{color: 'var(--link)', textDecoration: 'underline', cursor: 'pointer'}}
+                            onClick={()=>this.setState({
+                                reserveModalVisible: true,
+                                reserveModalId: elem.id,
+                            })}
+                        >
+                            {elem.countInWarehouses} / {elem.available}
+                        </span>
                     ) :
                     (
                         <AvailabilityIndicator
@@ -752,7 +762,7 @@ class DetailStorageModal extends React.Component{
     }
 
     render() {
-        const { dataSource, storeFilter, brandFilter, codeFilter, inStock } = this.state;
+        const { dataSource, storeFilter, brandFilter, codeFilter, inStock, reserveModalVisible, reserveModalData } = this.state;
         const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
         let tblData = [...dataSource];
 
@@ -809,6 +819,18 @@ class DetailStorageModal extends React.Component{
                         <Spin indicator={spinIcon} />
                     }
                 </Modal>
+                {this.props.stockMode && 
+                    <StoreProductTrackingModal
+                        visible={reserveModalVisible}
+                        productId={reserveModalData}
+                        hideModal={()=>{
+                            this.setState({
+                                reserveModalVisible: false,
+                                reserveModalData: undefined,
+                            })
+                        }}
+                    />
+                }
             </div>
         )
     }

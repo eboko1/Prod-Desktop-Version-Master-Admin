@@ -270,12 +270,13 @@ export default class LocationsPage extends Component {
                     dataSource={ dataSource }
                     pagination={ false }
                     rowClassName={(row) => !includeExternal && row.type == EXTERNAL_PARKING ? Styles.disabledRow : null}
+                    style={{padding: 12}}
                 />
                 <VehicleLocationModal
-                    visible={actionModalVisible}
+                    modalVisible={actionModalVisible}
                     receiveMode
                     selectedLocation={modalLocation}
-                    updateData={()=>this.getLocations()}
+                    onConfirm={()=>this.getLocations()}
                     hideModal={()=>{
                         this.setState({
                             actionModalVisible: false,

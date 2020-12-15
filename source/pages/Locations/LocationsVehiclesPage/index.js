@@ -259,10 +259,11 @@ export default class LocationsVehiclesPage extends Component {
                     pagination={ pagination }
                 />
                 <VehicleLocationModal
-                    visible={modalVisible}
+                    modalVisible={modalVisible}
                     transferMode
                     vehicleId={modalVehicleId}
                     currentLocation={modalCurrentLocation}
+                    onConfirm={()=>this.fetchData()}
                     hideModal={()=>{
                         this.setState({
                             modalVisible: false,

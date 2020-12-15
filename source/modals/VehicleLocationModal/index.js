@@ -9,16 +9,25 @@ import _ from 'lodash';
 import moment from 'moment';
 
 // proj
-
+import {getReport} from 'core/order/duck';
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
 
+const mapDispatchToProps = {
+    getReport,
+};
+
+@connect(
+    void 0,
+    {getReport},
+)
 @injectIntl
 export default class VehicleLocationModal extends Component {
     constructor(props) {
         super(props);
         this.state={
+            visible: false,
             locations: [],
             clients: [],
             selectedLocation: undefined,
@@ -88,8 +97,9 @@ export default class VehicleLocationModal extends Component {
     }
 
     postMovement() {
-        const { receiveMode, returnMode, transferMode, currentLocation, updateData } = this.props;
-        const { selectedLocation, vehicleId } = this.state;
+        const { receiveMode, returnMode, transferMode, currentLocation, onConfirm, orderId, getReport } = this.props;
+        const { selectedLocation, vehicleId, clientId, printAct } = this.state;
+
         const postData = {
             businessLocationId: selectedLocation,
             clientVehicleId: vehicleId,
@@ -106,6 +116,13 @@ export default class VehicleLocationModal extends Component {
             postData.type = 'EXPENSE';
             postData.documentType = 'TRANSFER';
             postData.counterpartBusinessLocationId = currentLocation;
+        }
+        console.log(postData);
+        if(printAct && orderId) {
+            getReport({
+                link: `/orders/reports/actOfAcceptanceReport/${orderId}?reverse=${Boolean(receiveMode)}`,
+                name: 'actOfAcceptanceReport'
+            });
         }
 
         var that = this;
@@ -129,8 +146,8 @@ export default class VehicleLocationModal extends Component {
         })
         .then(function (data) {
             console.log(data);
-            if(updateData) {
-                updateData()
+            if(onConfirm) {
+                onConfirm();
             };
         })
         .catch(function (error) {
@@ -203,6 +220,7 @@ export default class VehicleLocationModal extends Component {
                                 showSearch
                                 value={selectedLocation}
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                                placeholder={this.props.intl.formatMessage({id:'location'})}
                                 onChange={(value)=>{
                                     this.setState({
                                         selectedLocation: value,
@@ -244,6 +262,7 @@ export default class VehicleLocationModal extends Component {
     }
 
     returnModeContent() {
+        const { locations, clients, clientId, vehicles, vehicleId, selectedLocation, printAct } = this.state;
         return (
             <div>
                 <div className={Styles.modalTitle}>
@@ -257,13 +276,21 @@ export default class VehicleLocationModal extends Component {
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             value={vehicleId}
                         >
-                            
+                            {vehicles.map(({id, number, make, model, year}, key)=>
+                                <Option value={id} key={key}>
+                                    {number} {make} {model} ({year})
+                                </Option>
+                            )}
                         </Select>
                     </div>
                     <div className={Styles.printWrapper}>
                         <FormattedMessage id='vehicle_location_modal.print_act' />
                         <Checkbox
                             style={{marginLeft: 6}}
+                            checked={printAct}
+                            onChange={({target})=>{
+                                this.setState({printAct: target.checked})
+                            }}
                         />
                     </div>
                 </div>
@@ -280,6 +307,7 @@ export default class VehicleLocationModal extends Component {
     }
 
     transferModeContent() {
+        const { currentLocation } = this.props;
         const { locations, clients, clientId, vehicles, vehicleId, selectedLocation, printAct } = this.state;
         return (
             <div>
@@ -294,15 +322,38 @@ export default class VehicleLocationModal extends Component {
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             value={vehicleId}
                         >
-                            
+                            {vehicles.map(({id, number, make, model, year}, key)=>
+                                <Option value={id} key={key}>
+                                    {number} {make} {model} ({year})
+                                </Option>
+                            )}
                         </Select>
                     </div>
-                    <div className={Styles.locationWrapper}>
-                            <FormattedMessage id='vehicle_location_modal.new_location'/>
+                    <div className={Styles.locationToLocationWrapper}>
+                        <div className={Styles.locationWrapper}>
+                            <FormattedMessage id='vehicle_location_modal.from'/>
+                             <Select
+                                disabled
+                                value={currentLocation}
+                                style={{color: 'var(--text)'}}
+                            >
+                                {locations.map(({id, name}, key)=>
+                                    <Option
+                                        key={key}
+                                        value={id}
+                                    >
+                                        {name}
+                                    </Option>
+                                )}
+                            </Select>
+                        </div>
+                        <div className={Styles.locationWrapper}>
+                            <FormattedMessage id='vehicle_location_modal.to'/>
                              <Select
                                 showSearch
                                 value={selectedLocation}
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                                placeholder={this.props.intl.formatMessage({id:'location'})}
                                 onChange={(value)=>{
                                     this.setState({
                                         selectedLocation: value,
@@ -319,6 +370,7 @@ export default class VehicleLocationModal extends Component {
                                 )}
                             </Select>
                         </div>
+                    </div>
                 </div>
                 <div className={Styles.modalButton}>
                     <Button
@@ -339,20 +391,26 @@ export default class VehicleLocationModal extends Component {
 
     handleCancel = () => {
         this.setState({
+            visible: false,
             selectedLocation: undefined,
             printAct: true,
             clientId: undefined,
             vehicles: [],
             vehicleId: undefined,
         });
-        this.props.hideModal();
+        this.props.hideModal(this.state.selectedLocation);
     }
 
-    componentDidUpdate(prevProps) {
-        if(this.props.visible && !prevProps.visible) {
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.modalVisible && !prevProps.modalVisible || this.state.visible && !prevState.visible) {
+            const { selectedLocation, vehicleId, clientId, orderId } = this.props;
+            const { clients } = this.state;
             this.setState({
-                selectedLocation: this.props.selectedLocation,
-                vehicleId: this.props.vehicleId,
+                selectedLocation: selectedLocation,
+                orderId: orderId,
+                clientId: clientId,
+                vehicleId: vehicleId,
+                vehicles: clientId ? clients.find((client)=>client.clientId == clientId).vehicles : [],
             })
         }
     }
@@ -363,19 +421,33 @@ export default class VehicleLocationModal extends Component {
     }
 
     render() {
-        const { visible, hideModal, receiveMode, returnMode, transferMode } = this.props;
+        const { disabled, modalVisible, hideModal, receiveMode, returnMode, transferMode, showIcon, style } = this.props;
+        const { visible } = this.state;
         let content;
-        if(receiveMode) content = this.receiveModeContent();
         if(returnMode) content = this.returnModeContent();
         if(transferMode) content = this.transferModeContent();
+        if(receiveMode) content = this.receiveModeContent();
         return (
-            <Modal
-                visible={visible}
-                footer={null}
-                onCancel={this.handleCancel}
-            >
-                {content}
-            </Modal>
+            <div className={Styles.modalWrap} style={style}>
+                {showIcon && 
+                    <Icon
+                        type="double-right"
+                        className={`${Styles.modalIcon} ${disabled ? Styles.disabledIcon : null}`}
+                        onClick={()=>{
+                            this.setState({
+                                visible: true,
+                            })
+                        }}
+                    />
+                }
+                <Modal
+                    visible={modalVisible || visible}
+                    footer={null}
+                    onCancel={this.handleCancel}
+                >
+                    {content}
+                </Modal>
+            </div>
         );
     }
 }
