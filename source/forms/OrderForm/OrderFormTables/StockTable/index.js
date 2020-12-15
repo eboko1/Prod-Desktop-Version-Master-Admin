@@ -505,8 +505,6 @@ export default class StockTable extends Component {
             }
         })
 
-        console.log(orderData);
-
         confirm({
             title: operation == 'ORDER' ? 
                     `${formatMessage({id: 'stock_table.create_order_to_supplier'}, {name: supplierName})}` :
@@ -579,8 +577,6 @@ export default class StockTable extends Component {
         ) {
             data.details[ 0 ].agreement = detail.agreement;
         }
-
-        console.log(data);
 
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/orders/${this.props.orderId}`;
@@ -862,19 +858,17 @@ class DetailsStageButtonsGroup extends Component {
                       availableCount = response.notAvailableProducts[0].available,
                       reservedCount = response.notAvailableProducts[0].reservedCount;
                 confirm({
-                    title: (
-                        `${formatMessage({id: 'storage_document.error.available'})}. ${formatMessage({id: 'storage_document.warning.continue'})}`
-                    ),
+                    title: formatMessage({id: 'storage_document.not_enought_for_reserve'}),
                     content: (
                         <div>
-                            {`${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: `}
+                            <p>{formatMessage({id: 'storage_document.in_stock'})} - {availableCount}.</p>
+                            <p>{formatMessage({id: 'storage_document.available'})} - {availableCount- reservedCount}.</p>
                             <span
                                 style={{color: 'var(--link)', textDecoration: 'underline', cursor: 'pointer'}}
                                 onClick={()=>showReserveModal(productId)}
                             >
-                                {`${availableCount} / ${availableCount - reservedCount}`}
+                                {formatMessage({id: 'storage_document.more_details'})}...
                             </span>
-                            {` ${formatMessage({id: 'pc'})}`}
                         </div>
                     ),
                     zIndex: 1000,
@@ -981,7 +975,6 @@ class DetailsStageButtonsGroup extends Component {
 
     addProduct = () => {
         const { detail, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, intl:{formatMessage} } = this.props;
-        console.log(detail)
         var that = this;
         confirm({
             title: formatMessage({id: 'storage_document.error.product_not_found'}),

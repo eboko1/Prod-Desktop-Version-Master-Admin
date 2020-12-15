@@ -16,6 +16,7 @@ const { TabPane } = Tabs;
 
 const mapStateToProps = state => ({
     user: state.auth,
+    isMobile: state.ui.views.isMobile,
 });
 @injectIntl
 @connect(mapStateToProps)
@@ -91,7 +92,6 @@ export default class SupplierPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.requisites.map((elem, key)=>{
                 elem.key = key;
             });
@@ -144,7 +144,6 @@ export default class SupplierPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             window.location.reload();
         })
         .catch(function (error) {
@@ -157,7 +156,7 @@ export default class SupplierPage extends Component {
     }
 
     render() {
-        const { user, location, id } = this.props;
+        const { user, location, id, isMobile } = this.props;
         const { generalInfo, requisitesModalVisible, requisiteData, requisitesDataSource, loading } = this.state;
         return (
             <Layout
@@ -166,7 +165,7 @@ export default class SupplierPage extends Component {
                 <Catcher>
                     <Tabs
                         defaultActiveKey= {location.state && location.state.tab || 'general'}
-                        tabPosition='right'
+                        tabPosition={isMobile ? 'top' : 'right'}
                         type='card'
                     >
                         <TabPane
@@ -236,7 +235,7 @@ export default class SupplierPage extends Component {
                                         }}
                                     /> <FormattedMessage id='universal_filters_form.days' />
                                 </div>
-                                <div className={Styles.generalInfoItem} style={{display: 'flex', justifyContent: 'flex-end'}}>
+                                <div className={Styles.submitButton}>
                                     <Button
                                         type='primary'
                                         onClick={()=>{
@@ -256,7 +255,7 @@ export default class SupplierPage extends Component {
                             }
                             key="requisites"
                         >
-                            <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+                            <div className={Styles.addRequisiteButton}>
                                 <Button
                                     type='primary'
                                     onClick={()=>{

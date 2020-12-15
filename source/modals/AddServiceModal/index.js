@@ -530,7 +530,6 @@ class AddServiceModal extends React.Component{
                 },
             });
             const result = await response.json();
-            console.log(result);
             this.setState({
                 relatedServices: result.labors[0].relatedLabors.map((labor, key)=>{
                     return ({

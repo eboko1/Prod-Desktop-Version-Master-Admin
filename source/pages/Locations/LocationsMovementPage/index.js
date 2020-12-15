@@ -121,7 +121,6 @@ export default class LocationsMovementPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.list.map((elem, key)=>{
                 elem.key = key;
             })

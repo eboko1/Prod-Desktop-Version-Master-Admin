@@ -159,7 +159,6 @@ export default class LocationSettingsPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.map((elem, key)=>{
                 elem.key = key;
             })

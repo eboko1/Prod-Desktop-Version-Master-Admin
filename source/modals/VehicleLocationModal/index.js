@@ -149,13 +149,17 @@ export default class VehicleLocationModal extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             if(onConfirm) {
                 onConfirm(selectedLocation);
             };
         })
         .catch(function (error) {
             console.log('error', error);
+            notification.error({
+                message: that.props.intl.formatMessage({
+                    id: `error`,
+                }),
+            });
         });
     }
 
@@ -454,11 +458,12 @@ export default class VehicleLocationModal extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
         if(this._isMounted) {
             this.fetchClients();
             this.fetchLocations();
         }
-        this._isMounted = true;
+        
     }
 
     componentWillUnmount() {
