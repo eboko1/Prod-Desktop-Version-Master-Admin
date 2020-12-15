@@ -1230,25 +1230,19 @@ export class ReserveButton extends React.Component {
                 const { productId } = response.notAvailableProducts[0].productId,
                       availableCount = response.notAvailableProducts[0].available,
                       reservedCount = response.notAvailableProducts[0].reservedCount;
-                console.log(response);
 
                 confirm({
                     title: formatMessage({id: 'storage_document.not_enought_for_reserve'}),
                     content: (
                         <div>
-                            {formatMessage(
-                                {id: 'storage_document.in_stock_and_available_count', inStock: availableCount},
-                                {inStock: availableCount},
-                                {available: availableCount - reservedCount},
-                            )}
-                            {`${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: `}
+                            <p>{formatMessage({id: 'storage_document.in_stock'})} - {availableCount}.</p>
+                            <p>{formatMessage({id: 'storage_document.available'})} - {availableCount- reservedCount}.</p>
                             <span
                                 style={{color: 'var(--link)', textDecoration: 'underline', cursor: 'pointer'}}
                                 onClick={()=>showReserveModal(productId)}
                             >
-                                {`${availableCount} / ${availableCount - reservedCount}`}
+                                {formatMessage({id: 'storage_document.more_details'})}...
                             </span>
-                            {` ${formatMessage({id: 'pc'})}`}
                         </div>
                     ),
                     zIndex: 1000,

@@ -221,7 +221,7 @@ export default class OrderFormBody extends Component {
         return (
             <div>
                 <FormattedMessage id="location" />
-                {orderId &&
+                {orderId && fetchedOrder &&
                     <VehicleLocationModal
                         showIcon
                         style={{marginLeft: 4}}

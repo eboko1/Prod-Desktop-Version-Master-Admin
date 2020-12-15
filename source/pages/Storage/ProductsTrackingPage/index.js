@@ -65,7 +65,6 @@ export const ProductsTrackingPage = withRouter(
         { setTrackingFilters },
     )(props => {
         const type = props.type || "tracking";
-        console.log(type);
         const { filters } = props;
         const [ period, setPeriod ] = useState('month');
 

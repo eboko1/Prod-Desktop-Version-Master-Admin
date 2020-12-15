@@ -140,16 +140,16 @@ export class SuppliersTable extends Component {
     }
 
     render() {
-        const { suppliersFetching, suppliers } = this.props;
+        const { suppliersFetching, suppliers, isMobile } = this.props;
 
         return (
             <Table
                 size="small"
-                columns={this.columns}
+                columns={isMobile ? this.columns.slice(0, -3) : this.columns}
                 dataSource={suppliers}
                 rowKey='id'
                 loading={suppliersFetching}
-                pagination={{ hideOnSinglePage: true }}
+                pagination={isMobile ? false : { hideOnSinglePage: true }}
                 locale={{
                     emptyText: <FormattedMessage id="no_data" />,
                 }}

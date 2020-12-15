@@ -179,7 +179,6 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 if(onlyDetails) {
                     that.orderDetails = data.orderDetails;
                 }

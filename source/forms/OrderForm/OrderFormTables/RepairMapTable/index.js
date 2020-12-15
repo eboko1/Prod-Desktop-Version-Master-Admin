@@ -241,7 +241,6 @@ export default class RepairMapTable extends Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             that.setState({
                 dataSource: data,
             })

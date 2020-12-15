@@ -231,7 +231,7 @@ export class CashOrderForm extends Component {
                 return this.props.fetchCashOrderForm("employees");
 
             case cashOrderCounterpartyTypes.BUSINESS_SUPPLIER:
-                return this.props.fetchCashOrderForm("business_suppliers");
+                return this.props.fetchCashOrderForm("business_suppliers?all=true");
 
             default:
                 break;

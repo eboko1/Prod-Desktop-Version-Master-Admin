@@ -649,7 +649,6 @@ class DetailProductModal extends React.Component{
                 },
             });
             const result = await response.json();
-            console.log(result, this.state.mainTableSource);
             this.setState({
                 relatedDetails: result.storeGroups.map((detail, key)=>{
                     let formattedDetail = {
@@ -786,7 +785,6 @@ class DetailProductModal extends React.Component{
         const { mainTableSource, relatedDetails } = this.state;
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         const currentDetail = related ? relatedDetails[key] : mainTableSource[key];
-        console.log(related, key, currentDetail);
 
         currentDetail.supplierId = supplierId;
         currentDetail.supplierName = supplierName;

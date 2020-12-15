@@ -484,7 +484,6 @@ class OilModal extends React.Component{
                     var supplierOriginalCode = elem.price ? elem.price.supplierOriginalCode : undefined;
                     var supplierProductNumber = elem.price ? elem.price.supplierProductNumber : undefined;
                     var supplierPartNumber = elem.price ? elem.price.supplierPartNumber : undefined;
-                    console.log(elem)
                     return (
                         <Button
                             type="primary"
