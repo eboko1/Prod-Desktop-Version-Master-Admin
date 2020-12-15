@@ -99,7 +99,9 @@
         "storage_document.warning.continue": "Продолжить?",
         "storage_document.notification.available_from_warehouse": "Доступно со склада {name}",
         "storage_document.notification.reserved": "Зарезервировано {count} ед. товара",
-        "storage_document.notification.reserve_canceled": "Резерв отменен"
+        "storage_document.notification.reserve_canceled": "Резерв отменен",
+        "storage_document.not_enought_for_reserve": "Недостаточно товара для резерва. Продолжить?",
+        "storage_document.in_stock_and_available_count": "На скледе - {inStock}, доступно - {available}"
     },
     "uk": {
         "storage_document.document": "Документ",

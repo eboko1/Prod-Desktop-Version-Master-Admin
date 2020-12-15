@@ -11,7 +11,7 @@ import moment from 'moment';
 // proj
 import { Layout } from 'commons';
 import book from 'routes/book';
-import { StorageDateFilter } from 'components';
+import { SingleDatePicker } from 'components';
 import { VehicleLocationModal } from 'modals';
 // own
 const Option = Select.Option;
@@ -29,14 +29,15 @@ export default class LocationsVehiclesPage extends Component {
             paginationTotal: 0,
             modalVisible: false,
             modalVehicleId: undefined,
+            modalClientId: undefined,
             modalCurrentLocation: undefined,
+            toDatetime: moment(),
         };
 
         this.columns = [
             {
                 key:       'key',
                 dataIndex: 'key',
-                width:     'min-content',
                 render:    (data, row)=> {
                     return (
                         data + 1
@@ -46,10 +47,22 @@ export default class LocationsVehiclesPage extends Component {
             {
                 title:     <FormattedMessage id='locations.number' />,
                 key:       'number',
+                dataIndex: 'clientsVehicle',
+                render:    ({number}, row)=> {
+                    return (
+                        number || <FormattedMessage id='long_dash'/>
+                    )
+                }
             },
             {
                 title:     <FormattedMessage id='locations.vehicle'/>,
                 key:       'vehicle',
+                dataIndex: 'clientsVehicle',
+                render:    ({make, model, modification, year}, row)=> {
+                    return (
+                        `${make} ${model} ${modification} (${year})`
+                    )
+                }
             },
             {
                 title:     <FormattedMessage id='location' />,
@@ -66,7 +79,7 @@ export default class LocationsVehiclesPage extends Component {
                 key:       'time',
                 render:    (data, row)=> {
                     return (
-                        moment().format('DD HH')
+                        data
                     )
                 }
             },
@@ -80,7 +93,8 @@ export default class LocationsVehiclesPage extends Component {
                             onClick={()=>{
                                 this.setState({
                                     modalVisible: true,
-                                    modalVehicleId: data.id,
+                                    modalVehicleId: data.clientsVehicle.id,
+                                    modalClientId: data.client.id,
                                     modalCurrentLocation: data.businessLocation.id,
                                 })
                             }}
@@ -146,10 +160,11 @@ export default class LocationsVehiclesPage extends Component {
     }
 
     fetchData(id, page = 1) {
+        const { locationId, toDatetime } = this.state;
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/business_locations/movements?page=${page}`;
-        if(id) url += `&businessLocationId=${id}`;
+        let url = __API_URL__ + `/business_locations/movements?toDatetime=${toDatetime.format('YYYY-MM-DD')}&page=${page}&pageSize=10`;
+        if(id || locationId) url += `&businessLocationId=${id || locationId}`;
         fetch(url, {
             method: 'GET',
             headers: {
@@ -193,7 +208,7 @@ export default class LocationsVehiclesPage extends Component {
     }
 
     render() {
-        const { loading, locations, locationId, dataSource, currentPage, paginationTotal, modalVisible, modalVehicleId, modalCurrentLocation } = this.state;
+        const { loading, locations, locationId, dataSource, currentPage, paginationTotal, modalVisible, modalVehicleId, modalClientId, modalCurrentLocation, toDatetime } = this.state;
 
         const pagination = {
             total: paginationTotal,
@@ -211,43 +226,44 @@ export default class LocationsVehiclesPage extends Component {
                 title={ <FormattedMessage id='navigation.locations_vehicles' /> }
                 description={
                     <div>
-                        {moment().format('DD.MM.YY')}
+                        {toDatetime.format('DD.MM.YY')}
                     </div>
                 }
                 controls={
                     <div style={{display: 'flex'}}>
-                    <div>
-                        
-                        <StorageDateFilter
-                            // dateRange={}
-                            // onDateChange={}
-                            minimize
+                        <SingleDatePicker
+                            date={toDatetime}
+                            onDateChange={async (date)=>{
+                                await this.setState({
+                                    toDatetime: date,
+                                });
+                                this.fetchData();
+                            }}
                             style={{margin: '0 8px'}}
                         />
+                        <Select
+                            showSearch
+                            value={locationId}
+                            style={{width: 220}}
+                            placeholder={this.props.intl.formatMessage({id: 'location'})}
+                            onChange={(value)=>{
+                                this.setState({
+                                    locationId: value,
+                                    currentPage: 1,
+                                });
+                                this.fetchData(value);
+                            }}
+                        >
+                            {locations.map(({id, name}, key)=>
+                                <Option
+                                    key={key}
+                                    value={id}
+                                >
+                                    {name}
+                                </Option>
+                            )}
+                        </Select>
                     </div>
-                    <Select
-                        showSearch
-                        value={locationId}
-                        style={{width: 220}}
-                        placeholder={this.props.intl.formatMessage({id: 'location'})}
-                        onChange={(value)=>{
-                            this.setState({
-                                locationId: value,
-                                currentPage: 1,
-                            });
-                            this.fetchData(value);
-                        }}
-                    >
-                        {locations.map(({id, name}, key)=>
-                            <Option
-                                key={key}
-                                value={id}
-                            >
-                                {name}
-                            </Option>
-                        )}
-                    </Select>
-                </div>
                 }
             >
                 <Table
@@ -257,14 +273,17 @@ export default class LocationsVehiclesPage extends Component {
                     pagination={ pagination }
                 />
                 <VehicleLocationModal
-                    visible={modalVisible}
+                    modalVisible={modalVisible}
                     transferMode
                     vehicleId={modalVehicleId}
+                    clientId={modalClientId}
                     currentLocation={modalCurrentLocation}
+                    onConfirm={()=>this.fetchData()}
                     hideModal={()=>{
                         this.setState({
                             modalVisible: false,
                             modalVehicleId: undefined,
+                            modalClientId: undefined,
                             modalCurrentLocation: undefined,
                         })
                     }}

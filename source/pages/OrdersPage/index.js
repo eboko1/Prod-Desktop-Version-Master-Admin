@@ -24,7 +24,7 @@ import {
     OrdersFilterContainer,
     UniversalFilters,
 } from 'containers';
-import { StorageDateFilter } from 'components';
+import { DateRangePicker } from 'components';
 import book from 'routes/book';
 import { withResponsive, getDaterange, permissions, isForbidden } from 'utils';
 
@@ -203,7 +203,7 @@ export default class OrdersPage extends Component {
         // } = this.props;
 
         return (
-            <StorageDateFilter
+            <DateRangePicker
                 dateRange={this.props.daterange}
                 onDateChange={ this._setOrdersDaterange }
                 minimize

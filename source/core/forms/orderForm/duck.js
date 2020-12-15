@@ -94,6 +94,7 @@ const createDefaultState = () => ({
     managers:          [],
     employees:         [],
     stations:          [],
+    businessLocations: [],
     orderServices:     [],
     orderDetails:      [],
     orderTasks:        [],

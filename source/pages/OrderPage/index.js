@@ -121,6 +121,7 @@ const mapStateToProps = state => {
         selectedClient:        state.forms.orderForm.selectedClient,
         spinner:               state.ui.orderFetching,
         stations:              state.forms.orderForm.stations,
+        businessLocations:     state.forms.orderForm.businessLocations,
         user:                  state.auth,
         vehicles:              state.forms.orderForm.vehicles,
         ...selectInviteData(state),
@@ -626,6 +627,7 @@ class OrderPage extends Component {
             isMobile,
             managers,
             stations,
+            businessLocations,
             user,
             initialOrderTask,
         } = this.props;
@@ -892,8 +894,9 @@ class OrderPage extends Component {
                         download={ this.props.getReport }
                         scrollToMapId={ this.state.scrollToMapId }
                         scrollToMap={ this._scrollToMap }
-                        repairMapData={repairMapData}
-                        fetchRepairMapData={this._fetchRepairMapData}
+                        repairMapData={ repairMapData }
+                        fetchRepairMapData={ this._fetchRepairMapData }
+                        businessLocations={ businessLocations }
                     />
                 </ResponsiveView>
                 <CancelReasonModal
