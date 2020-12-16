@@ -47,6 +47,7 @@ const mapStateToProps = state => ({
     stats: state.reportOrders.stats,
     filterOptions: state.reportOrders.filterOptions,
     modal: state.modals.modal,
+    reportOrdersFetching: state.ui.reportOrdersFetching,
 });
 
 const mapDispatchToProps = {
@@ -201,6 +202,7 @@ export default class ReportOrdersPage extends Component {
             stats,
             setReportOrdersPage,
             filterOptions,
+            reportOrdersFetching,
 
             setReportOrdersQuery,
             setReportOrdersStatus,
@@ -251,6 +253,7 @@ export default class ReportOrdersPage extends Component {
                     tableData={tableData}
                     setIncludeServicesDiscount={setReportOrdersIncludeServicesDiscount}
                     includeServicesDiscount={includeServicesDiscount}
+                    loading={reportOrdersFetching}
                 />
                 <ReportOrdersFilterModal 
                     visible={modal}

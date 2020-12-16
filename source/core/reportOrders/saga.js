@@ -3,6 +3,7 @@ import { call, put, all, take, select } from 'redux-saga/effects';
 
 //proj
 import { fetchAPI } from 'utils';
+import {setReportOrdersFetching} from 'core/ui/duck';
 
 // own
 import {
@@ -25,7 +26,7 @@ export function* fetchReportOrdersSaga() {
     while (true) {
         try {
             yield take(FETCH_REPORT_ORDERS);
-            // yield put(setClientMRDsFetchingState(true));
+            yield put(setReportOrdersFetching(true));
 
             const {
                 filter,
@@ -40,7 +41,7 @@ export function* fetchReportOrdersSaga() {
             );
             yield put(fetchReportOrdersSuccess(data));
         } finally {
-            // yield put(setClientMRDsFetchingState(false));
+            yield put(setReportOrdersFetching(false));
         }
     }
 }
