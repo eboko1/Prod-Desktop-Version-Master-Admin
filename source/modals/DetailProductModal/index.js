@@ -313,7 +313,7 @@ class DetailProductModal extends React.Component{
                                 user={this.props.user}
                                 tableKey={0}
                                 disabled={
-                                    (this.state.radioValue != 2 && elem.storeGroupId == null) || 
+                                    (this.state.radioValue != 2 && this.state.radioValue != 3 && elem.storeGroupId == null) || 
                                     !(elem.detailCode) || 
                                     !(elem.brandName) ||
                                     this.state.radioValue == 5
