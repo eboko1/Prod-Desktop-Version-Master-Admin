@@ -1,0 +1,41 @@
+{
+    "en": {
+        "report-orders-form.creation": "Creation",
+        "report-orders-form.appointment": "Appointment",
+        "report-orders-form.done": "Done",
+        "report-orders-form.from": "from",
+        "report-orders-form.to": "to",
+        "report-orders-form.status": "Status",
+        "report-orders-form.station": "Station",
+        "report-orders-form.requisites": "Requisites",
+        "report-orders-form.responsible": "Service Advisor",
+        "report-orders-form.mechanic": "Mechanic",
+        "report-orders-form.appurtenancies_responsible": "Purchase manager"
+    },
+    "ru": {
+        "report-orders-form.creation": "Создание",
+        "report-orders-form.appointment": "Запись",
+        "report-orders-form.done": "Закрытие",
+        "report-orders-form.from": "с",
+        "report-orders-form.to": "по",
+        "report-orders-form.status": "Статус",
+        "report-orders-form.station": "Пост",
+        "report-orders-form.requisites": "Реквизиты",
+        "report-orders-form.responsible": "Менеджер",
+        "report-orders-form.mechanic": "Механик",
+        "report-orders-form.appurtenancies_responsible": "Запчастист"
+    },
+    "uk": {
+        "report-orders-form.creation": "Створення",
+        "report-orders-form.appointment": "Запис",
+        "report-orders-form.done": "Закриття",
+        "report-orders-form.from": "з",
+        "report-orders-form.to": "по",
+        "report-orders-form.status": "Статус",
+        "report-orders-form.station": "Пост",
+        "report-orders-form.requisites": "Реквізити",
+        "report-orders-form.responsible": "Менеджер",
+        "report-orders-form.mechanic": "Механік",
+        "report-orders-form.appurtenancies_responsible": "Запчастист"
+    }
+}

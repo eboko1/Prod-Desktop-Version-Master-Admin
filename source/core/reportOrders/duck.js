@@ -13,6 +13,11 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_REPORT_ORDERS = `${prefix}/FETCH_REPORT_ORDERS`;
 export const FETCH_REPORT_ORDERS_SUCCESS = `${prefix}/FETCH_REPORT_ORDERS_SUCCESS`;
 
+export const FETCH_REPORT_ORDERS_FILTER_OPTIONS = `${prefix}/FETCH_REPORT_ORDERS_FILTER_OPTIONS`;
+export const FETCH_REPORT_ORDERS_FILTER_OPTIONS_SUCCESS = `${prefix}/FETCH_REPORT_ORDERS_FILTER_OPTIONS_SUCCESS`;
+
+export const SET_REPORT_ORDERS_ALL_FILTERS = `${prefix}/SET_REPORT_ORDERS_ALL_FILTERS`;
+
 export const SET_REPORT_ORDERS_PAGE = `${prefix}/SET_REPORT_ORDERS_PAGE`;
 
 export const SET_REPORT_ORDERS_QUERY = `${prefix}/SET_REPORT_ORDERS_QUERY`;
@@ -51,6 +56,12 @@ const ReducerState = {
         appointmentToDate: undefined,
         doneFromDate: moment().startOf('month').format(DEF_DATE_FORMAT), //Set default creation date filter to serch
         doneToDate: moment().endOf('month').format(DEF_DATE_FORMAT), //Set default creation date filter to serch
+
+        appurtenanciesResponsibleId: undefined,
+        mechanicId: undefined,
+        managerId: undefined,
+        requisiteId: undefined,
+        stationNum: undefined,
     },
     options: {
         includeServicesDiscount: true,
@@ -59,6 +70,10 @@ const ReducerState = {
     sort: {
         field: 'datetime',
         order: 'desc',
+    },
+    //This value is used to save dropdown options, for example select employee or station num
+    filterOptions: {
+
     },
 };
 
@@ -72,7 +87,15 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 tableData: tableData? tableData: state.tableData,
                 stats: stats? stats: state.stats
-                // stats: stats? stats: state.stats
+            };
+
+        case FETCH_REPORT_ORDERS_FILTER_OPTIONS_SUCCESS:
+            return {
+                ...state,
+                filterOptions: {
+                    ...state.filterOptions,
+                    ...payload
+                }
             };
 
         //Filter-------------------------------------------------------------------------------------------------
@@ -178,6 +201,15 @@ export default function reducer(state = ReducerState, action) {
                 }
             };
 
+        case SET_REPORT_ORDERS_ALL_FILTERS:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    ...payload
+                }
+            };
+
         default:
             return state;
     }
@@ -190,6 +222,15 @@ export const fetchReportOrders = () => ({
 export const fetchReportOrdersSuccess = ({tableData, stats}) => ({
     type:    FETCH_REPORT_ORDERS_SUCCESS,
     payload: {tableData, stats},
+});
+
+export const fetchReportOrdersFilterOptions = () => ({ 
+    type:    FETCH_REPORT_ORDERS_FILTER_OPTIONS,
+});
+
+export const fetchReportOrdersFilterOptionsSuccess = (filterOptions) => ({
+    type:    FETCH_REPORT_ORDERS_FILTER_OPTIONS_SUCCESS,
+    payload: filterOptions,
 });
 
 //Filter-------------------------------------------------------------------------------------------------
@@ -248,4 +289,10 @@ export const setReportOrdersIncludeServicesDiscount = (val) => ({
 export const setReportOrdersIncludeAppurtenanciesDiscount = (val) => ({ 
     type:    SET_REPORT_ORDERS_INCLUDE_APPURTENANCIES_DISCOUNT,
     payload: val
+});
+
+//Override existing filters
+export const setReportOrdersAllFilters = (filters) => ({
+    type: SET_REPORT_ORDERS_ALL_FILTERS,
+    payload: filters
 });

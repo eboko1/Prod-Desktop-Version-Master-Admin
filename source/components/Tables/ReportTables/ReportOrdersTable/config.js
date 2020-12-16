@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import { Input, Icon, Checkbox, DatePicker, Menu, Dropdown, Button } from 'antd';
+import { Input, Icon, Checkbox, Menu, Dropdown, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
@@ -9,13 +9,11 @@ import moment from 'moment';
 import { Numeral } from 'commons';
 import { FormattedDatetime, DateRangePicker } from 'components';
 import book from 'routes/book';
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 // own
 import Styles from './styles.m.css';
 
 const DEF_DATE_FORMAT = 'YYYY/MM/DD';
-const DEF_UI_DATE_FORMAT = 'DD/MM/YYYY';
 
 const statuses = {
     required: 'transfer_required',
@@ -94,36 +92,6 @@ export function columnsConfig(props) {
 
     function onSearchInput(e) {
         setReportOrdersQuery(e.target.value.toLowerCase().trim());
-        fetchReportOrders();
-    }
-
-    function onCreationFromDateChanged(date) {
-        setReportOrdersCreationFromDate(date? date.format(DEF_DATE_FORMAT): undefined);
-        fetchReportOrders();
-    }
-
-    function onCreationToDateChanged(date) {
-        setReportOrdersCreationToDate(date? date.format(DEF_DATE_FORMAT): undefined);
-        fetchReportOrders();
-    }
-
-    function onAppointmentFromDateChanged(date) {
-        setReportOrdersAppointmentFromDate(date? date.format(DEF_DATE_FORMAT): undefined);
-        fetchReportOrders();
-    }
-
-    function onAppointmentToDateChanged(date) {
-        setReportOrdersAppointmentToDate(date? date.format(DEF_DATE_FORMAT): undefined);
-        fetchReportOrders();
-    }
-
-    function onDoneFromDateChanged(date) {
-        setReportOrdersDoneFromDate(date? date.format(DEF_DATE_FORMAT): undefined);
-        fetchReportOrders();
-    }
-
-    function onDoneToDateChanged(date) {
-        setReportOrdersDoneToDate(date? date.format(DEF_DATE_FORMAT): undefined);
         fetchReportOrders();
     }
 
@@ -229,7 +197,7 @@ export function columnsConfig(props) {
             {
                 title:  <div className={Styles.filterColumnHeaderWrap}>
                             <FormattedMessage id='report-orders-table.order_num' />
-                            <Button onClick={onOpenFilterModal}> Click me</Button>
+                            <Button onClick={onOpenFilterModal} className={Styles.filterButton}><FormattedMessage id="report-orders-table.filter"/></Button>
                         </div>,
                 align: 'left',
                 key: 'order_num',
