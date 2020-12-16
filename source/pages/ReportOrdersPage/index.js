@@ -100,9 +100,18 @@ export default class ReportOrdersPage extends Component {
 
         const totalSum = (parseInt(totalServicesSum) + parseInt(totalAppurtenanciesSum));
         const totalProfit = (parseInt(totalServicesProfit) + parseInt(totalAppurtenanciesProfit));
-        const totalLaborsMargin = ((totalServicesProfit*100.0)/totalServicesSum).toFixed(1);
-        const totalAppurtenanciesMargin = ((totalAppurtenanciesProfit*100.0)/totalAppurtenanciesSum).toFixed(1);
-        const totalMargin = (((totalProfit)/(totalSum))* 100.0).toFixed(1);
+
+        const totalLaborsMargin = (Number(totalServicesSum) && Number(totalServicesProfit))
+            ? ((totalServicesProfit*100.0)/totalServicesSum).toFixed(1)
+            : 0;
+
+        const totalAppurtenanciesMargin = (Number(totalAppurtenanciesProfit) && Number(totalAppurtenanciesSum))
+        ?((totalAppurtenanciesProfit*100.0)/totalAppurtenanciesSum).toFixed(1)
+        : 0;
+
+        const totalMargin = (totalProfit && totalSum)
+            ? (((totalProfit)/(totalSum))* 100.0).toFixed(1)
+            : 0;
 
         return <div className={Styles.statsMainCont}>
             <div className={Styles.statsCont}>
