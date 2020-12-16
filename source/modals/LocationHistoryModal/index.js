@@ -73,27 +73,34 @@ export default class LocationHistoryModal extends Component {
             {
                 title:     <FormattedMessage id='locations.arrival'/>,
                 key:       'arrival',
+                dataIndex: 'incomeDatetime',
                 render:    (data, row)=> {
                     return (
-                        data
+                        data ? moment(data).format('DD.MM.YYYY HH:MM') : <FormattedMessage id='long_dash'/>
                     )
                 }
             },
             {
                 title:     <FormattedMessage id='locations.departure'/>,
                 key:       'departure',
+                dataIndex: 'expenseDatetime',
                 render:    (data, row)=> {
                     return (
-                        data
+                        data ? moment(data).format('DD.MM.YYYY HH:MM') : <FormattedMessage id='long_dash'/>
                     )
                 }
             },
             {
                 title:     <FormattedMessage id='locations.duration'/>,
                 key:       'duration',
+                dataIndex: 'duration',
                 render:    (data, row)=> {
+                    const days = Math.floor(data/24);
+                    const hours = Math.floor(data%24);
                     return (
-                        data
+                        <div>
+                            {days ? <span>{days} <FormattedMessage id='locations.days'/></span> : null} {hours} <FormattedMessage id='locations.hours' />
+                        </div>
                     )
                 }
             },

@@ -522,7 +522,7 @@ class DetailProductModal extends React.Component{
     }
 
     handleOk = () => {
-        const { editing, mainTableSource, relatedServices, relatedDetails } = this.state;
+        const { editing, mainTableSource, relatedServices, relatedDetails, relatedDetailsCheckbox } = this.state;
         if(editing) {
             this.props.updateDetail(this.props.tableKey, {...mainTableSource[0]});
         }
@@ -571,47 +571,49 @@ class DetailProductModal extends React.Component{
                     })
                 }
             });
-            relatedDetails.map((element)=>{
-                if(element.checked) {
-                    if(!element.productId) {
-                        data.details.push({
-                            storeGroupId: element.storeGroupId,
-                            name: element.detailName,
-                            productCode: element.detailCode,
-                            supplierId: element.supplierId,
-                            supplierBrandId: element.supplierBrandId || element.brandId,
-                            supplierOriginalCode: element.supplierOriginalCode,
-                            supplierProductNumber: element.supplierProductNumber,
-                            supplierPartNumber: element.supplierPartNumber,
-                            reservedFromWarehouseId: element.reservedFromWarehouseId || null,
-                            purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
-                            count: element.count ? element.count : 1,
-                            price: element.price ? Math.round(element.price*10)/10 : 1,
-                            comment: element.comment || {
-                                comment: undefined,
-                                positions: [],
-                            },
-                        })
-                    } else {
-                        data.details.push({
-                            storeGroupId: element.storeGroupId,
-                            name: element.detailName,
-                            productId: element.productId,
-                            productCode: element.detailCode,
-                            supplierBrandId: element.supplierBrandId || element.brandId,
-                            purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
-                            count: element.count ? element.count : 1,
-                            price: element.price ? Math.round(element.price*10)/10  : 1,
-                            reservedFromWarehouseId: element.reservedFromWarehouseId || null,
-                            supplierId: element.supplierId,
-                            comment: element.comment || {
-                                comment: undefined,
-                                positions: [],
-                            },
-                        })
+            if(relatedDetailsCheckbox) {
+                relatedDetails.map((element)=>{
+                    if(element.checked) {
+                        if(!element.productId) {
+                            data.details.push({
+                                storeGroupId: element.storeGroupId,
+                                name: element.detailName,
+                                productCode: element.detailCode,
+                                supplierId: element.supplierId,
+                                supplierBrandId: element.supplierBrandId || element.brandId,
+                                supplierOriginalCode: element.supplierOriginalCode,
+                                supplierProductNumber: element.supplierProductNumber,
+                                supplierPartNumber: element.supplierPartNumber,
+                                reservedFromWarehouseId: element.reservedFromWarehouseId || null,
+                                purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
+                                count: element.count ? element.count : 1,
+                                price: element.price ? Math.round(element.price*10)/10 : 1,
+                                comment: element.comment || {
+                                    comment: undefined,
+                                    positions: [],
+                                },
+                            })
+                        } else {
+                            data.details.push({
+                                storeGroupId: element.storeGroupId,
+                                name: element.detailName,
+                                productId: element.productId,
+                                productCode: element.detailCode,
+                                supplierBrandId: element.supplierBrandId || element.brandId,
+                                purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
+                                count: element.count ? element.count : 1,
+                                price: element.price ? Math.round(element.price*10)/10  : 1,
+                                reservedFromWarehouseId: element.reservedFromWarehouseId || null,
+                                supplierId: element.supplierId,
+                                comment: element.comment || {
+                                    comment: undefined,
+                                    positions: [],
+                                },
+                            })
+                        }
                     }
-                }
-            });
+                });
+            }
             relatedServices.map((element)=>{
                 if(element.laborId) {
                     data.services.push({
@@ -621,6 +623,7 @@ class DetailProductModal extends React.Component{
                     })
                 }
             });
+            console.log(data);
             this.addDetailsAndLabors(data);
         }
         this.props.hideModal();
@@ -649,6 +652,7 @@ class DetailProductModal extends React.Component{
                 },
             });
             const result = await response.json();
+            console.log(result)
             this.setState({
                 relatedDetails: result.storeGroups.map((detail, key)=>{
                     let formattedDetail = {
@@ -657,6 +661,7 @@ class DetailProductModal extends React.Component{
                         related: true,
                         detailName: detail.name,
                         storeGroupId: detail.id,
+                        detailCode: detail.partNumber,
                         comment: {
                             comment: undefined,
                             positions: [],
@@ -672,7 +677,6 @@ class DetailProductModal extends React.Component{
                         formattedDetail={
                             ...formattedDetail,
                             detailName: itemName,
-                            detailCode: partNumber,
                             supplierBrandId: supplierBrandId,
                             supplierId: businessSupplierId,
                             supplierName: businessSupplierName,

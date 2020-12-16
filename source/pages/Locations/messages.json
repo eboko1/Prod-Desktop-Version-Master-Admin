@@ -4,7 +4,7 @@
   	"locations.name": "Name",
   	"locations.type": "Type",
   	"locations.volume": "Volume",
-  	"locations.price": "Price",
+  	"locations.price": "Price per day",
   	"locations.count": "Count",
   	"locations.WORK_POST": "Work Post",
   	"locations.INTERNAL_PARKING": "Internal Parking",
@@ -25,14 +25,16 @@
     "locations.arrival": "Arrival",
     "locations.departure": "Departure",
     "locations.duration": "Duration",
-    "locations.vehicles_location_history": "Vehicles Location History"
+    "locations.vehicles_location_history": "Vehicles Location History",
+    "locations.days": "days",
+    "locations.hours": "hours"
   },
   "ru": {
   	"location": "Локация",
   	"locations.name": "Название",
   	"locations.type": "Тип",
   	"locations.volume": "Вместимось",
-  	"locations.price": "Цена",
+  	"locations.price": "Цена за сутки",
   	"locations.count": "Кол-во",
   	"locations.WORK_POST": "Рабочий пост",
   	"locations.INTERNAL_PARKING": "Внутренний паркинг",
@@ -53,14 +55,16 @@
     "locations.arrival": "Заезд",
     "locations.departure": "Выезд",
     "locations.duration": "Продолжит.",
-    "locations.vehicles_location_history": "История локаций автомобилей"
+    "locations.vehicles_location_history": "История локаций автомобилей",
+    "locations.days": "дн",
+    "locations.hours": "час"
   },
   "uk": {
   	"location": "Локація",
   	"locations.name": "Назва",
   	"locations.type": "Тип",
   	"locations.volume": "Місткість",
-  	"locations.price": "Ціна",
+  	"locations.price": "Ціна за добу",
   	"locations.count": "Кіль-сть",
   	"locations.WORK_POST": "Робочий пост",
   	"locations.INTERNAL_PARKING": "Внутрішній паркінг",
@@ -81,6 +85,8 @@
     "locations.arrival": "В'їзд",
     "locations.departure": "Виїзд",
     "locations.duration": "Тривалість",
-    "locations.vehicles_location_history": "Історія локацій автомобілів"
+    "locations.vehicles_location_history": "Історія локацій автомобілів",
+    "locations.days": "дн",
+    "locations.hours": "год"
   }
 }

@@ -66,7 +66,7 @@
     "navigation.repair_map": "Repair map",
     "navigation.report_orders": "Orders report",
     "navigation.locations": "Locations",
-    "navigation.locations_settings": "Locations Settings",
+    "navigation.locations_settings": "Directory of Locations",
     "navigation.locations_document": "Locations Documents",
     "navigation.locations_vehicles": "Locations Vehicles",
     "navigation.locations_movement": "Vehicles Movement"
@@ -138,7 +138,7 @@
     "navigation.repair_map": "Технологическая карта",
     "navigation.report_orders": "Отчет по н/з",
     "navigation.locations": "Локации",
-    "navigation.locations_settings": "Настройки локаций",
+    "navigation.locations_settings": "Справочник локаций",
     "navigation.locations_document": "Документы локаций",
     "navigation.locations_vehicles": "Авто на локациях",
     "navigation.locations_movement": "Движение Авто по локациям"
@@ -210,7 +210,7 @@
     "navigation.repair_map": "Карта ремонту",
     "navigation.report_orders": "Звіт по н/з",
     "navigation.locations": "Локації",
-    "navigation.locations_settings": "Налаштування локацій",
+    "navigation.locations_settings": "Довідник локацій",
     "navigation.locations_document": "Документи локацій",
     "navigation.locations_vehicles": "Авто по локаціям",
     "navigation.locations_movement": "Рух Авто по локаціям"
