@@ -233,7 +233,7 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
-                window.location.reload();
+                that.props.fetchOrderForm(that.props.orderId);
             })
             .catch(function(error) {
                 console.log("error", error);

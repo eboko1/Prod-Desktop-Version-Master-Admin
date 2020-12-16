@@ -100,8 +100,9 @@ export default class VehicleLocationModal extends Component {
     }
 
     postMovement() {
-        const { receiveMode, returnMode, transferMode, currentLocation, onConfirm, orderId, getReport } = this.props;
+        const { receiveMode, transferMode, currentLocation, onConfirm, orderId, getReport } = this.props;
         const { selectedLocation, vehicleId, clientId, printAct } = this.state;
+        const returnMode = this.props.returnMode || transferMode && !selectedLocation;
 
         const postData = {
             businessLocationId: selectedLocation,
@@ -115,6 +116,7 @@ export default class VehicleLocationModal extends Component {
         } else if(returnMode) {
             postData.type = 'EXPENSE';
             postData.documentType = 'CLIENT';
+            postData.businessLocationId = currentLocation;
         } else if(transferMode) {
             postData.type = 'EXPENSE';
             postData.documentType = 'TRANSFER';
@@ -122,13 +124,7 @@ export default class VehicleLocationModal extends Component {
             postData.counterpartBusinessLocationId = selectedLocation;
         }
 
-        if(printAct && orderId) {
-            getReport({
-                link: `/orders/reports/actOfAcceptanceReport/${orderId}?reverse=${Boolean(receiveMode)}`,
-                name: 'actOfAcceptanceReport'
-            });
-        }
-
+        console.log(postData)
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/business_locations/movements`;
@@ -148,10 +144,16 @@ export default class VehicleLocationModal extends Component {
         .then(function (response) {
             return response.json()
         })
-        .then(function (data) {
+        .then(async function (data) {
             if(onConfirm) {
-                onConfirm(selectedLocation);
+                await onConfirm(selectedLocation);
             };
+            if(printAct && (returnMode || receiveMode)) {
+                await getReport({
+                    link: `/orders/reports/actOfAcceptanceReport/${orderId || 0}?clientVehicleId=${vehicleId}&reverse=${Boolean(returnMode)}`,
+                    name: 'actOfAcceptanceReport'
+                });
+            }
         })
         .catch(function (error) {
             console.log('error', error);
@@ -348,13 +350,13 @@ export default class VehicleLocationModal extends Component {
         )
     }
 
-    transferModeContent() {
+    transferReturnModeContent() {
         const { currentLocation } = this.props;
         const { locations, clients, clientId, vehicles, vehicleId, selectedLocation, printAct } = this.state;
         return (
             <div>
                 <div className={Styles.modalTitle}>
-                    <FormattedMessage id='vehicle_location_modal.title.transfer' />
+                    <FormattedMessage id={`vehicle_location_modal.title.${selectedLocation ? 'transfer' : 'return'}`} />
                 </div>
                 <div className={Styles.modalContent}>
                     <div>
@@ -392,6 +394,7 @@ export default class VehicleLocationModal extends Component {
                         <div className={Styles.locationWrapper}>
                             <FormattedMessage id='vehicle_location_modal.to'/>
                              <Select
+                                allowClear
                                 showSearch
                                 value={selectedLocation}
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
@@ -413,13 +416,25 @@ export default class VehicleLocationModal extends Component {
                             </Select>
                         </div>
                     </div>
+                    {!selectedLocation &&
+                        <div className={Styles.printWrapper}>
+                            <FormattedMessage id='vehicle_location_modal.print_act' />
+                            <Checkbox
+                                style={{marginLeft: 6}}
+                                checked={printAct}
+                                onChange={({target})=>{
+                                    this.setState({printAct: target.checked})
+                                }}
+                            />
+                        </div>
+                    }
                 </div>
                 <div className={Styles.modalButton}>
                     <Button
                         type='primary'
                         onClick={this.handleOk}
                     >
-                        <FormattedMessage id='vehicle_location_modal.button.transfer' />
+                        <FormattedMessage id={`vehicle_location_modal.button.${selectedLocation ? 'transfer' : 'return'}`} />
                     </Button>
                 </div>
             </div>
@@ -473,10 +488,12 @@ export default class VehicleLocationModal extends Component {
     render() {
         const { disabled, modalVisible, hideModal, receiveMode, returnMode, transferMode, showIcon, style } = this.props;
         const { visible } = this.state;
+        console.log(this);
         let content;
-        if(returnMode) content = this.returnModeContent();
-        if(transferMode) content = this.transferModeContent();
         if(receiveMode) content = this.receiveModeContent();
+        else if(returnMode) content = this.returnModeContent();
+        else if(transferMode) content = this.transferReturnModeContent();
+        
         return (
             <div className={Styles.modalWrap} style={style}>
                 {showIcon && 

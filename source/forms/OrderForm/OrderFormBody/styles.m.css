@@ -34,7 +34,6 @@
 
 .location {
     flex: 0 1 50%;
-    color: var(--text);
 }
 
 .clientSearchField {

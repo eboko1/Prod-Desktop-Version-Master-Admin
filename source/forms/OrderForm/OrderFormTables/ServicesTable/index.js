@@ -561,7 +561,7 @@ class ServicesTable extends Component {
                     id:            labor.id,
                     serviceId:     labor.laborId,
                     serviceName:   labor.serviceName,
-                    employeeId:    labor.employeeId,
+                    employeeId:    labor.employeeId || null,
                     serviceHours:  labor.hours,
                     purchasePrice: Math.round(labor.purchasePrice * 10) / 10,
                     count:         labor.count,
@@ -583,7 +583,7 @@ class ServicesTable extends Component {
         ) {
             data.services[ 0 ].agreement = labor.agreement;
         }
-
+        console.log(data);
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
         let params = `/orders/${this.props.orderId}`;
@@ -598,11 +598,6 @@ class ServicesTable extends Component {
                 body: JSON.stringify(data),
             });
             const result = await response.json();
-            if (result.success) {
-                
-            } else {
-                console.log('BAD', result);
-            }
             this.updateDataSource();
         } catch (error) {
             console.error('ERROR:', error);
@@ -829,7 +824,7 @@ class QuickEditModal extends React.Component {
                                     ) >= 0
                                 );
                             } }
-                            onSelect={ (value, option) => {
+                            onChange={ (value, option) => {
                                 this.state.dataSource[ 0 ].employeeId = value;
                                 this.setState({
                                     update: true,
