@@ -74,12 +74,18 @@ export default class LocationsVehiclesPage extends Component {
                     )
                 }
             },
-            {
+           {
                 title:     <FormattedMessage id='locations.time'/>,
-                key:       'time',
+                key:       'duration',
+                dataIndex: 'duration',
                 render:    (data, row)=> {
+                    console.log(row);
+                    const days = Math.floor(data/24);
+                    const hours = Math.floor(data%24);
                     return (
-                        data
+                        <div>
+                            {days ? <span>{days} <FormattedMessage id='locations.days'/></span> : null} {hours} <FormattedMessage id='locations.hours' />
+                        </div>
                     )
                 }
             },
