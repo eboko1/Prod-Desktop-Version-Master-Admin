@@ -184,7 +184,7 @@ class AddServiceModal extends React.Component{
                                             {elem.name ? elem.name : elem.defaultName}
                                         </Option>
                                     )) :
-                                    elem.laborId ? 
+                                    elem.laborId && currentServiceOption ? 
                                     <Option
                                         key={0}
                                         value={currentServiceOption.laborId}
@@ -242,7 +242,7 @@ class AddServiceModal extends React.Component{
                                     String(option.props.value).indexOf(input.toLowerCase()) >= 0
                                 )
                             }}
-                            onSelect={(value, option)=>{
+                            onChange={(value, option)=>{
                                 elem.employeeId = value;
                                 this.setState({});
                             }}
@@ -411,6 +411,7 @@ class AddServiceModal extends React.Component{
                 width:     '5%',
                 render: (elem)=>{
                     const sum = elem.price *  elem.count;
+                    console.log(elem);
                     return (
                         <InputNumber
                             className={Styles.serviceNumberInput}
@@ -474,7 +475,7 @@ class AddServiceModal extends React.Component{
                 data.services.push({
                     serviceId: element.laborId,
                     serviceName: element.serviceName,
-                    employeeId: element.employeeId,
+                    employeeId: element.employeeId || null,
                     serviceHours: element.hours ? element.hours : 0,
                     purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                     count: element.count ? element.count : 1,
@@ -530,7 +531,7 @@ class AddServiceModal extends React.Component{
                 },
             });
             const result = await response.json();
-            console.log(result);
+            console.log(result)
             this.setState({
                 relatedServices: result.labors[0].relatedLabors.map((labor, key)=>{
                     return ({
@@ -540,6 +541,7 @@ class AddServiceModal extends React.Component{
                         serviceName: labor.name,
                         storeGroupId: labor.productId,
                         defaultName: labor.name,
+                        count: labor.normHours || 1,
                         comment: {
                             comment: undefined,
                             positions: [],

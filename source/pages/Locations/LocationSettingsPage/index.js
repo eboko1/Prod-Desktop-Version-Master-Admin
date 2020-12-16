@@ -12,6 +12,7 @@ import moment from 'moment';
 import { Layout } from 'commons';
 
 // own
+import Styles from './styles.m.css';
 const Option = Select.Option;
 const   WORK_POST = 'WORK_POST',
         INTERNAL_PARKING = 'INTERNAL_PARKING', 
@@ -61,16 +62,32 @@ export default class LocationSettingsPage extends Component {
                 }
             },
             {
-                title:     <FormattedMessage id='locations.volume'/>,
+                title:  <div className={ Styles.numberColumn }>
+                            <FormattedMessage id='locations.volume' />
+                            
+                        </div>,
+                className: Styles.numberColumn,
                 key:       'volume',
                 dataIndex: 'volume',
                 width:     'auto',
+                render:    (data, elem)=>{
+                    const volume = Number(data || 0).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+                    return volume;
+                }
             },
             {
-                title:     <FormattedMessage id='locations.price'/>,
+                title:  <div className={ Styles.numberColumn }>
+                            <FormattedMessage id='locations.price' />
+                            
+                        </div>,
+                className: Styles.numberColumn,
                 key:       'price',
                 dataIndex: 'price',
                 width:     'auto',
+                render:    (data, elem)=>{
+                    const price = Number(data || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+                    return price;
+                }
             },
             {
                 key:       'edit',
@@ -159,7 +176,6 @@ export default class LocationSettingsPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.map((elem, key)=>{
                 elem.key = key;
             })
@@ -348,10 +364,13 @@ class AddLocationModal extends Component {
                 title={`${formatMessage({id: editMode ? 'edit' : 'add'})} ${formatMessage({id: 'navigation.locations'}).toLowerCase()}`}
                 onCancel={this.handleCancel}
                 onOk={this.handleOk}
+                okButtonProps={{
+                    disabled: !name || !type
+                }}
             >
                 <div>
                     <div style={{margin: '0 0 8px 0'}}>
-                        <FormattedMessage id='locations.name'/>: 
+                        <span style={{color: 'red'}}>*</span> <FormattedMessage id='locations.name'/>: 
                         <Input
                             value={name}
                             onChange={(event)=>{
@@ -362,7 +381,7 @@ class AddLocationModal extends Component {
                         />
                     </div>
                     <div style={{margin: '8px 0'}}>
-                        <FormattedMessage id='locations.type'/>: 
+                        <span style={{color: 'red'}}>*</span> <FormattedMessage id='locations.type'/>: 
                         <Select
                             allowClear
                             value={type}

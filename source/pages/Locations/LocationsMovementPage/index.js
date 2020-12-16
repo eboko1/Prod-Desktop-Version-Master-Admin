@@ -27,6 +27,10 @@ export default class LocationsMovementPage extends Component {
             currentPage: 1,
             fromDatetime: moment().startOf('month'),
             toDatetime: moment(),
+            modalVisible: false,
+            modalVehicleId: undefined,
+            modalClientId: undefined,
+            modalCurrentLocation: undefined,
         };
 
         this.columns = [
@@ -72,27 +76,57 @@ export default class LocationsMovementPage extends Component {
             {
                 title:     <FormattedMessage id='locations.arrival'/>,
                 key:       'arrival',
+                dataIndex: 'incomeDatetime',
                 render:    (data, row)=> {
                     return (
-                        data
+                        data ? moment(data).format('DD.MM.YYYY HH:MM') : <FormattedMessage id='long_dash'/>
                     )
                 }
             },
             {
                 title:     <FormattedMessage id='locations.departure'/>,
                 key:       'departure',
+                dataIndex: 'expenseDatetime',
                 render:    (data, row)=> {
                     return (
-                        data
+                        data ? moment(data).format('DD.MM.YYYY HH:MM') : <FormattedMessage id='long_dash'/>
                     )
                 }
             },
             {
                 title:     <FormattedMessage id='locations.duration'/>,
                 key:       'duration',
+                dataIndex: 'duration',
                 render:    (data, row)=> {
+                    console.log(row);
+                    const days = Math.floor(data/24);
+                    const hours = Math.floor(data%24);
                     return (
-                        data
+                        <div>
+                            {days ? <span>{days} <FormattedMessage id='locations.days'/></span> : null} {hours} <FormattedMessage id='locations.hours' />
+                        </div>
+                    )
+                }
+            },
+            {
+                key:       'action',
+                width:     'min-content',
+                render: (data)=>{
+                    return (
+                        <Button
+                            type={'primary'}
+                            disabled={data.count < 1}
+                            onClick={()=>{
+                                this.setState({
+                                    modalVisible: true,
+                                    modalVehicleId: data.clientsVehicle.id,
+                                    modalClientId: data.client.id,
+                                    modalCurrentLocation: data.businessLocation.id,
+                                })
+                            }}
+                        >
+                            <FormattedMessage id='locations.action'/>
+                        </Button>
                     )
                 }
             },
@@ -121,7 +155,6 @@ export default class LocationsMovementPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.list.map((elem, key)=>{
                 elem.key = key;
             })
@@ -147,7 +180,7 @@ export default class LocationsMovementPage extends Component {
     }
 
     render() {
-        const { loading, dataSource, clientVehicleId, currentPage, paginationTotal, fromDatetime, toDatetime } = this.state;
+        const { loading, dataSource, clientVehicleId, currentPage, paginationTotal, fromDatetime, toDatetime, modalVisible, modalVehicleId, modalClientId, modalCurrentLocation } = this.state;
 
         const pagination = {
             total: paginationTotal,
@@ -175,7 +208,7 @@ export default class LocationsMovementPage extends Component {
                                     fromDatetime: fromDatetime,
                                     toDatetime: toDatetime,
                                 });
-                                this.fetchData();
+                                this.fetchData(clientVehicleId);
                             }}
                         />
                     </div>
@@ -187,6 +220,22 @@ export default class LocationsMovementPage extends Component {
                     columns={ this.columns }
                     dataSource={ dataSource }
                     pagination={ pagination }
+                />
+                <VehicleLocationModal
+                    modalVisible={modalVisible}
+                    transferMode
+                    vehicleId={modalVehicleId}
+                    clientId={modalClientId}
+                    currentLocation={modalCurrentLocation}
+                    onConfirm={()=>this.fetchData()}
+                    hideModal={()=>{
+                        this.setState({
+                            modalVisible: false,
+                            modalVehicleId: undefined,
+                            modalClientId: undefined,
+                            modalCurrentLocation: undefined,
+                        })
+                    }}
                 />
             </Layout>
         );

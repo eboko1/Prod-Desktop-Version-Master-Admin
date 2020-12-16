@@ -85,6 +85,7 @@ export class DateRangePicker extends React.Component {
                 >
                     <Dropdown
                         className={Styles.datePickerButton}
+                        overlayStyle={{zIndex: 9999}}
                         overlay={
                             <Menu>
                                 <Menu.Item
@@ -126,6 +127,7 @@ export class DateRangePicker extends React.Component {
                     </Dropdown>
                     <Dropdown
                         className={Styles.datePickerButton}
+                        overlayStyle={{zIndex: 9999}}
                         overlay={
                             <Menu>
                                 <Menu.Item
@@ -167,6 +169,7 @@ export class DateRangePicker extends React.Component {
                     </Dropdown>
                     <Dropdown
                         className={Styles.datePickerButton}
+                        overlayStyle={{zIndex: 9999}}
                         overlay={
                             <Menu>
                                 <Menu.Item
@@ -218,6 +221,7 @@ export class DateRangePicker extends React.Component {
                     </Dropdown>
                     <Dropdown
                         className={Styles.datePickerButton}
+                        overlayStyle={{zIndex: 9999}}
                         overlay={
                             <Menu>
                                 <Menu.Item
@@ -269,6 +273,7 @@ export class DateRangePicker extends React.Component {
                     </Dropdown>
                     <Dropdown
                         className={Styles.datePickerButton}
+                        overlayStyle={{zIndex: 9999}}
                         overlay={
                             <Menu>
                                 <Menu.Item

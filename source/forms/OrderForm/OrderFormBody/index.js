@@ -221,11 +221,11 @@ export default class OrderFormBody extends Component {
         return (
             <div>
                 <FormattedMessage id="location" />
-                {orderId &&
+                {orderId && fetchedOrder &&
                     <VehicleLocationModal
                         showIcon
                         style={{marginLeft: 4}}
-                        receiveMode={!businessLocationId && !orderSuccess}
+                        receiveMode={!businessLocationId}
                         transferMode={businessLocationId && !orderSuccess}
                         returnMode={businessLocationId && orderSuccess}
                         disabled={!businessLocationId && orderSuccess}
@@ -234,7 +234,7 @@ export default class OrderFormBody extends Component {
                         vehicleId={_.get(fetchedOrder, "order.clientVehicleId")}
                         currentLocation={businessLocationId}
                         hideModal={()=>void 0}
-                        onConfirm={(businessLocationId)=>updateOrderField({businessLocationId: businessLocationId})}
+                        onConfirm={(businessLocationId)=>updateOrderField({businessLocationId: businessLocationId || null})}
                     />
                 }
             </div>
@@ -631,8 +631,9 @@ export default class OrderFormBody extends Component {
                         label={this.state.businessLocationsLabel}
                         placeholder={this._getLocalization("location")}
                         getFieldDecorator={getFieldDecorator}
-                        className={Styles.location}
+                        className={`${Styles.location} ${_.get(fetchedOrder, "order.businessLocationId") ? Styles.disableLoctionsSelectData : null}`}
                         formItemLayout={formVerticalLayout}
+                        disabled
                     >
                         {this.state.businessLocationsOptions}
                     </DecoratedSelect>

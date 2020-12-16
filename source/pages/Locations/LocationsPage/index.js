@@ -69,8 +69,8 @@ export default class LocationsPage extends Component {
                     </div>
                 ),
                 className: Styles.numberColumn,
-                key:       'freeCount',
-                dataIndex: 'freeCount',
+                key:       'usedCount',
+                dataIndex: 'usedCount',
                 width:     'auto',
                 render: (data, row)=>{
                     return (
@@ -108,7 +108,7 @@ export default class LocationsPage extends Component {
                 key:       'percent',
                 width:     'auto',
                 render:    (row)=>{
-                    const percent = (row.freeCount || 0) / row.volume;
+                    const percent = (row.usedCount || 0) / row.volume;
                     return (
                         Math.round(percent*100) + '%'
                     )
@@ -200,7 +200,7 @@ export default class LocationsPage extends Component {
         let totalCount = 0, totalVolume = 0;
         dataSource.map((elem)=>{
             if(includeExternal || elem.type != EXTERNAL_PARKING) {
-                totalCount += (elem.freeCount || 0);
+                totalCount += (elem.usedCount || 0);
                 totalVolume += elem.volume;
             }
         })

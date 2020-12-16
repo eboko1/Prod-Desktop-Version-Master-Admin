@@ -199,12 +199,12 @@ export function convertFieldsValuesToDbEntity(
     const order = {
         clientId:                    _.get(orderFields, 'selectedClient.clientId'),
         clientVehicleId:             _.get(orderFields, 'clientVehicle'),
-        businessRequisiteId:         _.get(orderFields, 'requisite'),
+        businessRequisiteId:         _.get(orderFields, 'requisite') || null,
         managerId:                   _.get(orderFields, 'manager'),
         duration:                    orderDuration ? Math.max(orderDuration, 0.5) : orderDuration,
         clientPhone:                 _.get(orderFields, 'clientPhone'),
         paymentMethod:               _.get(orderFields, 'paymentMethod'),
-        clientRequisiteId:           _.get(orderFields, 'clientRequisite'),
+        clientRequisiteId:           _.get(orderFields, 'clientRequisite') || null,
         status,
         beginDatetime,
         deliveryDatetime,
@@ -224,7 +224,7 @@ export function convertFieldsValuesToDbEntity(
         vehicleCondition: _.get(orderFields, 'vehicleCondition'),
         businessComment:  _.get(orderFields, 'businessComment'),
         comment:          _.get(orderFields, 'comment'),
-        businessLocationId:       _.get(orderFields, 'businessLocationId') || null,
+        businessLocationId: _.get(orderFields, 'businessLocationId') || null,
         insertMode:       true,
         updateRepairMap:  true,
     };

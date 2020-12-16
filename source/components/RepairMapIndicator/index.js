@@ -16,7 +16,7 @@ export default class RepairMapIndicator extends Component {
         return (
             <div className={Styles.repairMapIndicator} style={style}>
                 {data && data.map((elem, key)=>{
-                    if(elem.abbreviature) {
+                    if(elem.abbreviature && elem.show) {
                         return (
                             <div
                                 key={key}

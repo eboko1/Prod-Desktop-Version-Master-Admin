@@ -407,6 +407,7 @@ export default class WorkshopTable extends Component {
         })
 
         var filteredData = [...dataSource];
+        filteredData = filteredData.filter((elem)=>elem.agreement != 'REJECTED');
         if(fieldsFilter) {
             filteredData = dataSource.filter((elem)=>(
                 String(elem.serviceName).toLowerCase().includes(fieldsFilter.toLowerCase()) ||

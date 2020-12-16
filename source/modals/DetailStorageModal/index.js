@@ -353,7 +353,6 @@ class DetailStorageModal extends React.Component{
                         <Button
                             type="primary"
                             onClick={()=>{
-                                console.log(elem)
                                 if(this.props.onSelect) {
                                     this.props.onSelect(
                                         elem.partNumber,
@@ -475,7 +474,6 @@ class DetailStorageModal extends React.Component{
             let token = localStorage.getItem('_my.carbook.pro_token');
             let url = __API_URL__ + `/store_products?all=true`;
             if(warehouseId) url += `&warehouseId=${warehouseId}`;
-            console.log(url)
             fetch(url, {
                 method: "GET",
                 headers: {
@@ -492,7 +490,6 @@ class DetailStorageModal extends React.Component{
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 const brandOptions = [];
                 data.list.map((elem, key)=>{
                     elem.key = key;
@@ -547,11 +544,10 @@ class DetailStorageModal extends React.Component{
             var that = this;
             let token = localStorage.getItem('_my.carbook.pro_token');
             let url = API_URL;
-            let params = `/tecdoc/replacements?query=${this.props.codeFilter}`;
+            let params = `/tecdoc/replacements?query=${this.props.codeFilter.replace(' ', '')}`;
             //if(this.props.storeGroupId) params += `&storeGroupId=${this.props.storeGroupId}`
             if(this.props.brandId) params += `&brandIds=[${this.props.brandId}]`
             url += params;
-            console.log(url)
             fetch(url, {
                 method: 'GET',
                 headers: {
@@ -768,7 +764,7 @@ class DetailStorageModal extends React.Component{
 
         if(storeFilter) tblData = tblData.filter((elem)=>String(elem.storeGroupId).toLowerCase().indexOf(String(storeFilter).toLowerCase()) >= 0 );
         if(brandFilter.length) tblData = tblData.filter((elem)=>brandFilter.indexOf(elem.supplierId)!=-1);
-        if(codeFilter) tblData = tblData.filter((elem)=>elem.partNumber.toLowerCase().indexOf(codeFilter.toLowerCase()) >= 0 );
+        if(codeFilter) tblData = tblData.filter((elem)=>elem.partNumber.replace(' ', '').toLowerCase().indexOf(codeFilter.replace(' ', '').toLowerCase()) >= 0 );
         if(inStock) {
             if(this.props.stockMode) tblData = tblData.filter((elem)=>elem.store[0]);
             else tblData = tblData.filter((elem)=>elem.store);
@@ -940,7 +936,6 @@ class DetailWarehousesCountModal extends React.Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.setState({
                 brandName: data.brandName || data.brand && data.brand.name,
                 code: data.code,

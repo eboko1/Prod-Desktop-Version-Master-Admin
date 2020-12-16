@@ -5,3 +5,27 @@
 		margin: 8px 0;
 	}
 }
+
+.submitButton {
+	text-align: center;
+	margin: 8px 0;
+}
+
+.addRequisiteButton {
+	text-align: right;
+	margin: 8px 0;
+}
+
+@media screen and (max-width: 1199px) {
+	.generalInfo {
+		margin: 0 5%;
+
+		& .generalInfoItem {
+			margin: 12px 0;
+		}
+	}
+
+	.submitButton button{
+		width: 100%;
+	}
+}

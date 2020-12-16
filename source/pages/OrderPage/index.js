@@ -174,7 +174,7 @@ class OrderPage extends Component {
         if (viewTasks) {
             fetchOrderTask(id);
         }
-
+        console.log(this);
         this._fetchRepairMapData();
     }
 
@@ -222,7 +222,6 @@ class OrderPage extends Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             that.setState({
                 repairMapData: data,
             })
@@ -386,7 +385,6 @@ class OrderPage extends Component {
                     return;
                 }
             });
-            console.log(data);
             if(reserveError) {
                 confirm({
                     title: that.props.intl.formatMessage({id: 'order-page.status_confirmed_reserve_error'}),

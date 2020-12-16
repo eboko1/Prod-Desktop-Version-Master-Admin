@@ -179,7 +179,6 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 if(onlyDetails) {
                     that.orderDetails = data.orderDetails;
                 }
@@ -200,7 +199,7 @@ export class OrderForm extends React.PureComponent {
         if(field == 'duration') {
             let hours = 0;
             this.orderServices.map(elem => {
-                hours += elem.count;
+                if(elem.agreement != 'REJECTED') hours += elem.count;
             });
 
             if (hours > 8) {
@@ -234,7 +233,7 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
-                window.location.reload();
+                that.props.fetchOrderForm(that.props.orderId);
             })
             .catch(function(error) {
                 console.log("error", error);
