@@ -125,6 +125,7 @@ export function* fetchOrderFormSaga() {
                     handleErrorInternally: true,
                 },
             );
+            console.log(data);
             if(data.client && data.vehicle && data.client.vehicles.findIndex((elem)=>elem.id == data.vehicle.id) == -1) {
                 data.client.vehicles.push(data.vehicle);
             }

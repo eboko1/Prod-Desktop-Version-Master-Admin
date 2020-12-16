@@ -488,7 +488,6 @@ export default class VehicleLocationModal extends Component {
     render() {
         const { disabled, modalVisible, hideModal, receiveMode, returnMode, transferMode, showIcon, style } = this.props;
         const { visible } = this.state;
-        console.log(this);
         let content;
         if(receiveMode) content = this.receiveModeContent();
         else if(returnMode) content = this.returnModeContent();

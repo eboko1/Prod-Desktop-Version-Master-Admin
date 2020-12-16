@@ -79,7 +79,6 @@ export default class LocationsVehiclesPage extends Component {
                 key:       'duration',
                 dataIndex: 'duration',
                 render:    (data, row)=> {
-                    console.log(row);
                     const days = Math.floor(data/24);
                     const hours = Math.floor(data%24);
                     return (
