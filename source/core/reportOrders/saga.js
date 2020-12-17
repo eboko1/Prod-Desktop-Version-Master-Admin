@@ -3,14 +3,17 @@ import { call, put, all, take, select } from 'redux-saga/effects';
 
 //proj
 import { fetchAPI } from 'utils';
+import {setReportOrdersFetching} from 'core/ui/duck';
 
 // own
 import {
     fetchReportOrdersSuccess,
+    fetchReportOrdersFilterOptionsSuccess
 } from './duck';
 
 import {
     FETCH_REPORT_ORDERS,
+    FETCH_REPORT_ORDERS_FILTER_OPTIONS
 } from './duck';
 
 const selectFilter = ({ reportOrders: { filter, sort, options } }) => ({
@@ -23,7 +26,7 @@ export function* fetchReportOrdersSaga() {
     while (true) {
         try {
             yield take(FETCH_REPORT_ORDERS);
-            // yield put(setClientMRDsFetchingState(true));
+            yield put(setReportOrdersFetching(true));
 
             const {
                 filter,
@@ -38,11 +41,27 @@ export function* fetchReportOrdersSaga() {
             );
             yield put(fetchReportOrdersSuccess(data));
         } finally {
-            // yield put(setClientMRDsFetchingState(false));
+            yield put(setReportOrdersFetching(false));
+        }
+    }
+}
+
+export function* fetchReportOrdersFilterOptionsSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_REPORT_ORDERS_FILTER_OPTIONS);
+
+            const data = yield call(
+                fetchAPI,
+                'GET',
+                `/orders/form`
+            );
+            yield put(fetchReportOrdersFilterOptionsSuccess(data));
+        } finally {
         }
     }
 }
 
 export function* saga() {
-    yield all([ call(fetchReportOrdersSaga) ]);
+    yield all([ call(fetchReportOrdersSaga), call(fetchReportOrdersFilterOptionsSaga) ]);
 }

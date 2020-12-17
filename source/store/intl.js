@@ -85,6 +85,7 @@ import SetDetailProductForm from 'forms/SetDetailProductForm/messages';
 import SpreadBusinessBrandsForm from 'forms/SpreadBusinessBrandsForm/messages';
 import CashCreationForm from 'forms/CashCreationForm/messages';
 import CashOrderForm from 'forms/CashOrderForm/messages';
+import ReportOrdersFilterForm from 'forms/ReportForms/ReportOrdersFilterForm/messages';
 
 // OrderForm
 import OrderForm from 'forms/OrderForm/messages';
@@ -218,6 +219,7 @@ const messages = merge.all([
     CashOrderForm,
     SubscribeForm,
     DiagnosticTable,
+    ReportOrdersFilterForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,
