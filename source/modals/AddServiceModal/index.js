@@ -411,7 +411,6 @@ class AddServiceModal extends React.Component{
                 width:     '5%',
                 render: (elem)=>{
                     const sum = elem.price *  elem.count;
-                    console.log(elem);
                     return (
                         <InputNumber
                             className={Styles.serviceNumberInput}
@@ -531,26 +530,28 @@ class AddServiceModal extends React.Component{
                 },
             });
             const result = await response.json();
-            console.log(result)
-            this.setState({
-                relatedServices: result.labors[0].relatedLabors.map((labor, key)=>{
-                    return ({
-                        ...labor,
-                        key: key,
-                        related: true,
-                        serviceName: labor.name,
-                        storeGroupId: labor.productId,
-                        defaultName: labor.name,
-                        count: labor.normHours || 1,
-                        comment: {
-                            comment: undefined,
-                            positions: [],
-                            problems: [],
-                        },
-                        checked: true,
+            if(result.labors && result.labors.length) {
+                this.setState({
+                    relatedServices: result.labors[0].relatedLabors.map((labor, key)=>{
+                        return ({
+                            ...labor,
+                            key: key,
+                            related: true,
+                            serviceName: labor.name,
+                            storeGroupId: labor.productId,
+                            defaultName: labor.name,
+                            count: labor.normHours || 1,
+                            employeeId: this.props.defaultEmployeeId,
+                            comment: {
+                                comment: undefined,
+                                positions: [],
+                                problems: [],
+                            },
+                            checked: true,
+                        })
                     })
                 })
-            })
+            }
         } catch (error) {
             console.error('ERROR:', error);
         }
