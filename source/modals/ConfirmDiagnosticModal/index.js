@@ -113,6 +113,7 @@ class ConfirmDiagnosticModal extends React.Component{
             diagnosticList: [],
             servicesList: [],
             detailsList: [],
+            autoConfirmed: false,
         });
     };
 
