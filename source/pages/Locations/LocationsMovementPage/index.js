@@ -120,8 +120,8 @@ export default class LocationsMovementPage extends Component {
                                 this.setState({
                                     modalVisible: true,
                                     modalVehicleId: data.clientsVehicle.id,
-                                    modalClientId: data.client.id,
-                                    modalCurrentLocation: data.businessLocation.id,
+                                    modalClientId: data.clientШd,
+                                    modalCurrentLocation: data.businessLocationId,
                                 })
                             }}
                         >
