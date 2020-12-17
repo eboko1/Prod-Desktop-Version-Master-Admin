@@ -1,9 +1,11 @@
 .table {
     background-color: white;
     min-width: 0 !important;
+    display: block !important;
+    width: 100% !important;
 }
 
-.table :global(.ant-table-header) {
+.table:global(.ant-table-header) {
     text-transform: uppercase;
     min-width: 0 !important; /*IMPORTANT it solves antd table issue when scrolling is added*/
     font-size: 0.8em;
@@ -12,22 +14,39 @@
 }
 
 /* Fixing appearence bug(on test, it is not occur on localhost ) */
-.table :global(.ant-form-item-control-wrapper) {
+.table:global(.ant-form-item > .ant-form-item-control-wrapper) {
     display: block !important;
+    width: 100% !important;
 }
 
-.table :global(.ant-form-item) {
+.table:global(.ant-col) {
     display: block !important;
+    width: 100% !important;
+}
+
+.table:global(.ant-form-item-control-wrapper) {
+    display: block !important;
+    width: 100% !important;
+}
+
+.table:global(.ant-form-item) {
+    display: block !important;
+    width: 100% !important;
+}
+
+.table:global(.ant-form-inline) {
+    display: block !important;
+    width: 100% !important;
 }
 /* ------------------------------------------------------------- */
 
-.table :global(.ant-pagination) {
+.table:global(.ant-pagination) {
     float: none;
     justify-content: center;
     display: flex;
 }
 
-.table :global(th) {
+.table:global(th) {
     padding: 6px 4px 6px 4px !important; /*Remove bug: when text overflows, header shifts left*/
 }
 

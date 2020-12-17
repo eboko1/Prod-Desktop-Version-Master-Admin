@@ -19,10 +19,11 @@
 }
 
 .col {
-    display: flex;
+    /* display: flex;
     justify-content: flex-end;
-    align-items: center;
+    align-items: center; */
     padding: 5px;
+    display: block !important;
 }
 
 .colText {
@@ -34,9 +35,16 @@
 
 .formItemStyle {
     margin: 0 !important;
-    width: 100%;
+    display: block !important;
+    width: 100% !important;
 }
 
 .formItemStyle :global(.ant-col) {
     display: block !important;
+    width: 100% !important;
+}
+
+.decoratedSelect {
+    display: block !important;
+    width: 100% !important;
 }
