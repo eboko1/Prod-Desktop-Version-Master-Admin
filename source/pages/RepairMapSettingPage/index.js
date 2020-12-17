@@ -214,7 +214,7 @@ export default class RepairMapSettingPage extends Component {
                 render: (data, row)=>{
                     return (
                         <Switch
-                        style={{width: '50px'}}
+                            style={{width: '50px'}}
                             disabled={!this.state.dataSource[row.parentKey].show}
                             checked={data}
                             onChange={(value)=>{
@@ -251,6 +251,29 @@ export default class RepairMapSettingPage extends Component {
             });
             const result = await response.json();
             if(!dontUpdate) this.fetchData()
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
+    }
+
+    async updateParent(parent) {
+        const updateData = {
+            id: parent.id,
+            show: parent.show,
+        };
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/repair_map`;
+        try {
+            const response = await fetch(url, {
+                method:  'POST',
+                headers: {
+                    Authorization:  token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateData),
+            });
+            const result = await response.json();
+            this.fetchData()
         } catch (error) {
             console.error('ERROR:', error);
         }
@@ -312,6 +335,7 @@ export default class RepairMapSettingPage extends Component {
         this.state.dataSource[key].childs.map((child)=>{
             child.show = show;
         });
+        this.updateParent(this.state.dataSource[key]);
         this.setState({});
         this.state.dataSource[key].childs.map((child)=>{
             this.updateChild(child, true);

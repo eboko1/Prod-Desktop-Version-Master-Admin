@@ -1,58 +1,42 @@
-.buttonGroup {
-    display: flex;
-    align-items: center;
-
-    & > button {
-        margin: 0 4px;
-    }
+.mainCont {
+    background-color: white;
 }
 
-.printIcon {
-    font-size: 32px;
-    color: var(--primary);
-    cursor: pointer;
+.statsMainCont {
+    /* position: relative; */
+    background-color: white;
+    height: 110px;
+    width: 100%;
 }
 
-.filters {
+.statsCont{
     display: flex;
-    position: fixed;
-    flex-direction: column;
+    flex-direction: row;
+    background-color: white;
     justify-content: space-between;
-    overflow: initial;
     box-sizing: border-box;
-    background-color: rgb(255, 255, 255);
-    padding: 16px;
     margin-bottom: 24px;
-    z-index: 210;
-    width: calc(100% - 256px);
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 10px,
-        rgba(0, 0, 0, 0.23) 0px 3px 10px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    /* width: calc(100% - 310px); */
-    top: 128px;
 }
 
-.filtersCollapsed {
-    width: calc(100% - 80px);
-}
-
-@media screen and (max-width: 1199px) {
-    .filtersCollapsed {
-        width: 100%;
-    }
-}
-
-.content {
-    margin: 172px 16px 0;
-}
-
-.filter {
+.statsBlock{
     display: flex;
-    justify-content: space-between;
     flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid #9b59b6;
+    margin: 10px 5px 10px 0;
+    height: 70px;
+    width: 100%;
 }
 
-.search {
-    flex: 0 1 40%;
-    margin-bottom: 20px;
+.statsHeader {
+    color: rgb(80, 80, 80);
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.statsText {
+    color: rgb(100, 100, 100);
+    font-size: 0.8em;
+    text-align: center;
 }

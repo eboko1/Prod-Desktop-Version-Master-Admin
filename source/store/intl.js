@@ -44,7 +44,9 @@ import AvailabilitiesPage from 'pages/AvailabilitiesPage/messages';
 import RequisiteSettingPage from 'pages/RequisiteSettingPage/messages';
 import NewDocumentPage from 'pages/NewDocumentPage/messages';
 import SupplierPage from 'pages/SupplierPage/messages';
+import ReportOrdersPage from 'pages/ReportOrdersPage/messages';
 import RepairMapSettingPage from 'pages/RepairMapSettingPage/messages';
+import Locations from 'pages/Locations/messages';
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
@@ -83,6 +85,7 @@ import SetDetailProductForm from 'forms/SetDetailProductForm/messages';
 import SpreadBusinessBrandsForm from 'forms/SpreadBusinessBrandsForm/messages';
 import CashCreationForm from 'forms/CashCreationForm/messages';
 import CashOrderForm from 'forms/CashOrderForm/messages';
+import ReportOrdersFilterForm from 'forms/ReportForms/ReportOrdersFilterForm/messages';
 
 // OrderForm
 import OrderForm from 'forms/OrderForm/messages';
@@ -104,6 +107,7 @@ import UniversalChartModal from 'modals/UniversalChartModal/messages';
 import ConfirmRescheduleModal from 'modals/ConfirmRescheduleModal/messages';
 import SupplierModal from 'modals/SupplierModal/messages';
 import TecDocInfoModal from 'modals/TecDocInfoModal/messages'
+import VehicleLocationModal from 'modals/VehicleLocationModal/messages'
 
 // components
 import StatusIcons from 'components/StatusIcons/messages';
@@ -171,7 +175,9 @@ const messages = merge.all([
     RequisiteSettingPage,
     NewDocumentPage,
     SupplierPage,
+    ReportOrdersPage,
     RepairMapSettingPage,
+    Locations,
     // containers
     OrdersContainer,
     OrdersFilterContainer,
@@ -213,6 +219,7 @@ const messages = merge.all([
     CashOrderForm,
     SubscribeForm,
     DiagnosticTable,
+    ReportOrdersFilterForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,
@@ -222,6 +229,7 @@ const messages = merge.all([
     ConfirmRescheduleModal,
     SupplierModal,
     TecDocInfoModal,
+    VehicleLocationModal,
     // components
     StatusIcons,
     OrderFormTables,

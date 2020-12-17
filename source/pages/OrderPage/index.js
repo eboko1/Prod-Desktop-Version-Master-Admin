@@ -121,6 +121,7 @@ const mapStateToProps = state => {
         selectedClient:        state.forms.orderForm.selectedClient,
         spinner:               state.ui.orderFetching,
         stations:              state.forms.orderForm.stations,
+        businessLocations:     state.forms.orderForm.businessLocations,
         user:                  state.auth,
         vehicles:              state.forms.orderForm.vehicles,
         ...selectInviteData(state),
@@ -160,7 +161,6 @@ class OrderPage extends Component {
             scrollToMapId: undefined,
             repairMapData: [],
         };
-
         this._fetchRepairMapData = this._fetchRepairMapData.bind(this);
     }
 
@@ -174,7 +174,7 @@ class OrderPage extends Component {
         if (viewTasks) {
             fetchOrderTask(id);
         }
-
+        console.log(this);
         this._fetchRepairMapData();
     }
 
@@ -222,7 +222,6 @@ class OrderPage extends Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             that.setState({
                 repairMapData: data,
             })
@@ -289,6 +288,7 @@ class OrderPage extends Component {
                     options,
                     redirectTo,
                 });
+                //window.location.reload();
             } else {
                 this.setState({errors});
             }
@@ -385,7 +385,6 @@ class OrderPage extends Component {
                     return;
                 }
             });
-            console.log(data);
             if(reserveError) {
                 confirm({
                     title: that.props.intl.formatMessage({id: 'order-page.status_confirmed_reserve_error'}),
@@ -626,6 +625,7 @@ class OrderPage extends Component {
             isMobile,
             managers,
             stations,
+            businessLocations,
             user,
             initialOrderTask,
         } = this.props;
@@ -892,8 +892,9 @@ class OrderPage extends Component {
                         download={ this.props.getReport }
                         scrollToMapId={ this.state.scrollToMapId }
                         scrollToMap={ this._scrollToMap }
-                        repairMapData={repairMapData}
-                        fetchRepairMapData={this._fetchRepairMapData}
+                        repairMapData={ repairMapData }
+                        fetchRepairMapData={ this._fetchRepairMapData }
+                        businessLocations={ businessLocations }
                     />
                 </ResponsiveView>
                 <CancelReasonModal

@@ -475,7 +475,7 @@ class NewDocumentPage extends Component {
                         state:    catalogueLinkState,
                     } }
                 >
-                    <Icon type="folder-open" />
+                    <Icon className={Styles.folderIcon} type="folder-open" />
                 </Link>
             </div>
         ) : (

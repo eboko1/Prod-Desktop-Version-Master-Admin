@@ -798,12 +798,12 @@ class StorageDocumentPage extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        const { id } = this.props;
+        const { id, location } = this.props;
         
         if(this._isMounted) {
-            if(this._isMounted && this.props.location.state && this.props.location.state.showForm) {
-                this.updateFormData(this.props.location.state.formData);
-                console.log(this);
+            if(this._isMounted && location.state && location.state.showForm) {
+                const { formData } = location.state || {};
+                this.updateFormData(location.state.formData);
             }
             this.getWarehouses();
         }

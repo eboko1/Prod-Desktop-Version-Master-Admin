@@ -1364,6 +1364,7 @@ class DiagnosticTableHeader extends React.Component {
             selectValue:   undefined,
             dataSource:    props.dataSource,
         };
+        this.diagnosticSelectRef = React.createRef();
     }
 
     handleClickCheckbox() {
@@ -1394,6 +1395,12 @@ class DiagnosticTableHeader extends React.Component {
         this.updateState();
     }
 
+    componentDidUpdate(prevProps) {
+        if(this.props.action == 'DIAGNOSTICS_ADD') {
+            this.diagnosticSelectRef.current.focus();
+        }
+    }
+
     render() {
         const { Option } = Select;
         const { disabled } = this.props;
@@ -1411,6 +1418,8 @@ class DiagnosticTableHeader extends React.Component {
                 </div>
                 <div style={ { width: '15%' } }>
                     <Select
+                        ref={this.diagnosticSelectRef} 
+                        showAction={['focus', 'click']}
                         disabled={ disabled }
                         allowClear
                         value={ this.state.selectValue }

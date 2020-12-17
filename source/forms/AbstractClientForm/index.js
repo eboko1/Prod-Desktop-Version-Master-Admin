@@ -319,6 +319,49 @@ export class AbstractClientForm extends Component {
                                     }
                                 />
                             </Col>
+                            <Col span={8}>
+                                <DecoratedSelect
+                                    field="source"
+                                    initialValue={_.get(client, "source")}
+                                    formItem
+                                    hasFeedback
+                                    getFieldDecorator={getFieldDecorator}
+                                    getPopupContainer={trigger =>
+                                        trigger.parentNode
+                                    }
+                                    label={
+                                        <FormattedMessage id="add_client_form.source" />
+                                    }
+                                    options={[
+                                        {
+                                            id: "CARBOOK",
+                                            title: "CarBook",
+                                        },
+                                        {
+                                            id: "GOOGLE",
+                                            title: "Google",
+                                        },
+                                        {
+                                            id: "FACEBOOK",
+                                            title: "Facebook",
+                                        },
+                                        {
+                                            id: "INSTAGRAM",
+                                            title: "Instagram",
+                                        },
+                                        {
+                                            id: "RECOMENDATION",
+                                            title: this.props.intl.formatMessage({id:"add_client_form.recomendetion"}),
+                                        },
+                                        {
+                                            id: "OTHER",
+                                            title: this.props.intl.formatMessage({id:"other"}),
+                                        },
+                                    ]}
+                                    optionValue="id"
+                                    optionLabel="title"
+                                />
+                            </Col>
                         </Row>
                     </>
                 ) : (

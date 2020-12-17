@@ -1,0 +1,75 @@
+.modalWrap {
+	display: inline-block;
+}
+
+.modalIcon {
+	font-size: 16px;
+    cursor: pointer;
+    color: var(--link);
+    vertical-align: text-bottom;
+
+	&:hover {
+		color: var(--primary);
+	}
+
+	&.disabledIcon {
+		pointer-events: none;
+		color: var(--text2);
+	}
+}
+
+.modalTitle {
+	font-size: 16px;
+	font-weight: 500;
+	text-align: center;
+    padding: 12px 0;
+}
+
+.modalContent {
+	margin: 8px 0 24px;
+
+	& > div {
+		margin: 8px 0;
+	}
+}
+
+.locationPrintWrapper {
+	display: flex;
+	justify-content: space-between;	
+	align-items: center;
+}
+
+.locationToLocationWrapper {
+	display: flex;
+	justify-content: space-between;	
+	align-items: center;
+	& > div.locationWrapper {
+		flex: 0 1 48%;
+
+		& > div {
+			width: 100%;
+		}
+	}
+}
+
+.locationWrapper {
+	display: flex;
+	align-items: center;
+
+	& > div {
+		min-width: 140px;
+		margin-left: 8px;
+	}
+}
+
+.printWrapper {
+	text-align: end;
+}
+
+.modalButton {
+	text-align: center;
+
+	& > button {
+		width: 60%;
+	}
+}

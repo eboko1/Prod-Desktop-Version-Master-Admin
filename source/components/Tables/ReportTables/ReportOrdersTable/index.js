@@ -13,57 +13,58 @@ import Styles from './styles.m.css';
 export class ReportOrdersTable extends Component {
     constructor(props) {
         super(props);
-
-        const {
-            setIncludeServicesDiscount,
-            includeServicesDiscount
-        } = props;
-
-        this.columns = columnsConfig({
-            setIncludeServicesDiscount,
-            includeServicesDiscount,
-            // openPrint: props.openPrint,
-            // openEdit:  props.openEdit,
-            // cashOrderEntity: this.state.cashOrderEntity,
-        });
     }
 
     _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
 
     render() {
-        // const { cashOrders, cashOrdersFetching, totalCount } = this.props;
         const {
+            setIncludeServicesDiscount,
+            includeServicesDiscount,
             tableData,
+            stats,
+            filter,
+            filterControls,
+            loading,
         } = this.props;
+
+        //We need to upade props (needed for child components)
+        this.columns = columnsConfig({
+            setIncludeServicesDiscount,
+            includeServicesDiscount,
+            filterControls,
+            filter: filter
+        });
 
         const pagination = {
             pageSize:         25,
             size:             'large',
-            // total:            Math.ceil(this.props.totalCount / 25) * 25,
-            total:            100,
+            total:            Math.ceil(stats.totalRowsCount / 25) * 25,
             hideOnSinglePage: true,
-            // current:          this.props.filters.page,
-            // onChange:         page => {
-            //     this.props.setCashOrdersPage({ page });
-            //     this.props.fetchCashOrders();
-            // },
+            current:          filter.page,
+            onChange:         page => {
+                filterControls.setReportOrdersPage(page);
+                filterControls.fetchReportOrders();
+            },
         };
 
         return (
-            <Table
-                size='small'
-                className={ Styles.table }
-                columns={ this.columns }
-                pagination={ pagination }
-                dataSource={ tableData }
-                // loading={ cashOrdersFetching }
-                locale={ {
-                    emptyText: <FormattedMessage id='no_data' />,
-                } }
-                scroll={ { x: 1000 } }
-                rowKey={ record => record.id }
-                bordered
-            />
+            <div className={Styles.paper}>
+                <Table
+                    size='middle'
+                    className={Styles.table}
+                    columns={ this.columns }
+                    pagination={ pagination }
+                    dataSource={ tableData }
+                    locale={ {
+                        emptyText: <FormattedMessage id='no_data' />,
+                    } }
+                    scroll={ { x: 1800, y: '50vh' } }
+                    rowKey={ record => record.id }
+                    bordered
+                    loading={loading}
+                />
+            </div>
         );
     }
 }

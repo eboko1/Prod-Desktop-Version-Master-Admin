@@ -15,6 +15,7 @@ import Styles from "./styles.m.css";
 
 const mapStateToProps = state => ({
     modalProps: selectModalProps(state),
+    isMobile: state.ui.views.isMobile,
 });
 
 const mapDispatchToProps = {
@@ -31,8 +32,7 @@ export default class SuppliersPage extends Component {
     }
 
     render() {
-        const { setModal, modalProps } = this.props;
-
+        const { setModal, modalProps, isMobile } = this.props;
         return (
             <Layout
                 title={<FormattedMessage id="navigation.suppliers" />}
@@ -47,7 +47,9 @@ export default class SuppliersPage extends Component {
                     </div>
                 }
             >
-                <SuppliersTable />
+                <SuppliersTable 
+                    isMobile={isMobile}
+                />
                 <SupplierModal modalProps={modalProps} />
             </Layout>
         );

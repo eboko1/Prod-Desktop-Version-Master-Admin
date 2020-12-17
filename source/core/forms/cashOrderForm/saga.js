@@ -77,6 +77,7 @@ export function* fetchCashOrderFormSaga() {
     while (true) {
         try {
             const { payload } = yield take(FETCH_CASH_ORDER_FORM);
+            console.log(payload);
             const data = yield call(fetchAPI, 'GET', payload);
             yield put(fetchCashOrderFormSuccess(data));
         } catch (error) {

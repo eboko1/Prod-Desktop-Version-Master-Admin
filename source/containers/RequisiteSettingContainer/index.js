@@ -12,17 +12,18 @@ import { Table, Button, Icon } from 'antd';
 import { RequisiteSettingFormModal } from "forms";
 // own
 
+const mapStateToProps = state => ({
+    user: state.auth,
+    isMobile: state.ui.views.isMobile,
+});
+@injectIntl
+@connect(mapStateToProps)
 export default class RequisiteSettingContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
             fetched: false,
-            dataSource: [
-                {key: 0, name: "Чернявський Сергій Миколайович", form: "soleProprietor", code: "24467341", isPayer: false},
-                {key: 1, name: "Колісник Марія Григорівна", form: "soleProprietor", code: "24467342", isPayer: false},
-                {key: 2, name: "Авто Плюс", form: "ltd", code: "24467343", isPayer: false},
-                {key: 3, name: "Авто Плюс ПДВ", form: "ltd", code: "24467344", isPayer: true},
-            ],
+            dataSource: [],
         };
 
         this.columns = [
@@ -101,13 +102,13 @@ export default class RequisiteSettingContainer extends Component {
     }
 
     render() {
-        const { modalVisible, showModal, hideModal, requisiteData, dataSource, postRequisite, updateRequisite, id, loading } = this.props;
+        const { modalVisible, showModal, hideModal, requisiteData, dataSource, postRequisite, updateRequisite, id, loading, isMobile } = this.props;
         const { fetched } = this.state;
         return (
             <div>
                 <Table
                     loading={ loading }
-                    columns={ this.columns }
+                    columns={ isMobile ? this.columns.slice(1, -1) : this.columns }
                     dataSource={ dataSource }
                     onRow={ (record, rowIndex) => {
                         return {

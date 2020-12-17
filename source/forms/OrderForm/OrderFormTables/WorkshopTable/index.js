@@ -276,7 +276,7 @@ export default class WorkshopTable extends Component {
                 fetched: true,
             });
         }
-        if(this.props.reloadOrderForm) this.props.reloadOrderForm(callback, 'labors');
+        if(this.props.reloadOrderForm) this.props.reloadOrderForm(callback, 'labors', true);
         else {
             let token = localStorage.getItem('_my.carbook.pro_token');
             let url = __API_URL__ + `/orders/${this.props.orderId}/labors`;
@@ -407,6 +407,7 @@ export default class WorkshopTable extends Component {
         })
 
         var filteredData = [...dataSource];
+        filteredData = filteredData.filter((elem)=>elem.agreement != 'REJECTED');
         if(fieldsFilter) {
             filteredData = dataSource.filter((elem)=>(
                 String(elem.serviceName).toLowerCase().includes(fieldsFilter.toLowerCase()) ||

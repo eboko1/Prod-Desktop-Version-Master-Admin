@@ -285,6 +285,7 @@ class OrdersContainer extends Component {
         );
 
         const handleTableChange = (pagination, filters, sorter) => {
+            console.log(sorter)
             if (!sorter) {
                 return;
             }
