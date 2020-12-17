@@ -670,6 +670,9 @@ class DetailProductModal extends React.Component{
                         checked: true,
                     };
 
+                    delete formattedDetail.supplierName;
+                    delete formattedDetail.supplierId;
+
                     if(detail.price) {
                         const { id, itemName, partNumber, supplierBrandId, businessSupplierId, businessSupplierName, store, purchasePrice, supplierOriginalCode, supplierProductNumber, supplierPartNumber, isFromStock, defaultWarehouseId } = detail.price;
                         let markup = detail.markup ? detail.markup : 1.4;
