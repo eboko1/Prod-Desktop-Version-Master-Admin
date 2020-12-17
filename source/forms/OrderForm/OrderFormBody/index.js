@@ -17,6 +17,7 @@ import {
 } from "forms/DecoratedFields";
 import book from "routes/book";
 import { permissions, isForbidden } from "utils";
+import { VehicleLocationModal } from "modals";
 
 // own
 import Styles from "./styles.m.css";
@@ -100,17 +101,21 @@ export default class OrderFormBody extends Component {
         // Default select options
         const clientPhonesOptions = this._getClientPhonesOptions();
         const clientEmailsOptions = this._getClientEmailsOptions();
+        const businessLocationsOptions = this._getBusinessLocationsOptions();
         const clientVehiclesOptions = this._getClientVehiclesOptions();
 
         // ClientEmail required copy button, so we need to regenerate the value
         const clientEmailLabel = this._getClientEmailLabel();
+        const businessLocationsLabel = this._getBusinessLocationsLabel();
         const recommendationStyles = this._getRecommendationStyles();
 
         // Configure initial state
         this.state = {
             clientPhonesOptions,
             clientEmailsOptions,
+            businessLocationsOptions,
             clientEmailLabel,
+            businessLocationsLabel,
             clientVehiclesOptions,
             recommendationStyles,
         };
@@ -192,12 +197,46 @@ export default class OrderFormBody extends Component {
                 {clipboardClientEmail && (
                     <CopyToClipboard text={clipboardClientEmail}>
                         <Icon
+                            style={{marginLeft: 4}}
                             type="copy"
                             theme="outlined"
                             className={Styles.copyIcon}
                         />
                     </CopyToClipboard>
                 )}
+            </div>
+        );
+    }
+
+    _getBusinessLocationsLabel() {
+        const {
+            fields,
+            selectedClient,
+            fetchedOrder,
+            orderId,
+            updateOrderField,
+        } = this.props;
+        const businessLocationId = _.get(fields, "businessLocationId") || _.get(fetchedOrder, "order.businessLocationId");
+        const orderSuccess = _.get(this.props, "order.status") == "success";
+        return (
+            <div>
+                <FormattedMessage id="location" />
+                {orderId && fetchedOrder &&
+                    <VehicleLocationModal
+                        showIcon
+                        style={{marginLeft: 4}}
+                        receiveMode={!businessLocationId}
+                        transferMode={businessLocationId && !orderSuccess}
+                        returnMode={businessLocationId && orderSuccess}
+                        disabled={!businessLocationId && orderSuccess}
+                        orderId={orderId}
+                        clientId={_.get(selectedClient, "clientId")}
+                        vehicleId={_.get(fetchedOrder, "order.clientVehicleId")}
+                        currentLocation={businessLocationId}
+                        hideModal={()=>void 0}
+                        onConfirm={(businessLocationId)=>updateOrderField({businessLocationId: businessLocationId || null})}
+                    />
+                }
             </div>
         );
     }
@@ -212,6 +251,16 @@ export default class OrderFormBody extends Component {
             </Option>
         ));
     }
+
+    _getBusinessLocationsOptions = () => {
+        return _.get(this.props, "businessLocations", []).map(({ id, name }, key) => {
+            return (
+                <Option value={id} key={key}>
+                    {name}
+                </Option>
+            );
+        });
+    };
 
     _getClientVehiclesOptions() {
         return _.get(this.props, "selectedClient.vehicles", []).map(vehicle => (
@@ -570,25 +619,44 @@ export default class OrderFormBody extends Component {
                         </div>
                     )}
                 </div>
-                <DecoratedInputNumber
-                    errors={errors}
-                    defaultGetValueProps
-                    field="odometerValue"
-                    fieldValue={_.get(fields, "odometerValue")}
-                    disabled={this.bodyUpdateIsForbidden()}
-                    formItem
-                    initialValue={_.get(fetchedOrder, "order.odometerValue")}
-                    colon={false}
-                    label={this._getLocalization("add_order_form.odometr")}
-                    formItemLayout={formVerticalLayout}
-                    getFieldDecorator={getFieldDecorator}
-                    className={Styles.odometr}
-                    placeholder={this._getLocalization(
-                        "add_order_form.provide_odometr",
-                    )}
-                    rules={this.requiredNumberFieldRules}
-                    min={0}
-                />
+                <div className={Styles.clientsInfo}>
+                    <DecoratedSelect
+                        errors={errors}
+                        defaultGetValueProps
+                        fieldValue={_.get(fields, "businessLocationId")}
+                        field="businessLocationId"
+                        initialValue={_.get(fetchedOrder, "order.businessLocationId")}
+                        formItem
+                        hasFeedback
+                        label={this.state.businessLocationsLabel}
+                        placeholder={this._getLocalization("location")}
+                        getFieldDecorator={getFieldDecorator}
+                        className={`${Styles.location} ${_.get(fetchedOrder, "order.businessLocationId") ? Styles.disableLoctionsSelectData : null}`}
+                        formItemLayout={formVerticalLayout}
+                        disabled
+                    >
+                        {this.state.businessLocationsOptions}
+                    </DecoratedSelect>
+                    <DecoratedInputNumber
+                        errors={errors}
+                        defaultGetValueProps
+                        field="odometerValue"
+                        fieldValue={_.get(fields, "odometerValue")}
+                        disabled={this.bodyUpdateIsForbidden()}
+                        formItem
+                        initialValue={_.get(fetchedOrder, "order.odometerValue")}
+                        label={this._getLocalization("add_order_form.odometr")}
+                        formItemLayout={formVerticalLayout}
+                        getFieldDecorator={getFieldDecorator}
+                        placeholder={this._getLocalization(
+                            "add_order_form.provide_odometr",
+                        )}
+                        rules={this.requiredNumberFieldRules}
+                        className={Styles.odometr}
+                        formItemLayout={formVerticalLayout}
+                        min={0}
+                    />
+                </div>
             </div>
         );
     };

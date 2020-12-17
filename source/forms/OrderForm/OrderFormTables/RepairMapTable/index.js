@@ -38,6 +38,7 @@ const   HEADER_CLIENT_SEARCH = 'HEADER_CLIENT_SEARCH',
         STOCK_BUTTON_ACCEPTED = 'STOCK_BUTTON_ACCEPTED',
         STOCK_BUTTON_RESERVED = 'STOCK_BUTTON_RESERVED',
         PRINT_ACT_OF_ACCEPTANCE = 'PRINT_ACT_OF_ACCEPTANCE',
+        PRINT_REVERSED_ACT_OF_ACCEPTANCE = 'PRINT_REVERSED_ACT_OF_ACCEPTANCE',
         STOCK_BUTTON_GIVEN = 'STOCK_BUTTON_GIVEN',
         CREATE_DOC_TOL = 'CREATE_DOC_TOL',
         PRINT_BUSINESS_ORDER = 'PRINT_BUSINESS_ORDER',
@@ -81,7 +82,7 @@ export default class RepairMapTable extends Component {
                 break;
             case DIAGNOSTICS_ADD:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
-                setActiveTab('diagnostic');
+                setActiveTab('diagnostic', DIAGNOSTICS_ADD);
                 break;
             case DIAGNOSTICS_ELEMENTS: 
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
@@ -149,6 +150,12 @@ export default class RepairMapTable extends Component {
             case PRINT_ACT_OF_ACCEPTANCE:
                 download({
                     link: `/orders/reports/actOfAcceptanceReport/${orderId}`,
+                    name: 'actOfAcceptanceReport'
+                });
+                break;
+            case PRINT_REVERSED_ACT_OF_ACCEPTANCE:
+                download({
+                    link: `/orders/reports/actOfAcceptanceReport/${orderId}?reverse=true`,
                     name: 'actOfAcceptanceReport'
                 });
                 break;
@@ -234,7 +241,6 @@ export default class RepairMapTable extends Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             that.setState({
                 dataSource: data,
             })

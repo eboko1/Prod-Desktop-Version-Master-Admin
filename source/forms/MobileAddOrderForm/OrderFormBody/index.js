@@ -385,9 +385,10 @@ export default class OrderFormBody extends Component {
         return (
             <div className={Styles.formHeader}>
                 <div className={Styles.headerColumns}>
-                    {dateBlock} {masterBlock}
+                    {dateBlock} 
                 </div>
                 {duration}
+                {masterBlock}
                 {comments}
             </div>
         );
@@ -570,6 +571,32 @@ export default class OrderFormBody extends Component {
 
         return (
             <div className={Styles.headerCol}>
+                <DecoratedSelect
+                    errors={errors}
+                    colon={false}
+                    className={Styles.datePanelItem}
+                    getFieldDecorator={getFieldDecorator}
+                    field="stationLoads[0].station"
+                    fieldValue={_.get(fields, "stationLoads[0].station")}
+                    defaultGetValueProps
+                    formItem
+                    formItemLayout={formHeaderItemLayout}
+                    rules={this.requiredRule}
+                    label={this._getLocalization("add_order_form.station")}
+                    hasFeedback
+                    placeholder={this._getLocalization(
+                        "add_order_form.select_station",
+                    )}
+                    disabled={this.bodyUpdateIsForbidden()}
+                    initialValue={
+                        _.get(fetchedOrder, "order.stationNum") ||
+                        (this.bodyUpdateIsForbidden()
+                            ? void 0
+                            : _.get(location, "state.stationNum"))
+                    }
+                >
+                    {this.state.stationsOptions}
+                </DecoratedSelect>
                 <DecoratedDatePicker
                     errors={errors}
                     defaultGetValueProps
@@ -603,32 +630,6 @@ export default class OrderFormBody extends Component {
                     showTime={false}
                     initialValue={momentBeginDatetime}
                 />
-                <DecoratedSelect
-                    errors={errors}
-                    colon={false}
-                    className={Styles.datePanelItem}
-                    getFieldDecorator={getFieldDecorator}
-                    field="stationLoads[0].station"
-                    fieldValue={_.get(fields, "stationLoads[0].station")}
-                    defaultGetValueProps
-                    formItem
-                    formItemLayout={formHeaderItemLayout}
-                    rules={this.requiredRule}
-                    label={this._getLocalization("add_order_form.station")}
-                    hasFeedback
-                    placeholder={this._getLocalization(
-                        "add_order_form.select_station",
-                    )}
-                    disabled={this.bodyUpdateIsForbidden()}
-                    initialValue={
-                        _.get(fetchedOrder, "order.stationNum") ||
-                        (this.bodyUpdateIsForbidden()
-                            ? void 0
-                            : _.get(location, "state.stationNum"))
-                    }
-                >
-                    {this.state.stationsOptions}
-                </DecoratedSelect>
                 <DecoratedTimePicker
                     errors={errors}
                     defaultGetValueProps

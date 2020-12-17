@@ -24,7 +24,7 @@ const _loadStatus = load => {
 export const Dashboard = styled.div`
     display: flex;
     overflow-y: hidden;
-
+    position: relative;
     & .timeColumn {
         width: 10%;
         min-width: 10%;

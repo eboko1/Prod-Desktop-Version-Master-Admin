@@ -29,11 +29,11 @@ class StorageTable extends Component {
     }
 
     render() {
-        const { documentsList, location, listType, onSearch, docType } = this.props;
+        const { documentsList, match, listType, onSearch, docType, hideFilters } = this.props;
         const { formatMessage } = this.props.intl;
-
+        console.log(this);
         const columns = columnsConfig(
-            location.pathname,
+            match.path,
             listType,
             formatMessage,
             () => {
@@ -43,46 +43,47 @@ class StorageTable extends Component {
 
         return (
             <Catcher>
-                <div className={ Styles.filterWrap }>
-                    <Input
-                        placeholder={ formatMessage({
-                            id: 'orders.search.placeholder',
-                        }) }
-                        onChange={ event => {
-                            onSearch(event.target.value);
-                        } }
-                        allowClear
-                    />
-                    <Input
-                        allowClear
-                        style={{
-                            width: '30%'
-                        }}
-                        disabled={ docType == 'INCOME' || docType == 'ORDER' }
-                        placeholder={formatMessage({id:'storage_document.storage_expenses'})}
-                        onChange={(event)=>{
-                            this.props.documentWarehouseFilter([
-                                event.target.value,
-                                ""
-                            ]);
-                        }}
-                    />
-                    <Input
-                        allowClear
-                        style={{
-                            width: '30%'
-                        }}
-                        disabled={ docType == 'EXPENSE' || docType == 'ORDER' }
-                        placeholder={formatMessage({id:'storage_document.storage_income'})}
-                        onChange={(event)=>{
-                            this.props.documentWarehouseFilter([
-                                "",
-                                event.target.value
-                            ]);
-                        }}
-                    />
-                        
-                </div>
+                {!hideFilters &&
+                    <div className={ Styles.filterWrap }>
+                        <Input
+                            placeholder={ formatMessage({
+                                id: 'orders.search.placeholder',
+                            }) }
+                            onChange={ event => {
+                                onSearch(event.target.value);
+                            } }
+                            allowClear
+                        />
+                        <Input
+                            allowClear
+                            style={{
+                                width: '30%'
+                            }}
+                            disabled={ docType == 'INCOME' || docType == 'ORDER' }
+                            placeholder={formatMessage({id:'storage_document.storage_expenses'})}
+                            onChange={(event)=>{
+                                this.props.documentWarehouseFilter([
+                                    event.target.value,
+                                    ""
+                                ]);
+                            }}
+                        />
+                        <Input
+                            allowClear
+                            style={{
+                                width: '30%'
+                            }}
+                            disabled={ docType == 'EXPENSE' || docType == 'ORDER' }
+                            placeholder={formatMessage({id:'storage_document.storage_income'})}
+                            onChange={(event)=>{
+                                this.props.documentWarehouseFilter([
+                                    "",
+                                    event.target.value
+                                ]);
+                            }}
+                        />  
+                    </div>
+                }
                 <div className={ Styles.paper }>
                     <Table
                         size='small'

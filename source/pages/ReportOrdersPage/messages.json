@@ -1,0 +1,38 @@
+{
+    "en": {
+        "report_orders_page_page.labors_sum": "Labors sum",
+        "report_orders_page_page.parts_sum": "Parts sum",
+        "report_orders_page_page.total_sum": "Total sum",
+        "report_orders_page_page.labors_profit": "Labors profit",
+        "report_orders_page_page.parts_profit": "Parts profit",
+        "report_orders_page_page.total_profit": "Total profit",
+        "report_orders_page_page.labors_margin": "Labors margin %",
+        "report_orders_page_page.parts_margin": "Parts margin %",
+        "report_orders_page_page.total_margin": "Total margin %",
+        "report_orders_page_page.total_rows": "Total rows"
+    },
+    "ru": {
+        "report_orders_page_page.labors_sum": "Сумма работ",
+        "report_orders_page_page.parts_sum": "Сумма запчастей",
+        "report_orders_page_page.total_sum": "Общая сумма",
+        "report_orders_page_page.labors_profit": "Прибыль из работ",
+        "report_orders_page_page.parts_profit": "Прибыль с запчастей",
+        "report_orders_page_page.total_profit": "Общая прибыль",
+        "report_orders_page_page.labors_margin": "Маржа из работ %",
+        "report_orders_page_page.parts_margin": "Маржа по запчастям %",
+        "report_orders_page_page.total_margin": "Общая маржа %",
+        "report_orders_page_page.total_rows": "Количество строк"
+    },
+    "uk": {
+        "report_orders_page_page.labors_sum": "Сума робіт",
+        "report_orders_page_page.parts_sum": "Сума запчастин",
+        "report_orders_page_page.total_sum": "Загальна сума",
+        "report_orders_page_page.labors_profit": "Прибуток з робіт",
+        "report_orders_page_page.parts_profit": "Прибуток з запчастин",
+        "report_orders_page_page.total_profit": "Загальний прибуток",
+        "report_orders_page_page.labors_margin": "Маржа з робіт %",
+        "report_orders_page_page.parts_margin": "Маржа з запчастин %",
+        "report_orders_page_page.total_margin": "Загальна маржа %",
+        "report_orders_page_page.total_rows": "Кількість рядків"
+    }
+}

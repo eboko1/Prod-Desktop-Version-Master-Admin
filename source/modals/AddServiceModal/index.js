@@ -4,10 +4,9 @@ import ReactDOM from 'react-dom';
 import { Button, Modal, Icon, Select, Input, InputNumber, message, notification, Table, TreeSelect, Checkbox, Spin } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
-import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
 import { permissions, isForbidden } from "utils";
-import { DetailStorageModal, DetailSupplierModal, LaborsNormHourModal } from 'modals'
+import { DetailStorageModal, DetailSupplierModal, LaborsNormHourModal, DetailProductModal } from 'modals'
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
@@ -21,7 +20,8 @@ class AddServiceModal extends React.Component{
         this.state = {
             editing: false,
             mainTableSource: [],
-            relatedDetailsCheckbox: false,
+            relatedServices: [],
+            relatedServicesCheckbox: false,
             laborSearchValue: "",
         }
         this.labors = [];
@@ -33,10 +33,23 @@ class AddServiceModal extends React.Component{
         this.employeeOptions = [];
         this.relatedDetailsOptions = [];
 
-        this.setComment = this.setComment.bind(this);
-        this.setHours = this.setHours.bind(this);
-
         this.mainTableColumns = [
+            {
+                key:       'checked',
+                dataIndex: 'checked',
+                width: 'min-content',
+                render: (data, elem)=>{
+                    return elem.related ? (
+                        <Checkbox
+                            checked={data}
+                            onChange={({target})=>{
+                                elem.checked = target.checked;
+                                this.setState({});
+                            }}
+                        />
+                    ) : null
+                }
+            },
             {
                 title:  <FormattedMessage id="services_table.store_group" />,
                 key:       'storeGroupId',
@@ -49,7 +62,7 @@ class AddServiceModal extends React.Component{
                             disabled={this.state.editing || Boolean(elem.masterLaborId)}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.store_group'})}
-                            style={{maxWidth: 180, minWidth: 100}}
+                            style={{maxWidth: 180, minWidth: 100, color: 'var(--text)'}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.props.detailsTreeData}
@@ -60,13 +73,11 @@ class AddServiceModal extends React.Component{
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                this.state.mainTableSource[0].storeGroupId = value;
-                                this.state.mainTableSource[0].laborId = undefined;
-                                this.state.mainTableSource[0].serviceName = undefined;
+                                elem.storeGroupId = value;
+                                elem.laborId = undefined;
+                                elem.serviceName = undefined;
                                 this.filterOptions(elem.masterLaborId, value);
-                                this.setState({
-                                    update: true
-                                })
+                                this.setState({});
                             }}
                         />
                     )
@@ -85,7 +96,7 @@ class AddServiceModal extends React.Component{
                             disabled={this.state.editing || Boolean(elem.storeGroupId)}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
-                            style={{maxWidth: 180, minWidth: 100}}
+                            style={{maxWidth: 180, minWidth: 100, color: 'var(--text)'}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.props.laborsTreeData}
@@ -96,11 +107,9 @@ class AddServiceModal extends React.Component{
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                this.state.mainTableSource[0].masterLaborId = value;
+                                elem.masterLaborId = value;
                                 this.filterOptions(value, elem.storeGroupId);
-                                this.setState({
-                                    update: true
-                                })
+                                this.setState({});
                             }}
                         />
                     )
@@ -116,32 +125,39 @@ class AddServiceModal extends React.Component{
                     const currentServiceOption = this.servicesOptions.find((labor)=>labor.laborId==data);
                     return (
                         <Select
-                            disabled={this.state.editing}
+                            allowClear
+                            disabled={this.state.editing || elem.related}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.labor'})}
-                            value={data}
-                            style={{minWidth: 100}}
+                            value={!elem.related ? data : elem.name}
+                            style={{minWidth: 100, color: 'var(--text)'}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 380 }}
                             filterOption={(input, option) => {
-                                //if(!option.props.children) return false;
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
                                     String(option.props.value).indexOf(input.toLowerCase()) >= 0
                                 )
                             }}
-                            onSelect={(value, option)=>{
-                                let price = option.props.price ? option.props.price : Number(this.props.normHourPrice);
-                                let count = option.props.norm_hours ? option.props.norm_hours : 1;
-                                this.state.mainTableSource[0].laborId = value;
-                                this.state.mainTableSource[0].serviceName = option.props.children;
-                                //this.state.mainTableSource[0].masterLaborId = option.props.master_id;
-                                this.state.mainTableSource[0].tmpStoreGroupId = option.props.product_id;
-                                this.state.mainTableSource[0].count = count;
-                                this.state.mainTableSource[0].price = price;
-                                this.state.mainTableSource[0].sum = price * count;
-                                this.setState({
-                                    update: true
-                                })
+                            onChange={(value, option)=>{
+                                if(option) {
+                                    let price = option.props.price ? option.props.price : Number(this.props.normHourPrice);
+                                    let count = option.props.norm_hours ? option.props.norm_hours : 1;
+                                    elem.laborId = value;
+                                    elem.serviceName = option.props.children;
+                                    elem.masterLaborId = option.props.master_id;
+                                    elem.storeGroupId = option.props.product_id;
+                                    elem.count = count;
+                                    elem.price = price;
+                                    elem.sum = price * count;
+                                    if(!elem.related) this.getRelatedLabors(value);
+                                } else {
+                                    elem.laborId = value;
+                                    elem.serviceName = value;
+                                    elem.masterLaborId = value;
+                                    elem.storeGroupId = value;
+                                    this.state.relatedLabors = [];
+                                }
+                                this.setState({});
                             }}
                             onSearch={(input)=>{
                                 this.setState({
@@ -155,7 +171,7 @@ class AddServiceModal extends React.Component{
                             }}
                         >
                             {
-                                this.state.laborSearchValue.length > 2 || elem.storeGroupId || elem.masterLaborId ? 
+                                this.state.laborSearchValue.length > 2 || (!elem.related && (elem.storeGroupId || elem.masterLaborId)) ? 
                                     this.servicesOptions.map((elem, index)=>(
                                         <Option
                                             key={index}
@@ -168,7 +184,7 @@ class AddServiceModal extends React.Component{
                                             {elem.name ? elem.name : elem.defaultName}
                                         </Option>
                                     )) :
-                                    elem.laborId ? 
+                                    elem.laborId && currentServiceOption ? 
                                     <Option
                                         key={0}
                                         value={currentServiceOption.laborId}
@@ -195,13 +211,12 @@ class AddServiceModal extends React.Component{
                         <Input
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                             disabled={this.state.editing && elem.stage != 'INACTIVE'}
-                            style={{minWidth: 120}}
+                            style={{minWidth: 160}}
                             value={data}
-                            onChange={(event)=>{
-                                this.state.mainTableSource[0].serviceName = event.target.value;
-                                this.setState({
-                                    update: true
-                                })
+                            onChange={({target})=>{
+                                const { value } = target;
+                                elem.serviceName = value;
+                                this.setState({});
                             }}
                         />
                     )
@@ -227,11 +242,9 @@ class AddServiceModal extends React.Component{
                                     String(option.props.value).indexOf(input.toLowerCase()) >= 0
                                 )
                             }}
-                            onSelect={(value, option)=>{
-                                this.state.mainTableSource[0].employeeId = value;
-                                this.setState({
-                                    update: true
-                                })
+                            onChange={(value, option)=>{
+                                elem.employeeId = value;
+                                this.setState({});
                             }}
                         >
                             {this.employeeOptions}
@@ -261,7 +274,15 @@ class AddServiceModal extends React.Component{
                                 }
                             }
                             detail={detail}
-                            setComment={this.setComment}
+                            setComment={(comment, positions, problems)=>{
+                                elem.comment = {
+                                    comment: comment,
+                                    positions: positions,
+                                    problems: problems,
+                                };
+                                elem.serviceName = comment || elem.serviceName;
+                                this.setState({});
+                            }}
                         />
                     )
                 }
@@ -284,10 +305,8 @@ class AddServiceModal extends React.Component{
                                 `${value}`.replace(/\$\s?|(\s)/g, '')
                             }
                             onChange={(value)=>{
-                                this.state.mainTableSource[0].purchasePrice = value;
-                                this.setState({
-                                    update: true
-                                })
+                                elem.purchasePrice = value;
+                                this.setState({});
                             }}
                         />
                     )
@@ -320,11 +339,9 @@ class AddServiceModal extends React.Component{
                                 `${value}`.replace(/\$\s?|(\s)/g, '')
                             }
                             onChange={(value)=>{
-                                this.state.mainTableSource[0].price = value;
-                                this.state.mainTableSource[0].sum = value * this.state.mainTableSource[0].count;
-                                this.setState({
-                                    update: true
-                                })
+                                elem.price = value;
+                                elem.sum = value * elem.count;
+                                this.setState({});
                             }}
                         />
                     )
@@ -350,11 +367,9 @@ class AddServiceModal extends React.Component{
                                 `${value}`.replace(/\$\s?|(\s)/g, '')
                             }
                             onChange={(value)=>{
-                                this.state.mainTableSource[0].count = value;
-                                this.state.mainTableSource[0].sum = value * this.state.mainTableSource[0].price;
-                                this.setState({
-                                    update: true
-                                })
+                                elem.count = value;
+                                elem.sum = value * elem.price;
+                                this.setState({});
                             }}
                         />
                     )
@@ -370,8 +385,12 @@ class AddServiceModal extends React.Component{
                         <LaborsNormHourModal
                             user={this.props.user}
                             tecdocId={this.props.tecdocId}
-                            storeGroupId={elem.tmpStoreGroupId || elem.storeGroupId}
-                            onSelect={this.setHours}
+                            storeGroupId={elem.storeGroupId}
+                            onSelect={(hours)=>{
+                                elem.hours = hours;
+                                elem.count = hours * this.props.laborTimeMultiplier;
+                                this.setState({});
+                            }}
                             hours={data}
                         />
                     )
@@ -416,19 +435,16 @@ class AddServiceModal extends React.Component{
                         <Icon
                             type="close"
                             onClick={()=>{
-                                this.state.mainTableSource[0].storeGroupId = this.state.editing ? elem.storeGroupId : undefined;
-                                this.state.mainTableSource[0].masterLaborId = this.state.editing ? elem.masterLaborId : undefined;
-                                this.state.mainTableSource[0].serviceName = undefined;
-                                this.state.mainTableSource[0].comment = undefined;
-                                this.state.mainTableSource[0].purchasePrice = 0;
-                                this.state.mainTableSource[0].price = 1;
-                                this.state.mainTableSource[0].count = 1;
-                                this.state.mainTableSource[0].hours = 0;
-                                this.state.mainTableSource[0].sum = undefined;
-
-                                this.setState({
-                                    update: true
-                                })
+                                elem.storeGroupId = this.state.editing || elem.related ? elem.storeGroupId : undefined;
+                                elem.masterLaborId = this.state.editing || elem.related ? elem.masterLaborId : undefined;
+                                elem.serviceName = undefined;
+                                elem.comment = undefined;
+                                elem.purchasePrice = 0;
+                                elem.price = 1;
+                                elem.count = 1;
+                                elem.hours = 0;
+                                elem.sum = undefined;
+                                this.setState({});
                             }}
                         />
                     )
@@ -438,14 +454,15 @@ class AddServiceModal extends React.Component{
     }
 
     handleOk = () => {
-        if(this.state.mainTableSource[0].laborId == undefined) {
+        const { editing, mainTableSource, relatedServices, relatedServicesCheckbox } = this.state;
+        if(mainTableSource[0].laborId == undefined) {
             notification.warning({
-                message: 'Заполните все необходимые поля',
+                message: 'Заполните все необходимые поля!',
               });
             return;
         }
-        if(this.state.editing) {
-            this.props.updateLabor(this.props.tableKey, {...this.state.mainTableSource[0]});
+        if(editing) {
+            this.props.updateLabor(this.props.tableKey, {...mainTableSource[0]});
         }
         else {
             var data = {
@@ -453,12 +470,11 @@ class AddServiceModal extends React.Component{
                 details: [],
                 services: [],
             }
-            this.state.mainTableSource.map((element)=>{
+            mainTableSource.map((element)=>{
                 data.services.push({
-                    //storeGroupId: element.storeGroupId,
                     serviceId: element.laborId,
                     serviceName: element.serviceName,
-                    employeeId: element.employeeId,
+                    employeeId: element.employeeId || null,
                     serviceHours: element.hours ? element.hours : 0,
                     purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                     count: element.count ? element.count : 1,
@@ -469,40 +485,81 @@ class AddServiceModal extends React.Component{
                     },
                 })
             });
+            if(relatedServicesCheckbox) {
+                relatedServices.map((element)=>{
+                    if(element.checked) {
+                        data.services.push({
+                            serviceId: element.laborId,
+                            serviceName: element.serviceName,
+                            employeeId: element.employeeId,
+                            serviceHours: element.hours ? element.hours : 0,
+                            purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
+                            count: element.count ? element.count : 1,
+                            servicePrice:  Math.round(element.price*10)/10 || 1,
+                            comment: element.comment || {
+                                comment: undefined,
+                                positions: [],
+                            },
+                        })
+                    }
+                });
+            }
             this.addDetailsAndLabors(data);
         }
         this.props.hideModal();
     };
     
     handleCancel = () => {
+        this.setState({
+            mainTableSource: [],
+            relatedServices: [],
+            relatedServicesCheckbox: false,
+        });
         this.props.hideModal();
     };
 
-    setComment(comment, positions, problems) {
-        this.state.mainTableSource[0].comment = {
-            comment: comment,
-            positions: positions,
-            problems: problems,
-        };
-        this.state.mainTableSource[0].serviceName = comment || this.state.mainTableSource[0].serviceName;
-        this.setState({
-            update: true
-        })
-    }
-
-    setHours(hours) {
-        this.state.mainTableSource[0].hours = hours;
-        this.state.mainTableSource[0].count = hours * this.props.laborTimeMultiplier;
-        this.setState({
-            update: true
-        })
+    async getRelatedLabors(id) {
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/labors/related?id=${id}`;
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                },
+            });
+            const result = await response.json();
+            if(result.labors && result.labors.length) {
+                this.setState({
+                    relatedServices: result.labors[0].relatedLabors.map((labor, key)=>{
+                        return ({
+                            ...labor,
+                            key: key,
+                            related: true,
+                            serviceName: labor.name,
+                            storeGroupId: labor.productId,
+                            defaultName: labor.name,
+                            count: labor.normHours || 1,
+                            employeeId: this.props.defaultEmployeeId,
+                            comment: {
+                                comment: undefined,
+                                positions: [],
+                                problems: [],
+                            },
+                            checked: true,
+                        })
+                    })
+                })
+            }
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
     }
 
     async addDetailsAndLabors(data) {
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/orders/${this.props.orderId}`;
-        url += params;
+        let url = __API_URL__ + `/orders/${this.props.orderId}`;
         try {
             const response = await fetch(url, {
                 method: 'PUT',
@@ -574,6 +631,7 @@ class AddServiceModal extends React.Component{
 
     render() {
         const { visible } = this.props;
+        const { relatedServicesCheckbox, mainTableSource, relatedServices, editing } = this.state;
         return (
             <>
                 <Modal
@@ -588,23 +646,32 @@ class AddServiceModal extends React.Component{
                             <div style={{display: 'block'}}><FormattedMessage id='services_table.labor'/></div>
                         </div>
                         <Table
-                            dataSource={this.state.mainTableSource}
+                            dataSource={mainTableSource}
                             columns={this.mainTableColumns}
                             pagination={false}
                         />
                     </div>
                     <div style={{marginTop: 15}}>
-                        <FormattedMessage id="add_order_form.related"/>: <FormattedMessage id="add_order_form.details"/>
+                        <FormattedMessage id="add_order_form.related"/>: <FormattedMessage id="add_order_form.services"/>
                         <Checkbox
                             style={{marginLeft: 5}}
-                            disabled
-                            checked={this.state.relatedDetailsCheckbox}
+                            disabled={editing}
+                            checked={relatedServicesCheckbox}
                             onChange={()=>{
                                 this.setState({
-                                    relatedDetailsCheckbox: !this.state.relatedDetailsCheckbox
+                                    relatedServicesCheckbox: !relatedServicesCheckbox
                                 })
                             }}
-                        /> 
+                        />
+                        {relatedServicesCheckbox && 
+                            <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
+                                <Table
+                                    dataSource={relatedServices}
+                                    columns={this.mainTableColumns}
+                                    pagination={false}
+                                />
+                            </div>
+                        }
                     </div>
                 </Modal>
             </>

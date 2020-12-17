@@ -48,7 +48,11 @@
         "storage_document.warning.continue": "Сontinue?",
         "storage_document.notification.available_from_warehouse": "Available from warehouse {name}",
         "storage_document.notification.reserved": "Reserved {count} product units",
-        "storage_document.notification.reserve_canceled": "Reserve canceled"
+        "storage_document.notification.reserve_canceled": "Reserve canceled",
+        "storage_document.not_enought_for_reserve": "Not enough products to reserve. Continue?",
+        "storage_document.in_stock": "In Stock",
+        "storage_document.available": "Available",
+        "storage_document.more_details": "More Details"
     },
     "ru": {
         "storage_document.document": "Документ",
@@ -99,7 +103,11 @@
         "storage_document.warning.continue": "Продолжить?",
         "storage_document.notification.available_from_warehouse": "Доступно со склада {name}",
         "storage_document.notification.reserved": "Зарезервировано {count} ед. товара",
-        "storage_document.notification.reserve_canceled": "Резерв отменен"
+        "storage_document.notification.reserve_canceled": "Резерв отменен",
+        "storage_document.not_enought_for_reserve": "Недостаточно товара для резерва. Продолжить?",
+        "storage_document.in_stock": "На складе",
+        "storage_document.available": "Доступно",
+        "storage_document.more_details": "Детальнее"
     },
     "uk": {
         "storage_document.document": "Документ",
@@ -150,7 +158,11 @@
         "storage_document.warning.continue": "Продовжити?",
         "storage_document.notification.available_from_warehouse": "Доступно зі складу {name}",
         "storage_document.notification.reserved": "Зарезервовано {count} од. товару",
-        "storage_document.notification.reserve_canceled": "Резерв скасовано"
+        "storage_document.notification.reserve_canceled": "Резерв скасовано",
+        "storage_document.not_enought_for_reserve": "Недостатньо товару для резерву. Продовжити?",
+        "storage_document.in_stock": "На складі",
+        "storage_document.available": "Доступно",
+        "storage_document.more_details": "Детальніше"
     }
   }
   

@@ -8,6 +8,7 @@ import moment from 'moment';
 // proj
 import { permissions, isForbidden } from 'utils';
 import { Catcher } from 'commons';
+import { StoreProductTrackingModal } from 'modals';
 // own
 import Styles from './styles.m.css';
 const { confirm, warning } = Modal;
@@ -272,6 +273,12 @@ export default class StockTable extends Component {
                             mainWarehouseId={this.state.mainWarehouseId}
                             reserveWarehouseId={this.state.reserveWarehouseId}
                             orderOrAcceptDetails={this.orderOrAcceptDetails}
+                            showReserveModal={(productId)=>{
+                                this.setState({
+                                    reserveModalVisible: true,
+                                    reserveModalData: productId,
+                                })
+                            }}
                         />
                     )
                 }
@@ -358,7 +365,6 @@ export default class StockTable extends Component {
                 toUnreserve.push(dataSource[key].id);
             }
         });
-        console.log(data);
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/orders/${this.props.orderId}`;
         try {
@@ -429,7 +435,7 @@ export default class StockTable extends Component {
             });
         }
 
-        if(this.props.reloadOrderForm) this.props.reloadOrderForm(callback, 'details');
+        if(this.props.reloadOrderForm) this.props.reloadOrderForm(callback, 'details', true);
         else {
             let token = localStorage.getItem('_my.carbook.pro_token');
             let url = __API_URL__ + `/orders/${this.props.orderId}/details`;
@@ -498,8 +504,6 @@ export default class StockTable extends Component {
                 }
             }
         })
-
-        console.log(orderData);
 
         confirm({
             title: operation == 'ORDER' ? 
@@ -573,8 +577,6 @@ export default class StockTable extends Component {
         ) {
             data.details[ 0 ].agreement = detail.agreement;
         }
-
-        console.log(data);
 
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/orders/${this.props.orderId}`;
@@ -664,7 +666,7 @@ export default class StockTable extends Component {
     }
 
     render() {
-        const { dataSource, loading, fieldsFilter, stageFilter } = this.state;
+        const { dataSource, loading, fieldsFilter, stageFilter, reserveModalVisible, reserveModalData } = this.state;
         const { isMobile } = this.props;
         var filteredData = [...dataSource];
         if(fieldsFilter) {
@@ -742,6 +744,16 @@ export default class StockTable extends Component {
                     }}
                     rowSelection={isMobile ? null : rowSelection}
                 />
+                <StoreProductTrackingModal
+                    visible={reserveModalVisible}
+                    productId={reserveModalData}
+                    hideModal={()=>{
+                        this.setState({
+                            reserveModalVisible: false,
+                            reserveModalData: undefined,
+                        })
+                    }}
+                />
             </Catcher>
         );
     }
@@ -788,7 +800,7 @@ class DetailsStageButtonsGroup extends Component {
     }
 
     reserveProduct = (stage) => {
-        const { detail, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, intl:{formatMessage} } = this.props;
+        const { detail, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, showReserveModal, intl:{formatMessage} } = this.props;
         if(detail.reserved) {
             detail.stage = stage;
             updateDetail(detail.key, detail);
@@ -842,14 +854,27 @@ class DetailsStageButtonsGroup extends Component {
                 updateDetail(detail.key, detail);
             }
             else {
-                const availableCount = response.notAvailableProducts[0].available,
+                const { productId } = response.notAvailableProducts[0].productId,
+                      availableCount = response.notAvailableProducts[0].available,
                       reservedCount = response.notAvailableProducts[0].reservedCount;
                 confirm({
-                    title: `${formatMessage({id: 'storage_document.error.available'})}. ${formatMessage({id: 'storage_document.warning.continue'})}`,
-                    content: `${formatMessage({id: 'storage_document.notification.available_from_warehouse'}, {name: detail.reservedFromWarehouseName})}: ${availableCount} / ${availableCount - reservedCount} ${formatMessage({id: 'pc'})}`,
+                    title: formatMessage({id: 'storage_document.not_enought_for_reserve'}),
+                    content: (
+                        <div>
+                            <p>{formatMessage({id: 'storage_document.in_stock'})} - {availableCount}.</p>
+                            <p>{formatMessage({id: 'storage_document.available'})} - {availableCount- reservedCount}.</p>
+                            <span
+                                style={{color: 'var(--link)', textDecoration: 'underline', cursor: 'pointer'}}
+                                onClick={()=>showReserveModal(productId)}
+                            >
+                                {formatMessage({id: 'storage_document.more_details'})}...
+                            </span>
+                        </div>
+                    ),
+                    zIndex: 1000,
                     okButtonProps: {disabled: !availableCount},
                     onOk() {
-                        data.docProducts[0].quantity = availableCount;
+                        data.docProducts[0].quantity = availableCount - reservedCount;
                         fetch(url, {
                             method:  'POST',
                             headers: {
@@ -868,7 +893,7 @@ class DetailsStageButtonsGroup extends Component {
                         })
                         .then(function(response) {
                             if(response.created) {
-                                detail.reservedCount = availableCount;
+                                detail.reservedCount = availableCount - reservedCount;
                                 detail.reserved = true;
                                 updateDetail(detail.key, detail);
                                 notification.success({
@@ -950,7 +975,6 @@ class DetailsStageButtonsGroup extends Component {
 
     addProduct = () => {
         const { detail, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, intl:{formatMessage} } = this.props;
-        console.log(detail)
         var that = this;
         confirm({
             title: formatMessage({id: 'storage_document.error.product_not_found'}),

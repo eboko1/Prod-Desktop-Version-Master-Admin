@@ -6,7 +6,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
 import { permissions, isForbidden } from "utils";
-import { DetailSupplierModal } from 'modals';
+import { DetailSupplierModal, StoreProductTrackingModal } from 'modals';
 import { AvailabilityIndicator, WarehouseSelect } from 'components';
 // own
 import Styles from './styles.m.css';
@@ -32,6 +32,8 @@ class DetailStorageModal extends React.Component{
             codeFilter: undefined,
             attributesFilters: [],
             inStock: false,
+            reserveModalVisible: false,
+            reserveModalData: undefined,
         }
 
         this.setSupplier = this.setSupplier.bind(this);
@@ -319,7 +321,15 @@ class DetailStorageModal extends React.Component{
                 render: (store, elem) => {
                     return this.props.stockMode ? 
                     (
-                        <span>{elem.countInWarehouses} / {elem.available}</span>
+                        <span
+                            style={{color: 'var(--link)', textDecoration: 'underline', cursor: 'pointer'}}
+                            onClick={()=>this.setState({
+                                reserveModalVisible: true,
+                                reserveModalId: elem.id,
+                            })}
+                        >
+                            {elem.countInWarehouses} / {elem.available}
+                        </span>
                     ) :
                     (
                         <AvailabilityIndicator
@@ -343,7 +353,6 @@ class DetailStorageModal extends React.Component{
                         <Button
                             type="primary"
                             onClick={()=>{
-                                console.log(elem)
                                 if(this.props.onSelect) {
                                     this.props.onSelect(
                                         elem.partNumber,
@@ -465,7 +474,6 @@ class DetailStorageModal extends React.Component{
             let token = localStorage.getItem('_my.carbook.pro_token');
             let url = __API_URL__ + `/store_products?all=true`;
             if(warehouseId) url += `&warehouseId=${warehouseId}`;
-            console.log(url)
             fetch(url, {
                 method: "GET",
                 headers: {
@@ -482,7 +490,6 @@ class DetailStorageModal extends React.Component{
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 const brandOptions = [];
                 data.list.map((elem, key)=>{
                     elem.key = key;
@@ -537,11 +544,10 @@ class DetailStorageModal extends React.Component{
             var that = this;
             let token = localStorage.getItem('_my.carbook.pro_token');
             let url = API_URL;
-            let params = `/tecdoc/replacements?query=${this.props.codeFilter}`;
+            let params = `/tecdoc/replacements?query=${this.props.codeFilter.replace(' ', '')}`;
             //if(this.props.storeGroupId) params += `&storeGroupId=${this.props.storeGroupId}`
             if(this.props.brandId) params += `&brandIds=[${this.props.brandId}]`
             url += params;
-            console.log(url)
             fetch(url, {
                 method: 'GET',
                 headers: {
@@ -752,13 +758,13 @@ class DetailStorageModal extends React.Component{
     }
 
     render() {
-        const { dataSource, storeFilter, brandFilter, codeFilter, inStock } = this.state;
+        const { dataSource, storeFilter, brandFilter, codeFilter, inStock, reserveModalVisible, reserveModalData } = this.state;
         const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
         let tblData = [...dataSource];
 
         if(storeFilter) tblData = tblData.filter((elem)=>String(elem.storeGroupId).toLowerCase().indexOf(String(storeFilter).toLowerCase()) >= 0 );
         if(brandFilter.length) tblData = tblData.filter((elem)=>brandFilter.indexOf(elem.supplierId)!=-1);
-        if(codeFilter) tblData = tblData.filter((elem)=>elem.partNumber.toLowerCase().indexOf(codeFilter.toLowerCase()) >= 0 );
+        if(codeFilter) tblData = tblData.filter((elem)=>elem.partNumber.replace(' ', '').toLowerCase().indexOf(codeFilter.replace(' ', '').toLowerCase()) >= 0 );
         if(inStock) {
             if(this.props.stockMode) tblData = tblData.filter((elem)=>elem.store[0]);
             else tblData = tblData.filter((elem)=>elem.store);
@@ -809,6 +815,18 @@ class DetailStorageModal extends React.Component{
                         <Spin indicator={spinIcon} />
                     }
                 </Modal>
+                {this.props.stockMode && 
+                    <StoreProductTrackingModal
+                        visible={reserveModalVisible}
+                        productId={reserveModalData}
+                        hideModal={()=>{
+                            this.setState({
+                                reserveModalVisible: false,
+                                reserveModalData: undefined,
+                            })
+                        }}
+                    />
+                }
             </div>
         )
     }
@@ -918,7 +936,6 @@ class DetailWarehousesCountModal extends React.Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.setState({
                 brandName: data.brandName || data.brand && data.brand.name,
                 code: data.code,

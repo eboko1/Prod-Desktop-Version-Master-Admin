@@ -164,6 +164,8 @@ export function* redirectToTrackingSaga() {
                 productId: payload.id,
                 showOnlyOrders: payload.type == "orders",
                 showOnlyReserves: payload.type == "reserves",
+                startDate: moment(payload.date).startOf('year').format('YYYY-MM-DD'),
+                endDate: moment(payload.date).format('YYYY-MM-DD'),
             }));
             yield put(setStoreProductsSearchQuery(payload.code));
         } catch (error) {

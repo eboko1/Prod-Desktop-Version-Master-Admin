@@ -16,7 +16,7 @@ import {
 } from "core/cash/duck";
 import { onChangeCashOrdersFiltersForm } from "core/forms/cashOrdersFiltersForm/duck";
 
-import { StatsCountsPanel, StorageDateFilter } from "components";
+import { StatsCountsPanel, DateRangePicker } from "components";
 import {
     DecoratedSearch,
     DecoratedSelect,
@@ -106,7 +106,7 @@ export class CashOrdersFiltersForm extends Component {
                             </Option>
                         ))}
                     </DecoratedSelect>
-                    <StorageDateFilter
+                    <DateRangePicker
                         dateRange={[
                             moment(filters.startDate),
                             moment(filters.endDate),

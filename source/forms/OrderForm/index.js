@@ -88,8 +88,6 @@ export class OrderForm extends React.PureComponent {
         this.orderServices = [...props.orderServices];
         this.totalSumWithTax = props.order.totalSumWithTax;
         this.isTaxPayer = props.order.isTaxPayer;
-        //this._reloadOrderForm = this._reloadOrderForm.bind(this);
-        //this._updateDuration = this._updateDuration.bind(this);
     }
 
     _isMounted = false;
@@ -157,7 +155,7 @@ export class OrderForm extends React.PureComponent {
         });
     };
 
-    _reloadOrderForm = (callback, type) => {
+    _reloadOrderForm = (callback, type, reloadRepairMap) => {
         const onlyLabors = type == 'labors' || type == 'all',
               onlyDetails = type == 'details' || type == 'all';
         var that = this;
@@ -181,7 +179,6 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 if(onlyDetails) {
                     that.orderDetails = data.orderDetails;
                 }
@@ -190,6 +187,7 @@ export class OrderForm extends React.PureComponent {
                 }
                 that.totalSumWithTax = data.order.totalSumWithTax;
                 if(callback) callback(data);
+                if(reloadRepairMap) that.props.fetchRepairMapData(); 
                 that.forceUpdate();
             })
             .catch(function(error) {
@@ -197,17 +195,21 @@ export class OrderForm extends React.PureComponent {
             });
     }
 
-    _updateDuration = () => {
-        let hours = 0;
-        this.orderServices.map(elem => {
-            hours += elem.count;
-        });
+    _updateOrderField = (field) => {
+        if(field == 'duration') {
+            let hours = 0;
+            this.orderServices.map(elem => {
+                if(elem.agreement != 'REJECTED') hours += elem.count;
+            });
 
-        if (hours > 8) {
-            message.warning("Количество часов превышает 8. ");
-            hours = 8;
+            if (hours > 8) {
+                message.warning("Количество часов превышает 8. ");
+                hours = 8;
+            }
+
+            field = {duration: hours};
         }
-
+        
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
         let url = API_URL;
@@ -219,7 +221,7 @@ export class OrderForm extends React.PureComponent {
                 Authorization: token,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ duration: hours }),
+            body: JSON.stringify(field),
         })
             .then(function(response) {
                 if (response.status !== 200) {
@@ -231,7 +233,7 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
-                window.location.reload();
+                that.props.fetchOrderForm(that.props.orderId);
             })
             .catch(function(error) {
                 console.log("error", error);
@@ -392,6 +394,7 @@ export class OrderForm extends React.PureComponent {
             setAddClientModal,
             schedule,
             stations,
+            businessLocations,
             fetchedOrder,
             availableHours,
             managers,
@@ -439,6 +442,7 @@ export class OrderForm extends React.PureComponent {
             "clientEmail",
             "clientPhone",
             "searchClientQuery",
+            "businessLocationId",
         ]);
 
         const orderFormHeaderFields = _.pick(formFieldsValues, [
@@ -489,7 +493,7 @@ export class OrderForm extends React.PureComponent {
         return (
             <Form className={Styles.form} layout="horizontal">
                 <OrderFormHeader
-                    updateDuration={this._updateDuration}
+                    updateOrderField={this._updateOrderField}
                     allServices={allServices}
                     authentificatedManager={authentificatedManager}
                     availableHours={availableHours}
@@ -520,6 +524,7 @@ export class OrderForm extends React.PureComponent {
                     isTaxPayer={isTaxPayer}
                 />
                 <OrderFormBody
+                    updateOrderField={this._updateOrderField}
                     errors={errors}
                     location={location}
                     fields={orderFormBodyFields}
@@ -541,6 +546,7 @@ export class OrderForm extends React.PureComponent {
                     onStatusChange={this.props.onStatusChange}
                     createOrder={this.props.createOrder}
                     createStatus={this.props.createStatus}
+                    businessLocations={businessLocations}
                 />
                 <div id="OrderTabs">
                     {tabs}

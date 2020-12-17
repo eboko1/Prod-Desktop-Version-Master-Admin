@@ -1,0 +1,42 @@
+.mainCont {
+    background-color: white;
+}
+
+.statsMainCont {
+    /* position: relative; */
+    background-color: white;
+    height: 110px;
+    width: 100%;
+}
+
+.statsCont{
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    justify-content: space-between;
+    box-sizing: border-box;
+    margin-bottom: 24px;
+}
+
+.statsBlock{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid #9b59b6;
+    margin: 10px 5px 10px 0;
+    height: 70px;
+    width: 100%;
+}
+
+.statsHeader {
+    color: rgb(80, 80, 80);
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.statsText {
+    color: rgb(100, 100, 100);
+    font-size: 0.8em;
+    text-align: center;
+}

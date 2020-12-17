@@ -1,0 +1,44 @@
+{
+  "en": {
+    "vehicle_location_modal.title.receive": "Reception of a car at a station",
+    "vehicle_location_modal.button.receive": "Receive",
+    "vehicle_location_modal.title.return": "Return the car to the client",
+    "vehicle_location_modal.button.return": "Return",
+    "vehicle_location_modal.title.transfer": "Transfer a car to a location",
+    "vehicle_location_modal.button.transfer": "Transfer",
+    "vehicle_location_modal.print_act": "Print the acceptance certificate",
+    "vehicle_location_modal.new_location": "New location",
+    "vehicle_location_modal.client": "Client",
+    "vehicle_location_modal.vehicle": "Vehicle",
+    "vehicle_location_modal.from": "From",
+    "vehicle_location_modal.to": "To"
+  },
+  "ru": {
+    "vehicle_location_modal.title.receive": "Прием автомобиля на СТО",
+    "vehicle_location_modal.button.receive": "Принять",
+    "vehicle_location_modal.title.return": "Выдача автомобиля клиенту",
+    "vehicle_location_modal.button.return": "Выдать",
+    "vehicle_location_modal.title.transfer": "Перемещение автомобиля на локацию",
+    "vehicle_location_modal.button.transfer": "Переместить",
+    "vehicle_location_modal.print_act": "Распечатать акт приема-передачи",
+    "vehicle_location_modal.new_location": "Новая локация",
+    "vehicle_location_modal.client": "Клиент",
+    "vehicle_location_modal.vehicle": "Автомобиль",
+    "vehicle_location_modal.from": "Из",
+    "vehicle_location_modal.to": "На"
+  },
+  "uk": {
+    "vehicle_location_modal.title.receive": "Прийняття автомобіля на СТО",
+    "vehicle_location_modal.button.receive": "Прийняти",
+    "vehicle_location_modal.title.return": "Видача автомобіля клієнту",
+    "vehicle_location_modal.button.return": "Видати",
+    "vehicle_location_modal.title.transfer": "Переміщення автомобіля на локацію",
+    "vehicle_location_modal.button.transfer": "Перемістити",
+    "vehicle_location_modal.print_act": "Роздрукувати акт прийому-передачі",
+    "vehicle_location_modal.new_location": "Нова локація",
+    "vehicle_location_modal.client": "Клієнт",
+    "vehicle_location_modal.vehicle": "Автомобіль",
+    "vehicle_location_modal.from": "Із",
+    "vehicle_location_modal.to": "На"
+  }
+}

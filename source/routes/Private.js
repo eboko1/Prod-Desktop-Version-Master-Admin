@@ -56,6 +56,12 @@ import {
     NewDocumentPage,
     SupplierPage,
     RepairMapSettingPage,
+    RportOrdersPage,
+    LocationsPage,
+    LocationSettingsPage,
+    LocationsDocumentPage,
+    LocationsVehiclesPage,
+    LocationsMovementPage
 } from 'pages';
 import book from './book';
 
@@ -241,7 +247,33 @@ export default class Private extends Component {
                     path={ book.repairMapSetting }
                     render={ props => <RepairMapSettingPage { ...props } /> }
                 />
-                { /* Statistics */ }
+                { /* Locations */ }
+                <Route
+                    exact
+                    component={ LocationsPage }
+                    path={ book.locationsPage }
+                />
+                <Route
+                    exact
+                    component={ LocationSettingsPage }
+                    path={ book.locationSettings }
+                />
+                <Route
+                    exact
+                    component={ LocationsDocumentPage }
+                    path={ book.locationsDocument }
+                />
+                <Route
+                    exact
+                    component={ LocationsVehiclesPage }
+                    path={ book.locationsVehicles }
+                />
+                <Route
+                    exact
+                    component={ LocationsMovementPage }
+                    path={ book.locationsMovement }
+                />
+                { /* Statistics and reports */ }
                 <Route
                     exact
                     component={ ChartPage }
@@ -261,6 +293,11 @@ export default class Private extends Component {
                     exact
                     component={ CallsPage }
                     path={ book.calls }
+                />
+                <Route
+                    exact
+                    component={ RportOrdersPage }
+                    path={ book.reportOrders }
                 />
                 { /* Payment */ }
                 <Route

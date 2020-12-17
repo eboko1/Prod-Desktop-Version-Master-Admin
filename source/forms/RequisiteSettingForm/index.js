@@ -89,6 +89,29 @@ export class RequisiteSettingForm extends Component {
         }
     }
 
+    componentDidMount() {
+        const { requisiteData } = this.props;
+        if(requisiteData) {
+            this.props.form.setFieldsValue({
+                formType: requisiteData.formType || "OTHER",
+                formName: requisiteData.formType ? undefined : requisiteData.formName,
+                name: requisiteData.name,
+                address: requisiteData.address,
+                ifi: requisiteData.ifi,
+                ca: requisiteData.ca,
+                bank: requisiteData.bank,
+                isTaxPayer: Boolean(requisiteData.isTaxPayer),
+                taxRate: requisiteData.taxRate || 20,
+                calculationMethod: requisiteData.calculationMethod,
+                enabled: Boolean(requisiteData.enabled),
+            });
+
+            this.setState({
+                formType: requisiteData.formType || "OTHER",
+            });
+        }
+    }
+
     render() {
         const { intl: {formatMessage} } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
@@ -282,6 +305,7 @@ export class RequisiteSettingFormModal extends Component {
                     title={null}
                     footer={null}
                     onCancel={this.handleCancel}
+                    destroyOnClose
                     onOk={this.handleOk}
                     style={{
                         minWidth: '40%',

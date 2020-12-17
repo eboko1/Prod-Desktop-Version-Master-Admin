@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
-import { Table, Icon, Popconfirm } from "antd";
+import { Table, Icon, Popconfirm, notification } from "antd";
 import { Link } from 'react-router-dom';
 import _ from "lodash";
 
@@ -116,21 +116,48 @@ export class SuppliersTable extends Component {
             },
             {
                 key: "actions",
-                render: ({ id, name }) => (
-                    <div className={Styles.actions}>
-                        <Popconfirm
-                            title={`${props.intl.formatMessage({
-                                id: "delete",
-                            })} ?`}
-                            onConfirm={() => props.deleteSupplier(id)}
-                        >
-                            <Icon
-                                type="delete"
-                                className={Styles.deleteClientIcon}
-                            />
-                        </Popconfirm>
-                    </div>
-                ),
+                render: (row) => {
+                    const disabled = row.expenseOrderDocsCount || row.incomeOrderDocsCount || !row.businessId;
+                    return (
+                        <div className={!disabled ? Styles.actions : Styles.disabledActions}>
+                            <Popconfirm
+                                title={`${props.intl.formatMessage({
+                                    id: "delete",
+                                })} ?`}
+                                onConfirm={async () => {
+                                    let token = localStorage.getItem('_my.carbook.pro_token');
+                                    let url = __API_URL__ + `/business_suppliers/${row.id}`;
+                                    try {
+                                        const response = await fetch(url, {
+                                            method:  'DELETE',
+                                            headers: {
+                                                Authorization:  token,
+                                                'Content-Type': 'application/json',
+                                            },
+                                        });
+                                        const result = await response.json();
+                                        console.log(result)
+                                        if(result.deleted) {
+                                            props.fetchSuppliers();
+                                        } else {
+                                            notification.error({
+                                                message: this.props.intl.formatMessage({id: 'error'})
+                                            });
+                                        }
+                                    } catch (error) {
+                                        console.error('ERROR:', error);
+                                    }
+                                    
+                                }}
+                            >
+                                <Icon
+                                    type="delete"
+                                    className={!disabled ? Styles.deleteClientIcon : Styles.disabledDeleteIcon}
+                                />
+                            </Popconfirm>
+                        </div>
+                    )
+                }
             },
         ];
     }
@@ -140,16 +167,16 @@ export class SuppliersTable extends Component {
     }
 
     render() {
-        const { suppliersFetching, suppliers } = this.props;
+        const { suppliersFetching, suppliers, isMobile } = this.props;
 
         return (
             <Table
                 size="small"
-                columns={this.columns}
+                columns={isMobile ? this.columns.slice(0, -3) : this.columns}
                 dataSource={suppliers}
                 rowKey='id'
                 loading={suppliersFetching}
-                pagination={{ hideOnSinglePage: true }}
+                pagination={isMobile ? false : { hideOnSinglePage: true }}
                 locale={{
                     emptyText: <FormattedMessage id="no_data" />,
                 }}

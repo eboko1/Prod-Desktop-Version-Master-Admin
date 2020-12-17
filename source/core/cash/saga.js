@@ -166,6 +166,7 @@ export function* printCashOrdersSaga() {
             yield take(PRINT_CASH_ORDERS);
             yield nprogress.start();
             const filters = yield select(selectCashOrdersFilters);
+            delete filters.page;
             const response = yield call(
                 fetchAPI,
                 'GET',

@@ -29,6 +29,10 @@
 	}
 }
 
+.folderIcon {
+	vertical-align: middle;
+}
+
 .itemButton {
 	font-weight: 500;
 	white-space: break-spaces;
@@ -66,4 +70,10 @@
 
 .emptyItem {
 	display: block;
+}
+
+@media screen and (max-width: 1199px) {
+	.item {
+		width: 100%;
+	}
 }
