@@ -192,6 +192,7 @@ class ReportOrdersFilter extends React.Component {
                                         field="status"
                                         showSearch
                                         allowClear
+                                        cnStyles={Styles.decoratedSelect}
                                         getFieldDecorator={getFieldDecorator}
                                         getPopupContainer={trigger =>
                                             trigger.parentNode
@@ -213,6 +214,7 @@ class ReportOrdersFilter extends React.Component {
                                     field="stationNum"
                                     showSearch
                                     allowClear
+                                    cnStyles={Styles.decoratedSelect}
                                     getFieldDecorator={getFieldDecorator}
                                     getPopupContainer={trigger =>
                                         trigger.parentNode
