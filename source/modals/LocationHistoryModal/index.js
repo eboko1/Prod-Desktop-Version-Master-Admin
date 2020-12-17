@@ -76,7 +76,7 @@ export default class LocationHistoryModal extends Component {
                 dataIndex: 'incomeDatetime',
                 render:    (data, row)=> {
                     return (
-                        data ? moment(data).format('DD.MM.YYYY HH:MM') : <FormattedMessage id='long_dash'/>
+                        data ? moment(data).format('DD.MM.YYYY HH:mm') : <FormattedMessage id='long_dash'/>
                     )
                 }
             },
@@ -86,7 +86,7 @@ export default class LocationHistoryModal extends Component {
                 dataIndex: 'expenseDatetime',
                 render:    (data, row)=> {
                     return (
-                        data ? moment(data).format('DD.MM.YYYY HH:MM') : <FormattedMessage id='long_dash'/>
+                        data ? moment(data).format('DD.MM.YYYY HH:mm') : <FormattedMessage id='long_dash'/>
                     )
                 }
             },
