@@ -56,7 +56,7 @@ export class CashReportTable extends Component {
                 locale={ {
                     emptyText: <FormattedMessage id='no_data' />,
                 } }
-                scroll={ { x: 1000 } }
+                scroll={ { x: 1000, y: '50vh' } }
                 rowKey={ record => record.id }
             />
         );
