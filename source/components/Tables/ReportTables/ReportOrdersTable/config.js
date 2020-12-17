@@ -30,7 +30,7 @@ const defWidth = {
     no: '4%',
     client_name: 'auto',
     order_num: '10%',
-    status: '8%',
+    status: '10%',
 
     date_created: '6%',
     date_appointment: '6%',
