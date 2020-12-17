@@ -1,8 +1,6 @@
 .table {
     background-color: white;
     min-width: 0 !important;
-    display: block !important;
-    width: 100% !important;
 }
 
 .table :global(.ant-table-header) {
@@ -12,33 +10,6 @@
     font-style: bold;
     padding: 0;
 }
-
-/* Fixing appearence bug(on test, it is not occur on localhost ) */
-.table :global(.ant-form-item > .ant-form-item-control-wrapper) {
-    display: block !important;
-    width: 100% !important;
-}
-
-.table :global(.ant-col) {
-    display: block !important;
-    width: 100% !important;
-}
-
-.table :global(.ant-form-item-control-wrapper) {
-    display: block !important;
-    width: 100% !important;
-}
-
-.table :global(.ant-form-item) {
-    display: block !important;
-    width: 100% !important;
-}
-
-.table :global(.ant-form-inline) {
-    display: block !important;
-    width: 100% !important;
-}
-/* ------------------------------------------------------------- */
 
 .table :global(.ant-pagination) {
     float: none;

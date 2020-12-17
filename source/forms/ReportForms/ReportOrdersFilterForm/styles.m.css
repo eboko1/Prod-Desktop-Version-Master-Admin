@@ -6,6 +6,13 @@
     width: 100%;
 }
 
+
+/* Fix "DecoratedSelect" positioning */
+.formContent :global(.ant-form-item-control-wrapper) {
+    display: block !important;
+    width: 100% !important;
+}
+
 .filterBlock {
     padding: 10px 0 10px 0;
     min-width: 30%;
@@ -19,9 +26,6 @@
 }
 
 .col {
-    /* display: flex;
-    justify-content: flex-end;
-    align-items: center; */
     padding: 5px;
     display: block !important;
 }
@@ -35,16 +39,6 @@
 
 .formItemStyle {
     margin: 0 !important;
-    display: block !important;
-    width: 100% !important;
-}
-
-.formItemStyle :global(.ant-col) {
-    display: block !important;
-    width: 100% !important;
-}
-
-.decoratedSelect {
     display: block !important;
     width: 100% !important;
 }
