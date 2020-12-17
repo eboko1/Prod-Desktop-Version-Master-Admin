@@ -168,7 +168,7 @@ export default class LocationsVehiclesPage extends Component {
         const { locationId, toDatetime } = this.state;
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/business_locations/movements?toDatetime=${toDatetime.format('YYYY-MM-DD')}&page=${page}&pageSize=10`;
+        let url = __API_URL__ + `/business_locations/movements/vehicles?toDatetime=${toDatetime.format('YYYY-MM-DD')}&page=${page}&pageSize=10`;
         if(id || locationId) url += `&businessLocationId=${id || locationId}`;
         fetch(url, {
             method: 'GET',
@@ -186,12 +186,13 @@ export default class LocationsVehiclesPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            data.list.map((elem, key)=>{
+            console.log(data);
+            data.map((elem, key)=>{
                 elem.key = key;
             })
             that.setState({
-                paginationTotal: Number(data.stats.count),
-                dataSource: data.list,
+                paginationTotal: data.length,
+                dataSource: data,
             })
         })
         .catch(function (error) {
@@ -221,7 +222,7 @@ export default class LocationsVehiclesPage extends Component {
                 this.setState({
                     currentPage: page
                 })
-                this.fetchData(locationId, page);
+                //this.fetchData(locationId, page);
             },
         }
 

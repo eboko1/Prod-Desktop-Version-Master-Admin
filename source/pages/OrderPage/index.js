@@ -288,7 +288,7 @@ class OrderPage extends Component {
                     options,
                     redirectTo,
                 });
-                window.location.reload();
+                //window.location.reload();
             } else {
                 this.setState({errors});
             }
