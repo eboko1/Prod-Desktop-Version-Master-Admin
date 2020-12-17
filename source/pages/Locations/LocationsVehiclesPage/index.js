@@ -187,12 +187,16 @@ export default class LocationsVehiclesPage extends Component {
         })
         .then(function (data) {
             console.log(data);
-            data.map((elem, key)=>{
+            data.list.map((elem, key)=>{
                 elem.key = key;
+                elem.client = elem.movement.client;
+                elem.businessLocation = elem.movement.businessLocation;
+                elem.clientsVehicle = elem.movement.clientsVehicle;
+                elem.duration = elem.movement.duration;
             })
             that.setState({
-                paginationTotal: data.length,
-                dataSource: data,
+                paginationTotal: Number(data.stats.count),
+                dataSource: data.list,
             })
         })
         .catch(function (error) {
@@ -222,7 +226,7 @@ export default class LocationsVehiclesPage extends Component {
                 this.setState({
                     currentPage: page
                 })
-                //this.fetchData(locationId, page);
+                this.fetchData(locationId, page);
             },
         }
 
