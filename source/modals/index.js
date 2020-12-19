@@ -27,6 +27,7 @@ import OilModal from './OilModal';
 import ComplexesModal from './ComplexesModal';
 import VehicleLocationModal from './VehicleLocationModal';
 import LocationHistoryModal from './LocationHistoryModal';
+import ReportOrdersFilterModal from './ReportOrdersFilterModal';
 import StoreProductTrackingModal from './StoreProductTrackingModal';
 
 export {
@@ -59,5 +60,6 @@ export {
     ComplexesModal,
     VehicleLocationModal,
     LocationHistoryModal,
+    ReportOrdersFilterModal,
     StoreProductTrackingModal,
 };

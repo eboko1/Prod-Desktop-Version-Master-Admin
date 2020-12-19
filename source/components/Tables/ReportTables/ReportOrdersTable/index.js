@@ -24,7 +24,8 @@ export class ReportOrdersTable extends Component {
             tableData,
             stats,
             filter,
-            filterControls
+            filterControls,
+            loading,
         } = this.props;
 
         //We need to upade props (needed for child components)
@@ -58,9 +59,10 @@ export class ReportOrdersTable extends Component {
                     locale={ {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
-                    scroll={ { x: 1500, y: '50vh' } }
+                    scroll={ { x: 1800, y: '50vh' } }
                     rowKey={ record => record.id }
                     bordered
+                    loading={loading}
                 />
             </div>
         );

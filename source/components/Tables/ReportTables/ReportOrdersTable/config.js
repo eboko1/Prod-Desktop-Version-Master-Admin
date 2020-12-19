@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import { Input, Icon, Checkbox, DatePicker, Menu, Dropdown, Button } from 'antd';
+import { Input, Icon, Checkbox, Menu, Dropdown, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
@@ -14,7 +14,6 @@ import book from 'routes/book';
 import Styles from './styles.m.css';
 
 const DEF_DATE_FORMAT = 'YYYY/MM/DD';
-const DEF_UI_DATE_FORMAT = 'DD/MM/YYYY';
 
 const statuses = {
     required: 'transfer_required',
@@ -31,7 +30,7 @@ const defWidth = {
     no: '4%',
     client_name: 'auto',
     order_num: '10%',
-    status: '6%',
+    status: '10%',
 
     date_created: '6%',
     date_appointment: '6%',
@@ -49,7 +48,6 @@ const defWidth = {
     margin_parts: '5%',
     margin_total: '5%'
 }
-
 
 /* eslint-disable complexity */
 export function columnsConfig(props) {
@@ -75,7 +73,11 @@ export function columnsConfig(props) {
         setReportOrdersAppointmentToDate,
         setReportOrdersDoneFromDate,
         setReportOrdersDoneToDate,
+
+        onOpenFilterModal,
     } = filterControls;
+
+    
 
     //Handlers---------------------------------------------------------------
     function onIncludeLaborsDiscountChanged(e) {
@@ -90,36 +92,6 @@ export function columnsConfig(props) {
 
     function onSearchInput(e) {
         setReportOrdersQuery(e.target.value.toLowerCase().trim());
-        fetchReportOrders();
-    }
-
-    function onCreationFromDateChanged(date) {
-        setReportOrdersCreationFromDate(date? date.format(DEF_DATE_FORMAT): undefined);
-        fetchReportOrders();
-    }
-
-    function onCreationToDateChanged(date) {
-        setReportOrdersCreationToDate(date? date.format(DEF_DATE_FORMAT): undefined);
-        fetchReportOrders();
-    }
-
-    function onAppointmentFromDateChanged(date) {
-        setReportOrdersAppointmentFromDate(date? date.format(DEF_DATE_FORMAT): undefined);
-        fetchReportOrders();
-    }
-
-    function onAppointmentToDateChanged(date) {
-        setReportOrdersAppointmentToDate(date? date.format(DEF_DATE_FORMAT): undefined);
-        fetchReportOrders();
-    }
-
-    function onDoneFromDateChanged(date) {
-        setReportOrdersDoneFromDate(date? date.format(DEF_DATE_FORMAT): undefined);
-        fetchReportOrders();
-    }
-
-    function onDoneToDateChanged(date) {
-        setReportOrdersDoneToDate(date? date.format(DEF_DATE_FORMAT): undefined);
         fetchReportOrders();
     }
 
@@ -149,7 +121,23 @@ export function columnsConfig(props) {
         fetchReportOrders();
     }
 
+    const onClearDateCreatedFilter = () => {
+        setCreationDaterange([undefined, undefined]);
+    }
+
+    const onClearDateAppointmentFilter = () => {
+        setAppointmentDaterange([undefined, undefined]);
+    }
+
+    const onClearDateDoneFilter = () => {
+        setDoneDaterange([undefined, undefined]);
+    }
+
     //-----------------------------------------------------------------------
+
+    const activeCreationDateFilter = (filter.creationFromDate || filter.creationToDate); //Check if filter has value
+    const activeAppointmentDateFilter = (filter.appointmentFromDate || filter.appointmentToDate); //Check if filter has value
+    const activeDoneDateFilter = (filter.doneFromDate || filter.doneToDate); //Check if filter has value
 
     //Get corresponging status value
     const statusLangMapper = status => {
@@ -160,6 +148,7 @@ export function columnsConfig(props) {
             case 'approve': return <FormattedMessage id={statuses.approve} />;
             case 'progress': return <FormattedMessage id={statuses.progress} />;
             case 'success': return <FormattedMessage id={statuses.success} />;
+            case 'reset': return <FormattedMessage id='report-orders-table.reset' />;
             default: return <FormattedMessage id="report-orders-table.unknown_status" />;
         }
     }
@@ -185,7 +174,7 @@ export function columnsConfig(props) {
                 {statusLangMapper('success')}
             </Menu.Item>
             <Menu.Item key="reset">
-                <FormattedMessage id='report-orders-table.reset' />
+                {statusLangMapper('reset')}
             </Menu.Item>
         </Menu>
       );
@@ -206,7 +195,10 @@ export function columnsConfig(props) {
     const orderNumCol = {
         children: [
             {
-                title:     <FormattedMessage id='report-orders-table.order_num' />,
+                title:  <div className={Styles.filterColumnHeaderWrap}>
+                            <FormattedMessage id='report-orders-table.order_num' />
+                            <Button onClick={onOpenFilterModal} className={Styles.filterButton}><FormattedMessage id="report-orders-table.filter"/></Button>
+                        </div>,
                 align: 'left',
                 key: 'order_num',
                 width: defWidth.order_num,
@@ -231,7 +223,6 @@ export function columnsConfig(props) {
                             <Input onChange={onSearchInput} placeholder="Search"/>
                         </div>,
                 align: 'left',
-                // width: '20%',
                 key: 'client_name',
                 width: defWidth.client_name,
                 dataIndex: 'clientName',
@@ -268,8 +259,8 @@ export function columnsConfig(props) {
                     <FormattedMessage id='report-orders-table.status' />
                     <br />
                     <Dropdown className={Styles.statusDropdown} overlay={menu}>
-                        <Button onClick={() => {console.log('click')}}>
-                            <FormattedMessage id="report-orders-table.status"/> <Icon type="down" />
+                        <Button>
+                            {statusLangMapper(filter.status ? filter.status: "reset")} <Icon type="down" /> 
                         </Button>
                     </Dropdown>
                 </div>,
@@ -290,12 +281,18 @@ export function columnsConfig(props) {
                 title: <div  className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.creation_date' />
                     <br />
-                    <div style={{display: 'flex', justifyContent: 'center'}}>
+                    <div className={Styles.storageDateFilter}>
                         <DateRangePicker
                             minimize
+                            style={{margin: 0}}//prevent default space
                             dateRange={[moment(filter.creationFromDate), moment(filter.creationToDate)]}
                             onDateChange={ setCreationDaterange }
                         />
+                        {activeCreationDateFilter
+                            && <div className={Styles.clearIconCont}>
+                                <Icon onClick={onClearDateCreatedFilter} className={Styles.clearIcon} type="close-circle" />
+                            </div>
+                        }
                     </div>
                 </div>,
                 align: 'right',
@@ -305,16 +302,21 @@ export function columnsConfig(props) {
                 render: (orderDatetime) => (<FormattedDatetime datetime={ orderDatetime } format={ 'DD.MM.YY HH:mm' } />)
             },
             {
-                // title: <FormattedMessage id='report-orders-table.appointment_date' />,
                 title: <div  className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.appointment_date' />
                     <br />
-                    <div style={{display: 'flex', justifyContent: 'center'}}>
+                    <div className={Styles.storageDateFilter}>
                         <DateRangePicker
                             minimize
+                            style={{margin: 0}}//prevent default space
                             dateRange={[moment(filter.appointmentFromDate), moment(filter.appointmentToDate)]}
                             onDateChange={ setAppointmentDaterange }
                         />
+                        {activeAppointmentDateFilter
+                            && <div className={Styles.clearIconCont}>
+                                <Icon onClick={onClearDateAppointmentFilter} className={Styles.clearIcon} type="close-circle" />
+                            </div>
+                        }
                     </div>
                 </div>,
                 align: 'right',
@@ -327,12 +329,18 @@ export function columnsConfig(props) {
                 title: <div  className={Styles.filterColumnHeaderWrap}>
                     <FormattedMessage id='report-orders-table.done_date' />
                     <br />
-                    <div style={{display: 'flex', justifyContent: 'center'}}>
+                    <div className={Styles.storageDateFilter}>
                         <DateRangePicker
                             minimize
+                            style={{margin: 0}}//prevent default space
                             dateRange={[moment(filter.doneFromDate), moment(filter.doneToDate)]}
                             onDateChange={ setDoneDaterange }
                         />
+                        {activeDoneDateFilter
+                            && <div className={Styles.clearIconCont}>
+                                <Icon onClick={onClearDateDoneFilter} className={Styles.clearIcon} type="close-circle" />
+                            </div>
+                        }
                     </div>
                 </div>,
                 align: 'right',
