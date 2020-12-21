@@ -46,7 +46,7 @@ import { StorageFilters } from './StorageFilters';
 import StorageDocumentsFilters, { WarehouseSelect, BrandSelect } from './StorageDocumentsFilters';
 import AvailabilityIndicator from './AvailabilityIndicator';
 import RepairMapIndicator from './RepairMapIndicator';
-import ReportOrdersFilter from './ReportFilters/ReportOrdersFilter';
+import ReportLoadKPIFilter from './ReportFilters/ReportLoadKPIFilter';
 import { DateRangePicker, SingleDatePicker } from './DatePicker';
 
 // re-exports (*) must be before ES6 other (default) exports
@@ -105,7 +105,7 @@ export {
     WarehouseSelect,
     BrandSelect,
     RepairMapIndicator,
-    ReportOrdersFilter,
+    ReportLoadKPIFilter,
     DateRangePicker,
     SingleDatePicker,
 };

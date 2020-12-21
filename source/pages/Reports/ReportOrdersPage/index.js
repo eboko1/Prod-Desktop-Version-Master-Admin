@@ -27,7 +27,7 @@ import {
     setReportOrdersDoneToDate,
     setReportOrdersPage,
     setReportOrdersAllFilters
-} from 'core/reportOrders/duck';
+} from 'core/reports/reportOrders/duck';
 import ReportOrdersFilterModal from 'modals/ReportOrdersFilterModal';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 

@@ -17,7 +17,7 @@ import {
     fetchExcelFileReport,
     setReportQuery,
     setReportOverdueOnly,
-} from "core/reports/duck";
+} from "core/reports/reports/duck";
 
 import { Layout, Paper, Spinner, StyledButton, Catcher } from "commons";
 import { CashReportTable } from "components";
