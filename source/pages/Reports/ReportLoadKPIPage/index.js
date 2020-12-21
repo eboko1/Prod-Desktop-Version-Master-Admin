@@ -1,6 +1,5 @@
 /*
-The purpose of this module is to provide report about all clients' debts.
-Also it provides basic search and print button.
+This module shows Load KPI report. It has some subcomponents.
 */
 // vendor
 import React, { Component } from "react";
@@ -30,11 +29,13 @@ import _ from "lodash";
 // import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Layout, Numeral } from "commons";
+import {ReportLoadKPITable, ReportLoadKPIFilter} from 'components';
 // import { ReportOrdersTable, ReportOrdersFilter } from "components";
 // import { isForbidden, permissions } from "utils";
 
 // own
 import Styles from "./styles.m.css";
+import Stats from './Stats';
 
 const mapStateToProps = state => ({
     // tableData: state.reportOrders.tableData,
@@ -87,86 +88,7 @@ export default class ReportLoadKPIPage extends Component {
     //     this.props.fetchReportOrdersFilterOptions();
     // }
 
-    // showStats(stats) {
-
-    //     const {
-    //         totalRowsCount,
-    //         totalServicesSum,
-    //         totalAppurtenanciesSum,
-    //         totalServicesProfit,
-    //         totalAppurtenanciesProfit,
-    //     } = stats;
-
-    //     const totalSum = (parseInt(totalServicesSum) + parseInt(totalAppurtenanciesSum));
-    //     const totalProfit = (parseInt(totalServicesProfit) + parseInt(totalAppurtenanciesProfit));
-
-    //     const totalLaborsMargin = (Number(totalServicesSum) && Number(totalServicesProfit))
-    //         ? ((totalServicesProfit*100.0)/totalServicesSum).toFixed(1)
-    //         : 0;
-
-    //     const totalAppurtenanciesMargin = (Number(totalAppurtenanciesProfit) && Number(totalAppurtenanciesSum))
-    //     ?((totalAppurtenanciesProfit*100.0)/totalAppurtenanciesSum).toFixed(1)
-    //     : 0;
-
-    //     const totalMargin = (totalProfit && totalSum)
-    //         ? (((totalProfit)/(totalSum))* 100.0).toFixed(1)
-    //         : 0;
-
-    //     return <div className={Styles.statsMainCont}>
-    //         <div className={Styles.statsCont}>
-    //             <div className={Styles.statsBlock}>
-    //                 <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.labors_sum'} /></div>
-    //                 <div className={Styles.statsText}><Numeral>{parseInt(totalServicesSum)}</Numeral></div>
-    //             </div>
-
-    //             <div className={Styles.statsBlock}>
-    //                 <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.parts_sum'} /></div>
-    //                 <div className={Styles.statsText}><Numeral>{parseInt(totalAppurtenanciesSum)}</Numeral></div>
-    //             </div>
-
-    //             <div className={Styles.statsBlock}>
-    //                 <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_sum'} /></div>
-    //                 <div className={Styles.statsText}><Numeral>{parseInt(totalSum)}</Numeral></div>
-    //             </div>
-
-    //             <div className={Styles.statsBlock}>
-    //                 <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.labors_profit'} /></div>
-    //                 <div className={Styles.statsText}><Numeral>{parseInt(totalServicesProfit)}</Numeral></div>
-    //             </div>
-
-    //             <div className={Styles.statsBlock}>
-    //                 <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.parts_profit'} /></div>
-    //                 <div className={Styles.statsText}><Numeral>{parseInt(totalAppurtenanciesProfit)}</Numeral></div>
-    //             </div>
-
-    //             <div className={Styles.statsBlock}>
-    //                 <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_profit'} /></div>
-    //                 <div className={Styles.statsText}><Numeral>{parseInt(totalProfit)}</Numeral></div>
-    //             </div>
-
-    //             <div className={Styles.statsBlock}>
-    //                 <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.labors_margin'} /></div>
-    //                 <div className={Styles.statsText}>{totalLaborsMargin}</div>
-    //             </div>
-
-    //             <div className={Styles.statsBlock}>
-    //                 <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.parts_margin'} /></div>
-    //                 <div className={Styles.statsText}>{totalAppurtenanciesMargin}</div>
-    //             </div>
-
-    //             <div className={Styles.statsBlock}>
-    //                 <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_margin'} /></div>
-    //                 <div className={Styles.statsText}>{totalMargin}</div>
-    //             </div>
-
-    //             <div className={Styles.statsBlock}>
-    //                 <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_rows'} /></div>
-    //                 <div className={Styles.statsText}><Numeral>{totalRowsCount}</Numeral></div>
-    //             </div>
-    //         </div>
-    //     </div>
-    // }
-
+    
     // onOpenFilterModal() {
     //     this.props.setModal(MODALS.REPORT_ORDERS_FILTER);
     // }
@@ -214,53 +136,24 @@ export default class ReportLoadKPIPage extends Component {
             // modal,
         } = this.props;
 
-        //Transfer all filter methods in one object to easily manipulate data
-        // const filterControls = {
-        //     fetchReportOrders,
-        //     onOpenFilterModal: () => this.onOpenFilterModal(),
-
-        //     setReportOrdersPage,
-        //     setReportOrdersIncludeServicesDiscount,
-        //     setReportOrdersIncludeAppurtenanciesDiscount,
-        //     includeServicesDiscount,
-        //     includeAppurtenanciesDiscount,
-
-        //     setReportOrdersQuery,
-        //     setReportOrdersStatus,
-        //     setReportOrdersCreationFromDate,
-        //     setReportOrdersCreationToDate,
-        //     setReportOrdersAppointmentFromDate,
-        //     setReportOrdersAppointmentToDate,
-        //     setReportOrdersDoneFromDate,
-        //     setReportOrdersDoneToDate,
-        // };
         
         return (
             <Layout
                 title={<FormattedMessage id="navigation.report_load_kpi" />}
                 paper={false}
             >
-                <div>Hello world</div>
-                {/* <section> */}
-                    {/* {this.showStats(stats)}
-                </section>
+                <div className={Styles.mainCont}>
+                    <div className={Styles.header}>
+                        <div className={Styles.filterCont}>
+                            <ReportLoadKPIFilter />
+                        </div>
+                        <div className={Styles.statsCont}>
+                            <Stats />
+                        </div>
+                    </div>
+                </div>
 
-                <ReportOrdersTable
-                    stats={stats}
-                    filterControls={filterControls}
-                    filter={filter}
-                    tableData={tableData}
-                    setIncludeServicesDiscount={setReportOrdersIncludeServicesDiscount}
-                    includeServicesDiscount={includeServicesDiscount}
-                    loading={reportOrdersFetching}
-                />
-                <ReportOrdersFilterModal 
-                    visible={modal}
-                    filter={filter}
-                    onSubmit={this.onSubmitFilterModal}
-                    onCloseFilterModal={this.onCloseFilterModal}
-                    filterOptions={filterOptions}
-                /> */}
+                <ReportLoadKPITable />
             </Layout>
         );
     }

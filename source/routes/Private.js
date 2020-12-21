@@ -56,7 +56,7 @@ import {
     NewDocumentPage,
     SupplierPage,
     RepairMapSettingPage,
-    RportOrdersPage,
+    ReportOrdersPage,
     ReportLoadKPIPage,
     LocationsPage,
     LocationSettingsPage,
@@ -297,7 +297,7 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
-                    component={ RportOrdersPage }
+                    component={ ReportOrdersPage }
                     path={ book.reportOrders }
                 />
                 <Route
