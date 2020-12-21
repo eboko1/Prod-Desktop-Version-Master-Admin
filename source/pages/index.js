@@ -46,6 +46,7 @@ import RportOrdersPage from './ReportOrdersPage';
 // webpack issue: https://github.com/webpack/webpack/issues/3509
 export * from './Storage';
 export * from './Locations';
+export * from './Reports';
 
 export {
     DashboardPage,
