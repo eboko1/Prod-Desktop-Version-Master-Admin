@@ -19,26 +19,19 @@ export class ReportLoadKPITable extends Component {
     // _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
 
     render() {
-        // const {
-        //     setIncludeServicesDiscount,
-        //     includeServicesDiscount,
-        //     tableData,
-        //     stats,
-        //     filter,
-        //     filterControls,
-        //     loading,
-        // } = this.props;
+        const {
+            filter,
+            onPageChange,
+            tableData,
+        } = this.props;
 
         const pagination = {
             pageSize:         25,
             size:             'large',
             total:            100,//Math.ceil(stats.totalRowsCount / 25) * 25,
             hideOnSinglePage: true,
-            current:          0,//filter.page,
-            onChange:         page => {
-                // filterControls.setReportOrdersPage(page);
-                // filterControls.fetchReportOrders();
-            },
+            current:          filter.page,
+            onChange:         onPageChange,
         };
 
         return (
@@ -48,7 +41,7 @@ export class ReportLoadKPITable extends Component {
                     className={Styles.table}
                     columns={ columnsConfig() }
                     pagination={ pagination }
-                    // dataSource={ tableData }
+                    dataSource={ tableData }
                     locale={ {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }

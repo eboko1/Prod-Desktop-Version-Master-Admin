@@ -32,7 +32,7 @@ const book = Object.freeze({
     // reports
     reports:                  '/orders/reports',
     reportOrders:             '/report/orders',
-    reportLoadKPI:      '/report/kpi_for_loading',
+    reportLoadKPI:            '/report/load_kpi',
     //
     // Reference book
     //
