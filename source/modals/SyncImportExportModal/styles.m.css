@@ -10,7 +10,7 @@
 }
 
 .radioGroup {
-	width: 75%;
+	width: 65%;
 	& > * {
 		display: block;
 		width: 100%;
