@@ -30,13 +30,22 @@ export default class ImportExportTable extends Component {
                 key: "number",
             },
             {
+                title: <FormattedMessage id="export_import_pages.responsible" />,
+                key: "responsible",
+                render: (row)=>{
+                    return (
+                        (row.managerName || "") + " " + (row.managerSurname || "")
+                    )
+                }
+            },
+            {
                 title: <FormattedMessage id="export_import_pages.records_count" />,
                 key: "recordsCount",
                 children: [
                 	{
                 		title: <FormattedMessage id="export_import_pages.directories_count" />,
-		                dataIndex: "directCount",
-		                key: "directCount",
+		                dataIndex: "catalogueCount",
+		                key: "catalogueCount",
                         align: 'right',
                 	},
                 	{
@@ -54,9 +63,10 @@ export default class ImportExportTable extends Component {
                 	{
                 		title: <FormattedMessage id="export_import_pages.daterange.from" />,
 		                key: "fromDatetime",
+                        dataIndex: "fromDate",
                         align: 'right',
-                        render: (row)=>{
-                            return moment(row.payload.fromDate).format('DD.MM.YYYY')
+                        render: (data, row)=>{
+                            return moment(data).isValid() ? moment(data).format('DD.MM.YYYY') : <FormattedMessage id='long_dash'/>
                         }
                 	},
                 	{
