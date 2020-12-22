@@ -444,7 +444,7 @@ class SyncImportExportParametersModal extends Component {
     			onOk={this.handleOk}
     			onCancel={this.handleCancel}
     			okText={<FormattedMessage id='export_import_pages.sync'/>}
-    			style={{width: 'fit-content', minWidth: 540}}
+    			style={{width: 'fit-content', minWidth: 640}}
     			destroyOnClose
     		>
     			<div className={Styles.filtersBlock}>
@@ -495,7 +495,7 @@ class SyncImportExportParametersModal extends Component {
 			    				>
 			    					{STATUSES.map((status, key)=>(
 		    							<Option value={status} key={key}>
-		    								{status}
+		    								<FormattedMessage id={`export_import_pages.status.${status}`}/>
 		    							</Option>
 		    						))}
 			    				</Select>
