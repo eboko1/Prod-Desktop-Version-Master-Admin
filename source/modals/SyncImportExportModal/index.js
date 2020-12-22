@@ -285,7 +285,7 @@ export default class SyncImportExportModal extends Component {
     }
 
     render() {
-    	const { type, visible, tableData } = this.props;
+    	const { type, visible, tableData, hideModal } = this.props;
     	const { paramsModalVisible, dataSource, requisites } = this.state;
     	return (
     		<Modal
@@ -295,6 +295,7 @@ export default class SyncImportExportModal extends Component {
     			onCancel={this.handleCancel}
     			okText={<FormattedMessage id='export_import_pages.next'/>}
     			width={'fit-content'}
+    			destroyOnClose
     		>
     			<Table
     				columns={type == 'IMPORT' ? [...this.mainColumns, ...this.priorityColumn] : [...this.mainColumns, ...this.syncColumn, ...this.priorityColumn]}
@@ -313,6 +314,7 @@ export default class SyncImportExportModal extends Component {
 	    					paramsModalVisible: false,
 	    				})
 	    			}}
+	    			hideMainModal={hideModal}
     			/>
     		</Modal>
 	    );
@@ -343,7 +345,7 @@ class SyncImportExportParametersModal extends Component {
 
     handleOk = () => {
     	const token = localStorage.getItem('_my.carbook.pro_token');
-    	const { hideModal, type, tablesOptions, tableData } = this.props;
+    	const { hideModal, type, tablesOptions, tableData, hideMainModal } = this.props;
     	const { fileList, fileType, syncDocs, subjectRequisiteId, status, statuses, syncPeriod, fromDate } = this.state;
 
     	const payload = {
@@ -405,6 +407,7 @@ class SyncImportExportParametersModal extends Component {
 	        .then(function (file) {
 	            console.log(file)
            		saveAs(file, `backup-${moment().format('YYYY-MM-DD')}`);
+           		hideMainModal();
 	        })
 	        .catch(function (error) {
 	            console.log('error', error)

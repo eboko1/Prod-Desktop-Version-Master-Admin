@@ -86,7 +86,8 @@ export default class SyncImportPage extends Component {
 	    			hideModal={()=>{
 	    				this.setState({
 	    					modalVisible: false,
-	    				})
+	    				});
+	    				this.fetchTable();
 	    			}}
 	    		/>
 	    	</Layout>
