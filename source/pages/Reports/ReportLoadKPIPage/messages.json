@@ -1,0 +1,61 @@
+{
+    "en": {
+        "report_load_kpi_page.no": "#",
+        "report_load_kpi_page.vehicle": "Vehicle",
+        "report_load_kpi_page.client_name": "Client",
+        "report_load_kpi_page.order": "Order",
+        "report_load_kpi_page.planner": "Planner",
+        "report_load_kpi_page.labors_plan": "Labors plan",
+        "report_load_kpi_page.labors_actial": "Labors actual",
+        "report_load_kpi_page.breaks": "Breaks",
+        "report_load_kpi_page.location": "Location",
+        "report_load_kpi_page.internal_parking": "Internal parking",
+        "report_load_kpi_page.external_parking": "External parking",
+        "report_load_kpi_page.test_drive": "Test drive",
+        "report_load_kpi_page.total": "Total",
+        "report_load_kpi_page.efficiency": "Efficiency",
+        "report_load_kpi_page.plan": "Plan",
+        "report_load_kpi_page.department": "Department",
+        "report_load_kpi_page.station": "Station"
+    },
+
+    "ru": {
+        "report_load_kpi_page.no": "#",
+        "report_load_kpi_page.vehicle": "Vehicle",
+        "report_load_kpi_page.client_name": "Client",
+        "report_load_kpi_page.order": "Order",
+        "report_load_kpi_page.planner": "Planner",
+        "report_load_kpi_page.labors_plan": "Labors plan",
+        "report_load_kpi_page.labors_actial": "Labors actual",
+        "report_load_kpi_page.breaks": "Breaks",
+        "report_load_kpi_page.location": "Location",
+        "report_load_kpi_page.internal_parking": "Internal parking",
+        "report_load_kpi_page.external_parking": "External parking",
+        "report_load_kpi_page.test_drive": "Test drive",
+        "report_load_kpi_page.total": "Total",
+        "report_load_kpi_page.efficiency": "Efficiency",
+        "report_load_kpi_page.plan": "Plan",
+        "report_load_kpi_page.department": "Department",
+        "report_load_kpi_page.station": "Station"
+    },
+
+    "uk": {
+        "report_load_kpi_page.no": "#",
+        "report_load_kpi_page.vehicle": "Vehicle",
+        "report_load_kpi_page.client_name": "Client",
+        "report_load_kpi_page.order": "Order",
+        "report_load_kpi_page.planner": "Planner",
+        "report_load_kpi_page.labors_plan": "Labors plan",
+        "report_load_kpi_page.labors_actial": "Labors actual",
+        "report_load_kpi_page.breaks": "Breaks",
+        "report_load_kpi_page.location": "Location",
+        "report_load_kpi_page.internal_parking": "Internal parking",
+        "report_load_kpi_page.external_parking": "External parking",
+        "report_load_kpi_page.test_drive": "Test drive",
+        "report_load_kpi_page.total": "Total",
+        "report_load_kpi_page.efficiency": "Efficiency",
+        "report_load_kpi_page.plan": "Plan",
+        "report_load_kpi_page.department": "Department",
+        "report_load_kpi_page.station": "Station"
+    }
+}
