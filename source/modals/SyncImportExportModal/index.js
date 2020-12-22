@@ -345,7 +345,7 @@ class SyncImportExportParametersModal extends Component {
 
     handleOk = () => {
     	const token = localStorage.getItem('_my.carbook.pro_token');
-    	const { hideModal, type, tablesOptions, tableData } = this.props;
+    	const { hideModal, type, tablesOptions, tableData, hideMainModal } = this.props;
     	const { fileList, fileType, syncDocs, subjectRequisiteId, status, statuses, syncPeriod, fromDate } = this.state;
 
     	const payload = {
@@ -407,6 +407,7 @@ class SyncImportExportParametersModal extends Component {
 	        .then(function (file) {
 	            console.log(file)
            		saveAs(file, `backup-${moment().format('YYYY-MM-DD')}`);
+           		hideMainModal();
 	        })
 	        .catch(function (error) {
 	            console.log('error', error)
