@@ -375,8 +375,10 @@ class SyncImportExportParametersModal extends Component {
     		if(tableData.length) {
     			payload.syncPeriod = FROM_DATE;
 	    		payload.fromDate = moment(tableData[0].datetime).format('YYYY-MM-DD');
-    		} else {
+    		} else if(fromDate) {
 	    		payload.fromDate = fromDate.format('YYYY-MM-DD');
+	    	} else {
+	    		payload.syncPeriod = ALL;
 	    	}
     	}
 
