@@ -42,8 +42,9 @@ import roleReducer, { moduleName as roleModule } from 'core/role/duck';
 import clientReducer, { moduleName as clientModule } from 'core/client/duck';
 import clientOrdersReducer, { moduleName as clientOrdersModule } from 'core/clientOrders/duck';
 import clientMRDsReducer, { moduleName as clientMRDsModule } from 'core/clientMRDs/duck';
-import reportOrdersReducer, { moduleName as reportOrdersModule } from 'core/reportOrders/duck';
-import reportsReducer, { moduleName as reportsModule } from 'core/reports/duck';
+import reportOrdersReducer, { moduleName as reportOrdersModule } from 'core/reports/reportOrders/duck';
+import reportsReducer, { moduleName as reportsModule } from 'core/reports/reports/duck';
+import reportLoadKPIReducer, { moduleName as reportLoadKPIModule } from 'core/reports/reportLoadKPI/duck';
 import clientRequisiteReducer, { moduleName as clientRequisiteModule } from 'core/clientRequisite/duck';
 import chartReducer, { moduleName as chartModule } from 'core/chart/duck';
 import reviewsReducer, { moduleName as reviewsModule } from 'core/reviews/duck';
@@ -100,6 +101,7 @@ const appState = {
     [ clientMRDsModule ]:           clientMRDsReducer,
     [ reportOrdersModule ]:         reportOrdersReducer,
     [ reportsModule ]:              reportsReducer,
+    [ reportLoadKPIModule ]:        reportLoadKPIReducer,
     [ clientRequisiteModule ]:      clientRequisiteReducer,
     [ clientsModule ]:              clientsReducer,
     [ dashboardModule ]:            dashboardReducer,

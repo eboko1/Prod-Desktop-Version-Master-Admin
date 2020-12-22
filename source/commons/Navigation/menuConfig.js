@@ -237,7 +237,7 @@ export default {
                 },
             ],
         },
-        /* Statistics and reports submenu */
+        /* Statistics and reports submenu*/
         {
             key:      'reports',
             iconType: 'line-chart',
@@ -274,6 +274,14 @@ export default {
                         !isAdmin(user),
                     link: book.reportOrders,
                     name: 'navigation.report_orders',
+                },
+                {
+                    key:      '/report/load_kpi',
+                    disabled: user =>
+                        isForbidden(user, permissions.SHOW_ORDERS) &&
+                        !isAdmin(user),
+                    link: book.reportLoadKPI,
+                    name: 'navigation.report_load_kpi',
                 },
             ],
         },

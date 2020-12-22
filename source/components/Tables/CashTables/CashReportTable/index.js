@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { Table } from 'antd';
 
 // proj
-import { fetchReport, setReportPage } from 'core/reports/duck';
+import { fetchReport, setReportPage } from 'core/reports/reports/duck';
 
 // own
 import { columnsConfig } from './config';
