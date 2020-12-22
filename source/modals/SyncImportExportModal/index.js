@@ -285,7 +285,7 @@ export default class SyncImportExportModal extends Component {
     }
 
     render() {
-    	const { type, visible, tableData } = this.props;
+    	const { type, visible, tableData, hideModal } = this.props;
     	const { paramsModalVisible, dataSource, requisites } = this.state;
     	return (
     		<Modal
@@ -295,6 +295,7 @@ export default class SyncImportExportModal extends Component {
     			onCancel={this.handleCancel}
     			okText={<FormattedMessage id='export_import_pages.next'/>}
     			width={'fit-content'}
+    			destroyOnClose
     		>
     			<Table
     				columns={type == 'IMPORT' ? [...this.mainColumns, ...this.priorityColumn] : [...this.mainColumns, ...this.syncColumn, ...this.priorityColumn]}
@@ -313,6 +314,7 @@ export default class SyncImportExportModal extends Component {
 	    					paramsModalVisible: false,
 	    				})
 	    			}}
+	    			hideMainModal={hideModal}
     			/>
     		</Modal>
 	    );
