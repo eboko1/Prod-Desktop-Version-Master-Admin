@@ -116,6 +116,8 @@ const book = Object.freeze({
     servicesPage:             '/administration/services',
     brandsPage:               '/administration/brands',
     availabilitiesPage:       '/administration/availabilities',
+    syncImportPage:           '/administration/sync-import',
+    syncExportPage:           '/administration/sync-export', 
 
     oldApp: {
         // link to my.cb24.eu
