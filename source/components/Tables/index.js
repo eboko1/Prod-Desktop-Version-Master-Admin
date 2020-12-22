@@ -1,5 +1,6 @@
 import ClientSearchTable from './ClientSearchTable';
 import ClientMRDsTable from './ClientMRDsTable';
+import ImportExportTable from './ImportExportTable';
 
 export { EditableTable } from './EditableTable';
 export { SuppliersTable } from './SuppliersTable';
@@ -33,4 +34,5 @@ export {
 export { 
 	ClientMRDsTable,
 	ClientSearchTable,
+	ImportExportTable,
 };

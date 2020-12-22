@@ -62,7 +62,10 @@ import {
     LocationSettingsPage,
     LocationsDocumentPage,
     LocationsVehiclesPage,
-    LocationsMovementPage
+    LocationsMovementPage,
+    SyncImportPage,
+    SyncExportPage
+
 } from 'pages';
 import book from './book';
 
@@ -383,6 +386,16 @@ export default class Private extends Component {
                     exact
                     component={ AgreementPage }
                     path={ book.agreement }
+                />
+                <Route 
+                    exact
+                    component={ SyncImportPage }
+                    path={ book.syncImportPage }
+                />
+                <Route 
+                    exact
+                    component={ SyncExportPage }
+                    path={ book.syncExportPage }
                 />
                 <Redirect exact from='/' to={ book.ordersAppointments } />
                 <Redirect to={ `${book.exception}/404` } />

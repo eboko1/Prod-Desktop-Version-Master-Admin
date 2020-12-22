@@ -454,6 +454,18 @@ export default {
                     visible: user => isAdmin(user),
                     name:    'navigation.availabilities',
                 },
+                {
+                    key:     '/administration/sync-import',
+                    link:    book.syncImportPage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.sync_import',
+                },
+                {
+                    key:     '/administration/sync-export',
+                    link:    book.syncExportPage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.sync_export',
+                },
             ],
         },
         {

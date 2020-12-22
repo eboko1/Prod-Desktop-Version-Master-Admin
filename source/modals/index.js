@@ -29,6 +29,7 @@ import VehicleLocationModal from './VehicleLocationModal';
 import LocationHistoryModal from './LocationHistoryModal';
 import ReportOrdersFilterModal from './ReportOrdersFilterModal';
 import StoreProductTrackingModal from './StoreProductTrackingModal';
+import SyncImportExportModal from './SyncImportExportModal';
 
 export {
     UniversalFiltersModal,
@@ -62,4 +63,5 @@ export {
     LocationHistoryModal,
     ReportOrdersFilterModal,
     StoreProductTrackingModal,
+    SyncImportExportModal,
 };

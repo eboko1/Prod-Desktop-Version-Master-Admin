@@ -45,6 +45,7 @@ import RepairMapSettingPage from './RepairMapSettingPage';
 // webpack issue: https://github.com/webpack/webpack/issues/3509
 export * from './Storage';
 export * from './Locations';
+export * from './SyncImportExport';
 export * from './Reports';
 
 export {

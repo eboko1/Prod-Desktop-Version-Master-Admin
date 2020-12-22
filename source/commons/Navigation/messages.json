@@ -70,7 +70,9 @@
     "navigation.locations_settings": "Directory of Locations",
     "navigation.locations_document": "Locations Documents",
     "navigation.locations_vehicles": "Locations Vehicles",
-    "navigation.locations_movement": "Vehicles Movement"
+    "navigation.locations_movement": "Vehicles Movement",
+    "navigation.sync_import": "Synchronization / Import",
+    "navigation.sync_export": "Synchronization / Backup"
   },
   "ru": {
     "navigation.operations": "Операции",
@@ -143,7 +145,9 @@
     "navigation.locations_settings": "Справочник локаций",
     "navigation.locations_document": "Документы локаций",
     "navigation.locations_vehicles": "Авто на локациях",
-    "navigation.locations_movement": "Движение Авто по локациям"
+    "navigation.locations_movement": "Движение Авто по локациям",
+    "navigation.sync_import": "Синхронизация / Импорт",
+    "navigation.sync_export": "Синхронизация / Бэкап"
   },
   "uk": {
     "navigation.operations": "Операції",
@@ -216,6 +220,8 @@
     "navigation.locations_settings": "Довідник локацій",
     "navigation.locations_document": "Документи локацій",
     "navigation.locations_vehicles": "Авто по локаціям",
-    "navigation.locations_movement": "Рух Авто по локаціям"
+    "navigation.locations_movement": "Рух Авто по локаціям",
+    "navigation.sync_import": "Синхронізація / Імпорт",
+    "navigation.sync_export": "Синхронізація / Бекап"
   }
 }
