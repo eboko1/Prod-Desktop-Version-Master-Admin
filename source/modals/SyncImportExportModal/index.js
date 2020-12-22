@@ -31,15 +31,15 @@ const 	ALL = 'ALL',
 		XLSX = 'xlsx',
 		CSV = 'csv',
 		CALL = 'CALL',
-		REDUNDANT = 'REDUNDANT',
-		APPROVED = 'APPROVED',
-		CANCELED = 'CANCELED',
-		CREATED = 'CREATED',
-		IN_PROGRESS = 'IN_PROGRESS',
-		RESERVED = 'RESERVED',
-		REQUIRED = 'REQUIRED',
-		SUCCESS = 'SUCCESS',
-		INVITE = 'INVITE';
+		REDUNDANT = 'redundant',
+		APPROVED = 'approved',
+		CANCELED = 'canceled',
+		CREATED = 'created',
+		IN_PROGRESS = 'in_progress',
+		RESERVED = 'reserved',
+		REQUIRED = 'required',
+		SUCCESS = 'success',
+		INVITE = 'invite';
 const STATUSES = [CALL, REDUNDANT, APPROVED, CANCELED, CREATED, IN_PROGRESS, RESERVED, REQUIRED, SUCCESS, INVITE];
 
 export default class SyncImportExportModal extends Component {
@@ -495,7 +495,7 @@ class SyncImportExportParametersModal extends Component {
 			    				>
 			    					{STATUSES.map((status, key)=>(
 		    							<Option value={status} key={key}>
-		    								<FormattedMessage id={`export_import_pages.status.${status}`}/>
+		    								<FormattedMessage id={`export_import_pages.status.${status.toUpperCase()}`}/>
 		    							</Option>
 		    						))}
 			    				</Select>

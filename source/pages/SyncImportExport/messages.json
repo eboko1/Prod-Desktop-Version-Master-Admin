@@ -62,7 +62,8 @@
         "export_import_pages.status.REQUIRED": "Required",
         "export_import_pages.status.SUCCESS": "Success",
         "export_import_pages.status.INVITE": "Invite",
-        "export_import_pages.status.CALL": "Call"
+        "export_import_pages.status.CALL": "Call",
+        "export_import_pages.responsible": "Responsible"
     },
     "ru": {
         "export_import_pages.export_data": "Экспортировать даные",
@@ -127,7 +128,8 @@
         "export_import_pages.status.REQUIRED": "Обязательные",
         "export_import_pages.status.SUCCESS": "Законченные",
         "export_import_pages.status.INVITE": "Приглашения",
-        "export_import_pages.status.CALL": "Звонки"
+        "export_import_pages.status.CALL": "Звонки",
+        "export_import_pages.responsible": "Ответственный"
     },
     "uk": {
         "export_import_pages.export_data": "Экспортировать даные",
@@ -192,6 +194,7 @@
         "export_import_pages.status.REQUIRED": "Обязательные",
         "export_import_pages.status.SUCCESS": "Законченные",
         "export_import_pages.status.INVITE": "Приглашения",
-        "export_import_pages.status.CALL": "Звонки"
+        "export_import_pages.status.CALL": "Звонки",
+        "export_import_pages.responsible": "Ответственный"
     }
 }
