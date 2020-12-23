@@ -16,7 +16,8 @@
         "report_load_kpi_page.efficiency": "Efficiency",
         "report_load_kpi_page.plan": "Plan",
         "report_load_kpi_page.department": "Department",
-        "report_load_kpi_page.station": "Station"
+        "report_load_kpi_page.station": "Station",
+        "report_load_kpi_page.total_rows": "Rows count"
     },
 
     "ru": {
@@ -36,7 +37,8 @@
         "report_load_kpi_page.efficiency": "Efficiency",
         "report_load_kpi_page.plan": "Plan",
         "report_load_kpi_page.department": "Department",
-        "report_load_kpi_page.station": "Station"
+        "report_load_kpi_page.station": "Station",
+        "report_load_kpi_page.total_rows": "Rows count"
     },
 
     "uk": {
@@ -56,6 +58,7 @@
         "report_load_kpi_page.efficiency": "Efficiency",
         "report_load_kpi_page.plan": "Plan",
         "report_load_kpi_page.department": "Department",
-        "report_load_kpi_page.station": "Station"
+        "report_load_kpi_page.station": "Station",
+        "report_load_kpi_page.total_rows": "Rows count"
     }
 }

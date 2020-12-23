@@ -58,7 +58,8 @@ export default class ReportLoadKPIPage extends Component {
     render() {
         const {
             filter,
-            tableData
+            tableData,
+            stats
         } = this.props;
 
         
@@ -73,7 +74,9 @@ export default class ReportLoadKPIPage extends Component {
                             <ReportLoadKPIFilter />
                         </div>
                         <div className={Styles.statsCont}>
-                            <Stats />
+                            <Stats
+                                stats={stats}
+                            />
                         </div>
                     </div>
                 </div>
@@ -82,6 +85,7 @@ export default class ReportLoadKPIPage extends Component {
                     filter={filter}
                     onPageChange={this.onTablePage}
                     tableData={tableData}
+                    stats={stats}
                 />
             </Layout>
         );
