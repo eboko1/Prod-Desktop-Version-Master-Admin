@@ -24,6 +24,7 @@ export class ReportLoadKPITable extends Component {
             onPageChange,
             tableData,
         } = this.props;
+        let rowKeyCounter = 0;
 
         const pagination = {
             pageSize:         25,
@@ -46,7 +47,7 @@ export class ReportLoadKPITable extends Component {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
                     scroll={ { x: 1800, y: '50vh' } }
-                    rowKey={ record => record.id }
+                    rowKey={ record =>  rowKeyCounter++}
                     bordered
                     // loading={loading}
                 />
