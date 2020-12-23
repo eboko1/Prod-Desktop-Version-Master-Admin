@@ -36,7 +36,7 @@ export default class Stats extends React.Component {
                 <div className={Styles.statsCont}>
                     <StatsBlock title={<FormattedMessage id={'report_load_kpi_page.planner'} />} content={1234}/>
                     <StatsBlock title={<FormattedMessage id={'report_load_kpi_page.labors_plan'} />} content={1234}/>
-                    <StatsBlock title={<FormattedMessage id={'report_load_kpi_page.labors_actial'} />} content={1234}/>
+                    <StatsBlock title={<FormattedMessage id={'report_load_kpi_page.labors_actual'} />} content={1234}/>
                     <StatsBlock title={<FormattedMessage id={'report_load_kpi_page.breaks'} />} content={1234}/>
 
                     <StatsBlock title={<FormattedMessage id={'report_load_kpi_page.internal_parking'} />} content={1234}/>
