@@ -1,20 +1,22 @@
 /*
-This module shows Load KPI report. It has some subcomponents.
+This module shows Load KPI report.
 */
 // vendor
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import {Input} from 'antd';
 import _ from "lodash";
 
 // proj
 import {
     fetchReportLoadKPI,
-    setReportLoadKPIPage
+    setReportLoadKPIPage,
+    setReportLoadKPIDoneFromDate,
+    setReportLoadKPIDoneToDate,
+    setReportLoadKPIQuery,
 } from 'core/reports/reportLoadKPI/duck';
 
-import { Layout, Numeral } from "commons";
+import { Layout } from "commons";
 import {ReportLoadKPITable, ReportLoadKPIFilter} from 'components';
 
 // own
@@ -29,7 +31,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     fetchReportLoadKPI,
-    setReportLoadKPIPage
+    setReportLoadKPIPage,
+    setReportLoadKPIDoneFromDate,
+    setReportLoadKPIDoneToDate,
+    setReportLoadKPIQuery,
 };
 
 
@@ -59,8 +64,19 @@ export default class ReportLoadKPIPage extends Component {
         const {
             filter,
             tableData,
-            stats
+            stats,
+            setReportLoadKPIDoneFromDate,
+            setReportLoadKPIDoneToDate,
+            fetchReportLoadKPI,
+            setReportLoadKPIQuery,
         } = this.props;
+
+        const filterControls = {
+            setReportLoadKPIDoneFromDate,
+            setReportLoadKPIDoneToDate,
+            fetchReportLoadKPI,
+            setReportLoadKPIQuery,
+        };
 
         
         return (
@@ -71,7 +87,10 @@ export default class ReportLoadKPIPage extends Component {
                 <div className={Styles.mainCont}>
                     <div className={Styles.header}>
                         <div className={Styles.filterCont}>
-                            <ReportLoadKPIFilter />
+                            <ReportLoadKPIFilter
+                                filter={filter}
+                                filterControls={filterControls}
+                            />
                         </div>
                         <div className={Styles.statsCont}>
                             <Stats

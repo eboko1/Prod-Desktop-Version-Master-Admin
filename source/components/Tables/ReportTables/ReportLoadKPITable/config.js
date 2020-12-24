@@ -48,6 +48,15 @@ const defWidth = {
     efficiency_station: '6%'
 }
 
+//This formats number to make it appearance better
+const formatNumber = (number, precision = 0) => {
+    return (
+        number
+        ? Number(number).toFixed(precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+        : Number(0).toFixed(precision)
+    )
+}
+
 /* eslint-disable complexity */
 export function columnsConfig() {
 
@@ -83,12 +92,19 @@ export function columnsConfig() {
                     return <div>
                         {vehicles
                             ? vehicles.map((elem) => {
-                                return (<div>
-                                    <div className={ Styles.clientVehicle }>
-                                        { `${elem.vehicleMake ||
-                                            '-'} ${elem.vehicleModel ||
-                                            '-'} ${elem.vehicleYear || '-'}` }
-                                    </div>
+                                const {vehicleNumber, vehicleMake, vehicleModel, vehicleModification, vehicleYear} = elem;
+                                return (<div className={ Styles.clientVehicle }>                                    
+                                    <span className={ Styles.vehicleNum }>
+                                        {
+                                            vehicleNumber
+                                            ? `${vehicleNumber} -`
+                                            : '-'
+                                        }
+                                    </span>
+                                    <span>
+                                        { vehicleMake } { vehicleModel }{ ' ' }
+                                        { vehicleModification } ({ vehicleYear })
+                                    </span>
                                 </div>)
                             })
                             : "-"
@@ -114,11 +130,28 @@ export function columnsConfig() {
                 width: defWidth.client_name,
                 dataIndex: 'clientName',
                 render: (clientName, record) => {
+                    const {clientPhones, clientId} = record;
                     return <div className={ Styles.clientName }>
-                        <Link
-                            className={ Styles.clientName }
-                            to={`${book.client}/${record.clientId}`}
-                        > {clientName} </Link>
+                        <div>
+                            <Link
+                                className={ Styles.clientName }
+                                to={`${book.client}/${clientId}`}
+                            > {clientName} </Link>
+                        </div>
+                        <div>
+                        {clientPhones
+                            ? clientPhones.map((elem) => {
+                                return (<div>
+                                    <div>
+                                        <a  className={ Styles.clientPhone } href={ `tel:${elem}` }>
+                                            {elem}
+                                        </a>
+                                    </div>
+                                </div>)
+                            })
+                            : "-"
+                        }
+                    </div>
                     </div>;
                 }
             }
@@ -134,12 +167,12 @@ export function columnsConfig() {
                         <FormattedMessage id={'report_load_kpi_page.planner'} />
                     )
                 },
-                align: 'left',
+                align: 'right',
                 key: 'order_planner',
                 width: defWidth.order_planner,
                 dataIndex: 'totalDuration',
                 render: (totalDuration) => {
-                    return <div>{totalDuration}</div>;
+                    return <div>{formatNumber(totalDuration, 1)}</div>
                 }
             },
             {
@@ -155,7 +188,7 @@ export function columnsConfig() {
                 width: defWidth.order_labors_plan,
                 dataIndex: 'laborsPlan',
                 render: (laborsPlan) => {
-                    return <div>{laborsPlan}</div>;
+                    return <div>{formatNumber(laborsPlan, 1)}</div>
                 }
             },
             {
@@ -171,7 +204,7 @@ export function columnsConfig() {
                 width: defWidth.order_labors_actual,
                 dataIndex: 'workingTime',
                 render: (workingTime) => {
-                    return <div>{workingTime}</div>;
+                    return <div>{formatNumber(workingTime, 1)}</div>
                 }
             },
             {
@@ -187,7 +220,7 @@ export function columnsConfig() {
                 width: defWidth.order_breaks,
                 dataIndex: 'stoppedTime',
                 render: (stoppedTime) => {
-                    return <div>{stoppedTime}</div>;
+                    return <div>{formatNumber(stoppedTime, 1)}</div>;
                 }
             },
         ]
@@ -209,7 +242,7 @@ export function columnsConfig() {
                 width: defWidth.location_internal_parking,
                 dataIndex: 'internalParkingDuration',
                 render: (internalParkingDuration) => {
-                    return <div>{internalParkingDuration}</div>;
+                    return <div>{formatNumber(internalParkingDuration, 1)}</div>;
                 }
             },
             {
@@ -225,7 +258,7 @@ export function columnsConfig() {
                 width: defWidth.location_external_parking,
                 dataIndex: 'externalParkingDuration',
                 render: (externalParkingDuration) => {
-                    return <div>{externalParkingDuration}</div>;
+                    return <div>{formatNumber(externalParkingDuration, 1)}</div>;
                 }
             },
             {
@@ -241,7 +274,7 @@ export function columnsConfig() {
                 width: defWidth.location_department,
                 dataIndex: 'workPostParkingDuration',
                 render: (workPostParkingDuration) => {
-                    return <div>{workPostParkingDuration}</div>;
+                    return <div>{formatNumber(workPostParkingDuration, 1)}</div>;
                 }
             },
             {
@@ -257,7 +290,7 @@ export function columnsConfig() {
                 width: defWidth.location_test_drive,
                 dataIndex: 'otherParkingDuration',
                 render: (otherParkingDuration) => {
-                    return <div>{otherParkingDuration}</div>;
+                    return <div>{formatNumber(otherParkingDuration, 1)}</div>;
                 }
             },
             {
@@ -278,7 +311,8 @@ export function columnsConfig() {
                         workPostParkingDuration,
                         otherParkingDuration
                     } = record;
-                    return <div>{_.sum([internalParkingDuration, externalParkingDuration, workPostParkingDuration, otherParkingDuration])}</div>;
+                    const val = _.sum([internalParkingDuration, externalParkingDuration, workPostParkingDuration, otherParkingDuration]);
+                    return <div>{formatNumber(val, 1)}</div>;
                 }
             },
         ]
@@ -305,7 +339,7 @@ export function columnsConfig() {
                         workingTime
                     } = record;
                     const val = workingTime? (laborsPlan/workingTime): undefined;//Remove dividing by zero
-                    return <div>{val? val: "-"}</div>
+                    return <div>{val? formatNumber(val, 2): "-"}</div>
                 }
             },
             {
@@ -326,7 +360,7 @@ export function columnsConfig() {
                         stoppedTime
                     } = record;
                     const val = workingTime/(workingTime+stoppedTime);
-                    return <div>{val? val: "-"}</div>
+                    return <div>{val? formatNumber(val, 2): "-"}</div>
                 }
             },
             {
@@ -350,7 +384,7 @@ export function columnsConfig() {
                         workingTime
                     } = record;
                     const val = workingTime/_.sum([internalParkingDuration, externalParkingDuration, workPostParkingDuration, otherParkingDuration]);
-                    return <div>{val? val: "-"}</div>
+                    return <div>{val? formatNumber(val, 2): "-"}</div>
                 }
             },
         ]
