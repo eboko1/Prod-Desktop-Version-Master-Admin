@@ -93,13 +93,7 @@ export function columnsConfig() {
                         {vehicles
                             ? vehicles.map((elem) => {
                                 const {vehicleNumber, vehicleMake, vehicleModel, vehicleModification, vehicleYear} = elem;
-                                return (<div className={ Styles.clientVehicle }>
-                                    
-                                    {/* <div className={ Styles.clientVehicle }>
-                                        { `${elem.vehicleMake ||
-                                            '-'} ${elem.vehicleModel ||
-                                            '-'} ${elem.vehicleYear || '-'}` }
-                                    </div> */}
+                                return (<div className={ Styles.clientVehicle }>                                    
                                     <span className={ Styles.vehicleNum }>
                                         {
                                             vehicleNumber

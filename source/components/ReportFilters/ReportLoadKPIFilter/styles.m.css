@@ -1,6 +1,21 @@
 .mainCont {
     display: flex;
     flex-direction: column;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.inputCont, .datePickerCont {
+    width: 100%;
+    display: flex;
+    margin-left: 5px;
+}
+
+.input {
+    margin: 10px 15px 0 0;
+}
+
+.datePicker {
+    margin: 0 !important;
 }

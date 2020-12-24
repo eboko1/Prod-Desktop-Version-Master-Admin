@@ -8,7 +8,7 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import _ from 'lodash';
 
 //proj
-import { Layout, Numeral } from "commons";
+import { Numeral } from "commons";
 
 //own
 import Styles from './styles.m.css';

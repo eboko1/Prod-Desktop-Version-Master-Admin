@@ -42,8 +42,8 @@ const ReducerState = {
     filter:     {
         page: 1,
         query: undefined,
-        doneFromDate: undefined,
-        doneToDate: undefined,
+        doneFromDate: moment().startOf('month').format(DEF_DATE_FORMAT), //Set default creation date filter to serch,
+        doneToDate: moment().endOf('month').format(DEF_DATE_FORMAT), //Set default creation date filter to serch,
     },
 };
 
