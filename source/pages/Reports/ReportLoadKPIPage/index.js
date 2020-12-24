@@ -5,7 +5,7 @@ This module shows Load KPI report. It has some subcomponents.
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import {Input} from 'antd';
+import {Input, Button} from 'antd';
 import _ from "lodash";
 
 // proj
@@ -79,6 +79,11 @@ export default class ReportLoadKPIPage extends Component {
                             />
                         </div>
                     </div>
+                </div>
+                <div>
+                    <Button onClick={() => this.props.fetchReportLoadKPI()}>
+                        Reload
+                    </Button>
                 </div>
 
                 <ReportLoadKPITable
