@@ -5,6 +5,7 @@ import React, {Component} from 'react';
 import { FormattedMessage, injectIntl } from "react-intl";
 import {Input } from 'antd';
 import moment from 'moment';
+import _ from 'lodash';
 
 //proj
 import { DateRangePicker } from 'components';
@@ -19,6 +20,15 @@ export default class ReportLoadKPIFilter extends Component {
 
     constructor(props) {
         super(props);
+
+        this.handleSearch = _.debounce(value => {
+            const {
+                setReportLoadKPIQuery,
+                fetchReportLoadKPI
+            } = this.props.filterControls;
+            setReportLoadKPIQuery(value);
+            fetchReportLoadKPI();
+        }, 1000).bind(this);
        
     }
 
@@ -36,12 +46,8 @@ export default class ReportLoadKPIFilter extends Component {
     };
 
     onSearch = e => {
-        const {
-            setReportLoadKPIQuery,
-            fetchReportLoadKPI
-        } = this.props.filterControls;
-        setReportLoadKPIQuery(e.target.value);
-        fetchReportLoadKPI();
+        const value = e.target.value.replace(/[+()]/g,'');
+        this.handleSearch(value);
     }
 
     render() {
