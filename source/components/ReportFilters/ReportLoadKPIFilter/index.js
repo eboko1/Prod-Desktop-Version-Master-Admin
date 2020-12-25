@@ -48,13 +48,19 @@ export default class ReportLoadKPIFilter extends Component {
 
         const {
             filter,
+            disabled
         } = this.props;
 
+        //If it is needed to disable filters just set this style to main container
+        const disabledStyle = {
+            pointerEvents: 'none',
+            opacity: '0.7'
+        };
+
         return (
-            <div className={Styles.mainCont}>
-                <div className={Styles.datePickerCont}>
+            <div className={Styles.mainCont} style={disabled ? disabledStyle: undefined }>
+                <div className={Styles.datePickerCont} disabled={disabled}>
                     <DateRangePicker
-                        style={{margin: 0}}//prevent default margin
                         className={Styles.datePicker}
                         dateRange={[moment(filter.doneFromDate), moment(filter.doneToDate)]}
                         onDateChange={ this.setDoneDaterange }

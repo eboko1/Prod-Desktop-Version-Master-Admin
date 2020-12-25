@@ -22,6 +22,7 @@ export class ReportLoadKPITable extends Component {
             onPageChange,
             tableData,
             stats,
+            isFetching,
         } = this.props;
         let rowKeyCounter = 0;
 
@@ -48,7 +49,7 @@ export class ReportLoadKPITable extends Component {
                     scroll={ { x: 1800, y: '50vh' } }
                     rowKey={ record =>  rowKeyCounter++}
                     bordered
-                    // loading={loading}
+                    loading={isFetching}
                 />
             </div>
         );
