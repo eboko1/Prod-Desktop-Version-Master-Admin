@@ -325,7 +325,7 @@ export const selectCashSum = createSelector(
 
             console.log(increase, decrease);
 
-            return increase + -decrease;
+            return Math.round(increase*100)/100 - Math.round(decrease*100)/100;
         }
         return 0;
     },
