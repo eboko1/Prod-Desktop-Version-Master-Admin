@@ -323,6 +323,8 @@ export const selectCashSum = createSelector(
                 0,
             );
 
+            console.log(increase, decrease);
+
             return increase + -decrease;
         }
         return 0;

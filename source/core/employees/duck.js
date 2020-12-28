@@ -21,7 +21,7 @@ const ReducerState = {
         disabled: null,
     },
     employees:   null,
-    status:      'all',
+    status:      'working',
     activeOrder: null,
 };
 

@@ -16,9 +16,10 @@ import Styles from './styles.m.css';
 const Option = Select.Option;
 const   WORK_POST = 'WORK_POST',
         INTERNAL_PARKING = 'INTERNAL_PARKING', 
-        EXTERNAL_PARKING = 'EXTERNAL_PARKING', 
+        EXTERNAL_PARKING = 'EXTERNAL_PARKING',
+        TEST_DRIVE = 'TEST_DRIVE',
         OTHER = 'OTHER';
-const TYPES = [WORK_POST, INTERNAL_PARKING, EXTERNAL_PARKING, OTHER];
+const TYPES = [WORK_POST, INTERNAL_PARKING, EXTERNAL_PARKING, TEST_DRIVE, OTHER];
 
 export default class LocationSettingsPage extends Component {
     constructor(props) {

@@ -12,7 +12,7 @@ import { ImportExportTable } from "components";
 import { SyncImportExportModal } from "modals";
 // own
 
-export default class SyncImportPage extends Component {
+export default class SyncExportPage extends Component {
 	constructor(props) {
         super(props);
 
@@ -25,7 +25,7 @@ export default class SyncImportPage extends Component {
     fetchTable = () => {
     	const that = this;
     	const token = localStorage.getItem('_my.carbook.pro_token');
-    	let url = __API_URL__ + `/sync/history`;
+    	let url = __API_URL__ + `/sync/history?type=EXPORT`;
         fetch(url, {
             method: 'GET',
             headers: {
