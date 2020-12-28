@@ -39,7 +39,9 @@ const mapDispatchToProps = {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class EmployeesContainer extends Component {
     componentDidMount() {
-        this.props.fetchEmployees();
+        const { status, setEmployeesStatus, fetchEmployees } = this.props;
+        setEmployeesStatus({ status, disabled: false });
+        fetchEmployees();
     }
 
     /* eslint-enable complexity */

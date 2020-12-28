@@ -33,7 +33,8 @@
         "add_client_form.invalid_phone_format": "Incorrect phone format",
         "add_client_form.payment_respite": "Payment term",
         "add_client_form.source": "Source",
-        "add_client_form.recomendetion": "Recomendetion"
+        "add_client_form.recomendetion": "Recomendetion",
+        "vehicle_transfer.error": "You have unfulfilled orders for this car, fulfill them, then repeat the action."
     },
     "ru": {
         "add_client_form.year": "Год",
@@ -69,7 +70,8 @@
         "add_client_form.invalid_phone_format": "Неправильный формат номера",
         "add_client_form.payment_respite": "Отсрочка",
         "add_client_form.source": "Источник",
-        "add_client_form.recomendetion": "Рекомендация"
+        "add_client_form.recomendetion": "Рекомендация",
+        "vehicle_transfer.error": "У вас есть невыполненные заказы по этому авто, выполните их, затем повторите действие."
     },
     "uk": {
         "add_client_form.year": "Рік",
@@ -105,6 +107,7 @@
         "add_client_form.invalid_phone_format": "Неправильний формат номера",
         "add_client_form.payment_respite": "Відстрочка",
         "add_client_form.source": "Джерело",
-        "add_client_form.recomendetion": "Рекомендація"
+        "add_client_form.recomendetion": "Рекомендація",
+        "vehicle_transfer.error": "У вас є невиконані замовлення по цьому авто, виконайте їх, потім повторіть дію."
     }
 }
