@@ -3,7 +3,7 @@ import { call, put, all, take, select } from 'redux-saga/effects';
 
 //proj
 import { fetchAPI } from 'utils';
-// import {setReportOrdersFetching} from 'core/ui/duck';
+import {setReportLoadKPIFetching} from 'core/ui/duck';
 
 // own
 import {
@@ -22,7 +22,7 @@ export function* fetchReportLoadKPISaga() {
     while (true) {
         try {
             yield take(FETCH_REPORT_LOAD_KPI);
-            // yield put(setReportOrdersFetching(true));
+            yield put(setReportLoadKPIFetching(true));
 
             const {
                 filter,
@@ -36,7 +36,7 @@ export function* fetchReportLoadKPISaga() {
             );
             yield put(fetchReportLoadKPISuccess(data));
         } finally {
-            // yield put(setReportOrdersFetching(false));
+            yield put(setReportLoadKPIFetching(false));
         }
     }
 }

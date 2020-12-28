@@ -37,6 +37,7 @@ export default class Stats extends React.Component {
     render() {
 
         const {
+            totalDuration,
             totalRowsCount,
             totalLaborsPlan,
             totalWorkingTime,
@@ -57,7 +58,7 @@ export default class Stats extends React.Component {
         return (
             <div className={Styles.statsMainCont}>
                 <div className={Styles.statsCont}>
-                    <StatsBlock title={<FormattedMessage id={'report_load_kpi_page.planner'} />} value={1234}/>
+                    <StatsBlock title={<FormattedMessage id={'report_load_kpi_page.planner'} />} value={totalDuration}/>
                     <StatsBlock title={<FormattedMessage id={'report_load_kpi_page.labors_plan'} />} value={totalLaborsPlan}/>
                     <StatsBlock title={<FormattedMessage id={'report_load_kpi_page.labors_actual'} />} value={totalWorkingTime}/>
                     <StatsBlock title={<FormattedMessage id={'report_load_kpi_page.breaks'} />} value={totalStoppedTime}/>

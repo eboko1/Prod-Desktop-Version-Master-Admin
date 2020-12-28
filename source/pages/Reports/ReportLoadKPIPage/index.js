@@ -27,6 +27,7 @@ const mapStateToProps = state => ({
     tableData: state.reportLoadKPI.tableData,
     filter: state.reportLoadKPI.filter,
     stats: state.reportLoadKPI.stats,
+    reportLoadKPIFetching: state.ui.reportLoadKPIFetching,
 });
 
 const mapDispatchToProps = {
@@ -69,6 +70,7 @@ export default class ReportLoadKPIPage extends Component {
             setReportLoadKPIDoneToDate,
             fetchReportLoadKPI,
             setReportLoadKPIQuery,
+            reportLoadKPIFetching,
         } = this.props;
 
         const filterControls = {
@@ -90,6 +92,7 @@ export default class ReportLoadKPIPage extends Component {
                             <ReportLoadKPIFilter
                                 filter={filter}
                                 filterControls={filterControls}
+                                disabled={reportLoadKPIFetching}
                             />
                         </div>
                         <div className={Styles.statsCont}>
@@ -105,6 +108,7 @@ export default class ReportLoadKPIPage extends Component {
                     onPageChange={this.onTablePage}
                     tableData={tableData}
                     stats={stats}
+                    isFetching={reportLoadKPIFetching}
                 />
             </Layout>
         );
