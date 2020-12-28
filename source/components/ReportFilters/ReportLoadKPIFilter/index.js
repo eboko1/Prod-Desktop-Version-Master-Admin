@@ -5,6 +5,7 @@ import React, {Component} from 'react';
 import { FormattedMessage, injectIntl } from "react-intl";
 import {Input } from 'antd';
 import moment from 'moment';
+import _ from 'lodash';
 
 //proj
 import { DateRangePicker } from 'components';
@@ -19,6 +20,15 @@ export default class ReportLoadKPIFilter extends Component {
 
     constructor(props) {
         super(props);
+
+        this.handleSearch = _.debounce(value => {
+            const {
+                setReportLoadKPIQuery,
+                fetchReportLoadKPI
+            } = this.props.filterControls;
+            setReportLoadKPIQuery(value);
+            fetchReportLoadKPI();
+        }, 1000).bind(this);
        
     }
 
@@ -36,25 +46,27 @@ export default class ReportLoadKPIFilter extends Component {
     };
 
     onSearch = e => {
-        const {
-            setReportLoadKPIQuery,
-            fetchReportLoadKPI
-        } = this.props.filterControls;
-        setReportLoadKPIQuery(e.target.value);
-        fetchReportLoadKPI();
+        const value = e.target.value.replace(/[+()]/g,'');
+        this.handleSearch(value);
     }
 
     render() {
 
         const {
             filter,
+            disabled
         } = this.props;
 
+        //If it is needed to disable filters just set this style to main container
+        const disabledStyle = {
+            pointerEvents: 'none',
+            opacity: '0.7'
+        };
+
         return (
-            <div className={Styles.mainCont}>
-                <div className={Styles.datePickerCont}>
+            <div className={Styles.mainCont} style={disabled ? disabledStyle: undefined }>
+                <div className={Styles.datePickerCont} disabled={disabled}>
                     <DateRangePicker
-                        style={{margin: 0}}//prevent default margin
                         className={Styles.datePicker}
                         dateRange={[moment(filter.doneFromDate), moment(filter.doneToDate)]}
                         onDateChange={ this.setDoneDaterange }
