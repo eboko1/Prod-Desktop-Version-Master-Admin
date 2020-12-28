@@ -842,6 +842,7 @@ class DetailProductModal extends React.Component{
     }
 
     setVinDetail(code, name, key, related) {
+        this.unsetSupplier(key, related);
         this.state.mainTableSource[0].detailName = name;
         this.state.mainTableSource[0].detailCode = code;
         
