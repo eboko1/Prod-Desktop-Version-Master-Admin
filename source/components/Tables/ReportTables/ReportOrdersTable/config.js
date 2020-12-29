@@ -49,6 +49,9 @@ const defWidth = {
     margin_total: '5%'
 }
 
+
+let _handleSearchRef = null;
+
 /* eslint-disable complexity */
 export function columnsConfig(props) {
 
@@ -77,6 +80,19 @@ export function columnsConfig(props) {
         onOpenFilterModal,
     } = filterControls;
 
+    if(!_handleSearchRef) {
+        _handleSearchRef = _.debounce(value => {
+            // const {
+            //     setReportLoadKPIQuery,
+            //     fetchReportLoadKPI
+            // } = this.props.filterControls;
+            setReportOrdersQuery(value.toLowerCase().trim());
+            fetchReportOrders();
+            // setReportLoadKPIQuery(value);
+            // fetchReportLoadKPI();
+        }, 1000);
+    }
+
     
 
     //Handlers---------------------------------------------------------------
@@ -91,8 +107,9 @@ export function columnsConfig(props) {
     }
 
     function onSearchInput(e) {
-        setReportOrdersQuery(e.target.value.toLowerCase().trim());
-        fetchReportOrders();
+        // setReportOrdersQuery(e.target.value.toLowerCase().trim());
+        // fetchReportOrders();
+        if(_handleSearchRef) _handleSearchRef(e.target.value)
     }
 
     const setCreationDaterange = daterange => {
