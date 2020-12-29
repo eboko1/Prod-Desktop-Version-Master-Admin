@@ -82,14 +82,8 @@ export function columnsConfig(props) {
 
     if(!_handleSearchRef) {
         _handleSearchRef = _.debounce(value => {
-            // const {
-            //     setReportLoadKPIQuery,
-            //     fetchReportLoadKPI
-            // } = this.props.filterControls;
-            setReportOrdersQuery(value.toLowerCase().trim());
+            setReportOrdersQuery(value.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").trim());
             fetchReportOrders();
-            // setReportLoadKPIQuery(value);
-            // fetchReportLoadKPI();
         }, 1000);
     }
 
@@ -107,8 +101,6 @@ export function columnsConfig(props) {
     }
 
     function onSearchInput(e) {
-        // setReportOrdersQuery(e.target.value.toLowerCase().trim());
-        // fetchReportOrders();
         if(_handleSearchRef) _handleSearchRef(e.target.value)
     }
 
