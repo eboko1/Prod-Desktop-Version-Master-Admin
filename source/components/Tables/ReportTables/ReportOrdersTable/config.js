@@ -229,7 +229,11 @@ export function columnsConfig(props) {
             {
                 title:  <div className={Styles.filterColumnHeaderWrap}>
                             <FormattedMessage id='report-orders-table.client_name' />
-                            <Input onChange={onSearchInput} placeholder="Search"/>
+                            <Input
+                                onChange={onSearchInput}
+                                placeholder="Search"
+                                defaultValue={filter.query}
+                            />
                         </div>,
                 align: 'left',
                 key: 'client_name',
