@@ -64,6 +64,7 @@ export default class OrderFormTabs extends React.PureComponent {
 
     buildStoreGroupsTree() {
         var treeData = [];
+        console.log(this.props.details);
         for (let i = 0; i < this.props.details.length; i++) {
             const parentGroup = this.props.details[ i ];
             treeData.push({
@@ -74,6 +75,7 @@ export default class OrderFormTabs extends React.PureComponent {
                 key:        `${i}`,
                 selectable: false,
                 children:   [],
+                multiplier: parentGroup.priceGroupMultiplier,
             });
             for (let j = 0; j < parentGroup.childGroups.length; j++) {
                 const childGroup = parentGroup.childGroups[ j ];
@@ -85,6 +87,7 @@ export default class OrderFormTabs extends React.PureComponent {
                     key:        `${i}-${j}`,
                     selectable: false,
                     children:   [],
+                    multiplier: childGroup.priceGroupMultiplier,
                 });
                 for (let k = 0; k < childGroup.childGroups.length; k++) {
                     const lastNode = childGroup.childGroups[ k ];
@@ -95,6 +98,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         className: Styles.groupTreeOption,
                         key:       `${i}-${j}-${k}`,
                         children:  [],
+                        multiplier: lastNode.priceGroupMultiplier,
                     });
                     for (let l = 0; l < lastNode.childGroups.length; l++) {
                         const elem = lastNode.childGroups[ l ];
@@ -104,6 +108,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             value:     elem.id,
                             className: Styles.groupTreeOption,
                             key:       `${i}-${j}-${k}-${l}`,
+                            multiplier: elem.priceGroupMultiplier,
                         });
                     }
                 }
