@@ -783,6 +783,7 @@ class DetailsTable extends Component {
                         this.hideDetailProductModal();
                     } }
                     brands={ allDetails.brands }
+                    allDetails={ allDetails.details }
                     detail={ dataSource[ productModalKey ] }
                     tableKey={ productModalKey }
                     updateDetail={ this.updateDetail }
