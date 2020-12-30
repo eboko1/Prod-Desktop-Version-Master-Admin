@@ -82,7 +82,7 @@ export function columnsConfig(props) {
 
     if(!_handleSearchRef) {
         _handleSearchRef = _.debounce(value => {
-            setReportOrdersQuery(value.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").trim());
+            setReportOrdersQuery(value.toLowerCase().trim());
             fetchReportOrders();
         }, 1000);
     }
