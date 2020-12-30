@@ -410,7 +410,7 @@ class AddServiceModal extends React.Component{
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
-                    const sum = elem.price *  elem.count;
+                    const sum = elem.price *  (elem.count || 1);
                     return (
                         <InputNumber
                             className={Styles.serviceNumberInput}
