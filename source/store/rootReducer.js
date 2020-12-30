@@ -79,15 +79,16 @@ import history from './history';
 export const persistConfig = {
     key:       'persistedStore',
     storage:   persistStorage,
-    whitelist: [ 'auth', 'subscription',  'reportOrders',],
+    whitelist: [ 'auth', 'subscription',  'reportOrders', 'reportLoadKPI', ],
 };
 
 const persistedState = {
-    [ authModule ]:         authReducer,
-    [ subscriptionModule ]: subscriptionReducer,
-    [ reportOrdersModule ]: reportOrdersReducer,
+    [ authModule ]:          authReducer,
+    [ subscriptionModule ]:  subscriptionReducer,
+    [ reportOrdersModule ]:  reportOrdersReducer,
+    [ reportLoadKPIModule ]: reportLoadKPIReducer,
     intl,
-    router:                 connectRouter(history),
+    router:                  connectRouter(history),
 };
 
 const appState = {
@@ -100,9 +101,7 @@ const appState = {
     [ clientModule ]:               clientReducer,
     [ clientOrdersModule ]:         clientOrdersReducer,
     [ clientMRDsModule ]:           clientMRDsReducer,
-    // [ reportOrdersModule ]:         reportOrdersReducer,
     [ reportsModule ]:              reportsReducer,
-    [ reportLoadKPIModule ]:        reportLoadKPIReducer,
     [ clientRequisiteModule ]:      clientRequisiteReducer,
     [ clientsModule ]:              clientsReducer,
     [ dashboardModule ]:            dashboardReducer,

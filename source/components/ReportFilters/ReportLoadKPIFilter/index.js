@@ -77,6 +77,8 @@ export default class ReportLoadKPIFilter extends Component {
                         className={Styles.input}
                         placeholder="Search"
                         onChange={this.onSearch}
+                        defaultValue={filter.query}
+                        allowClear
                     />
                 </div>
             </div>
