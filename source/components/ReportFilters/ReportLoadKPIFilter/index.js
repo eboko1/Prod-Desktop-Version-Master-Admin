@@ -16,6 +16,7 @@ import Styles from './styles.m.css';
 const DEF_DATE_FORMAT = 'YYYY/MM/DD';
 const DEF_UI_DATE_FORMAT = 'DD/MM/YYYY';
 
+@injectIntl
 export default class ReportLoadKPIFilter extends Component {
 
     constructor(props) {
@@ -75,7 +76,7 @@ export default class ReportLoadKPIFilter extends Component {
                 <div className={Styles.inputCont}>
                     <Input
                         className={Styles.input}
-                        placeholder="Search"
+                        placeholder={this.props.intl.formatMessage({ id: "report_orders_page_page.search" })}
                         onChange={this.onSearch}
                         defaultValue={filter.query}
                         allowClear

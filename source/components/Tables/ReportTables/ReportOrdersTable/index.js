@@ -1,15 +1,15 @@
 // vendor
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Table } from 'antd';
 
 // proj
-import { Loader } from 'commons';
 
 // own
 import { columnsConfig } from './config';
 import Styles from './styles.m.css';
 
+@injectIntl
 export class ReportOrdersTable extends Component {
     constructor(props) {
         super(props);
@@ -33,7 +33,8 @@ export class ReportOrdersTable extends Component {
             setIncludeServicesDiscount,
             includeServicesDiscount,
             filterControls,
-            filter: filter
+            filter: filter,
+            formatMessage: this.props.intl.formatMessage
         });
 
         const pagination = {

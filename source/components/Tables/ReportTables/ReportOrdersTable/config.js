@@ -58,6 +58,7 @@ export function columnsConfig(props) {
     const {
         filterControls,
         filter,
+        formatMessage,
     } = props;
 
     const {
@@ -231,7 +232,7 @@ export function columnsConfig(props) {
                             <FormattedMessage id='report-orders-table.client_name' />
                             <Input
                                 onChange={onSearchInput}
-                                placeholder="Search"
+                                placeholder={formatMessage({ id: "report_orders_page_page.search" })}
                                 defaultValue={filter.query}
                             />
                         </div>,

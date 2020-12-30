@@ -9,7 +9,8 @@
         "report_orders_page_page.labors_margin": "Labors margin %",
         "report_orders_page_page.parts_margin": "Parts margin %",
         "report_orders_page_page.total_margin": "Total margin %",
-        "report_orders_page_page.total_rows": "Total rows"
+        "report_orders_page_page.total_rows": "Total rows",
+        "report_orders_page_page.search": "Search"
     },
     "ru": {
         "report_orders_page_page.labors_sum": "Сумма работ",
@@ -21,7 +22,8 @@
         "report_orders_page_page.labors_margin": "Маржа из работ %",
         "report_orders_page_page.parts_margin": "Маржа по запчастям %",
         "report_orders_page_page.total_margin": "Общая маржа %",
-        "report_orders_page_page.total_rows": "Количество строк"
+        "report_orders_page_page.total_rows": "Количество строк",
+        "report_orders_page_page.search": "Поиск"
     },
     "uk": {
         "report_orders_page_page.labors_sum": "Сума робіт",
@@ -33,6 +35,7 @@
         "report_orders_page_page.labors_margin": "Маржа з робіт %",
         "report_orders_page_page.parts_margin": "Маржа з запчастин %",
         "report_orders_page_page.total_margin": "Загальна маржа %",
-        "report_orders_page_page.total_rows": "Кількість рядків"
+        "report_orders_page_page.total_rows": "Кількість рядків",
+        "report_orders_page_page.search": "Шукати"
     }
 }
