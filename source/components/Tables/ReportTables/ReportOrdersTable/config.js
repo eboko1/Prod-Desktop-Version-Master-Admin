@@ -58,6 +58,7 @@ export function columnsConfig(props) {
     const {
         filterControls,
         filter,
+        formatMessage,
     } = props;
 
     const {
@@ -82,7 +83,7 @@ export function columnsConfig(props) {
 
     if(!_handleSearchRef) {
         _handleSearchRef = _.debounce(value => {
-            setReportOrdersQuery(value.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").trim());
+            setReportOrdersQuery(value.toLowerCase().trim());
             fetchReportOrders();
         }, 1000);
     }
@@ -229,7 +230,11 @@ export function columnsConfig(props) {
             {
                 title:  <div className={Styles.filterColumnHeaderWrap}>
                             <FormattedMessage id='report-orders-table.client_name' />
-                            <Input onChange={onSearchInput} placeholder="Search"/>
+                            <Input
+                                onChange={onSearchInput}
+                                placeholder={formatMessage({ id: "report_orders_page_page.search" })}
+                                defaultValue={filter.query}
+                            />
                         </div>,
                 align: 'left',
                 key: 'client_name',
