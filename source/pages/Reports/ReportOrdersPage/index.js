@@ -6,7 +6,7 @@ Also it provides basic search and print button.
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import {Input} from 'antd';
+import {Input, Button} from 'antd';
 import _ from "lodash";
 
 const Search = Input.Search;
@@ -28,7 +28,7 @@ import {
     setReportOrdersPage,
     setReportOrdersAllFilters
 } from 'core/reports/reportOrders/duck';
-import ReportOrdersFilterModal from 'modals/ReportOrdersFilterModal';
+import { ReportOrdersFilterModal } from 'modals';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Layout, Numeral } from "commons";
@@ -37,6 +37,7 @@ import { isForbidden, permissions } from "utils";
 
 // own
 import Styles from "./styles.m.css";
+import Stats from './Stats';
 
 const mapStateToProps = state => ({
     tableData: state.reportOrders.tableData,
@@ -89,85 +90,7 @@ export default class ReportOrdersPage extends Component {
         this.props.fetchReportOrdersFilterOptions();
     }
 
-    showStats(stats) {
-
-        const {
-            totalRowsCount,
-            totalServicesSum,
-            totalAppurtenanciesSum,
-            totalServicesProfit,
-            totalAppurtenanciesProfit,
-        } = stats;
-
-        const totalSum = (parseInt(totalServicesSum) + parseInt(totalAppurtenanciesSum));
-        const totalProfit = (parseInt(totalServicesProfit) + parseInt(totalAppurtenanciesProfit));
-
-        const totalLaborsMargin = (Number(totalServicesSum) && Number(totalServicesProfit))
-            ? ((totalServicesProfit*100.0)/totalServicesSum).toFixed(1)
-            : 0;
-
-        const totalAppurtenanciesMargin = (Number(totalAppurtenanciesProfit) && Number(totalAppurtenanciesSum))
-        ?((totalAppurtenanciesProfit*100.0)/totalAppurtenanciesSum).toFixed(1)
-        : 0;
-
-        const totalMargin = (totalProfit && totalSum)
-            ? (((totalProfit)/(totalSum))* 100.0).toFixed(1)
-            : 0;
-
-        return <div className={Styles.statsMainCont}>
-            <div className={Styles.statsCont}>
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.labors_sum'} /></div>
-                    <div className={Styles.statsText}><Numeral>{parseInt(totalServicesSum)}</Numeral></div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.parts_sum'} /></div>
-                    <div className={Styles.statsText}><Numeral>{parseInt(totalAppurtenanciesSum)}</Numeral></div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_sum'} /></div>
-                    <div className={Styles.statsText}><Numeral>{parseInt(totalSum)}</Numeral></div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.labors_profit'} /></div>
-                    <div className={Styles.statsText}><Numeral>{parseInt(totalServicesProfit)}</Numeral></div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.parts_profit'} /></div>
-                    <div className={Styles.statsText}><Numeral>{parseInt(totalAppurtenanciesProfit)}</Numeral></div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_profit'} /></div>
-                    <div className={Styles.statsText}><Numeral>{parseInt(totalProfit)}</Numeral></div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.labors_margin'} /></div>
-                    <div className={Styles.statsText}>{totalLaborsMargin}</div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.parts_margin'} /></div>
-                    <div className={Styles.statsText}>{totalAppurtenanciesMargin}</div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_margin'} /></div>
-                    <div className={Styles.statsText}>{totalMargin}</div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_rows'} /></div>
-                    <div className={Styles.statsText}><Numeral>{totalRowsCount}</Numeral></div>
-                </div>
-            </div>
-        </div>
-    }
+    
 
     onOpenFilterModal() {
         this.props.setModal(MODALS.REPORT_ORDERS_FILTER);
@@ -239,11 +162,16 @@ export default class ReportOrdersPage extends Component {
         
         return (
             <Layout
-                title={<FormattedMessage id="navigation.report_orders" />}
+                title={
+                    <div>
+                        <div><FormattedMessage id="navigation.report_orders" /></div>
+                        <div><Button>Export</Button></div>
+                    </div>
+                }
                 paper={false}
             >
                 <section>
-                    {this.showStats(stats)}
+                    <Stats stats={stats}/>
                 </section>
 
                 <ReportOrdersTable
