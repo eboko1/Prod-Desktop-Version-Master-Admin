@@ -823,6 +823,7 @@ export default class OrderFormHeader extends Component {
                     {this.state.paymentMethodOptions}
                 </DecoratedSelect>
                 <DecoratedSelect
+                    allowClear={true}
                     errors={errors}
                     field="requisite"
                     fieldValue={_.get(fields, "requisite")}

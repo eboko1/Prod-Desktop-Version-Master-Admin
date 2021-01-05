@@ -89,38 +89,65 @@ export default class ImportExportTable extends Component {
                 		<Button
                 			type='primary'
                             onClick={() => {
-                                const { fetchTable } = this.props;
-                                const fetchData = {...payload};
-                                delete fetchData.businessId;
-                                delete fetchData.format;
-                                delete fetchData.language;
-
+                                console.log(row);
                                 const token = localStorage.getItem('_my.carbook.pro_token');
-                                let url = __API_URL__ + `/sync/${row.type.toLowerCase()}/${payload.format.toLowerCase()}`;
-                                fetch(url, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Authorization': token,
-                                    },
-                                    body: JSON.stringify(fetchData),
-                                })
-                                .then(function (response) {
-                                    if (response.status !== 200) {
-                                    return Promise.reject(new Error(response.statusText))
-                                    }
-                                    return Promise.resolve(response)
-                                })
-                                .then(function (response) {
-                                    return response.blob();
-                                })
-                                .then(function (file) {
-                                    console.log(file)
-                                    saveAs(file, `backup-${moment(row.datetime).format('YYYY-MM-DD')}`);
-                                    fetchTable();
-                                })
-                                .catch(function (error) {
-                                    console.log('error', error)
-                                });
+                                if(this.props.type == 'EXPORT') {
+                                    let url = __API_URL__ + `/sync/${row.type.toLowerCase()}/${row.format.toLowerCase()}`;
+                                    fetch(url, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Authorization': token,
+                                        },
+                                        body: JSON.stringify({
+                                            generate: false,
+                                            repeatSyncById: row.id,
+                                        }),
+                                    })
+                                    .then(function (response) {
+                                        if (response.status !== 200) {
+                                        return Promise.reject(new Error(response.statusText))
+                                        }
+                                        return Promise.resolve(response)
+                                    })
+                                    .then(function (response) {
+                                        return response.blob();
+                                    })
+                                    .then(function (file) {
+                                        console.log(file)
+                                        saveAs(file, `backup-${moment(row.datetime).format('YYYY-MM-DD')}.${row.format.toLowerCase()}`);
+                                        //fetchTable();
+                                    })
+                                    .catch(function (error) {
+                                        console.log('error', error)
+                                    });
+                                } else if(this.props.type == 'IMPORT') {
+                                    let url = __API_URL__ + `/sync/${row.type.toLowerCase()}/${row.format.toLowerCase()}`;
+                                    fetch(url, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Authorization': token,
+                                        },
+                                        body: JSON.stringify({
+                                            tablesOptions: row.payload.tablesOptions,
+                                            repeatSyncById: row.id,
+                                        }),
+                                    })
+                                    .then(function (response) {
+                                        if (response.status !== 200) {
+                                        return Promise.reject(new Error(response.statusText))
+                                        }
+                                        return Promise.resolve(response)
+                                    })
+                                    .then(function (response) {
+                                        return response.blob();
+                                    })
+                                    .then(function (data) {
+                                        //fetchTable();
+                                    })
+                                    .catch(function (error) {
+                                        console.log('error', error)
+                                    });
+                                }
                             }}
                 		>
                 			<FormattedMessage id='export_import_pages.retry'/>
