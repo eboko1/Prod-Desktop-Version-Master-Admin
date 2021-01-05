@@ -1,10 +1,11 @@
 //vendor
 import React from 'react';
-import { Form, Row, Col, DatePicker } from 'antd';
+import { Form, Row, Col, DatePicker, Popover, Button } from 'antd';
 import { FormattedMessage, injectIntl } from "react-intl";
 import moment from 'moment';
 
 //proj
+import { DateRangePicker } from 'components';
 
 //own
 import Styles from './styles.m.css'
@@ -100,6 +101,16 @@ class ReportOrdersFilter extends React.Component {
         doneFromDate: doneFromDate ? moment(doneFromDate, DEF_DATE_FORMAT): undefined,
         doneToDate: doneToDate ? moment(doneToDate, DEF_DATE_FORMAT): undefined,
     }
+
+    //Handlers
+    const onCreationRangeChanged = (range) => {
+        this.props.form.setFieldsValue({
+            creationFromDate: range[0],
+            creationToDate: range[1],
+            creationDateRange: range
+        });
+    }
+    //------------------
     
     return (
         <Form
@@ -110,7 +121,7 @@ class ReportOrdersFilter extends React.Component {
             <div className={Styles.formContent}>
                 <div className={Styles.filterBlock}>
                     <Row className={Styles.row}>
-                        <Col  className={Styles.colText} span={6}><FormattedMessage id="report-orders-form.creation"/></Col>
+                        <Col  className={Styles.colText} span={4}><FormattedMessage id="report-orders-form.creation"/></Col>
                         <Col className={Styles.col} span={2}><FormattedMessage id="report-orders-form.from"/></Col>
                         <Col className={Styles.col} span={6}>
                             <Form.Item className={Styles.formItemStyle} name={'creationFromDate'}>
@@ -131,8 +142,24 @@ class ReportOrdersFilter extends React.Component {
                                     )}
                             </Form.Item>
                         </Col>
-                        <Col className={Styles.col} span={2}></Col>
+                        <Col className={Styles.col} span={4}>
+                            <Form.Item>
+                                {getFieldDecorator('creationDateRange', {
+                                    initialValue: [initValues.creationFromDate, initValues.creationToDate ],
+                                    valuePropName: 'dateRange',
+                                    // trigger: 'onDateChange'
+                                })(
+                                    <DateRangePicker
+                                        minimize
+                                        overlayStyle={{zIndex: '5000'}}
+                                        onDateChange={onCreationRangeChanged}
+                                    />
+                                )}
+                            </Form.Item>
+                            
+                        </Col>
                     </Row>
+
                     <Row  className={Styles.row}>
                         <Col className={Styles.colText} span={6}><FormattedMessage id="report-orders-form.appointment"/></Col>
                         <Col className={Styles.col} span={2}><FormattedMessage id="report-orders-form.from"/></Col>
@@ -157,6 +184,7 @@ class ReportOrdersFilter extends React.Component {
                         </Col>
                         <Col className={Styles.col} span={2}></Col>
                     </Row>
+
                     <Row  className={Styles.row}>
                         <Col className={Styles.colText} span={6}><FormattedMessage id="report-orders-form.done"/></Col>
                         <Col className={Styles.col} span={2}><FormattedMessage id="report-orders-form.from"/></Col>
