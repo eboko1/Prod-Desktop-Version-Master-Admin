@@ -110,6 +110,77 @@ class ReportOrdersFilter extends React.Component {
             creationDateRange: range
         });
     }
+
+    const onAppointmentRangeChanged = (range) => {
+        this.props.form.setFieldsValue({
+            appointmentFromDate: range[0],
+            appointmentToDate: range[1],
+            appointmentDateRange: range
+        });
+    }
+
+    const onDoneRangeChanged = (range) => {
+        this.props.form.setFieldsValue({
+            doneFromDate: range[0],
+            doneToDate: range[1],
+            doneDateRange: range
+        });
+    }
+
+    const onCreationFromDateChanged = (date) => {
+        const {
+            creationToDate,
+        } = this.props.form.getFieldsValue();
+
+        this.props.form.setFieldsValue({
+            creationDateRange: [date, creationToDate]
+        });
+    }
+
+    const onCreationToDateChanged = (date) => {
+        const {
+            creationFromDate
+        } = this.props.form.getFieldsValue();
+        this.props.form.setFieldsValue({
+            creationDateRange: [creationFromDate, date]
+        });
+    }
+
+    const onAppointmentFromDateChanged = (date) => {
+        const {
+            appointmentToDate,
+        } = this.props.form.getFieldsValue();
+        this.props.form.setFieldsValue({
+            appointmentDateRange: [date, appointmentToDate]
+        });
+    }
+
+    const onAppointmentToDateChanged = (date) => {
+        const {
+            appointmentFromDate,
+        } = this.props.form.getFieldsValue();
+        this.props.form.setFieldsValue({
+            appointmentDateRange: [appointmentFromDate, date]
+        });
+    }
+
+    const onDoneFromDateChanged = (date) => {
+        const {
+            doneToDate
+        } = this.props.form.getFieldsValue();
+        this.props.form.setFieldsValue({
+            doneDateRange: [date, doneToDate]
+        });
+    }
+
+    const onDoneToDateChanged = (date) => {
+        const {
+            doneFromDate,
+        } = this.props.form.getFieldsValue();
+        this.props.form.setFieldsValue({
+            doneDateRange: [doneFromDate, date]
+        });
+    }
     //------------------
     
     return (
@@ -128,7 +199,7 @@ class ReportOrdersFilter extends React.Component {
                                 {getFieldDecorator('creationFromDate', {
                                     initialValue: initValues.creationFromDate
                                 })(
-                                    <DatePicker format={"YYYY/MM/DD"} popupStyle={{zIndex: 2000}} fromat={DEF_UI_DATE_FORMAT}/>
+                                    <DatePicker format={"YYYY/MM/DD"} popupStyle={{zIndex: 2000}} fromat={DEF_UI_DATE_FORMAT} onChange={onCreationFromDateChanged}/>
                                 )}
                             </Form.Item>
                         </Col>
@@ -138,7 +209,7 @@ class ReportOrdersFilter extends React.Component {
                                     {getFieldDecorator('creationToDate', {
                                         initialValue: initValues.creationToDate
                                     })(
-                                        <DatePicker format={"YYYY/MM/DD"} popupStyle={{zIndex: 2000}} fromat={DEF_UI_DATE_FORMAT}/>
+                                        <DatePicker format={"YYYY/MM/DD"} popupStyle={{zIndex: 2000}} fromat={DEF_UI_DATE_FORMAT} onChange={onCreationToDateChanged}/>
                                     )}
                             </Form.Item>
                         </Col>
@@ -156,19 +227,18 @@ class ReportOrdersFilter extends React.Component {
                                     />
                                 )}
                             </Form.Item>
-                            
                         </Col>
                     </Row>
 
                     <Row  className={Styles.row}>
-                        <Col className={Styles.colText} span={6}><FormattedMessage id="report-orders-form.appointment"/></Col>
+                        <Col className={Styles.colText} span={4}><FormattedMessage id="report-orders-form.appointment"/></Col>
                         <Col className={Styles.col} span={2}><FormattedMessage id="report-orders-form.from"/></Col>
                         <Col className={Styles.col} span={6}>
                             <Form.Item className={Styles.formItemStyle} name={'appointmentFromDate'}>
                                     {getFieldDecorator('appointmentFromDate', {
                                         initialValue: initValues.appointmentFromDate
                                     })(
-                                        <DatePicker format={"YYYY/MM/DD"} popupStyle={{zIndex: 2000}} fromat={DEF_UI_DATE_FORMAT}/>
+                                        <DatePicker format={"YYYY/MM/DD"} popupStyle={{zIndex: 2000}} fromat={DEF_UI_DATE_FORMAT} onChange={onAppointmentFromDateChanged}/>
                                     )}
                             </Form.Item>
                         </Col>
@@ -178,22 +248,36 @@ class ReportOrdersFilter extends React.Component {
                                     {getFieldDecorator('appointmentToDate', {
                                         initialValue: initValues.appointmentToDate
                                     })(
-                                        <DatePicker format={"YYYY/MM/DD"} popupStyle={{zIndex: 2000}} fromat={DEF_UI_DATE_FORMAT}/>
+                                        <DatePicker format={"YYYY/MM/DD"} popupStyle={{zIndex: 2000}} fromat={DEF_UI_DATE_FORMAT} onChange={onAppointmentToDateChanged}/>
                                     )}
                             </Form.Item>
                         </Col>
-                        <Col className={Styles.col} span={2}></Col>
+                        <Col className={Styles.col} span={4}>
+                            <Form.Item>
+                                {getFieldDecorator('appointmentDateRange', {
+                                    initialValue: [initValues.appointmentFromDate, initValues.appointmentToDate ],
+                                    valuePropName: 'dateRange',
+                                    // trigger: 'onDateChange'
+                                })(
+                                    <DateRangePicker
+                                        minimize
+                                        overlayStyle={{zIndex: '5000'}}
+                                        onDateChange={onAppointmentRangeChanged}
+                                    />
+                                )}
+                            </Form.Item>
+                        </Col>
                     </Row>
 
                     <Row  className={Styles.row}>
-                        <Col className={Styles.colText} span={6}><FormattedMessage id="report-orders-form.done"/></Col>
+                        <Col className={Styles.colText} span={4}><FormattedMessage id="report-orders-form.done"/></Col>
                         <Col className={Styles.col} span={2}><FormattedMessage id="report-orders-form.from"/></Col>
                         <Col className={Styles.col} span={6}>
                             <Form.Item className={Styles.formItemStyle} name={'doneFromDate'}>
                                     {getFieldDecorator('doneFromDate', {
                                         initialValue: initValues.doneFromDate
                                     })(
-                                        <DatePicker format={"YYYY/MM/DD"} popupStyle={{zIndex: 2000}} fromat={DEF_UI_DATE_FORMAT}/>
+                                        <DatePicker format={"YYYY/MM/DD"} popupStyle={{zIndex: 2000}} fromat={DEF_UI_DATE_FORMAT} onChange={onDoneFromDateChanged}/>
                                     )}
                             </Form.Item>
                         </Col>
@@ -203,11 +287,25 @@ class ReportOrdersFilter extends React.Component {
                                     {getFieldDecorator('doneToDate', {
                                         initialValue: initValues.doneToDate
                                     })(
-                                        <DatePicker format={"YYYY/MM/DD"} popupStyle={{zIndex: 2000}} fromat={DEF_UI_DATE_FORMAT}/>
+                                        <DatePicker format={"YYYY/MM/DD"} popupStyle={{zIndex: 2000}} fromat={DEF_UI_DATE_FORMAT} onChange={onDoneToDateChanged}/>
                                     )}
                             </Form.Item>
                         </Col>
-                        <Col className={Styles.col} span={2}></Col>
+                        <Col className={Styles.col} span={4}>
+                            <Form.Item>
+                                {getFieldDecorator('doneDateRange', {
+                                    initialValue: [initValues.doneFromDate, initValues.doneToDate ],
+                                    valuePropName: 'dateRange',
+                                    // trigger: 'onDateChange'
+                                })(
+                                    <DateRangePicker
+                                        minimize
+                                        overlayStyle={{zIndex: '5000'}}
+                                        onDateChange={onDoneRangeChanged}
+                                    />
+                                )}
+                            </Form.Item>
+                        </Col>
                     </Row>
                 </div>
                 {/* ------------------------------------------------------------------------- */}

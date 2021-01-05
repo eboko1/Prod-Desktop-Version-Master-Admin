@@ -81,6 +81,8 @@ export default class ReportOrdersFilterModal extends Component {
 
         //Some values are redundant, we need to remove them
         values.creationDateRange = undefined;
+        values.appointmentDateRange = undefined;
+        values.doneDateRange = undefined;
 
         return values;
     }
