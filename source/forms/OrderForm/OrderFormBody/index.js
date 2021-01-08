@@ -483,6 +483,7 @@ export default class OrderFormBody extends Component {
                         {this.state.clientEmailsOptions}
                     </DecoratedSelect>
                     <DecoratedSelect
+                        allowClear={true}
                         errors={errors}
                         defaultGetValueProps
                         fieldValue={_.get(fields, "clientRequisite")}

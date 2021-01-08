@@ -858,6 +858,7 @@ class OrderPage extends Component {
                         orderId={ id }
                         orderDiagnostic={ diagnosis }
                         allDetails={ this.props.allDetails }
+                        onClose={ this._close }
                     />
                 </MobileView>
                 <ResponsiveView
