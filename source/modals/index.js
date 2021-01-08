@@ -28,6 +28,7 @@ import ComplexesModal from './ComplexesModal';
 import VehicleLocationModal from './VehicleLocationModal';
 import LocationHistoryModal from './LocationHistoryModal';
 import ReportOrdersFilterModal from './ReportModals/ReportOrdersFilterModal';
+import ReportOrdersExportModal from './ReportModals/ReportOrdersExportModal';
 import StoreProductTrackingModal from './StoreProductTrackingModal';
 import SyncImportExportModal from './SyncImportExportModal';
 
@@ -62,6 +63,7 @@ export {
     VehicleLocationModal,
     LocationHistoryModal,
     ReportOrdersFilterModal,
+    ReportOrdersExportModal,
     StoreProductTrackingModal,
     SyncImportExportModal,
 };
