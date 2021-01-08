@@ -314,7 +314,12 @@ export default class SyncImportExportModal extends Component {
 	    					paramsModalVisible: false,
 	    				})
 	    			}}
-	    			hideMainModal={hideModal}
+	    			hideMainModal={()=>{
+	    				hideModal();
+	    				this.setState({
+	    					paramsModalVisible: false,
+	    				})
+	    			}}
     			/>
     		</Modal>
 	    );
@@ -327,6 +332,9 @@ class SyncImportExportParametersModal extends Component {
 	constructor(props) {
         super(props);
         this.state = {
+        	conflictsId: undefined,
+        	conflictsModalVisible: false,
+        	confirmLoading: false,
         	fileList: [],
         	ftpList: [],
         	fileType: XLSX,
@@ -345,7 +353,7 @@ class SyncImportExportParametersModal extends Component {
     	hideModal();
     }
 
-    handleOk = () => {
+    handleOk = async () => {
     	const token = localStorage.getItem('_my.carbook.pro_token');
     	const { hideModal, type, tablesOptions, tableData, hideMainModal } = this.props;
     	const { fileList, fileType, syncDocs, subjectRequisiteId, status, statuses, syncPeriod, fromDate, syncThrough } = this.state;
@@ -414,51 +422,55 @@ class SyncImportExportParametersModal extends Component {
 	            console.log('error', error)
 	        });
     	} else if(type == 'IMPORT') {
-	    	const payload = {
-	    		syncThrough,
-	    		//file: fileList[0],
-	    		tablesOptions: tablesOptions.filter(({checked})=>checked).map(({checked, table, sync, priority})=>{
+    		this.setState({
+    			confirmLoading: true,
+    		});
+    		const normalizedTablesOptions = [...tablesOptions.filter(({checked})=>checked).map(({checked, table, sync, priority})=>{
 	    			if(checked) {
 	    				return {
 	    					table,
 	    					priority,
 	    				}
 	    			}
-	    		}),
-	    	}
-    		console.log(payload);
+	    		})
+    		];
+	    	const formData = new FormData();
+	    	formData.append('syncThrough', syncThrough);
+	    	formData.append('file', fileList[0]);
+	    	formData.append('tablesOptions', JSON.stringify(normalizedTablesOptions));
 	        let url = __API_URL__ + `/sync/import/${fileType}`;
-	        fetch(url, {
-	            method: 'POST',
-	            headers: {
-	            	//'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-	                'Authorization': token,
-	            },
-	            body: JSON.stringify(payload),
-	        })
-	        .then(function (response) {
-	            if (response.status !== 200) {
-	            return Promise.reject(new Error(response.statusText))
-	            }
-	            return Promise.resolve(response)
-	        })
-	        .then(function (response) {
-	            return response.blob();
-	        })
-	        .then(function (file) {
-	            console.log(file)
-           		saveAs(file, `backup-${moment().format('YYYY-MM-DD')}`);
-           		hideMainModal();
-	        })
-	        .catch(function (error) {
-	            console.log('error', error)
-	        });
+	        try {
+			  	const response = await fetch(url, {
+			    	method: 'POST',
+			    	body: formData,
+			    	headers: {
+	                	'Authorization': token,
+	            	},
+			  	});
+			  	const result = await response.json();
+			  	console.log(result);
+			  	this.setState({
+	    			confirmLoading: true,
+	    		});
+	    		if(!result.conflictsId) {
+	    			hideMainModal();
+	    		} else {
+	    			this.setState({
+	    				conflictsId: result.conflictsId,
+	    			})
+	    		}
+			} catch (error) {
+			  	console.error('error:', error);
+			  	this.setState({
+    				confirmLoading: true,
+    			});
+			}
     	}
     }
 
     render() {
     	const { type, visible, intl: {formatMessage}, requisites, tableData } = this.props;
-    	const { fileList, ftpList } = this.state;
+    	const { fileList, ftpList, confirmLoading } = this.state;
 		const uploadFileProps = {
 			onRemove: file => {
 				this.setState(state => {
@@ -506,6 +518,7 @@ class SyncImportExportParametersModal extends Component {
     			okText={<FormattedMessage id='export_import_pages.sync'/>}
     			style={{width: 'fit-content', minWidth: 640}}
     			destroyOnClose
+    			confirmLoading={confirmLoading}
     		>
     			{type == 'EXPORT' &&
 	    			<div className={Styles.filtersBlock}>
