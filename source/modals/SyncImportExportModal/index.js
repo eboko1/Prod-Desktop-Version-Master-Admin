@@ -8,8 +8,6 @@ import _ from "lodash";
 import moment from "moment";
 import { saveAs } from 'file-saver';
 // proj
-import { Layout } from "commons";
-import { ImportExportTable } from "components";
 import { getData as getRequisites } from "core/requisiteSettings/saga";
 // own
 import Styles from './styles.m.css';
@@ -285,7 +283,7 @@ export default class SyncImportExportModal extends Component {
     }
 
     render() {
-    	const { type, visible, tableData, hideModal } = this.props;
+    	const { type, visible, tableData, hideModal, showConflictsModal } = this.props;
     	const { paramsModalVisible, dataSource, requisites } = this.state;
     	return (
     		<Modal
@@ -320,6 +318,7 @@ export default class SyncImportExportModal extends Component {
 	    					paramsModalVisible: false,
 	    				})
 	    			}}
+	    			showConflictsModal={showConflictsModal}
     			/>
     		</Modal>
 	    );
@@ -332,8 +331,6 @@ class SyncImportExportParametersModal extends Component {
 	constructor(props) {
         super(props);
         this.state = {
-        	conflictsId: undefined,
-        	conflictsModalVisible: false,
         	confirmLoading: false,
         	fileList: [],
         	ftpList: [],
@@ -355,7 +352,7 @@ class SyncImportExportParametersModal extends Component {
 
     handleOk = async () => {
     	const token = localStorage.getItem('_my.carbook.pro_token');
-    	const { hideModal, type, tablesOptions, tableData, hideMainModal } = this.props;
+    	const { hideModal, type, tablesOptions, tableData, hideMainModal, showConflictsModal } = this.props;
     	const { fileList, fileType, syncDocs, subjectRequisiteId, status, statuses, syncPeriod, fromDate, syncThrough } = this.state;
 
     	if(type == 'EXPORT') {
@@ -453,12 +450,7 @@ class SyncImportExportParametersModal extends Component {
 	    			confirmLoading: true,
 	    		});
 	    		hideMainModal();
-	    		if(result.conflictsId) {
-	    			this.setState({
-	    				conflictsId: result.conflictsId,
-	    				conflictsModalVisible: true,
-	    			})
-	    		}
+	    		showConflictsModal(result.conflictsId);
 			} catch (error) {
 			  	console.error('error:', error);
 			  	this.setState({
@@ -470,7 +462,7 @@ class SyncImportExportParametersModal extends Component {
 
     render() {
     	const { type, visible, intl: {formatMessage}, requisites, tableData, hideMainModal } = this.props;
-    	const { fileList, ftpList, confirmLoading, conflictsModalVisible, conflictsId } = this.state;
+    	const { fileList, ftpList, confirmLoading } = this.state;
 		const uploadFileProps = {
 			onRemove: file => {
 				this.setState(state => {
@@ -631,90 +623,6 @@ class SyncImportExportParametersModal extends Component {
 	    				</Radio.Group>
 	    			</div>
     			</div>
-    			<ConflictsModal
-    				visible={conflictsModalVisible}
-    				conflictsId={conflictsId}
-    				hideModal={()=>{
-    					this.setState({
-    						conflictsModalVisible: false,
-    					})
-    				}}
-    				hideMainModal={()=>{
-	    				hideMainModal();
-	    				this.setState({
-	    					conflictsModalVisible: false,
-	    				})
-	    			}}
-    			/>
-    		</Modal>
-	    );
-    }
-}
-
-@injectIntl
-class ConflictsModal extends Component {
-	constructor(props) {
-        super(props);
-        this.state = {
-        };
-    }
-
-    fetchConflicts() {
-    	const token = localStorage.getItem('_my.carbook.pro_token');
-    	let url = __API_URL__ + `/sync/conflicts/${this.props.conflictsId}`;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            },
-            body: JSON.stringify(payload),
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data) {
-            console.log(data);
-       		
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-    }
-
-    handleCancel = () => {
-    	const { hideModal } = this.props;
-    	hideModal();
-    }
-
-    handleOk = async () => {
-    	const token = localStorage.getItem('_my.carbook.pro_token');
-    }
-
-    componentDidUpdate(prevProps) {
-    	if(prevProps.conflictsId != this.props.conflictsId) {
-    		this.fetchConflicts();
-    	}
-    }
-
-    render() {
-    	const { type, visible, intl: {formatMessage} } = this.props;
-    	return (
-    		<Modal
-    			title={<FormattedMessage id='export_import_pages.conflicts'/>}
-    			visible={visible}
-    			onOk={this.handleOk}
-    			onCancel={this.handleCancel}
-    			okText={<FormattedMessage id='export_import_pages.import'/>}
-    			style={{width: 'fit-content', minWidth: 640}}
-    			destroyOnClose
-    		>
-
     		</Modal>
 	    );
     }

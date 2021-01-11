@@ -16,7 +16,6 @@ export default class ImportExportTable extends Component {
 	constructor(props) {
         super(props);
         this.state = {
-            retryButtonLoadind: false,
             retryButtonLoadindId: undefined,
         }
 
@@ -93,7 +92,8 @@ export default class ImportExportTable extends Component {
                 	return (
                 		<Button
                 			type='primary'
-                            loading={this.state.retryButtonLoadind && this.state.retryButtonLoadindId == row.id}
+                            style={{width: '100%'}}
+                            loading={this.state.retryButtonLoadindId == row.id}
                             onClick={async () => {
                                 const token = localStorage.getItem('_my.carbook.pro_token');
                                 if(this.props.type == 'EXPORT') {
@@ -127,7 +127,6 @@ export default class ImportExportTable extends Component {
                                     });
                                 } else if(this.props.type == 'IMPORT') {
                                     this.setState({
-                                        retryButtonLoadind: true,
                                         retryButtonLoadindId: row.id,
                                     })
                                     const formData = new FormData();
@@ -145,7 +144,6 @@ export default class ImportExportTable extends Component {
                                         const result = await response.json();
                                         console.log(result);
                                         this.setState({
-                                            retryButtonLoadind: false,
                                             retryButtonLoadindId: undefined,
                                         });
                                         notification.success({
