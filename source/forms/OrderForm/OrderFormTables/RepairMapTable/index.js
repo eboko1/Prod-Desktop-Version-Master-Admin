@@ -63,10 +63,19 @@ export default class RepairMapTable extends Component {
     }
 
     repairMapAction(operation) {
-        const { orderId, setActiveTab, history, setModal, modals, download } = this.props;
+        const { 
+            orderId,
+            setActiveTab,
+            history,
+            setModal,
+            modals,
+            download,
+            clientNameInputRef,
+         } = this.props;
         switch(operation) {
             case HEADER_CLIENT_SEARCH:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
+                console.log(clientNameInputRef, clientNameInputRef);
                 break;
             case HEADER_STATION:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});

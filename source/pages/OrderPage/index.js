@@ -162,6 +162,7 @@ class OrderPage extends Component {
             repairMapData: [],
         };
         this._fetchRepairMapData = this._fetchRepairMapData.bind(this);
+        this.clientNameInputRef = React.createRef();
     }
 
     
@@ -176,6 +177,12 @@ class OrderPage extends Component {
         }
         console.log(this);
         this._fetchRepairMapData();
+    }
+
+    componentDidUpdate(prevProps) {
+        if(this.props.order.status && this.props.order != prevProps.order) {
+            this._fetchRepairMapData();
+        }
     }
 
     saveFormRef = formRef => {
@@ -222,6 +229,7 @@ class OrderPage extends Component {
             return response.json();
         })
         .then(function(data) {
+            console.log(that, data);
             that.setState({
                 repairMapData: data,
             })
@@ -288,7 +296,6 @@ class OrderPage extends Component {
                     options,
                     redirectTo,
                 });
-                //window.location.reload();
             } else {
                 this.setState({errors});
             }
@@ -896,6 +903,7 @@ class OrderPage extends Component {
                         repairMapData={ repairMapData }
                         fetchRepairMapData={ this._fetchRepairMapData }
                         businessLocations={ businessLocations }
+                        clientNameInputRef={this.clientNameInputRed}
                     />
                 </ResponsiveView>
                 <CancelReasonModal

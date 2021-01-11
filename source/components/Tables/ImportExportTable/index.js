@@ -11,9 +11,14 @@ import { saveAs } from 'file-saver';
 
 // own
 
+@injectIntl
 export default class ImportExportTable extends Component {
 	constructor(props) {
         super(props);
+        this.state = {
+            retryButtonLoadind: false,
+            retryButtonLoadindId: undefined,
+        }
 
         this.exportColumns = [
             {
@@ -88,8 +93,8 @@ export default class ImportExportTable extends Component {
                 	return (
                 		<Button
                 			type='primary'
-                            onClick={() => {
-                                console.log(row);
+                            loading={this.state.retryButtonLoadind && this.state.retryButtonLoadindId == row.id}
+                            onClick={async () => {
                                 const token = localStorage.getItem('_my.carbook.pro_token');
                                 if(this.props.type == 'EXPORT') {
                                     let url = __API_URL__ + `/sync/${row.type.toLowerCase()}/${row.format.toLowerCase()}`;
@@ -121,32 +126,36 @@ export default class ImportExportTable extends Component {
                                         console.log('error', error)
                                     });
                                 } else if(this.props.type == 'IMPORT') {
+                                    this.setState({
+                                        retryButtonLoadind: true,
+                                        retryButtonLoadindId: row.id,
+                                    })
+                                    const formData = new FormData();
+                                    formData.append('repeatSyncById', row.id);
+                                    formData.append('tablesOptions', JSON.stringify(row.payload.tablesOptions));
                                     let url = __API_URL__ + `/sync/${row.type.toLowerCase()}/${row.format.toLowerCase()}`;
-                                    fetch(url, {
-                                        method: 'POST',
-                                        headers: {
-                                            'Authorization': token,
-                                        },
-                                        body: JSON.stringify({
-                                            tablesOptions: row.payload.tablesOptions,
-                                            repeatSyncById: row.id,
-                                        }),
-                                    })
-                                    .then(function (response) {
-                                        if (response.status !== 200) {
-                                        return Promise.reject(new Error(response.statusText))
-                                        }
-                                        return Promise.resolve(response)
-                                    })
-                                    .then(function (response) {
-                                        return response.blob();
-                                    })
-                                    .then(function (data) {
-                                        //fetchTable();
-                                    })
-                                    .catch(function (error) {
-                                        console.log('error', error)
-                                    });
+                                    try {
+                                        const response = await fetch(url, {
+                                            method: 'POST',
+                                            body: formData,
+                                            headers: {
+                                                'Authorization': token,
+                                            },
+                                        });
+                                        const result = await response.json();
+                                        console.log(result);
+                                        this.setState({
+                                            retryButtonLoadind: false,
+                                            retryButtonLoadindId: undefined,
+                                        });
+                                        notification.success({
+                                            message: this.props.intl.formatMessage({
+                                                id: `export_import_pages.imported`,
+                                            }),
+                                        });
+                                    } catch (error) {
+                                        console.error('error:', error);
+                                    }
                                 }
                             }}
                 		>
@@ -164,7 +173,7 @@ export default class ImportExportTable extends Component {
             	return (
             		<Button
             			type='primary'
-                        
+                        disabled
             		>
             			<FormattedMessage id='export_import_pages.conflicts'/>
             		</Button>

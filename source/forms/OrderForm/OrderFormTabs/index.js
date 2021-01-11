@@ -229,7 +229,8 @@ export default class OrderFormTabs extends React.PureComponent {
             modals,
             download,
             repairMapData,
-            fetchRepairMapData
+            fetchRepairMapData,
+            clientNameInputRef,
         } = this.props;
 
         var orderServicesSize = 0,
@@ -320,6 +321,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             activeKey={this.state.activeKey}
                             repairMapData={repairMapData}
                             fetchRepairMapData={fetchRepairMapData}
+                            clientNameInputRef={clientNameInputRef}
                         />
                     </TabPane>
                 )}

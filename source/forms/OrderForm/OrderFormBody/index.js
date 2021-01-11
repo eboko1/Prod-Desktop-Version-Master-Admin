@@ -323,7 +323,7 @@ export default class OrderFormBody extends Component {
 
     _renderClientSearch = () => {
         const { getFieldDecorator } = this.props.form;
-        const { user, fields, errors } = this.props;
+        const { user, fields, errors, clientNameInputRef } = this.props;
         const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
 
         const disabledClientSearch =
@@ -352,6 +352,7 @@ export default class OrderFormBody extends Component {
                     placeholder={this._getLocalization(
                         "add_order_form.search_client.placeholder",
                     )}
+                    ref={clientNameInputRef}
                 />
                 {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
                     <Icon
