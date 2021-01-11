@@ -30,6 +30,7 @@ import LocationHistoryModal from './LocationHistoryModal';
 import ReportOrdersFilterModal from './ReportOrdersFilterModal';
 import StoreProductTrackingModal from './StoreProductTrackingModal';
 import SyncImportExportModal from './SyncImportExportModal';
+import SyncConflictsModal from './SyncConflictsModal';
 
 export {
     UniversalFiltersModal,
@@ -64,4 +65,5 @@ export {
     ReportOrdersFilterModal,
     StoreProductTrackingModal,
     SyncImportExportModal,
+    SyncConflictsModal,
 };

@@ -8,8 +8,6 @@ import _ from "lodash";
 import moment from "moment";
 import { saveAs } from 'file-saver';
 // proj
-import { Layout } from "commons";
-import { ImportExportTable } from "components";
 import { getData as getRequisites } from "core/requisiteSettings/saga";
 // own
 import Styles from './styles.m.css';
@@ -285,7 +283,7 @@ export default class SyncImportExportModal extends Component {
     }
 
     render() {
-    	const { type, visible, tableData, hideModal } = this.props;
+    	const { type, visible, tableData, hideModal, showConflictsModal } = this.props;
     	const { paramsModalVisible, dataSource, requisites } = this.state;
     	return (
     		<Modal
@@ -320,6 +318,7 @@ export default class SyncImportExportModal extends Component {
 	    					paramsModalVisible: false,
 	    				})
 	    			}}
+	    			showConflictsModal={showConflictsModal}
     			/>
     		</Modal>
 	    );
@@ -332,8 +331,6 @@ class SyncImportExportParametersModal extends Component {
 	constructor(props) {
         super(props);
         this.state = {
-        	conflictsId: undefined,
-        	conflictsModalVisible: false,
         	confirmLoading: false,
         	fileList: [],
         	ftpList: [],
@@ -355,7 +352,7 @@ class SyncImportExportParametersModal extends Component {
 
     handleOk = async () => {
     	const token = localStorage.getItem('_my.carbook.pro_token');
-    	const { hideModal, type, tablesOptions, tableData, hideMainModal } = this.props;
+    	const { hideModal, type, tablesOptions, tableData, hideMainModal, showConflictsModal } = this.props;
     	const { fileList, fileType, syncDocs, subjectRequisiteId, status, statuses, syncPeriod, fromDate, syncThrough } = this.state;
 
     	if(type == 'EXPORT') {
@@ -452,13 +449,8 @@ class SyncImportExportParametersModal extends Component {
 			  	this.setState({
 	    			confirmLoading: true,
 	    		});
-	    		if(!result.conflictsId) {
-	    			hideMainModal();
-	    		} else {
-	    			this.setState({
-	    				conflictsId: result.conflictsId,
-	    			})
-	    		}
+	    		hideMainModal();
+	    		showConflictsModal(result.conflictsId);
 			} catch (error) {
 			  	console.error('error:', error);
 			  	this.setState({
@@ -469,7 +461,7 @@ class SyncImportExportParametersModal extends Component {
     }
 
     render() {
-    	const { type, visible, intl: {formatMessage}, requisites, tableData } = this.props;
+    	const { type, visible, intl: {formatMessage}, requisites, tableData, hideMainModal } = this.props;
     	const { fileList, ftpList, confirmLoading } = this.state;
 		const uploadFileProps = {
 			onRemove: file => {

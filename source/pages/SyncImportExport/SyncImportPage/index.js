@@ -9,7 +9,7 @@ import _ from "lodash";
 // proj
 import { Layout } from "commons";
 import { ImportExportTable } from "components";
-import { SyncImportExportModal } from "modals";
+import { SyncImportExportModal, SyncConflictsModal } from "modals";
 // own
 
 export default class SyncImportPage extends Component {
@@ -19,6 +19,7 @@ export default class SyncImportPage extends Component {
         this.state = {
         	modalVisible: false,
         	tableData: [],
+            conflictsId: undefined,
         }
     }
 
@@ -57,7 +58,7 @@ export default class SyncImportPage extends Component {
     }
 
     render() {
-    	const { modalVisible, tableData } = this.state;
+    	const { modalVisible, tableData, conflictsId } = this.state;
     	return (
 	    	<Layout
 	    		title={ <FormattedMessage id='navigation.sync_import' /> }
@@ -89,7 +90,21 @@ export default class SyncImportPage extends Component {
 	    				});
 	    				this.fetchTable();
 	    			}}
+                    showConflictsModal={(id)=>{
+                        this.setState({
+                            conflictsId: id,
+                        })
+                    }}
 	    		/>
+                <SyncConflictsModal
+                    visible={Boolean(conflictsId)}
+                    conflictsId={conflictsId}
+                    hideModal={()=>{
+                        this.setState({
+                            conflictsId: undefined,
+                        })
+                    }}
+                />
 	    	</Layout>
 	    );
     }
