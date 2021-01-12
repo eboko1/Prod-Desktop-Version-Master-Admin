@@ -10,9 +10,11 @@ import { getField } from 'react-redux-form';
 
 // own
 import Styles from './styles.m.css';
+import reportFields from './constants';
 
 const FItem = Form.Item;
 const RGroup = Radio.Group;
+const CGroup = Checkbox.Group;
 
 const mapStateToProps = state => ({
 
@@ -37,27 +39,54 @@ class ReportOrdersExportModal extends Component {
     generateRadio() {
         return (
             <RGroup className={Styles.radioGroup}>
-                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={1} /></Col></Row>
-                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={2} /></Col></Row>
-                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={3} /></Col></Row>
-                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={4} /></Col></Row>
-                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={5} /></Col></Row>
-                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={6} /></Col></Row>
-                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={7} /></Col></Row>
-                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={8} /></Col></Row>
-                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={9} /></Col></Row>
-                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={10} /></Col></Row>
-                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={11} /></Col></Row>
+                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={reportFields.creation_date} /></Col></Row>
+                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={reportFields.appointment_date} /></Col></Row>
+                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={reportFields.done_date} /></Col></Row>
+                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={reportFields.service_advisor} /></Col></Row>
+                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={reportFields.mechanic} /></Col></Row>
+                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={reportFields.purchase_manager} /></Col></Row>
+                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={reportFields.post} /></Col></Row>
+                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={reportFields.status} /></Col></Row>
+                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={reportFields.requisite} /></Col></Row>
+                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={reportFields.client} /></Col></Row>
+                <Row className={Styles.row}><Col className={Styles.col} span={24}><Radio value={reportFields.nothing} /></Col></Row>
             </RGroup>
         );
     }
 
-    generateCheckbox(text) {
+    generateCheckboxes() {
+
+        const row = (value, label) => {
+            return (
+                <Row className={Styles.row}>
+                    <Col className={Styles.col} span={6}><Checkbox value={value}/></Col>
+                    <Col span={18}>{label}</Col>
+                </Row>
+            );
+        }
+
+        const labelRow = (label) =>  (
+                <Row className={Styles.row}>
+                    <Col className={Styles.col} span={6}></Col>
+                    <Col span={18}>{label}</Col>
+                </Row>
+            );
+        
+        
         return (
-            <Row className={Styles.row}>
-                <Col className={Styles.col} span={6}><Checkbox /></Col>
-                <Col span={18}>{text}</Col>
-            </Row>
+            <CGroup style={{width: '100%'}}>
+                {row(reportFields.creation_date, 'Creation date')}
+                {row(reportFields.appointment_date, 'Appointmen date')}
+                {row(reportFields.done_date, 'Done date')}
+                {row(reportFields.service_advisor, 'Service advisor')}
+                {row(reportFields.mechanic, 'Mechanic')}
+                {row(reportFields.purchase_manager, 'Purchase manager')}
+                {row(reportFields.post, 'Post')}
+                {row(reportFields.status, 'Status')}
+                {row(reportFields.requisite, 'Requisite')}
+                {row(reportFields.client, 'Client')}
+                {labelRow('Nothing')}
+            </CGroup>
         );
     }
 
@@ -75,11 +104,11 @@ class ReportOrdersExportModal extends Component {
         } = form;
 
         const generateRadio = this.generateRadio;
-        const generateCheckbox = this.generateCheckbox;
+        const generateCheckboxes = this.generateCheckboxes;
         
         return (
             <Modal
-                width={ '85%' }
+                width={ '40%' }
                 visible={ visible === MODALS.REPORT_ORDERS_EXPORT }
                 onOk={ onOk }
                 onCancel={ onCancel }
@@ -87,18 +116,15 @@ class ReportOrdersExportModal extends Component {
                 <Form>
                     <Row>
                         <Col span={12}>
-                            
-                            {generateCheckbox('Creation date')}
-                            {generateCheckbox('Appointment date')}
-                            {generateCheckbox('Done date')}
-                            {generateCheckbox('Service advisors')}
-                            {generateCheckbox('Mechanics')}
-                            {generateCheckbox('Purchase manager')}
-                            {generateCheckbox('Posts')}
-                            {generateCheckbox('Statuses')}
-                            {generateCheckbox('Requisites')}
-                            {generateCheckbox('Clients')}
-                            {generateCheckbox('Nothing')}
+                            <FItem>
+                                {
+                                    getFieldDecorator('reportFields', {
+
+                                    })(
+                                        generateCheckboxes()
+                                    )
+                                }
+                            </FItem>
                         </Col>
                         {/* ==================================================== */}
                         <Col span={4}>

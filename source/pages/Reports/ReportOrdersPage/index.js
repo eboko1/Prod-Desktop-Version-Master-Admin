@@ -15,8 +15,10 @@ const Search = Input.Search;
 import {
     fetchReportOrders,
     fetchReportOrdersFilterOptions,
+    fetchExcelFileReport,
     setReportOrdersIncludeServicesDiscount,
     setReportOrdersIncludeAppurtenanciesDiscount,
+    setReportOrdersExportOptions,
     setReportOrdersQuery,
     setReportOrdersStatus,
     setReportOrdersCreationFromDate,
@@ -54,9 +56,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchReportOrders,
     fetchReportOrdersFilterOptions,
+    fetchExcelFileReport,
     setReportOrdersPage,
     setReportOrdersIncludeServicesDiscount,
     setReportOrdersIncludeAppurtenanciesDiscount,
+    setReportOrdersExportOptions,
     setReportOrdersQuery,
     setReportOrdersStatus,
     setReportOrdersCreationFromDate,
@@ -126,6 +130,8 @@ export default class ReportOrdersPage extends Component {
                 }
           
                 console.log('Received values of form: ', values);
+                this.props.setReportOrdersExportOptions(values);
+                this.props.fetchExcelFileReport();
                 form.resetFields();
                 this.onCloseExportModal();
               });

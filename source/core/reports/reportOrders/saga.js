@@ -1,25 +1,29 @@
 // vendor
 import { call, put, all, take, select } from 'redux-saga/effects';
+import nprogress from 'nprogress';
+import { saveAs } from 'file-saver';
 
 //proj
 import { fetchAPI } from 'utils';
-import {setReportOrdersFetching} from 'core/ui/duck';
+import {setReportOrdersFetching, emitError} from 'core/ui/duck';
 
 // own
 import {
     fetchReportOrdersSuccess,
-    fetchReportOrdersFilterOptionsSuccess
+    fetchReportOrdersFilterOptionsSuccess,
+    fetchExcelFileReportSuccess
 } from './duck';
 
 import {
     FETCH_REPORT_ORDERS,
-    FETCH_REPORT_ORDERS_FILTER_OPTIONS
+    FETCH_REPORT_ORDERS_FILTER_OPTIONS,
+    FETCH_EXCEL_FILE_REPORT
 } from './duck';
 
-const selectFilter = ({ reportOrders: { filter, sort, options } }) => ({
-    sort,
+const selectFilter = ({ reportOrders: { filter, options, exportOptions } }) => ({
     filter,
-    options
+    options,
+    exportOptions
 });
 
 export function* fetchReportOrdersSaga() {
@@ -62,6 +66,36 @@ export function* fetchReportOrdersFilterOptionsSaga() {
     }
 }
 
+export function* fetchExcelFileReportSaga() {
+    while(true){
+        try {
+            yield take(FETCH_EXCEL_FILE_REPORT);
+
+            yield nprogress.start();
+
+            const { filter, options, exportOptions } = yield select(selectFilter);
+            const filters = { ...filter};
+            const finalOptions = {...options, ...exportOptions}
+
+            const response = yield call(fetchAPI, 'GET', '/report/orders/file', {filters, options: {...finalOptions}}, null, {
+                rawResponse: true,
+            });
+
+            const reportFile = yield response.blob();
+
+            const contentDispositionHeader = response.headers.get('content-disposition');
+            const fileName = contentDispositionHeader.match(/^attachment; filename="(.*)"/)[ 1 ];
+
+            yield saveAs(reportFile, fileName);
+            yield put(fetchExcelFileReportSuccess());        
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
 export function* saga() {
-    yield all([ call(fetchReportOrdersSaga), call(fetchReportOrdersFilterOptionsSaga) ]);
+    yield all([ call(fetchReportOrdersSaga), call(fetchReportOrdersFilterOptionsSaga), call(fetchExcelFileReportSaga) ]);
 }
