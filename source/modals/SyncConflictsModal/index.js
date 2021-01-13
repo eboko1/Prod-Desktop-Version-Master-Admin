@@ -72,6 +72,30 @@ export default class SyncConflictsModal extends Component {
         })
         .then(function (data) {
             console.log(data[0]);
+            data[0] = {
+                id: 32,
+                syncId: 168,
+                datetime: "2021-01-11T22:48:12.192Z",
+                conflicts: {
+                    LABORS: [
+                        {
+                            ONEC: {
+                                Labor_Id: "72062030000",
+                                LaborName: "Kurt screws up"
+                            },
+                            CARBOOK: {
+                                id: 9904,
+                                name: "Fucked upasdas shitahey",
+                                laborId: "72062030000",
+                                Labor_Id: "72062030000",
+                                laborname: "Fucked upasdas shitahey",
+                                businessId: 1174
+                            }
+                        }
+                    ],
+                }
+            };
+
             const conflictsTableData = [];
             let index = -1;
             Object.entries(data[0].conflicts).map(([key, value])=>{
@@ -112,6 +136,7 @@ export default class SyncConflictsModal extends Component {
     render() {
     	const { type, visible, intl: {formatMessage} } = this.props;
         const { conflictsData, conflictsTableData, conflictModalData } = this.state;
+        console.log(conflictsTableData)
     	return (
     		<Modal
     			title={<FormattedMessage id='export_import_pages.conflicts'/>}
@@ -231,26 +256,59 @@ class ConflictModal extends Component {
                         </div>
                     </div>
                 }
-                {conflict && 
-                    Object.entries(conflict.conflictData).map(([key, value], index)=>{
-                        return (
-                            <div
-                                key={index}
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between'
-                                }}
-                            >
-                                <div>
-                                    {key}
-                                </div>
-                                <div>
-                                    {value}
-                                </div>
-                            </div>
-                        )
-                    })
-                }
+                <div 
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between'
+                    }}
+                >
+                    <div style={{width: '49%'}}> 
+                        <div>1C</div>
+                        {conflict && 
+                            Object.entries(conflict.conflictData.ONEC).map(([key, value], index)=>{
+                                return (
+                                    <div
+                                        key={index}
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between'
+                                        }}
+                                    >
+                                        <div>
+                                            {key}
+                                        </div>
+                                        <div>
+                                            {value}
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                    <div style={{width: '49%'}}>
+                        <div>CARBOOK</div>
+                        {conflict && 
+                            Object.entries(conflict.conflictData.CARBOOK).map(([key, value], index)=>{
+                                return (
+                                    <div
+                                        key={index}
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between'
+                                        }}
+                                    >
+                                        <div>
+                                            {key}
+                                        </div>
+                                        <div>
+                                            {value}
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
             </Modal>
         );
     }
