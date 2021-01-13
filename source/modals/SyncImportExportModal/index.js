@@ -16,7 +16,7 @@ const 	ALL = 'ALL',
 		FROM_DOCS = 'FROM_DOCS',
 		NONE = 'NONE',
 		CARBOOK = 'CARBOOK',
-		ONE_C = '1C',
+		EXTERNAL = 'EXTERNAL',
 		MANUAL = 'CUSTOM',
 		SUBJECTS = 'SUBJECT',
 		DONE = 'DONE',
@@ -223,15 +223,15 @@ export default class SyncImportExportModal extends Component {
 		                }
                 	},
                 	{
-                		title: <FormattedMessage id="export_import_pages.1c" />,
+                		title: <FormattedMessage id="export_import_pages.external" />,
 		                dataIndex: "priority",
-		                key: "ONE_C",
+		                key: "EXTERNAL",
 		                align: 'center',         
 		                render: (data, row)=>{
 		                	return row.priority != NONE ? (
 		                		<Radio
-		                			value={ONE_C}
-		                			checked={data == ONE_C}
+		                			value={EXTERNAL}
+		                			checked={data == EXTERNAL}
 		                			onChange={({target})=>{
 		                				row.priority = target.value;
 		                				this.setState({});
