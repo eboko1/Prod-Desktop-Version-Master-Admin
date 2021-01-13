@@ -72,7 +72,7 @@ export default class SyncConflictsModal extends Component {
         })
         .then(function (data) {
             console.log(data[0]);
-            data[0] = {
+            /*data[0] = {
                 id: 32,
                 syncId: 168,
                 datetime: "2021-01-11T22:48:12.192Z",
@@ -94,7 +94,7 @@ export default class SyncConflictsModal extends Component {
                         }
                     ],
                 }
-            };
+            };*/
 
             const conflictsTableData = [];
             let index = -1;
