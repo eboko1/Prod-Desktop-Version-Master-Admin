@@ -166,12 +166,16 @@ export default class ImportExportTable extends Component {
 
         this.importColumns = [...this.exportColumns, {
         	key: "conflicts",
+            dataIndex: "conflictsId",
         	width: "min-content",
-            render: (payload, row) => {
+            render: (data, row) => {
             	return (
             		<Button
             			type='primary'
-                        disabled
+                        disabled={!Boolean(data)}
+                        onClick={()=>{
+                            this.props.showConflictsModal(data);
+                        }}
             		>
             			<FormattedMessage id='export_import_pages.conflicts'/>
             		</Button>

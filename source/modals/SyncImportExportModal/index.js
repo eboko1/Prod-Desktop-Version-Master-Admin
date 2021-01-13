@@ -55,14 +55,14 @@ export default class SyncImportExportModal extends Component {
 	        		table: 'CLIENTS',
 	        	},
 	        	{
-	        		name: 'vehicles',
+	        		name: 'clients_vehicles',
 	        		checked: true,
 	        		sync: ALL,
 	        		priority: CARBOOK,
 	        		table: 'CLIENTS_VEHICLES',
 	        	},
 	        	{
-	        		name: 'suppliers',
+	        		name: 'bussiness_suppliers',
 	        		checked: true,
 	        		sync: ALL,
 	        		priority: CARBOOK,
@@ -76,7 +76,7 @@ export default class SyncImportExportModal extends Component {
 	        		table: 'EMPLOYEES',
 	        	},
 	        	{
-	        		name: 'products',
+	        		name: 'store_products',
 	        		checked: true,
 	        		sync: ALL,
 	        		priority: CARBOOK,
