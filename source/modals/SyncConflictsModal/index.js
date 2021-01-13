@@ -191,15 +191,23 @@ class ConflictModal extends Component {
         };
     }
 
-    resolveConflict() {
+    resolveConflict(priority) {
+        const { conflict: {conflictsId, dataBase, key} } = this.props;
+        const payload = {
+            conflictsId,
+            conflictIndex: key,
+            conflictTable: dataBase,
+            priority,
+        };
         const that = this;
         const token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/sync/conflicts/${this.props.conflictsId}`;
+        let url = __API_URL__ + `/sync/conflicts/resolve`;
         fetch(url, {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 'Authorization': token,
             },
+            body: JSON.stringify(payload),
         })
         .then(function (response) {
             if (response.status !== 200) {
@@ -208,7 +216,7 @@ class ConflictModal extends Component {
             return Promise.resolve(response)
         })
         .then(function (response) {
-            return response.json();
+            //return response.json();
             that.props.updateConflictsList();
             that.props.hideModal();
         })
@@ -217,25 +225,23 @@ class ConflictModal extends Component {
         });
     }
 
-    handleCancel = () => {
-        const { hideModal } = this.props;
-        hideModal();
-    }
-
-    handleOk = async () => {
-        this.resolveConflict();
-    }
-
     render() {
-        const { conflict, visible, intl: {formatMessage} } = this.props;
+        const { conflict, visible, intl: {formatMessage}, hideModal } = this.props;
         return (
             <Modal
                 title={<FormattedMessage id='export_import_pages.conflicts'/>}
                 visible={visible}
-                onOk={this.handleOk}
-                onCancel={this.handleCancel}
+                onCancel={hideModal}
                 okText={<FormattedMessage id='export_import_pages.import'/>}
                 style={{width: 'fit-content', minWidth: 640}}
+                footer={[
+                    <Button key={'CARBOOK'} onClick={()=>this.resolveConflict('CARBOOK')}>
+                        <FormattedMessage id='cancel'/>
+                    </Button>,
+                    <Button key={'EXTERNAL'} type='primary' onClick={()=>this.resolveConflict('EXTERNAL')}>
+                        <FormattedMessage id='export_import_pages.import'/>
+                    </Button>
+                ]}
                 destroyOnClose
             >
                 {conflict &&
@@ -262,10 +268,10 @@ class ConflictModal extends Component {
                         justifyContent: 'space-between'
                     }}
                 >
-                    <div style={{width: '49%'}}> 
-                        <div>1C</div>
-                        {conflict && 
-                            Object.entries(conflict.conflictData["1C"]).map(([key, value], index)=>{
+                    <div style={{width: '49%'}}>
+                        <div><FormattedMessage id='export_import_pages.carbook'/></div>
+                        {conflict && conflict.conflictData["CARBOOK"] &&
+                            Object.entries(conflict.conflictData["CARBOOK"]).map(([key, value], index)=>{
                                 return (
                                     <div
                                         key={index}
@@ -285,10 +291,10 @@ class ConflictModal extends Component {
                             })
                         }
                     </div>
-                    <div style={{width: '49%'}}>
-                        <div>CARBOOK</div>
-                        {conflict && 
-                            Object.entries(conflict.conflictData["CARBOOK"]).map(([key, value], index)=>{
+                    <div style={{width: '49%'}}> 
+                        <div><FormattedMessage id='export_import_pages.external'/></div>
+                        {conflict && conflict.conflictData["EXTERNAL"] &&
+                            Object.entries(conflict.conflictData["EXTERNAL"]).map(([key, value], index)=>{
                                 return (
                                     <div
                                         key={index}
