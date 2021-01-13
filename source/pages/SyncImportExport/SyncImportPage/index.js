@@ -79,6 +79,11 @@ export default class SyncImportPage extends Component {
 	    			type={'IMPORT'}
 	    			tableData={tableData}
 	    			fetchTable={this.fetchTable}
+                    showConflictsModal={(id)=>{
+                        this.setState({
+                            conflictsId: id,
+                        })
+                    }}
 	    		/>
 	    		<SyncImportExportModal
 	    			visible={modalVisible}
