@@ -265,7 +265,7 @@ class ConflictModal extends Component {
                     <div style={{width: '49%'}}> 
                         <div>1C</div>
                         {conflict && 
-                            Object.entries(conflict.conflictData.ONEC).map(([key, value], index)=>{
+                            Object.entries(conflict.conflictData["1C"]).map(([key, value], index)=>{
                                 return (
                                     <div
                                         key={index}
@@ -288,7 +288,7 @@ class ConflictModal extends Component {
                     <div style={{width: '49%'}}>
                         <div>CARBOOK</div>
                         {conflict && 
-                            Object.entries(conflict.conflictData.CARBOOK).map(([key, value], index)=>{
+                            Object.entries(conflict.conflictData["CARBOOK"]).map(([key, value], index)=>{
                                 return (
                                     <div
                                         key={index}
