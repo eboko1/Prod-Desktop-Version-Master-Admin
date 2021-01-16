@@ -19,6 +19,7 @@ export default class SyncExportPage extends Component {
         this.state = {
         	modalVisible: false,
         	tableData: [],
+            intervalId: undefined,
         }
     }
 
@@ -53,7 +54,13 @@ export default class SyncExportPage extends Component {
     }
 
     componentDidMount() {
-    	this.fetchTable();
+        this.fetchTable();
+        var intervalId = setInterval(this.fetchTable, 5000);
+       this.setState({intervalId: intervalId});
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.intervalId);
     }
 
     render() {
