@@ -450,7 +450,7 @@ class SyncImportExportParametersModal extends Component {
 	    			confirmLoading: true,
 	    		});
 	    		hideMainModal();
-	    		showConflictsModal(result.conflictsId);
+	    		//showConflictsModal(result.conflictsId);
 			} catch (error) {
 			  	console.error('error:', error);
 			  	this.setState({

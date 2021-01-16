@@ -21,6 +21,56 @@ export default class ImportExportTable extends Component {
 
         this.exportColumns = [
             {
+                title: <FormattedMessage id="order_form_table.status" />,
+                dataIndex: "status",
+                key: "status",
+                render: (status, row)=>{
+                    let color;
+                    switch (status) {
+                        case 'PENDING':
+                            color = 'var(--text2)';
+                            break;
+                        case 'IN_PROGRESS':
+                            color = 'var(--success)';
+                            break;
+                        case 'ERROR':
+                            color = 'var(--disabled)';
+                            break;
+                        case 'DONE':
+                            color = 'var(--green)';
+                            break;
+                        default:
+                            color = null;
+                    }
+                    return (
+                        <div
+                            style={{
+                                borderRadius: 4,
+                                border: `1px solid ${color}`,
+                                padding: '2px 6px',
+                                display: 'inline-block',
+                                color: color,
+                            }}
+                            title={row.completePercent}
+                        >
+                            <Icon
+                                type={
+                                    status == 'PENDING' ? 'pause-circle' :
+                                    status == 'IN_PROGRESS' ? 'clock-circle' :
+                                    status == 'DONE' ? 'check-circle' :
+                                    'exclamation-circle'
+                                }
+                                style={{
+                                    margin: '0 6px 0 0',
+                                    fontSize: 15,
+                                }}
+                            />
+                            <FormattedMessage id={`export_import_pages.${status}`} />
+                        </div>
+                    )
+                }
+            },
+            {
                 title: <FormattedMessage id="date" />,
                 dataIndex: "datetime",
                 key: "datetime",
@@ -94,6 +144,7 @@ export default class ImportExportTable extends Component {
                 			type='primary'
                             style={{width: '100%'}}
                             loading={this.state.retryButtonLoadindId == row.id}
+                            disabled={row.status != 'DONE'}
                             onClick={async () => {
                                 const token = localStorage.getItem('_my.carbook.pro_token');
                                 if(this.props.type == 'EXPORT') {
@@ -172,7 +223,7 @@ export default class ImportExportTable extends Component {
             	return (
             		<Button
             			type='primary'
-                        disabled={!Boolean(data)}
+                        disabled={!Boolean(data) || row.status != 'DONE'}
                         onClick={()=>{
                             this.props.showConflictsModal(data);
                         }}
