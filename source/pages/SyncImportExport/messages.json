@@ -65,7 +65,11 @@
         "export_import_pages.status.CALL": "Call",
         "export_import_pages.responsible": "Responsible",
         "export_import_pages.import": "Import",
-        "export_import_pages.imported": "Imported"
+        "export_import_pages.imported": "Imported",
+        "export_import_pages.PENDING": "Pending",
+        "export_import_pages.IN_PROGRESS": "In Progress",
+        "export_import_pages.ERROR": "Error",
+        "export_import_pages.DONE": "Done"
     },
     "ru": {
         "export_import_pages.export_data": "Экспортировать даные",
@@ -133,7 +137,11 @@
         "export_import_pages.status.CALL": "Звонки",
         "export_import_pages.responsible": "Ответственный",
         "export_import_pages.import": "Импортировать",
-        "export_import_pages.imported": "Импортировано"
+        "export_import_pages.imported": "Импортировано",
+        "export_import_pages.PENDING": "Pending",
+        "export_import_pages.IN_PROGRESS": "In Progress",
+        "export_import_pages.ERROR": "Error",
+        "export_import_pages.DONE": "Done"
     },
     "uk": {
         "export_import_pages.export_data": "Экспортировать даные",
@@ -201,6 +209,10 @@
         "export_import_pages.status.CALL": "Звонки",
         "export_import_pages.responsible": "Ответственный",
         "export_import_pages.import": "Импортировать",
-        "export_import_pages.imported": "Импортировано"
+        "export_import_pages.imported": "Импортировано",
+        "export_import_pages.PENDING": "Pending",
+        "export_import_pages.IN_PROGRESS": "In Progress",
+        "export_import_pages.ERROR": "Error",
+        "export_import_pages.DONE": "Done"
     }
 }

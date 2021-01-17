@@ -20,6 +20,7 @@ export default class SyncImportPage extends Component {
         	modalVisible: false,
         	tableData: [],
             conflictsId: undefined,
+            intervalId: undefined,
         }
     }
 
@@ -54,7 +55,13 @@ export default class SyncImportPage extends Component {
     }
 
     componentDidMount() {
-    	this.fetchTable();
+        this.fetchTable();
+        var intervalId = setInterval(this.fetchTable, 5000);
+       this.setState({intervalId: intervalId});
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.intervalId);
     }
 
     render() {

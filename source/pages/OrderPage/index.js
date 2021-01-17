@@ -160,9 +160,9 @@ class OrderPage extends Component {
             showOilModal: false,
             scrollToMapId: undefined,
             repairMapData: [],
+            focusedRef: undefined,
         };
         this._fetchRepairMapData = this._fetchRepairMapData.bind(this);
-        this.clientNameInputRef = React.createRef();
     }
 
     
@@ -201,6 +201,10 @@ class OrderPage extends Component {
         this.props.fetchAddClientForm();
         this.props.setModal(MODALS.ADD_CLIENT);
     };
+
+    _focusOnRef = (focusedRef) => {
+        this.setState({focusedRef});
+    }
 
     _scrollToMap = (id) => {
         this.setState({
@@ -617,7 +621,7 @@ class OrderPage extends Component {
 
     /* eslint-disable complexity*/
     render() {
-        const {showOilModal, oilModalData, repairMapData } = this.state;
+        const {showOilModal, oilModalData, repairMapData, focusedRef } = this.state;
         const {
             fetchOrderForm,
             fetchOrderTask,
@@ -903,7 +907,8 @@ class OrderPage extends Component {
                         repairMapData={ repairMapData }
                         fetchRepairMapData={ this._fetchRepairMapData }
                         businessLocations={ businessLocations }
-                        clientNameInputRef={this.clientNameInputRed}
+                        focusOnRef={this._focusOnRef}
+                        focusedRef={focusedRef}
                     />
                 </ResponsiveView>
                 <CancelReasonModal

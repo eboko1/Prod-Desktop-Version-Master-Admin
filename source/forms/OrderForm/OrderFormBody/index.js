@@ -119,6 +119,8 @@ export default class OrderFormBody extends Component {
             clientVehiclesOptions,
             recommendationStyles,
         };
+
+        this.clientRef = React.createRef();
     }
 
     componentDidUpdate(prevProps) {
@@ -147,6 +149,10 @@ export default class OrderFormBody extends Component {
         ) {
             const recommendationStyles = this._getRecommendationStyles();
             this.setState({ recommendationStyles });
+        }
+
+        if(prevProps.focusedRef != this.props.focusedRef) {
+            if(this.props.focusedRef == 'HEADER_CLIENT_SEARCH') this.clientRef.current.focus();
         }
     }
 
@@ -323,7 +329,7 @@ export default class OrderFormBody extends Component {
 
     _renderClientSearch = () => {
         const { getFieldDecorator } = this.props.form;
-        const { user, fields, errors, clientNameInputRef } = this.props;
+        const { user, fields, errors } = this.props;
         const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
 
         const disabledClientSearch =
@@ -352,7 +358,7 @@ export default class OrderFormBody extends Component {
                     placeholder={this._getLocalization(
                         "add_order_form.search_client.placeholder",
                     )}
-                    ref={clientNameInputRef}
+                    ref={this.clientRef}
                 />
                 {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
                     <Icon
