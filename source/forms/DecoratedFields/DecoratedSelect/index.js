@@ -53,6 +53,7 @@ export const DecoratedSelect = memo(
 
             initialValue,
             onFocus,
+            showAction,
         } = props;
 
         const renderSelect = (
@@ -95,6 +96,7 @@ export const DecoratedSelect = memo(
                                   .toLowerCase()
                                   .indexOf(input.toLowerCase()) >= 0
                 }
+                showAction={ showAction }
             >
                 { children
                     ? children

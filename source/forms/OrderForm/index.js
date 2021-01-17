@@ -404,7 +404,8 @@ export class OrderForm extends React.PureComponent {
             location,
             errors,
             repairMap,
-            clientNameInputRef,
+            focusOnRef,
+            focusedRef,
         } = this.props;
         const formFieldsValues = form.getFieldsValue();
 
@@ -523,6 +524,8 @@ export class OrderForm extends React.PureComponent {
                     zeroStationLoadStation={zeroStationLoadStation}
                     totalSumWithTax={totalSumWithTax}
                     isTaxPayer={isTaxPayer}
+                    focusOnRef={focusOnRef}
+                    focusedRef={focusedRef}
                 />
                 <OrderFormBody
                     updateOrderField={this._updateOrderField}
@@ -548,7 +551,8 @@ export class OrderForm extends React.PureComponent {
                     createOrder={this.props.createOrder}
                     createStatus={this.props.createStatus}
                     businessLocations={businessLocations}
-                    clientNameInputRef={clientNameInputRef}
+                    focusOnRef={focusOnRef}
+                    focusedRef={focusedRef}
                 />
                 <div id="OrderTabs">
                     {tabs}
@@ -690,7 +694,7 @@ export class OrderForm extends React.PureComponent {
             scrollToMap,
             repairMapData,
             fetchRepairMapData,
-            clientNameInputRef,
+            focusOnRef,
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
@@ -799,7 +803,7 @@ export class OrderForm extends React.PureComponent {
                 scrollToMap={ scrollToMap }
                 repairMapData={repairMapData}
                 fetchRepairMapData={fetchRepairMapData}
-                clientNameInputRef={clientNameInputRef}
+                focusOnRef={focusOnRef}
             />
         );
     };

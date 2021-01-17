@@ -230,7 +230,7 @@ export default class OrderFormTabs extends React.PureComponent {
             download,
             repairMapData,
             fetchRepairMapData,
-            clientNameInputRef,
+            focusOnRef,
         } = this.props;
 
         var orderServicesSize = 0,
@@ -321,7 +321,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             activeKey={this.state.activeKey}
                             repairMapData={repairMapData}
                             fetchRepairMapData={fetchRepairMapData}
-                            clientNameInputRef={clientNameInputRef}
+                            focusOnRef={focusOnRef}
                         />
                     </TabPane>
                 )}

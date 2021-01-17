@@ -70,21 +70,24 @@ export default class RepairMapTable extends Component {
             setModal,
             modals,
             download,
-            clientNameInputRef,
+            focusOnRef,
          } = this.props;
         switch(operation) {
             case HEADER_CLIENT_SEARCH:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
-                console.log(clientNameInputRef, clientNameInputRef);
+                focusOnRef(HEADER_CLIENT_SEARCH);
                 break;
             case HEADER_STATION:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
+                focusOnRef(HEADER_STATION);
                 break;
             case HEADER_EMPLOYEE:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
+                focusOnRef(HEADER_EMPLOYEE);
                 break;
             case HEADER_REQUISITES:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
+                focusOnRef(HEADER_REQUISITES);
                 break;
             case HEADER_CHANGE_STATUS:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
