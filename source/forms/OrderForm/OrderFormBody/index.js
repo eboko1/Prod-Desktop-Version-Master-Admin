@@ -152,7 +152,7 @@ export default class OrderFormBody extends Component {
         }
 
         if(prevProps.focusedRef != this.props.focusedRef) {
-            if(this.props.focusedRef == 'HEADER_CLIENT_SEARCH') this.clientRef.current.focus();
+            if(this.props.focusedRef == 'HEADER_CLIENT_SEARCH' && this.clientRef.current) this.clientRef.current.focus();
         }
     }
 
