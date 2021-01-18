@@ -61,7 +61,7 @@ export class ReportOrdersTable extends Component {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
                     scroll={ { x: 1800, y: '50vh' } }
-                    rowKey={ record => record.id }
+                    rowKey={ record => record.orderId }
                     bordered
                     loading={loading}
                 />
