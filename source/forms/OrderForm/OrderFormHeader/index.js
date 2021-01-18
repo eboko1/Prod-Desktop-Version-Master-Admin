@@ -122,6 +122,10 @@ export default class OrderFormHeader extends Component {
             managersOptions,
             paymentMethodOptions,
         };
+
+        this.stationRef = React.createRef();
+        this.employeeRef = React.createRef();
+        this.requisitesRef = React.createRef();
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -206,6 +210,12 @@ export default class OrderFormHeader extends Component {
             this.setState({
                 beginDatetimeConfig: this._getBeginDatetimeConfig(),
             });
+        }
+
+        if(prevProps.focusedRef != this.props.focusedRef) {
+            if(this.props.focusedRef == 'HEADER_STATION') this.stationRef.current.focus();
+            if(this.props.focusedRef == 'HEADER_EMPLOYEE') this.employeeRef.current.focus();
+            if(this.props.focusedRef == 'HEADER_REQUISITES') this.requisitesRef.current.focus();
         }
     }
     // TODO: move into utils
@@ -592,6 +602,8 @@ export default class OrderFormHeader extends Component {
                             ? void 0
                             : _.get(location, "state.stationNum"))
                     }
+                    ref={this.stationRef}
+                    showAction={['focus', 'click']}
                 >
                     {this.state.stationsOptions}
                 </DecoratedSelect>
@@ -698,6 +710,8 @@ export default class OrderFormHeader extends Component {
                         "order_form_table.select_master",
                     )}
                     formItemLayout={formHeaderItemLayout}
+                    ref={this.employeeRef}
+                    showAction={['focus', 'click']}
                 >
                     {this.state.employeesOptions}
                 </DecoratedSelect>
@@ -823,6 +837,7 @@ export default class OrderFormHeader extends Component {
                     {this.state.paymentMethodOptions}
                 </DecoratedSelect>
                 <DecoratedSelect
+                    allowClear={true}
                     errors={errors}
                     field="requisite"
                     fieldValue={_.get(fields, "requisite")}
@@ -845,6 +860,8 @@ export default class OrderFormHeader extends Component {
                     optionValue="id"
                     optionLabel="name"
                     optionDisabled="disabled"
+                    ref={this.requisitesRef}
+                    showAction={['focus', 'click']}
                 />
             </div>
         );

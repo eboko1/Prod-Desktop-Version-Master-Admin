@@ -160,6 +160,7 @@ class OrderPage extends Component {
             showOilModal: false,
             scrollToMapId: undefined,
             repairMapData: [],
+            focusedRef: undefined,
         };
         this._fetchRepairMapData = this._fetchRepairMapData.bind(this);
     }
@@ -178,6 +179,12 @@ class OrderPage extends Component {
         this._fetchRepairMapData();
     }
 
+    componentDidUpdate(prevProps) {
+        if(this.props.order.status && this.props.order != prevProps.order) {
+            this._fetchRepairMapData();
+        }
+    }
+
     saveFormRef = formRef => {
         this.formRef = formRef;
     };
@@ -194,6 +201,10 @@ class OrderPage extends Component {
         this.props.fetchAddClientForm();
         this.props.setModal(MODALS.ADD_CLIENT);
     };
+
+    _focusOnRef = (focusedRef) => {
+        this.setState({focusedRef});
+    }
 
     _scrollToMap = (id) => {
         this.setState({
@@ -222,6 +233,7 @@ class OrderPage extends Component {
             return response.json();
         })
         .then(function(data) {
+            console.log(that, data);
             that.setState({
                 repairMapData: data,
             })
@@ -288,7 +300,6 @@ class OrderPage extends Component {
                     options,
                     redirectTo,
                 });
-                //window.location.reload();
             } else {
                 this.setState({errors});
             }
@@ -610,7 +621,7 @@ class OrderPage extends Component {
 
     /* eslint-disable complexity*/
     render() {
-        const {showOilModal, oilModalData, repairMapData } = this.state;
+        const {showOilModal, oilModalData, repairMapData, focusedRef } = this.state;
         const {
             fetchOrderForm,
             fetchOrderTask,
@@ -858,6 +869,7 @@ class OrderPage extends Component {
                         orderId={ id }
                         orderDiagnostic={ diagnosis }
                         allDetails={ this.props.allDetails }
+                        onClose={ this._close }
                     />
                 </MobileView>
                 <ResponsiveView
@@ -895,6 +907,8 @@ class OrderPage extends Component {
                         repairMapData={ repairMapData }
                         fetchRepairMapData={ this._fetchRepairMapData }
                         businessLocations={ businessLocations }
+                        focusOnRef={this._focusOnRef}
+                        focusedRef={focusedRef}
                     />
                 </ResponsiveView>
                 <CancelReasonModal

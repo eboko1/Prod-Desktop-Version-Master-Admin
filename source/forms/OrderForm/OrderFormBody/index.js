@@ -119,6 +119,8 @@ export default class OrderFormBody extends Component {
             clientVehiclesOptions,
             recommendationStyles,
         };
+
+        this.clientRef = React.createRef();
     }
 
     componentDidUpdate(prevProps) {
@@ -147,6 +149,10 @@ export default class OrderFormBody extends Component {
         ) {
             const recommendationStyles = this._getRecommendationStyles();
             this.setState({ recommendationStyles });
+        }
+
+        if(prevProps.focusedRef != this.props.focusedRef) {
+            if(this.props.focusedRef == 'HEADER_CLIENT_SEARCH' && this.clientRef.current) this.clientRef.current.focus();
         }
     }
 
@@ -352,6 +358,7 @@ export default class OrderFormBody extends Component {
                     placeholder={this._getLocalization(
                         "add_order_form.search_client.placeholder",
                     )}
+                    ref={this.clientRef}
                 />
                 {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
                     <Icon
@@ -483,6 +490,7 @@ export default class OrderFormBody extends Component {
                         {this.state.clientEmailsOptions}
                     </DecoratedSelect>
                     <DecoratedSelect
+                        allowClear={true}
                         errors={errors}
                         defaultGetValueProps
                         fieldValue={_.get(fields, "clientRequisite")}
