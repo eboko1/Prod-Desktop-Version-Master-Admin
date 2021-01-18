@@ -114,6 +114,18 @@ class ReportOrdersExportModal extends Component {
                 onCancel={ onCancel }
             >
                 <Form>
+                    <Row><Col className={Styles.col} span={24}>Orders report export</Col></Row>
+                    <Row>
+                        <Col className={Styles.col} span={12}>Data fields</Col>
+                        <Col className={Styles.col} span={12}>Grouping</Col>
+                    </Row>
+                    <Row>
+                        <Col className={Styles.col} span={12}></Col>
+                        <Col className={Styles.col} span={4}>1 level</Col>
+                        <Col className={Styles.col} span={4}>2 level</Col>
+                        <Col className={Styles.col} span={4}>3 level</Col>
+                    </Row>
+
                     <Row>
                         <Col span={12}>
                             <FItem>
