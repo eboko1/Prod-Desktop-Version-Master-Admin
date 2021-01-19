@@ -307,7 +307,7 @@ export class CashOrderForm extends Component {
         event.preventDefault();
         const { form, createCashOrder, resetModal, editMode, fromOrder, fetchOrder } = this.props;
 
-        form.validateFields((err, values) => {
+        form.validateFields(async (err, values) => {
             if (_.has(err, "clientId") || _.has(err, "orderId")) {
                 this._handleErrorValidationPanel();
             }
@@ -323,11 +323,11 @@ export class CashOrderForm extends Component {
                     editMode,
                     ...values,
                 };
-                createCashOrder(cashOrder);
+                await createCashOrder(cashOrder);
                 form.resetFields();
                 resetModal();
 
-                if(fromOrder) fetchOrder();
+                if(fromOrder) await fetchOrder();
             }
         });
     };
