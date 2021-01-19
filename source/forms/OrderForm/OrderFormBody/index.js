@@ -121,6 +121,8 @@ export default class OrderFormBody extends Component {
         };
 
         this.clientRef = React.createRef();
+        this.milageRef = React.createRef();
+        this.locationRef = React.createRef();
     }
 
     componentDidUpdate(prevProps) {
@@ -153,6 +155,8 @@ export default class OrderFormBody extends Component {
 
         if(prevProps.focusedRef != this.props.focusedRef) {
             if(this.props.focusedRef == 'HEADER_CLIENT_SEARCH' && this.clientRef.current) this.clientRef.current.focus();
+            if(this.props.focusedRef == 'HEADER_MILEAGE') this.milageRef.current.focus();
+            if(this.props.focusedRef == 'HEADER_LOCATION_ACTION') this.locationRef.current.focus();
         }
     }
 
@@ -642,6 +646,7 @@ export default class OrderFormBody extends Component {
                         className={`${Styles.location} ${_.get(fetchedOrder, "order.businessLocationId") ? Styles.disableLoctionsSelectData : null}`}
                         formItemLayout={formVerticalLayout}
                         disabled
+                        ref={this.locationRef}
                     >
                         {this.state.businessLocationsOptions}
                     </DecoratedSelect>
@@ -663,6 +668,7 @@ export default class OrderFormBody extends Component {
                         className={Styles.odometr}
                         formItemLayout={formVerticalLayout}
                         min={0}
+                        ref={this.milageRef}
                     />
                 </div>
             </div>
