@@ -1,4 +1,7 @@
-
+/**
+ * This object contains constant valiables which are mapped on the server. You can use any of these to export corresponding fields.
+ * For example if you select "client", then client name will be included to the report
+ */
 const reportFields = {
     creation_date: 'creation_date',
     appointment_date: 'appointment_date',

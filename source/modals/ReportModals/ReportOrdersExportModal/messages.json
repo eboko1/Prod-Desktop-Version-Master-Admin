@@ -1,17 +1,63 @@
 {
     "en": {
-        "universal_filters": "Universal filters",
-        "universal_filters.submit": "Submit filters",
-        "universal_filters.cancel": "Cancel"
+        "report_orders_export_modal.orders_report_export": "Orders report export",
+        "report_orders_export_modal.data_fileds": "Fields to include",
+        "report_orders_export_modal.grouping_levels": "Grouping levels",
+        "report_orders_export_modal.level1": "1",
+        "report_orders_export_modal.level2": "2",
+        "report_orders_export_modal.level3": "3",
+
+        "report_orders_export_modal.creation_date": "Creation date",
+        "report_orders_export_modal.appointment_date": "Appointment date",
+        "report_orders_export_modal.done_date": "Done date",
+        "report_orders_export_modal.service_advisor": "Service advisor",
+        "report_orders_export_modal.mechanic": "Mechanic",
+        "report_orders_export_modal.purchase_manager": "Purchase manager",
+        "report_orders_export_modal.post": "Post",
+        "report_orders_export_modal.status": "Status",
+        "report_orders_export_modal.requisites": "Requisites",
+        "report_orders_export_modal.client": "Client name",
+        "report_orders_export_modal.nothing": "Nothing"
+        
     },
     "ru": {
-        "universal_filters": "Универсальные фильтры",
-        "universal_filters.submit": "Применить фильтры",
-        "universal_filters.cancel": "Отменить"
+        "report_orders_export_modal.orders_report_export": "Экспортировать отчет по заказам",
+        "report_orders_export_modal.data_fileds": "Дополнительные колонки отчета",
+        "report_orders_export_modal.grouping_levels": "Уровни группировки",
+        "report_orders_export_modal.level1": "1",
+        "report_orders_export_modal.level2": "2",
+        "report_orders_export_modal.level3": "3",
+
+        "report_orders_export_modal.creation_date": "Дата создания",
+        "report_orders_export_modal.appointment_date": "Дата записи",
+        "report_orders_export_modal.done_date": "Дата закрытия",
+        "report_orders_export_modal.service_advisor": "Ответственный",
+        "report_orders_export_modal.mechanic": "Механик",
+        "report_orders_export_modal.purchase_manager": "Запчастист",
+        "report_orders_export_modal.post": "Пост",
+        "report_orders_export_modal.status": "Статус",
+        "report_orders_export_modal.requisites": "Реквизиты",
+        "report_orders_export_modal.client": "Имя клиента",
+        "report_orders_export_modal.nothing": "Не группировать"
     },
     "uk": {
-        "universal_filters": "Універсальні фільтри",
-        "universal_filters.submit": "Застосувати фільтри",
-        "universal_filters.cancel": "Відмінити"
+        "report_orders_export_modal.orders_report_export": "Експортувати звіт по замовленням",
+        "report_orders_export_modal.data_fileds": "Додаткові колонки звіту",
+        "report_orders_export_modal.grouping_levels": "Рівні групування",
+        "report_orders_export_modal.level1": "1",
+        "report_orders_export_modal.level2": "2",
+        "report_orders_export_modal.level3": "3",
+
+        "report_orders_export_modal.creation_date": "Дата створення",
+        "report_orders_export_modal.appointment_date": "Дата запису",
+        "report_orders_export_modal.done_date": "Дата закриття",
+        "report_orders_export_modal.service_advisor": "Відповідальний",
+        "report_orders_export_modal.mechanic": "Механік",
+        "report_orders_export_modal.purchase_manager": "Запчастист",
+        "report_orders_export_modal.post": "Пост",
+        "report_orders_export_modal.status": "Статус",
+        "report_orders_export_modal.requisites": "Реквізити",
+        "report_orders_export_modal.client": "Ім'я клієнта",
+        "report_orders_export_modal.nothing": "Не групувати"
     }
 }

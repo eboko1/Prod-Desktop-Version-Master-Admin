@@ -33,7 +33,7 @@ const mapDispatchToProps = {
 class ReportOrdersExportModal extends Component {
     constructor(props) {
         super(props);
-        // this.generateRadio = this.generateRadio.bind(this)
+        this.generateCheckboxes = this.generateCheckboxes.bind(this)
     }
 
     generateRadio() {
@@ -56,6 +56,8 @@ class ReportOrdersExportModal extends Component {
 
     generateCheckboxes() {
 
+        const {intl:{formatMessage}} = this.props;
+
         const row = (value, label) => {
             return (
                 <Row className={Styles.row}>
@@ -75,17 +77,17 @@ class ReportOrdersExportModal extends Component {
         
         return (
             <CGroup style={{width: '100%'}}>
-                {row(reportFields.creation_date, 'Creation date')}
-                {row(reportFields.appointment_date, 'Appointmen date')}
-                {row(reportFields.done_date, 'Done date')}
-                {row(reportFields.service_advisor, 'Service advisor')}
-                {row(reportFields.mechanic, 'Mechanic')}
-                {row(reportFields.purchase_manager, 'Purchase manager')}
-                {row(reportFields.post, 'Post')}
-                {row(reportFields.status, 'Status')}
-                {row(reportFields.requisite, 'Requisite')}
-                {row(reportFields.client, 'Client')}
-                {labelRow('Nothing')}
+                {row(reportFields.creation_date,    formatMessage({id: 'report_orders_export_modal.creation_date'}))}
+                {row(reportFields.appointment_date, formatMessage({id: 'report_orders_export_modal.appointment_date'}))}
+                {row(reportFields.done_date,        formatMessage({id: 'report_orders_export_modal.done_date'}))}
+                {row(reportFields.service_advisor,  formatMessage({id: 'report_orders_export_modal.service_advisor'}))}
+                {row(reportFields.mechanic,         formatMessage({id: 'report_orders_export_modal.mechanic'}))}
+                {row(reportFields.purchase_manager, formatMessage({id: 'report_orders_export_modal.purchase_manager'}))}
+                {row(reportFields.post,             formatMessage({id: 'report_orders_export_modal.post'}))}
+                {row(reportFields.status,           formatMessage({id: 'report_orders_export_modal.status'}))}
+                {row(reportFields.requisite,        formatMessage({id: 'report_orders_export_modal.requisites'}))}
+                {row(reportFields.client,           formatMessage({id: 'report_orders_export_modal.client'}))}
+                {labelRow(formatMessage({id: 'report_orders_export_modal.nothing'}))}
             </CGroup>
         );
     }
@@ -114,16 +116,16 @@ class ReportOrdersExportModal extends Component {
                 onCancel={ onCancel }
             >
                 <Form>
-                    <Row><Col className={Styles.col} span={24}>Orders report export</Col></Row>
+                    <Row><Col className={Styles.col} span={24}><div className={Styles.title}><FormattedMessage id="report_orders_export_modal.orders_report_export"/></div></Col></Row>
                     <Row>
-                        <Col className={Styles.col} span={12}>Data fields</Col>
-                        <Col className={Styles.col} span={12}>Grouping</Col>
+                        <Col className={Styles.col} span={12}><FormattedMessage id="report_orders_export_modal.data_fileds"/></Col>
+                        <Col className={Styles.col} span={12}><FormattedMessage id="report_orders_export_modal.grouping_levels"/></Col>
                     </Row>
                     <Row>
                         <Col className={Styles.col} span={12}></Col>
-                        <Col className={Styles.col} span={4}>1 level</Col>
-                        <Col className={Styles.col} span={4}>2 level</Col>
-                        <Col className={Styles.col} span={4}>3 level</Col>
+                        <Col className={Styles.col} span={4}><FormattedMessage id="report_orders_export_modal.level1"/></Col>
+                        <Col className={Styles.col} span={4}><FormattedMessage id="report_orders_export_modal.level2"/></Col>
+                        <Col className={Styles.col} span={4}><FormattedMessage id="report_orders_export_modal.level3"/></Col>
                     </Row>
 
                     <Row>

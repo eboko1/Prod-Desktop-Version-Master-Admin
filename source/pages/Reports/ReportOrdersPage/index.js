@@ -33,7 +33,7 @@ import {
 import { ReportOrdersFilterModal, ReportOrdersExportModal } from 'modals';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
-import { Layout, Numeral } from "commons";
+import { Layout, StyledButton } from "commons";
 import { ReportOrdersTable, ReportOrdersFilter } from "components";
 import { isForbidden, permissions } from "utils";
 
@@ -129,7 +129,7 @@ export default class ReportOrdersPage extends Component {
                   return;
                 }
           
-                console.log('Received values of form: ', values);
+                // console.log('Received values of form: ', values);
                 this.props.setReportOrdersExportOptions(values);
                 this.props.fetchExcelFileReport();
                 form.resetFields();
@@ -208,7 +208,16 @@ export default class ReportOrdersPage extends Component {
                 title={
                     <div>
                         <div><FormattedMessage id="navigation.report_orders" /></div>
-                        <div><Button onClick={this.onOpenExportModal}>Export</Button></div>
+                    </div>
+                }
+                controls={
+                    <div className={Styles.buttonGroup}>
+                        <StyledButton
+                            type="primary"
+                            onClick={this.onOpenExportModal}
+                        >
+                            <FormattedMessage id="report_orders_page_page.download_report" />
+                        </StyledButton>
                     </div>
                 }
                 paper={false}
