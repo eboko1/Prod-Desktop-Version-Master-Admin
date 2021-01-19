@@ -18,6 +18,7 @@ export default class SyncConflictsModal extends Component {
             conflictsData: undefined,
             conflictsTableData: [],
             conflictModalData: undefined,
+            selectedRows: [],
         };
 
         this.columns = [
@@ -49,6 +50,43 @@ export default class SyncConflictsModal extends Component {
                 key: "name",
             },
         ];
+    }
+
+    resolveConflicts(priority) {
+        const { selectedRows } = this.state;
+        const payload = [];
+        selectedRows.map((elem)=>{
+            payload.push({
+                conflictsId: elem.conflictsId,
+                conflictIndex: elem.index,
+                conflictTable: elem.dataBase,
+                priority: priority,
+            })
+        })
+        const that = this;
+        const token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/sync/conflicts/resolve`;
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': token,
+            },
+            body: JSON.stringify(payload),
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            //return response.json();
+            that.fetchConflicts();
+            that.props.hideModal();
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
     }
 
     fetchConflicts() {
@@ -298,10 +336,6 @@ export default class SyncConflictsModal extends Component {
     	hideModal();
     }
 
-    handleOk = async () => {
-    	const token = localStorage.getItem('_my.carbook.pro_token');
-    }
-
     componentDidUpdate(prevProps) {
     	if(!prevProps.visible && this.props.visible) {
     		this.fetchConflicts();
@@ -321,6 +355,14 @@ export default class SyncConflictsModal extends Component {
     			okText={<FormattedMessage id='export_import_pages.import'/>}
     			style={{width: 'fit-content', minWidth: 640}}
     			destroyOnClose
+                footer={[
+                    <Button key={'CARBOOK'} onClick={()=>this.resolveConflicts('CARBOOK')}>
+                        <FormattedMessage id='cancel'/>
+                    </Button>,
+                    <Button key={'EXTERNAL'} type='primary' onClick={()=>this.resolveConflicts('EXTERNAL')}>
+                        <FormattedMessage id='export_import_pages.import'/>
+                    </Button>
+                ]}
     		>
                 <Table
                     columns={this.columns}
@@ -328,6 +370,9 @@ export default class SyncConflictsModal extends Component {
                     rowSelection={{
                         onChange: (selectedRowKeys, selectedRows) => {
                             console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                            this.setState({
+                                selectedRows: selectedRows
+                            })
                         },
                     }}
                     onRow={(record, rowIndex) => {
@@ -368,12 +413,12 @@ class ConflictModal extends Component {
 
     resolveConflict(priority) {
         const { conflict: {conflictsId, dataBase, index} } = this.props;
-        const payload = {
+        const payload = [{
             conflictsId,
             conflictIndex: index,
             conflictTable: dataBase,
             priority,
-        };
+        }];
         const that = this;
         const token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/sync/conflicts/resolve`;

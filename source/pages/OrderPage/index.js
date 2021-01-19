@@ -675,7 +675,7 @@ class OrderPage extends Component {
             orderNum: num,
             clientName: name,
             clientSurname: surname,
-            increase: remainSum,
+            increase: Math.round(remainSum*100)/100,
             type: "INCOME",
         }
 
