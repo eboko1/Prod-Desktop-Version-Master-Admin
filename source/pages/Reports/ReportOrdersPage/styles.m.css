@@ -1,3 +1,13 @@
+.buttonGroup {
+    display: flex;
+    align-items: center;
+
+    & > button {
+        margin: 0 4px;
+    }
+}
+
+
 .mainCont {
     background-color: white;
 }

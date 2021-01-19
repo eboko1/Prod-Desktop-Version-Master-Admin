@@ -109,7 +109,8 @@ import UniversalChartModal from 'modals/UniversalChartModal/messages';
 import ConfirmRescheduleModal from 'modals/ConfirmRescheduleModal/messages';
 import SupplierModal from 'modals/SupplierModal/messages';
 import TecDocInfoModal from 'modals/TecDocInfoModal/messages'
-import VehicleLocationModal from 'modals/VehicleLocationModal/messages'
+import VehicleLocationModal from 'modals/VehicleLocationModal/messages';
+import ReportOrdersExportModal from 'modals/ReportModals/ReportOrdersExportModal/messages';
 
 // components
 import StatusIcons from 'components/StatusIcons/messages';
@@ -234,6 +235,7 @@ const messages = merge.all([
     SupplierModal,
     TecDocInfoModal,
     VehicleLocationModal,
+    ReportOrdersExportModal,
     // components
     StatusIcons,
     OrderFormTables,
