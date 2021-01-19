@@ -54,6 +54,10 @@ export default class SyncConflictsModal extends Component {
 
     resolveConflicts(priority) {
         const { selectedRows } = this.state;
+        if(selectedRows.length == 0) {
+            this.props.hideModal();
+            return;
+        }
         const payload = [];
         selectedRows.map((elem)=>{
             payload.push({
@@ -109,7 +113,7 @@ export default class SyncConflictsModal extends Component {
             return response.json();
         })
         .then(function (data) {
-            console.log(data[0]);
+            console.log(data);
             /*data[0] = {
                 id: 32,
                 syncId: 168,
@@ -318,6 +322,8 @@ export default class SyncConflictsModal extends Component {
                         dataBase: dataBase,
                         conflictsId: that.props.conflictsId,
                         index: index,
+                        id: elem.id,
+                        name: elem.name,
                     })
                 })        
             })
