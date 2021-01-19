@@ -49,7 +49,10 @@ const   HEADER_CLIENT_SEARCH = 'HEADER_CLIENT_SEARCH',
         CREATE_DOC_TOR = 'CREATE_DOC_TOR',
         ORDER_CHECK = 'ORDER_CHECK',
         ORDER_CLOSE = 'ORDER_CLOSE',
-        PRINT_COMPLETED_WORK = 'PRINT_COMPLETED_WORK';
+        PRINT_COMPLETED_WORK = 'PRINT_COMPLETED_WORK',
+        HEADER_MILEAGE = 'HEADER_MILEAGE',
+        HEADER_LOCATION_ACTION = 'HEADER_LOCATION_ACTION',
+        COMMENT_RECOMMENDATION_FOR_CLIENT = 'COMMENT_RECOMMENDATION_FOR_CLIENT';
 
 @withRouter
 @injectIntl
@@ -87,9 +90,17 @@ export default class RepairMapTable extends Component {
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
                 focusOnRef(HEADER_EMPLOYEE);
                 break;
+            case HEADER_LOCATION_ACTION:
+                document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
+                focusOnRef(HEADER_LOCATION_ACTION);
+                break;
             case HEADER_REQUISITES:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
                 focusOnRef(HEADER_REQUISITES);
+                break;
+            case HEADER_MILEAGE:
+                document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
+                focusOnRef(HEADER_MILEAGE);
                 break;
             case HEADER_CHANGE_STATUS:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
@@ -198,6 +209,10 @@ export default class RepairMapTable extends Component {
                     link: `/orders/reports/businessOrderReport/${orderId}`,
                     name: 'businessOrderReport'
                 });
+                break;
+            case COMMENT_RECOMMENDATION_FOR_CLIENT:
+                document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
+                setActiveTab('comments');
                 break;
             case WORKSHOP:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
