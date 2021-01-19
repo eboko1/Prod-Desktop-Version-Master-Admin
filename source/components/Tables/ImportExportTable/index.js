@@ -139,6 +139,22 @@ export default class ImportExportTable extends Component {
                 dataIndex: "payload",
                 width: "min-content",
                 render: (payload, row) => {
+                    const { fetchTable, showErrors } = this.props;
+                    if(row.errorsCount) {
+                        return (
+                            <Button
+                                type='danger'
+                                style={{
+                                    width: '100%',
+                                }}
+                                onClick={()=>{
+                                    showErrors(row.id)
+                                }}
+                            >
+                                <FormattedMessage id='export_import_pages.errors' />
+                            </Button>
+                        )
+                    }
                 	return (
                 		<Button
                 			type='primary'
@@ -171,7 +187,7 @@ export default class ImportExportTable extends Component {
                                     .then(function (file) {
                                         console.log(file)
                                         saveAs(file, `backup-${moment(row.datetime).format('YYYY-MM-DD')}.${row.format.toLowerCase()}`);
-                                        //fetchTable();
+                                        fetchTable();
                                     })
                                     .catch(function (error) {
                                         console.log('error', error)
@@ -197,11 +213,12 @@ export default class ImportExportTable extends Component {
                                         this.setState({
                                             retryButtonLoadindId: undefined,
                                         });
-                                        notification.success({
+                                        /*notification.success({
                                             message: this.props.intl.formatMessage({
                                                 id: `export_import_pages.imported`,
                                             }),
-                                        });
+                                        });*/
+                                        fetchTable();
                                     } catch (error) {
                                         console.error('error:', error);
                                     }

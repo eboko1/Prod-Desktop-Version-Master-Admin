@@ -645,6 +645,7 @@ class OrderPage extends Component {
             user,
             initialOrderTask,
             clearCashOrderForm,
+            fetchedOrder,
         } = this.props;
         const {num, status, datetime, diagnosis, repairMapIndicator, totalSumWithTax} = this.props.order;
         const { clientId, name, surname } = this.props.selectedClient;
@@ -659,13 +660,22 @@ class OrderPage extends Component {
         const viewTasks = !isForbidden(user, permissions.GET_TASKS);
         const copyDisabled = isForbidden(user, permissions.CREATE_ORDER);
 
+        let remainSum = totalSumWithTax;
+
+        if(fetchedOrder) {
+            fetchedOrder.cashOrders.map((elem)=>{
+                remainSum += elem.decrease || 0;
+                remainSum -= elem.increase || 0;
+            })
+        }
+
         const cashOrderEntity = {
             orderId: id,
             clientId: clientId,
             orderNum: num,
             clientName: name,
             clientSurname: surname,
-            increase: totalSumWithTax,
+            increase: remainSum,
             type: "INCOME",
         }
 
