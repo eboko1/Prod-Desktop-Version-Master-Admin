@@ -15,6 +15,7 @@ import {
     getDiagnosticsAct,
     createAgreement,
 } from 'core/forms/orderDiagnosticForm/saga';
+import {setModal, resetModal, MODALS} from 'core/modals/duck';
 // own
 import Styles from './styles.m.css';
 
@@ -71,6 +72,7 @@ export default class RepairMapTable extends Component {
             modals,
             download,
             focusOnRef,
+            cashOrderEntity,
          } = this.props;
         switch(operation) {
             case HEADER_CLIENT_SEARCH:
@@ -146,6 +148,10 @@ export default class RepairMapTable extends Component {
                 break;
             case HEADER_PAY:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
+                setModal(MODALS.CASH_ORDER, {
+                    fromOrder: true,
+                    cashOrderEntity: cashOrderEntity,
+                })
                 break;
             case STOCK_BUTTON_ORDERED:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});

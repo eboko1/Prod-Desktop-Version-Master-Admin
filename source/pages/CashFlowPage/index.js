@@ -81,6 +81,7 @@ export default class CashFlowPage extends Component {
     };
 
     _onOpenEditCashOrderModal = cashOrderEntity => {
+        console.log(cashOrderEntity);
         this.props.setModal(MODALS.CASH_ORDER, {
             editMode: true,
             printMode: false,
