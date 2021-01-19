@@ -26,6 +26,7 @@ import {
     saveOrderTask,
     changeModalStatus,
 } from 'core/forms/orderTaskForm/duck';
+import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
 import {fetchAddClientForm} from 'core/forms/addClientForm/duck';
 import {getReport, fetchReport} from 'core/order/duck';
 import {setModal, resetModal, MODALS} from 'core/modals/duck';
@@ -39,6 +40,7 @@ import {
     OrderTaskModal,
     StoreProductModal,
     TecDocInfoModal,
+    CashOrderModal,
 } from 'modals';
 import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage, roundCurrentTime} from 'utils';
 import book from 'routes/book';
@@ -109,6 +111,7 @@ const mapStateToProps = state => {
         isMobile:              state.ui.views.isMobile,
         managers:              state.forms.orderForm.managers,
         modal:                 state.modals.modal,
+        modalProps:            state.modals.modalProps,
         order:                 state.forms.orderForm.order,
         orderCalls:            state.forms.orderForm.calls,
         orderComments:         state.forms.orderForm.orderComments,
@@ -143,6 +146,7 @@ const mapDispatchToProps = {
     resetOrderTasksForm,
     saveOrderTask,
     changeModalStatus,
+    clearCashOrderForm,
 };
 
 @withRouter
@@ -633,14 +637,17 @@ class OrderPage extends Component {
             isInviteEnabled,
             inviteOrderId,
             modal,
+            modalProps,
             isMobile,
             managers,
             stations,
             businessLocations,
             user,
             initialOrderTask,
+            clearCashOrderForm,
         } = this.props;
-        const {num, status, datetime, diagnosis, repairMapIndicator} = this.props.order;
+        const {num, status, datetime, diagnosis, repairMapIndicator, totalSumWithTax} = this.props.order;
+        const { clientId, name, surname } = this.props.selectedClient;
         const {id} = this.props.match.params;
 
         const {
@@ -651,6 +658,16 @@ class OrderPage extends Component {
         } = this.getSecurityConfig();
         const viewTasks = !isForbidden(user, permissions.GET_TASKS);
         const copyDisabled = isForbidden(user, permissions.CREATE_ORDER);
+
+        const cashOrderEntity = {
+            orderId: id,
+            clientId: clientId,
+            orderNum: num,
+            clientName: name,
+            clientSurname: surname,
+            increase: totalSumWithTax,
+            type: "INCOME",
+        }
 
         return spinner ? (
             <Spinner spin={ spinner }/>
@@ -801,6 +818,20 @@ class OrderPage extends Component {
                                 download={ this.props.getReport }
                                 isMobile={ isMobile }
                             />
+                            <Icon
+                                type='dollar'
+                                onClick={()=>{
+                                    setModal(MODALS.CASH_ORDER, {
+                                        fromOrder: true,
+                                        cashOrderEntity: cashOrderEntity,
+                                    })
+                                }}
+                                style={ {
+                                    fontSize: isMobile ? 14 : 24,
+                                    cursor:   'pointer',
+                                    margin:   '0 10px',
+                                } }
+                            />
                             </>
                         ) }
                         { !copyDisabled ?
@@ -909,6 +940,7 @@ class OrderPage extends Component {
                         businessLocations={ businessLocations }
                         focusOnRef={this._focusOnRef}
                         focusedRef={focusedRef}
+                        cashOrderEntity={cashOrderEntity}
                     />
                 </ResponsiveView>
                 <CancelReasonModal
@@ -955,6 +987,17 @@ class OrderPage extends Component {
                     orderTasks={ this.props.orderTasks }
                 />
                 <StoreProductModal />
+                <CashOrderModal
+                    visible={modal}
+                    modalProps={modalProps}
+                    resetModal={ () => {
+                        resetModal();
+                        clearCashOrderForm();
+                    } }
+                    fetchOrder={()=>{
+                        fetchOrderForm(id);
+                    }}
+                />
             </Layout>
         );
     }
