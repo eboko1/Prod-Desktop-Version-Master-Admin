@@ -156,7 +156,7 @@ class ErrorsModal extends Component {
             {
                 title: <FormattedMessage id="export_import_pages.data_base" />,
                 dataIndex: "table",
-                key: "table",
+                key: "data_base",
                 render: (data, row)=>{
                     return data ? (
                         <FormattedMessage id={`export_import_pages.${data.toLowerCase()}`} />
@@ -164,12 +164,12 @@ class ErrorsModal extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="order_form_table.row" />,
+                title: <FormattedMessage id="export_import_pages.row" />,
                 dataIndex: "row",
                 key: "row",
             },
             {
-                title:  <FormattedMessage id="order_form_table.message" />,
+                title:  <FormattedMessage id="export_import_pages.message" />,
                 dataIndex: "message",
                 key: "message",
             },
