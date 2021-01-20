@@ -471,6 +471,8 @@ export default class VehicleLocationModal extends Component {
             })
         }
 
+        //console.log(prevProps.showModal, this.props.showModal);
+
         if(!prevProps.showModal && this.props.showModal) {
             this.setState({
                 visible: true,
@@ -479,6 +481,7 @@ export default class VehicleLocationModal extends Component {
     }
 
     componentDidMount() {
+        //console.log(this.props.showModal)
         this._isMounted = true;
         if(this._isMounted) {
             this.fetchClients();

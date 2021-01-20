@@ -154,12 +154,19 @@ export default class OrderFormBody extends Component {
         }
 
         if(prevProps.focusedRef != this.props.focusedRef) {
-            if(this.props.focusedRef == 'HEADER_CLIENT_SEARCH' && this.clientRef.current) this.clientRef.current.focus();
-            if(this.props.focusedRef == 'HEADER_MILEAGE') this.milageRef.current.focus();
+            if(this.props.focusedRef == 'HEADER_CLIENT_SEARCH' && this.clientRef.current) {
+                this.clientRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
+            if(this.props.focusedRef == 'HEADER_MILEAGE') {
+                this.milageRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
             if(this.props.focusedRef == 'HEADER_LOCATION_ACTION') {
                 const businessLocationsLabel = this._getBusinessLocationsLabel();
                 this.setState({businessLocationsLabel});
                 this.locationRef.current.focus();
+                this.props.focusOnRef(undefined);
             }
         }
     }
@@ -247,7 +254,10 @@ export default class OrderFormBody extends Component {
                         clientId={_.get(selectedClient, "clientId")}
                         vehicleId={_.get(fetchedOrder, "order.clientVehicleId")}
                         currentLocation={businessLocationId}
-                        hideModal={()=>void 0}
+                        hideModal={()=>{
+                            const businessLocationsLabel = this._getBusinessLocationsLabel();
+                            this.setState({businessLocationsLabel});
+                        }}
                         onConfirm={(businessLocationId)=>updateOrderField({businessLocationId: businessLocationId || null})}
                         showModal={this.props.focusedRef == 'HEADER_LOCATION_ACTION'}
                     />
