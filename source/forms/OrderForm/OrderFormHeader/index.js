@@ -213,9 +213,18 @@ export default class OrderFormHeader extends Component {
         }
 
         if(prevProps.focusedRef != this.props.focusedRef) {
-            if(this.props.focusedRef == 'HEADER_STATION') this.stationRef.current.focus();
-            if(this.props.focusedRef == 'HEADER_EMPLOYEE') this.employeeRef.current.focus();
-            if(this.props.focusedRef == 'HEADER_REQUISITES') this.requisitesRef.current.focus();
+            if(this.props.focusedRef == 'HEADER_STATION') {
+                this.stationRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
+            if(this.props.focusedRef == 'HEADER_EMPLOYEE') {
+                this.employeeRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
+            if(this.props.focusedRef == 'HEADER_REQUISITES') {
+                this.requisitesRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
         }
     }
     // TODO: move into utils
