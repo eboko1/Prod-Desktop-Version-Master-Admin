@@ -156,7 +156,11 @@ export default class OrderFormBody extends Component {
         if(prevProps.focusedRef != this.props.focusedRef) {
             if(this.props.focusedRef == 'HEADER_CLIENT_SEARCH' && this.clientRef.current) this.clientRef.current.focus();
             if(this.props.focusedRef == 'HEADER_MILEAGE') this.milageRef.current.focus();
-            if(this.props.focusedRef == 'HEADER_LOCATION_ACTION') this.locationRef.current.focus();
+            if(this.props.focusedRef == 'HEADER_LOCATION_ACTION') {
+                const businessLocationsLabel = this._getBusinessLocationsLabel();
+                this.setState({businessLocationsLabel});
+                this.locationRef.current.focus();
+            }
         }
     }
 
@@ -245,6 +249,7 @@ export default class OrderFormBody extends Component {
                         currentLocation={businessLocationId}
                         hideModal={()=>void 0}
                         onConfirm={(businessLocationId)=>updateOrderField({businessLocationId: businessLocationId || null})}
+                        showModal={this.props.focusedRef == 'HEADER_LOCATION_ACTION'}
                     />
                 }
             </div>
