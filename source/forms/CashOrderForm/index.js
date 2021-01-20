@@ -139,10 +139,11 @@ export class CashOrderForm extends Component {
         return null;
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const {
             editMode,
             printMode,
+            fromOrder,
             activeCashOrder,
             fetchCashOrderNextId,
             fetchCashboxes,
@@ -159,16 +160,26 @@ export class CashOrderForm extends Component {
             this._selectOrderType(_.get(activeCashOrder, "type"));
         }
 
-        if (!editMode && !printMode) {
+        if (!editMode && !printMode && !fromOrder) {
             fetchCashOrderNextId();
             fetchCashboxes();
             setFieldsValue({ tag: defaultTagValue });
+        }
+
+        if(fromOrder) {
+            console.log(activeCashOrder);
+            await fetchCashOrderNextId();
+            await fetchCashboxes();
+            await this._selectOrderType(_.get(activeCashOrder, "type"));
+            await setFieldsValue(activeCashOrder);
         }
     }
 
     componentDidUpdate(prevProps) {
         const {
             editMode,
+            fromOrder,
+            activeCashOrder,
             fields,
             form: { getFieldValue, setFieldsValue, resetFields },
         } = this.props;
@@ -294,9 +305,9 @@ export class CashOrderForm extends Component {
 
     _submit = event => {
         event.preventDefault();
-        const { form, createCashOrder, resetModal, editMode } = this.props;
+        const { form, createCashOrder, resetModal, editMode, fromOrder, fetchOrder } = this.props;
 
-        form.validateFields((err, values) => {
+        form.validateFields(async (err, values) => {
             if (_.has(err, "clientId") || _.has(err, "orderId")) {
                 this._handleErrorValidationPanel();
             }
@@ -312,9 +323,11 @@ export class CashOrderForm extends Component {
                     editMode,
                     ...values,
                 };
-                createCashOrder(cashOrder);
+                await createCashOrder(cashOrder);
                 form.resetFields();
                 resetModal();
+
+                if(fromOrder) await fetchOrder();
             }
         });
     };

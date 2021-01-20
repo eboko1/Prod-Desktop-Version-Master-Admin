@@ -119,6 +119,7 @@ export class MobileRecordForm extends Component {
             onStatusChange,
             orderDiagnostic,
             order: { status },
+            onClose,
         } = this.props;
         const { getFieldDecorator, getFieldsValue } = this.props.form;
         const { formatMessage } = this.props.intl;
@@ -145,7 +146,7 @@ export class MobileRecordForm extends Component {
                         getFieldDecorator={getFieldDecorator}
                     />
                 </div>
-                <div className={Styles.mobileRecordFormFooter}>
+                <div className={Styles.mobileRecordFormFooter} style={{display: 'none'}}>
                     {status !== "cancel" && status !== "approve" && (
                         <Button
                             className={Styles.mobileRecordSubmitBtn}
@@ -326,7 +327,7 @@ export class MobileRecordForm extends Component {
                 <DecoratedTimePicker
                     field="stationLoads[0].beginTime"
                     initialValue={moment(
-                        this.props.order.deliveryDatetime,
+                        this.props.order.beginDatetime,
                     ).toISOString()}
                     formItem
                     hasFeedback
@@ -493,6 +494,33 @@ export class MobileRecordForm extends Component {
                         isMobile={true}
                     />
                 </Modal>
+                <div 
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        margin: '12px 0',
+                    }}
+                >
+                    {status !== "cancel" && status !== "approve" && (
+                        <Button
+                            style={status !== "cancel" && status !== "approve" ? {width: '49%'} : {width: '100%'}}
+                            type="primary"
+                            onClick={() => onStatusChange("approve")}
+                        >
+                            <FormattedMessage id="add_order_form.save_appointment" />
+                        </Button>
+                    )}
+                    {status !== "cancel" && (
+                        <Button
+                            style={status !== "cancel" && status !== "approve" ? {width: '49%'} : {width: '100%'}}
+                            onClick={() =>
+                                onClose()
+                            }
+                        >
+                            <FormattedMessage id="close" />
+                        </Button>
+                    )}
+                </div>
             </Form>
         );
     }

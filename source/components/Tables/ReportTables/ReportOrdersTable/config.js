@@ -49,12 +49,16 @@ const defWidth = {
     margin_total: '5%'
 }
 
+
+let _handleSearchRef = null;
+
 /* eslint-disable complexity */
 export function columnsConfig(props) {
 
     const {
         filterControls,
         filter,
+        formatMessage,
     } = props;
 
     const {
@@ -77,6 +81,13 @@ export function columnsConfig(props) {
         onOpenFilterModal,
     } = filterControls;
 
+    if(!_handleSearchRef) {
+        _handleSearchRef = _.debounce(value => {
+            setReportOrdersQuery(value.toLowerCase().trim());
+            fetchReportOrders();
+        }, 1000);
+    }
+
     
 
     //Handlers---------------------------------------------------------------
@@ -91,8 +102,7 @@ export function columnsConfig(props) {
     }
 
     function onSearchInput(e) {
-        setReportOrdersQuery(e.target.value.toLowerCase().trim());
-        fetchReportOrders();
+        if(_handleSearchRef) _handleSearchRef(e.target.value)
     }
 
     const setCreationDaterange = daterange => {
@@ -220,7 +230,11 @@ export function columnsConfig(props) {
             {
                 title:  <div className={Styles.filterColumnHeaderWrap}>
                             <FormattedMessage id='report-orders-table.client_name' />
-                            <Input onChange={onSearchInput} placeholder="Search"/>
+                            <Input
+                                onChange={onSearchInput}
+                                placeholder={formatMessage({ id: "report_orders_page_page.search" })}
+                                defaultValue={filter.query}
+                            />
                         </div>,
                 align: 'left',
                 key: 'client_name',

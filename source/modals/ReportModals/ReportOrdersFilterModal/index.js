@@ -79,6 +79,11 @@ export default class ReportOrdersFilterModal extends Component {
         values.doneFromDate= values.doneFromDate ? values.doneFromDate.format(DEF_DATE_FORMAT): undefined;
         values.doneToDate= values.doneToDate ? values.doneToDate.format(DEF_DATE_FORMAT): undefined;
 
+        //Some values are redundant, we need to remove them
+        values.creationDateRange = undefined;
+        values.appointmentDateRange = undefined;
+        values.doneDateRange = undefined;
+
         return values;
     }
 

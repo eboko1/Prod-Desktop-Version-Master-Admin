@@ -16,6 +16,9 @@ export const FETCH_REPORT_ORDERS_SUCCESS = `${prefix}/FETCH_REPORT_ORDERS_SUCCES
 export const FETCH_REPORT_ORDERS_FILTER_OPTIONS = `${prefix}/FETCH_REPORT_ORDERS_FILTER_OPTIONS`;
 export const FETCH_REPORT_ORDERS_FILTER_OPTIONS_SUCCESS = `${prefix}/FETCH_REPORT_ORDERS_FILTER_OPTIONS_SUCCESS`;
 
+export const FETCH_EXCEL_FILE_REPORT = `${prefix}/FETCH_EXCEL_FILE_REPORT`;
+export const FETCH_EXCEL_FILE_REPORT_SUCCESS = `${prefix}/FETCH_EXCEL_FILE_REPORT_SUCCESS`;
+
 export const SET_REPORT_ORDERS_ALL_FILTERS = `${prefix}/SET_REPORT_ORDERS_ALL_FILTERS`;
 
 export const SET_REPORT_ORDERS_PAGE = `${prefix}/SET_REPORT_ORDERS_PAGE`;
@@ -26,6 +29,8 @@ export const SET_REPORT_ORDERS_STATUS = `${prefix}/SET_REPORT_ORDERS_STATUS`;
 
 export const SET_REPORT_ORDERS_INCLUDE_SERVICES_DISCOUNT = `${prefix}/SET_REPORT_ORDERS_INCLUDE_SERVICES_DISCOUNT`;
 export const SET_REPORT_ORDERS_INCLUDE_APPURTENANCIES_DISCOUNT = `${prefix}/SET_REPORT_ORDERS_INCLUDE_APPURTENANCIES_DISCOUNT`;
+
+export const SET_REPORT_ORDERS_EXPORT_OPTIONS = `${prefix}/SET_REPORT_ORDERS_EXPORT_OPTIONS`;
 
 export const SET_REPORT_ORDERS_CREATION_FROM_DATE = `${prefix}/SET_REPORT_ORDERS_CREATION_FROM_DATE`;
 export const SET_REPORT_ORDERS_CREATION_TO_DATE = `${prefix}/SET_REPORT_ORDERS_CREATION_TO_DATE`;
@@ -65,16 +70,14 @@ const ReducerState = {
     },
     options: {
         includeServicesDiscount: true,
-        includeAppurtenanciesDiscount: true,
+        includeAppurtenanciesDiscount: true
     },
-    sort: {
-        field: 'datetime',
-        order: 'desc',
-    },
-    //This value is used to save dropdown options, for example select employee or station num
-    filterOptions: {
-
-    },
+    exportOptions: {
+        groupingLevel1: undefined,
+        groupingLevel2: undefined,
+        groupingLevel3: undefined,
+        reportFields: undefined
+    }
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -201,6 +204,15 @@ export default function reducer(state = ReducerState, action) {
                 }
             };
 
+        case SET_REPORT_ORDERS_EXPORT_OPTIONS: 
+            return {
+                ...state,
+                exportOptions:{
+                    ...state.exportOptions,
+                    ...payload
+                }
+            };
+
         case SET_REPORT_ORDERS_ALL_FILTERS:
             return {
                 ...state,
@@ -231,6 +243,14 @@ export const fetchReportOrdersFilterOptions = () => ({
 export const fetchReportOrdersFilterOptionsSuccess = (filterOptions) => ({
     type:    FETCH_REPORT_ORDERS_FILTER_OPTIONS_SUCCESS,
     payload: filterOptions,
+});
+
+export const fetchExcelFileReport = () => ({
+    type: FETCH_EXCEL_FILE_REPORT,
+});
+
+export const fetchExcelFileReportSuccess = () => ({
+    type:    FETCH_EXCEL_FILE_REPORT_SUCCESS
 });
 
 //Filter-------------------------------------------------------------------------------------------------
@@ -289,6 +309,11 @@ export const setReportOrdersIncludeServicesDiscount = (val) => ({
 export const setReportOrdersIncludeAppurtenanciesDiscount = (val) => ({ 
     type:    SET_REPORT_ORDERS_INCLUDE_APPURTENANCIES_DISCOUNT,
     payload: val
+});
+
+export const setReportOrdersExportOptions = (options) => ({ 
+    type:    SET_REPORT_ORDERS_EXPORT_OPTIONS,
+    payload: options
 });
 
 //Override existing filters
