@@ -80,6 +80,7 @@ class DetailProductModal extends React.Component{
                             onSelect={(value, option)=>{
                                 elem.storeGroupId = value;
                                 elem.detailName = option.props.name;
+                                elem.multiplier = option.props.multiplier;
                                 if(this.state.radioValue != 2) this.getDefaultValues(value);
                                 if(!elem.related) this.getRelatedDetails(value);
                                 this.filterOptions(value);
@@ -188,10 +189,6 @@ class DetailProductModal extends React.Component{
                             onChange={(value, option)=>{
                                 this.unsetSupplier(elem.key, elem.related);
                                 elem.detailCode = undefined;
-                                elem.purchasePrice = 0;
-                                elem.price = 1;
-                                elem.count = 1;
-                                elem.sum = undefined;
                                 elem.brandId = value;
                                 elem.brandName = option ? option.props.children : undefined;
                                 if(!option) this.state.relatedDetails = []; 
@@ -386,7 +383,9 @@ class DetailProductModal extends React.Component{
                                 `${value}`.replace(/\$\s?|(\s)/g, '')
                             }
                             onChange={(value)=>{
+                                const storeGroup = this.props.allDetails.find((detail)=>detail.id == elem.storeGroupId);
                                 elem.purchasePrice = value;
+                                elem.price = elem.purchasePrice * (storeGroup ? storeGroup.priceGroupMultiplier : 1);
                                 this.setState({});
                             }}
                         />
@@ -422,7 +421,7 @@ class DetailProductModal extends React.Component{
                             }
                             onChange={(value)=>{
                                 elem.price = value;
-                                telem.sum = value * elem.count;
+                                elem.sum = value * elem.count;
                                 this.setState({});
                             }}
                         />
@@ -842,6 +841,7 @@ class DetailProductModal extends React.Component{
     }
 
     setVinDetail(code, name, key, related) {
+        this.unsetSupplier(key, related);
         this.state.mainTableSource[0].detailName = name;
         this.state.mainTableSource[0].detailCode = code;
         

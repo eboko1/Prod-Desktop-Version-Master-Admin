@@ -65,11 +65,14 @@
     "navigation.availabilities": "Availability settings",
     "navigation.repair_map": "Repair map",
     "navigation.report_orders": "Orders report",
+    "navigation.report_load_kpi": "Load KPI",
     "navigation.locations": "Locations",
     "navigation.locations_settings": "Directory of Locations",
     "navigation.locations_document": "Locations Documents",
     "navigation.locations_vehicles": "Locations Vehicles",
-    "navigation.locations_movement": "Vehicles Movement"
+    "navigation.locations_movement": "Vehicles Movement",
+    "navigation.sync_import": "Synchronization / Import",
+    "navigation.sync_export": "Synchronization / Backup"
   },
   "ru": {
     "navigation.operations": "Операции",
@@ -137,11 +140,14 @@
     "navigation.availabilities": "Настройки наличия",
     "navigation.repair_map": "Технологическая карта",
     "navigation.report_orders": "Отчет по н/з",
+    "navigation.report_load_kpi": "KPI по завантаженню",
     "navigation.locations": "Локации",
     "navigation.locations_settings": "Справочник локаций",
     "navigation.locations_document": "Документы локаций",
     "navigation.locations_vehicles": "Авто на локациях",
-    "navigation.locations_movement": "Движение Авто по локациям"
+    "navigation.locations_movement": "Движение Авто по локациям",
+    "navigation.sync_import": "Синхронизация / Импорт",
+    "navigation.sync_export": "Синхронизация / Бэкап"
   },
   "uk": {
     "navigation.operations": "Операції",
@@ -209,10 +215,13 @@
     "navigation.availabilities": "Налаштування наявності",
     "navigation.repair_map": "Карта ремонту",
     "navigation.report_orders": "Звіт по н/з",
+    "navigation.report_load_kpi": "KPI по загрузке",
     "navigation.locations": "Локації",
     "navigation.locations_settings": "Довідник локацій",
     "navigation.locations_document": "Документи локацій",
     "navigation.locations_vehicles": "Авто по локаціям",
-    "navigation.locations_movement": "Рух Авто по локаціям"
+    "navigation.locations_movement": "Рух Авто по локаціям",
+    "navigation.sync_import": "Синхронізація / Імпорт",
+    "navigation.sync_export": "Синхронізація / Бекап"
   }
 }

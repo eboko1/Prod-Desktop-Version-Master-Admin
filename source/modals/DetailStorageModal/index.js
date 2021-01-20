@@ -59,7 +59,7 @@ class DetailStorageModal extends React.Component{
                     return (
                         <div>
                             <FormattedMessage id="order_form_table.detail_code" />
-                            {this.state.storeOptions.length && 
+                            {this.state.storeOptions.length ? 
                                 <Select
                                     showSearch
                                     value={this.state.storeFilter}
@@ -82,7 +82,7 @@ class DetailStorageModal extends React.Component{
                                             {elem.name}
                                         </Option>
                                     ))}
-                                </Select>
+                                </Select> : null
                             }
                             <Input
                                 allowClear
@@ -154,9 +154,10 @@ class DetailStorageModal extends React.Component{
                 },
                 key:       'brand',
                 dataIndex: 'supplierName',
-                sorter: (a, b) => a.supplierName.localeCompare(b.supplierName),
+                sorter: (a, b) => a.supplierName && a.supplierName.localeCompare(b.supplierName),
                 sortDirections: ['descend', 'ascend'],
                 render: (data, elem)=>{
+                    console.log(elem);
                     //<div>{getSupplier(elem.suplierId, elem.partNumber)}</div>
                     return (
                        <div>{data}</div>

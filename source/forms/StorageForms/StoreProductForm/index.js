@@ -102,9 +102,31 @@ const ProductForm = props => {
         return groupName;
     };
 
+     const findGroupMultiplierById = (data, groupId) => {
+        let resultNumber = null;
+
+        data.forEach(item => {
+            if (item.id === groupId) {
+                resultNumber = item.priceGroupNumber;
+            }
+
+            if (!_.isEmpty(item.childGroups)) {
+                const result = findGroupMultiplierById(item.childGroups, groupId);
+                if (!resultNumber) {
+                    resultNumber = result;
+                }
+            }
+        });
+
+        return resultNumber;
+    };
+
     const onSelectProductGroup = value => {
         const groupName = findGroupNameById(props.storeGroups, value);
         props.form.setFieldsValue({ name: groupName });
+
+        const priceGroup = findGroupMultiplierById(props.storeGroups, value);
+        props.form.setFieldsValue({ priceGroupNumber: priceGroup });
 
         return value;
     };

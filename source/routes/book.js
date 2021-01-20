@@ -31,6 +31,8 @@ const book = Object.freeze({
     addOrder:                 '/add',
     // reports
     reports:                  '/orders/reports',
+    reportOrders:             '/report/orders',
+    reportLoadKPI:            '/report/load_kpi',
     //
     // Reference book
     //
@@ -88,13 +90,12 @@ const book = Object.freeze({
     locationsVehicles:        '/location-vehicles',
     locationsMovement:        '/location-movement',
     //
-    // Statistics and reports
+    // Statistics
     //
     chart:                    '/chart',
     feedback:                 '/feedback',
     feedbackId:               '/feedback/:id',
     calls:                    '/calls',
-    reportOrders:             '/report/orders',
     //
     // Payment
     //
@@ -116,6 +117,8 @@ const book = Object.freeze({
     servicesPage:             '/administration/services',
     brandsPage:               '/administration/brands',
     availabilitiesPage:       '/administration/availabilities',
+    syncImportPage:           '/administration/sync-import',
+    syncExportPage:           '/administration/sync-export', 
 
     oldApp: {
         // link to my.cb24.eu

@@ -119,6 +119,10 @@ export default class OrderFormBody extends Component {
             clientVehiclesOptions,
             recommendationStyles,
         };
+
+        this.clientRef = React.createRef();
+        this.milageRef = React.createRef();
+        this.locationRef = React.createRef();
     }
 
     componentDidUpdate(prevProps) {
@@ -147,6 +151,23 @@ export default class OrderFormBody extends Component {
         ) {
             const recommendationStyles = this._getRecommendationStyles();
             this.setState({ recommendationStyles });
+        }
+
+        if(prevProps.focusedRef != this.props.focusedRef) {
+            if(this.props.focusedRef == 'HEADER_CLIENT_SEARCH' && this.clientRef.current) {
+                this.clientRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
+            if(this.props.focusedRef == 'HEADER_MILEAGE') {
+                this.milageRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
+            if(this.props.focusedRef == 'HEADER_LOCATION_ACTION') {
+                const businessLocationsLabel = this._getBusinessLocationsLabel();
+                this.setState({businessLocationsLabel});
+                this.locationRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
         }
     }
 
@@ -233,8 +254,12 @@ export default class OrderFormBody extends Component {
                         clientId={_.get(selectedClient, "clientId")}
                         vehicleId={_.get(fetchedOrder, "order.clientVehicleId")}
                         currentLocation={businessLocationId}
-                        hideModal={()=>void 0}
+                        hideModal={()=>{
+                            const businessLocationsLabel = this._getBusinessLocationsLabel();
+                            this.setState({businessLocationsLabel});
+                        }}
                         onConfirm={(businessLocationId)=>updateOrderField({businessLocationId: businessLocationId || null})}
+                        showModal={this.props.focusedRef == 'HEADER_LOCATION_ACTION'}
                     />
                 }
             </div>
@@ -352,6 +377,7 @@ export default class OrderFormBody extends Component {
                     placeholder={this._getLocalization(
                         "add_order_form.search_client.placeholder",
                     )}
+                    ref={this.clientRef}
                 />
                 {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
                     <Icon
@@ -483,6 +509,7 @@ export default class OrderFormBody extends Component {
                         {this.state.clientEmailsOptions}
                     </DecoratedSelect>
                     <DecoratedSelect
+                        allowClear={true}
                         errors={errors}
                         defaultGetValueProps
                         fieldValue={_.get(fields, "clientRequisite")}
@@ -634,6 +661,7 @@ export default class OrderFormBody extends Component {
                         className={`${Styles.location} ${_.get(fetchedOrder, "order.businessLocationId") ? Styles.disableLoctionsSelectData : null}`}
                         formItemLayout={formVerticalLayout}
                         disabled
+                        ref={this.locationRef}
                     >
                         {this.state.businessLocationsOptions}
                     </DecoratedSelect>
@@ -655,6 +683,7 @@ export default class OrderFormBody extends Component {
                         className={Styles.odometr}
                         formItemLayout={formVerticalLayout}
                         min={0}
+                        ref={this.milageRef}
                     />
                 </div>
             </div>

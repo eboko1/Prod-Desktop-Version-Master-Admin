@@ -361,6 +361,12 @@ class ClientVehicleTransfer extends Component {
                 })
                 .catch(function(error) {
                     console.log("error", error);
+                    openNotificationWithIcon(
+                        "error",
+                        that.props.intl.formatMessage({
+                            id: "vehicle_transfer.error",
+                        }),
+                    );
                 });
                 that.handleCancel();
             },

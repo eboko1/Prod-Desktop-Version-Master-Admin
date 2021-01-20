@@ -1,11 +1,13 @@
 import ClientSearchTable from './ClientSearchTable';
 import ClientMRDsTable from './ClientMRDsTable';
+import ImportExportTable from './ImportExportTable';
 
 export { EditableTable } from './EditableTable';
 export { SuppliersTable } from './SuppliersTable';
 
 //Reports
 export { ReportOrdersTable } from './ReportTables/ReportOrdersTable'
+export { ReportLoadKPITable} from './ReportTables/ReportLoadKPITable';
 
 export { CashboxesTable } from './CashTables/CashboxesTable';
 export { CashOrdersTable } from './CashTables/CashOrdersTable';
@@ -32,4 +34,5 @@ export {
 export { 
 	ClientMRDsTable,
 	ClientSearchTable,
+	ImportExportTable,
 };

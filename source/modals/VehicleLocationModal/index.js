@@ -470,9 +470,18 @@ export default class VehicleLocationModal extends Component {
                 vehicles: clientId ? clients.find((client)=>client.clientId == clientId).vehicles : [],
             })
         }
+
+        //console.log(prevProps.showModal, this.props.showModal);
+
+        if(!prevProps.showModal && this.props.showModal) {
+            this.setState({
+                visible: true,
+            })
+        }
     }
 
     componentDidMount() {
+        //console.log(this.props.showModal)
         this._isMounted = true;
         if(this._isMounted) {
             this.fetchClients();
