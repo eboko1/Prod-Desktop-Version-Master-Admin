@@ -695,7 +695,7 @@ export class OrderForm extends React.PureComponent {
             repairMapData,
             fetchRepairMapData,
             focusOnRef,
-            cashOrderEntity,
+            showCahOrderModal,
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
@@ -805,7 +805,7 @@ export class OrderForm extends React.PureComponent {
                 repairMapData={repairMapData}
                 fetchRepairMapData={fetchRepairMapData}
                 focusOnRef={focusOnRef}
-                cashOrderEntity={cashOrderEntity}
+                showCahOrderModal={showCahOrderModal}
             />
         );
     };
