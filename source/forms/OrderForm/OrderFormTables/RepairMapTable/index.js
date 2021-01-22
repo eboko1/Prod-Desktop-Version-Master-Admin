@@ -75,7 +75,7 @@ export default class RepairMapTable extends Component {
             modals,
             download,
             focusOnRef,
-            cashOrderEntity,
+            showCahOrderModal,
          } = this.props;
         switch(operation) {
             case HEADER_CLIENT_SEARCH:
@@ -159,10 +159,7 @@ export default class RepairMapTable extends Component {
                 break;
             case HEADER_PAY:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
-                setModal(MODALS.CASH_ORDER, {
-                    fromOrder: true,
-                    cashOrderEntity: cashOrderEntity,
-                })
+                showCahOrderModal();
                 break;
             case STOCK_BUTTON_ORDERED:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});

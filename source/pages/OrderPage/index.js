@@ -371,6 +371,43 @@ class OrderPage extends Component {
             : returnToOrdersPage(status);
     };
 
+    _getOrderRemainSum = (callback) => {
+        const { fetchedOrder } = this.props;
+        let token = localStorage.getItem("_my.carbook.pro_token");
+        let url = API_URL;
+        let params = `/orders/${this.props.order.id}?onlyLabors=${false}&onlyDetails=${false}`;
+        url += params;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                let remainSum = data.order.totalSumWithTax;;
+
+                if(fetchedOrder) {
+                    fetchedOrder.cashOrders.map((elem)=>{
+                        remainSum += elem.decrease || 0;
+                        remainSum -= elem.increase || 0;
+                    })
+                }
+                if(callback) callback(remainSum);
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
+    }
+
     _checkIsAllReserved = (callback) => {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
@@ -669,14 +706,21 @@ class OrderPage extends Component {
             })
         }
 
-        const cashOrderEntity = {
-            orderId: id,
-            clientId: clientId,
-            orderNum: num,
-            clientName: name,
-            clientSurname: surname,
-            increase: Math.round(remainSum*100)/100,
-            type: "INCOME",
+        const showCahOrderModal = () => {
+            this._getOrderRemainSum((remainSum)=>{
+                setModal(MODALS.CASH_ORDER, {
+                    fromOrder: true,
+                    cashOrderEntity: {
+                        orderId: id,
+                        clientId: clientId,
+                        orderNum: num,
+                        clientName: name,
+                        clientSurname: surname,
+                        increase: Math.round(remainSum*100)/100,
+                        type: "INCOME",
+                    },
+                })
+            });
         }
 
         return spinner ? (
@@ -830,12 +874,7 @@ class OrderPage extends Component {
                             />
                             <Icon
                                 type='dollar'
-                                onClick={()=>{
-                                    setModal(MODALS.CASH_ORDER, {
-                                        fromOrder: true,
-                                        cashOrderEntity: cashOrderEntity,
-                                    })
-                                }}
+                                onClick={showCahOrderModal}
                                 style={ {
                                     fontSize: isMobile ? 14 : 24,
                                     cursor:   'pointer',
@@ -950,7 +989,7 @@ class OrderPage extends Component {
                         businessLocations={ businessLocations }
                         focusOnRef={this._focusOnRef}
                         focusedRef={focusedRef}
-                        cashOrderEntity={cashOrderEntity}
+                        showCahOrderModal={showCahOrderModal}
                     />
                 </ResponsiveView>
                 <CancelReasonModal

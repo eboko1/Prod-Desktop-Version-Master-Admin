@@ -61,7 +61,11 @@ export default class CashFlowPage extends Component {
     }
 
     _onOpenCashOrderModal = () => {
-        this.props.setModal(MODALS.CASH_ORDER);
+        this.props.setModal(MODALS.CASH_ORDER, {
+            cashOrderEntity: {
+                cashBoxId: this.props.filters.cashBoxId,
+            }
+        });
         this.setState({ cashOrderModalMounted: true });
     };
 

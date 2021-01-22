@@ -231,7 +231,7 @@ export default class OrderFormTabs extends React.PureComponent {
             repairMapData,
             fetchRepairMapData,
             focusOnRef,
-            cashOrderEntity,
+            showCahOrderModal,
         } = this.props;
 
         var orderServicesSize = 0,
@@ -323,7 +323,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             repairMapData={repairMapData}
                             fetchRepairMapData={fetchRepairMapData}
                             focusOnRef={focusOnRef}
-                            cashOrderEntity={cashOrderEntity}
+                            showCahOrderModal={showCahOrderModal}
                         />
                     </TabPane>
                 )}

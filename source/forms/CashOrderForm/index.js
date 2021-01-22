@@ -147,6 +147,7 @@ export class CashOrderForm extends Component {
             activeCashOrder,
             fetchCashOrderNextId,
             fetchCashboxes,
+            cashboxes,
             intl: { formatMessage },
             form: { setFieldsValue },
         } = this.props;
@@ -163,11 +164,10 @@ export class CashOrderForm extends Component {
         if (!editMode && !printMode && !fromOrder) {
             fetchCashOrderNextId();
             fetchCashboxes();
-            setFieldsValue({ tag: defaultTagValue });
+            setFieldsValue({ tag: defaultTagValue, cashBoxId: activeCashOrder.cashBoxId || _.get(cashboxes, "[0].id")});
         }
 
         if(fromOrder) {
-            console.log(activeCashOrder);
             await fetchCashOrderNextId();
             await fetchCashboxes();
             await this._selectOrderType(_.get(activeCashOrder, "type"));
