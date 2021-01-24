@@ -226,6 +226,7 @@ class DetailSupplierModal extends React.Component{
                     title={<FormattedMessage id="order_form_table.supplier" />}
                     onCancel={this.handleCancel}
                     footer={null}
+                    maskClosable={false}
                 >
                     {this.state.fetched ? 
                         <Table

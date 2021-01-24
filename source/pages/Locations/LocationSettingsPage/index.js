@@ -368,6 +368,7 @@ class AddLocationModal extends Component {
                 okButtonProps={{
                     disabled: !name || !type
                 }}
+                maskClosable={false}
             >
                 <div>
                     <div style={{margin: '0 0 8px 0'}}>

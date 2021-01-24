@@ -155,6 +155,7 @@ export default class RoleContainer extends Component {
                         this.props.hideForms();
                     }}
                     footer={null}
+                    maskClosable={false}
                 >
                     {(editRoleId && (
                         <RoleForm

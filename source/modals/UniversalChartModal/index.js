@@ -47,6 +47,7 @@ export default class UniversalChartModal extends Component {
                 onCancel={ () => resetModal() }
                 footer={ null }
                 className={ Styles.modal }
+                maskClosable={false}
             >
                 <Catcher>
                     { Object.keys(chartList).map((key, index) => (

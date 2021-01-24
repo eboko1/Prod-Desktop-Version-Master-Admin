@@ -21,6 +21,7 @@ export default class CancelResonModal extends Component {
                 visible={ visible === MODALS.CANCEL_REASON }
                 onCancel={ () => resetModal() }
                 footer={ null }
+                maskClosable={false}
             >
                 <CancelReasonForm
                     orderComments={ orderComments }

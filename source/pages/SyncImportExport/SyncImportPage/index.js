@@ -225,6 +225,7 @@ class ErrorsModal extends Component {
                 onCancel={hideModal}
                 style={{width: 'fit-content', minWidth: 840}}
                 destroyOnClose
+                maskClosable={false}
             >
                 <Table
                     columns={this.columns}

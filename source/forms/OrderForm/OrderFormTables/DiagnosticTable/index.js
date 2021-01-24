@@ -2002,6 +2002,7 @@ class CommentaryButton extends React.Component {
                                 </Button>,
                             ]
                     }
+                    maskClosable={false}
                 >
                     <>
                         <div className={ Styles.commentaryVehicleSchemeWrap }>

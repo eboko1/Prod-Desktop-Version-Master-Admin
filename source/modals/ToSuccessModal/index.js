@@ -29,6 +29,7 @@ export default class ToSuccessModal extends Component {
                 onCancel={ () => resetModal() }
                 footer={ null }
                 destroyOnClose
+                maskClosable={false}
             >
                 <ToSuccessForm
                     //handleToSuccessModalSubmit={

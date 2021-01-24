@@ -976,6 +976,7 @@ class DetailProductModal extends React.Component{
                     title={null}
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
+                    maskClosable={false}
                 >
                     <div>
                         <Radio.Group 
@@ -1203,6 +1204,7 @@ class CommentaryButton extends React.Component{
                             </Button>,
                         ])
                     }
+                    maskClosable={false}
                 >
                     <>
                     <div className={Styles.commentaryVehicleSchemeWrap}>
@@ -1852,6 +1854,7 @@ class VinCodeModal extends Component{
                     footer={null}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
+                    maskClosable={false}
                 >
                     {
                         !loading && !itemsListEmpty && categoryMode && !this.props.storeGroupId && allCategories && allCategories == categories &&
@@ -2145,6 +2148,7 @@ class VinCodeModal extends Component{
                                             zoomed: false,
                                         })
                                     }}
+                                    maskClosable={false}
                                 >
                                     <img
                                         width='100%'
@@ -2225,6 +2229,7 @@ class VinCodeModal extends Component{
                                 infoModalVisible: false,
                             })
                         }}
+                        maskClosable={false}
                     >
                         {infoItem && infoItem.body}
                     </Modal>

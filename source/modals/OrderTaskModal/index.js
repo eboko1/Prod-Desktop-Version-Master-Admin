@@ -46,6 +46,7 @@ export default class OrderTaskModal extends Component {
                     resetModal();
                     resetOrderTasksForm();
                 } }
+                maskClosable={false}
             >
                 <OrderTaskForm
                     initialOrderTask={ initialOrderTask }

@@ -3,10 +3,11 @@ import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { FormattedMessage } from "react-intl";
 import { Layout, Menu, Icon } from "antd";
+import { Link as ReactLink } from "react-router-dom";
 
 // proj
 import HeaderMenu from "commons/Header/HeaderMenu";
-
+import book from "routes/book";
 // own
 import Link from "./link";
 import Styles from "./styles.m.css";
@@ -43,11 +44,13 @@ export default class SiderMenu extends Component {
                             : Styles.logo
                     }
                 >
-                    {collapsed ? (
-                        <Icon type="environment-o" />
-                    ) : (
-                        user.businessName
-                    )}
+                    <ReactLink to={book.dashboard} style={{color: 'white'}}>
+                        {collapsed ? (
+                            <Icon type="environment-o" />
+                        ) : (
+                            user.businessName
+                        )}
+                    </ReactLink>
                 </div>
                 {isMobile && <HeaderMenu isMobile={isMobile} user={user} />}
                 <Menu

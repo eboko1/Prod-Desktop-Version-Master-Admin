@@ -130,6 +130,7 @@ export default class ReportOrdersFilterModal extends Component {
                     this.onFiltersClose();
                     onCloseFilterModal();
                 }}
+                maskClosable={false}
             >
                 <ReportOrdersFilterForm
                     filter={filter}

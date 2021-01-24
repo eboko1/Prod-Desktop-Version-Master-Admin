@@ -909,6 +909,7 @@ class ConfirmDiagnosticModal extends React.Component{
                             {<FormattedMessage id='order_form_table.diagnostic.confirm' />}
                         </Button>,
                     ]}
+                    maskClosable={false}
                 >
                     {!isMobile ? (
                     <div className={Styles.confirm_diagnostic_modal_wrap}>
@@ -1155,6 +1156,7 @@ class CommentaryButton extends React.Component{
                             </Button>,
                         ])
                     }
+                    maskClosable={false}
                 >
                     <>
                     <div className={Styles.commentaryVehicleSchemeWrap}>

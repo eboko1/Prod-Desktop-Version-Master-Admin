@@ -181,6 +181,7 @@ export class EditClientVehicleForm extends Component {
                                             onCancel={() =>
                                                 setEditVehicle(false)
                                             }
+                                            maskClosable={false}
                                         >
                                             <AddClientVehicleForm
                                                 onlyVehicles
@@ -426,6 +427,7 @@ class ClientVehicleTransfer extends Component {
                     style={{
                         minWidth: 640
                     }}
+                    maskClosable={false}
                 >
                     <div
                         style={{

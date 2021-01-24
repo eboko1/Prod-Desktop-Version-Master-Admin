@@ -462,6 +462,7 @@ export class MobileRecordForm extends Component {
                     visible={this.state.workshopModalVisible}
                     onCancel={()=>this.hideWorkshopModal()}
                     onOk={()=>this.hideWorkshopModal()}
+                    maskClosable={false}
                 >
                     {vehicle &&
                         <div>
@@ -486,6 +487,7 @@ export class MobileRecordForm extends Component {
                     onCancel={()=>this.hideStockModal()}
                     onOk={()=>this.hideStockModal()}
                     style={{overflow: 'scroll'}}
+                    maskClosable={false}
                 >
                     <StockTable
                         user={this.props.user}
@@ -822,6 +824,7 @@ class MobileDiagnostic extends Component {
                     title={<FormattedMessage id="order-page.diagnostic" />}
                     onCancel={this.handleCancel}
                     footer={[]}
+                    maskClosable={false}
                 >
                     {this.getDiagnosticHeader()}
                     {this.getDiagnosticElements()}
@@ -1268,6 +1271,7 @@ class CommentaryButton extends React.Component {
                                   </Button>,
                               ]
                     }
+                    maskClosable={false}
                 >
                     <>
                         <div className={Styles.commentaryVehicleSchemeWrap}>
@@ -1492,6 +1496,7 @@ class PhotoButton extends React.Component {
                             {<FormattedMessage id="add" />}
                         </Button>,
                     ]}
+                    maskClosable={false}
                 >
                     <Upload {...props}>
                         <Button>
