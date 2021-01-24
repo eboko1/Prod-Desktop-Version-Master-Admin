@@ -1330,6 +1330,7 @@ class ReturnModal extends React.Component {
                     onCancel={()=>{
                         this.handleCancel();
                     }}
+                    maskClosable={false}
                 >
                     <div
                         style={{
@@ -1464,6 +1465,7 @@ class ReturnModal extends React.Component {
                             recommendedReturnsVisible: false,
                         })
                     }}
+                    maskClosable={false}
                 >
                     <Table 
                         columns={this.returnTableColumns}
@@ -2055,6 +2057,7 @@ class AutomaticOrderCreationModal extends React.Component {
                     onCancel={()=>{
                         this.handleCancel();
                     }}
+                    maskClosable={false}
                 >
                     <Table
                         columns={

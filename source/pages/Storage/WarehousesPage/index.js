@@ -389,6 +389,7 @@ class AddWarehousesModal extends Component {
                 title={`${formatMessage({id: editMode ? 'edit' : 'add'})} ${formatMessage({id: 'storage'}).toLowerCase()}`}
                 onCancel={this.handleCancel}
                 onOk={this.handleOk}
+                maskClosable={false}
             >
                 <div
                     style={{

@@ -217,6 +217,7 @@ export default class ManagerRoleContainer extends Component {
                     visible={ Boolean(managerRole) }
                     onCancel={ () => hideForms() }
                     footer={ null }
+                    maskClosable={false}
                 >
                     { managerRole && (
                         <ManagerRoleForm

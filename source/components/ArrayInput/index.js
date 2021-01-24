@@ -7,6 +7,8 @@ import _ from 'lodash';
 import { DecoratedInput, DecoratedInputNumber } from 'forms/DecoratedFields';
 
 // own
+import Styles from "./styles.m.css";
+
 const FormItem = Form.Item;
 
 class ArrayInput extends Component {

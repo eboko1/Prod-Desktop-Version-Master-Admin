@@ -36,6 +36,7 @@ export default class ConfirmRescheduleModal extends Component {
                         </Button>
                     </div>
                 }
+                maskClosable={false}
             >
                 <FormattedMessage id='confirm_reschedule_repairs' />
             </Modal>

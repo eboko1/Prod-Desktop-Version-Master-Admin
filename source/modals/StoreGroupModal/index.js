@@ -115,6 +115,7 @@ const StoreGroup = props => {
             onOk={ () => submit() }
             okButtonProps={ deleteMode && { type: 'danger' } }
             onCancel={ () => resetModal() }
+            maskClosable={false}
         >
             <Form onSubmit={ submit } style={ { padding: 24 } }>
                 <DecoratedInput

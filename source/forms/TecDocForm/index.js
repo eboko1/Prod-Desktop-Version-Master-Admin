@@ -183,6 +183,7 @@ export class TecDocForm extends Component {
                         visible={this.props.attributes}
                         onOk={() => this.props.clearAttributes()}
                         onCancel={() => this.props.clearAttributes()}
+                        maskClosable={false}
                     >
                         <List
                             bordered

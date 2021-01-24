@@ -273,6 +273,7 @@ export default class BusinessPackageContainer extends Component {
                     )}
                     onCancel={() => this.props.hideForms()}
                     footer={null}
+                    maskClosable={false}
                 >
                     <AddBusinessPackageForm
                         {...filters}
@@ -296,6 +297,7 @@ export default class BusinessPackageContainer extends Component {
                     visible={Boolean(businessPackage)}
                     onCancel={() => this.props.hideForms()}
                     footer={null}
+                    maskClosable={false}
                 >
                     <BusinessPackageForm
                         businessPackage={businessPackage}

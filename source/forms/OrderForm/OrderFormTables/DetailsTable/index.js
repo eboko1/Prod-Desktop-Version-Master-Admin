@@ -1115,6 +1115,7 @@ class QuickEditModal extends React.Component {
                     }
                     onOk={ this.handleOk }
                     onCancel={ this.handleCancel }
+                    maskClosable={false}
                 >
                     <Table
                         columns={ this.columns }

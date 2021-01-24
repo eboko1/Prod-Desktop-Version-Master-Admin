@@ -71,6 +71,7 @@ const StoreProductModal = props => {
             destroyOnClose
             footer={ null }
             width={ 720 }
+            maskClosable={false}
         >
             <StoreProductForm
                 editing={ editing }

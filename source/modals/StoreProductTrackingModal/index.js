@@ -73,6 +73,7 @@ export default class StoreProductTrackingModal extends Component {
                 zIndex={9999}
                 onCancel={this.handleCancel}
                 footer={null}
+                maskClosable={false}
             >
                 <TrackingTable
                     filters={ filters }

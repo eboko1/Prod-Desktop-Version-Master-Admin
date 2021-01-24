@@ -62,6 +62,7 @@ export default class SupplierModal extends Component {
                 visible={modal === MODALS.SUPPLIER}
                 onOk={() => this._submit()}
                 onCancel={() => resetModal()}
+                maskClosable={false}
             >
                 <Form onSubmit={this._submit}>
                     <DecoratedInput

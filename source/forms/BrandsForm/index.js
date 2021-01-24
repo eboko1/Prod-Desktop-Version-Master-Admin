@@ -409,6 +409,7 @@ export class BrandsForm extends Component {
                     visible={MODALS.DETAIL_PRODUCT === this.props.modal}
                     onCancel={() => this.props.resetModal()}
                     footer={null}
+                    maskClosable={false}
                 >
                     <SetDetailProductForm />
                 </Modal>
@@ -417,6 +418,7 @@ export class BrandsForm extends Component {
                     visible={MODALS.SPREAD_BUSINESS_BRANDS === this.props.modal}
                     onCancel={() => this.props.resetModal()}
                     footer={null}
+                    maskClosable={false}
                 >
                     <SpreadBusinessBrandsForm />
                 </Modal>

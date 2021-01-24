@@ -710,6 +710,7 @@ class OilModal extends React.Component{
                     title={<FormattedMessage id="details_table.oils_and_liquids" />}
                     onCancel={this.handleCancel}
                     footer={null}
+                    maskClosable={false}
                 >
                     {this.state.fetched ? 
                         <Table

@@ -107,10 +107,12 @@ export default class AddClientModal extends Component {
 
                             this.props.createClient(clientEntity);
                             // resetModal();
+                            window.location.reload();
                         }
                     });
                 } }
                 onCancel={ () => resetModal() }
+                maskClosable={false}
             >
                 <AbstractClientForm
                     { ...this.props }

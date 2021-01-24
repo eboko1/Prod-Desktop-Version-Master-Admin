@@ -26,6 +26,7 @@ export default class InviteModal extends Component {
                 visible={ visible === MODALS.INVITE }
                 { ...modalOkOptions }
                 onCancel={ () => resetModal() }
+                maskClosable={false}
             >
                 { count ? (
                     <div>
