@@ -130,6 +130,7 @@ class ArrayInput extends Component {
                                 key={ key }
                                 field={ `${fieldName}[${key}][number]` }
                                 rules={ rules }
+                                className={Styles.arrayInput}
                             />
                         ) : (
                             <DecoratedInput
@@ -143,6 +144,7 @@ class ArrayInput extends Component {
                                 key={ key }
                                 field={ `${fieldName}[${key}]` }
                                 rules={ rules }
+                                className={Styles.arrayInput}
                             />
                         ) }
                     </Col>

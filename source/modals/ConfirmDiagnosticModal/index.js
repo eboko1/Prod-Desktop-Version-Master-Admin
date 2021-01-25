@@ -388,8 +388,8 @@ class ConfirmDiagnosticModal extends React.Component{
             that.state.servicesList.pop();
             that.state.detailsList.pop();
 
-            const serviceArray = [];
-            const detailArrat = [];
+            const serviceArray = [...that.state.servicesList];
+            const detailArrat = [...that.state.detailsList];
             
             data.map((elem, index)=>{
                 elem.labor.map((labor)=>{

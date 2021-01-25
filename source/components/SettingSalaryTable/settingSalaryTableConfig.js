@@ -114,7 +114,7 @@ export function columnsConfig(
     const percentFrom = {
         title:     <FormattedMessage id='setting-salary.percentFrom' />,
         dataIndex: 'percentFrom',
-        width:     '15%',
+        width:     '20%',
         render:    (text, record) => (
             <DecoratedSelect
                 field={ `settingSalaries[${record.key}][percentFrom]` }
@@ -166,7 +166,7 @@ export function columnsConfig(
     const considerDiscount = {
         title:     <FormattedMessage id='setting-salary.considerDiscount' />,
         dataIndex: 'considerDiscount',
-        width:     '10%',
+        width:     '5%',
         render:    (text, record) => (
             <Row type='flex' align='center'>
                 <DecoratedCheckbox
