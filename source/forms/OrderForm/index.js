@@ -302,6 +302,15 @@ export class OrderForm extends React.PureComponent {
             }
         }
 
+        if(
+            _.get(prevFormValues, "stationLoads[0].beginDate", undefined) &&
+            !(_.get(formValues, "stationLoads[0].beginDate", undefined).isSame(_.get(prevFormValues, "stationLoads[0].beginDate", undefined)))
+        ) {
+            this.props.form.setFieldsValue({
+                deliveryDate:  _.get(formValues, "stationLoads[0].beginDate", undefined),
+            });
+        }
+
         if (!_.isEqual(formValues, prevFormValues)) {
             this.setState({ formValues });
         }
