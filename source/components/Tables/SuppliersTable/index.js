@@ -115,6 +115,18 @@ export class SuppliersTable extends Component {
                 }
             },
             {
+                title: <FormattedMessage id="supplier.show" />,
+                dataIndex: "hide",
+                key: "hide",
+                render: (hide, {id}) => {
+                    return (
+                        !hide ? 
+                        <Icon type='check' style={{color: 'var(--green)'}}/> :
+                        <Icon type='close' style={{color: 'var(--warning)'}}/>
+                    )
+                }
+            },
+            {
                 key: "actions",
                 render: (row) => {
                     const disabled = row.expenseOrderDocsCount || row.incomeOrderDocsCount || !row.businessId;

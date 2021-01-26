@@ -6,7 +6,9 @@
         "supplier.orders": "Orders",
         "supplier.supply": "Supply",
         "supplier.paymentRespite": "Payment respite",
-        "supplier.error.email": "Incorrect E-mail"
+        "supplier.error.email": "Incorrect E-mail",
+        "supplier.show_suppleir": "Show supplier",
+        "supplier.show": "Show"
     },
     "ru": {
         "supplier.contact": "Контакт",
@@ -15,7 +17,9 @@
         "supplier.orders": "Заказы",
         "supplier.supply": "Поставки",
         "supplier.paymentRespite": "Отстрочка",
-        "supplier.error.email": "Неправильный E-mail"
+        "supplier.error.email": "Неправильный E-mail",
+        "supplier.show_suppleir": "Отображать поставщика",
+        "supplier.show": "Отображать"
     },
     "uk": {
         "supplier.contact": "Контакт",
@@ -24,6 +28,8 @@
         "supplier.orders": "Замовлення",
         "supplier.supply": "Поставки",
         "supplier.paymentRespite": "Відстрочка",
-        "supplier.error.email": "Невірний E-mail"
+        "supplier.error.email": "Невірний E-mail",
+        "supplier.show_suppleir": "Відображати постачальника",
+        "supplier.show": "Відображати"
     }
 }
