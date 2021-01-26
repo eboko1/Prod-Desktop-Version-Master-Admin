@@ -475,6 +475,7 @@ export default class ComplexesModal extends React.Component{
                     title={<FormattedMessage id='services_table.complexes'/>}
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
+                    maskClosable={false}
                 >
                     {this.state.fetched ? 
                         <div>
@@ -698,6 +699,7 @@ class CommentaryButton extends React.Component{
                             </Button>,
                         ])
                     }
+                    maskClosable={false}
                 >
                     <>
                     <div className={Styles.commentaryVehicleSchemeWrap}>

@@ -520,6 +520,7 @@ export default class VehicleLocationModal extends Component {
                     footer={null}
                     onCancel={this.handleCancel}
                     style={{minWidth: 840}}
+                    maskClosable={false}
                 >
                     {content}
                 </Modal>

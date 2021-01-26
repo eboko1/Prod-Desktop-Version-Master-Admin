@@ -311,6 +311,7 @@ export class RequisiteSettingFormModal extends Component {
                         minWidth: '40%',
                         maxWidth: '95%',
                     }}
+                    maskClosable={false}
                 >
                     <RequisiteSettingForm
                         requisiteData = { requisiteData }

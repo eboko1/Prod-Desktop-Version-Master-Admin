@@ -36,6 +36,7 @@ export default class SubscribeModal extends Component {
                 footer={ footer }
                 destroyOnClose
                 width={ 760 }
+                maskClosable={false}
             >
                 <SubscribeForm
                     user={ user }

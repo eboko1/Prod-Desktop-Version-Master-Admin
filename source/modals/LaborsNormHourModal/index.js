@@ -237,6 +237,7 @@ class LaborsNormHourModal extends React.Component{
                     title={<FormattedMessage id="services_table.norm_hours" />}
                     onCancel={this.handleCancel}
                     footer={null}
+                    maskClosable={false}
                 >
                     {this.state.fetched ? 
                         <Table

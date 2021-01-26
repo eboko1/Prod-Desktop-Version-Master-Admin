@@ -221,6 +221,7 @@ export default class LocationHistoryModal extends Component {
                 title={<FormattedMessage id='locations.vehicles_location_history'/>}
                 width={'80%'}
                 onCancel={this.handleCancel}
+                maskClosable={false}
             >
                 <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 24}}>
                     <div>

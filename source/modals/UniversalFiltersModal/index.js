@@ -64,6 +64,7 @@ export default class UniversalFiltersModal extends Component {
                     // hideModal();
                 } }
                 onCancel={ () => resetModal() }
+                maskClosable={false}
             >
                 <StatsCountsPanel stats={ stats } />
                 <UniversalFiltersForm

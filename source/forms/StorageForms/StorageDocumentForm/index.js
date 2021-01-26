@@ -1305,6 +1305,7 @@ class AddProductModal extends React.Component {
                 onCancel={()=>{
                     this.handleCancel();
                 }}
+                maskClosable={false}
             >
                 <div
                     style={{
@@ -1780,6 +1781,7 @@ export class AddStoreProductModal extends React.Component {
                         cancelAlertModal();
                     }}
                     onCancel={cancelAlertModal}
+                    maskClosable={false}
                 >
                     {this.props.children}
                 </Modal>
@@ -1792,6 +1794,7 @@ export class AddStoreProductModal extends React.Component {
                     onCancel={()=>{
                         this.setState({visible: false});
                     }}
+                    maskClosable={false}
                 >
                     <div>
                         <FormattedMessage id='order_form_table.detail_code' />{requiredField()}

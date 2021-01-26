@@ -369,6 +369,7 @@ export default class SyncConflictsModal extends Component {
                         <FormattedMessage id='export_import_pages.import'/>
                     </Button>
                 ]}
+                maskClosable={false}
     		>
                 <Table
                     columns={this.columns}
@@ -469,6 +470,7 @@ class ConflictModal extends Component {
                     </Button>
                 ]}
                 destroyOnClose
+                maskClosable={false}
             >
                 {conflict &&
                     <div

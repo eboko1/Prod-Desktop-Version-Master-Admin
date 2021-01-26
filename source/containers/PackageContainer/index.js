@@ -190,6 +190,7 @@ export default class PackageContainer extends Component {
                     visible={editPackageId || createPackageForm}
                     onCancel={() => this.props.hideForms()}
                     footer={null}
+                    maskClosable={false}
                 >
                     {(editPackageId && (
                         <PackageForm

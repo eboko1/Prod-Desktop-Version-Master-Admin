@@ -496,6 +496,7 @@ class DiagnosticPatternsPage extends Component {
                     footer={null}
                     visible={this.state.visible}
                     onCancel={()=>{this.handleCancel()}}
+                    maskClosable={false}
                 >
                     <Table
                         dataSource={modalDataSource}

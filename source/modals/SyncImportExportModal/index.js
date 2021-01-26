@@ -294,6 +294,7 @@ export default class SyncImportExportModal extends Component {
     			okText={<FormattedMessage id='export_import_pages.next'/>}
     			width={'fit-content'}
     			destroyOnClose
+				maskClosable={false}
     		>
     			<Table
     				columns={type == 'IMPORT' ? [...this.mainColumns, ...this.priorityColumn] : [...this.mainColumns, ...this.syncColumn]}
@@ -511,6 +512,7 @@ class SyncImportExportParametersModal extends Component {
     			style={{width: 'fit-content', minWidth: 640}}
     			destroyOnClose
     			confirmLoading={confirmLoading}
+				maskClosable={false}
     		>
     			{type == 'EXPORT' &&
 	    			<div className={Styles.filtersBlock}>
