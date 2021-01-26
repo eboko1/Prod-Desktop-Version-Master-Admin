@@ -233,6 +233,7 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
+                //that.props.onStatusChange(that.props.orderStatus);
                 that.props.fetchOrderForm(that.props.orderId);
             })
             .catch(function(error) {
@@ -302,18 +303,21 @@ export class OrderForm extends React.PureComponent {
             }
         }
 
+
+        if (!_.isEqual(formValues, prevFormValues)) {
+            this.setState({ formValues });
+        }
+
         if(
-            _.get(prevFormValues, "stationLoads[0].beginDate", undefined) &&
+            _.get(formValues, "stationLoads[0].beginDate", undefined) && _.get(prevFormValues, "stationLoads[0].beginDate", undefined) &&
             !(_.get(formValues, "stationLoads[0].beginDate", undefined).isSame(_.get(prevFormValues, "stationLoads[0].beginDate", undefined)))
         ) {
+            alert(111);
             this.props.form.setFieldsValue({
                 deliveryDate:  _.get(formValues, "stationLoads[0].beginDate", undefined),
             });
         }
 
-        if (!_.isEqual(formValues, prevFormValues)) {
-            this.setState({ formValues });
-        }
         //
         // for each stationLoad row in stationLoads tab we have to provide extra check
         // if values is not equal we will fetch available hours for each row
