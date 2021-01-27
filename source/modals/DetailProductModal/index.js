@@ -98,7 +98,7 @@ class DetailProductModal extends React.Component{
                         <VinCodeModal
                             setVinDetail={this.setVinDetail}
                             disabled={false}
-                            storeGroupId={elem.storeGroupId}
+                            storeGroupId={this.state.radioValue != 2 ? elem.storeGroupId : undefined}
                             vin={this.props.clientVehicleVin}
                         />
                     )
