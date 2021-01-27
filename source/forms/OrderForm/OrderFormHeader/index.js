@@ -579,7 +579,7 @@ export default class OrderFormHeader extends Component {
                     allowClear={false}
                     colon={false}
                     className={Styles.datePanelItem}
-                    rules={this.requiredRule}
+                    //rules={this.requiredRule}
                     placeholder={this._getLocalization(
                         "add_order_form.select_date",
                     )}

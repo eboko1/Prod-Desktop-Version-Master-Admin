@@ -159,17 +159,6 @@ export default class EmployeesTable extends Component {
         return (
             <RadioGroup value={status}>
                 <RadioButton
-                    value="all"
-                    onClick={() =>
-                        this._setEmployeesFilterStatus({
-                            status: "all",
-                            disabled: null,
-                        })
-                    }
-                >
-                    <FormattedMessage id="all" />
-                </RadioButton>
-                <RadioButton
                     value="working"
                     onClick={() =>
                         this._setEmployeesFilterStatus({
@@ -190,6 +179,17 @@ export default class EmployeesTable extends Component {
                     }
                 >
                     <FormattedMessage id="employee-table.filter.fired" />
+                </RadioButton>
+                <RadioButton
+                    value="all"
+                    onClick={() =>
+                        this._setEmployeesFilterStatus({
+                            status: "all",
+                            disabled: null,
+                        })
+                    }
+                >
+                    <FormattedMessage id="all" />
                 </RadioButton>
             </RadioGroup>
         );
