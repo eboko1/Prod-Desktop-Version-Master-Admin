@@ -35,6 +35,7 @@ export class DecoratedTimePicker extends React.PureComponent {
             initialValue: initialInitialValue,
             defaultOpenValue: initialDefaultOpenValue,
             onChange,
+            hideDisabledOptions,
         } = this.props;
         const defaultOpenValue = _.isString(initialDefaultOpenValue)
             ? moment(initialDefaultOpenValue)
@@ -64,6 +65,7 @@ export class DecoratedTimePicker extends React.PureComponent {
                 inputReadOnly={ inputReadOnly }
                 allowClear={ allowClear }
                 onChange={ onChange }
+                hideDisabledOptions = { hideDisabledOptions }
             />,
         );
 

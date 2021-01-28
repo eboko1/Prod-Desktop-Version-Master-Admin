@@ -179,7 +179,6 @@ class OrderPage extends Component {
         if (viewTasks) {
             fetchOrderTask(id);
         }
-        console.log(this);
         this._fetchRepairMapData();
     }
 
@@ -237,7 +236,6 @@ class OrderPage extends Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(that, data);
             that.setState({
                 repairMapData: data,
             })

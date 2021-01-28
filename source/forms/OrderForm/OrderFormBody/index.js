@@ -654,7 +654,6 @@ export default class OrderFormBody extends Component {
                         field="businessLocationId"
                         initialValue={_.get(fetchedOrder, "order.businessLocationId")}
                         formItem
-                        hasFeedback
                         label={this.state.businessLocationsLabel}
                         placeholder={this._getLocalization("location")}
                         getFieldDecorator={getFieldDecorator}
