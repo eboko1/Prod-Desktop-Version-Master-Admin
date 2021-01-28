@@ -62,7 +62,7 @@ export default class RoleContainer extends Component {
                     _.intersection(field, _.values(permissions))
                         .map(grant =>
                             this.props.intl.formatMessage({
-                                id: `roles.${grant.toLowerCase()}`,
+                                id: `roles.${grant}`,
                             }),
                         )
                         .map(message => (
