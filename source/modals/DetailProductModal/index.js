@@ -5,7 +5,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { DetailStorageModal, DetailSupplierModal, OilModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
-import { images } from 'utils';
+import { permissions, isForbidden, images } from 'utils';
 // own
 import Styles from './styles.m.css';
 const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
@@ -97,7 +97,7 @@ class DetailProductModal extends React.Component{
                     return (
                         <VinCodeModal
                             setVinDetail={this.setVinDetail}
-                            disabled={false}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_VIN)}
                             storeGroupId={this.state.radioValue != 2 ? elem.storeGroupId : undefined}
                             vin={this.props.clientVehicleVin}
                         />
@@ -257,6 +257,7 @@ class DetailProductModal extends React.Component{
                                     elem.storeGroupId == null && this.state.radioValue != 3 && this.state.radioValue != 5 
                                     || this.state.radioValue == 2 
                                     || this.state.radioValue == 3 && (data || '').length < 3
+                                    || this.state.radioValue == 5 && isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_STOCK)
                                 }
                                 codeSearch={this.state.radioValue == 3}
                                 tecdocId={this.props.tecdocId}
@@ -272,6 +273,7 @@ class DetailProductModal extends React.Component{
                                 stockMode={this.state.radioValue == 5}
                             /> :
                             <OilModal
+                                disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_OILS)}
                                 brands={this.props.brands}
                                 user={this.props.user}
                                 tableKey={elem.key}
@@ -964,6 +966,9 @@ class DetailProductModal extends React.Component{
                 radioValue: 4,
             })
         }
+        if(isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_FIND_FROM_VEHICLE) && this.state.radioValue == 1) {
+            this.setState({radioValue: 2});
+        }
     }
 
     render() {
@@ -992,11 +997,35 @@ class DetailProductModal extends React.Component{
                                 })
                             }} 
                         >
-                            <Radio value={1}><FormattedMessage id="details_table.selection_by_car"/></Radio>
-                            <Radio value={2}><FormattedMessage id="details_table.direct_editing"/></Radio>
-                            <Radio value={3}><FormattedMessage id="details_table.selection_by_product_code"/></Radio>
-                            <Radio value={4}><FormattedMessage id="details_table.oils_and_liquids"/></Radio>
-                            <Radio value={5}><FormattedMessage id="navigation.storage"/></Radio>
+                            <Radio
+                                value={1}
+                                disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_FIND_FROM_VEHICLE)}
+                            >
+                                <FormattedMessage id="details_table.selection_by_car"/>
+                            </Radio>
+                            <Radio
+                                value={2}
+                            >
+                                <FormattedMessage id="details_table.direct_editing"/>
+                            </Radio>
+                            <Radio
+                                value={3}
+                                disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_FIND_FROM_CODE)}
+                            >
+                                <FormattedMessage id="details_table.selection_by_product_code"/>
+                            </Radio>
+                            <Radio 
+                                value={4}
+                                disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_FIND_OILS)}
+                            >
+                                <FormattedMessage id="details_table.oils_and_liquids"/>
+                            </Radio>
+                            <Radio
+                                value={5}
+                                disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_FIND_STOCK)}
+                            >
+                                <FormattedMessage id="navigation.storage"/>
+                            </Radio>
                         </Radio.Group>
                     </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>

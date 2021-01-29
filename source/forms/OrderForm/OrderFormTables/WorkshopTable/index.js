@@ -104,10 +104,7 @@ export default class WorkshopTable extends Component {
 
                     return (
                         <Select
-                            disabled={ isForbidden(
-                                this.props.user,
-                                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
-                            ) }
+                            disabled
                             style={ { color: color } }
                             value={ confirmed }
                             onChange={ value => {
@@ -153,6 +150,7 @@ export default class WorkshopTable extends Component {
                             onClick={(value)=>{
                                 this.multipleChangeState(value);
                             }}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_TABS_WORKSHOP_BUTTONS)}
                         />,                        
                 key:       'actions',
                 dataIndex: 'stage',
@@ -165,6 +163,7 @@ export default class WorkshopTable extends Component {
                                 elem.stage = value;
                                 this.updateLabor(elem.key, elem);
                             }}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_TABS_WORKSHOP_BUTTONS)}
                         />
                     )
                 }
@@ -218,6 +217,7 @@ export default class WorkshopTable extends Component {
                                 elem.stage = value;
                                 this.updateLabor(elem.key, elem);
                             }}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_TABS_WORKSHOP_BUTTONS)}
                         />
                     )
                 }
@@ -310,15 +310,6 @@ export default class WorkshopTable extends Component {
             ],
         };
 
-        if (
-            !isForbidden(
-                this.props.user,
-                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
-            )
-        ) {
-            data.services[ 0 ].agreement = labor.agreement;
-        }
-
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/orders/${this.props.orderId}`;
         try {
@@ -398,7 +389,7 @@ export default class WorkshopTable extends Component {
 
     render() {
         const { dataSource, loading, fieldsFilter, stageFilter } = this.state;
-        const { isMobile } = this.props;
+        const { isMobile, user } = this.props;
         var calcTime = 0, realTime = 0, stoppedTime = 0;
         dataSource.map((elem)=>{
             if(elem.count) calcTime += elem.count;
@@ -473,6 +464,7 @@ export default class WorkshopTable extends Component {
                                 onClick={ () => {
                                     this.sendSms()
                                 } }
+                                disabled={isForbidden(user, permissions.ACCESS_ORDER_TABS_WORKSHOP_FINISH)}
                             >
                                 <FormattedMessage id="end" />
                             </Button>
@@ -521,7 +513,7 @@ export default class WorkshopTable extends Component {
 
 class LaborStageButtonsGroup extends Component {
     render() {
-        const { stage, onClick, buttonStyle, isMobile } = this.props;
+        const { stage, onClick, buttonStyle, isMobile, disabled } = this.props;
         return (
             <div className={Styles.laborStageButtonsGroup} style={!isMobile ? {display: 'flex'} : {}}>
                 {stage == CANCELED || stage == DONE ?
@@ -536,7 +528,7 @@ class LaborStageButtonsGroup extends Component {
                         <Button
                             style={buttonStyle}
                             className={Styles.greenButton}
-                            disabled={stage != ALL && (stage == IN_PROGRESS || stage == CANCELED)}
+                            disabled={disabled || stage != ALL && (stage == IN_PROGRESS || stage == CANCELED)}
                             onClick={ () => onClick(IN_PROGRESS) }
                         >
                             <FormattedMessage id='workshop_table.button.start'/>
@@ -544,7 +536,7 @@ class LaborStageButtonsGroup extends Component {
                         <Button
                             style={buttonStyle}
                             className={Styles.greenButton}
-                            disabled={stage != ALL && (stage == INACTIVE || stage == DONE || stage == CANCELED)}
+                            disabled={disabled || stage != ALL && (stage == INACTIVE || stage == DONE || stage == CANCELED)}
                             onClick={ () => onClick(DONE) }
                         >
                             <FormattedMessage id='workshop_table.button.finish'/>
@@ -553,7 +545,7 @@ class LaborStageButtonsGroup extends Component {
                             style={buttonStyle}
                             className={Styles.redButton}
                             type='danger'
-                            disabled={stage != ALL && (stage == STOPPED || stage == DONE || stage == CANCELED)}
+                            disabled={disabled || stage != ALL && (stage == STOPPED || stage == DONE || stage == CANCELED)}
                             onClick={ () => onClick(STOPPED) }
                         >
                             <FormattedMessage id='workshop_table.button.stop'/>
@@ -561,7 +553,7 @@ class LaborStageButtonsGroup extends Component {
                         <Button
                             style={buttonStyle}
                             className={Styles.yellowButton}
-                            disabled={stage != ALL && (stage == DONE || stage == CANCELED)}
+                            disabled={disabled || stage != ALL && (stage == DONE || stage == CANCELED)}
                             onClick={ () => onClick(CANCELED) }
                         >
                             <FormattedMessage id='workshop_table.button.cancel'/>

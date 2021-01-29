@@ -10,8 +10,19 @@ import _ from "lodash";
 import { Layout } from "commons";
 import { ImportExportTable } from "components";
 import { SyncImportExportModal } from "modals";
-// own
+import { permissions, isForbidden } from 'utils';
 
+// own
+const mapStateToProps = state => {
+    return {
+        user: state.auth,
+    };
+};
+
+@connect(
+    mapStateToProps,
+    void 0,
+)
 export default class SyncExportPage extends Component {
 	constructor(props) {
         super(props);
@@ -64,6 +75,7 @@ export default class SyncExportPage extends Component {
     }
 
     render() {
+        const { user } = this.props;
     	const { modalVisible, tableData } = this.state;
     	return (
 	    	<Layout

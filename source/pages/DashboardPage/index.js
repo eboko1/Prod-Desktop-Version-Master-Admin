@@ -221,7 +221,7 @@ class DashboardPage extends Component {
                                 <FormattedMessage id='dashboard-page.calendar' />
                             }
                             key='calendar'
-                            disabled={ loading }
+                            disabled={ loading || isForbidden(user, permissions.ACCESS_DASHBOARD_POSTS) }
                         >
                             { dashboardContainer }
                         </TabPane>
@@ -230,7 +230,7 @@ class DashboardPage extends Component {
                                 <FormattedMessage id='dashboard-page.stations_load' />
                             }
                             key='stations'
-                            disabled={ loading }
+                            disabled={ loading || isForbidden(user, permissions.ACCESS_DASHBOARD_MECHANICS) }
                         >
                             { dashboardContainer }
                         </TabPane>

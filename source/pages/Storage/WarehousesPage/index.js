@@ -10,6 +10,7 @@ import moment from 'moment';
 
 // proj
 import { Layout } from 'commons';
+import { permissions, isForbidden } from 'utils';
 
 // own
 const Option = Select.Option;
@@ -18,6 +19,16 @@ const MAIN = 'MAIN',
       TOOL = 'TOOL',
       REPAIR_AREA= 'REPAIR_AREA';
 
+const mapStateToProps = state => {
+    return {
+        user: state.auth,
+    };
+};
+
+@connect(
+    mapStateToProps,
+    void 0,
+)
 class WarehousesPage extends Component {
     constructor(props) {
         super(props);
@@ -87,12 +98,19 @@ class WarehousesPage extends Component {
                     return (
                         <Icon
                             type='edit'
-                            style={{fontSize: 18}}
+                            style={!isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD) ? {
+                                fontSize: 18,
+                                color: 'var(--text2)',
+                                pointerEvents: 'none',
+                            } : {
+                                fontSize: 18
+                            }}
                             onClick={()=>{
-                                this.setState({
-                                    editMode: true,
-                                    warehouse: elem,
-                                })
+                                if(!isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD))
+                                    this.setState({
+                                        editMode: true,
+                                        warehouse: elem,
+                                    })
                             }}
                         />
                     )
@@ -105,9 +123,16 @@ class WarehousesPage extends Component {
                     return (
                         <Icon
                             type='delete'
-                            style={{fontSize: 18}}
+                            style={!isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD) ? {
+                                fontSize: 18,
+                                color: 'var(--text2)',
+                                pointerEvents: 'none',
+                            } : {
+                                fontSize: 18
+                            }}
                             onClick={()=>{
-                                this.deleteWarehouse(elem.id)
+                                if(!isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD))
+                                    this.deleteWarehouse(elem.id)
                             }}
                         />
                     )
@@ -214,6 +239,8 @@ class WarehousesPage extends Component {
                 title={ <FormattedMessage id='navigation.warehouses' /> }
                 controls={
                     <AddWarehousesModal
+                        disabled={!isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD)}
+
                         getWarehouses={this.getWarehouses} 
                         isMain={isMain}
                         isReserve={isReserve}
@@ -371,10 +398,11 @@ class AddWarehousesModal extends Component {
 
 
     render() {
-        const { isMain, isReserve, isTool, isRepairArea, editMode, intl: {formatMessage} } = this.props;
+        const { isMain, isReserve, isTool, isRepairArea, editMode, intl: {formatMessage}, disabled } = this.props;
         return (
             <>
             <Button
+                disabled={disabled}
                 type="primary"
                 onClick={()=>{
                     this.setState({

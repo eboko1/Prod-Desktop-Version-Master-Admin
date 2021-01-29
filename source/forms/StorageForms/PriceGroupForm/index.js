@@ -9,6 +9,7 @@ import schema from 'async-validator';
 // proj
 import { createPriceGroup } from 'core/storage/priceGroups';
 import { DecoratedInputNumber } from 'forms/DecoratedFields';
+import { permissions, isForbidden } from 'utils';
 
 const StyledInput = styled(DecoratedInputNumber)`
     & .ant-input-number {
@@ -59,9 +60,12 @@ const PriceGroup = props => {
         // validation passed
     });
 
-    return (
+    const isCRUDForbidden = isForbidden(props.user, permissions.ACCESS_CATALOGUE_PRICE_GROUPS_CRUD);
+
+    return !isCRUDForbidden && (
         <StyledForm>
             <StyledInput
+                disabled={ isCRUDForbidden }
                 fields={ {} }
                 field='multiplier'
                 formItem
@@ -78,7 +82,11 @@ const PriceGroup = props => {
                 ] }
                 onPressEnter={ () => _submit() }
             />
-            <Button type='primary' onClick={ () => _submit() }>
+            <Button
+                type='primary'
+                onClick={ () => _submit() }
+                disabled={ isCRUDForbidden }
+            >
                 { props.intl.formatMessage({ id: 'create' }) }
             </Button>
         </StyledForm>
@@ -86,5 +94,10 @@ const PriceGroup = props => {
 };
 
 export const PriceGroupForm = injectIntl(
-    connect(null, { createPriceGroup })(Form.create()(PriceGroup)),
+    connect(
+        (state)=>({
+            user: state.auth,
+        }), 
+        { createPriceGroup }
+)(Form.create()(PriceGroup)),
 );

@@ -10,6 +10,7 @@ import { Form, Modal, Button, Input, InputNumber, Radio, Checkbox, Icon, Row, Co
 
 // proj
 
+import { permissions, isForbidden } from 'utils';
 
 // own
 const FormItem = Form.Item;
@@ -28,8 +29,18 @@ const formItemStyle= {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        user: state.auth,
+    };
+};
+
 @injectIntl
 @Form.create()
+@connect(
+    mapStateToProps,
+    void 0,
+)
 export class RequisiteSettingForm extends Component {
     constructor(props) {
         super(props);
@@ -113,10 +124,11 @@ export class RequisiteSettingForm extends Component {
     }
 
     render() {
-        const { intl: {formatMessage} } = this.props;
+        const { user, intl: {formatMessage} } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const isOtherForm = this.state.formType == "OTHER";
         
+        const isTaxCRUDForbidden = !isForbidden(user, permissions.ACCESS_CATALOGUE_REQUISITES_TAX_CRUD);
         return (
             <Form onSubmit={this.handleSubmit} layout='horizontal'>
                 <Form.Item 
@@ -196,7 +208,7 @@ export class RequisiteSettingForm extends Component {
                          rules: [{ required: true, message: formatMessage({id: 'storage_document.error.required_fields'}), }],
                         initialValue: false
                     })(
-                        <Radio.Group>
+                        <Radio.Group disabled={isTaxCRUDForbidden}>
                             <Radio value={true}><FormattedMessage id='yes'/></Radio>
                             <Radio value={false}><FormattedMessage id='no'/></Radio>
                         </Radio.Group>,
@@ -207,7 +219,15 @@ export class RequisiteSettingForm extends Component {
                     {...formItemStyle}
                     {...formItemLayout}
                 >
-                    {getFieldDecorator('taxRate', { initialValue: 20 })(<InputNumber min={0} max={100} formatter={value => `${value}%`} parser={value => value.replace('%', '')}/>)}
+                    {getFieldDecorator('taxRate', { initialValue: 20 })(
+                        <InputNumber
+                            min={0}
+                            max={100}
+                            formatter={value => `${value}%`}
+                            parser={value => value.replace('%', '')}
+                            disabled={isTaxCRUDForbidden}
+                        />
+                    )}
                 </Form.Item>
                 <Form.Item 
                     label={<FormattedMessage id='requisite-setting.method_of_calculation'/>}

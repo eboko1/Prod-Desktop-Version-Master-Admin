@@ -3,11 +3,11 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { Tabs, Input, InputNumber, Button, notification, Checkbox } from "antd";
-import { permissions, isForbidden } from "utils";
 
 // proj
 import { Layout, Catcher, Spinner } from 'commons';
 import { RequisiteSettingContainer, StorageTable } from "containers";
+import { permissions, isForbidden } from "utils";
 import { deleteSupplierRequisite, postSupplierRequisite, updateSupplierRequisite } from "core/requisiteSettings/saga";
 
 // own
@@ -359,6 +359,7 @@ export default class SupplierPage extends Component {
                                 />
                             }
                             key="requisites"
+                            disabled={isForbidden(user, permissions.ACCESS_SUPPLIER_REQUISITES)}
                         >
                             <div className={Styles.addRequisiteButton}>
                                 <Button
@@ -390,6 +391,7 @@ export default class SupplierPage extends Component {
                                 <FormattedMessage id={"supplier.orders"} />
                             }
                             key="orders"
+                            disabled={isForbidden(user, permissions.ACCESS_SUPPLIER_STATISTICS)}
                         >
                             <StorageTable
                                 hideFilters
@@ -406,6 +408,7 @@ export default class SupplierPage extends Component {
                                 />
                             }
                             key="supply"
+                            disabled={isForbidden(user, permissions.ACCESS_SUPPLIER_STATISTICS)}
                         >
                             <StorageTable
                                 hideFilters

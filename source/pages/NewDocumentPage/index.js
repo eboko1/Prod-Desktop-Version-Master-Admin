@@ -11,12 +11,14 @@ import moment from 'moment';
 // proj
 import { Layout } from 'commons';
 import book from 'routes/book';
+import {permissions, isForbidden} from 'utils';
 // own
 import Styles from './styles.m.css';
 
 const struct = [
     {
         blockTitle: 'repairs',
+        permission: 'NEW_DOCUMENT_ORDERS',
         items: [
             {
                 itemName:         'order',
@@ -67,6 +69,7 @@ const struct = [
     },
     {
         blockTitle: 'storage',
+        permission: 'NEW_DOCUMENT_STOCK',
         items: [
             {
                 itemName:         'order-to-supplier',
@@ -346,6 +349,7 @@ const struct = [
     },
     {
         blockTitle: 'accounting',
+        permission: 'NEW_DOCUMENT_ACCOUNTING',
         items: [
             {
                 itemName:         'cash-order',
@@ -357,6 +361,7 @@ const struct = [
     },
     {
         blockTitle: 'catalogue',
+        permission: 'NEW_DOCUMENT_CATALOGUES',
         items: [
             {
                 itemName:         'client',
@@ -434,12 +439,23 @@ const struct = [
     },
 ];
 
+const mapStateToProps = state => {
+    return {
+        user: state.auth,
+    };
+};
+
+@connect(
+    mapStateToProps,
+    void 0,
+)
 class NewDocumentPage extends Component {
     constructor(props) {
         super(props);
     }
 
-    _renderBlock = ({blockTitle, items}, key) => {
+    _renderBlock = ({blockTitle, permission, items}, key) => {
+        if(isForbidden(this.props.user, permissions[permission])) return;
         return(
             <div key={ key } className={ Styles.block }>
                 <div className={ Styles.blockTitle }>
