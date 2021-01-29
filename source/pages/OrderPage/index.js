@@ -693,7 +693,7 @@ class OrderPage extends Component {
             forbiddenUpdate,
         } = this.getSecurityConfig();
         const viewTasks = !isForbidden(user, permissions.GET_TASKS);
-        const copyDisabled = isForbidden(user, permissions.CREATE_ORDER);
+        const copyDisabled = isForbidden(user, permissions.ACCESS_ORDER_COPY);
 
         let remainSum = totalSumWithTax;
 
@@ -870,30 +870,33 @@ class OrderPage extends Component {
                                 download={ this.props.getReport }
                                 isMobile={ isMobile }
                             />
+                            {!isForbidden(user, permissions.ACCESS_ORDER_PAY) &&
+                                <Icon
+                                    type='dollar'
+                                    onClick={showCahOrderModal}
+                                    style={ {
+                                        fontSize: isMobile ? 14 : 24,
+                                        cursor:   'pointer',
+                                        margin:   '0 10px',
+                                    } }
+                                />
+                            }
+                            </>
+                        ) }
+                        { !copyDisabled &&
                             <Icon
-                                type='dollar'
-                                onClick={showCahOrderModal}
+                                title={this.props.intl.formatMessage({ id: `order-page.create_copy`})}
+                                type='copy'
+                                onClick={ () => {
+                                    this._getCurrentOrder();
+                                } }
                                 style={ {
                                     fontSize: isMobile ? 14 : 24,
                                     cursor:   'pointer',
                                     margin:   '0 10px',
                                 } }
-                            />
-                            </>
-                        ) }
-                        { !copyDisabled ?
-                        <Icon
-                            title={this.props.intl.formatMessage({ id: `order-page.create_copy`})}
-                            type='copy'
-                            onClick={ () => {
-                                this._getCurrentOrder();
-                            } }
-                            style={ {
-                                fontSize: isMobile ? 14 : 24,
-                                cursor:   'pointer',
-                                margin:   '0 10px',
-                            } }
-                        /> : null}
+                            /> 
+                        }
                         { !hideEditButton && (
                             <Icon
                                 type='save'
@@ -912,7 +915,8 @@ class OrderPage extends Component {
                             />
                         ) }
                         { !isClosedStatus &&
-                        !forbiddenUpdate && (
+                        !forbiddenUpdate &&
+                        !isForbidden(user, permissions.ACCESS_ORDER_DELETE) && (
                             <Icon
                                 type='delete'
                                 style={ {

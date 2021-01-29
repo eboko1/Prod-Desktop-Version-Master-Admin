@@ -45,6 +45,7 @@ export function columnsConfig(
                 getFieldDecorator={ getFieldDecorator }
                 placeholder={ formatMessage({ id: 'setting-salary.period' }) }
                 initialValue={ _.get(initialSettingSalaries, [ record.key, 'period' ]) }
+                disabled={ isForbidden(user, permissions.ACCESS_EMPLOYEE_SALARIES_CRUD) }
             >
                 { [ 'DAY', 'WEEK', 'MONTH' ].map((period, index) => (
                     <Option value={ period } key={ `${period}-${index}` }>
@@ -68,6 +69,7 @@ export function columnsConfig(
                 format='YYYY-MM-DD'
                 formatMessage={ formatMessage }
                 getFieldDecorator={ getFieldDecorator }
+                disabled={ isForbidden(user, permissions.ACCESS_EMPLOYEE_SALARIES_CRUD) }
             />
         ),
     };
@@ -86,6 +88,7 @@ export function columnsConfig(
                     // getCalendarContainer={ trigger => trigger.parentNode }
                     formatMessage={ formatMessage }
                     getFieldDecorator={ getFieldDecorator }
+                    disabled={ isForbidden(user, permissions.ACCESS_EMPLOYEE_SALARIES_CRUD) }
                 />
             );
         },
@@ -107,6 +110,7 @@ export function columnsConfig(
                 min={ 0 }
                 // onKeyPress={ this.handleChangeNew.bind(this, null) }
                 // defaultValue={ text }
+                disabled={ isForbidden(user, permissions.ACCESS_EMPLOYEE_SALARIES_CRUD) }
             />
         ),
     };
@@ -125,6 +129,7 @@ export function columnsConfig(
                 }) }
                 // onChange={ this.handleChangeNew.bind(this, 'percentFrom') }
                 // value={ record.percentFrom }
+                disabled={ isForbidden(user, permissions.ACCESS_EMPLOYEE_SALARIES_CRUD) }
             >
                 { /* eslint-disable array-element-newline */ }
                 { [
@@ -159,6 +164,7 @@ export function columnsConfig(
                 max={ 100 }
                 formatter={ value => `${value}%` }
                 parser={ value => value.replace('%', '') }
+                disabled={ isForbidden(user, permissions.ACCESS_EMPLOYEE_SALARIES_CRUD) }
             />
         ),
     };
@@ -174,6 +180,7 @@ export function columnsConfig(
                     field={ `settingSalaries[${record.key}][considerDiscount]` }
                     getFieldDecorator={ getFieldDecorator }
                     initialValue={ _.get(initialSettingSalaries, [ record.key, 'considerDiscount' ]) }
+                    disabled={ isForbidden(user, permissions.ACCESS_EMPLOYEE_SALARIES_CRUD) }
                 />
             </Row>
         ),
@@ -185,10 +192,8 @@ export function columnsConfig(
         width:  'auto',
         render: (text, record) => {
             return (
-                !isForbidden(
-                    user,
-                    permissions.CREATE_EDIT_DELETE_EMPLOYEES,
-                ) && (
+                !isForbidden(user, permissions.CREATE_EDIT_DELETE_EMPLOYEES) && 
+                !isForbidden(user, permissions.ACCESS_EMPLOYEE_SALARIES_CRUD) && (
                     <div>
                         <Icon
                             className={ Styles.saveSalary }

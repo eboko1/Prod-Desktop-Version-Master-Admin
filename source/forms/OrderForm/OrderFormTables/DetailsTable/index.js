@@ -368,10 +368,7 @@ class DetailsTable extends Component {
 
                     return (
                         <Select
-                            disabled={ isForbidden(
-                                this.props.user,
-                                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
-                            ) }
+                            disabled
                             style={ { color: color } }
                             value={ confirmed }
                             onChange={ value => {
@@ -642,14 +639,6 @@ class DetailsTable extends Component {
                 newDetail,
             ],
         };
-        if (
-            !isForbidden(
-                this.props.user,
-                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
-            )
-        ) {
-            data.details[ 0 ].agreement = detail.agreement;
-        }
 
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;

@@ -760,7 +760,7 @@ class DetailStorageModal extends React.Component{
 
     render() {
         const { dataSource, storeFilter, brandFilter, codeFilter, inStock, reserveModalVisible, reserveModalData } = this.state;
-        const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
+        const disabled = this.props.disabled || this.props.stockMode && isForbidden(this.props.user, permissions.ACCESS_STOCK) || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
         let tblData = [...dataSource];
 
         if(storeFilter) tblData = tblData.filter((elem)=>String(elem.storeGroupId).toLowerCase().indexOf(String(storeFilter).toLowerCase()) >= 0 );

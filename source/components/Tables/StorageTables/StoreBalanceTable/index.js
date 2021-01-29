@@ -73,6 +73,7 @@ const mapStateToProps = state => ({
     balance: selectStoreBalance(state),
     filters: selectStoreBalanceFilters(state),
     loading: selectStoreBalanceLoading(state),
+    user:    state.auth, 
 });
 
 const mapDispatchToProps = {

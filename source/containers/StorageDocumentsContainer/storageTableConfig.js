@@ -46,6 +46,7 @@ const INC = 'INC',
 
 
 export function columnsConfig(
+    isCRUDForbidden,
     activeRoute,
     listType,
     formatMessage,
@@ -96,7 +97,7 @@ export function columnsConfig(
         // fixed:     'left',
         render:    (_, document) => (
             <>
-                <Link to={ `${book.storageDocument}/${document.id}` }>
+                <Link to={ !isCRUDForbidden ? `${book.storageDocument}/${document.id}` : false}>
                     { document.documentNumber }
                 </Link>
             </>
@@ -258,7 +259,7 @@ export function columnsConfig(
     const deleteActionCol = {
         key:    'delete',
         width:  20,
-        render: (_, document) => (
+        render: (_, document) => !isCRUDForbidden && (
             <div>
                 <Popconfirm
                     type='danger'

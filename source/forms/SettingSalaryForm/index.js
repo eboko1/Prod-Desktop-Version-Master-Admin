@@ -67,7 +67,7 @@ export default class SettingSalaryForm extends Component {
 
         return (
             <Catcher>
-                {!isForbidden(user, permissions.EMPLOYEES_SALARIES) && (
+                {!isForbidden(user, permissions.ACCESS_EMPLOYEE_SALARIES_CALC) && (
                     <SalaryReportForm employeesIds={[employeeId]} />
                 )}
                 <SettingSalaryTable

@@ -864,7 +864,7 @@ class ConfirmDiagnosticModal extends React.Component{
                             });
                             sendMessage(this.props.orderId);
                         }}
-                        disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM) || disabled}
+                        disabled={isForbidden(this.props.user, permissions.ACCESS_DIAGNOSTICS_COMPLETE) || disabled}
                     >
                         <FormattedMessage id='end'/>
                     </Button>
@@ -889,7 +889,7 @@ class ConfirmDiagnosticModal extends React.Component{
                                 });
                                 sendMessage(this.props.orderId);
                             }}
-                            disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM) || disabled}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_DIAGNOSTICS_COMPLETE) || disabled}
                         >
                             <FormattedMessage id='end'/>
                         </Button>

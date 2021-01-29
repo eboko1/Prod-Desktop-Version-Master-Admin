@@ -377,6 +377,7 @@ export default class OrderFormHeader extends Component {
             form: { getFieldDecorator },
             intl: { formatMessage },
             errors,
+            user,
         } = this.props;
         const {
             disabledDate,
@@ -522,6 +523,7 @@ export default class OrderFormHeader extends Component {
             zeroStationLoadStation,
             fields,
             errors,
+            user,
         } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
@@ -609,7 +611,7 @@ export default class OrderFormHeader extends Component {
                     placeholder={this._getLocalization(
                         "add_order_form.select_station",
                     )}
-                    disabled={this.bodyUpdateIsForbidden()}
+                    disabled={this.bodyUpdateIsForbidden() || !isForbidden(user, permissions.ACCESS_ORDER_POSTS)}
                     initialValue={
                         _.get(fetchedOrder, "order.stationNum") ||
                         (this.bodyUpdateIsForbidden()
