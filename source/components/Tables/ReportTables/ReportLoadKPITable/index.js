@@ -16,19 +16,20 @@ export class ReportLoadKPITable extends Component {
 
     }
 
-    // _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
-
     render() {
         const {
             filter,
             onPageChange,
             tableData,
+            stats,
+            isFetching,
         } = this.props;
+        let rowKeyCounter = 0;
 
         const pagination = {
             pageSize:         25,
             size:             'large',
-            total:            100,//Math.ceil(stats.totalRowsCount / 25) * 25,
+            total:            Math.ceil(stats.totalRowsCount / 25) * 25,
             hideOnSinglePage: true,
             current:          filter.page,
             onChange:         onPageChange,
@@ -46,9 +47,9 @@ export class ReportLoadKPITable extends Component {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
                     scroll={ { x: 1800, y: '50vh' } }
-                    rowKey={ record => record.id }
+                    rowKey={ record =>  rowKeyCounter++}
                     bordered
-                    // loading={loading}
+                    loading={isFetching}
                 />
             </div>
         );

@@ -29,12 +29,21 @@ const DEF_DATE_FORMAT = 'YYYY/MM/DD';
 
 const ReducerState = {
     tableData: [],
-    stats: {},
+    stats: {
+        totalRowsCount: undefined,
+        totalLaborsPlan: undefined,
+        totalWorkingTime: undefined,
+        totalStoppedTime: undefined,
+        totalInternalParkingDuration: undefined,
+        totalExternalParkingDuration: undefined,
+        totalWorkPostParkingDuration: undefined,
+        totalOtherParkingDuration: undefined,
+    },
     filter:     {
         page: 1,
         query: undefined,
-        doneFromDate: undefined,
-        doneToDate: undefined,
+        doneFromDate: moment().startOf('month').format(DEF_DATE_FORMAT), //Set default creation date filter to serch,
+        doneToDate: moment().endOf('month').format(DEF_DATE_FORMAT), //Set default creation date filter to serch,
     },
 };
 

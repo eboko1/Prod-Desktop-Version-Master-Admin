@@ -35,55 +35,26 @@
     flex-direction: column;
 }
 
-.filterColumnHeaderWrap{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 95px;
-    width: 100%;
-}
-
-.filterColumnText {
-    text-transform: lowercase;
-    color: rgba(0, 0, 0, 0.5);
-    align-self: flex-start;
-}
-
-.statusDropdown {
-    width: 100%;
-}
-
 .clientName {
     color: #001529;
-}
-
-.clientVehicle {
-    color: var(--text4);
 }
 
 .clientPhone {
     color: var(--link);
 }
 
-.storageDateFilter {
+.clientVehicle {
     display: flex;
-    justify-content: space-around;
-
+    text-align: end;
+    justify-content: space-between;
 }
 
-.clearIconCont {
-    display: flex;
-    align-items: center;
-    height: 100%;
+.clientVehicle:not(:last-child){
+    border-bottom: 1px dashed var(--lightGray);
 }
 
-.clearIcon {
-    background-color: rgba(155, 89, 182, .5);
-    border-radius: 100%;
-    font-size: 16px;
-}
-
-.filterButton {
-    background-color: #9b59b6;
-    font-weight: bolder;
+.vehicleNum {
+    font-weight: bold;
+    margin-right: 10px;
+    white-space: nowrap;
 }

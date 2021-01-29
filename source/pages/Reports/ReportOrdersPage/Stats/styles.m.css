@@ -1,8 +1,8 @@
 .statsMainCont {
+    /* position: relative; */
     background-color: white;
     height: 110px;
     width: 100%;
-    display: flex;
 }
 
 .statsCont{
@@ -10,9 +10,8 @@
     flex-direction: row;
     background-color: white;
     justify-content: space-between;
-    align-items: center;
     box-sizing: border-box;
-    width: 100%;
+    margin-bottom: 24px;
 }
 
 .statsBlock{
@@ -21,7 +20,7 @@
     justify-content: space-around;
     align-items: center;
     border: 1px solid #9b59b6;
-    margin: 0px 5px 0px 0;
+    margin: 10px 5px 10px 0;
     height: 70px;
     width: 100%;
 }

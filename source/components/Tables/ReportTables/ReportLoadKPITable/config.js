@@ -4,6 +4,7 @@ import { Input, Icon, Checkbox, Menu, Dropdown, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
+import _ from 'lodash';
 
 // proj
 import { Numeral } from 'commons';
@@ -47,6 +48,15 @@ const defWidth = {
     efficiency_station: '6%'
 }
 
+//This formats number to make it appearance better
+const formatNumber = (number, precision = 0) => {
+    return (
+        number
+        ? Number(number).toFixed(precision).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+        : Number(0).toFixed(precision)
+    )
+}
+
 /* eslint-disable complexity */
 export function columnsConfig() {
 
@@ -57,6 +67,9 @@ export function columnsConfig() {
                 align: 'left',
                 key: 'no',
                 width: defWidth.no,
+                render: (text, record, index) => {
+                    return <div>{index+1}</div>;
+                }
             }
         ]
     };
@@ -74,8 +87,30 @@ export function columnsConfig() {
                 align: 'left',
                 key: 'client_vehicle',
                 width: defWidth.client_vehicle,
-                dataIndex: 'orderNum',
-                
+                dataIndex: 'vehicles',
+                render: (vehicles) => {
+                    return <div>
+                        {vehicles
+                            ? vehicles.map((elem) => {
+                                const {vehicleNumber, vehicleMake, vehicleModel, vehicleModification, vehicleYear} = elem;
+                                return (<div className={ Styles.clientVehicle }>                                    
+                                    <span className={ Styles.vehicleNum }>
+                                        {
+                                            vehicleNumber
+                                            ? `${vehicleNumber} -`
+                                            : '-'
+                                        }
+                                    </span>
+                                    <span>
+                                        { vehicleMake } { vehicleModel }{ ' ' }
+                                        { vehicleModification } ({ vehicleYear })
+                                    </span>
+                                </div>)
+                            })
+                            : "-"
+                        }
+                    </div>;
+                }
             }
         ]
     };
@@ -94,14 +129,37 @@ export function columnsConfig() {
                 key: 'client_name',
                 width: defWidth.client_name,
                 dataIndex: 'clientName',
-                
+                render: (clientName, record) => {
+                    const {clientPhones, clientId} = record;
+                    return <div className={ Styles.clientName }>
+                        <div>
+                            <Link
+                                className={ Styles.clientName }
+                                to={`${book.client}/${clientId}`}
+                            > {clientName} </Link>
+                        </div>
+                        <div>
+                        {clientPhones
+                            ? clientPhones.map((elem) => {
+                                return (<div>
+                                    <div>
+                                        <a  className={ Styles.clientPhone } href={ `tel:${elem}` }>
+                                            {elem}
+                                        </a>
+                                    </div>
+                                </div>)
+                            })
+                            : "-"
+                        }
+                    </div>
+                    </div>;
+                }
             }
         ]
     };
 
     const orderCol = {
         title:     <FormattedMessage id='report_load_kpi_page.order' />,
-        key: 'date',
         children: [
             {
                 title: () => {
@@ -109,10 +167,13 @@ export function columnsConfig() {
                         <FormattedMessage id={'report_load_kpi_page.planner'} />
                     )
                 },
-                align: 'left',
+                align: 'right',
                 key: 'order_planner',
                 width: defWidth.order_planner,
-                dataIndex: 'orderStatus',
+                dataIndex: 'totalDuration',
+                render: (totalDuration) => {
+                    return <div>{formatNumber(totalDuration, 1)}</div>
+                }
             },
             {
                 title: () => {
@@ -125,20 +186,26 @@ export function columnsConfig() {
                 align: 'right',
                 key: 'order_labors_plan',
                 width: defWidth.order_labors_plan,
-                dataIndex: 'orderDatetime',
+                dataIndex: 'laborsPlan',
+                render: (laborsPlan) => {
+                    return <div>{formatNumber(laborsPlan, 1)}</div>
+                }
             },
             {
                 title: () => {
                     return (
                         <div>
-                            <FormattedMessage id={'report_load_kpi_page.labors_actial'} />
+                            <FormattedMessage id={'report_load_kpi_page.labors_actual'} />
                         </div>
                     )
                 },
                 align: 'right',
                 key: 'order_labors_actual',
                 width: defWidth.order_labors_actual,
-                dataIndex: 'orderBeginDatetime',
+                dataIndex: 'workingTime',
+                render: (workingTime) => {
+                    return <div>{formatNumber(workingTime, 1)}</div>
+                }
             },
             {
                 title: () => {
@@ -151,14 +218,16 @@ export function columnsConfig() {
                 align: 'right',
                 key: 'order_breaks',
                 width: defWidth.order_breaks,
-                dataIndex: 'orderSuccessDatetime',
+                dataIndex: 'stoppedTime',
+                render: (stoppedTime) => {
+                    return <div>{formatNumber(stoppedTime, 1)}</div>;
+                }
             },
         ]
     };
     
     const locationsCol = {
         title:     <FormattedMessage id='report_load_kpi_page.location' />,
-        key: 'sum',
         children: [
             {
                 title: () => {
@@ -171,7 +240,10 @@ export function columnsConfig() {
                 align: 'right',
                 key: 'location_internal_parking',
                 width: defWidth.location_internal_parking,
-                dataIndex: 'orderServicesSum',
+                dataIndex: 'internalParkingDuration',
+                render: (internalParkingDuration) => {
+                    return <div>{formatNumber(internalParkingDuration, 1)}</div>;
+                }
             },
             {
                 title: () => {
@@ -184,7 +256,10 @@ export function columnsConfig() {
                 align: 'right',
                 key: 'location_external_parking',
                 width: defWidth.location_external_parking,
-                dataIndex: 'orderAppurtenanciesSum',
+                dataIndex: 'externalParkingDuration',
+                render: (externalParkingDuration) => {
+                    return <div>{formatNumber(externalParkingDuration, 1)}</div>;
+                }
             },
             {
                 title: () => {
@@ -197,6 +272,10 @@ export function columnsConfig() {
                 align: 'right',
                 key: 'location_department',
                 width: defWidth.location_department,
+                dataIndex: 'workPostParkingDuration',
+                render: (workPostParkingDuration) => {
+                    return <div>{formatNumber(workPostParkingDuration, 1)}</div>;
+                }
             },
             {
                 title: () => {
@@ -209,6 +288,10 @@ export function columnsConfig() {
                 align: 'right',
                 key: 'location_test_drive',
                 width: defWidth.location_test_drive,
+                dataIndex: 'otherParkingDuration',
+                render: (otherParkingDuration) => {
+                    return <div>{formatNumber(otherParkingDuration, 1)}</div>;
+                }
             },
             {
                 title: () => {
@@ -221,13 +304,22 @@ export function columnsConfig() {
                 align: 'right',
                 key: 'location_total',
                 width: defWidth.location_total,
+                render: (text, record) => {
+                    const {
+                        internalParkingDuration,
+                        externalParkingDuration,
+                        workPostParkingDuration,
+                        otherParkingDuration
+                    } = record;
+                    const val = _.sum([internalParkingDuration, externalParkingDuration, workPostParkingDuration, otherParkingDuration]);
+                    return <div>{formatNumber(val, 1)}</div>;
+                }
             },
         ]
     };
 
     const efficiencyCol = {
         title:     <FormattedMessage id={'report_load_kpi_page.efficiency'} />,
-        key: 'profit',
         children: [
             {
                 title: () => {
@@ -241,6 +333,14 @@ export function columnsConfig() {
                 key: 'efficiency_plan',
                 width: defWidth.efficiency_plan,
                 dataIndex: 'profitServicesSum',
+                render: (item, record) => {
+                    const {
+                        laborsPlan,
+                        workingTime
+                    } = record;
+                    const val = workingTime? (laborsPlan/workingTime): undefined;//Remove dividing by zero
+                    return <div>{val? formatNumber(val, 2): "-"}</div>
+                }
             },
             {
                 title: () => {
@@ -254,6 +354,14 @@ export function columnsConfig() {
                 key: 'efficiency_department',
                 width: defWidth.efficiency_department,
                 dataIndex: 'profitAppurtenanciesSum',
+                render: (item, record) => {
+                    const {
+                        workingTime,
+                        stoppedTime
+                    } = record;
+                    const val = workingTime/(workingTime+stoppedTime);
+                    return <div>{val? formatNumber(val, 2): "-"}</div>
+                }
             },
             {
                 title: () => {
@@ -266,6 +374,18 @@ export function columnsConfig() {
                 align: 'right',
                 key: 'efficiency_station',
                 width: defWidth.efficiency_station,
+                dataIndex: 'profitAppurtenanciesSum',
+                render: (item, record) => {
+                    const {
+                        internalParkingDuration,
+                        externalParkingDuration,
+                        workPostParkingDuration,
+                        otherParkingDuration,
+                        workingTime
+                    } = record;
+                    const val = workingTime/_.sum([internalParkingDuration, externalParkingDuration, workPostParkingDuration, otherParkingDuration]);
+                    return <div>{val? formatNumber(val, 2): "-"}</div>
+                }
             },
         ]
     };

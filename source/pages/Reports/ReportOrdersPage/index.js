@@ -6,7 +6,7 @@ Also it provides basic search and print button.
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import {Input} from 'antd';
+import {Input, Button} from 'antd';
 import _ from "lodash";
 
 const Search = Input.Search;
@@ -15,8 +15,10 @@ const Search = Input.Search;
 import {
     fetchReportOrders,
     fetchReportOrdersFilterOptions,
+    fetchExcelFileReport,
     setReportOrdersIncludeServicesDiscount,
     setReportOrdersIncludeAppurtenanciesDiscount,
+    setReportOrdersExportOptions,
     setReportOrdersQuery,
     setReportOrdersStatus,
     setReportOrdersCreationFromDate,
@@ -28,15 +30,16 @@ import {
     setReportOrdersPage,
     setReportOrdersAllFilters
 } from 'core/reports/reportOrders/duck';
-import ReportOrdersFilterModal from 'modals/ReportOrdersFilterModal';
+import { ReportOrdersFilterModal, ReportOrdersExportModal } from 'modals';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
-import { Layout, Numeral } from "commons";
+import { Layout, StyledButton } from "commons";
 import { ReportOrdersTable, ReportOrdersFilter } from "components";
 import { isForbidden, permissions } from "utils";
 
 // own
 import Styles from "./styles.m.css";
+import Stats from './Stats';
 
 const mapStateToProps = state => ({
     tableData: state.reportOrders.tableData,
@@ -53,9 +56,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchReportOrders,
     fetchReportOrdersFilterOptions,
+    fetchExcelFileReport,
     setReportOrdersPage,
     setReportOrdersIncludeServicesDiscount,
     setReportOrdersIncludeAppurtenanciesDiscount,
+    setReportOrdersExportOptions,
     setReportOrdersQuery,
     setReportOrdersStatus,
     setReportOrdersCreationFromDate,
@@ -79,9 +84,17 @@ export default class ReportOrdersPage extends Component {
     constructor(props) {
         super(props);
 
+        this.exportModalFormRef = null;
+
         this.onOpenFilterModal = this.onOpenFilterModal.bind(this);
         this.onCloseFilterModal = this.onCloseFilterModal.bind(this);
         this.onSubmitFilterModal = this.onSubmitFilterModal.bind(this);
+
+        this.onOpenExportModal = this.onOpenExportModal.bind(this);
+        this.onCloseExportModal = this.onCloseExportModal.bind(this);
+        this.onSubmitExportModal = this.onSubmitExportModal.bind(this);
+        
+        this.saveExportModalFormRef = this.saveExportModalFormRef.bind(this);
     }
 
     componentDidMount() {
@@ -89,85 +102,7 @@ export default class ReportOrdersPage extends Component {
         this.props.fetchReportOrdersFilterOptions();
     }
 
-    showStats(stats) {
-
-        const {
-            totalRowsCount,
-            totalServicesSum,
-            totalAppurtenanciesSum,
-            totalServicesProfit,
-            totalAppurtenanciesProfit,
-        } = stats;
-
-        const totalSum = (parseInt(totalServicesSum) + parseInt(totalAppurtenanciesSum));
-        const totalProfit = (parseInt(totalServicesProfit) + parseInt(totalAppurtenanciesProfit));
-
-        const totalLaborsMargin = (Number(totalServicesSum) && Number(totalServicesProfit))
-            ? ((totalServicesProfit*100.0)/totalServicesSum).toFixed(1)
-            : 0;
-
-        const totalAppurtenanciesMargin = (Number(totalAppurtenanciesProfit) && Number(totalAppurtenanciesSum))
-        ?((totalAppurtenanciesProfit*100.0)/totalAppurtenanciesSum).toFixed(1)
-        : 0;
-
-        const totalMargin = (totalProfit && totalSum)
-            ? (((totalProfit)/(totalSum))* 100.0).toFixed(1)
-            : 0;
-
-        return <div className={Styles.statsMainCont}>
-            <div className={Styles.statsCont}>
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.labors_sum'} /></div>
-                    <div className={Styles.statsText}><Numeral>{parseInt(totalServicesSum)}</Numeral></div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.parts_sum'} /></div>
-                    <div className={Styles.statsText}><Numeral>{parseInt(totalAppurtenanciesSum)}</Numeral></div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_sum'} /></div>
-                    <div className={Styles.statsText}><Numeral>{parseInt(totalSum)}</Numeral></div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.labors_profit'} /></div>
-                    <div className={Styles.statsText}><Numeral>{parseInt(totalServicesProfit)}</Numeral></div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.parts_profit'} /></div>
-                    <div className={Styles.statsText}><Numeral>{parseInt(totalAppurtenanciesProfit)}</Numeral></div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_profit'} /></div>
-                    <div className={Styles.statsText}><Numeral>{parseInt(totalProfit)}</Numeral></div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.labors_margin'} /></div>
-                    <div className={Styles.statsText}>{totalLaborsMargin}</div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.parts_margin'} /></div>
-                    <div className={Styles.statsText}>{totalAppurtenanciesMargin}</div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_margin'} /></div>
-                    <div className={Styles.statsText}>{totalMargin}</div>
-                </div>
-
-                <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_rows'} /></div>
-                    <div className={Styles.statsText}><Numeral>{totalRowsCount}</Numeral></div>
-                </div>
-            </div>
-        </div>
-    }
+    
 
     onOpenFilterModal() {
         this.props.setModal(MODALS.REPORT_ORDERS_FILTER);
@@ -177,6 +112,38 @@ export default class ReportOrdersPage extends Component {
         this.props.resetModal();
     }
 
+    onOpenExportModal() {
+        this.props.setModal(MODALS.REPORT_ORDERS_EXPORT);
+    }
+
+    onCloseExportModal() {
+        this.props.resetModal();
+    }
+
+    onSubmitExportModal() {
+        if(this.exportModalFormRef) {
+            const {form} = this.exportModalFormRef.props;
+
+            form.validateFields((err, values) => {
+                if (err) {
+                  return;
+                }
+          
+                // console.log('Received values of form: ', values);
+                this.props.setReportOrdersExportOptions(values);
+                this.props.fetchExcelFileReport();
+                form.resetFields();
+                this.onCloseExportModal();
+              });
+        }
+    }
+
+    saveExportModalFormRef = formRef => {
+        this.exportModalFormRef = formRef;
+    };
+
+    
+
     //This method takes filters generated by modal, overrides them in duck and fetch result
     onSubmitFilterModal(filters) {
         const {
@@ -185,7 +152,6 @@ export default class ReportOrdersPage extends Component {
             resetModal
         } = this.props;
         setReportOrdersAllFilters(filters);
-        console.log(filters);
         fetchReportOrders();
         resetModal();
     }
@@ -239,11 +205,25 @@ export default class ReportOrdersPage extends Component {
         
         return (
             <Layout
-                title={<FormattedMessage id="navigation.report_orders" />}
+                title={
+                    <div>
+                        <div><FormattedMessage id="navigation.report_orders" /></div>
+                    </div>
+                }
+                controls={
+                    <div className={Styles.buttonGroup}>
+                        <StyledButton
+                            type="primary"
+                            onClick={this.onOpenExportModal}
+                        >
+                            <FormattedMessage id="report_orders_page_page.download_report" />
+                        </StyledButton>
+                    </div>
+                }
                 paper={false}
             >
                 <section>
-                    {this.showStats(stats)}
+                    <Stats stats={stats}/>
                 </section>
 
                 <ReportOrdersTable
@@ -261,6 +241,12 @@ export default class ReportOrdersPage extends Component {
                     onSubmit={this.onSubmitFilterModal}
                     onCloseFilterModal={this.onCloseFilterModal}
                     filterOptions={filterOptions}
+                />
+                <ReportOrdersExportModal
+                    visible={modal}
+                    wrappedComponentRef={this.saveExportModalFormRef}
+                    onCancel={this.onCloseExportModal}
+                    onOk={this.onSubmitExportModal}
                 />
             </Layout>
         );
