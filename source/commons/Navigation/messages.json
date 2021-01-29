@@ -72,7 +72,8 @@
     "navigation.locations_vehicles": "Locations Vehicles",
     "navigation.locations_movement": "Vehicles Movement",
     "navigation.sync_import": "Synchronization / Import",
-    "navigation.sync_export": "Synchronization / Backup"
+    "navigation.sync_export": "Synchronization / Backup",
+    "navigation.analytics": "Analytics"
   },
   "ru": {
     "navigation.operations": "Операции",
@@ -147,7 +148,8 @@
     "navigation.locations_vehicles": "Авто на локациях",
     "navigation.locations_movement": "Движение Авто по локациям",
     "navigation.sync_import": "Синхронизация / Импорт",
-    "navigation.sync_export": "Синхронизация / Бэкап"
+    "navigation.sync_export": "Синхронизация / Бэкап",
+    "navigation.analytics": "Аналитика"
   },
   "uk": {
     "navigation.operations": "Операції",
@@ -222,6 +224,7 @@
     "navigation.locations_vehicles": "Авто по локаціям",
     "navigation.locations_movement": "Рух Авто по локаціям",
     "navigation.sync_import": "Синхронізація / Імпорт",
-    "navigation.sync_export": "Синхронізація / Бекап"
+    "navigation.sync_export": "Синхронізація / Бекап",
+    "navigation.analytics": "Аналітика"
   }
 }

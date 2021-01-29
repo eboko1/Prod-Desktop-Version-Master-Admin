@@ -1,0 +1,35 @@
+.mainCont {
+    margin: 20px 40px 0 40px;
+}
+
+.analyticsCont {
+    
+    min-height: 2em;
+    background-color: rgba(231, 231, 231, 0.513);
+    margin: 3px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: stretch;
+
+}
+
+.row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.colCentered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.col {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+

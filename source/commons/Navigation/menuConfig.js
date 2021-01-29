@@ -51,6 +51,13 @@ export default {
             name:     'navigation.catalog',
             items:    [
                 {
+                    key:      '/report/analytics',
+                    link:     book.analytics,
+                    disabled: user =>
+                        isForbidden(user, permissions.GET_CLIENTS),
+                    name: 'navigation.analytics',
+                },
+                {
                     key:      '/clients',
                     link:     book.clients,
                     disabled: user =>

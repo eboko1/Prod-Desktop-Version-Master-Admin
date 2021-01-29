@@ -1,6 +1,5 @@
 /*
-The purpose of this module is to provide report about all clients' debts.
-Also it provides basic search and print button.
+The purpose of this module is to provide report about all orders.
 */
 // vendor
 import React, { Component } from "react";
