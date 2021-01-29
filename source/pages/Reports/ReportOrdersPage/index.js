@@ -51,6 +51,7 @@ const mapStateToProps = state => ({
     filterOptions: state.reportOrders.filterOptions,
     modal: state.modals.modal,
     reportOrdersFetching: state.ui.reportOrdersFetching,
+    user: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -180,6 +181,7 @@ export default class ReportOrdersPage extends Component {
             setReportOrdersDoneToDate,
 
             modal,
+            user,
         } = this.props;
 
         //Transfer all filter methods in one object to easily manipulate data
@@ -215,6 +217,7 @@ export default class ReportOrdersPage extends Component {
                         <StyledButton
                             type="primary"
                             onClick={this.onOpenExportModal}
+                            disabled={isForbidden(user, permissions.ACCESS_REPORT_PROFIT_FROM_ORDERS_PRINT)}
                         >
                             <FormattedMessage id="report_orders_page_page.download_report" />
                         </StyledButton>
