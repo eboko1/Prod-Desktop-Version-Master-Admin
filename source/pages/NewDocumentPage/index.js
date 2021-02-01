@@ -455,8 +455,7 @@ class NewDocumentPage extends Component {
     }
 
     _renderBlock = ({blockTitle, permission, items}, key) => {
-        if(isForbidden(this.props.user, permissions[permission])) return;
-        return(
+        return !isForbidden(this.props.user, permissions[permission]) && (
             <div key={ key } className={ Styles.block }>
                 <div className={ Styles.blockTitle }>
                     <FormattedMessage id={`new-document-page.block.${blockTitle}`} />

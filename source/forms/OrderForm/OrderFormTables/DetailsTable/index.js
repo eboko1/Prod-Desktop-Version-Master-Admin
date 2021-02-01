@@ -522,43 +522,48 @@ class DetailsTable extends Component {
     }
 
     fetchData() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/warehouses`;
-        fetch(url, {
-            method:  'GET',
-            headers: {
-                Authorization: token,
-            },
-        })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            const warehousesData = {};
-            data.map((warehouse)=>{
-                if(warehouse.attribute == 'MAIN') {
-                    warehousesData.main = warehouse.id;
-                }
-                if(warehouse.attribute == 'RESERVE') {
-                    warehousesData.reserve = warehouse.id;
-                }
+        if(!isForbidden(this.props.user, permissions.ACCESS_STOCK)) {
+            var that = this;
+            let token = localStorage.getItem('_my.carbook.pro_token');
+            let url = __API_URL__ + `/warehouses`;
+            fetch(url, {
+                method:  'GET',
+                headers: {
+                    Authorization: token,
+                },
             })
-            that.setState({
-                mainWarehouseId: warehousesData.main,
-                reserveWarehouseId: warehousesData.reserve,
-                fetched: true,
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
             })
-        })
-        .catch(function(error) {
-            console.log('error', error);
-        });
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                const warehousesData = {};
+                data.map((warehouse)=>{
+                    if(warehouse.attribute == 'MAIN') {
+                        warehousesData.main = warehouse.id;
+                    }
+                    if(warehouse.attribute == 'RESERVE') {
+                        warehousesData.reserve = warehouse.id;
+                    }
+                })
+                that.setState({
+                    mainWarehouseId: warehousesData.main,
+                    reserveWarehouseId: warehousesData.reserve,
+                    fetched: true,
+                })
+            })
+            .catch(function(error) {
+                console.log('error', error);
+                that.setState({
+                    fetched: true,
+                })
+            });
+        }
         this.storeGroups = this.props.details;
     }
 

@@ -611,7 +611,7 @@ export default class OrderFormHeader extends Component {
                     placeholder={this._getLocalization(
                         "add_order_form.select_station",
                     )}
-                    disabled={this.bodyUpdateIsForbidden() || !isForbidden(user, permissions.ACCESS_ORDER_POSTS)}
+                    disabled={this.bodyUpdateIsForbidden() || isForbidden(user, permissions.ACCESS_ORDER_POSTS)}
                     initialValue={
                         _.get(fetchedOrder, "order.stationNum") ||
                         (this.bodyUpdateIsForbidden()
