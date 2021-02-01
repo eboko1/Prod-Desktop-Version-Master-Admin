@@ -563,6 +563,10 @@ class DetailsTable extends Component {
                     fetched: true,
                 })
             });
+        } else {
+            this.setState({
+                fetched: true,
+            })
         }
         this.storeGroups = this.props.details;
     }
