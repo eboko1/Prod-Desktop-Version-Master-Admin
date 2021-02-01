@@ -284,7 +284,7 @@ class DetailsTable extends Component {
                 className: Styles.numberColumn,
                 key:       'reserve',
                 render:    elem => {
-                    const disabled = this.props.disabled || !elem.id || elem.stage == INSTALLED && elem.agreement != 'REJECTED';
+                    const disabled = this.props.disabled || !elem.id || elem.stage == INSTALLED && elem.agreement != 'REJECTED' || isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK);
                     return (
                         <ReserveButton
                             detail={elem}
@@ -563,6 +563,10 @@ class DetailsTable extends Component {
                     fetched: true,
                 })
             });
+        } else {
+            this.setState({
+                fetched: true,
+            })
         }
         this.storeGroups = this.props.details;
     }
