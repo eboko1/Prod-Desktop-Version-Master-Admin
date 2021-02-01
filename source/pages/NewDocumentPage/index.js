@@ -368,52 +368,70 @@ const struct = [
                 formLink:  book.clients,
                 catalogueLink: book.clients,
                 formLinkState : { showForm: true },
+                permission: 'GET_CLIENTS',
+                permissionCRUD: 'CREATE_EDIT_DELETE_CLIENTS',
             },
             {
                 itemName:         'supplier',
                 formLink:  book.suppliersPage,
                 catalogueLink: book.suppliersPage,
                 formLinkState : { showForm: true },
+                permission: 'ACCESS_SUPPLIERS',
+                permissionCRUD: 'ACCESS_SUPPLIERS_CRUD',
             },
             {
                 itemName:         'product',
                 formLink:  book.products,
                 catalogueLink: book.products,
                 formLinkState : { showForm: true },
+                permission: 'ACCESS_STORE_PRODUCTS',
+                permissionCRUD: 'EDIT_STORE_PRODUCT_PRICE',
             },
             {
                 itemName:         'labor',
                 formLink:  book.laborsPage,
                 catalogueLink: book.laborsPage,
                 formLinkState : { showForm: true },
+                permission: 'ACCESS_LABOR_CATALOGUE',
+                permissionCRUD: 'ACCESS_CATALOGUE_LABORS_CRUD',
             },
             {
                 itemName:         'diagnostics',
                 formLink:  book.diagnosticPatterns,
                 catalogueLink: book.diagnosticPatterns,
                 formLinkState : { showForm: true },
+                permission: 'ACCESS_DIAGNOSTIC_CATALOGUE',
+                permissionCRUD: 'ACCESS_CATALOGUE_DIAGNOSTICS_CRUD',
             },
             {
                 itemName:         'employee',
                 formLink:  book.addEmployee,
                 catalogueLink: book.employeesPage,
+                permission: 'GET_EMPLOYEES',
+                permissionCRUD: 'CREATE_EDIT_DELETE_EMPLOYEES',
             },
             {
                 itemName:         'warehouse',
                 formLink:  book.warehouses,
                 catalogueLink: book.warehouses,
                 formLinkState : { showForm: true },
+                permission: 'ACCESS_CATALOGUE_STOCK',
+                permissionCRUD: 'ACCESS_CATALOGUE_STOCK_CRUD',
             },
             {
                 itemName:         'cashbox',
                 formLink:  book.cashSettingsPage,
                 catalogueLink: book.cashSettingsPage,
+                permission: 'ACCESS_CATALOGUE_CASH',
+                permissionCRUD: 'ACCESS_CATALOGUE_CASH_CRUD',
             },
             {
                 itemName:         'requisites',
                 formLink:  book.requisites,
                 catalogueLink: book.requisites,
                 formLinkState : { showForm: true },
+                permission: 'ACCESS_CATALOGUE_REQUISITES',
+                permissionCRUD: 'ACCESS_CATALOGUE_REQUISITES_CRUD',
             },
             {
                 emptyItem: true,
@@ -423,17 +441,23 @@ const struct = [
                 formLink:  book.productsGroups,
                 catalogueLink: book.productsGroups,
                 formLinkState : { showForm: true },
+                permission: 'ACCESS_STORE_GROUPS',
+                permissionCRUD: 'ACCESS_CATALOGUE_STORE_GROUPS_CRUD',
             },
             {
                 itemName:         'markup-group',
                 formLink:  book.priceGroups,
                 catalogueLink: book.priceGroups,
+                permission: 'ACCESS_CATALOGUE_PRICE_GROUPS',
+                permissionCRUD: 'ACCESS_CATALOGUE_PRICE_GROUPS_CRUD',
             },
             {
                 itemName:         'units',
                 formLink:  book.products,
                 catalogueLink: book.products,
                 disabled: true,
+                permission: 'ACCESS_STORE_PRODUCTS',
+                permissionCRUD: 'EDIT_STORE_PRODUCT_PRICE',
             },
         ],
     },
@@ -469,12 +493,14 @@ class NewDocumentPage extends Component {
         )
     };
 
-    _renderItem = (blockTitle, {itemName, formLink, formLinkState, catalogueLink, catalogueLinkState, disabled, emptyItem}, key) => {
-        return !emptyItem ? (
-            <div key={ key } className={ disabled ? Styles.disabledItem + " " + Styles.item : Styles.item }>
+    _renderItem = (blockTitle, {itemName, formLink, formLinkState, catalogueLink, catalogueLinkState, disabled, emptyItem, permission, permissionCRUD}, key) => {
+        const isForbiddenAccess = permission ? isForbidden(this.props.user, permissions[permission]) : false;
+        const isForbiddenCRUD = permissionCRUD ? isForbidden(this.props.user, permissions[permissionCRUD]) : false;
+        return !emptyItem && !isForbiddenAccess ? (
+            <div key={ key } className={ disabled || isForbiddenCRUD ? Styles.disabledItem + " " + Styles.item : Styles.item }>
                 <Link
                     className={Styles.buttonLink}
-                    to={ {
+                    to={ !isForbiddenCRUD && {
                         pathname: formLink,
                         state:    formLinkState,
                     } }
@@ -485,7 +511,7 @@ class NewDocumentPage extends Component {
                 </Link>
                 <Link
                     className={Styles.folderLink}
-                    to={ {
+                    to={ !isForbiddenAccess && {
                         pathname: catalogueLink,
                         state:    catalogueLinkState,
                     } }

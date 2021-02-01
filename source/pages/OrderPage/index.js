@@ -216,33 +216,35 @@ class OrderPage extends Component {
     }
 
     _fetchRepairMapData() {
-        const {id} = this.props.match.params;
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/orders/${id}/repair_map?update=true`;
-        fetch(url, {
-            method:  'GET',
-            headers: {
-                Authorization: token,
-            },
-        })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            that.setState({
-                repairMapData: data,
+        if(!isForbidden(this.props.user, permissions.ACCESS_ORDER_TABS_REPAIR_MAP_UPDATE)) {
+            const {id} = this.props.match.params;
+            var that = this;
+            let token = localStorage.getItem('_my.carbook.pro_token');
+            let url = __API_URL__ + `/orders/${id}/repair_map?update=true`;
+            fetch(url, {
+                method:  'GET',
+                headers: {
+                    Authorization: token,
+                },
             })
-        })
-        .catch(function(error) {
-            console.log('error', error);
-        });
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                that.setState({
+                    repairMapData: data,
+                })
+            })
+            .catch(function(error) {
+                console.log('error', error);
+            });
+        }
     }
 
     _showOilModal = (oem, oeCode, acea, api, sae) => {

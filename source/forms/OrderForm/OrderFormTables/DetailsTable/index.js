@@ -522,7 +522,7 @@ class DetailsTable extends Component {
     }
 
     fetchData() {
-        if(!isForbidden(this.props.user, permissions.ACCESS_STOCK)) {
+        if(!isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK)) {
             var that = this;
             let token = localStorage.getItem('_my.carbook.pro_token');
             let url = __API_URL__ + `/warehouses`;
