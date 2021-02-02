@@ -101,7 +101,7 @@ export function columnsConfig(
                 placeholder={ formatMessage({
                     id: 'add_order_form.select_date',
                 }) }
-                disabledDate={ disabledDate }
+                //disabledDate={ disabledDate }
                 format={ 'YYYY-MM-DD' } // HH:mm
                 showTime={ false }
                 allowClear={ false }
@@ -177,7 +177,7 @@ export function columnsConfig(
                 }
                 defaultOpenValue={ moment(`${beginTime}:00`, 'HH:mm:ss') }
                 field={ `stationLoads[${key}].beginTime` }
-                disabledHours={ () => {
+                /*disabledHours={ () => {
                     const availableHours = _.get(
                         props.availableHours,
                         String(key),
@@ -209,7 +209,7 @@ export function columnsConfig(
                             Number(availableHour.format('mm')));
 
                     return _.difference([ 0, 30 ], availableMinutes);
-                } }
+                } }*/
                 formatMessage={ formatMessage }
                 getFieldDecorator={ props.form.getFieldDecorator }
                 rules={ [

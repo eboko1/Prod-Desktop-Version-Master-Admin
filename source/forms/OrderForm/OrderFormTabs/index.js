@@ -271,6 +271,26 @@ export default class OrderFormTabs extends React.PureComponent {
                 this.props.orderStatus == "cancel") &&
             isForbidden(user, UPDATE_SUCCESS_ORDER);
 
+        if(this.state.activeKey == 'map' && areRepairMapForbidden) {
+            if(!areDiagnosticForbidden) {
+                this.setState({
+                    activeKey: 'diagnostic'
+                })
+            } else if(!areServicesForbidden) {
+                this.setState({
+                    activeKey: 'services'
+                })
+            } else if(!areDetailsForbidden) {
+                this.setState({
+                    activeKey: 'details'
+                })
+            } else {
+                this.setState({
+                    activeKey: 'comments'
+                })
+            }
+        }
+
         const viewTasks = !isForbidden(user, GET_TASKS);
         const viewAllTasks = !isForbidden(user, GET_ALL_TASKS);
         const canCreateTask =
