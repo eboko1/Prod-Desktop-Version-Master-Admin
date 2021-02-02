@@ -67,7 +67,7 @@ export default class AnalyticsDropdown extends React.Component {
 
         return (
             <div className={Style.mainCont}>
-                <Collapse onChange={() => console.log('click')} defaultActiveKey={['1']}>
+                <Collapse defaultActiveKey={['1']}>
                     
                     {
                         _.map(firstLevelAnal, (obj) => {

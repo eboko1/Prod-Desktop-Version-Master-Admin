@@ -23,6 +23,7 @@ import {
 } from 'core/reports/reportAnalytics/duck';
 import { ReportAnalyticsModal } from 'modals';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import {fetchAPI} from 'utils';
 
 import { Layout, StyledButton } from "commons";
 import { ReportOrdersTable, ReportOrdersFilter } from "components";
@@ -72,7 +73,8 @@ export default class ReportAnalyticsPage extends Component {
 
         const {
             analytics,
-            modal
+            modal,
+            fetchReportAnalytics
         } = this.props;
         
         
@@ -85,7 +87,12 @@ export default class ReportAnalyticsPage extends Component {
                 }
                 controls={
                     <div className={Styles.buttonGroup}>
-                        <StyledButton type="primary">Reset all</StyledButton>
+                        <StyledButton type="primary" onClick={
+                            () => {
+                                fetchAPI('DELETE', 'report/analytics');
+                                fetchReportAnalytics();
+                            }
+                        }>Reset all</StyledButton>
                         <StyledButton type="secondary" onClick={this.onAnalyticsBtn}>Create</StyledButton>
                     </div>
                 }

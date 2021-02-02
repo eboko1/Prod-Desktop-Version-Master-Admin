@@ -9,11 +9,15 @@ import { fetchAPI } from 'utils';
 
 // own
 import {
-    fetchReportAnalyticsSuccess
+    fetchReportAnalyticsSuccess,
+    deleteReportAnalyticsSuccess,
+    createReportAnalyticsSuccess
 } from './duck';
 
 import {
-    FETCH_REPORT_ANALYTICS
+    FETCH_REPORT_ANALYTICS,
+    DELETE_REPORT_ANALYTICS,
+    CREATE_REPORT_ANALYTICS
 } from './duck';
 
 export function* fetchReportAnalyticsSaga() {
@@ -34,7 +38,45 @@ export function* fetchReportAnalyticsSaga() {
     }
 }
 
+export function* deleteReportAnalyticsSaga() {
+    while (true) {
+        try {
+            yield take(DELETE_REPORT_ANALYTICS);
+            // yield put(setReportOrdersFetching(true));
+
+            yield call(
+                fetchAPI,
+                'DELETE',
+                `/report/analytics`
+            );
+            yield put(deleteReportAnalyticsSuccess());
+        } finally {
+            // yield put(setReportOrdersFetching(false));
+        }
+    }
+}
+
+// export function* createReportAnalyticsSaga() {
+//     while (true) {
+//         try {
+//             const {analyticsEntity} = yield take(CREATE_REPORT_ANALYTICS);
+//             // yield put(setReportOrdersFetching(true));
+
+//             yield call(
+//                 fetchAPI,
+//                 'POST',
+//                 `/report/analytics`,
+//                 null,
+//                 analyticsEntity
+//             );
+//             yield put(createReportAnalyticsSuccess());
+//         } finally {
+//             // yield put(setReportOrdersFetching(false));
+//         }
+//     }
+// }
+
 
 export function* saga() {
-    yield all([ call(fetchReportAnalyticsSaga) ]);
+    yield all([ call(fetchReportAnalyticsSaga), call(deleteReportAnalyticsSaga) ]);
 }

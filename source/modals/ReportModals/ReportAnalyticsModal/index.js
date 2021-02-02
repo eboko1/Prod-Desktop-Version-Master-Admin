@@ -6,7 +6,16 @@ import { Modal, Form, Button, Col, Row, Checkbox, Radio, Tabs, Input, Select } f
 
 // proj
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
-import { getField } from 'react-redux-form';
+import { ReportAnalyticsForm, ReportAnalyticsCatalogForm } from 'forms';
+import {
+    formKeys,
+    analyticsLevels,
+
+    createAnalytics,
+    changeCurrentForm,
+    fetchAnalyticsCatalogs
+} from 'core/forms/reportAnalyticsForm/duck';
+import {fetchReportAnalytics} from 'core/reports/reportAnalytics/duck';
 
 // own
 import Styles from './styles.m.css';
@@ -17,12 +26,18 @@ const CGroup = Checkbox.Group;
 const TPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
-
+    currentForm: state.forms.reportAnalyticsForm.currentForm, //Current active analytics form
+    analyticsCatalogs: state.forms.reportAnalyticsForm.analyticsCatalogs
 });
 
 const mapDispatchToProps = {
     setModal,
     resetModal,
+
+    createAnalytics,
+    changeCurrentForm,
+    fetchAnalyticsCatalogs,
+    fetchReportAnalytics
 };
 
 @injectIntl
@@ -30,101 +45,123 @@ const mapDispatchToProps = {
     mapStateToProps,
     mapDispatchToProps,
 )
-class ReportAnalyticsModal extends Component {
+export default class ReportAnalyticsModal extends Component {
     constructor(props) {
         super(props);
+
+        //Initialize analytics catalogs for this modal
+        console.log("Func:", this.props.fetchAnalyticsCatalogs());
+        this.props.fetchAnalyticsCatalogs();
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.saveCatalogFormRef = this.saveCatalogFormRef.bind(this);
+        this.saveAnalyticsFormRef = this.saveAnalyticsFormRef.bind(this);
+
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+
+        const {
+            currentForm,
+            createAnalytics
+        } = this.props;
+
+        //Select an appropriate form to proceed and submit a request appropriately
+        if(currentForm == formKeys.catalogForm && this.catalogForm) {
+            //Create new analytics catalog
+            this.catalogForm.validateFields((err, values) => {
+                // if (!err) {
+                //     console.log('Received values of catalogForm: ', values);
+                // } else {
+                //     console.log('Cannot submit, errors occured: ', err);
+                // }
+
+                let analyticsEntity = {
+                    level: analyticsLevels.catalog,
+                    name: values.catalogName
+                }
+
+                createAnalytics({analyticsEntity});
+            });
+        } else if(currentForm == formKeys.analyticsForm && this.analyticsForm) {
+            //Create new analytics in an specific catalog
+            this.analyticsForm.validateFields((err, values) => {
+                if (!err) {
+                    console.log('Received values of analyticsForm: ', values);
+                } else {
+                    console.log('Cannot submit, errors occured: ', err);
+                }
+
+                let analyticsEntity = {
+                    level: analyticsLevels.analytics,
+                    name: values.analyticsName,
+
+                    parentId: values.catalogId,
+                    bookkeepingAccount: values.bookkeepingAccount,
+                    orderType: values.orderType
+                }
+                createAnalytics({analyticsEntity});
+            });
+        } else {
+            console.log("Error, cannot detect current form or instance is missing");
+        }
+
+        //TODO clear fields
+
+        this.props.fetchReportAnalytics();
+        this.props.resetModal();
+        
+    };
+
+    saveCatalogFormRef = (ref) => {
+        this.catalogForm = ref;
+        console.log(ref);
+    }
+
+    saveAnalyticsFormRef = (ref) => {
+        this.analyticsForm = ref;
+        console.log(ref);
     }
 
     render() {
 
         const {
+            currentForm,
+            analyticsCatalogs,
+            changeCurrentForm,
+
             visible,
-            onOk,
             onCancel,
-            form
+
+            fetchAnalyticsCatalogs
         } = this.props;
 
-        const {
-            getFieldDecorator
-        } = form;
-        
         return (
             <Modal
                 width={ '80%' }
                 visible={ visible === MODALS.REPORT_ANALYTICS }
-                onOk={ onOk }
+                onOk={ this.handleSubmit }
                 onCancel={ onCancel }
                 title={<div className={Styles.title}>Create analytics</div>}
                 style={{height: '90vh'}}
             >
-                <Form>
+                <button onClick={fetchAnalyticsCatalogs}>Press</button>
 
-                    <Tabs tabPosition='left' tabBarStyle={{width: '20%'}}>
-
-                        <TPane tab="Create catalog" key='0'>
-                            <Row>
-                                <Col span={6}>Catalog name: </Col>
-                                <Col span={18}>
-                                    <FItem>
-                                        {
-                                            getFieldDecorator('catalogName')(
-                                                <Input />
-                                            )
-                                        }
-                                    </FItem>
-                                </Col>
-                            </Row>
-                        </TPane>
-
-                        <TPane tab="Create analytics" key='1'>
-                            <Row>
-                                <Col span={6}>Analytics name: </Col>
-                                <Col span={18}>
-                                    <FItem>
-                                        {
-                                            getFieldDecorator('analyticsName')(
-                                                <Input />
-                                            )
-                                        }
-                                    </FItem>
-                                </Col>
-                            </Row>
-                            {/* ==================================================== */}
-                            <Row>
-                                <Col span={6}>Bookkeeping account: </Col>
-                                <Col span={18}>
-                                    <FItem>
-                                        {
-                                            getFieldDecorator('bookkeepingAccount')(
-                                                <Input />
-                                            )
-                                        }
-                                    </FItem>
-                                </Col>
-                            </Row>
-                            {/* ==================================================== */}
-                            <Row>
-                                <Col span={6}>Order type: </Col>
-                                <Col span={18}>
-                                    <FItem>
-                                        {
-                                            getFieldDecorator('orderType')(
-                                                <Select />
-                                            )
-                                        }
-                                    </FItem>
-                                </Col>
-                            </Row>
-                        </TPane>
-
-                    </Tabs>
-
-                </Form>
+                <Tabs tabPosition='left' tabBarStyle={{width: '20%'}} activeKey={currentForm} onChange={activeKey => changeCurrentForm(activeKey)}>
+                    <TPane tab="Create catalog" key={formKeys.catalogForm}>
+                        <ReportAnalyticsCatalogForm
+                            getFormRefCB={this.saveCatalogFormRef}//Get form refference
+                        />
+                    </TPane>
+                    <TPane  tab="Create analytics" key={formKeys.analyticsForm}>
+                        <ReportAnalyticsForm
+                            getFormRefCB={this.saveAnalyticsFormRef}//Get form refference
+                            analyticsCatalogs={analyticsCatalogs}
+                        />
+                    </TPane>
+                </Tabs>
             </Modal>
         );
     }
 }
-
-export default Form.create({name: 'report_analytics_modal_in_form'}) (
-    ReportAnalyticsModal
-)
