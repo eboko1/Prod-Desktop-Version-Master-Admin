@@ -572,6 +572,7 @@ class StorageDocumentForm extends Component {
                     showModal={this.showModal}
                     type={type}
                     sellingPrice={type == EXPENSE}
+                    user={user}
                 />
                 { !disabled ? 
                     <AddProductModal
@@ -616,34 +617,35 @@ class DocProductsTable extends React.Component {
                 width:     actionColWidth,
                 key:       'edit',
                 render:     (elem)=>{
+                    const accessForbidden = isForbidden(this.props.user, permissions.ACCESS_STOCK);
                     return this.props.disabled ? null :
                         !elem.detailCode ?
                             <Button
-                                
+                                disabled={accessForbidden}
                                 onClick={()=>{
-                                    this.props.showModal();
+                                    if(!accessForbidden) this.props.showModal();
                                 }}
                             >
                                 <Icon type='plus'/>
                             </Button> :
                             elem.productId ? 
                                 <Button
-                                    disabled={this.props.disabled}
+                                    disabled={this.props.disabled || accessForbidden}
                                     type='primary'
                                     onClick={()=>{
-                                        this.props.editProduct(elem.key);
+                                        if(!accessForbidden) this.props.editProduct(elem.key);
                                     }}
                                 >
                                     <Icon type='edit' />
                                 </Button> :
                                 <Button
-                                    disabled={this.props.disabled}
+                                    disabled={this.props.disabled || accessForbidden}
                                     type='primary'
                                     style={{
                                         backgroundColor: 'var(--approve)'
                                     }}
                                     onClick={()=>{
-                                        this.props.editProduct(elem.key, true);
+                                        if(!accessForbidden) this.props.editProduct(elem.key, true);
                                     }}
                                 >
                                     <Icon type='warning'/>
@@ -758,7 +760,7 @@ class DocProductsTable extends React.Component {
                 render:     (elem)=>{
                     return this.props.disabled ? null : (
                         <Button
-                            disabled={this.props.disabled || !elem.detailCode}
+                            disabled={this.props.disabled || !elem.detailCode || isForbidden(this.props.user, permissions.ACCESS_STOCK)}
                             type={'danger'}
                             onClick={()=>{
                                 this.props.deleteDocProduct(elem.key)
@@ -1305,6 +1307,7 @@ class AddProductModal extends React.Component {
                 onCancel={()=>{
                     this.handleCancel();
                 }}
+                maskClosable={false}
             >
                 <div
                     style={{
@@ -1780,6 +1783,7 @@ export class AddStoreProductModal extends React.Component {
                         cancelAlertModal();
                     }}
                     onCancel={cancelAlertModal}
+                    maskClosable={false}
                 >
                     {this.props.children}
                 </Modal>
@@ -1792,6 +1796,7 @@ export class AddStoreProductModal extends React.Component {
                     onCancel={()=>{
                         this.setState({visible: false});
                     }}
+                    maskClosable={false}
                 >
                     <div>
                         <FormattedMessage id='order_form_table.detail_code' />{requiredField()}

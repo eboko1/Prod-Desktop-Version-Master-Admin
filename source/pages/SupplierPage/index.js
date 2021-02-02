@@ -2,12 +2,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import { Tabs, Input, InputNumber, Button, notification } from "antd";
-import { permissions, isForbidden } from "utils";
+import { Tabs, Input, InputNumber, Button, notification, Checkbox } from "antd";
 
 // proj
 import { Layout, Catcher, Spinner } from 'commons';
 import { RequisiteSettingContainer, StorageTable } from "containers";
+import { permissions, isForbidden } from "utils";
 import { deleteSupplierRequisite, postSupplierRequisite, updateSupplierRequisite } from "core/requisiteSettings/saga";
 
 // own
@@ -156,6 +156,7 @@ export default class SupplierPage extends Component {
             return response.json()
         })
         .then(function (data) {
+            console.log(data);
             data.requisites.map((elem, key)=>{
                 elem.key = key;
             });
@@ -191,7 +192,29 @@ export default class SupplierPage extends Component {
         }
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/business_suppliers/${this.props.id}`;
+        let url = __API_URL__ + `/business_suppliers/${this.props.id}/settings`;
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Authorization': token,
+            },
+            body: JSON.stringify({
+                hide: Boolean(generalInfo.hide),
+            }),
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .catch(function (error) {
+            console.log('error', error);
+        });
+        url =__API_URL__ + `/business_suppliers/${this.props.id}`;
         fetch(url, {
             method: 'PUT',
             headers: {
@@ -288,19 +311,34 @@ export default class SupplierPage extends Component {
                                         }}
                                     />
                                 </div>
-                                <div className={Styles.generalInfoItem}>
-                                    <FormattedMessage id='supplier.paymentRespite'/>
-                                    <InputNumber
-                                        style={{
-                                            margin: '0 0 0 8px'
-                                        }}
-                                        min={0}
-                                        value={generalInfo.paymentRespite || 0}
-                                        onChange={(value)=>{
-                                            generalInfo.paymentRespite = value;
-                                            this.setState({});
-                                        }}
-                                    /> <FormattedMessage id='universal_filters_form.days' />
+                                <div className={Styles.generalInfoItem} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                    <div>
+                                        <FormattedMessage id='supplier.paymentRespite'/>
+                                        <InputNumber
+                                            style={{
+                                                margin: '0 0 0 8px'
+                                            }}
+                                            min={0}
+                                            value={generalInfo.paymentRespite || 0}
+                                            onChange={(value)=>{
+                                                generalInfo.paymentRespite = value;
+                                                this.setState({});
+                                            }}
+                                        /> <FormattedMessage id='universal_filters_form.days' />
+                                    </div>
+                                    <div>
+                                        <FormattedMessage id='supplier.show_suppleir'/>
+                                        <Checkbox
+                                            style={{
+                                                margin: '0 0 0 8px'
+                                            }}
+                                            checked={!generalInfo.hide}
+                                            onChange={(event)=>{
+                                                generalInfo.hide = !event.target.checked;
+                                                this.setState({});
+                                            }}
+                                        />
+                                    </div>
                                 </div>
                                 <div className={Styles.submitButton}>
                                     <Button
@@ -321,6 +359,7 @@ export default class SupplierPage extends Component {
                                 />
                             }
                             key="requisites"
+                            disabled={isForbidden(user, permissions.ACCESS_SUPPLIER_REQUISITES)}
                         >
                             <div className={Styles.addRequisiteButton}>
                                 <Button
@@ -352,6 +391,7 @@ export default class SupplierPage extends Component {
                                 <FormattedMessage id={"supplier.orders"} />
                             }
                             key="orders"
+                            disabled={isForbidden(user, permissions.ACCESS_SUPPLIER_STATISTICS)}
                         >
                             <StorageTable
                                 hideFilters
@@ -368,6 +408,7 @@ export default class SupplierPage extends Component {
                                 />
                             }
                             key="supply"
+                            disabled={isForbidden(user, permissions.ACCESS_SUPPLIER_STATISTICS)}
                         >
                             <StorageTable
                                 hideFilters

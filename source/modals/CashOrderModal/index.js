@@ -13,9 +13,10 @@ import Styles from './styles.m.css';
 
 export default class CashOrderModal extends Component {
     render() {
-        const { visible, resetModal, modalProps, cashOrderEntity } = this.props;
+        const { visible, resetModal, modalProps, cashOrderEntity, fetchOrder} = this.props;
         const printMode = _.get(modalProps, 'printMode');
         const editMode = _.get(modalProps, 'editMode');
+        const fromOrder = _.get(modalProps, 'fromOrder');
 
         return (
             <Modal
@@ -24,12 +25,15 @@ export default class CashOrderModal extends Component {
                 footer={ null }
                 onCancel={ resetModal }
                 destroyOnClose
+                maskClosable={false}
             >
                 <CashOrderForm
                     resetModal={ resetModal }
                     printMode={ printMode }
                     editMode={ editMode }
+                    fromOrder={ fromOrder }
                     cashOrderEntity={ cashOrderEntity }
+                    fetchOrder={ fetchOrder }
                 />
             </Modal>
         );

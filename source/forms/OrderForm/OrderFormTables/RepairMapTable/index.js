@@ -10,11 +10,13 @@ import moment from 'moment';
 // proj
 import { Catcher } from 'commons';
 import book from 'routes/book';
+import { permissions, isForbidden } from 'utils';
 import {
     getDiagnosticsReport,
     getDiagnosticsAct,
     createAgreement,
 } from 'core/forms/orderDiagnosticForm/saga';
+import {setModal, resetModal, MODALS} from 'core/modals/duck';
 // own
 import Styles from './styles.m.css';
 
@@ -48,7 +50,10 @@ const   HEADER_CLIENT_SEARCH = 'HEADER_CLIENT_SEARCH',
         CREATE_DOC_TOR = 'CREATE_DOC_TOR',
         ORDER_CHECK = 'ORDER_CHECK',
         ORDER_CLOSE = 'ORDER_CLOSE',
-        PRINT_COMPLETED_WORK = 'PRINT_COMPLETED_WORK';
+        PRINT_COMPLETED_WORK = 'PRINT_COMPLETED_WORK',
+        HEADER_MILEAGE = 'HEADER_MILEAGE',
+        HEADER_LOCATION_ACTION = 'HEADER_LOCATION_ACTION',
+        COMMENT_RECOMMENDATION_FOR_CLIENT = 'COMMENT_RECOMMENDATION_FOR_CLIENT';
 
 @withRouter
 @injectIntl
@@ -71,6 +76,7 @@ export default class RepairMapTable extends Component {
             modals,
             download,
             focusOnRef,
+            showCahOrderModal,
          } = this.props;
         switch(operation) {
             case HEADER_CLIENT_SEARCH:
@@ -85,9 +91,17 @@ export default class RepairMapTable extends Component {
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
                 focusOnRef(HEADER_EMPLOYEE);
                 break;
+            case HEADER_LOCATION_ACTION:
+                document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
+                focusOnRef(HEADER_LOCATION_ACTION);
+                break;
             case HEADER_REQUISITES:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
                 focusOnRef(HEADER_REQUISITES);
+                break;
+            case HEADER_MILEAGE:
+                document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
+                focusOnRef(HEADER_MILEAGE);
                 break;
             case HEADER_CHANGE_STATUS:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
@@ -146,6 +160,8 @@ export default class RepairMapTable extends Component {
                 break;
             case HEADER_PAY:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
+                if(!isForbidden(user, permissions.ACCESS_ORDER_PAY)) 
+                    showCahOrderModal();
                 break;
             case STOCK_BUTTON_ORDERED:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
@@ -192,6 +208,10 @@ export default class RepairMapTable extends Component {
                     link: `/orders/reports/businessOrderReport/${orderId}`,
                     name: 'businessOrderReport'
                 });
+                break;
+            case COMMENT_RECOMMENDATION_FOR_CLIENT:
+                document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
+                setActiveTab('comments');
                 break;
             case WORKSHOP:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
@@ -269,7 +289,7 @@ export default class RepairMapTable extends Component {
     }
 
     render() {
-        const { repairMapData, fetchRepairMapData } = this.props;
+        const { repairMapData, fetchRepairMapData, user } = this.props;
 
         return (
             <div>
@@ -288,6 +308,7 @@ export default class RepairMapTable extends Component {
                     </span>
                     <Button
                         type='primary'
+                        disabled={isForbidden(user, permissions.ACCESS_ORDER_TABS_REPAIR_MAP_UPDATE)}
                         onClick={()=>{
                             fetchRepairMapData();
                             window.location.reload();
@@ -315,7 +336,7 @@ export default class RepairMapTable extends Component {
                                                 <span>{child.name}</span>
                                                 <Button
                                                     type='primary'
-                                                    disabled={!child.operation}
+                                                    disabled={!child.operation || isForbidden(user, permissions.ACCESS_ORDER_TABS_REPAIR_MAP_UPDATE)}
                                                     onClick={async ()=>{
                                                         await this.repairMapAction(child.operation);
                                                         await fetchRepairMapData();

@@ -11,7 +11,7 @@ import classNames from "classnames/bind";
 // proj
 import { Catcher } from "commons";
 import book from "routes/book";
-// import { permissions, isForbidden } from 'utils';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from "./styles.m.css";
@@ -31,15 +31,23 @@ export default class EmployeesTable extends Component {
                 width: "25%",
                 render: (text, record) => (
                     <div>
-                        <Link
-                            className={Styles.employeeName}
-                            to={book.editEmployee.replace(":id", record.id)}
-                        >
-                            {`${record.name} ${record.surname}`}
-                            <div className={Styles.jobTitle}>
-                                {record.jobTitle}
-                            </div>
-                        </Link>
+                        {isForbidden(this.props.user, permissions.ACCESS_EMPLOYEE) ? 
+                            <>
+                                {`${record.name} ${record.surname}`}
+                                <div className={Styles.jobTitle}>
+                                    {record.jobTitle}
+                                </div> 
+                            </> :
+                            <Link
+                                className={Styles.employeeName}
+                                to={book.editEmployee.replace(":id", record.id)}
+                            >
+                                {`${record.name} ${record.surname}`}
+                                <div className={Styles.jobTitle}>
+                                    {record.jobTitle}
+                                </div>
+                            </Link>
+                        }
                     </div>
                 ),
             },
@@ -159,17 +167,6 @@ export default class EmployeesTable extends Component {
         return (
             <RadioGroup value={status}>
                 <RadioButton
-                    value="all"
-                    onClick={() =>
-                        this._setEmployeesFilterStatus({
-                            status: "all",
-                            disabled: null,
-                        })
-                    }
-                >
-                    <FormattedMessage id="all" />
-                </RadioButton>
-                <RadioButton
                     value="working"
                     onClick={() =>
                         this._setEmployeesFilterStatus({
@@ -190,6 +187,17 @@ export default class EmployeesTable extends Component {
                     }
                 >
                     <FormattedMessage id="employee-table.filter.fired" />
+                </RadioButton>
+                <RadioButton
+                    value="all"
+                    onClick={() =>
+                        this._setEmployeesFilterStatus({
+                            status: "all",
+                            disabled: null,
+                        })
+                    }
+                >
+                    <FormattedMessage id="all" />
                 </RadioButton>
             </RadioGroup>
         );

@@ -40,11 +40,17 @@ export function columnsConfig(props) {
             removable ? (
                 <Popconfirm
                     title={ `${props.formatMessage({ id: 'delete' })} ?` }
-                    onConfirm={ () => props.deleteCashbox(id) }
+                    onConfirm={ () => {
+                        if(props.isCRUDForbidden) props.deleteCashbox(id);
+                    }}
                 >
                     <Icon
                         type='delete'
-                        style={ {
+                        style={ props.isCRUDForbidden ? {
+                            fontSize: '18px',
+                            color:    'var(--text2)',
+                            pointerEvents: 'none',
+                        } : {
                             fontSize: '18px',
                             color:    'var(--warning)',
                             cursor:   'pointer',

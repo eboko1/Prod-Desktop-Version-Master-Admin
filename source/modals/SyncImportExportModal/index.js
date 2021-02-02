@@ -9,6 +9,7 @@ import moment from "moment";
 import { saveAs } from 'file-saver';
 // proj
 import { getData as getRequisites } from "core/requisiteSettings/saga";
+import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
@@ -40,89 +41,122 @@ const 	ALL = 'ALL',
 		INVITE = 'invite';
 const STATUSES = [CALL, REDUNDANT, APPROVED, CANCELED, CREATED, IN_PROGRESS, RESERVED, REQUIRED, SUCCESS, INVITE];
 
+const SYNC_CATALOGUES = [
+	{
+		name: 'clients',
+		checked: true,
+		sync: ALL,
+		priority: CARBOOK,
+		table: 'CLIENTS',
+	},
+	{
+		name: 'clients_vehicles',
+		checked: true,
+		sync: ALL,
+		priority: CARBOOK,
+		table: 'CLIENTS_VEHICLES',
+	},
+	{
+		name: 'bussiness_suppliers',
+		checked: true,
+		sync: ALL,
+		priority: CARBOOK,
+		table: 'BUSINESS_SUPPLIERS',
+	},
+	{
+		name: 'employees',
+		checked: true,
+		sync: ALL,
+		priority: CARBOOK,
+		table: 'EMPLOYEES',
+	},
+	{
+		name: 'store_products',
+		checked: true,
+		sync: ALL,
+		priority: CARBOOK,
+		table: 'STORE_PRODUCTS',
+	},
+	{
+		name: 'store_groups',
+		checked: true,
+		sync: ALL,
+		priority: CARBOOK,
+		table: 'STORE_GROUPS',
+	},
+	{
+		name: 'labors',
+		checked: true,
+		sync: ALL,
+		priority: CARBOOK,
+		table: 'LABORS',
+	},
+	{
+		sync: NONE,
+		priority: NONE,
+		table: NONE,
+	},
+];
+
+const SYNC_ORDERS = [
+	{
+		name: 'orders',
+		checked: true,
+		sync: NONE,
+		priority: CARBOOK,
+		table: 'ORDERS',
+	},
+];
+
+const SYNC_STOCK = [
+	{
+		name: 'store_docs',
+		checked: true,
+		sync: NONE,
+		priority: CARBOOK,
+		table: 'STORE_DOCS',
+	},
+];
+
+const SYNC_CASH_ORDERS = [
+	{
+		name: 'cash_orders',
+		checked: true,
+		sync: NONE,
+		priority: CARBOOK,
+		table: 'CASH_ORDERS',
+	},
+];
+
+const mapStateToProps = state => {
+    return {
+        user: state.auth,
+    };
+};
+
+@connect(
+    mapStateToProps,
+    void 0,
+)
 export default class SyncImportExportModal extends Component {
 	constructor(props) {
         super(props);
+
+        const isCatalogueForbidden = isForbidden(props.user, permissions.ACCESS_SYNC_CATALOGUES);
+        const isOrderForbidden = isForbidden(props.user, permissions.ACCESS_SYNC_ORDERS);
+        const isStockForbidden = isForbidden(props.user, permissions.ACCESS_SYNC_STOCK);
+        const isSettingsForbidden = isForbidden(props.user, permissions.ACCESS_SYNC_SETTINGS);
+
         this.state = {
         	requisites: [],
 	        paramsModalVisible: false,
-	        dataSource: [
-	        	{
-	        		name: 'clients',
-	        		checked: true,
-	        		sync: ALL,
-	        		priority: CARBOOK,
-	        		table: 'CLIENTS',
-	        	},
-	        	{
-	        		name: 'clients_vehicles',
-	        		checked: true,
-	        		sync: ALL,
-	        		priority: CARBOOK,
-	        		table: 'CLIENTS_VEHICLES',
-	        	},
-	        	{
-	        		name: 'bussiness_suppliers',
-	        		checked: true,
-	        		sync: ALL,
-	        		priority: CARBOOK,
-	        		table: 'BUSINESS_SUPPLIERS',
-	        	},
-	        	{
-	        		name: 'employees',
-	        		checked: true,
-	        		sync: ALL,
-	        		priority: CARBOOK,
-	        		table: 'EMPLOYEES',
-	        	},
-	        	{
-	        		name: 'store_products',
-	        		checked: true,
-	        		sync: ALL,
-	        		priority: CARBOOK,
-	        		table: 'STORE_PRODUCTS',
-	        	},
-	        	{
-	        		name: 'store_groups',
-	        		checked: true,
-	        		sync: ALL,
-	        		priority: CARBOOK,
-	        		table: 'STORE_GROUPS',
-	        	},
-	        	{
-	        		name: 'labors',
-	        		checked: true,
-	        		sync: ALL,
-	        		priority: CARBOOK,
-	        		table: 'LABORS',
-	        	},
-	        	{
-	        		sync: NONE,
-	        		priority: NONE,
-	        		table: NONE,
-	        	},
-	        	{
-	        		name: 'orders',
-	        		checked: true,
-	        		sync: NONE,
-	        		priority: CARBOOK,
-	        		table: 'ORDERS',
-	        	},
-	        	{
-	        		name: 'store_docs',
-	        		checked: true,
-	        		sync: NONE,
-	        		priority: CARBOOK,
-	        		table: 'STORE_DOCS',
-	        	},
-	        	{
-	        		name: 'cash_orders',
-	        		checked: true,
-	        		sync: NONE,
-	        		priority: CARBOOK,
-	        		table: 'CASH_ORDERS',
-	        	},
-	        ]
+	        dataSource: 
+	        	_.concat(
+	        		!isCatalogueForbidden ? SYNC_CATALOGUES : [],
+	        		!isOrderForbidden ? SYNC_ORDERS : [],
+	        		!isStockForbidden ? SYNC_STOCK : [],
+	        		SYNC_CASH_ORDERS,
+	        	)
         };
 
         this.mainColumns = [
@@ -283,7 +317,7 @@ export default class SyncImportExportModal extends Component {
     }
 
     render() {
-    	const { type, visible, tableData, hideModal, showConflictsModal } = this.props;
+    	const { type, visible, tableData, hideModal, showConflictsModal, user } = this.props;
     	const { paramsModalVisible, dataSource, requisites } = this.state;
     	return (
     		<Modal
@@ -294,6 +328,7 @@ export default class SyncImportExportModal extends Component {
     			okText={<FormattedMessage id='export_import_pages.next'/>}
     			width={'fit-content'}
     			destroyOnClose
+				maskClosable={false}
     		>
     			<Table
     				columns={type == 'IMPORT' ? [...this.mainColumns, ...this.priorityColumn] : [...this.mainColumns, ...this.syncColumn]}
@@ -511,6 +546,7 @@ class SyncImportExportParametersModal extends Component {
     			style={{width: 'fit-content', minWidth: 640}}
     			destroyOnClose
     			confirmLoading={confirmLoading}
+				maskClosable={false}
     		>
     			{type == 'EXPORT' &&
 	    			<div className={Styles.filtersBlock}>

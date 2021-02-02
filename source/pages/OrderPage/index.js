@@ -26,6 +26,7 @@ import {
     saveOrderTask,
     changeModalStatus,
 } from 'core/forms/orderTaskForm/duck';
+import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
 import {fetchAddClientForm} from 'core/forms/addClientForm/duck';
 import {getReport, fetchReport} from 'core/order/duck';
 import {setModal, resetModal, MODALS} from 'core/modals/duck';
@@ -39,6 +40,7 @@ import {
     OrderTaskModal,
     StoreProductModal,
     TecDocInfoModal,
+    CashOrderModal,
 } from 'modals';
 import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage, roundCurrentTime} from 'utils';
 import book from 'routes/book';
@@ -109,6 +111,7 @@ const mapStateToProps = state => {
         isMobile:              state.ui.views.isMobile,
         managers:              state.forms.orderForm.managers,
         modal:                 state.modals.modal,
+        modalProps:            state.modals.modalProps,
         order:                 state.forms.orderForm.order,
         orderCalls:            state.forms.orderForm.calls,
         orderComments:         state.forms.orderForm.orderComments,
@@ -143,6 +146,7 @@ const mapDispatchToProps = {
     resetOrderTasksForm,
     saveOrderTask,
     changeModalStatus,
+    clearCashOrderForm,
 };
 
 @withRouter
@@ -175,7 +179,6 @@ class OrderPage extends Component {
         if (viewTasks) {
             fetchOrderTask(id);
         }
-        console.log(this);
         this._fetchRepairMapData();
     }
 
@@ -213,34 +216,35 @@ class OrderPage extends Component {
     }
 
     _fetchRepairMapData() {
-        const {id} = this.props.match.params;
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/orders/${id}/repair_map?update=true`;
-        fetch(url, {
-            method:  'GET',
-            headers: {
-                Authorization: token,
-            },
-        })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            console.log(that, data);
-            that.setState({
-                repairMapData: data,
+        if(!isForbidden(this.props.user, permissions.ACCESS_ORDER_TABS_REPAIR_MAP_UPDATE)) {
+            const {id} = this.props.match.params;
+            var that = this;
+            let token = localStorage.getItem('_my.carbook.pro_token');
+            let url = __API_URL__ + `/orders/${id}/repair_map?update=true`;
+            fetch(url, {
+                method:  'GET',
+                headers: {
+                    Authorization: token,
+                },
             })
-        })
-        .catch(function(error) {
-            console.log('error', error);
-        });
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                that.setState({
+                    repairMapData: data,
+                })
+            })
+            .catch(function(error) {
+                console.log('error', error);
+            });
+        }
     }
 
     _showOilModal = (oem, oeCode, acea, api, sae) => {
@@ -366,6 +370,43 @@ class OrderPage extends Component {
             ? history.push(`${book.dashboard}`)
             : returnToOrdersPage(status);
     };
+
+    _getOrderRemainSum = (callback) => {
+        const { fetchedOrder } = this.props;
+        let token = localStorage.getItem("_my.carbook.pro_token");
+        let url = API_URL;
+        let params = `/orders/${this.props.order.id}?onlyLabors=${false}&onlyDetails=${false}`;
+        url += params;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                let remainSum = data.order.totalSumWithTax;;
+
+                if(fetchedOrder) {
+                    fetchedOrder.cashOrders.map((elem)=>{
+                        remainSum += elem.decrease || 0;
+                        remainSum -= elem.increase || 0;
+                    })
+                }
+                if(callback) callback(remainSum);
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
+    }
 
     _checkIsAllReserved = (callback) => {
         var that = this;
@@ -633,14 +674,18 @@ class OrderPage extends Component {
             isInviteEnabled,
             inviteOrderId,
             modal,
+            modalProps,
             isMobile,
             managers,
             stations,
             businessLocations,
             user,
             initialOrderTask,
+            clearCashOrderForm,
+            fetchedOrder,
         } = this.props;
-        const {num, status, datetime, diagnosis, repairMapIndicator} = this.props.order;
+        const {num, status, datetime, diagnosis, repairMapIndicator, totalSumWithTax} = this.props.order;
+        const { clientId, name, surname } = this.props.selectedClient;
         const {id} = this.props.match.params;
 
         const {
@@ -650,7 +695,33 @@ class OrderPage extends Component {
             forbiddenUpdate,
         } = this.getSecurityConfig();
         const viewTasks = !isForbidden(user, permissions.GET_TASKS);
-        const copyDisabled = isForbidden(user, permissions.CREATE_ORDER);
+        const copyDisabled = isForbidden(user, permissions.ACCESS_ORDER_COPY);
+
+        let remainSum = totalSumWithTax;
+
+        if(fetchedOrder) {
+            fetchedOrder.cashOrders.map((elem)=>{
+                remainSum += elem.decrease || 0;
+                remainSum -= elem.increase || 0;
+            })
+        }
+
+        const showCahOrderModal = () => {
+            this._getOrderRemainSum((remainSum)=>{
+                setModal(MODALS.CASH_ORDER, {
+                    fromOrder: true,
+                    cashOrderEntity: {
+                        orderId: id,
+                        clientId: clientId,
+                        orderNum: num,
+                        clientName: name,
+                        clientSurname: surname,
+                        increase: Math.round(remainSum*100)/100,
+                        type: "INCOME",
+                    },
+                })
+            });
+        }
 
         return spinner ? (
             <Spinner spin={ spinner }/>
@@ -801,21 +872,33 @@ class OrderPage extends Component {
                                 download={ this.props.getReport }
                                 isMobile={ isMobile }
                             />
+                            {!isForbidden(user, permissions.ACCESS_ORDER_PAY) &&
+                                <Icon
+                                    type='dollar'
+                                    onClick={showCahOrderModal}
+                                    style={ {
+                                        fontSize: isMobile ? 14 : 24,
+                                        cursor:   'pointer',
+                                        margin:   '0 10px',
+                                    } }
+                                />
+                            }
                             </>
                         ) }
-                        { !copyDisabled ?
-                        <Icon
-                            title={this.props.intl.formatMessage({ id: `order-page.create_copy`})}
-                            type='copy'
-                            onClick={ () => {
-                                this._getCurrentOrder();
-                            } }
-                            style={ {
-                                fontSize: isMobile ? 14 : 24,
-                                cursor:   'pointer',
-                                margin:   '0 10px',
-                            } }
-                        /> : null}
+                        { !copyDisabled &&
+                            <Icon
+                                title={this.props.intl.formatMessage({ id: `order-page.create_copy`})}
+                                type='copy'
+                                onClick={ () => {
+                                    this._getCurrentOrder();
+                                } }
+                                style={ {
+                                    fontSize: isMobile ? 14 : 24,
+                                    cursor:   'pointer',
+                                    margin:   '0 10px',
+                                } }
+                            /> 
+                        }
                         { !hideEditButton && (
                             <Icon
                                 type='save'
@@ -834,7 +917,8 @@ class OrderPage extends Component {
                             />
                         ) }
                         { !isClosedStatus &&
-                        !forbiddenUpdate && (
+                        !forbiddenUpdate &&
+                        !isForbidden(user, permissions.ACCESS_ORDER_DELETE) && (
                             <Icon
                                 type='delete'
                                 style={ {
@@ -909,6 +993,8 @@ class OrderPage extends Component {
                         businessLocations={ businessLocations }
                         focusOnRef={this._focusOnRef}
                         focusedRef={focusedRef}
+                        showCahOrderModal={showCahOrderModal}
+                        orderStatus={ status }
                     />
                 </ResponsiveView>
                 <CancelReasonModal
@@ -955,6 +1041,17 @@ class OrderPage extends Component {
                     orderTasks={ this.props.orderTasks }
                 />
                 <StoreProductModal />
+                <CashOrderModal
+                    visible={modal}
+                    modalProps={modalProps}
+                    resetModal={ () => {
+                        resetModal();
+                        clearCashOrderForm();
+                    } }
+                    fetchOrder={()=>{
+                        fetchOrderForm(id);
+                    }}
+                />
             </Layout>
         );
     }

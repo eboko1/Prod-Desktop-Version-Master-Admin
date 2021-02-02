@@ -42,6 +42,8 @@ export default class ClientContainer extends Component {
         const {
             CREATE_EDIT_DELETE_CLIENTS,
             GET_CLIENTS_ADDITIONAL_INFORMATION,
+            ACCESS_CLIENTS_REQUISITES,
+            ACCESS_RECEIVABLES_GET,
         } = permissions;
 
         return (
@@ -105,7 +107,7 @@ export default class ClientContainer extends Component {
                         <ClientFeedbackTab feedback={clientEntity.reviews} />
                     </TabPane>
                     <TabPane
-                        disabled={isForbidden(user, CREATE_EDIT_DELETE_CLIENTS)}
+                        disabled={isForbidden(user, ACCESS_CLIENTS_REQUISITES)}
                         tab={
                             <FormattedMessage
                                 id={"client_container.requisites"}
@@ -119,7 +121,7 @@ export default class ClientContainer extends Component {
                         />
                     </TabPane>
                     <TabPane
-                        disabled={ isForbidden(user, GET_CLIENTS_ADDITIONAL_INFORMATION) }
+                        disabled={ isForbidden(user, ACCESS_RECEIVABLES_GET) }
                         tab={<FormattedMessage id={ 'client_container.debt'}/>}
                         key='clientDebt'
                     >

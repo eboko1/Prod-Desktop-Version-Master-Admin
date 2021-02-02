@@ -177,6 +177,7 @@ export default class PartSuggestions extends Component {
                     visible={showModal}
                     footer={null}
                     onCancel={() => hideModal()}
+                    maskClosable={false}
                 >
                     {suggestions && (
                         <Table

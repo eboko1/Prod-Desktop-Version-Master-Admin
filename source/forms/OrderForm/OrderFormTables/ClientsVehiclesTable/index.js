@@ -165,6 +165,7 @@ class EditVheliceModal extends React.Component {
                     title={ <FormattedMessage id='edit' /> }
                     onCancel={ this.handleCancel }
                     footer={ null }
+                    maskClosable={false}
                 >
                     <AddClientVehicleForm
                         { ...vehicle }

@@ -281,6 +281,7 @@ class StorageDocumentsContainer extends Component {
     }
 
     render() {
+        const { newDocType, isCRUDForbidden } = this.props;
         const { dateRange, filtredDocumentsList, documentFilters, documentType, isFiltred } = this.state;
         return (
             <Layout
@@ -293,7 +294,7 @@ class StorageDocumentsContainer extends Component {
                     <>
                         <StorageDocumentsFilters
                             isFetched={Boolean(filtredDocumentsList.length)}
-                            type={this.props.newDocType}
+                            type={newDocType}
                             dateRange={ dateRange }
                             dateFormat={ dateFormat }
                             onDateChange={ this.onDateChange }
@@ -302,17 +303,17 @@ class StorageDocumentsContainer extends Component {
                             documentStatusFilter={ this.documentStatusFilter }
                         />
                         <Link
-                            to={{
+                            to={!isCRUDForbidden && {
                                 pathname: book.storageDocument,
                                 state:    {
                                     formData: {
-                                        type: this.props.newDocType,
+                                        type: newDocType,
                                         documentType: documentType || documentFilters.documentTypeFilter,
                                     }
                                 },
                             }}
                         >
-                            <Button type='primary'>
+                            <Button type='primary' disabled={isCRUDForbidden}>
                                 <FormattedMessage id='add' />
                             </Button>
                         </Link>
@@ -326,6 +327,7 @@ class StorageDocumentsContainer extends Component {
                     listType={ this.props.listType }
                     onSearch={ this.querySearchFilter }
                     documentWarehouseFilter={ this.documentWarehouseFilter }
+                    isCRUDForbidden={isCRUDForbidden}
                 />
             </Layout>
         );

@@ -18,6 +18,7 @@ export default class SyncConflictsModal extends Component {
             conflictsData: undefined,
             conflictsTableData: [],
             conflictModalData: undefined,
+            selectedRows: [],
         };
 
         this.columns = [
@@ -51,6 +52,47 @@ export default class SyncConflictsModal extends Component {
         ];
     }
 
+    resolveConflicts(priority) {
+        const { selectedRows } = this.state;
+        if(selectedRows.length == 0) {
+            this.props.hideModal();
+            return;
+        }
+        const payload = [];
+        selectedRows.map((elem)=>{
+            payload.push({
+                conflictsId: elem.conflictsId,
+                conflictIndex: elem.index,
+                conflictTable: elem.dataBase,
+                priority: priority,
+            })
+        })
+        const that = this;
+        const token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/sync/conflicts/resolve`;
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': token,
+            },
+            body: JSON.stringify(payload),
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            //return response.json();
+            that.fetchConflicts();
+            that.props.hideModal();
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
     fetchConflicts() {
         const that = this;
     	const token = localStorage.getItem('_my.carbook.pro_token');
@@ -71,7 +113,7 @@ export default class SyncConflictsModal extends Component {
             return response.json();
         })
         .then(function (data) {
-            console.log(data[0]);
+            console.log(data);
             /*data[0] = {
                 id: 32,
                 syncId: 168,
@@ -280,6 +322,8 @@ export default class SyncConflictsModal extends Component {
                         dataBase: dataBase,
                         conflictsId: that.props.conflictsId,
                         index: index,
+                        id: elem.id,
+                        name: elem.name,
                     })
                 })        
             })
@@ -296,10 +340,6 @@ export default class SyncConflictsModal extends Component {
     handleCancel = () => {
     	const { hideModal } = this.props;
     	hideModal();
-    }
-
-    handleOk = async () => {
-    	const token = localStorage.getItem('_my.carbook.pro_token');
     }
 
     componentDidUpdate(prevProps) {
@@ -321,6 +361,15 @@ export default class SyncConflictsModal extends Component {
     			okText={<FormattedMessage id='export_import_pages.import'/>}
     			style={{width: 'fit-content', minWidth: 640}}
     			destroyOnClose
+                footer={[
+                    <Button key={'CARBOOK'} onClick={()=>this.resolveConflicts('CARBOOK')}>
+                        <FormattedMessage id='cancel'/>
+                    </Button>,
+                    <Button key={'EXTERNAL'} type='primary' onClick={()=>this.resolveConflicts('EXTERNAL')}>
+                        <FormattedMessage id='export_import_pages.import'/>
+                    </Button>
+                ]}
+                maskClosable={false}
     		>
                 <Table
                     columns={this.columns}
@@ -328,6 +377,9 @@ export default class SyncConflictsModal extends Component {
                     rowSelection={{
                         onChange: (selectedRowKeys, selectedRows) => {
                             console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                            this.setState({
+                                selectedRows: selectedRows
+                            })
                         },
                     }}
                     onRow={(record, rowIndex) => {
@@ -368,12 +420,12 @@ class ConflictModal extends Component {
 
     resolveConflict(priority) {
         const { conflict: {conflictsId, dataBase, index} } = this.props;
-        const payload = {
+        const payload = [{
             conflictsId,
             conflictIndex: index,
             conflictTable: dataBase,
             priority,
-        };
+        }];
         const that = this;
         const token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/sync/conflicts/resolve`;
@@ -418,6 +470,7 @@ class ConflictModal extends Component {
                     </Button>
                 ]}
                 destroyOnClose
+                maskClosable={false}
             >
                 {conflict &&
                     <div

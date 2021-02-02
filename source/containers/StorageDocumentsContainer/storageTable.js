@@ -29,10 +29,10 @@ class StorageTable extends Component {
     }
 
     render() {
-        const { documentsList, match, listType, onSearch, docType, hideFilters } = this.props;
+        const { documentsList, match, listType, onSearch, docType, hideFilters, isCRUDForbidden } = this.props;
         const { formatMessage } = this.props.intl;
-        console.log(this);
         const columns = columnsConfig(
+            isCRUDForbidden,
             match.path,
             listType,
             formatMessage,

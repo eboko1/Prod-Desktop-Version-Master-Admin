@@ -7,6 +7,8 @@ import _ from 'lodash';
 import { DecoratedInput, DecoratedInputNumber } from 'forms/DecoratedFields';
 
 // own
+import Styles from "./styles.m.css";
+
 const FormItem = Form.Item;
 
 class ArrayInput extends Component {
@@ -128,6 +130,7 @@ class ArrayInput extends Component {
                                 key={ key }
                                 field={ `${fieldName}[${key}][number]` }
                                 rules={ rules }
+                                className={Styles.arrayInput}
                             />
                         ) : (
                             <DecoratedInput
@@ -141,6 +144,7 @@ class ArrayInput extends Component {
                                 key={ key }
                                 field={ `${fieldName}[${key}]` }
                                 rules={ rules }
+                                className={Styles.arrayInput}
                             />
                         ) }
                     </Col>

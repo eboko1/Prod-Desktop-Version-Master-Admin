@@ -148,6 +148,7 @@ export default class ClientsContainer extends Component {
                             <FormattedMessage id="orders.invite" />
                         </Button>,
                     ]}
+                    maskClosable={false}
                 >
                     {invite.client && (
                         <Form>

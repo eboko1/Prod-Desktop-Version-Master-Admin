@@ -116,6 +116,7 @@ export default class VehicleNumberHistory extends Component {
                     visible={Boolean(history)}
                     onCancel={() => this.props.clearVehicleNumberHistory()}
                     footer={null}
+                    maskClosable={false}
                 >
                     <Table rowKey={v4} columns={columns} dataSource={history} />
                 </Modal>

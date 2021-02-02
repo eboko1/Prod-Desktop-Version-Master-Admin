@@ -10,12 +10,14 @@ import _ from "lodash";
 import { setModal, MODALS } from "core/modals/duck";
 import { fetchSuppliers, deleteSupplier } from "core/suppliers/duck";
 import book from 'routes/book';
+import { permissions, isForbidden } from "utils";
 
 // own
 import Styles from "./styles.m.css";
 
 const mapStateToProps = state => ({
     suppliers: state.suppliers.suppliers,
+    //user: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -36,7 +38,9 @@ export class SuppliersTable extends Component {
                 dataIndex: "name",
                 key: "name",
                 render: (name, {id}) => {
-                    return (
+                    return isForbidden(this.props.user, permissions.ACCESS_SUPPLIER) ? 
+                        name :
+                    (
                         <Link
                             to={ {
                                 pathname: `${book.supplier}/${id}`,
@@ -68,7 +72,9 @@ export class SuppliersTable extends Component {
                 dataIndex: "debt",
                 key: "debt",
                 render: (debt, {id}) => {
-                    return (
+                    return isForbidden(this.props.user, permissions.ACCESS_SUPPLIER) ?
+                        debt :
+                    (
                         <Link
                             to={ {
                                 pathname: `${book.supplier}/${id}`,
@@ -85,7 +91,9 @@ export class SuppliersTable extends Component {
                 dataIndex: "incomeOrderDocsCount",
                 key: "orders",
                 render: (orders, {id}) => {
-                    return (
+                    return isForbidden(this.props.user, permissions.ACCESS_SUPPLIER) ?
+                        orders :
+                    (
                         <Link
                             to={ {
                                 pathname: `${book.supplier}/${id}`,
@@ -102,7 +110,9 @@ export class SuppliersTable extends Component {
                 dataIndex: "expenseOrderDocsCount",
                 key: "supply",
                 render: (supply, {id}) => {
-                    return (
+                    return isForbidden(this.props.user, permissions.ACCESS_SUPPLIER) ?
+                        supply :
+                    (
                         <Link
                             to={ {
                                 pathname: `${book.supplier}/${id}`,
@@ -115,9 +125,21 @@ export class SuppliersTable extends Component {
                 }
             },
             {
+                title: <FormattedMessage id="supplier.show" />,
+                dataIndex: "hide",
+                key: "hide",
+                render: (hide, {id}) => {
+                    return (
+                        !hide ? 
+                        <Icon type='check' style={{color: 'var(--green)'}}/> :
+                        <Icon type='close' style={{color: 'var(--warning)'}}/>
+                    )
+                }
+            },
+            {
                 key: "actions",
                 render: (row) => {
-                    const disabled = row.expenseOrderDocsCount || row.incomeOrderDocsCount || !row.businessId;
+                    const disabled = row.expenseOrderDocsCount || row.incomeOrderDocsCount || !row.businessId || isForbidden(this.props.user, permissions.ACCESS_SUPPLIERS_CRUD);
                     return (
                         <div className={!disabled ? Styles.actions : Styles.disabledActions}>
                             <Popconfirm
@@ -180,6 +202,7 @@ export class SuppliersTable extends Component {
                 locale={{
                     emptyText: <FormattedMessage id="no_data" />,
                 }}
+                disabled
             />
         );
     }

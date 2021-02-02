@@ -284,7 +284,7 @@ class DetailsTable extends Component {
                 className: Styles.numberColumn,
                 key:       'reserve',
                 render:    elem => {
-                    const disabled = this.props.disabled || !elem.id || elem.stage == INSTALLED && elem.agreement != 'REJECTED';
+                    const disabled = this.props.disabled || !elem.id || elem.stage == INSTALLED && elem.agreement != 'REJECTED' || isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK);
                     return (
                         <ReserveButton
                             detail={elem}
@@ -370,7 +370,7 @@ class DetailsTable extends Component {
                         <Select
                             disabled={ isForbidden(
                                 this.props.user,
-                                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
+                                permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS,
                             ) }
                             style={ { color: color } }
                             value={ confirmed }
@@ -525,43 +525,52 @@ class DetailsTable extends Component {
     }
 
     fetchData() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/warehouses`;
-        fetch(url, {
-            method:  'GET',
-            headers: {
-                Authorization: token,
-            },
-        })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            const warehousesData = {};
-            data.map((warehouse)=>{
-                if(warehouse.attribute == 'MAIN') {
-                    warehousesData.main = warehouse.id;
-                }
-                if(warehouse.attribute == 'RESERVE') {
-                    warehousesData.reserve = warehouse.id;
-                }
+        if(!isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK)) {
+            var that = this;
+            let token = localStorage.getItem('_my.carbook.pro_token');
+            let url = __API_URL__ + `/warehouses`;
+            fetch(url, {
+                method:  'GET',
+                headers: {
+                    Authorization: token,
+                },
             })
-            that.setState({
-                mainWarehouseId: warehousesData.main,
-                reserveWarehouseId: warehousesData.reserve,
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                const warehousesData = {};
+                data.map((warehouse)=>{
+                    if(warehouse.attribute == 'MAIN') {
+                        warehousesData.main = warehouse.id;
+                    }
+                    if(warehouse.attribute == 'RESERVE') {
+                        warehousesData.reserve = warehouse.id;
+                    }
+                })
+                that.setState({
+                    mainWarehouseId: warehousesData.main,
+                    reserveWarehouseId: warehousesData.reserve,
+                    fetched: true,
+                })
+            })
+            .catch(function(error) {
+                console.log('error', error);
+                that.setState({
+                    fetched: true,
+                })
+            });
+        } else {
+            this.setState({
                 fetched: true,
             })
-        })
-        .catch(function(error) {
-            console.log('error', error);
-        });
+        }
         this.storeGroups = this.props.details;
     }
 
@@ -1115,6 +1124,7 @@ class QuickEditModal extends React.Component {
                     }
                     onOk={ this.handleOk }
                     onCancel={ this.handleCancel }
+                    maskClosable={false}
                 >
                     <Table
                         columns={ this.columns }

@@ -2,11 +2,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-
-// proj
-import {
-    API_URL,
-} from 'core/forms/orderDiagnosticForm/saga';
 import {
     Table,
     Button,
@@ -21,10 +16,23 @@ import {
     TreeSelect,
     Pagination,
 } from 'antd';
+
+// proj
 import { Layout, Spinner } from 'commons';
+import { permissions, isForbidden } from 'utils';
 const { Option } = Select;
 
+const mapStateToProps = state => {
+    return {
+        user: state.auth,
+    };
+};
+
 @injectIntl
+@connect(
+    mapStateToProps,
+    void 0,
+)
 export default class LaborsPage extends Component {
     constructor(props) {
         super(props);
@@ -90,6 +98,7 @@ export default class LaborsPage extends Component {
                         <p>{data}</p>
                     ) : (
                         <Select
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
                             showSearch
                             placeholder="ID"
                             style={{minWidth: "100px"}}
@@ -144,6 +153,7 @@ export default class LaborsPage extends Component {
                         <p>{data}</p>
                     ) : (
                         <TreeSelect
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
                             showSearch
                             style={{ minWidth: '130px', maxWidth: '10%' }}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
@@ -213,6 +223,7 @@ export default class LaborsPage extends Component {
                     const key = elem.key;
                     return (
                         <Input
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
                             ref={(input) => { this.nameInput = input; }} 
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                             value={elem.name?elem.name:null}
@@ -223,6 +234,7 @@ export default class LaborsPage extends Component {
                                     update: true,
                                 });
                             }}
+                            style={{color: 'var(--text)'}}
                         />
                     )
                 }
@@ -236,6 +248,7 @@ export default class LaborsPage extends Component {
                     const key = elem.key;
                     return (
                         <Switch
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
                             checked={fixed}
                             onClick={(event)=>{
                                 this.state.labors[key].changed = true; 
@@ -260,7 +273,7 @@ export default class LaborsPage extends Component {
                             min={0.1}
                             step={0.2}
                             value={data || 1}
-                            disabled={elem.fixed}
+                            disabled={elem.fixed || isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
                             onChange={(event)=>{
                                 this.state.labors[key].changed = true;
                                 this.state.labors[key].normHours = event;
@@ -268,6 +281,7 @@ export default class LaborsPage extends Component {
                                     update: true,
                                 });
                             }}
+                            style={{color: 'var(--text)'}}
                         />
                     )
                 }
@@ -283,7 +297,7 @@ export default class LaborsPage extends Component {
                         <InputNumber
                             min={1}
                             value={data || 1}
-                            disabled={!elem.fixed}
+                            disabled={!elem.fixed || isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
                             onChange={(event)=>{
                                 this.state.labors[key].changed = true;
                                 this.state.labors[key].price = event;
@@ -291,6 +305,7 @@ export default class LaborsPage extends Component {
                                     update: true,
                                 });
                             }}
+                            style={{color: 'var(--text)'}}
                         />
                     )
                 }
@@ -300,7 +315,7 @@ export default class LaborsPage extends Component {
 
     async updatePrice () {
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/labors/recalc_prices`;
         url += params;
 
@@ -365,7 +380,7 @@ export default class LaborsPage extends Component {
             }
         });
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/labors`;
         url += params;
 
@@ -419,7 +434,7 @@ export default class LaborsPage extends Component {
     fetchLabors() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/labors`;
         url += params;
         fetch(url, {
@@ -454,7 +469,7 @@ export default class LaborsPage extends Component {
         });
 
         params = `/labors/master`;
-        url = API_URL + params;
+        url = __API_URL__ + params;
         fetch(url, {
             method: 'GET',
             headers: {
@@ -480,7 +495,7 @@ export default class LaborsPage extends Component {
         });
 
         params = `/store_groups`;
-        url = API_URL + params;
+        url = __API_URL__ + params;
         fetch(url, {
             method: 'GET',
             headers: {
@@ -553,8 +568,11 @@ export default class LaborsPage extends Component {
 
     render() {
         const { labors, filterCode, filterId, filterDetail, filterDefaultName, filterName, currentPage } = this.state;
-        if(labors.length && 
-            (labors[labors.length-1].defaultName != "" || labors[labors.length-1].masterLaborId != "")) {
+        if(
+            !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD) && 
+            labors.length && 
+            (labors[labors.length-1].defaultName != "" || labors[labors.length-1].masterLaborId != "")
+        ) {
             labors.push({
                 key: labors.length,
                 laborCode: "0000-0000000",
@@ -586,6 +604,7 @@ export default class LaborsPage extends Component {
                 controls={
                     <>
                         <Button
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
                             style={{marginRight: 10}}
                             onClick={ () =>
                                 this.updatePrice()
@@ -594,6 +613,7 @@ export default class LaborsPage extends Component {
                             <FormattedMessage id='update_price' /> 
                         </Button>
                         <Button
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
                             type='primary'
                             onClick={ () =>
                                 this.saveLabors()

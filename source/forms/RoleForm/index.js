@@ -78,6 +78,12 @@ export class RoleForm extends Component {
                     }
                     mode={"multiple"}
                     getFieldDecorator={getFieldDecorator}
+                    filterOption={(input, option)=>{
+                        return option.props.children &&
+                              String(option.props.children)
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                    }}
                 >
                     {_.toPairs(groupedPermissions).map(([name, value]) => (
                         <OptGroup label={groupsLabels[name]}>

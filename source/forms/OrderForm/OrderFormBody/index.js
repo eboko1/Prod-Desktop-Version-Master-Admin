@@ -121,6 +121,8 @@ export default class OrderFormBody extends Component {
         };
 
         this.clientRef = React.createRef();
+        this.milageRef = React.createRef();
+        this.locationRef = React.createRef();
     }
 
     componentDidUpdate(prevProps) {
@@ -152,7 +154,20 @@ export default class OrderFormBody extends Component {
         }
 
         if(prevProps.focusedRef != this.props.focusedRef) {
-            if(this.props.focusedRef == 'HEADER_CLIENT_SEARCH' && this.clientRef.current) this.clientRef.current.focus();
+            if(this.props.focusedRef == 'HEADER_CLIENT_SEARCH' && this.clientRef.current) {
+                this.clientRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
+            if(this.props.focusedRef == 'HEADER_MILEAGE') {
+                this.milageRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
+            if(this.props.focusedRef == 'HEADER_LOCATION_ACTION') {
+                const businessLocationsLabel = this._getBusinessLocationsLabel();
+                this.setState({businessLocationsLabel});
+                this.locationRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
         }
     }
 
@@ -221,6 +236,7 @@ export default class OrderFormBody extends Component {
             fetchedOrder,
             orderId,
             updateOrderField,
+            user
         } = this.props;
         const businessLocationId = _.get(fields, "businessLocationId") || _.get(fetchedOrder, "order.businessLocationId");
         const orderSuccess = _.get(this.props, "order.status") == "success";
@@ -234,13 +250,17 @@ export default class OrderFormBody extends Component {
                         receiveMode={!businessLocationId}
                         transferMode={businessLocationId && !orderSuccess}
                         returnMode={businessLocationId && orderSuccess}
-                        disabled={!businessLocationId && orderSuccess}
+                        disabled={(!businessLocationId && orderSuccess) || isForbidden(user, permissions.ACCESS_ORDER_LOCATIONS)}
                         orderId={orderId}
                         clientId={_.get(selectedClient, "clientId")}
                         vehicleId={_.get(fetchedOrder, "order.clientVehicleId")}
                         currentLocation={businessLocationId}
-                        hideModal={()=>void 0}
+                        hideModal={()=>{
+                            const businessLocationsLabel = this._getBusinessLocationsLabel();
+                            this.setState({businessLocationsLabel});
+                        }}
                         onConfirm={(businessLocationId)=>updateOrderField({businessLocationId: businessLocationId || null})}
+                        showModal={this.props.focusedRef == 'HEADER_LOCATION_ACTION'}
                     />
                 }
             </div>
@@ -635,13 +655,13 @@ export default class OrderFormBody extends Component {
                         field="businessLocationId"
                         initialValue={_.get(fetchedOrder, "order.businessLocationId")}
                         formItem
-                        hasFeedback
                         label={this.state.businessLocationsLabel}
                         placeholder={this._getLocalization("location")}
                         getFieldDecorator={getFieldDecorator}
                         className={`${Styles.location} ${_.get(fetchedOrder, "order.businessLocationId") ? Styles.disableLoctionsSelectData : null}`}
                         formItemLayout={formVerticalLayout}
                         disabled
+                        ref={this.locationRef}
                     >
                         {this.state.businessLocationsOptions}
                     </DecoratedSelect>
@@ -663,6 +683,7 @@ export default class OrderFormBody extends Component {
                         className={Styles.odometr}
                         formItemLayout={formVerticalLayout}
                         min={0}
+                        ref={this.milageRef}
                     />
                 </div>
             </div>

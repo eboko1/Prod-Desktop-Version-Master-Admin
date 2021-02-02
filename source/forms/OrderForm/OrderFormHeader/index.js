@@ -60,6 +60,17 @@ const getAvailableHoursDisabledMinutes = propsAvailableHours => hour => {
     return _.difference([0, 30], availableMinutes);
 };
 
+const getDisabledHours = (startTime = 0, endTime = 23) => {
+    const availableHours = [];
+    for(let i = Number(startTime); i <= Number(endTime); i++) {
+        availableHours.push(i);
+    }
+    return _.difference(
+        Array(24).fill(1).map((value, index) => index),
+        availableHours
+    );
+};
+
 @injectIntl
 export default class OrderFormHeader extends Component {
     constructor(props) {
@@ -78,13 +89,6 @@ export default class OrderFormHeader extends Component {
                 }),
             },
         ];
-
-        const availableHoursDisabledMinutes = getAvailableHoursDisabledMinutes(
-            props.availableHours,
-        );
-        const availableHoursDisabledHours = getAvailableHoursDisabledHours(
-            props.availableHours,
-        );
 
         const stationsOptions = this._getStationsOptions();
         const managersOptions = this._getManagersOptions();
@@ -114,8 +118,6 @@ export default class OrderFormHeader extends Component {
         // we write all data to state to handle updates correctly
         this.state = {
             deliveryDatetimeConfig,
-            availableHoursDisabledMinutes,
-            availableHoursDisabledHours,
             beginDatetimeConfig,
             stationsOptions,
             employeesOptions,
@@ -136,23 +138,6 @@ export default class OrderFormHeader extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const oldAvailableHours = _.get(prevProps, ["availableHours", "0"]);
-        const newAvailableHours = _.get(this.props, ["availableHours", "0"]);
-        // if availableHours has been changed we need to generate new configs
-        if (oldAvailableHours !== newAvailableHours) {
-            const availableHoursDisabledMinutes = getAvailableHoursDisabledMinutes(
-                this.props.availableHours,
-            );
-            const availableHoursDisabledHours = getAvailableHoursDisabledHours(
-                this.props.availableHours,
-            );
-
-            this.setState({
-                availableHoursDisabledHours,
-                availableHoursDisabledMinutes,
-            });
-        }
-
         if (prevProps.stations !== this.props.stations) {
             const stationsOptions = this._getStationsOptions();
             this.setState({ stationsOptions });
@@ -213,9 +198,18 @@ export default class OrderFormHeader extends Component {
         }
 
         if(prevProps.focusedRef != this.props.focusedRef) {
-            if(this.props.focusedRef == 'HEADER_STATION') this.stationRef.current.focus();
-            if(this.props.focusedRef == 'HEADER_EMPLOYEE') this.employeeRef.current.focus();
-            if(this.props.focusedRef == 'HEADER_REQUISITES') this.requisitesRef.current.focus();
+            if(this.props.focusedRef == 'HEADER_STATION') {
+                this.stationRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
+            if(this.props.focusedRef == 'HEADER_EMPLOYEE') {
+                this.employeeRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
+            if(this.props.focusedRef == 'HEADER_REQUISITES') {
+                this.requisitesRef.current.focus();
+                this.props.focusOnRef(undefined);
+            }
         }
     }
     // TODO: move into utils
@@ -383,6 +377,7 @@ export default class OrderFormHeader extends Component {
             form: { getFieldDecorator },
             intl: { formatMessage },
             errors,
+            user,
         } = this.props;
         const {
             disabledDate,
@@ -523,11 +518,12 @@ export default class OrderFormHeader extends Component {
         const {
             location,
             fetchedOrder,
-
+            schedule,
             zeroStationLoadBeginDate,
             zeroStationLoadStation,
             fields,
             errors,
+            user,
         } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
@@ -543,6 +539,27 @@ export default class OrderFormHeader extends Component {
         const momentBeginDatetime = beginDatetime
             ? moment(beginDatetime).toISOString()
             : void 0;
+
+        const dayNumber = moment(_.get(fields, "stationLoads[0].beginDate")).day();
+        let disabledHours = undefined;
+        if(schedule && dayNumber) {
+            let index;
+            switch (dayNumber) {
+                case 6:
+                    index = 1;
+                    break;
+                case 7:
+                    index = 2;
+                    break;
+                default:
+                    index = 0;
+            }
+
+            disabledHours = getDisabledHours(
+                schedule[index].beginTime.split(/[.:]/)[0],
+                schedule[index].endTime.split(/[.:]/)[0]
+            )
+        }
 
         return (
             <div className={Styles.headerCol}>
@@ -570,11 +587,11 @@ export default class OrderFormHeader extends Component {
                     allowClear={false}
                     colon={false}
                     className={Styles.datePanelItem}
-                    rules={this.requiredRule}
+                    //rules={this.requiredRule}
                     placeholder={this._getLocalization(
                         "add_order_form.select_date",
                     )}
-                    disabledDate={disabledDate}
+                    //disabledDate={disabledDate}
                     format={"YYYY-MM-DD"} // HH:mm
                     showTime={false}
                     initialValue={momentBeginDatetime}
@@ -591,11 +608,10 @@ export default class OrderFormHeader extends Component {
                     formItemLayout={formHeaderItemLayout}
                     rules={this.requiredRule}
                     label={this._getLocalization("add_order_form.station")}
-                    hasFeedback
                     placeholder={this._getLocalization(
                         "add_order_form.select_station",
                     )}
-                    disabled={this.bodyUpdateIsForbidden()}
+                    disabled={this.bodyUpdateIsForbidden() || isForbidden(user, permissions.ACCESS_ORDER_POSTS)}
                     initialValue={
                         _.get(fetchedOrder, "order.stationNum") ||
                         (this.bodyUpdateIsForbidden()
@@ -619,20 +635,14 @@ export default class OrderFormHeader extends Component {
                             : void 0
                     }
                     formItem
-                    disabled={
-                        this.bodyUpdateIsForbidden() ||
-                        !zeroStationLoadBeginDate ||
-                        !zeroStationLoadStation
-                    }
+                    disabled={this.bodyUpdateIsForbidden() || !_.get(fields, "stationLoads[0].beginDate")}
                     formItemLayout={formHeaderItemLayout}
                     defaultOpenValue={moment(
                         `${beginTime}:00`,
                         "HH:mm:ss",
                     ).toISOString()}
                     field="stationLoads[0].beginTime"
-                    hasFeedback
-                    disabledHours={this.state.availableHoursDisabledHours}
-                    disabledMinutes={this.state.availableHoursDisabledMinutes}
+                    disabledHours={()=>disabledHours}
                     label={this._getLocalization("add_order_form.applied_on")}
                     formatMessage={formatMessage}
                     className={Styles.datePanelItem}
@@ -643,6 +653,7 @@ export default class OrderFormHeader extends Component {
                     )}
                     minuteStep={30}
                     initialValue={momentBeginDatetime}
+                    hideDisabledOptions
                 />
             </div>
         );

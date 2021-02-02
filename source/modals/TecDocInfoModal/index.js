@@ -363,6 +363,7 @@ class TecDocInfoModal extends React.Component{
                     title={null}
                     footer={null}
                     onCancel={this.handleCancel}
+                    maskClosable={false}
                 >
                     {this.state.fetched ? 
                         <Tabs tabPosition='left'>

@@ -19,16 +19,23 @@ import {
 // proj
 import { Layout, Spinner } from 'commons';
 import { DiagnosticPatternsContainer } from 'containers';
-import {
-    API_URL
-} from 'core/forms/orderDiagnosticForm/saga';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
 
+const mapStateToProps = state => {
+    return {
+        user: state.auth,
+    };
+};
+
 @injectIntl
 @withRouter
-
+@connect(
+    mapStateToProps,
+    void 0,
+)
 class DiagnosticPatternsPage extends Component {
     constructor(props) {
         super(props);
@@ -77,8 +84,9 @@ class DiagnosticPatternsPage extends Component {
                     const key = elem.key;
                     return (
                         <Input
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_DIAGNOSTICS_CRUD)}
                             ref={(input) => { this.planInput = input; }} 
-                            style={{minWidth: "100px"}}
+                            style={{minWidth: "100px", color: 'var(--text)'}}
                             placeholder={this.props.intl.formatMessage({id: 'diagnostic-page.plan'})}
                             value={data}
                             onChange={(event)=>{
@@ -117,7 +125,8 @@ class DiagnosticPatternsPage extends Component {
                     const key = elem.key;
                     return (
                         <Input
-                            style={{minWidth: "100px"}}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_DIAGNOSTICS_CRUD)}
+                            style={{minWidth: "100px", color: 'var(--text)'}}
                             value={data}
                             placeholder={this.props.intl.formatMessage({id: 'diagnostic-page.group'})}
                             onChange={(event)=>{
@@ -155,12 +164,18 @@ class DiagnosticPatternsPage extends Component {
                     const key = elem.key
                     return(
                         <Button
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_DIAGNOSTICS_CRUD)}
                             type='primary'
                             onClick={()=>{
                                 this.setState({
                                     currentKey: key,
                                     visible: true,
                                 })
+                            }}
+                            style={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_DIAGNOSTICS_CRUD) ? {
+                                color: 'var(--tetx)'
+                            } : {
+                                width: '100%'
                             }}
                         >
                             {data ? data : <FormattedMessage id="select" />}
@@ -203,11 +218,17 @@ class DiagnosticPatternsPage extends Component {
                     return(
                         <Icon
                             type='delete'
+                            style={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_DIAGNOSTICS_CRUD) ? {
+                                pointerEvents: 'none',
+                                color: 'var(--text2)'
+                            } : null}
                             onClick={()=>{
-                                this.state.diagnosticParts[key].deleted = true;
-                                this.setState({
-                                    update: true,
-                                })
+                                if(!isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_DIAGNOSTICS_CRUD)) {
+                                    this.state.diagnosticParts[key].deleted = true;
+                                    this.setState({
+                                        update: true,
+                                    })    
+                                }
                             }}
                         />
                     )
@@ -241,6 +262,7 @@ class DiagnosticPatternsPage extends Component {
                     return(
                         <Button
                             type='primary'
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_DIAGNOSTICS_CRUD)}
                             onClick={()=>{
                                 this.state.diagnosticParts[key].partId = elem.partId;
                                 this.state.diagnosticParts[key].partTitle = elem.partTitle;
@@ -307,7 +329,7 @@ class DiagnosticPatternsPage extends Component {
         })
 
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/diagnostics`;
         url += params;
         fetch(url, {
@@ -343,7 +365,7 @@ class DiagnosticPatternsPage extends Component {
             content: content,
             onOk: async ()=>{
                 let token = localStorage.getItem('_my.carbook.pro_token');
-                let url = API_URL;
+                let url = __API_URL__;
                 let params = `/diagnostics/standard`;
                 url += params;
             
@@ -362,7 +384,7 @@ class DiagnosticPatternsPage extends Component {
     componentWillMount() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/diagnostics?keepFlat=true`;
         url += params;
     
@@ -394,7 +416,7 @@ class DiagnosticPatternsPage extends Component {
         })
 
         params = `/diagnostics/master?keepFlat=true`;
-        url = API_URL + params;
+        url = __API_URL__ + params;
     
         fetch(url, {
             method: 'GET',
@@ -424,8 +446,11 @@ class DiagnosticPatternsPage extends Component {
 
     render() {
         const { diagnosticParts, masterDiagnosticParts, filterPlan, filterGroup, filterCode, filterName, currentPage } = this.state;
-        if(diagnosticParts.length && 
-            (diagnosticParts[diagnosticParts.length-1].diagnosticTemplateTitle != "" || diagnosticParts[diagnosticParts.length-1].groupTitle != "")) {
+        if(
+            !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_DIAGNOSTICS_CRUD) &&
+            diagnosticParts.length && 
+            (diagnosticParts[diagnosticParts.length-1].diagnosticTemplateTitle != "" || diagnosticParts[diagnosticParts.length-1].groupTitle != "")
+        ) {
                 diagnosticParts.push({
                 key: diagnosticParts.length,
                 diagnosticTemplateTitle: "",
@@ -453,6 +478,7 @@ class DiagnosticPatternsPage extends Component {
                     <>
                         <Button
                             style={{marginRight: 10}}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_DIAGNOSTICS_CRUD)}
                             onClick={ () =>
                                 this.importDefaultDiagnostics()
                             }
@@ -461,6 +487,7 @@ class DiagnosticPatternsPage extends Component {
                         </Button>
                         <Button
                             type='primary'
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_DIAGNOSTICS_CRUD)}
                             onClick={ () =>
                                 this.saveDiagnostic()
                             }
@@ -496,6 +523,7 @@ class DiagnosticPatternsPage extends Component {
                     footer={null}
                     visible={this.state.visible}
                     onCancel={()=>{this.handleCancel()}}
+                    maskClosable={false}
                 >
                     <Table
                         dataSource={modalDataSource}
