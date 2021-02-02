@@ -286,7 +286,7 @@ export default class OrderFormTabs extends React.PureComponent {
                 })
             } else {
                 this.setState({
-                    activeKey: 'comments'
+                    activeKey: 'station'
                 })
             }
         }
