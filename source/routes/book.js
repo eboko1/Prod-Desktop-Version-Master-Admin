@@ -55,6 +55,7 @@ const book = Object.freeze({
     laborsPage:               '/labors',
     diagnosticPatterns:       '/diagnostic-patterns',
     warehouses:               '/warehouses',
+    analytics:                '/report/analytics',
     //
     //  Cash
     //

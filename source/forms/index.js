@@ -34,6 +34,7 @@ import { SetDetailProductForm } from './SetDetailProductForm';
 import { SpreadBusinessBrandsForm } from './SpreadBusinessBrandsForm';
 import { RequisiteSettingForm, RequisiteSettingFormModal } from './RequisiteSettingForm';
 import { ReportOrdersFilterForm } from './ReportForms/ReportOrdersFilterForm';
+import { ReportAnalyticsForm, ReportAnalyticsCatalogForm } from './ReportForms/ReportAnalyticsForm';
 
 export { ForgotPasswordForm } from './ForgotPasswordForm';
 export { NewPasswordForm } from './NewPasswordForm';
@@ -87,4 +88,6 @@ export {
     RequisiteSettingForm,
     RequisiteSettingFormModal,
     ReportOrdersFilterForm,
+    ReportAnalyticsForm,
+    ReportAnalyticsCatalogForm
 };

@@ -113,6 +113,10 @@ import cashOrderFormReducer, {
     moduleName as cashOrderForm,
 } from 'core/forms/cashOrderForm/duck';
 
+import reportAnalyticsFormReducer, {
+    moduleName as reportAnalyticsForm,
+} from 'core/forms/reportAnalyticsForm/duck';
+
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
     [ addBusinessPackage ]:      addBusinessPackageReducer,
@@ -148,4 +152,5 @@ export const formsReducer = combineReducers({
     [ tecDoc ]:                  tecDocReducer,
     [ toSuccess ]:               toSuccessReducer,
     [ universalFilters ]:        universalFiltersReducer,
+    [ reportAnalyticsForm ]:     reportAnalyticsFormReducer
 });
