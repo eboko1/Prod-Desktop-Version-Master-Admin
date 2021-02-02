@@ -302,7 +302,7 @@ export default {
                 {
                     key:      '/settings',
                     disabled: user =>
-                        !isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settings,
                     name: 'navigation.main_settings',
                 },
@@ -325,63 +325,64 @@ export default {
                 {
                     key:      '/requisites',
                     disabled: user =>
-                        !isForbidden(user, permissions.ACCESS_CATALOGUE_REQUISITES),
+                        !isForbidden(user, permissions.ACCESS_CATALOGUE_REQUISITES) &&
+                            !isAdmin(user),
                     link: book.requisites,
                     name: 'navigation.requisites',
                 },
                 {
                     key:      '/prices',
                     disabled: user =>
-                        !isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsSpecialization,
                     name: 'navigation.specialization_and_prices',
                 },
                 {
                     key:      '/services',
                     disabled: user =>
-                        !isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsServices,
                     name: 'navigation.services',
                 },
                 {
                     key:      '/stocks',
                     disabled: user =>
-                        !isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsOffers,
                     name: 'navigation.special_offers',
                 },
                 {
                     key:      '/news',
                     disabled: user =>
-                        !isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsNews,
                     name: 'navigation.news',
                 },
                 {
                     key:      '/articles',
                     disabled: user =>
-                        !isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsArticles,
                     name: 'navigation.articles',
                 },
                 {
                     key:      '/media',
                     disabled: user =>
-                        !isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsGallery,
                     name: 'navigation.media_files',
                 },
                 {
                     key:      '/managers',
                     disabled: user =>
-                        !isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsManagers,
                     name: 'navigation.managers',
                 },
                 {
                     key:      '/notice',
                     disabled: user =>
-                        !isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsNotifications,
                     name: 'navigation.notifications',
                 },
