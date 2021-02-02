@@ -97,7 +97,7 @@ class DetailProductModal extends React.Component{
                     return (
                         <VinCodeModal
                             setVinDetail={this.setVinDetail}
-                            disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_VIN)}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_VIN) || isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_CRUD)}
                             storeGroupId={this.state.radioValue != 2 ? elem.storeGroupId : undefined}
                             vin={this.props.clientVehicleVin}
                         />
