@@ -325,8 +325,7 @@ export default {
                 {
                     key:      '/requisites',
                     disabled: user =>
-                        !isForbidden(user, permissions.ACCESS_CATALOGUE_REQUISITES) &&
-                            !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_REQUISITES),
                     link: book.requisites,
                     name: 'navigation.requisites',
                 },
