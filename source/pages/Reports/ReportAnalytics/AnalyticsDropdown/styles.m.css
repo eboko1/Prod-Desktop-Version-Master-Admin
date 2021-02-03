@@ -18,6 +18,8 @@
     width: 100%;
     display: flex;
     align-items: center;
+    height: 2.5em;
+    padding-left: 5px;
 }
 
 .colCentered {

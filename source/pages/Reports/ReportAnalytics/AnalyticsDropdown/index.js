@@ -22,6 +22,10 @@ export default class AnalyticsDropdown extends React.Component {
 
     //Generate panel with all it's children components for one parent analytics
     genPanel(parent, children) {
+
+        const {
+            onDeleteAnalytics
+        } = this.props;
         // console.log("Parent: ", parent, '\n', "Cld: ", children);
 
         const genParentHeader = (ana) => {
@@ -34,12 +38,26 @@ export default class AnalyticsDropdown extends React.Component {
             return (
                 <div className={Style.analyticsCont}>
                     <Row className={Style.row}>
-                        <Col className={Style.col} span={20}>{chil.analyticsName} {chil.nalalyticsId}</Col>
-                        <Col className={Style.colCentered} span={2}><Switch size='small'/></Col>
+                        <Col className={Style.col} span={12}>{chil.analyticsName} {chil.analyticsId}</Col>
+
+                        <Col className={Style.col} span={4}>{chil.analyticsBookkeepingAccount}</Col>
+                        <Col className={Style.col} span={4}>{chil.analyticsOrderType}</Col>
+
+                        <Col className={Style.colCentered} span={2}><Switch size='small' checked={!chil.analyticsDisabled}/></Col>
                         <Col className={Style.colCentered} span={2}>
-                            <Button size="small">
-                                <Icon type="delete" />
-                            </Button>
+                            {
+                                /* Buttons only for non-custom fields in another case just place icon */
+                                (() => {
+                                    if(chil.analyticsIsCustom) {
+                                        return (
+                                            <Button size="small" onClick={() => onDeleteAnalytics(chil.analyticsId)}> 
+                                                <Icon type="delete" />
+                                            </Button>
+                                        );
+                                    } else return (<Icon type="global" />);
+                                })()
+                            }
+                            
                         </Col>
                     </Row>
                     

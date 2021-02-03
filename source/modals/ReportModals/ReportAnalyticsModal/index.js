@@ -27,7 +27,8 @@ const TPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
     currentForm: state.forms.reportAnalyticsForm.currentForm, //Current active analytics form
-    analyticsCatalogs: state.forms.reportAnalyticsForm.analyticsCatalogs
+    analyticsCatalogsLoading: state.forms.reportAnalyticsForm.analyticsCatalogsLoading,
+    analyticsCatalogs: state.forms.reportAnalyticsForm.analyticsCatalogs,
 });
 
 const mapDispatchToProps = {
@@ -50,7 +51,6 @@ export default class ReportAnalyticsModal extends Component {
         super(props);
 
         //Initialize analytics catalogs for this modal
-        console.log("Func:", this.props.fetchAnalyticsCatalogs());
         this.props.fetchAnalyticsCatalogs();
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -67,50 +67,52 @@ export default class ReportAnalyticsModal extends Component {
             createAnalytics
         } = this.props;
 
+        const analyticsRequest = ({analyticsEntity}) => {
+            createAnalytics({analyticsEntity});
+
+            //Reset fields
+            this.analyticsForm && this.analyticsForm.resetFields();
+            this.catalogForm && this.catalogForm.resetFields();
+
+            //Finishing touches
+            this.props.fetchReportAnalytics();
+            this.props.resetModal();
+        }
+
         //Select an appropriate form to proceed and submit a request appropriately
         if(currentForm == formKeys.catalogForm && this.catalogForm) {
             //Create new analytics catalog
             this.catalogForm.validateFields((err, values) => {
-                // if (!err) {
-                //     console.log('Received values of catalogForm: ', values);
-                // } else {
-                //     console.log('Cannot submit, errors occured: ', err);
-                // }
-
-                let analyticsEntity = {
-                    level: analyticsLevels.catalog,
-                    name: values.catalogName
-                }
-
-                createAnalytics({analyticsEntity});
+                if (!err) {
+                    let analyticsEntity = {
+                        level: analyticsLevels.catalog,
+                        name: values.catalogName
+                    }
+    
+                    analyticsRequest({analyticsEntity});
+                } 
             });
         } else if(currentForm == formKeys.analyticsForm && this.analyticsForm) {
             //Create new analytics in an specific catalog
             this.analyticsForm.validateFields((err, values) => {
                 if (!err) {
-                    console.log('Received values of analyticsForm: ', values);
-                } else {
-                    console.log('Cannot submit, errors occured: ', err);
+                    let analyticsEntity = {
+                        level: analyticsLevels.analytics,
+                        name: values.analyticsName,
+    
+                        parentId: values.catalogId,
+                        bookkeepingAccount: values.bookkeepingAccount,
+                        orderType: values.orderType
+                    }
+    
+                    analyticsRequest({analyticsEntity});
                 }
-
-                let analyticsEntity = {
-                    level: analyticsLevels.analytics,
-                    name: values.analyticsName,
-
-                    parentId: values.catalogId,
-                    bookkeepingAccount: values.bookkeepingAccount,
-                    orderType: values.orderType
-                }
-                createAnalytics({analyticsEntity});
             });
         } else {
             console.log("Error, cannot detect current form or instance is missing");
         }
 
-        //TODO clear fields
-
-        this.props.fetchReportAnalytics();
-        this.props.resetModal();
+        
         
     };
 
@@ -130,6 +132,7 @@ export default class ReportAnalyticsModal extends Component {
             currentForm,
             analyticsCatalogs,
             changeCurrentForm,
+            analyticsCatalogsLoading,
 
             visible,
             onCancel,
@@ -144,23 +147,35 @@ export default class ReportAnalyticsModal extends Component {
                 onOk={ this.handleSubmit }
                 onCancel={ onCancel }
                 title={<div className={Styles.title}>Create analytics</div>}
-                style={{height: '90vh'}}
             >
-                <button onClick={fetchAnalyticsCatalogs}>Press</button>
-
-                <Tabs tabPosition='left' tabBarStyle={{width: '20%'}} activeKey={currentForm} onChange={activeKey => changeCurrentForm(activeKey)}>
-                    <TPane tab="Create catalog" key={formKeys.catalogForm}>
-                        <ReportAnalyticsCatalogForm
-                            getFormRefCB={this.saveCatalogFormRef}//Get form refference
-                        />
-                    </TPane>
-                    <TPane  tab="Create analytics" key={formKeys.analyticsForm}>
-                        <ReportAnalyticsForm
-                            getFormRefCB={this.saveAnalyticsFormRef}//Get form refference
-                            analyticsCatalogs={analyticsCatalogs}
-                        />
-                    </TPane>
-                </Tabs>
+                <div style={{minHeight: '50vh'}}>
+                    <Tabs
+                        tabPosition='left'
+                        tabBarStyle={{width: '20%'}}
+                        activeKey={currentForm}
+                        onChange={(activeKey) => {
+                            //When tab is clicked or opened force updating some fields
+                            if(activeKey == formKeys.analyticsForm) {
+                                fetchAnalyticsCatalogs();
+                            }
+                            
+                            changeCurrentForm(activeKey);
+                        }}
+                    >
+                        <TPane tab="Create catalog" key={formKeys.catalogForm}>
+                            <ReportAnalyticsCatalogForm
+                                getFormRefCB={this.saveCatalogFormRef}//Get form refference
+                            />
+                        </TPane>
+                        <TPane  tab="Create analytics" key={formKeys.analyticsForm}>
+                            <ReportAnalyticsForm
+                                getFormRefCB={this.saveAnalyticsFormRef}//Get form refference
+                                analyticsCatalogs={analyticsCatalogs}
+                                analyticsCatalogsLoading={analyticsCatalogsLoading}
+                            />
+                        </TPane>
+                    </Tabs>
+                </div>
             </Modal>
         );
     }

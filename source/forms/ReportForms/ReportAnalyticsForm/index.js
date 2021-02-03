@@ -44,13 +44,13 @@ class ReportAnalyticsCatalog extends React.Component {
         
         return (
             <Form>
-                <Row>
+                <Row className={Styles.row}>
                     <Col span={6}>Catalog name: </Col>
                     <Col span={18}>
                         <FItem>
                             {
                                 getFieldDecorator('catalogName', {
-                                    rules: [{ required: true, message: 'Please catalog name!!!' }]
+                                    rules: [{ required: true, whitespace: true, message: 'Catalog name please!!!' }]
                                 })(
                                     <Input />
                                 )
@@ -79,7 +79,8 @@ class ReportAnalytics extends React.Component {
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
 
         const {
-            analyticsCatalogs
+            analyticsCatalogs,
+            analyticsCatalogsLoading
         } = this.props;
 
         const orderTypes = [
@@ -96,18 +97,25 @@ class ReportAnalytics extends React.Component {
         
         return (
             <Form>
-                <Row>
+                <Row className={Styles.row}>
                     <Col span={6}>Select catalog: </Col>
                     <Col span={18}>
                         <FItem>
                             <DecoratedSelect
                                 field="catalogId"
                                 showSearch
+                                loading={analyticsCatalogsLoading}
+                                disabled={analyticsCatalogsLoading}
                                 allowClear
+                                formItem
+                                style={{width: '100%'}}
                                 getFieldDecorator={getFieldDecorator}
                                 getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
+                                rules={[
+                                    { required: true, message: 'Catalog must be selected!!!' },
+                                ]}
                                 options={analyticsCatalogs}
                                 optionValue="analyticsId" //Will be sent as var
                                 optionLabel="analyticsName"
@@ -117,12 +125,14 @@ class ReportAnalytics extends React.Component {
                     </Col>
                 </Row>
                 {/* ==================================================== */}
-                <Row>
+                <Row className={Styles.row}>
                     <Col span={6}>Analytics name: </Col>
                     <Col span={18}>
                         <FItem>
                             {
-                                getFieldDecorator('analyticsName')(
+                                getFieldDecorator('analyticsName', {
+                                    rules: [{ required: true, whitespace: true, message: 'Analytics name please!!!' }]
+                                })(
                                     <Input />
                                 )
                             }
@@ -130,7 +140,7 @@ class ReportAnalytics extends React.Component {
                     </Col>
                 </Row>
                 {/* ==================================================== */}
-                <Row>
+                <Row className={Styles.row}>
                     <Col span={6}>Bookkeeping account: </Col>
                     <Col span={18}>
                         <FItem>
@@ -143,7 +153,7 @@ class ReportAnalytics extends React.Component {
                     </Col>
                 </Row>
                 {/* ==================================================== */}
-                <Row>
+                <Row className={Styles.row}>
                     <Col span={6}>Order type: </Col>
                     <Col span={18}>
                         <FItem>
@@ -151,14 +161,18 @@ class ReportAnalytics extends React.Component {
                                 field="orderType"
                                 showSearch
                                 allowClear
+                                formItem
+                                style={{width: '100%'}}
                                 getFieldDecorator={getFieldDecorator}
                                 getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
+                                rules= {[
+                                    { required: true, message: 'Order type must be selected!!!' }
+                                ]}
                                 options={orderTypes}
                                 optionValue="value" //Will be sent as var
                                 optionLabel="label"
-                                // initialValue={status}
                             />
                         </FItem>
                     </Col>

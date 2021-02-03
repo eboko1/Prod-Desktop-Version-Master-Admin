@@ -62,10 +62,17 @@ export default function reducer(state = ReducerState, action) {
                 currentForm: payload
             };
 
+        case FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM:
+            return {
+                ...state,
+                analyticsCatalogsLoading: true,//Fetching started started
+            };
+
         case FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM_SUCCESS:
             return {
                 ...state,
-                analyticsCatalogs: payload
+                analyticsCatalogs: payload,
+                analyticsCatalogsLoading: false, //Fetching finished
             };
 
         // case ON_CHANGE_ADD_CLIENT_FORM:

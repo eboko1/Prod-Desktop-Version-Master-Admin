@@ -20,6 +20,7 @@ const Search = Input.Search;
 // proj
 import {
     fetchReportAnalytics,
+    deleteReportAnalytics
 } from 'core/reports/reportAnalytics/duck';
 import { ReportAnalyticsModal } from 'modals';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
@@ -39,6 +40,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     fetchReportAnalytics,
+    deleteReportAnalytics,
+
     setModal,
     resetModal
 };
@@ -54,6 +57,7 @@ export default class ReportAnalyticsPage extends Component {
 
         this.onAnalyticsBtn = this.onAnalyticsBtn.bind(this);
         this.onAnalyticsModalCancel = this.onAnalyticsModalCancel.bind(this);
+        this._onDeleteAnalytics = this._onDeleteAnalytics.bind(this);
     }
 
     componentDidMount() {
@@ -66,6 +70,20 @@ export default class ReportAnalyticsPage extends Component {
 
     onAnalyticsModalCancel() {
         this.props.resetModal();
+    }
+
+    /**
+     * Very danger zone, be carefull. If you will not provide correct analytics Id
+     * all changes of the user will be lost forever!!!
+     * @param {int} analyticsId Analytics or analytics catalog Id
+     */
+    _onDeleteAnalytics(analyticsId) {
+        const {deleteReportAnalytics} = this.props;
+
+        if(analyticsId)
+            deleteReportAnalytics(analyticsId); //Delete specific analytics
+        else
+            deleteReportAnalytics(undefined);//Delete all changes on user's page
     }
 
     
@@ -98,7 +116,10 @@ export default class ReportAnalyticsPage extends Component {
                 }
                 paper={false}
             >
-                <AnalyticsDropdown analytics={analytics}/>
+                <AnalyticsDropdown
+                    analytics={analytics}
+                    onDeleteAnalytics={this._onDeleteAnalytics}
+                />
 
                 <ReportAnalyticsModal 
                     visible={modal}
