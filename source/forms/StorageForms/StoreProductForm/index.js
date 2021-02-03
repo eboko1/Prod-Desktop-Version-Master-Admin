@@ -191,6 +191,7 @@ const ProductForm = props => {
                     },
                 ] }
                 initialValue={ _.get(props, 'product.code') }
+                disabled={props.editing}
             />
             <>
                 <DecoratedAutoComplete
@@ -230,6 +231,7 @@ const ProductForm = props => {
                     optionFilterProp={ 'children' }
                     showSearch
                     dropdownMatchSelectWidth={ false }
+                    disabled={props.editing}
                 >
                     { !_.isEmpty(props.product) && _generateBrandInitialOption() }
                     { props.brands.map(({ brandName, brandId }) => (
