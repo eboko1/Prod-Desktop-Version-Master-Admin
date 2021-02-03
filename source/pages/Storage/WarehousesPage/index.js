@@ -239,7 +239,7 @@ class WarehousesPage extends Component {
                 title={ <FormattedMessage id='navigation.warehouses' /> }
                 controls={
                     <AddWarehousesModal
-                        disabled={!isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD)}
+                        disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD)}
 
                         getWarehouses={this.getWarehouses} 
                         isMain={isMain}
