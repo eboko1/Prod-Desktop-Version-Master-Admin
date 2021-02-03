@@ -59,6 +59,11 @@ export class RequisiteSettingForm extends Component {
             if (!err) {
                 values.itn = values.itn || values.ifi;
                 if(values.formName) values.formType = null;
+                if(isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_REQUISITES_TAX_CRUD)) {
+                    delete values.isTaxPayer;
+                    delete values.taxRate;
+                    delete values.calculationMethod;
+                }
                 if(id) {
                     updateRequisite(id, values, this.props.hideModal);
                 } else {
@@ -128,7 +133,7 @@ export class RequisiteSettingForm extends Component {
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const isOtherForm = this.state.formType == "OTHER";
         
-        const isTaxCRUDForbidden = !isForbidden(user, permissions.ACCESS_CATALOGUE_REQUISITES_TAX_CRUD);
+        const isTaxCRUDForbidden = isForbidden(user, permissions.ACCESS_CATALOGUE_REQUISITES_TAX_CRUD);
         return (
             <Form onSubmit={this.handleSubmit} layout='horizontal'>
                 <Form.Item 
@@ -199,48 +204,52 @@ export class RequisiteSettingForm extends Component {
                 >
                   {getFieldDecorator('bank')(<Input />)}
                 </Form.Item>
-                <Form.Item
-                    label={<span><FormattedMessage id='requisite-setting.payer'/> <FormattedMessage id='VAT'/></span>}
-                    {...formItemStyle}
-                    {...formItemLayout}
-                >
-                    {getFieldDecorator('isTaxPayer', {
-                         rules: [{ required: true, message: formatMessage({id: 'storage_document.error.required_fields'}), }],
-                        initialValue: false
-                    })(
-                        <Radio.Group disabled={isTaxCRUDForbidden}>
-                            <Radio value={true}><FormattedMessage id='yes'/></Radio>
-                            <Radio value={false}><FormattedMessage id='no'/></Radio>
-                        </Radio.Group>,
-                    )}
-                </Form.Item>
-                <Form.Item
-                    label={<span><FormattedMessage id='requisite-setting.rate'/> <FormattedMessage id='VAT'/></span>}
-                    {...formItemStyle}
-                    {...formItemLayout}
-                >
-                    {getFieldDecorator('taxRate', { initialValue: 20 })(
-                        <InputNumber
-                            min={0}
-                            max={100}
-                            formatter={value => `${value}%`}
-                            parser={value => value.replace('%', '')}
-                            disabled={isTaxCRUDForbidden}
-                        />
-                    )}
-                </Form.Item>
-                <Form.Item 
-                    label={<FormattedMessage id='requisite-setting.method_of_calculation'/>}
-                    {...formItemStyle}
-                    {...formItemLayout}
-                >
-                    {getFieldDecorator('calculationMethod', { initialValue: "WITH_TAX" })(
-                        <Radio.Group>
-                            <Radio value="WITH_TAX"><FormattedMessage id='requisite-setting.VAT.plus'/></Radio>
-                            <Radio value="ADD_TAX" disabled><FormattedMessage id='requisite-setting.VAT.including'/></Radio>
-                        </Radio.Group>,
-                    )}
-                </Form.Item>
+                {!isTaxCRUDForbidden && (
+                    <>
+                        <Form.Item
+                            label={<span><FormattedMessage id='requisite-setting.payer'/> <FormattedMessage id='VAT'/></span>}
+                            {...formItemStyle}
+                            {...formItemLayout}
+                        >
+                            {getFieldDecorator('isTaxPayer', {
+                                 rules: [{ required: true, message: formatMessage({id: 'storage_document.error.required_fields'}), }],
+                                initialValue: false
+                            })(
+                                <Radio.Group disabled={isTaxCRUDForbidden}>
+                                    <Radio value={true}><FormattedMessage id='yes'/></Radio>
+                                    <Radio value={false}><FormattedMessage id='no'/></Radio>
+                                </Radio.Group>,
+                            )}
+                        </Form.Item>
+                        <Form.Item
+                            label={<span><FormattedMessage id='requisite-setting.rate'/> <FormattedMessage id='VAT'/></span>}
+                            {...formItemStyle}
+                            {...formItemLayout}
+                        >
+                            {getFieldDecorator('taxRate', { initialValue: 20 })(
+                                <InputNumber
+                                    min={0}
+                                    max={100}
+                                    formatter={value => `${value}%`}
+                                    parser={value => value.replace('%', '')}
+                                    disabled={isTaxCRUDForbidden}
+                                />
+                            )}
+                        </Form.Item>
+                        <Form.Item 
+                            label={<FormattedMessage id='requisite-setting.method_of_calculation'/>}
+                            {...formItemStyle}
+                            {...formItemLayout}
+                        >
+                            {getFieldDecorator('calculationMethod', { initialValue: "WITH_TAX" })(
+                                <Radio.Group>
+                                    <Radio value="WITH_TAX"><FormattedMessage id='requisite-setting.VAT.plus'/></Radio>
+                                    <Radio value="ADD_TAX" disabled><FormattedMessage id='requisite-setting.VAT.including'/></Radio>
+                                </Radio.Group>,
+                            )}
+                        </Form.Item>
+                    </>
+                )}
                 <Form.Item
                     label={<FormattedMessage id='requisite-setting.active'/>}
                     {...formItemStyle}
