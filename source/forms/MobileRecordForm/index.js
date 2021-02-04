@@ -126,8 +126,6 @@ export class MobileRecordForm extends Component {
 
         const vehicle = selectedClient.vehicles.find((vehicle)=>vehicle.id == this.props.order.clientVehicleId) || undefined;
 
-        console.log(this, vehicle);
-
         const isDurationDisabled = _.every(
             getFieldsValue([
                 "stationLoads[0].beginDate",
@@ -418,10 +416,7 @@ export class MobileRecordForm extends Component {
                     })}
                     autoSize={{ minRows: 2, maxRows: 6 }}
                 />
-                {!isForbidden(
-                    this.props.user,
-                    permissions.ACCESS_ORDER_DIAGNOSTICS,
-                ) ? (
+                {!isForbidden(this.props.user, permissions.ACCESS_ORDER_DIAGNOSTICS) && (
                     <MobileDiagnostic
                         disabled={
                             this.props.orderStatus == "success" ||
@@ -432,8 +427,6 @@ export class MobileRecordForm extends Component {
                         orderDiagnostic={this.props.orderDiagnostic}
                         vehicle={vehicle}
                     />
-                ) : (
-                    null
                 )}
                 <div
                     style={{
@@ -446,6 +439,7 @@ export class MobileRecordForm extends Component {
                         type='primary'
                         style={{width: '49%'}}
                         onClick={()=>this.showWorkshopModal()}
+                        disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_WORKSHOP)}
                     >
                         <FormattedMessage id='order_tabs.workshop' />
                     </Button>
@@ -453,6 +447,7 @@ export class MobileRecordForm extends Component {
                         type='primary'
                         style={{width: '49%'}}
                         onClick={()=>this.showStockModal()}
+                        disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_STOCK)}
                     >
                         <FormattedMessage id='order_tabs.stock' />
                     </Button>    
@@ -717,7 +712,7 @@ class MobileDiagnostic extends Component {
                                     status={data.status}
                                     rowProp={data}
                                     disabled={
-                                        this.props.disabled || data.disabled
+                                        this.props.disabled || data.disabled || isForbidden(this.props.user, permissions.ACCESS_DIAGNOSTICS_UPDATE_ELEMENTS)
                                     }
                                 />
                                 <div className={Styles.diagnostic_buttons}>
@@ -744,7 +739,7 @@ class MobileDiagnostic extends Component {
                                         type="primary"
                                         style={{ width: "49%" }}
                                         disabled={
-                                            this.props.disabled || data.disabled
+                                            this.props.disabled || data.disabled || isForbidden(this.props.user, permissions.ACCESS_DIAGNOSTICS_ADD_ELEMENTS)
                                         }
                                         onClick={async () => {
                                             await addNewDiagnosticRow(
@@ -841,7 +836,7 @@ class MobileDiagnostic extends Component {
                         }}
                         disabled={isForbidden(
                             this.props.user,
-                            permissions.ACCESS_TELEGRAM,
+                            permissions.ACCESS_DIAGNOSTICS_COMPLETE,
                         )}
                     >
                         <FormattedMessage id="end" />

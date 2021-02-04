@@ -54,16 +54,19 @@ class ServicesTable extends Component {
             {
                 title: ()=>(
                             <div style={{textAlign: 'center'}}>
-                                <ComplexesModal
-                                    disabled={this.props.disabled}
-                                    tecdocId={this.props.tecdocId}
-                                    labors={this.props.labors}
-                                    details={this.props.details}
-                                    detailsTreeData={this.props.detailsTreeData}
-                                    orderId={this.props.orderId}
-                                    reloadOrderForm={this.props.reloadOrderForm}
-                                />
+                                {!isForbidden(this.props.user, permissions.ACCESS_ORDER_LABORS_COMPLEXES) &&
+                                    <ComplexesModal
+                                        disabled={this.props.disabled}
+                                        tecdocId={this.props.tecdocId}
+                                        labors={this.props.labors}
+                                        details={this.props.details}
+                                        detailsTreeData={this.props.detailsTreeData}
+                                        orderId={this.props.orderId}
+                                        reloadOrderForm={this.props.reloadOrderForm}
+                                    />
+                                }
                                 <InputNumber
+                                    disabled={isForbidden(this.props.user, permissions.ACCESS_NORM_HOURS_MODAL_WINDOW)}
                                     title='Коэффициент норматива'
                                     style={ { fontWeight: 700 } }
                                     defaultValue={ this.props.laborTimeMultiplier || 1 }
@@ -339,7 +342,7 @@ class ServicesTable extends Component {
 
                     return (
                         <Select
-                            disabled={ isForbidden(
+                            disabled={ this.props.disabled || isForbidden(
                                 this.props.user,
                                 permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
                             ) }

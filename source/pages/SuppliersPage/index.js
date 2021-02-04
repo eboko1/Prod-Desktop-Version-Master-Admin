@@ -9,6 +9,7 @@ import { setModal, selectModalProps, MODALS } from "core/modals/duck";
 import { Layout, StyledButton } from "commons";
 import { SuppliersTable } from "components";
 import { SupplierModal } from "modals";
+import { permissions, isForbidden } from "utils";
 
 // own
 import Styles from "./styles.m.css";
@@ -16,6 +17,7 @@ import Styles from "./styles.m.css";
 const mapStateToProps = state => ({
     modalProps: selectModalProps(state),
     isMobile: state.ui.views.isMobile,
+    user: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -32,7 +34,8 @@ export default class SuppliersPage extends Component {
     }
 
     render() {
-        const { setModal, modalProps, isMobile } = this.props;
+        const { setModal, modalProps, isMobile, user } = this.props;
+        const isSuppliersCRUDForbidden = isForbidden(user, permissions.ACCESS_SUPPLIERS_CRUD);
         return (
             <Layout
                 title={<FormattedMessage id="navigation.suppliers" />}
@@ -41,6 +44,7 @@ export default class SuppliersPage extends Component {
                         <StyledButton
                             type="secondary"
                             onClick={() => setModal(MODALS.SUPPLIER)}
+                            disabled={isSuppliersCRUDForbidden}
                         >
                             <FormattedMessage id="supplier-modal.add_supplier" />
                         </StyledButton>
@@ -49,6 +53,8 @@ export default class SuppliersPage extends Component {
             >
                 <SuppliersTable 
                     isMobile={isMobile}
+                    disabled={isSuppliersCRUDForbidden}
+                    user={user}
                 />
                 <SupplierModal modalProps={modalProps} />
             </Layout>

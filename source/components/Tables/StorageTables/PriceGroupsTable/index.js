@@ -14,6 +14,7 @@ import {
 } from 'core/storage/priceGroups';
 
 import { Loader } from 'commons';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import { columnsConfig } from './config';
@@ -55,7 +56,10 @@ const PriceGroups = props => {
         },
     };
 
+    const isCRUDForbidden = isForbidden(props.user, permissions.ACCESS_CATALOGUE_PRICE_GROUPS_CRUD);
+
     const columns = columnsConfig(
+        isCRUDForbidden,
         props.intl.formatMessage,
         editingKey,
         _getEditingState,
@@ -103,6 +107,7 @@ const PriceGroups = props => {
 
 const mapStateToProps = state => ({
     priceGroups: selectPriceGroups(state),
+    user: state.auth,
 });
 
 const mapDispatchToProps = {

@@ -75,12 +75,13 @@ export default class RequisiteSettingContainer extends Component {
                     return (
                         <div style={{textAlign: 'end'}}>
                             <Button
+                                disabled={this.props.disabled}
                                 onClick={()=>this.props.showModal(elem)}
                             >
                                 <Icon type='edit'/>
                             </Button>
                             <Button
-                                disabled={elem.used}
+                                disabled={elem.used || this.props.disabled}
                                 onClick={()=>{
                                     this.props.deleteRequisite(elem.id, this.props.updateDataSource);
                                 }}
@@ -102,7 +103,7 @@ export default class RequisiteSettingContainer extends Component {
     }
 
     render() {
-        const { modalVisible, showModal, hideModal, requisiteData, dataSource, postRequisite, updateRequisite, id, loading, isMobile } = this.props;
+        const { modalVisible, showModal, hideModal, requisiteData, dataSource, postRequisite, updateRequisite, id, loading, isMobile, disabled } = this.props;
         const { fetched } = this.state;
         return (
             <div>
@@ -113,7 +114,7 @@ export default class RequisiteSettingContainer extends Component {
                     onRow={ (record, rowIndex) => {
                         return {
                             onDoubleClick: event => {
-                                showModal(record);
+                                if(!disabled) showModal(record);
                             }
                         };
                     }}

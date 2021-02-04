@@ -10,9 +10,14 @@ import moment from 'moment';
 
 // proj
 import { StorageDocumentsContainer } from 'containers';
+import { permissions, isForbidden } from 'utils';
 
 // own
+const mapStateToProps = state => ({
+    user: state.auth,
+});
 
+@connect( mapStateToProps, void 0 )
 class ExpensesPage extends Component {
     constructor(props) {
         super(props);
@@ -20,13 +25,16 @@ class ExpensesPage extends Component {
             documentFilters: undefined,
         };
     }
-    
+
     render() {
+        const { user } = this.props;
         const { documentFilters } = this.state;
+        const isCRUDForbidden = isForbidden(user, permissions.ACCESS_EXPENSE_STORE_DOCS_CRUD);
         return (
             <StorageDocumentsContainer
                 listType = 'EXPENSE'
                 newDocType = 'EXPENSE'
+                isCRUDForbidden={isCRUDForbidden}
             />
         );
     }

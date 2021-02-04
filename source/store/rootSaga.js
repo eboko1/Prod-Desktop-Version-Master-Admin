@@ -42,6 +42,8 @@ import { saga as clientMRDsSaga } from 'core/clientMRDs/saga';
 import { saga as reportOrdersSaga } from 'core/reports/reportOrders/saga';
 import { saga as reportsSaga } from 'core/reports/reports/saga';
 import { saga as reportLoadKPISaga } from 'core/reports/reportLoadKPI/saga';
+import { saga as reportAnalyticsSaga } from 'core/reports/reportAnalytics/saga';
+import { saga as reportAnalyticsFormSaga } from 'core/forms/reportAnalyticsForm/saga'
 import { saga as switchBusinessSaga } from 'core/forms/switchBusinessForm/saga';
 import { saga as addClientVehicleSaga } from 'core/forms/addClientVehicleForm/saga';
 import { saga as employeesSaga } from 'core/employees/saga';
@@ -97,6 +99,8 @@ export default function* rootSaga() {
         clientOrdersSaga(),
         clientMRDsSaga(),
         reportOrdersSaga(),
+        reportAnalyticsSaga(),
+        reportAnalyticsFormSaga(),
         reportsSaga(),
         reportLoadKPISaga(),
         clientRequisitesSaga(),

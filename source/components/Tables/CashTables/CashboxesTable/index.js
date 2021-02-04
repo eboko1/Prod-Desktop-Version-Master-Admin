@@ -6,12 +6,14 @@ import { Table } from "antd";
 
 // proj
 import { fetchCashboxes, deleteCashbox } from "core/cash/duck";
+import { permissions, isForbidden } from 'utils';
 
 // own
 import { columnsConfig } from "./config";
 
 const mapStateToProps = state => ({
     cashboxes: state.cash.cashboxes,
+    user: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -26,8 +28,9 @@ export class CashboxesTable extends Component {
         super(props);
 
         this.columns = columnsConfig({
-            deleteCashbox: props.deleteCashbox,
-            formatMessage: props.intl.formatMessage,
+            deleteCashbox:      props.deleteCashbox,
+            formatMessage:      props.intl.formatMessage,
+            isCRUDForbidden:    isForbidden(props.user, permissions.ACCESS_CATALOGUE_CASH_CRUD),
         });
     }
 

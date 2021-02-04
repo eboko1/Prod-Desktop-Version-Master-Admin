@@ -220,7 +220,7 @@ class DiagnosticTable extends Component {
                         <p>{ plan }</p>
                     ) : (
                         <Select
-                            disabled={ this.props.disabled }
+                            disabled={ this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_DIAGNOSTICS_ADD_ELEMENTS) }
                             showSearch
                             placeholder={
                                 <FormattedMessage id='order_form_table.diagnostic.plan' />
@@ -662,7 +662,8 @@ class DiagnosticTable extends Component {
                         disabled={
                             this.props.disabled ||
                             rowProp.disabled ||
-                            !rowProp.partId
+                            !rowProp.partId ||
+                            isForbidden(this.props.user, permissions.ACCESS_DIAGNOSTICS_UPDATE_ELEMENTS)
                         }
                         getCurrentDiagnostic={ this.getCurrentDiagnostic }
                         commentary={ commentary }
@@ -694,7 +695,8 @@ class DiagnosticTable extends Component {
                         disabled={
                             this.props.disabled ||
                             rowProp.disabled ||
-                            !rowProp.partId
+                            !rowProp.partId ||
+                            isForbidden(this.props.user, permissions.ACCESS_DIAGNOSTICS_ADD_ELEMENTS)
                         }
                         onClick={ async () => {
                             await addNewDiagnosticRow(
@@ -728,7 +730,7 @@ class DiagnosticTable extends Component {
                 render:    (text, rowProp) => {
                     return rowProp.plan ? (
                         <DiagnosticStatusButton
-                            disabled={ this.props.disabled || rowProp.disabled }
+                            disabled={ this.props.disabled || rowProp.disabled || isForbidden(this.props.user, permissions.ACCESS_DIAGNOSTICS_UPDATE_ELEMENTS) }
                             getCurrentDiagnostic={ this.getCurrentDiagnostic }
                             status={ text }
                             rowProp={ rowProp }
@@ -747,7 +749,7 @@ class DiagnosticTable extends Component {
                             } }
                             disabled={ isForbidden(
                                 this.props.user,
-                                permissions.ACCESS_TELEGRAM,
+                                permissions.ACCESS_DIAGNOSTICS_COMPLETE,
                             ) }
                         >
                             <FormattedMessage id='end' />
@@ -764,7 +766,8 @@ class DiagnosticTable extends Component {
                         disabled={
                             this.props.disabled ||
                             rowProp.disabled ||
-                            rowProp.status > 0
+                            rowProp.status > 0 ||
+                            isForbidden(this.props.user, permissions.ACCESS_DIAGNOSTICS_UPDATE_ELEMENTS)
                         }
                         deleteRow={ this.deleteRow }
                         rowProp={ rowProp }
@@ -1403,7 +1406,7 @@ class DiagnosticTableHeader extends React.Component {
 
     render() {
         const { Option } = Select;
-        const { disabled } = this.props;
+        const { disabled, user } = this.props;
 
         return (
             <div className={ Styles.diagnosticTableHeader }>
@@ -1420,7 +1423,7 @@ class DiagnosticTableHeader extends React.Component {
                     <Select
                         ref={this.diagnosticSelectRef} 
                         showAction={['focus', 'click']}
-                        disabled={ disabled }
+                        disabled={ disabled || isForbidden(user, permissions.ACCESS_DIAGNOSTICS_ADD_TEMPLATE) }
                         allowClear
                         value={ this.state.selectValue }
                         showSearch
@@ -1442,7 +1445,7 @@ class DiagnosticTableHeader extends React.Component {
                 </div>
                 <div style={ { width: '15%' } }>
                     <Button
-                        disabled={ disabled }
+                        disabled={ disabled || isForbidden(user, permissions.ACCESS_DIAGNOSTICS_ADD_TEMPLATE) }
                         onClick={ () => {
                             this.props.addNewDiagnostic(this.state.selectValue);
                             this.setState({ selectValue: undefined });
@@ -1451,7 +1454,7 @@ class DiagnosticTableHeader extends React.Component {
                         <FormattedMessage id='+' />
                     </Button>
                     <Button
-                        disabled={ disabled }
+                        disabled={ disabled || isForbidden(user, permissions.ACCESS_DIAGNOSTICS_ADD_TEMPLATE) }
                         onClick={ () => {
                             this.props.deleteDiagnostic(this.state.selectValue);
                             this.setState({ selectValue: undefined });
@@ -1483,7 +1486,7 @@ class DiagnosticTableHeader extends React.Component {
                 </div>
                 <div style={ { width: '10%' } }>
                     <Button
-                        disabled={ disabled }
+                        disabled={ disabled || isForbidden(user, permissions.ACCESS_DIAGNOSTICS_UPDATE_ELEMENTS) }
                         type='primary'
                         onClick={ () => {
                             this.handleClickStatusButtons(0);
@@ -1498,7 +1501,7 @@ class DiagnosticTableHeader extends React.Component {
                     style={ { width: '15%' } }
                 >
                     <Button
-                        disabled={ disabled }
+                        disabled={ disabled || isForbidden(user, permissions.ACCESS_DIAGNOSTICS_UPDATE_ELEMENTS) }
                         className={ Styles.diagnostic_status_button }
                         onClick={ () => {
                             this.handleClickStatusButtons(1);
@@ -1511,7 +1514,7 @@ class DiagnosticTableHeader extends React.Component {
                         <FormattedMessage id='order_form_table.diagnostic.status.ok' />
                     </Button>
                     <Button
-                        disabled={ disabled }
+                        disabled={ disabled || isForbidden(user, permissions.ACCESS_DIAGNOSTICS_UPDATE_ELEMENTS) }
                         className={ Styles.diagnostic_status_button }
                         onClick={ () => {
                             this.handleClickStatusButtons(2);
@@ -1524,7 +1527,7 @@ class DiagnosticTableHeader extends React.Component {
                         <FormattedMessage id='order_form_table.diagnostic.status.bad' />
                     </Button>
                     <Button
-                        disabled={ disabled }
+                        disabled={ disabled || isForbidden(user, permissions.ACCESS_DIAGNOSTICS_UPDATE_ELEMENTS) }
                         className={ Styles.diagnostic_status_button }
                         type='danger'
                         onClick={ () => {
@@ -1553,7 +1556,8 @@ class DiagnosticTableHeader extends React.Component {
                                 : Styles.delete_diagnostic_button_disabled
                         }
                         onClick={ () => {
-                            this.handleClickDeleteButton();
+                            if(!isForbidden(user, permissions.ACCESS_DIAGNOSTICS_UPDATE_ELEMENTS))
+                                this.handleClickDeleteButton();
                         } }
                     />
                 </div>

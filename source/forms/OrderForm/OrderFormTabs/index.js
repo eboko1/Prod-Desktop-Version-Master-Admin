@@ -64,7 +64,6 @@ export default class OrderFormTabs extends React.PureComponent {
 
     buildStoreGroupsTree() {
         var treeData = [];
-        console.log(this.props.details);
         for (let i = 0; i < this.props.details.length; i++) {
             const parentGroup = this.props.details[ i ];
             treeData.push({
@@ -250,21 +249,47 @@ export default class OrderFormTabs extends React.PureComponent {
             GET_TASKS,
             GET_ALL_TASKS,
             UPDATE_SUCCESS_ORDER,
+            ACCESS_ORDER_REPAIR_MAP,
+            ACCESS_ORDER_WORKSHOP,
+            ACCESS_ORDER_STOCK,
+            ACCESS_ORDER_TABS_POSTS_CRUD,
+            ACCESS_ORDER_TABS_COMMENTS_CRUD,
         } = permissions;
 
         const isHistoryForbidden = isForbidden(user, ACCESS_ORDER_HISTORY);
         const areCallsForbidden = isForbidden(user, ACCESS_ORDER_CALLS);
-        const areCommentsForbidden = isForbidden(user, ACCESS_ORDER_COMMENTS);
+        const areCommentsForbidden = isForbidden(user, ACCESS_ORDER_TABS_COMMENTS_CRUD);
         const areServicesForbidden = isForbidden(user, ACCESS_ORDER_SERVICES);
         const areDetailsForbidden = isForbidden(user, ACCESS_ORDER_DETAILS);
-        const areDiagnosticForbidden = isForbidden(
-            user,
-            ACCESS_ORDER_DIAGNOSTICS,
-        );
-        const clodedEditing =
+        const areDiagnosticForbidden = isForbidden(user, ACCESS_ORDER_DIAGNOSTICS);
+        const areRepairMapForbidden = isForbidden(user, ACCESS_ORDER_REPAIR_MAP);
+        const areWorkshopForbidden = isForbidden(user, ACCESS_ORDER_WORKSHOP);
+        const areStockForbidden = isForbidden(user, ACCESS_ORDER_STOCK);
+        const arePostForbidden = isForbidden(user, ACCESS_ORDER_TABS_POSTS_CRUD);
+        const closedEditing =
             (this.props.orderStatus == "success" ||
                 this.props.orderStatus == "cancel") &&
             isForbidden(user, UPDATE_SUCCESS_ORDER);
+
+        if(this.state.activeKey == 'map' && areRepairMapForbidden) {
+            if(!areDiagnosticForbidden) {
+                this.setState({
+                    activeKey: 'diagnostic'
+                })
+            } else if(!areServicesForbidden) {
+                this.setState({
+                    activeKey: 'services'
+                })
+            } else if(!areDetailsForbidden) {
+                this.setState({
+                    activeKey: 'details'
+                })
+            } else {
+                this.setState({
+                    activeKey: 'station'
+                })
+            }
+        }
 
         const viewTasks = !isForbidden(user, GET_TASKS);
         const viewAllTasks = !isForbidden(user, GET_ALL_TASKS);
@@ -303,7 +328,7 @@ export default class OrderFormTabs extends React.PureComponent {
                     });
                 }}
             >
-                {!addOrderForm && (
+                {!addOrderForm && !areRepairMapForbidden && (
                     <TabPane
                         forceRender
                         tab={formatMessage({
@@ -370,7 +395,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="services"
                     >
                         <ServicesTable
-                            disabled={clodedEditing}
+                            disabled={closedEditing || isForbidden(user, permissions.ACCESS_ORDER_LABORS_CRUD)}
                             laborTimeMultiplier={this.props.laborTimeMultiplier}
                             defaultEmployeeId={this.props.defaultEmployeeId}
                             normHourPrice={normHourPrice}
@@ -404,7 +429,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         <DiscountPanel
                             fields={discountTabFieldsProps}
                             form={form}
-                            forbidden={areServicesForbidden}
+                            forbidden={areServicesForbidden || isForbidden(user, permissions.ACCESS_ORDER_LABORS_DISCOUNTS)}
                             price={priceServices}
                             discountFieldName={"servicesDiscount"}
                             fetchedOrder={fetchedOrder}
@@ -417,7 +442,6 @@ export default class OrderFormTabs extends React.PureComponent {
                 {!addOrderForm && (
                     <TabPane
                         forceRender
-
                         tab={`${formatMessage({
                             id: "add_order_form.details",
                             defaultMessage: "Details",
@@ -425,7 +449,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="details"
                     >
                         <DetailsTable
-                            disabled={clodedEditing}
+                            disabled={closedEditing || isForbidden(user, permissions.ACCESS_ORDER_DETAILS_CRUD)}
                             errors={errors}
                             orderId={orderId}
                             fields={detailsTableFieldsProps}
@@ -483,7 +507,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             orderDetails={orderDetails}
                             fields={discountTabFieldsProps}
                             form={form}
-                            forbidden={areDetailsForbidden}
+                            forbidden={areDetailsForbidden || isForbidden(user, permissions.ACCESS_ORDER_DETAILS_DISCOUNTS)}
                             price={priceDetails}
                             totalDetailsProfit={totalDetailsProfit}
                             discountFieldName={"detailsDiscount"}
@@ -493,7 +517,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         />
                     </TabPane>
                 )}
-                {!addOrderForm && (
+                {!addOrderForm && !areWorkshopForbidden && (
                     <TabPane
                         forceRender
                         tab={formatMessage({
@@ -510,7 +534,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         />
                     </TabPane>
                 )}
-                {!addOrderForm && (
+                {!addOrderForm && !areStockForbidden && (
                     <TabPane
                         forceRender
                         tab={formatMessage({
@@ -527,99 +551,101 @@ export default class OrderFormTabs extends React.PureComponent {
                         />
                     </TabPane>
                 )}
-                <TabPane
-                    forceRender
-                    key="comments"
-                    tab={
-                        formatMessage({
-                            id: "add_order_form.comments",
-                        }) + ` (${commentsCount})`
-                    }
-                >
-                    <DecoratedTextArea
-                        errors={errors}
-                        defaultGetValueProps
-                        fieldValue={_.get(fields, "comment")}
-                        formItem
-                        disabled={areCommentsForbidden}
-                        label={this._getLocalization(
-                            "add_order_form.client_comments",
-                        )}
-                        getFieldDecorator={getFieldDecorator}
-                        field="comment"
-                        initialValue={_.get(fetchedOrder, "order.comment")}
-                        rules={this.commentsRules}
-                        placeholder={this._getLocalization(
-                            "add_order_form.client_comments",
-                        )}
-                        autoSize={this.commentsAutoSize}
-                    />
-                    <DecoratedTextArea
-                        errors={errors}
-                        defaultGetValueProps
-                        fieldValue={_.get(fields, "vehicleCondition")}
-                        formItem
-                        disabled={areCommentsForbidden}
-                        label={this._getLocalization(
-                            "add_order_form.vehicle_condition",
-                        )}
-                        getFieldDecorator={getFieldDecorator}
-                        field="vehicleCondition"
-                        initialValue={_.get(
-                            fetchedOrder,
-                            "order.vehicleCondition",
-                        )}
-                        rules={this.commentsRules}
-                        placeholder={this._getLocalization(
-                            "add_order_form.vehicle_condition",
-                        )}
-                        autoSize={this.commentsAutoSize}
-                    />
+                {!isForbidden(user, ACCESS_ORDER_COMMENTS) &&
+                    <TabPane
+                        forceRender
+                        key="comments"
+                        tab={
+                            formatMessage({
+                                id: "add_order_form.comments",
+                            }) + ` (${commentsCount})`
+                        }
+                    >
+                        <DecoratedTextArea
+                            errors={errors}
+                            defaultGetValueProps
+                            fieldValue={_.get(fields, "comment")}
+                            formItem
+                            disabled={areCommentsForbidden}
+                            label={this._getLocalization(
+                                "add_order_form.client_comments",
+                            )}
+                            getFieldDecorator={getFieldDecorator}
+                            field="comment"
+                            initialValue={_.get(fetchedOrder, "order.comment")}
+                            rules={this.commentsRules}
+                            placeholder={this._getLocalization(
+                                "add_order_form.client_comments",
+                            )}
+                            autoSize={this.commentsAutoSize}
+                        />
+                        <DecoratedTextArea
+                            errors={errors}
+                            defaultGetValueProps
+                            fieldValue={_.get(fields, "vehicleCondition")}
+                            formItem
+                            disabled={areCommentsForbidden}
+                            label={this._getLocalization(
+                                "add_order_form.vehicle_condition",
+                            )}
+                            getFieldDecorator={getFieldDecorator}
+                            field="vehicleCondition"
+                            initialValue={_.get(
+                                fetchedOrder,
+                                "order.vehicleCondition",
+                            )}
+                            rules={this.commentsRules}
+                            placeholder={this._getLocalization(
+                                "add_order_form.vehicle_condition",
+                            )}
+                            autoSize={this.commentsAutoSize}
+                        />
 
-                    <DecoratedTextArea
-                        errors={errors}
-                        defaultGetValueProps
-                        fieldValue={_.get(fields, "businessComment")}
-                        formItem
-                        disabled={areCommentsForbidden}
-                        label={this._getLocalization(
-                            "add_order_form.business_comment",
-                        )}
-                        getFieldDecorator={getFieldDecorator}
-                        field="businessComment"
-                        initialValue={_.get(
-                            fetchedOrder,
-                            "order.businessComment",
-                        )}
-                        rules={this.commentsRules}
-                        placeholder={this._getLocalization(
-                            "add_order_form.business_comment",
-                        )}
-                        autoSize={this.commentsAutoSize}
-                    />
+                        <DecoratedTextArea
+                            errors={errors}
+                            defaultGetValueProps
+                            fieldValue={_.get(fields, "businessComment")}
+                            formItem
+                            disabled={areCommentsForbidden}
+                            label={this._getLocalization(
+                                "add_order_form.business_comment",
+                            )}
+                            getFieldDecorator={getFieldDecorator}
+                            field="businessComment"
+                            initialValue={_.get(
+                                fetchedOrder,
+                                "order.businessComment",
+                            )}
+                            rules={this.commentsRules}
+                            placeholder={this._getLocalization(
+                                "add_order_form.business_comment",
+                            )}
+                            autoSize={this.commentsAutoSize}
+                        />
 
-                    <DecoratedTextArea
-                        errors={errors}
-                        defaultGetValueProps
-                        fieldValue={_.get(fields, "recommendation")}
-                        formItem
-                        disabled={areCommentsForbidden}
-                        label={this._getLocalization(
-                            "add_order_form.service_recommendations",
-                        )}
-                        getFieldDecorator={getFieldDecorator}
-                        field="recommendation"
-                        initialValue={_.get(
-                            fetchedOrder,
-                            "order.recommendation",
-                        )}
-                        rules={this.commentsRules}
-                        placeholder={this._getLocalization(
-                            "add_order_form.service_recommendations",
-                        )}
-                        autoSize={this.commentsAutoSize}
-                    />
-                </TabPane>
+                        <DecoratedTextArea
+                            errors={errors}
+                            defaultGetValueProps
+                            fieldValue={_.get(fields, "recommendation")}
+                            formItem
+                            disabled={areCommentsForbidden}
+                            label={this._getLocalization(
+                                "add_order_form.service_recommendations",
+                            )}
+                            getFieldDecorator={getFieldDecorator}
+                            field="recommendation"
+                            initialValue={_.get(
+                                fetchedOrder,
+                                "order.recommendation",
+                            )}
+                            rules={this.commentsRules}
+                            placeholder={this._getLocalization(
+                                "add_order_form.service_recommendations",
+                            )}
+                            autoSize={this.commentsAutoSize}
+                        />
+                    </TabPane>
+                }
                 {!addOrderForm && (
                     <TabPane
                         forceRender
@@ -659,7 +685,6 @@ export default class OrderFormTabs extends React.PureComponent {
                 )}
                 <TabPane
                     forceRender
-                    // disabled={ areCallsForbidden }
                     tab={
                         formatMessage({
                             id: "order_form_table.station",
@@ -678,6 +703,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         availableHours={availableHours}
                         stationLoads={stationLoads}
                         user={user}
+                        disabled={arePostForbidden}
                     />
                 </TabPane>
             </Tabs>

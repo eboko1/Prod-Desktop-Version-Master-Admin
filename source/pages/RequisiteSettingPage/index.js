@@ -12,8 +12,19 @@ import { Button } from 'antd';
 import { Layout, Spinner } from "commons";
 import { getData, deleteRequisite, postRequisite, updateRequisite } from "core/requisiteSettings/saga";
 import { RequisiteSettingContainer } from "containers";
+import { permissions, isForbidden } from 'utils';
 // own
 
+const mapStateToProps = state => {
+    return {
+        user: state.auth,
+    };
+};
+
+@connect(
+    mapStateToProps,
+    void 0,
+)
 export default class RequisiteSettingPage extends Component {
     constructor(props) {
         super(props);
@@ -76,7 +87,10 @@ export default class RequisiteSettingPage extends Component {
     }
 
     render() {
+        const { user } = this.props;
         const { modalVisible, requisiteData, dataSource, loading } = this.state;
+
+        const isCRUDForbidden = isForbidden(user, permissions.ACCESS_CATALOGUE_REQUISITES_CRUD);
         return (
             <Layout
                 title={ <FormattedMessage id='navigation.requisites' /> }
@@ -84,6 +98,7 @@ export default class RequisiteSettingPage extends Component {
                     <Button
                         type='primary'
                         onClick={()=>this.showModal()}
+                        disabled={isCRUDForbidden}
                     >
                         <FormattedMessage id='add' />
                     </Button>
@@ -100,6 +115,7 @@ export default class RequisiteSettingPage extends Component {
                     deleteRequisite={deleteRequisite}
                     postRequisite={postRequisite}
                     updateRequisite={updateRequisite}
+                    disabled={isCRUDForbidden}
                 />
             </Layout>
         );
