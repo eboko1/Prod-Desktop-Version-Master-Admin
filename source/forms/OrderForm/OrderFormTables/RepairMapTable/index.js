@@ -336,7 +336,11 @@ export default class RepairMapTable extends Component {
                                                 <span>{child.name}</span>
                                                 <Button
                                                     type='primary'
-                                                    disabled={!child.operation || isForbidden(user, permissions.ACCESS_ORDER_TABS_REPAIR_MAP_UPDATE)}
+                                                    disabled={
+                                                        !child.operation || 
+                                                        child.isOperationDisabled || 
+                                                        isForbidden(user, permissions.ACCESS_ORDER_TABS_REPAIR_MAP_UPDATE)
+                                                    }
                                                     onClick={async ()=>{
                                                         await this.repairMapAction(child.operation);
                                                         await fetchRepairMapData();
