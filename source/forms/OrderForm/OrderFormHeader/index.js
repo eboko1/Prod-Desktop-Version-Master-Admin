@@ -556,8 +556,8 @@ export default class OrderFormHeader extends Component {
             }
 
             disabledHours = getDisabledHours(
-                schedule[index].beginTime.split(/[.:]/)[0],
-                schedule[index].endTime.split(/[.:]/)[0]
+                schedule[index] && schedule[index].beginTime ? schedule[index].beginTime.split(/[.:]/)[0] : 9,
+                schedule[index] && schedule[index].endTime ? schedule[index].endTime.split(/[.:]/)[0] : 20
             )
         }
 
