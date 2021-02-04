@@ -98,7 +98,7 @@ class WarehousesPage extends Component {
                     return (
                         <Icon
                             type='edit'
-                            style={!isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD) ? {
+                            style={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD) ? {
                                 fontSize: 18,
                                 color: 'var(--text2)',
                                 pointerEvents: 'none',
@@ -123,7 +123,7 @@ class WarehousesPage extends Component {
                     return (
                         <Icon
                             type='delete'
-                            style={!isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD) ? {
+                            style={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD) ? {
                                 fontSize: 18,
                                 color: 'var(--text2)',
                                 pointerEvents: 'none',
