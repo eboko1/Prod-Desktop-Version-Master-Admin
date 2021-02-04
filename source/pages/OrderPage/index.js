@@ -237,6 +237,18 @@ class OrderPage extends Component {
                 return response.json();
             })
             .then(function(data) {
+                data.map((group)=>{
+                    if(group.childs) {
+                        group.childs.map((child)=>{
+                            child.isOperationDisabled = false;
+                            if(child.availableWithScope) {
+                                child.availableWithScope.map((scope)=>{
+                                    child.isOperationDisabled = child.isOperationDisabled || isForbidden(that.props.user, permissions[scope]);
+                                })
+                            }
+                        })
+                    }
+                })
                 that.setState({
                     repairMapData: data,
                 })
