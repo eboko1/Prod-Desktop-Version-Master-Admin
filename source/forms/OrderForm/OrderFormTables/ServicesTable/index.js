@@ -66,6 +66,7 @@ class ServicesTable extends Component {
                                     />
                                 }
                                 <InputNumber
+                                    disabled={isForbidden(this.props.user, permissions.ACCESS_NORM_HOURS_MODAL_WINDOW)}
                                     title='Коэффициент норматива'
                                     style={ { fontWeight: 700 } }
                                     defaultValue={ this.props.laborTimeMultiplier || 1 }
