@@ -25,6 +25,7 @@ const ActionsIcons = styled.div`
 
 // export function columnsConfig(formatMessage, deletePriceGroup) {
 export function columnsConfig(
+    isCRUDForbidden,
     formatMessage,
     editingKey,
     getEditingState,
@@ -54,7 +55,7 @@ export function columnsConfig(
         render:    (text, record) => {
             const editable = getEditingState(record);
 
-            return (
+            return !isCRUDForbidden && (
                 <ActionsIcons>
                     { editable ? (
                         <span>

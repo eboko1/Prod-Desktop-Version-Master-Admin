@@ -13,9 +13,20 @@ import { Layout } from 'commons';
 import book from 'routes/book';
 import { SingleDatePicker } from 'components';
 import { VehicleLocationModal } from 'modals';
+import {permissions, isForbidden} from 'utils';
 // own
 const Option = Select.Option;
 
+const mapStateToProps = state => {
+    return {
+        user: state.auth,
+    };
+};
+
+@connect(
+    mapStateToProps,
+    void 0,
+)
 @injectIntl
 export default class LocationsVehiclesPage extends Component {
     constructor(props) {
@@ -113,7 +124,7 @@ export default class LocationsVehiclesPage extends Component {
                 key:       'history',
                 width:     'min-content',
                 render: (row)=>{
-                    return (
+                    return !isForbidden(this.props.user, permissions.ACCESS_LOCATIONS_VEHICLE_HISTORY) ? (
                         <Link
                             to={ {
                                 pathname: book.locationsMovement,
@@ -126,7 +137,7 @@ export default class LocationsVehiclesPage extends Component {
                                 <FormattedMessage id='locations.history'/>
                             </Button>
                         </Link>
-                    )
+                    ) : null
                 }
             },
         ];

@@ -11,7 +11,6 @@ import { API_URL } from "core/forms/orderDiagnosticForm/saga";
 import {
     onChangeOrderForm,
     setClientSelection,
-    fetchAvailableHours,
     fetchTecdocSuggestions,
     fetchTecdocDetailsSuggestions,
     clearTecdocSuggestions,
@@ -51,7 +50,6 @@ import Styles from "./styles.m.css";
         setClientSelection,
         initOrderTasksForm,
         resetModal,
-        fetchAvailableHours,
         fetchTecdocSuggestions,
         clearTecdocSuggestions,
         fetchTecdocDetailsSuggestions,
@@ -63,17 +61,17 @@ import Styles from "./styles.m.css";
     mapStateToProps: state => ({
         // modal: state.modals.modal,
         // user: state.auth,
-        addClientFormData: state.forms.addClientForm.data,
-        authentificatedManager: state.auth.id,
-        cashFlowFilters: selectCashFlowFilters(state),
-        cashSum: selectCashSum(state),
+        addClientFormData:          state.forms.addClientForm.data,
+        authentificatedManager:     state.auth.id,
+        cashFlowFilters:            selectCashFlowFilters(state),
+        cashSum:                    selectCashSum(state),
         detailsSuggestionsFetching: state.ui.detailsSuggestionsFetching,
-        schedule: state.forms.orderForm.schedule,
-        stationLoads: state.forms.orderForm.stationLoads,
-        suggestionsFetching: state.ui.suggestionsFetching,
-        storeProducts: selectStoreProductsByQuery(state),
-        recommendedPrice: selectRecommendedPrice(state),
-        recommendedPriceLoading: selectRecommendedPriceLoading(state),
+        schedule:                   state.forms.orderForm.schedule,
+        stationLoads:               state.forms.orderForm.stationLoads,
+        suggestionsFetching:        state.ui.suggestionsFetching,
+        storeProducts:              selectStoreProductsByQuery(state),
+        recommendedPrice:           selectRecommendedPrice(state),
+        recommendedPriceLoading:    selectRecommendedPriceLoading(state),
     }),
 })
 export class OrderForm extends React.PureComponent {
@@ -95,37 +93,7 @@ export class OrderForm extends React.PureComponent {
     _fetchLaborsAndDetails = async () => {
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
-        let url = __API_URL__ + `/labors`;
-        /*fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: token,
-            },
-        })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            data.labors.map((elem, index) => {
-                elem.key = index;
-                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
-            });
-            that.labors = data.labors;
-            that.setState({
-                labors: data.labors,
-            });
-        })
-        .catch(function(error) {
-            console.log("error", error);
-        });*/
-
-        url = __API_URL__ + `/store_groups`;
+        let url = __API_URL__ + `/store_groups`;
         fetch(url, {
             method: "GET",
             headers: {
@@ -233,6 +201,7 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
+                //that.props.onStatusChange(that.props.orderStatus);
                 that.props.fetchOrderForm(that.props.orderId);
             })
             .catch(function(error) {
@@ -305,46 +274,15 @@ export class OrderForm extends React.PureComponent {
         if (!_.isEqual(formValues, prevFormValues)) {
             this.setState({ formValues });
         }
-        //
-        // for each stationLoad row in stationLoads tab we have to provide extra check
-        // if values is not equal we will fetch available hours for each row
-        _.each(formValues.stationLoads, (stationLoad, index) => {
-            const prevStationLoad = _.get(prevFormValues.stationLoads, index);
-            const prevStationHoursFields = _.pick(prevStationLoad, [
-                "beginDate",
-                "station",
-            ]);
-            const stationHoursFields = _.pick(stationLoad, [
-                "beginDate",
-                "station",
-            ]);
 
-            if (
-                stationHoursFields &&
-                !_.isEqual(prevStationHoursFields, stationHoursFields)
-            ) {
-                const { station, beginDate } = stationHoursFields;
-                const {
-                    station: prevStation,
-                    beginDate: prevBeginDate,
-                } = prevStationHoursFields;
-                // fetching new availableHours
-                if (![station, beginDate].some(_.isNil)) {
-                    this.props.fetchAvailableHours(
-                        station,
-                        beginDate,
-                        orderId,
-                        index,
-                    );
-                    // clearing previous form fields values
-                    if (![prevStation, prevBeginDate].some(_.isNil)) {
-                        this.props.form.setFieldsValue({
-                            [`stationLoads[${index}].beginTime`]: void 0,
-                        });
-                    }
-                }
-            }
-        });
+        if(
+            _.get(formValues, "stationLoads[0].beginDate", undefined) && _.get(prevFormValues, "stationLoads[0].beginDate", undefined) &&
+            !(_.get(formValues, "stationLoads[0].beginDate", undefined).isSame(_.get(prevFormValues, "stationLoads[0].beginDate", undefined)))
+        ) {
+            this.props.form.setFieldsValue({
+                deliveryDate:  _.get(formValues, "stationLoads[0].beginDate", undefined),
+            });
+        }
     }
 
     _saveFormRef = formRef => {
@@ -396,7 +334,6 @@ export class OrderForm extends React.PureComponent {
             stations,
             businessLocations,
             fetchedOrder,
-            availableHours,
             managers,
             employees,
             requisites,
@@ -407,10 +344,11 @@ export class OrderForm extends React.PureComponent {
             focusOnRef,
             focusedRef,
         } = this.props;
+
         const formFieldsValues = form.getFieldsValue();
 
         const { totalHours } = servicesStats(
-            _.get(formFieldsValues, "services", []),
+            this.orderServices,
             allServices,
         );
         const clientVehicle = _.get(formFieldsValues, "clientVehicle");
@@ -498,7 +436,6 @@ export class OrderForm extends React.PureComponent {
                     updateOrderField={this._updateOrderField}
                     allServices={allServices}
                     authentificatedManager={authentificatedManager}
-                    availableHours={availableHours}
                     cashFlowFilters={cashFlowFilters}
                     cashSum={cashSum}
                     deliveryDate={deliveryDate}
@@ -672,7 +609,6 @@ export class OrderForm extends React.PureComponent {
             fetchedOrder,
             user,
             stations,
-            availableHours,
 
             changeModalStatus,
             errors,
@@ -695,7 +631,7 @@ export class OrderForm extends React.PureComponent {
             repairMapData,
             fetchRepairMapData,
             focusOnRef,
-            cashOrderEntity,
+            showCahOrderModal,
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
@@ -738,7 +674,6 @@ export class OrderForm extends React.PureComponent {
                 initialBeginDatetime={initialBeginDatetime}
                 initialStation={initialStation}
                 fields={orderFormTabsFields}
-                details={orderFormTabsFields.details || []}
                 services={orderFormTabsFields.services || []}
                 fetchOrderForm={fetchOrderForm}
                 fetchOrderTask={fetchOrderTask}
@@ -765,7 +700,6 @@ export class OrderForm extends React.PureComponent {
                 fetchedOrder={fetchedOrder}
                 user={user}
                 stations={stations}
-                availableHours={availableHours}
                 changeModalStatus={changeModalStatus}
                 tecdocId={tecdocId}
                 clientVehicleId={clientVehicleId}
@@ -805,7 +739,7 @@ export class OrderForm extends React.PureComponent {
                 repairMapData={repairMapData}
                 fetchRepairMapData={fetchRepairMapData}
                 focusOnRef={focusOnRef}
-                cashOrderEntity={cashOrderEntity}
+                showCahOrderModal={showCahOrderModal}
             />
         );
     };

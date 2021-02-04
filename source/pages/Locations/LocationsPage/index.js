@@ -13,6 +13,8 @@ import { Layout } from 'commons';
 import book from 'routes/book';
 import { SingleDatePicker } from 'components';
 import { VehicleLocationModal, LocationHistoryModal } from 'modals';
+import { permissions, isForbidden } from 'utils';
+
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
@@ -22,6 +24,11 @@ const   WORK_POST = 'WORK_POST',
         OTHER = 'OTHER';
 const TYPES = [WORK_POST, INTERNAL_PARKING, EXTERNAL_PARKING, OTHER];
 
+const mapStateToProps = state => ({
+    user: state.auth,
+});
+
+@connect( mapStateToProps, void 0 )
 export default class LocationsPage extends Component {
     constructor(props) {
         super(props);
@@ -73,7 +80,8 @@ export default class LocationsPage extends Component {
                 dataIndex: 'usedCount',
                 width:     'auto',
                 render: (data, row)=>{
-                    return (
+                    return isForbidden(this.props.user, permissions.ACCESS_LOCATION_HISTORY) ? data :
+                    (
                         <Link
                             className={Styles.countLink}
                             to={ {
@@ -83,7 +91,6 @@ export default class LocationsPage extends Component {
                         >
                             {data || 0}
                         </Link>
-                        
                     )
                 }
             },
@@ -140,6 +147,7 @@ export default class LocationsPage extends Component {
                     return (
                         <Button
                             type={'primary'}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_LOCATION_HISTORY)}
                             onClick={()=>{
                                 this.setState({
                                     historyModalVisible: true,
@@ -240,14 +248,18 @@ export default class LocationsPage extends Component {
                     <div className={Styles.headerBlock}>
                         <FormattedMessage id='locations.total_count'/>
                         <div>
-                            <Link
-                                className={Styles.countLink}
-                                to={ {
-                                    pathname: book.locationsVehicles,
-                                } }
-                            >
-                                {totalCount}
-                            </Link>
+                            {
+                                isForbidden(this.props.user, permissions.ACCESS_LOCATION_HISTORY) ? 
+                                    totalCount :
+                                    <Link
+                                        className={Styles.countLink}
+                                        to={ {
+                                            pathname: book.locationsVehicles,
+                                        } }
+                                    >
+                                        {totalCount}
+                                    </Link>
+                            }
                             
                         </div>
                     </div>

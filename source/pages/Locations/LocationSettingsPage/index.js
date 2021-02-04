@@ -10,6 +10,7 @@ import moment from 'moment';
 
 // proj
 import { Layout } from 'commons';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -21,6 +22,11 @@ const   WORK_POST = 'WORK_POST',
         OTHER = 'OTHER';
 const TYPES = [WORK_POST, INTERNAL_PARKING, EXTERNAL_PARKING, TEST_DRIVE, OTHER];
 
+const mapStateToProps = state => ({
+    user: state.auth,
+});
+
+@connect( mapStateToProps, void 0 )
 export default class LocationSettingsPage extends Component {
     constructor(props) {
         super(props);
@@ -65,7 +71,6 @@ export default class LocationSettingsPage extends Component {
             {
                 title:  <div className={ Styles.numberColumn }>
                             <FormattedMessage id='locations.volume' />
-                            
                         </div>,
                 className: Styles.numberColumn,
                 key:       'volume',
@@ -94,7 +99,7 @@ export default class LocationSettingsPage extends Component {
                 key:       'edit',
                 width:     '5%',
                 render:     (elem)=>{
-                    return (
+                    return !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LOCATIONS_CRUD) && (
                         <Icon
                             type='edit'
                             style={{fontSize: 18}}
@@ -112,7 +117,7 @@ export default class LocationSettingsPage extends Component {
                 key:       'delete',
                 width:     '5%',
                 render:     (elem)=>{
-                    return (
+                    return !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LOCATIONS_CRUD) && (
                         <Icon
                             type='delete'
                             style={{fontSize: 18}}
@@ -203,17 +208,18 @@ export default class LocationSettingsPage extends Component {
             <Layout
                 title={ <FormattedMessage id='navigation.locations_settings' /> }
                 controls={
-                    <AddLocationModal
-                        getLocations={this.getLocations}
-                        editMode={editMode}
-                        location={location}
-                        unsetVisible={()=>{
-                            this.setState({
-                                editMode: false,
-                                location: undefined,
-                            })
-                        }}
-                    />
+                    !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LOCATIONS_CRUD) &&
+                        <AddLocationModal
+                            getLocations={this.getLocations}
+                            editMode={editMode}
+                            location={location}
+                            unsetVisible={()=>{
+                                this.setState({
+                                    editMode: false,
+                                    location: undefined,
+                                })
+                            }}
+                        />
                 }
             >
                  <Table
@@ -368,6 +374,7 @@ class AddLocationModal extends Component {
                 okButtonProps={{
                     disabled: !name || !type
                 }}
+                maskClosable={false}
             >
                 <div>
                     <div style={{margin: '0 0 8px 0'}}>

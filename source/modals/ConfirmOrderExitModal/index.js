@@ -33,6 +33,7 @@ export default class CancelReasonModal extends Component {
                         </Button>
                     </div>
                 }
+                maskClosable={false}
             >
                 <FormattedMessage id='order_form_table.confirm_exit' />
             </Modal>

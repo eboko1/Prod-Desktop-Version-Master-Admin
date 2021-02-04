@@ -760,7 +760,7 @@ class DetailStorageModal extends React.Component{
 
     render() {
         const { dataSource, storeFilter, brandFilter, codeFilter, inStock, reserveModalVisible, reserveModalData } = this.state;
-        const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
+        const disabled = this.props.disabled || this.props.stockMode && isForbidden(this.props.user, permissions.ACCESS_STOCK) || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
         let tblData = [...dataSource];
 
         if(storeFilter) tblData = tblData.filter((elem)=>String(elem.storeGroupId).toLowerCase().indexOf(String(storeFilter).toLowerCase()) >= 0 );
@@ -804,6 +804,7 @@ class DetailStorageModal extends React.Component{
                     title={<FormattedMessage id="order_form_table.catalog" />}
                     onCancel={this.handleCancel}
                     footer={null}
+                    maskClosable={false}
                 >
                     {this.state.fetched ? 
                         <Table
@@ -875,6 +876,7 @@ export class PhotoModal extends React.Component{
                     footer={null}
                     title={<FormattedMessage id="photo" />}
                     onCancel={this.handleCancel}
+                    maskClosable={false}
                 >
                     <div style={{textAlign: 'center'}}>
                         <img
@@ -979,6 +981,7 @@ class DetailWarehousesCountModal extends React.Component {
                         maxWidth: 380,
                         fontSize: 16,
                     }}
+                    maskClosable={false}
                 >
                     <div className={Styles.detailWarehousesCountModalLine}>
                         <div>

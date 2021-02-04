@@ -75,6 +75,7 @@ export function columnsConfig(
                     field={ `stationLoads[${key}].status` }
                     getFieldDecorator={ props.form.getFieldDecorator }
                     initialValue={ _getDefaultValue(key, 'status') || 'TO_DO' }
+                    disabled={props.disabled}
                 >
                     <Option value='TO_DO' key='TO_DO'>
                         <FormattedMessage id='order_form_table.TO_DO' />
@@ -100,10 +101,11 @@ export function columnsConfig(
                 placeholder={ formatMessage({
                     id: 'add_order_form.select_date',
                 }) }
-                disabledDate={ disabledDate }
+                //disabledDate={ disabledDate }
                 format={ 'YYYY-MM-DD' } // HH:mm
                 showTime={ false }
                 allowClear={ false }
+                disabled={props.disabled}
                 initialValue={
                     _getDefaultValue(key, 'beginDate') ||
                     (key === 0 ? initialBeginDatetime : void 0)
@@ -132,7 +134,7 @@ export function columnsConfig(
                 placeholder={ formatMessage({
                     id: 'add_order_form.select_station',
                 }) }
-                disabled={ bodyUpdateIsForbidden() }
+                disabled={ bodyUpdateIsForbidden() || props.disabled }
                 initialValue={
                     _getDefaultValue(key, 'stationNum') ||
                     (key === 0 ? initialStation : void 0)
@@ -159,6 +161,7 @@ export function columnsConfig(
                 additionalData={ _.get(props.availableHours, String(key), []) }
                 disabled={
                     bodyUpdateIsForbidden() ||
+                    props.disabled || 
                     !_.get(props, [
                         'fields',
                         'stationLoads',
@@ -174,7 +177,7 @@ export function columnsConfig(
                 }
                 defaultOpenValue={ moment(`${beginTime}:00`, 'HH:mm:ss') }
                 field={ `stationLoads[${key}].beginTime` }
-                disabledHours={ () => {
+                /*disabledHours={ () => {
                     const availableHours = _.get(
                         props.availableHours,
                         String(key),
@@ -206,7 +209,7 @@ export function columnsConfig(
                             Number(availableHour.format('mm')));
 
                     return _.difference([ 0, 30 ], availableMinutes);
-                } }
+                } }*/
                 formatMessage={ formatMessage }
                 getFieldDecorator={ props.form.getFieldDecorator }
                 rules={ [
@@ -253,6 +256,7 @@ export function columnsConfig(
                 optionValue='value'
                 optionLabel='value'
                 initialValue={ _getDefaultValue(key, 'duration') || 0.5 }
+                disabled={props.disabled}
             />
         ),
     };
@@ -263,6 +267,7 @@ export function columnsConfig(
         width:  'auto',
         render: ({ key }) => {
             return (
+                !props.disabled && 
                 state.keys.length > 2 &&
                 _.first(state.keys) !== key &&
                 _.last(state.keys) !== key && (

@@ -15,6 +15,7 @@ import { StorageDocumentForm } from 'forms';
 import book from 'routes/book';
 import { type } from 'ramda';
 import { DetailStorageModal } from 'modals';
+import { permissions, isForbidden } from 'utils';
 // own
 const Option = Select.Option;
 const { error } = Modal;
@@ -887,14 +888,18 @@ class StorageDocumentPage extends Component {
                         : null}
                         {formData.status != DONE && (
                             <div style={{display: 'flex'}}>
-                                {formData.type == ORDER &&
-                                    <AutomaticOrderCreationModal
-                                        supplierId={formData.counterpartId}
-                                        addDocProduct={this.addDocProduct}
-                                        type={formData.type}
-                                        documentType={formData.documentType}
-                                        disabled={formData.status != NEW}
-                                    />
+                                {
+                                    formData.type == ORDER && (
+                                        !isForbidden(user, permissions.ACCESS_SUPPLIER_ORDER_STORE_DOCS_AUTO) && formData.documentType == SUPPLIER || 
+                                        !isForbidden(user, permissions.ACCESS_INCOME_STORE_DOCS_AUTO) && formData.documentType == ORDERINCOME
+                                    ) && 
+                                        <AutomaticOrderCreationModal
+                                            supplierId={formData.counterpartId}
+                                            addDocProduct={this.addDocProduct}
+                                            type={formData.type}
+                                            documentType={formData.documentType}
+                                            disabled={formData.status != NEW}
+                                        />
                                 }
                                 {((formData.type == INCOME && formData.documentType == CLIENT) || (formData.type == EXPENSE && formData.documentType == SUPPLIER)) &&
                                     <ReturnModal
@@ -1330,6 +1335,7 @@ class ReturnModal extends React.Component {
                     onCancel={()=>{
                         this.handleCancel();
                     }}
+                    maskClosable={false}
                 >
                     <div
                         style={{
@@ -1464,6 +1470,7 @@ class ReturnModal extends React.Component {
                             recommendedReturnsVisible: false,
                         })
                     }}
+                    maskClosable={false}
                 >
                     <Table 
                         columns={this.returnTableColumns}
@@ -2055,6 +2062,7 @@ class AutomaticOrderCreationModal extends React.Component {
                     onCancel={()=>{
                         this.handleCancel();
                     }}
+                    maskClosable={false}
                 >
                     <Table
                         columns={

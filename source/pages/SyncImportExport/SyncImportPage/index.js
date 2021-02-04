@@ -10,8 +10,18 @@ import _ from "lodash";
 import { Layout } from "commons";
 import { ImportExportTable } from "components";
 import { SyncImportExportModal, SyncConflictsModal } from "modals";
-// own
 
+// own
+const mapStateToProps = state => {
+    return {
+        user: state.auth,
+    };
+};
+
+@connect(
+    mapStateToProps,
+    void 0,
+)
 export default class SyncImportPage extends Component {
 	constructor(props) {
         super(props);
@@ -66,6 +76,7 @@ export default class SyncImportPage extends Component {
     }
 
     render() {
+        const { user } = this.state;
     	const { modalVisible, tableData, conflictsId, errorsId } = this.state;
     	return (
 	    	<Layout
@@ -225,6 +236,7 @@ class ErrorsModal extends Component {
                 onCancel={hideModal}
                 style={{width: 'fit-content', minWidth: 840}}
                 destroyOnClose
+                maskClosable={false}
             >
                 <Table
                     columns={this.columns}

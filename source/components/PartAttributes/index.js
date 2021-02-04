@@ -92,6 +92,7 @@ export default class PartAttributes extends Component {
                     onOk={() => hideModal()}
                     onCancel={() => hideModal()}
                     footer={null}
+                    maskClosable={false}
                 >
                     {images &&
                         attributes &&

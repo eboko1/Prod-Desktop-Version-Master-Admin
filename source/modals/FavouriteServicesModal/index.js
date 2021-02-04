@@ -588,6 +588,7 @@ class FavouriteServicesModal extends React.Component{
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                     footer={null}
+                    maskClosable={false}
                 >
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
@@ -817,6 +818,7 @@ class NormHourModal extends React.Component{
                     title={<FormattedMessage id="services_table.norm_hours" />}
                     onCancel={this.handleCancel}
                     footer={null}
+                    maskClosable={false}
                 >
                     {this.state.fetched ? 
                         <Table
@@ -996,6 +998,7 @@ class CommentaryButton extends React.Component{
                             </Button>,
                         ])
                     }
+                    maskClosable={false}
                 >
                     <>
                     <div className={Styles.commentaryVehicleSchemeWrap}>

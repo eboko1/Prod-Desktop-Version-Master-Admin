@@ -236,6 +236,7 @@ export default class OrderFormBody extends Component {
             fetchedOrder,
             orderId,
             updateOrderField,
+            user
         } = this.props;
         const businessLocationId = _.get(fields, "businessLocationId") || _.get(fetchedOrder, "order.businessLocationId");
         const orderSuccess = _.get(this.props, "order.status") == "success";
@@ -249,7 +250,7 @@ export default class OrderFormBody extends Component {
                         receiveMode={!businessLocationId}
                         transferMode={businessLocationId && !orderSuccess}
                         returnMode={businessLocationId && orderSuccess}
-                        disabled={!businessLocationId && orderSuccess}
+                        disabled={(!businessLocationId && orderSuccess) || isForbidden(user, permissions.ACCESS_ORDER_LOCATIONS)}
                         orderId={orderId}
                         clientId={_.get(selectedClient, "clientId")}
                         vehicleId={_.get(fetchedOrder, "order.clientVehicleId")}
@@ -654,7 +655,6 @@ export default class OrderFormBody extends Component {
                         field="businessLocationId"
                         initialValue={_.get(fetchedOrder, "order.businessLocationId")}
                         formItem
-                        hasFeedback
                         label={this.state.businessLocationsLabel}
                         placeholder={this._getLocalization("location")}
                         getFieldDecorator={getFieldDecorator}

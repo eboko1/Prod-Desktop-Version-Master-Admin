@@ -10,6 +10,7 @@ import moment from 'moment';
 // proj
 import { Catcher } from 'commons';
 import book from 'routes/book';
+import { permissions, isForbidden } from 'utils';
 import {
     getDiagnosticsReport,
     getDiagnosticsAct,
@@ -75,7 +76,7 @@ export default class RepairMapTable extends Component {
             modals,
             download,
             focusOnRef,
-            cashOrderEntity,
+            showCahOrderModal,
          } = this.props;
         switch(operation) {
             case HEADER_CLIENT_SEARCH:
@@ -159,10 +160,8 @@ export default class RepairMapTable extends Component {
                 break;
             case HEADER_PAY:
                 document.getElementById('OrderFormHeader').scrollIntoView({behavior: "smooth", block: "end"});
-                setModal(MODALS.CASH_ORDER, {
-                    fromOrder: true,
-                    cashOrderEntity: cashOrderEntity,
-                })
+                if(!isForbidden(user, permissions.ACCESS_ORDER_PAY)) 
+                    showCahOrderModal();
                 break;
             case STOCK_BUTTON_ORDERED:
                 document.getElementById('OrderTabs').scrollIntoView({behavior: "smooth"});
@@ -290,7 +289,7 @@ export default class RepairMapTable extends Component {
     }
 
     render() {
-        const { repairMapData, fetchRepairMapData } = this.props;
+        const { repairMapData, fetchRepairMapData, user } = this.props;
 
         return (
             <div>
@@ -309,6 +308,7 @@ export default class RepairMapTable extends Component {
                     </span>
                     <Button
                         type='primary'
+                        disabled={isForbidden(user, permissions.ACCESS_ORDER_TABS_REPAIR_MAP_UPDATE)}
                         onClick={()=>{
                             fetchRepairMapData();
                             window.location.reload();
@@ -336,7 +336,11 @@ export default class RepairMapTable extends Component {
                                                 <span>{child.name}</span>
                                                 <Button
                                                     type='primary'
-                                                    disabled={!child.operation}
+                                                    disabled={
+                                                        !child.operation || 
+                                                        child.isOperationDisabled || 
+                                                        isForbidden(user, permissions.ACCESS_ORDER_TABS_REPAIR_MAP_UPDATE)
+                                                    }
                                                     onClick={async ()=>{
                                                         await this.repairMapAction(child.operation);
                                                         await fetchRepairMapData();

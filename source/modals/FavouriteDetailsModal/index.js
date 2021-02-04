@@ -629,6 +629,7 @@ class FavouriteDetailsModal extends React.Component{
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                     footer={null}
+                    maskClosable={false}
                 >
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
@@ -815,6 +816,7 @@ class CommentaryButton extends React.Component{
                             </Button>,
                         ])
                     }
+                    maskClosable={false}
                 >
                     <>
                     <div className={Styles.commentaryVehicleSchemeWrap}>

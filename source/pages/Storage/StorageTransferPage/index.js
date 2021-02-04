@@ -10,9 +10,14 @@ import moment from 'moment';
 
 // proj
 import { StorageDocumentsContainer } from 'containers';
+import { permissions, isForbidden } from 'utils';
 
 // own
+const mapStateToProps = state => ({
+    user: state.auth,
+});
 
+@connect( mapStateToProps, void 0 )
 class StorageTransferPage extends Component {
     constructor(props) {
         super(props);
@@ -22,11 +27,14 @@ class StorageTransferPage extends Component {
     }
 
     render() {
+        const { user } = this.props;
         const { documentFilters } = this.state;
+        const isCRUDForbidden = isForbidden(user, permissions.ACCESS_TRANSFER_STORE_DOCS_CRUD);
         return (
             <StorageDocumentsContainer
                 listType = 'TRANSFER'
                 newDocType = 'TRANSFER'
+                isCRUDForbidden={isCRUDForbidden}
             />
         );
     }

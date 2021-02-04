@@ -4,6 +4,7 @@ import React from 'react';
 // proj
 import { Numeral } from 'commons';
 import { numeralFormatter } from 'utils';
+import { permissions, isForbidden } from 'utils';
 
 //own
 import { ProductTableData } from '../ProductTableData';
@@ -72,13 +73,15 @@ export default props => {
             return (
                 <div className={Styles.cellWrapp} 
                     onClick={()=>{
-                        props.redirectToTracking({
-                            id:   data.id,
-                            name: data.name,
-                            code: data.code,
-                            type: "reserves",
-                            date: props.filters.date,
-                        })
+                        if(!isForbidden(props.user, permissions.ACCESS_RESERVES_STORE_DOCS)) {
+                            props.redirectToTracking({
+                                id:   data.id,
+                                name: data.name,
+                                code: data.code,
+                                type: "reserves",
+                                date: props.filters.date,
+                            })
+                        }
                     }}
                 >
                     {numeralFormatter(reserved)}
@@ -126,13 +129,15 @@ export default props => {
             return (
                 <div className={Styles.cellWrapp} 
                     onClick={()=>{
-                        props.redirectToTracking({
-                            id:   data.id,
-                            name: data.name,
-                            code: data.code,
-                            type: "orders",
-                            date: props.filters.date,
-                        })
+                        if(!isForbidden(props.user, permissions.ACCESS_ORDERS_STORE_DOCS)) {
+                            props.redirectToTracking({
+                                id:   data.id,
+                                name: data.name,
+                                code: data.code,
+                                type: "orders",
+                                date: props.filters.date,
+                            })
+                        }
                     }}
                 >
                     {numeralFormatter(ordered)}

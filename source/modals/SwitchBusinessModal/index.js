@@ -34,6 +34,7 @@ export default class SwitchBusinessModal extends Component {
                 onCancel={() => resetModal()}
                 footer={null}
                 destroyOnClose
+                maskClosable={false}
             >
                 <SwitchBusinessForm
                     setBusiness={setBusiness}

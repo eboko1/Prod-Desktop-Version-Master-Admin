@@ -29,6 +29,7 @@ import VehicleLocationModal from './VehicleLocationModal';
 import LocationHistoryModal from './LocationHistoryModal';
 import ReportOrdersFilterModal from './ReportModals/ReportOrdersFilterModal';
 import ReportOrdersExportModal from './ReportModals/ReportOrdersExportModal';
+import ReportAnalyticsModal from './ReportModals/ReportAnalyticsModal';
 import StoreProductTrackingModal from './StoreProductTrackingModal';
 import SyncImportExportModal from './SyncImportExportModal';
 import SyncConflictsModal from './SyncConflictsModal';
@@ -65,6 +66,7 @@ export {
     LocationHistoryModal,
     ReportOrdersFilterModal,
     ReportOrdersExportModal,
+    ReportAnalyticsModal,
     StoreProductTrackingModal,
     SyncImportExportModal,
     SyncConflictsModal,

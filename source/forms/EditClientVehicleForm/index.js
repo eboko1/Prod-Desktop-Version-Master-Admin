@@ -181,6 +181,7 @@ export class EditClientVehicleForm extends Component {
                                             onCancel={() =>
                                                 setEditVehicle(false)
                                             }
+                                            maskClosable={false}
                                         >
                                             <AddClientVehicleForm
                                                 onlyVehicles
@@ -275,7 +276,7 @@ export class EditClientVehicleForm extends Component {
                                     ) : null}
                                 </Col>
                                 <Col span={3}>
-                                    {!isEditForbidden && editableItem != index ? (
+                                    {!isForbidden(user, permissions.ACCESS_CLIENTS_VEHICLE_TRANSFER) && !isEditForbidden && editableItem != index ? (
                                         <ClientVehicleTransfer
                                             clientId={clientId}
                                             vehicleId={item.id}
@@ -426,6 +427,7 @@ class ClientVehicleTransfer extends Component {
                     style={{
                         minWidth: 640
                     }}
+                    maskClosable={false}
                 >
                     <div
                         style={{

@@ -14,7 +14,7 @@ export default {
                     key:      '/new-document',
                     link:     book.newDocumentPage,
                     disabled: user =>
-                        isForbidden(user, permissions.ACCESS_DASHBOARD),
+                        isForbidden(user, permissions.NEW_DOCUMENT),
                     name: 'navigation.new_document',
                 },
                 {
@@ -34,6 +34,8 @@ export default {
                 {
                     key:      '/locations',
                     link:      book.locationsPage,
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_LOCATIONS),
                     name:      'navigation.locations',
                 },
                 {
@@ -50,6 +52,13 @@ export default {
             iconType: 'contacts',
             name:     'navigation.catalog',
             items:    [
+                {
+                    key:      '/report/analytics',
+                    link:     book.analytics,
+                    disabled: user =>
+                        isForbidden(user, permissions.GET_CLIENTS),
+                    name: 'navigation.analytics',
+                },
                 {
                     key:      '/clients',
                     link:     book.clients,
@@ -68,7 +77,7 @@ export default {
                     key:      '/warehouses',
                     link:     book.warehouses,
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE),
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_STOCK),
                     name: 'navigation.warehouses',
                 },
                 {
@@ -124,6 +133,8 @@ export default {
                 {
                     key:      '/location-settings',
                     link: book.locationSettings,
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_LOCATIONS),
                     name: 'navigation.locations_settings',
                 },
             ],
@@ -144,14 +155,14 @@ export default {
                 {
                     key:      '/cash/clients-debts',
                     disabled: user =>
-                        isForbidden(user, permissions.ACCESS_ACCOUNTING),
+                        isForbidden(user, permissions.ACCESS_FINANCE_RECEIVABLE),
                     link: book.cashClientsDebtsPage,
                     name: 'navigation.clients_debts',
                 },
                 {
                     key:      '/cash/bank',
                     disabled: user =>
-                        isForbidden(user, permissions.ACCESS_ACCOUNTING),
+                        isForbidden(user, permissions.ACCESS_FINANCE_CASH),
                     link: book.cashBankPage,
                     name: 'navigation.cash_bank',
                 },
@@ -173,7 +184,7 @@ export default {
                 {
                     key:      '/storage-orders',
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE),
+                        isForbidden(user, permissions.ACCESS_SUPPLIER_ORDER_STORE_DOCS),
                     link: book.storageOrders,
                     name: 'navigation.orders',
                 },
@@ -194,7 +205,7 @@ export default {
                 {
                     key:      '/storage-transfers',
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE),
+                        isForbidden(user, permissions.ACCESS_TRANSFER_STORE_DOCS),
                     link: book.storageTransfers,
                     name: 'navigation.transfers',
                 },
@@ -208,32 +219,9 @@ export default {
                 {
                     key:      '/storage-inventory',
                     disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE) || true,
+                        isForbidden(user, permissions.ACCESS_STOCK_INVENTORIZATION) || true,
                     link: book.storageInventory,
                     name: 'navigation.inventory',
-                },
-            ],
-        },
-        /* Locations 
-        {
-            key:      'locations',
-            iconType: 'heat-map',
-            name:     'navigation.locations',
-            items:    [
-                {
-                    key:      '/location-document',
-                    link: book.locationsDocument,
-                    name: 'navigation.locations_document',
-                },
-                {
-                    key:      '/location-vehicles',
-                    link: book.locationsVehicles,
-                    name: 'navigation.locations_vehicles',
-                },
-                {
-                    key:      '/location-movement',
-                    link: book.locationsMovement,
-                    name: 'navigation.locations_movement',
                 },
             ],
         },
@@ -270,7 +258,7 @@ export default {
                 {
                     key:      '/report/orders',
                     disabled: user =>
-                        isForbidden(user, permissions.SHOW_ORDERS) &&
+                        isForbidden(user, permissions.ACCESS_REPORT_PROFIT_FROM_ORDERS) &&
                         !isAdmin(user),
                     link: book.reportOrders,
                     name: 'navigation.report_orders',
@@ -278,7 +266,7 @@ export default {
                 {
                     key:      '/report/load_kpi',
                     disabled: user =>
-                        isForbidden(user, permissions.SHOW_ORDERS) &&
+                        isForbidden(user, permissions.ACCESS_REPORT_TIME_EFFICIENCY) &&
                         !isAdmin(user),
                     link: book.reportLoadKPI,
                     name: 'navigation.report_load_kpi',
@@ -316,18 +304,19 @@ export default {
             key:      'settings',
             iconType: 'setting',
             name:     'navigation.settings',
+            disabled: user => isForbidden(user, permissions.ACCESS_SETTINGS),
             items:    [
                 {
                     key:      '/settings',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settings,
                     name: 'navigation.main_settings',
                 },
                 {
                     key:      '/cash/settings',
                     disabled: user =>
-                        isForbidden(user, permissions.ACCESS_ACCOUNTING),
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_CASH),
                     link: book.cashSettingsPage,
                     name: 'navigation.cash_settings',
                 },
@@ -343,63 +332,63 @@ export default {
                 {
                     key:      '/requisites',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_REQUISITES),
                     link: book.requisites,
                     name: 'navigation.requisites',
                 },
                 {
                     key:      '/prices',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsSpecialization,
                     name: 'navigation.specialization_and_prices',
                 },
                 {
                     key:      '/services',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsServices,
                     name: 'navigation.services',
                 },
                 {
                     key:      '/stocks',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsOffers,
                     name: 'navigation.special_offers',
                 },
                 {
                     key:      '/news',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsNews,
                     name: 'navigation.news',
                 },
                 {
                     key:      '/articles',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsArticles,
                     name: 'navigation.articles',
                 },
                 {
                     key:      '/media',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsGallery,
                     name: 'navigation.media_files',
                 },
                 {
                     key:      '/managers',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsManagers,
                     name: 'navigation.managers',
                 },
                 {
                     key:      '/notice',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settingsNotifications,
                     name: 'navigation.notifications',
                 },
@@ -409,7 +398,7 @@ export default {
         {
             key:      'administration',
             iconType: 'database',
-            disabled: user => isForbidden(user, permissions.GRANT),
+            disabled: user => isForbidden(user, permissions.ACCESS_ADMINISTRATION),
             name:     'navigation.administration',
             items:    [
                 {
@@ -451,19 +440,19 @@ export default {
                 {
                     key:     '/administration/availabilities',
                     link:    book.availabilitiesPage,
-                    visible: user => isAdmin(user),
+                    visible: user => !isForbidden(user, permissions.ACCESS_DISTRIBUTORS),
                     name:    'navigation.availabilities',
                 },
                 {
                     key:     '/administration/sync-import',
                     link:    book.syncImportPage,
-                    visible: user => isAdmin(user),
+                    visible: user => !isForbidden(user, permissions.ACCESS_SYNC_IMPORT),
                     name:    'navigation.sync_import',
                 },
                 {
                     key:     '/administration/sync-export',
                     link:    book.syncExportPage,
-                    visible: user => isAdmin(user),
+                    visible: user => !isForbidden(user, permissions.ACCESS_SYNC_EXPORT),
                     name:    'navigation.sync_export',
                 },
             ],
