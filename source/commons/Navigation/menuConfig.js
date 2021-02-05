@@ -56,7 +56,7 @@ export default {
                     key:      '/report/analytics',
                     link:     book.analytics,
                     disabled: user =>
-                        isForbidden(user, permissions.GET_CLIENTS),
+                        isForbidden(user, permissions.GET_CLIENTS) || true,
                     name: 'navigation.analytics',
                 },
                 {
