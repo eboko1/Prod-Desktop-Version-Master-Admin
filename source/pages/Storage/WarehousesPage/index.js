@@ -9,6 +9,7 @@ import _ from 'lodash';
 import moment from 'moment';
 
 // proj
+import { fetchWarehouses } from 'core/warehouses/duck';
 import { Layout } from 'commons';
 import { permissions, isForbidden } from 'utils';
 
@@ -20,15 +21,18 @@ const MAIN = 'MAIN',
       REPAIR_AREA= 'REPAIR_AREA';
 
 const mapStateToProps = state => {
+    console.log(state);
     return {
         user: state.auth,
+        warehouses: state.warehouses.warehouses,
     };
 };
 
-@connect(
-    mapStateToProps,
-    void 0,
-)
+const mapDispatchToProps = {
+    fetchWarehouses,
+};
+
+@connect(mapStateToProps, mapDispatchToProps)
 class WarehousesPage extends Component {
     constructor(props) {
         super(props);
@@ -224,6 +228,7 @@ class WarehousesPage extends Component {
     }
 
     componentDidMount() {
+        //this.props.fetchWarehouses();
         this.getWarehouses()
         if(this.props.location.state && this.props.location.state.showForm) {
             this.setState({
@@ -233,6 +238,7 @@ class WarehousesPage extends Component {
     }
 
     render() {
+        console.log(this);
         const { warehouses, isMain, isReserve, isTool, isRepairArea, editMode, warehouse, modalVisible } = this.state;
         return (
             <Layout

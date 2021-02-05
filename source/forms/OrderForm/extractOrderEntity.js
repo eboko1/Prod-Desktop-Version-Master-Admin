@@ -247,11 +247,13 @@ export function convertFieldsValuesToDbEntity(
                 ? _.omit(orderEntity, [ 'status' ])
                 : orderEntity,
         orderEntity =>
-            isForbidden(user, permissions.ACCESS_ORDER_SERVICES)
+            isForbidden(user, permissions.ACCESS_ORDER_SERVICES) || 
+            isForbidden(user, permissions.ACCESS_ORDER_LABORS_DISCOUNTS)
                 ? _.omit(orderEntity, [ 'services', 'servicesDiscount' ])
                 : orderEntity,
         orderEntity =>
-            isForbidden(user, permissions.ACCESS_ORDER_DETAILS)
+            isForbidden(user, permissions.ACCESS_ORDER_DETAILS) ||
+            isForbidden(user, permissions.ACCESS_ORDER_DETAILS_DISCOUNTS)
                 ? _.omit(orderEntity, [ 'details', 'detailsDiscount' ])
                 : orderEntity,
         orderEntity =>
