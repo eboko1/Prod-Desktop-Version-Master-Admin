@@ -228,13 +228,13 @@ class WarehousesPage extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchWarehouses();
-        // this.getWarehouses()
-        // if(this.props.location.state && this.props.location.state.showForm) {
-        //     this.setState({
-        //         modalVisible: true,
-        //     })
-        // }
+        //this.props.fetchWarehouses();
+        this.getWarehouses()
+        if(this.props.location.state && this.props.location.state.showForm) {
+            this.setState({
+                modalVisible: true,
+            })
+        }
     }
 
     render() {
