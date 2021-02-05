@@ -175,7 +175,7 @@ export class OrderForm extends React.PureComponent {
                 hours = 8;
             }
 
-            field = {duration: hours};
+            field = {duration: Math.round(hours*10)/10};
         }
         
         var that = this;

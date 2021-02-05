@@ -41,6 +41,7 @@ export default class AddClientModal extends Component {
             addClientFormData,
             searchQuery,
             vehicles,
+            onSubmit,
         } = this.props;
 
         const { getFieldsValue, validateFields } = this.props.form;
@@ -106,8 +107,8 @@ export default class AddClientModal extends Component {
                             };
 
                             this.props.createClient(clientEntity);
-                            // resetModal();
-                            window.location.reload();
+                            resetModal();
+                            if(onSubmit) onSubmit();
                         }
                     });
                 } }
