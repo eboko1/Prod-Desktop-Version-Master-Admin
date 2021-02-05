@@ -24,6 +24,7 @@ import { saga as vehicleNumberHistorySaga } from 'core/vehicleNumberHistory/saga
 import { saga as cashSaga } from 'core/cash/saga';
 import { saga as suppliersSaga } from 'core/suppliers/saga';
 import { saga as paymentsSaga } from 'core/payments/saga';
+import { saga as warehousesSaga } from 'core/warehouses/saga';
 // forms
 import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
@@ -107,6 +108,7 @@ export default function* rootSaga() {
         scheduleFormSaga(),
         settingSalaryFormSaga(),
         suppliersSaga(),
+        warehousesSaga(),
         // storage
         storageStoreGroupsSaga(),
         storagePriceGroupsSaga(),
