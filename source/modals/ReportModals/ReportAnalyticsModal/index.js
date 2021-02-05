@@ -10,6 +10,7 @@ import { ReportAnalyticsForm, ReportAnalyticsCatalogForm } from 'forms';
 import {
     formKeys,
     analyticsLevels,
+    formModes,
 
     createAnalytics,
     changeCurrentForm,
@@ -50,9 +51,24 @@ export default class ReportAnalyticsModal extends Component {
     constructor(props) {
         super(props);
 
+        const {modalProps = {}} = props;
+
+        //Initialize default values and combine props from all sources
+        this.state = {
+            analyticsEntity: modalProps.analyticsEntity || props.analyticsEntity || {},
+            mode: modalProps.mode || props.mode || formModes.ADD,
+            initialTab: modalProps.initialTab || props.initialTab || undefined
+        };
+
+        //Set view to initial tab
+        const {initialTab} = this.state;
+        console.log("Here:", initialTab);
+        initialTab && changeCurrentForm(initialTab);
+
         //Initialize analytics catalogs for this modal
         this.props.fetchAnalyticsCatalogs();
 
+        //Binds
         this.handleSubmit = this.handleSubmit.bind(this);
         this.saveCatalogFormRef = this.saveCatalogFormRef.bind(this);
         this.saveAnalyticsFormRef = this.saveAnalyticsFormRef.bind(this);
@@ -64,8 +80,17 @@ export default class ReportAnalyticsModal extends Component {
 
         const {
             currentForm,
-            createAnalytics
+            createAnalytics,
         } = this.props;
+
+        const {mode} = this.state;
+
+        //Do nothing for view mode except resetting all
+        if(mode == formModes.VIEW) {
+            this.analyticsForm && this.analyticsForm.resetFields();
+            this.catalogForm && this.catalogForm.resetFields();
+            this.props.resetModal();
+        }
 
         const analyticsRequest = ({analyticsEntity}) => {
             createAnalytics({analyticsEntity});
@@ -118,12 +143,10 @@ export default class ReportAnalyticsModal extends Component {
 
     saveCatalogFormRef = (ref) => {
         this.catalogForm = ref;
-        console.log(ref);
     }
 
     saveAnalyticsFormRef = (ref) => {
         this.analyticsForm = ref;
-        console.log(ref);
     }
 
     render() {
@@ -140,6 +163,14 @@ export default class ReportAnalyticsModal extends Component {
             fetchAnalyticsCatalogs
         } = this.props;
 
+        const {
+            mode, //Can be "EDIT", "VIEW", "ADD", default ADD,
+            analyticsEntity, //Used only in EDIT or VIEW mode(to edit or view analytics :3),
+        } = this.state;
+
+        console.log(this.state);
+        console.log(this.props);
+
         return (
             <Modal
                 width={ '80%' }
@@ -154,17 +185,18 @@ export default class ReportAnalyticsModal extends Component {
                         tabBarStyle={{width: '20%'}}
                         activeKey={currentForm}
                         onChange={(activeKey) => {
-                            //When tab is clicked or opened force updating some fields
-                            if(activeKey == formKeys.analyticsForm) {
-                                fetchAnalyticsCatalogs();
+                            //Don't change tab if we are in EDIT or in VIEW mode, it must be specified and locked
+                            if(mode == formModes.ADD) {
+                                //When this tab is opened force updating some fields
+                                (activeKey == formKeys.analyticsForm) && fetchAnalyticsCatalogs();
+                                changeCurrentForm(activeKey);
                             }
-                            
-                            changeCurrentForm(activeKey);
                         }}
                     >
                         <TPane tab="Create catalog" key={formKeys.catalogForm}>
                             <ReportAnalyticsCatalogForm
                                 getFormRefCB={this.saveCatalogFormRef}//Get form refference
+                                analyticsEntity={analyticsEntity}
                             />
                         </TPane>
                         <TPane  tab="Create analytics" key={formKeys.analyticsForm}>
@@ -172,6 +204,8 @@ export default class ReportAnalyticsModal extends Component {
                                 getFormRefCB={this.saveAnalyticsFormRef}//Get form refference
                                 analyticsCatalogs={analyticsCatalogs}
                                 analyticsCatalogsLoading={analyticsCatalogsLoading}
+                                mode={mode}
+                                analyticsEntity={analyticsEntity}
                             />
                         </TPane>
                     </Tabs>

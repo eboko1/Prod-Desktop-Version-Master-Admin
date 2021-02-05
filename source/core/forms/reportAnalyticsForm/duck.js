@@ -29,6 +29,13 @@ export const analyticsLevels = {
     analytics: 2
 }
 
+//Help to define how data have to be represented inside forms and what to do after submit button
+export const formModes = {
+    EDIT: "EDIT",
+    VIEW: "VIEW",
+    ADD: "ADD"
+}
+
 /**
  * Reducer
  * */

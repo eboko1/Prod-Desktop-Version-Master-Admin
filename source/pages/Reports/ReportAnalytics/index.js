@@ -18,16 +18,20 @@ import _ from "lodash";
 const Search = Input.Search;
 
 // proj
+import { ReportAnalyticsModal } from 'modals';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import { Layout, StyledButton } from "commons";
+import { ReportOrdersTable, ReportOrdersFilter } from "components";
+import {fetchAPI} from 'utils';
 import {
     fetchReportAnalytics,
     deleteReportAnalytics
 } from 'core/reports/reportAnalytics/duck';
-import { ReportAnalyticsModal } from 'modals';
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
-import {fetchAPI} from 'utils';
+import {
+    formKeys,
+    formModes,
+} from 'core/forms/reportAnalyticsForm/duck';
 
-import { Layout, StyledButton } from "commons";
-import { ReportOrdersTable, ReportOrdersFilter } from "components";
 
 // own
 import Styles from "./styles.m.css";
@@ -36,6 +40,8 @@ import AnalyticsDropdown from './AnalyticsDropdown';
 const mapStateToProps = state => ({
     analytics: state.reportAnalytics.analytics,
     modal: state.modals.modal,
+
+    modalProps: state.modals.modalProps,
 });
 
 const mapDispatchToProps = {
@@ -58,6 +64,7 @@ export default class ReportAnalyticsPage extends Component {
         this.onAnalyticsBtn = this.onAnalyticsBtn.bind(this);
         this.onAnalyticsModalCancel = this.onAnalyticsModalCancel.bind(this);
         this._onDeleteAnalytics = this._onDeleteAnalytics.bind(this);
+        this.openAnalyticsModal = this.openAnalyticsModal.bind(this);
     }
 
     componentDidMount() {
@@ -70,6 +77,14 @@ export default class ReportAnalyticsPage extends Component {
 
     onAnalyticsModalCancel() {
         this.props.resetModal();
+    }
+    
+    openAnalyticsModal(mode, initialTab, analyticsEntity) {
+        
+        //Open modal
+        this.onAnalyticsBtn();
+
+        this.props.setModal(MODALS.REPORT_ANALYTICS, {mode, initialTab, analyticsEntity});
     }
 
     /**
@@ -92,7 +107,8 @@ export default class ReportAnalyticsPage extends Component {
         const {
             analytics,
             modal,
-            fetchReportAnalytics
+            fetchReportAnalytics,
+            modalProps
         } = this.props;
         
         
@@ -119,11 +135,13 @@ export default class ReportAnalyticsPage extends Component {
                 <AnalyticsDropdown
                     analytics={analytics}
                     onDeleteAnalytics={this._onDeleteAnalytics}
+                    openAnalyticsModal={this.openAnalyticsModal}
                 />
 
                 <ReportAnalyticsModal 
                     visible={modal}
                     onCancel={this.onAnalyticsModalCancel}
+                    modalProps={modalProps}
                 />
             </Layout>
         );

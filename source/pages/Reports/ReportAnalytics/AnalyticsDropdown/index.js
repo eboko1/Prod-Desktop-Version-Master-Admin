@@ -9,6 +9,11 @@ import { Collapse, Row, Col, Switch, Button, Icon } from 'antd';
 import _ from 'lodash';
 
 //proj
+import {
+    formKeys,
+    analyticsLevels,
+    formModes
+} from 'core/forms/reportAnalyticsForm/duck';
 
 //own
 import Style from './styles.m.css';
@@ -20,11 +25,14 @@ export default class AnalyticsDropdown extends React.Component {
         super(props);
     }
 
+    
+
     //Generate panel with all it's children components for one parent analytics
     genPanel(parent, children) {
 
         const {
-            onDeleteAnalytics
+            onDeleteAnalytics,
+            openAnalyticsModal
         } = this.props;
         // console.log("Parent: ", parent, '\n', "Cld: ", children);
 
@@ -36,9 +44,9 @@ export default class AnalyticsDropdown extends React.Component {
 
         const genChildren = (chil) => {
             return (
-                <div className={Style.analyticsCont}>
+                <div className={Style.analyticsCont} key={chil.analyticsId}>
                     <Row className={Style.row}>
-                        <Col className={Style.col} span={12}>{chil.analyticsName} {chil.analyticsId}</Col>
+                        <Col className={Style.col} span={8}>{chil.analyticsName} {chil.analyticsId}</Col>
 
                         <Col className={Style.col} span={4}>{chil.analyticsBookkeepingAccount}</Col>
                         <Col className={Style.col} span={4}>{chil.analyticsOrderType}</Col>
@@ -46,7 +54,37 @@ export default class AnalyticsDropdown extends React.Component {
                         <Col className={Style.colCentered} span={2}><Switch size='small' checked={!chil.analyticsDisabled}/></Col>
                         <Col className={Style.colCentered} span={2}>
                             {
-                                /* Buttons only for non-custom fields in another case just place icon */
+                                /* Buttons only for non-custom fields otherwise just place an icon */
+                                (() => {
+                                    if(chil.analyticsIsCustom) {
+                                        return (
+                                            <Button size="small" onClick={() => openAnalyticsModal(formModes.VIEW, formKeys.analyticsForm, chil)}> 
+                                                <Icon type="eye" />
+                                            </Button>
+                                        );
+                                    } else return "";
+                                })()
+                            }
+                            
+                        </Col>
+                        <Col className={Style.colCentered} span={2}>
+                            {
+                                /* Buttons only for non-custom fields otherwise just place an icon */
+                                (() => {
+                                    if(chil.analyticsIsCustom) {
+                                        return (
+                                            <Button size="small" onClick={() => openAnalyticsModal(formModes.EDIT, formKeys.analyticsForm, chil)}> 
+                                                <Icon type="edit" />
+                                            </Button>
+                                        );
+                                    } else return "";
+                                })()
+                            }
+                            
+                        </Col>
+                        <Col className={Style.colCentered} span={2}>
+                            {
+                                /* Buttons only for non-custom fields in another case just place an icon */
                                 (() => {
                                     if(chil.analyticsIsCustom) {
                                         return (
@@ -64,7 +102,6 @@ export default class AnalyticsDropdown extends React.Component {
                 </div>
             );
         }
-
 
         return (
             <Panel header={genParentHeader(parent)} key={parent.analyticsId}>

@@ -5,7 +5,9 @@ import { Modal, Form, Button, Col, Row, Checkbox, Radio, Tabs, Input, Select } f
 import moment from 'moment';
 
 //proj
-
+import {
+    formModes,
+} from 'core/forms/reportAnalyticsForm/duck';
 
 //own
 import Styles from './styles.m.css'
@@ -39,6 +41,7 @@ class ReportAnalyticsCatalog extends React.Component {
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
 
         const {
+
         } = this.props;
 
         
@@ -80,8 +83,19 @@ class ReportAnalytics extends React.Component {
 
         const {
             analyticsCatalogs,
-            analyticsCatalogsLoading
+            analyticsCatalogsLoading,
+            mode,
+            analyticsEntity,
         } = this.props;
+
+        //Initial values are generally used for EDIT or VIEW mode
+        const initValues = {
+            catalogId: analyticsEntity.analyticsParentId,
+            analyticsName: analyticsEntity.analyticsName,
+            bookkeepingAccount: analyticsEntity.analyticsBookkeepingAccount,
+            orderType: analyticsEntity.analyticsOrderType
+
+        };
 
         const orderTypes = [
             {
@@ -105,9 +119,10 @@ class ReportAnalytics extends React.Component {
                                 field="catalogId"
                                 showSearch
                                 loading={analyticsCatalogsLoading}
-                                disabled={analyticsCatalogsLoading}
+                                disabled={analyticsCatalogsLoading || (mode == formModes.VIEW)}
                                 allowClear
                                 formItem
+                                initialValue={initValues.catalogId}
                                 style={{width: '100%'}}
                                 getFieldDecorator={getFieldDecorator}
                                 getPopupContainer={trigger =>
@@ -131,9 +146,12 @@ class ReportAnalytics extends React.Component {
                         <FItem>
                             {
                                 getFieldDecorator('analyticsName', {
-                                    rules: [{ required: true, whitespace: true, message: 'Analytics name please!!!' }]
+                                    rules: [{ required: true, whitespace: true, message: 'Analytics name please!!!' }],
+                                    initialValue: initValues.analyticsName,
                                 })(
-                                    <Input />
+                                    <Input
+                                        disabled={(mode == formModes.VIEW)}
+                                    />
                                 )
                             }
                         </FItem>
@@ -145,8 +163,12 @@ class ReportAnalytics extends React.Component {
                     <Col span={18}>
                         <FItem>
                             {
-                                getFieldDecorator('bookkeepingAccount')(
-                                    <Input />
+                                getFieldDecorator('bookkeepingAccount', {
+                                    initialValue: initValues.bookkeepingAccount,
+                                })(
+                                    <Input
+                                        disabled={(mode == formModes.VIEW)}
+                                    />
                                 )
                             }
                         </FItem>
@@ -162,8 +184,10 @@ class ReportAnalytics extends React.Component {
                                 showSearch
                                 allowClear
                                 formItem
+                                disabled={(mode == formModes.VIEW)}
                                 style={{width: '100%'}}
                                 getFieldDecorator={getFieldDecorator}
+                                initialValue={initValues.orderType}
                                 getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }

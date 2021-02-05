@@ -46,13 +46,9 @@ export function* fetchAnalyticsCatalogsAnalyticsFormSaga() {
                 catalogsFilters
             } = yield select(selectFilter);
 
-            console.log("Filters: ", catalogsFilters);
-
             const filters = {...catalogsFilters};
 
             const {analytics} = yield call(fetchAPI, 'GET', 'report/analytics', {filters});
-
-            console.log(analytics);
 
             yield put(fetchAnalyticsCatalogsSuccess(analytics));
         } catch (error) {
