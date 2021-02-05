@@ -102,6 +102,9 @@ export default class ClientsPage extends Component {
                     visible={ modal }
                     resetModal={ resetModal }
                     addClientFormData={ addClientFormData }
+                    onSubmit={ ()=>{
+                        window.location.reload();
+                    } }
                 />
             </Layout>
         );
