@@ -1,8 +1,11 @@
+/*
+This module contains two forms, each purpose is to work with specific analytics(one for catalog anlytics and another for ordinar analytics)
+*/
+
 //vendor
 import React from 'react';
 import { FormattedMessage, injectIntl } from "react-intl";
-import { Modal, Form, Button, Col, Row, Checkbox, Radio, Tabs, Input, Select } from 'antd';
-import moment from 'moment';
+import { Form, Col, Row, Checkbox, Radio, Tabs, Input } from 'antd';
 
 //proj
 import {
@@ -16,14 +19,6 @@ import {
 } from "forms/DecoratedFields";
 
 const FItem = Form.Item;
-const RGroup = Radio.Group;
-const CGroup = Checkbox.Group;
-const TPane = Tabs.TabPane;
-
-function hasErrors(fieldsError) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
-}
-
 
 @injectIntl
 class ReportAnalyticsCatalog extends React.Component {
@@ -38,13 +33,22 @@ class ReportAnalyticsCatalog extends React.Component {
     }
 
     render() {
-        const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
-
         const {
-
+            mode,
+            analyticsEntity,
+            form
         } = this.props;
-
         
+        const { getFieldDecorator} = form;
+        //------------------
+
+
+        const initValues = {
+            catalogName: analyticsEntity.analyticsName
+        }
+        
+        const fieldsDisabled = (mode == formModes.VIEW);
+
         return (
             <Form>
                 <Row className={Styles.row}>
@@ -53,9 +57,12 @@ class ReportAnalyticsCatalog extends React.Component {
                         <FItem>
                             {
                                 getFieldDecorator('catalogName', {
-                                    rules: [{ required: true, whitespace: true, message: 'Catalog name please!!!' }]
+                                    rules: [{ required: true, whitespace: true, message: 'Catalog name please!!!' }],
+                                    initialValue: initValues.catalogName
                                 })(
-                                    <Input />
+                                    <Input
+                                        disabled={fieldsDisabled}
+                                    />
                                 )
                             }
                         </FItem>
@@ -79,7 +86,7 @@ class ReportAnalytics extends React.Component {
     }
 
     render() {
-        const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
 
         const {
             analyticsCatalogs,
@@ -97,6 +104,9 @@ class ReportAnalytics extends React.Component {
 
         };
 
+        //Disable all fields in VIEW mode
+        const fieldsDisabled = (mode == formModes.VIEW);
+
         const orderTypes = [
             {
                 value: 'INCOME',
@@ -107,7 +117,6 @@ class ReportAnalytics extends React.Component {
                 label: 'Expense'
             }
         ];
-
         
         return (
             <Form>
@@ -119,7 +128,7 @@ class ReportAnalytics extends React.Component {
                                 field="catalogId"
                                 showSearch
                                 loading={analyticsCatalogsLoading}
-                                disabled={analyticsCatalogsLoading || (mode == formModes.VIEW)}
+                                disabled={analyticsCatalogsLoading || (fieldsDisabled)}
                                 allowClear
                                 formItem
                                 initialValue={initValues.catalogId}
@@ -134,7 +143,6 @@ class ReportAnalytics extends React.Component {
                                 options={analyticsCatalogs}
                                 optionValue="analyticsId" //Will be sent as var
                                 optionLabel="analyticsName"
-                                // initialValue={status}
                             />
                         </FItem>
                     </Col>
@@ -150,7 +158,7 @@ class ReportAnalytics extends React.Component {
                                     initialValue: initValues.analyticsName,
                                 })(
                                     <Input
-                                        disabled={(mode == formModes.VIEW)}
+                                        disabled={(fieldsDisabled)}
                                     />
                                 )
                             }
@@ -167,7 +175,7 @@ class ReportAnalytics extends React.Component {
                                     initialValue: initValues.bookkeepingAccount,
                                 })(
                                     <Input
-                                        disabled={(mode == formModes.VIEW)}
+                                        disabled={(fieldsDisabled)}
                                     />
                                 )
                             }
@@ -184,7 +192,7 @@ class ReportAnalytics extends React.Component {
                                 showSearch
                                 allowClear
                                 formItem
-                                disabled={(mode == formModes.VIEW)}
+                                disabled={(fieldsDisabled)}
                                 style={{width: '100%'}}
                                 getFieldDecorator={getFieldDecorator}
                                 initialValue={initValues.orderType}

@@ -34,7 +34,6 @@ export default class AnalyticsDropdown extends React.Component {
             onDeleteAnalytics,
             openAnalyticsModal
         } = this.props;
-        // console.log("Parent: ", parent, '\n', "Cld: ", children);
 
         const genParentHeader = (ana) => {
             return (<div>

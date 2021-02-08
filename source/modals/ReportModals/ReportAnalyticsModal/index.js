@@ -13,6 +13,7 @@ import {
     formModes,
 
     createAnalytics,
+    updateAnalytics,
     changeCurrentForm,
     fetchAnalyticsCatalogs
 } from 'core/forms/reportAnalyticsForm/duck';
@@ -21,15 +22,14 @@ import {fetchReportAnalytics} from 'core/reports/reportAnalytics/duck';
 // own
 import Styles from './styles.m.css';
 
-const FItem = Form.Item;
-const RGroup = Radio.Group;
-const CGroup = Checkbox.Group;
 const TPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
     currentForm: state.forms.reportAnalyticsForm.currentForm, //Current active analytics form
     analyticsCatalogsLoading: state.forms.reportAnalyticsForm.analyticsCatalogsLoading,
     analyticsCatalogs: state.forms.reportAnalyticsForm.analyticsCatalogs,
+
+    modalProps: state.modals.modalProps,
 });
 
 const mapDispatchToProps = {
@@ -37,6 +37,7 @@ const mapDispatchToProps = {
     resetModal,
 
     createAnalytics,
+    updateAnalytics,
     changeCurrentForm,
     fetchAnalyticsCatalogs,
     fetchReportAnalytics
@@ -48,22 +49,20 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class ReportAnalyticsModal extends Component {
+
+    //Use this if some modalProps are not initialized
+    defaultModalProps = {
+        analyticsEntity: {},
+        mode: formModes.ADD,
+        initialTab: formKeys.catalogForm
+    }
+
     constructor(props) {
         super(props);
 
-        const {modalProps = {}} = props;
-
-        //Initialize default values and combine props from all sources
-        this.state = {
-            analyticsEntity: modalProps.analyticsEntity || props.analyticsEntity || {},
-            mode: modalProps.mode || props.mode || formModes.ADD,
-            initialTab: modalProps.initialTab || props.initialTab || undefined
-        };
-
         //Set view to initial tab
-        const {initialTab} = this.state;
-        console.log("Here:", initialTab);
-        initialTab && changeCurrentForm(initialTab);
+        const {initialTab = this.defaultModalProps.initialTab} = this.props.modalProps;
+        initialTab && this.props.changeCurrentForm(initialTab);
 
         //Initialize analytics catalogs for this modal
         this.props.fetchAnalyticsCatalogs();
@@ -72,7 +71,45 @@ export default class ReportAnalyticsModal extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.saveCatalogFormRef = this.saveCatalogFormRef.bind(this);
         this.saveAnalyticsFormRef = this.saveAnalyticsFormRef.bind(this);
+        this.analyticsRequest = this.analyticsRequest.bind(this)
+    }
 
+    componentDidUpdate(prevProps) {
+        const {initialTab} = this.props.modalProps;
+
+        //If modal was reopened(with new initialTab) we need to swith to new a tab if it is not undefined
+        (initialTab && prevProps.modalProps.initialTab != initialTab) && this.props.changeCurrentForm(initialTab);
+    }
+
+    /**
+     * This is used to send appropriate request to the server
+     * analyticsId - is used if you want to update existing analytics
+     * analyticsEntity - new analytics to be created or updated
+     * @param {Object} param0 
+     */
+    analyticsRequest = ({analyticsId, analyticsEntity}) => {
+
+        const {
+            createAnalytics,
+            updateAnalytics,
+            modalProps
+        } = this.props;
+
+        const {mode = this.defaultModalProps.mode} = modalProps;
+
+        if(mode == formModes.ADD) {
+            createAnalytics({analyticsEntity});
+        } else if(mode == formModes.EDIT) {
+            updateAnalytics({analyticsId, newAnalyticsEntity: analyticsEntity})
+        }
+        
+        //Reset fields
+        this.analyticsForm && this.analyticsForm.resetFields();
+        this.catalogForm && this.catalogForm.resetFields();
+
+        //Finishing touches
+        this.props.fetchReportAnalytics();
+        this.props.resetModal();
     }
 
     handleSubmit(e) {
@@ -80,10 +117,13 @@ export default class ReportAnalyticsModal extends Component {
 
         const {
             currentForm,
-            createAnalytics,
+            modalProps
         } = this.props;
 
-        const {mode} = this.state;
+        const {
+            mode = this.defaultModalProps.mode,
+            analyticsEntity = this.defaultModalProps.analyticsEntity, //Used only in EDIT or VIEW mode,
+        } = modalProps;
 
         //Do nothing for view mode except resetting all
         if(mode == formModes.VIEW) {
@@ -92,36 +132,24 @@ export default class ReportAnalyticsModal extends Component {
             this.props.resetModal();
         }
 
-        const analyticsRequest = ({analyticsEntity}) => {
-            createAnalytics({analyticsEntity});
-
-            //Reset fields
-            this.analyticsForm && this.analyticsForm.resetFields();
-            this.catalogForm && this.catalogForm.resetFields();
-
-            //Finishing touches
-            this.props.fetchReportAnalytics();
-            this.props.resetModal();
-        }
-
         //Select an appropriate form to proceed and submit a request appropriately
         if(currentForm == formKeys.catalogForm && this.catalogForm) {
             //Create new analytics catalog
             this.catalogForm.validateFields((err, values) => {
                 if (!err) {
-                    let analyticsEntity = {
+                    let newAnalyticsEntity = {
                         level: analyticsLevels.catalog,
                         name: values.catalogName
                     }
     
-                    analyticsRequest({analyticsEntity});
+                    this.analyticsRequest({analyticsEntity: newAnalyticsEntity});
                 } 
             });
         } else if(currentForm == formKeys.analyticsForm && this.analyticsForm) {
             //Create new analytics in an specific catalog
             this.analyticsForm.validateFields((err, values) => {
                 if (!err) {
-                    let analyticsEntity = {
+                    let newAnalyticsEntity = {
                         level: analyticsLevels.analytics,
                         name: values.analyticsName,
     
@@ -130,15 +158,12 @@ export default class ReportAnalyticsModal extends Component {
                         orderType: values.orderType
                     }
     
-                    analyticsRequest({analyticsEntity});
+                    this.analyticsRequest({analyticsId: analyticsEntity.analyticsId, analyticsEntity: newAnalyticsEntity});
                 }
             });
         } else {
             console.log("Error, cannot detect current form or instance is missing");
-        }
-
-        
-        
+        }        
     };
 
     saveCatalogFormRef = (ref) => {
@@ -159,17 +184,15 @@ export default class ReportAnalyticsModal extends Component {
 
             visible,
             onCancel,
-
+            
+            modalProps,
             fetchAnalyticsCatalogs
         } = this.props;
 
         const {
-            mode, //Can be "EDIT", "VIEW", "ADD", default ADD,
-            analyticsEntity, //Used only in EDIT or VIEW mode(to edit or view analytics :3),
-        } = this.state;
-
-        console.log(this.state);
-        console.log(this.props);
+            mode = this.defaultModalProps.mode, //Can be "EDIT", "VIEW", "ADD", default ADD,
+            analyticsEntity = this.defaultModalProps.analyticsEntity, //Used only in EDIT or VIEW mode,
+        } = modalProps;
 
         return (
             <Modal
@@ -177,7 +200,19 @@ export default class ReportAnalyticsModal extends Component {
                 visible={ visible === MODALS.REPORT_ANALYTICS }
                 onOk={ this.handleSubmit }
                 onCancel={ onCancel }
-                title={<div className={Styles.title}>Create analytics</div>}
+                title={
+                    <div className={Styles.title}>
+                        {
+                            (mode == formModes.ADD)
+                            ? "Create analytics"
+                            : (
+                                (mode ==formModes.EDIT)
+                                ? "Edit analytics"
+                                : "Analytics"
+                            )
+                        }
+                    </div>
+                }
             >
                 <div style={{minHeight: '50vh'}}>
                     <Tabs
@@ -187,7 +222,7 @@ export default class ReportAnalyticsModal extends Component {
                         onChange={(activeKey) => {
                             //Don't change tab if we are in EDIT or in VIEW mode, it must be specified and locked
                             if(mode == formModes.ADD) {
-                                //When this tab is opened force updating some fields
+                                //When analyticsTab is opened force updating some fields
                                 (activeKey == formKeys.analyticsForm) && fetchAnalyticsCatalogs();
                                 changeCurrentForm(activeKey);
                             }
@@ -196,6 +231,8 @@ export default class ReportAnalyticsModal extends Component {
                         <TPane tab="Create catalog" key={formKeys.catalogForm}>
                             <ReportAnalyticsCatalogForm
                                 getFormRefCB={this.saveCatalogFormRef}//Get form refference
+                                analyticsEntity={analyticsEntity}
+                                mode={mode}
                                 analyticsEntity={analyticsEntity}
                             />
                         </TPane>

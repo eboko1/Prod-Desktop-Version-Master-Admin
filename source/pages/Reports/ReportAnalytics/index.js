@@ -27,10 +27,6 @@ import {
     fetchReportAnalytics,
     deleteReportAnalytics
 } from 'core/reports/reportAnalytics/duck';
-import {
-    formKeys,
-    formModes,
-} from 'core/forms/reportAnalyticsForm/duck';
 
 
 // own
@@ -61,7 +57,6 @@ export default class ReportAnalyticsPage extends Component {
     constructor(props) {
         super(props);
 
-        this.onAnalyticsBtn = this.onAnalyticsBtn.bind(this);
         this.onAnalyticsModalCancel = this.onAnalyticsModalCancel.bind(this);
         this._onDeleteAnalytics = this._onDeleteAnalytics.bind(this);
         this.openAnalyticsModal = this.openAnalyticsModal.bind(this);
@@ -71,19 +66,12 @@ export default class ReportAnalyticsPage extends Component {
         this.props.fetchReportAnalytics();
     }
 
-    onAnalyticsBtn() {
-        this.props.setModal(MODALS.REPORT_ANALYTICS);
-    }
-
     onAnalyticsModalCancel() {
         this.props.resetModal();
     }
     
     openAnalyticsModal(mode, initialTab, analyticsEntity) {
-        
         //Open modal
-        this.onAnalyticsBtn();
-
         this.props.setModal(MODALS.REPORT_ANALYTICS, {mode, initialTab, analyticsEntity});
     }
 
@@ -108,7 +96,6 @@ export default class ReportAnalyticsPage extends Component {
             analytics,
             modal,
             fetchReportAnalytics,
-            modalProps
         } = this.props;
         
         
@@ -127,7 +114,7 @@ export default class ReportAnalyticsPage extends Component {
                                 fetchReportAnalytics();
                             }
                         }>Reset all</StyledButton>
-                        <StyledButton type="secondary" onClick={this.onAnalyticsBtn}>Create</StyledButton>
+                        <StyledButton type="secondary" onClick={() => this.openAnalyticsModal()/*Call with defaults*/}>Create</StyledButton>
                     </div>
                 }
                 paper={false}
@@ -141,7 +128,6 @@ export default class ReportAnalyticsPage extends Component {
                 <ReportAnalyticsModal 
                     visible={modal}
                     onCancel={this.onAnalyticsModalCancel}
-                    modalProps={modalProps}
                 />
             </Layout>
         );

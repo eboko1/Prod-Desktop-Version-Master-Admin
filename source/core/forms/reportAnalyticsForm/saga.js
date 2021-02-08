@@ -11,11 +11,13 @@ import {fetchReportAnalytics} from 'core/reports/reportAnalytics/duck';
 
 import {
     createAnalyticsSuccess,
-    fetchAnalyticsCatalogsSuccess
+    fetchAnalyticsCatalogsSuccess,
+    updateAnalyticsSuccess
 } from './duck'
 import {
     FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM,
     CREATE_ANALYTICS_ANALYTICS_FORM,
+    UPDATE_ANALYTICS_ANALYTICS_FORM
 } from './duck';
 
 const selectFilter = ({ forms: {reportAnalyticsForm: { catalogsFilters } } }) => ({
@@ -30,14 +32,27 @@ export function* createCatalogAnalyticsFormSaga() {
             yield call(fetchAPI, 'POST', 'report/analytics', null, analyticsEntity);
 
             yield put(createAnalyticsSuccess());
-            // fetchReportAnalytics(); //Update ???
         } catch (error) {
             yield put(emitError(error));
         }
     }
 }
 
-export function* fetchAnalyticsCatalogsAnalyticsFormSaga() {
+export function* updateAnalytics_AnalyticsFormSaga() {
+    while (true) {
+        try {
+            const {payload: {analyticsId, newAnalyticsEntity}} = yield take(UPDATE_ANALYTICS_ANALYTICS_FORM);
+
+            yield call(fetchAPI, 'PUT', `report/analytics/${analyticsId}`, null, newAnalyticsEntity);
+
+            yield put(updateAnalyticsSuccess());
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
+
+export function* fetchAnalyticsCatalogs_AnalyticsFormSaga() {
     while (true) {
         try {
             yield take(FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM);
@@ -59,6 +74,6 @@ export function* fetchAnalyticsCatalogsAnalyticsFormSaga() {
 
 /* eslint-disable array-element-newline */
 export function* saga() {
-    yield all([ call(createCatalogAnalyticsFormSaga), call(fetchAnalyticsCatalogsAnalyticsFormSaga) ]);
+    yield all([ call(createCatalogAnalyticsFormSaga), call(fetchAnalyticsCatalogs_AnalyticsFormSaga), call(updateAnalytics_AnalyticsFormSaga) ]);
 }
 /* eslint-enable array-element-newline */
