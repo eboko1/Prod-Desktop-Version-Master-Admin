@@ -35,10 +35,44 @@ export default class AnalyticsDropdown extends React.Component {
             openAnalyticsModal
         } = this.props;
 
-        const genParentHeader = (ana) => {
-            return (<div>
-                {ana.analyticsName} {ana.analyticsId}
-            </div>);
+        const genParentHeader = (analytics) => {
+            return (
+                <div>
+                    <Row className={Style.row}>
+                        <Col className={Style.colHeader} span={20}>{analytics.analyticsName} {analytics.analyticsId}</Col>
+                        <Col className={Style.colCentered} span={2}>
+                            {
+                                /* EDIT btn | Buttons only for non-custom fields otherwise just place an icon */
+                                (() => {
+                                    if(analytics.analyticsIsCustom) {
+                                        return (
+                                            <Button size="large" onClick={() => openAnalyticsModal(formModes.EDIT, formKeys.catalogForm, analytics)}> 
+                                                <Icon type="edit" />
+                                            </Button>
+                                        );
+                                    } else return "";
+                                })()
+                            }
+                            
+                        </Col>
+                        <Col className={Style.colCentered} span={2}>
+                            {
+                                /* DELETE btn | Buttons only for non-custom fields in another case just place an icon */
+                                (() => {
+                                    if(analytics.analyticsIsCustom) {
+                                        return (
+                                            <Button size="large" onClick={() => onDeleteAnalytics(analytics.analyticsId)}> 
+                                                <Icon type="delete" />
+                                            </Button>
+                                        );
+                                    } else return (<Icon type="global" />);
+                                })()
+                            }
+                            
+                        </Col>
+                    </Row>
+                </div>
+            );
         }
 
         const genChildren = (chil) => {
@@ -53,7 +87,7 @@ export default class AnalyticsDropdown extends React.Component {
                         <Col className={Style.colCentered} span={2}><Switch size='small' checked={!chil.analyticsDisabled}/></Col>
                         <Col className={Style.colCentered} span={2}>
                             {
-                                /* Buttons only for non-custom fields otherwise just place an icon */
+                                /* VIEW btn | Buttons only for non-custom fields otherwise just place an icon */
                                 (() => {
                                     if(chil.analyticsIsCustom) {
                                         return (
@@ -68,7 +102,7 @@ export default class AnalyticsDropdown extends React.Component {
                         </Col>
                         <Col className={Style.colCentered} span={2}>
                             {
-                                /* Buttons only for non-custom fields otherwise just place an icon */
+                                /* EDIT btn | Buttons only for non-custom fields otherwise just place an icon */
                                 (() => {
                                     if(chil.analyticsIsCustom) {
                                         return (
@@ -83,7 +117,7 @@ export default class AnalyticsDropdown extends React.Component {
                         </Col>
                         <Col className={Style.colCentered} span={2}>
                             {
-                                /* Buttons only for non-custom fields in another case just place an icon */
+                                /* DELETE btn | Buttons only for non-custom fields in another case just place an icon */
                                 (() => {
                                     if(chil.analyticsIsCustom) {
                                         return (

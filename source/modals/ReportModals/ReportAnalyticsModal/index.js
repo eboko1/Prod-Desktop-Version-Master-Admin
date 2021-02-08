@@ -146,7 +146,7 @@ export default class ReportAnalyticsModal extends Component {
                         name: values.catalogName
                     }
     
-                    this.analyticsRequest({analyticsEntity: newAnalyticsEntity});
+                    this.analyticsRequest({analyticsId: analyticsEntity.analyticsId, analyticsEntity: newAnalyticsEntity});
                 } 
             });
         } else if(currentForm == formKeys.analyticsForm && this.analyticsForm) {
