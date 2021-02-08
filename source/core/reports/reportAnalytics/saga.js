@@ -60,26 +60,6 @@ export function* deleteReportAnalyticsSaga() {
     }
 }
 
-// export function* createReportAnalyticsSaga() {
-//     while (true) {
-//         try {
-//             const {analyticsEntity} = yield take(CREATE_REPORT_ANALYTICS);
-//             // yield put(setReportOrdersFetching(true));
-
-//             yield call(
-//                 fetchAPI,
-//                 'POST',
-//                 `/report/analytics`,
-//                 null,
-//                 analyticsEntity
-//             );
-//             yield put(createReportAnalyticsSuccess());
-//         } finally {
-//             // yield put(setReportOrdersFetching(false));
-//         }
-//     }
-// }
-
 
 export function* saga() {
     yield all([ call(fetchReportAnalyticsSaga), call(deleteReportAnalyticsSaga) ]);

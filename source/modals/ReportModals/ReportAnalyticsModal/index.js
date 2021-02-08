@@ -48,6 +48,10 @@ const mapDispatchToProps = {
     mapStateToProps,
     mapDispatchToProps,
 )
+/**
+ * To open this modal you have to use standard core/modal/duck methods because it uses modal props to store
+ * some important values. This modal uses two forms one for catalogs and one for analytics itself
+ */
 export default class ReportAnalyticsModal extends Component {
 
     //Use this if some modalProps are not initialized

@@ -81,27 +81,6 @@ export default function reducer(state = ReducerState, action) {
                 analyticsCatalogsLoading: false, //Fetching finished
             };
 
-        // case ON_CHANGE_ADD_CLIENT_FORM:
-        //     return {
-        //         ...state,
-        //         fields: {
-        //             ...state.fields,
-        //             ...payload,
-        //         },
-        //     };
-
-        // case ADD_ERROR:
-        //     return {
-        //         ...state,
-        //         errors: [ ...state.errors, { id: errorId++, ...payload }],
-        //     };
-
-        // case HANDLE_ERROR:
-        //     return {
-        //         ...state,
-        //         errors: state.errors.filter(({ id }) => id !== payload),
-        //     };
-
         default:
             return state;
     }

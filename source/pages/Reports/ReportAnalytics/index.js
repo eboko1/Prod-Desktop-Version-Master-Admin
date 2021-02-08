@@ -12,7 +12,7 @@ Author: Anatolii Kotvytskyi;
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import {Input, Button} from 'antd';
+import {Input} from 'antd';
 import _ from "lodash";
 
 const Search = Input.Search;
@@ -21,7 +21,6 @@ const Search = Input.Search;
 import { ReportAnalyticsModal } from 'modals';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { Layout, StyledButton } from "commons";
-import { ReportOrdersTable, ReportOrdersFilter } from "components";
 import {fetchAPI} from 'utils';
 import {
     fetchReportAnalytics,
