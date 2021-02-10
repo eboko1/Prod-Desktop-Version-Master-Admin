@@ -21,6 +21,9 @@ import {
 // proj
 import { Layout, Spinner } from 'commons';
 import { permissions, isForbidden } from 'utils';
+
+// own
+import Styles from './styles.m.css';
 const { Option } = Select;
 
 const mapStateToProps = state => {
@@ -416,6 +419,7 @@ export default class LaborsPage extends Component {
                 render: (row)=>{
                     return (
                         <Popconfirm
+                            disabled={!Boolean(row.businessId)}
                             title={
                                 <FormattedMessage id='add_order_form.delete_confirm' />
                             }
@@ -426,6 +430,7 @@ export default class LaborsPage extends Component {
                         >
                             <Button
                                 type='danger'
+                                disabled={!Boolean(row.businessId)}
                             >
                                 <Icon type='delete'/>
                             </Button>
