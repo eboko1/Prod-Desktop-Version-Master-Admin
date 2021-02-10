@@ -207,7 +207,7 @@ class StorageDocumentsFilters extends Component {
                     </Radio.Group>
                 </div>
                 <DateRangePicker
-                    autoMinimize
+                    minimize
                     dateRange={dateRange}
                     dateFormat={dateFormat}
                     onDateChange={onDateChange}
