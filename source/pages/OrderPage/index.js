@@ -45,7 +45,6 @@ import {
 import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage, roundCurrentTime} from 'utils';
 import book from 'routes/book';
 import {
-    API_URL,
     confirmDiagnostic,
     createAgreement,
     lockDiagnostic,
@@ -386,7 +385,7 @@ class OrderPage extends Component {
     _getOrderRemainSum = (callback) => {
         const { fetchedOrder } = this.props;
         let token = localStorage.getItem("_my.carbook.pro_token");
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/orders/${this.props.order.id}?onlyLabors=${false}&onlyDetails=${false}`;
         url += params;
         fetch(url, {

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Table, Button } from 'antd';
+import { Table, Button, Icon } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -13,6 +13,8 @@ import { Layout } from 'commons';
 import { StorageTable } from 'containers';
 import { StorageDocumentsFilters } from 'components';
 import book from 'routes/book';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import { CashOrderModal } from 'modals';
 
 // own
 const INCOME = 'INCOME',
@@ -79,13 +81,22 @@ const fetchStorage = (type, action) => {
     });
 };
 
+const mapStateToProps = state => {
+    return {
+        modal:       state.modals.modal,
+        modalProps:  state.modals.modalProps,
+    };
+};
+
 const mapDispatchToProps = {
     fetchStorage,
+    setModal,
+    resetModal,
 };
 
 @withRouter
 @injectIntl
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class StorageDocumentsContainer extends Component {
     constructor(props) {
         super(props);
@@ -281,7 +292,7 @@ class StorageDocumentsContainer extends Component {
     }
 
     render() {
-        const { newDocType, isCRUDForbidden } = this.props;
+        const { newDocType, isCRUDForbidden, listType, modal, modalProps, setModal, resetModal } = this.props;
         const { dateRange, filtredDocumentsList, documentFilters, documentType, isFiltred } = this.state;
         return (
             <Layout
@@ -292,6 +303,19 @@ class StorageDocumentsContainer extends Component {
                 }s`} /> }
                 controls={
                     <>
+                        {listType == 'EXPENSE' &&
+                            <Icon
+                                type='dollar'
+                                onClick={()=>{
+                                    setModal(MODALS.CASH_ORDER);
+                                }}
+                                style={ {
+                                    fontSize: 24,
+                                    cursor:   'pointer',
+                                    margin:   '0 10px',
+                                } }
+                            />
+                        }
                         <StorageDocumentsFilters
                             isFetched={Boolean(filtredDocumentsList.length)}
                             type={newDocType}
@@ -328,6 +352,13 @@ class StorageDocumentsContainer extends Component {
                     onSearch={ this.querySearchFilter }
                     documentWarehouseFilter={ this.documentWarehouseFilter }
                     isCRUDForbidden={isCRUDForbidden}
+                />
+                <CashOrderModal
+                    visible={modal}
+                    modalProps={modalProps}
+                    resetModal={ () => {
+                        resetModal();
+                    } }
                 />
             </Layout>
         );
