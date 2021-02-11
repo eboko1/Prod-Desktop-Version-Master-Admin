@@ -753,7 +753,7 @@ export class CashOrderForm extends Component {
                         formatter={numeralFormatter}
                         parser={numeralParser}
                     />
-                    <DecoratedInput
+                    {/* <DecoratedInput
                         fields={{}}
                         field="tag"
                         getFieldDecorator={getFieldDecorator}
@@ -763,7 +763,35 @@ export class CashOrderForm extends Component {
                         })}
                         formItemLayout={formItemLayout}
                         className={Styles.styledFormItem}
+                    /> */}
+
+                    {/* TODO analyticsId has to be selected by default */}
+                    <DecoratedSelect
+                        field="analyticsId"
+                        showSearch
+                        // loading={analyticsCatalogsLoading}
+                        // disabled={analyticsCatalogsLoading || (fieldsDisabled)}
+                        allowClear
+                        formItem
+                        // initialValue={initValues.catalogId}
+                        getFieldDecorator={getFieldDecorator}
+                        getPopupContainer={trigger =>
+                            trigger.parentNode
+                        }
+                        label={formatMessage({
+                            id: "cash-table.tag",
+                        })}
+                        rules={[
+                            { required: true, message: 'Analytics must be selected!!!' },
+                        ]}
+                        options={[{val: 'test', la: 'Text'}, {val: 'test2', la: 'Text2'}, {val: 'test3', la: 'Text3'}]}
+                        optionValue="val" //Will be sent as var
+                        optionLabel="la"
+
+                        formItemLayout={formItemLayout}
+                        className={Styles.styledFormItem}
                     />
+
                     <DecoratedTextArea
                         fields={{}}
                         field="description"
