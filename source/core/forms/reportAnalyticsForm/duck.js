@@ -16,19 +16,25 @@ export const CHANGE_CURRENT_FORM = `${prefix}/CHANGE_CURRENT_FORM`;
 export const FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM = `${prefix}/FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM`;
 export const FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM_SUCCESS = `${prefix}/FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM_SUCCESS`;
 
-//Which form is currently focused(two types available)
+/**
+ * Which form is currently focused(two types available)
+ */
 export const formKeys = {
     catalogForm: 'CATALOG_FORM',
     analyticsForm: 'ANALYTICS_FORM'
 }
 
-//Each analytics has its tree level respectivly
+/**
+ * Each analytics has its tree level respectivly
+ */
 export const analyticsLevels = {
     catalog: 1,
     analytics: 2
 }
 
-//Help to define how data have to be represented inside forms and what to do after submit button
+/**
+ * Help to define how data have to be represented inside forms and what to do after submit button
+ */
 export const formModes = {
     EDIT: "EDIT",
     VIEW: "VIEW",
@@ -39,7 +45,6 @@ export const formModes = {
  * Reducer
  * */
 
-// let errorId = 1;
 
 const ReducerState = {
     fields: {

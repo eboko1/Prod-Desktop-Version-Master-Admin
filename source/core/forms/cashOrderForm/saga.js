@@ -21,6 +21,7 @@ import {
 } from 'core/ui/duck';
 import { fetchCashOrders } from 'core/cash/duck';
 import { fetchAPI } from 'utils';
+import {analyticsLevels} from 'core/forms/reportAnalyticsForm/duck'
 
 // own
 import {
@@ -40,13 +41,16 @@ import {
     selectClientOrdersFilters,
     selectSearchOrdersResultFilters,
     setOrderSearchFilters,
+    setanalyticsFetchingState,
     //
     fetchSelectedClientOrdersSuccess,
     fetchSearchOrderSuccess,
+    fetchAnalyticsSuccess,
     //
     printCashOrderSuccess,
     FETCH_CASH_ORDER_NEXT_ID,
     FETCH_CASH_ORDER_FORM,
+    FETCH_ANALYTICS,
     CREATE_CASH_ORDER,
     PRINT_CASH_ORDER,
     ON_CHANGE_CASH_ORDER_FORM,
@@ -205,6 +209,26 @@ export function* fetchSearchOrderSaga() {
     }
 }
 
+export function* fetchAnalyticsSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_ANALYTICS);
+            yield put(setanalyticsFetchingState(true));
+            
+            const filters = {
+                level: analyticsLevels.analytics
+            }
+
+            const {analytics} = yield call(fetchAPI, 'GET', '/report/analytics', {filters});
+
+            yield put(fetchAnalyticsSuccess(analytics));
+            yield put(setanalyticsFetchingState(false));
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
+
 export function* createCashOrderSaga() {
     while (true) {
         try {
@@ -272,6 +296,7 @@ export function* saga() {
         call(handleClientSelectSaga),
         call(fetchSelectedClientOrders),
         call(fetchSearchOrderSaga),
+        call(fetchAnalyticsSaga),
         call(printCashOrderSaga),
         takeLatest(FETCH_CASH_ORDER_NEXT_ID, fetchCashOrderNextIdSaga),
         takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga),

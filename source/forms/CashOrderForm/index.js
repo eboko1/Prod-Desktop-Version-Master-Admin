@@ -13,8 +13,10 @@ import {
     onChangeCashOrderForm,
     fetchCashOrderNextId,
     fetchCashOrderForm,
+    fetchAnalytics,
     createCashOrder,
     selectCounterpartyList,
+    selectAnalytics,
     selectClient,
     selectOrder,
     onClientSelect,
@@ -89,6 +91,7 @@ const getActiveFieldsMap = activeCashOrder => {
         fetchCashboxes,
         fetchCashOrderNextId,
         fetchCashOrderForm,
+        fetchAnalytics,
         createCashOrder,
         onClientSelect,
         onOrderSelect,
@@ -104,7 +107,9 @@ const getActiveFieldsMap = activeCashOrder => {
             client: selectClient(state),
             clientFetching: state.ui.clientFetching,
             clientOrdersFetching: state.ui.clientOrdersFetching,
+            analyticsFetchingState: state.forms.cashOrderForm.analyticsFetchingState,
             counterpartyList: selectCounterpartyList(state),
+            analytics: selectAnalytics(state),
             nextId: _.get(state, "forms.cashOrderForm.fields.nextId"),
             order: selectOrder(state),
         };
@@ -147,6 +152,7 @@ export class CashOrderForm extends Component {
             activeCashOrder,
             fetchCashOrderNextId,
             fetchCashboxes,
+            fetchAnalytics,
             cashboxes,
             intl: { formatMessage },
             form: { setFieldsValue },
@@ -155,6 +161,9 @@ export class CashOrderForm extends Component {
         const defaultTagValue = `${formatMessage({
             id: `cash-order-form.dafault_tag`,
         })}`;
+
+        //We need analytics in all modes
+        fetchAnalytics();
 
         if (editMode || printMode) {
             this._setFormFields(activeCashOrder);
@@ -512,6 +521,9 @@ export class CashOrderForm extends Component {
             editMode,
             intl: { formatMessage },
             form: { getFieldDecorator, getFieldValue },
+
+            analyticsFetchingState,
+            analytics
         } = this.props;
 
         const cashOrderId = getFieldValue("id");
@@ -769,8 +781,8 @@ export class CashOrderForm extends Component {
                     <DecoratedSelect
                         field="analyticsId"
                         showSearch
-                        // loading={analyticsCatalogsLoading}
-                        // disabled={analyticsCatalogsLoading || (fieldsDisabled)}
+                        loading={analyticsFetchingState}
+                        disabled={printMode || analyticsFetchingState}
                         allowClear
                         formItem
                         // initialValue={initValues.catalogId}
@@ -784,9 +796,9 @@ export class CashOrderForm extends Component {
                         rules={[
                             { required: true, message: 'Analytics must be selected!!!' },
                         ]}
-                        options={[{val: 'test', la: 'Text'}, {val: 'test2', la: 'Text2'}, {val: 'test3', la: 'Text3'}]}
-                        optionValue="val" //Will be sent as var
-                        optionLabel="la"
+                        options={analytics || []}
+                        optionValue="analyticsId" //Will be sent as var
+                        optionLabel="analyticsName"
 
                         formItemLayout={formItemLayout}
                         className={Styles.styledFormItem}

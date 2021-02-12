@@ -21,6 +21,9 @@ export const FETCH_SELECTED_CLIENT_ORDERS_SUCCESS = `${prefix}/FETCH_SELECTED_CL
 export const FETCH_SEARCH_ORDER = `${prefix}/FETCH_SEARCH_ORDER`;
 export const FETCH_SEARCH_ORDER_SUCCESS = `${prefix}/FETCH_SEARCH_ORDER_SUCCESS`;
 
+export const FETCH_ANALYTICS = `${prefix}/FETCH_ANALYTICS`;
+export const FETCH_ANALYTICS_SUCCESS = `${prefix}/FETCH_ANALYTICS_SUCCESS`;
+
 export const SET_SELECTED_CLIENT_ORDERS_FILTERS = `${prefix}/SET_SELECTED_CLIENT_ORDERS_FILTERS`;
 
 export const CREATE_CASH_ORDER = `${prefix}/CREATE_CASH_ORDER`;
@@ -51,6 +54,7 @@ export const ON_ORDER_SELECT = `${prefix}/ON_ORDER_SELECT`;
 export const ON_ORDER_RESET = `${prefix}/ON_ORDER_RESET`;
 
 export const SET_ORDER_SEARCH_FILTERS = `${prefix}/SET_ORDER_SEARCH_FILTERS`;
+export const SET_ANALYTICS_FETCHING_STATE = `${prefix}/SET_ANALYTICS_FETCHING_STATE`;
 
 export const ON_CLIENT_FIELDS_RESET = `${prefix}/ON_CLIENT_FIELDS_RESET`;
 
@@ -106,6 +110,8 @@ const ReducerState = {
         },
     },
     selectedOrder: {},
+    analytics: [],
+    analyticsFetchingState: false,
 };
 /* eslint-disable complexity */
 export default function reducer(state = ReducerState, action) {
@@ -128,6 +134,12 @@ export default function reducer(state = ReducerState, action) {
                     ...state.fields,
                     ...payload,
                 },
+            };
+
+        case FETCH_ANALYTICS_SUCCESS:
+            return {
+                ...state,
+                analytics: payload
             };
 
         case FETCH_CASH_ORDER_FORM_SUCCESS:
@@ -294,6 +306,12 @@ export default function reducer(state = ReducerState, action) {
                     },
                 },
             };
+        
+        case SET_ANALYTICS_FETCHING_STATE: 
+            return {
+                ...state,
+                analyticsFetchingState: payload
+            };
 
         case FETCH_SELECTED_CLIENT_ORDERS_SUCCESS:
             return {
@@ -331,6 +349,9 @@ export const selectCashOrderNextId = state =>
 
 export const selectCounterpartyList = state =>
     state.forms.cashOrderForm.counterpartyList;
+
+export const selectAnalytics = state =>
+    state.forms.cashOrderForm.analytics;
 
 export const selectClientOrders = state =>
     state.forms.cashOrderForm.selectedClient.clientOrders;
@@ -375,6 +396,15 @@ export const fetchCashOrderForm = endpoint => ({
 export const fetchCashOrderFormSuccess = data => ({
     type:    FETCH_CASH_ORDER_FORM_SUCCESS,
     payload: data,
+});
+
+export const fetchAnalytics = () => ({
+    type: FETCH_ANALYTICS,
+});
+
+export const fetchAnalyticsSuccess = (analytics) => ({
+    type: FETCH_ANALYTICS_SUCCESS,
+    payload: analytics
 });
 
 export const createCashOrder = payload => ({
@@ -482,6 +512,11 @@ export const fetchSearchOrderSuccess = orders => ({
 export const setSelectedClientOrdersFilters = filters => ({
     type:    SET_SELECTED_CLIENT_ORDERS_FILTERS,
     payload: filters,
+});
+
+export const setanalyticsFetchingState = (val) => ({
+    type: SET_ANALYTICS_FETCHING_STATE,
+    payload: val
 });
 
 export const onClientFieldsReset = () => ({
