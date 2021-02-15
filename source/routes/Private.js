@@ -65,7 +65,8 @@ import {
     LocationsVehiclesPage,
     LocationsMovementPage,
     SyncImportPage,
-    SyncExportPage
+    SyncExportPage,
+    BarcodePage,
 
 } from 'pages';
 import book from './book';
@@ -106,6 +107,11 @@ export default class Private extends Component {
                     exact
                     component={ MyTasksPage }
                     path={ book.myTasksPage }
+                />
+                <Route
+                    exact
+                    component={ BarcodePage }
+                    path={ book.barcodePage }
                 />
                 { /* Reference book */ }
                 <Route

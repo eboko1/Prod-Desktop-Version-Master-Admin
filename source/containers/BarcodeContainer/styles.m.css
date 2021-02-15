@@ -1,0 +1,37 @@
+.container {
+	padding: 16px 24px;
+}
+
+.barcodeInput {
+	display: flex;
+    white-space: nowrap;
+    align-items: baseline;
+}
+
+.buttonBlockWrapp {
+	margin: 12px 0 0 0;
+}
+
+.buttonBlock {
+	display: flex;
+    align-items: stretch;
+    margin: 8px;
+    min-height: 48px;
+}
+
+.buttonBlockTitle {
+	width: 15%;
+    display: flex;
+    align-items: center;
+}
+
+.buttonWrapp {
+	width: 17%;
+	padding: 4px;
+}
+
+.button {
+	width: 100%;
+    white-space: normal;
+    height: 100%;
+}
