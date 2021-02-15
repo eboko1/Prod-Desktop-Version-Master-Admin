@@ -292,7 +292,7 @@ class StorageDocumentForm extends Component {
                             }}
                             //optionFilterProp={'children'}
                             filterOption={(input, option) => {
-                                const searchValue = option.props.children.toLowerCase().replace(/[+()]/g,'');
+                                const searchValue = option.props.children.toLowerCase().replace(/[+()-\s]/g,'');
                                 const inputValue = input.toLowerCase();
                                 return searchValue.indexOf(inputValue) >= 0;
                             }}
