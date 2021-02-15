@@ -401,7 +401,8 @@ export default class LaborsPage extends Component {
                                 }
                                 onConfirm={ () => {
                                     this.state.selectedRows.map((elem)=>{
-                                        elem.deleted = true;
+                                        if(elem.businessId)
+                                            elem.deleted = true;
                                     })
                                     this.setState({});
                                 } }
@@ -417,9 +418,8 @@ export default class LaborsPage extends Component {
                 },
                 key: 'delete',
                 render: (row)=>{
-                    return (
+                    return Boolean(row.businessId) ? (
                         <Popconfirm
-                            disabled={!Boolean(row.businessId)}
                             title={
                                 <FormattedMessage id='add_order_form.delete_confirm' />
                             }
@@ -430,11 +430,17 @@ export default class LaborsPage extends Component {
                         >
                             <Button
                                 type='danger'
-                                disabled={!Boolean(row.businessId)}
                             >
                                 <Icon type='delete'/>
                             </Button>
                         </Popconfirm>
+                    ) : (
+                        <Button
+                            type='danger'
+                            disabled
+                        >
+                            <Icon type='delete'/>
+                        </Button>
                     )
                 }
             }
@@ -482,7 +488,7 @@ export default class LaborsPage extends Component {
                 labors.push({
                     masterLaborId: elem.masterLaborId,
                     productId: elem.productId,
-                    disable: elem.disable,
+                    disable: Boolean(elem.disable),
                 });
                 if(elem.laborId) labors[labors.length-1].laborId = elem.laborId;
                 if(elem.name) labors[labors.length-1].name = elem.name;
@@ -499,7 +505,7 @@ export default class LaborsPage extends Component {
                 newLabors.push({
                     masterLaborId: elem.masterLaborId,
                     productId: elem.productId,
-                    disable: elem.disable,
+                    disable: Boolean(elem.disable),
                 });
                 if(elem.name) newLabors[newLabors.length-1].name = elem.name;
                 if(elem.fixed) {
