@@ -18,7 +18,6 @@ const ReducerState = {
 
 export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
-    console.log(type, payload);
     switch (type) {
         case FETCH_WAREHOUSES_SUCCESS:
             return { 
