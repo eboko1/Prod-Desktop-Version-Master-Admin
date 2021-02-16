@@ -18,6 +18,9 @@ export const FETCH_CASHBOXES_BALANCE_SUCCESS = `${prefix}/FETCH_CASHBOXES_BALANC
 export const FETCH_CASHBOXES_ACTIVITY = `${prefix}/FETCH_CASHBOXES_ACTIVITY`;
 export const FETCH_CASHBOXES_ACTIVITY_SUCCESS = `${prefix}/FETCH_CASHBOXES_ACTIVITY_SUCCESS`;
 
+export const FETCH_ANALYTICS = `${prefix}/FETCH_ANALYTICS`;
+export const FETCH_ANALYTICS_SUCCESS = `${prefix}/FETCH_ANALYTICS_SUCCESS`;
+
 export const CREATE_CASHBOX = `${prefix}/CREATE_CASHBOX`;
 export const CREATE_CASHBOX_SUCCESS = `${prefix}/CREATE_CASHBOX_SUCCESS`;
 
@@ -29,6 +32,8 @@ export const SET_CASH_ORDERS_PAGE = `${prefix}/SET_CASH_ORDERS_PAGE`;
 export const SET_CASH_ACCOUNTING_FILTERS = `${prefix}/SET_CASH_ACCOUNTING_FILTERS`;
 
 export const SET_SEARCH_QUERY = `${prefix}/SET_SEARCH_QUERY`;
+export const SET_ANALYTICS_FETCHING_STATE = `${prefix}/SET_ANALYTICS_FETCHING_STATE`;
+
 
 export const PRINT_CASH_ORDERS = `${prefix}/PRINT_CASH_ORDERS`;
 export const PRINT_CASH_ORDERS_SUCCESS = `${prefix}/PRINT_CASH_ORDERS_SUCCESS`;
@@ -38,6 +43,7 @@ export const PRINT_CASH_ORDERS_SUCCESS = `${prefix}/PRINT_CASH_ORDERS_SUCCESS`;
  * */
 const ReducerState = {
     cashboxes:         [],
+    analytics:         [],
     activity:          [],
     balance:           [],
     stats:             {},
@@ -48,6 +54,7 @@ const ReducerState = {
             .format('YYYY-MM-DD'),
         endDate: moment().format('YYYY-MM-DD'),
         query:   '',
+        analyticsUniqueId: undefined,
         page:    1,
     },
     cashAccountingFilters: {
@@ -57,6 +64,7 @@ const ReducerState = {
             .format('YYYY-MM-DD'),
         endDate: moment().format('YYYY-MM-DD'),
     },
+    analyticsFetchingState: false,
 };
 // eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
@@ -79,6 +87,12 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 activity: [ ...payload ],
+            };
+
+        case FETCH_ANALYTICS_SUCCESS:
+            return {
+                ...state,
+                analytics: payload
             };
 
         case CREATE_CASHBOX_SUCCESS:
@@ -147,6 +161,12 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case SET_ANALYTICS_FETCHING_STATE: 
+            return {
+                ...state,
+                analyticsFetchingState: payload
+            };
+
         default:
             return state;
     }
@@ -199,6 +219,15 @@ export const fetchCashboxesActivitySuccess = activity => ({
     payload: activity,
 });
 
+export const fetchAnalytics = () => ({
+    type: FETCH_ANALYTICS,
+});
+
+export const fetchAnalyticsSuccess = (analytics) => ({
+    type: FETCH_ANALYTICS_SUCCESS,
+    payload: analytics
+});
+
 export const createCashbox = cashbox => ({
     type:    CREATE_CASHBOX,
     payload: cashbox,
@@ -232,6 +261,12 @@ export const setCashOrdersPage = ({ page }) => ({
 export const setCashAccountingFilters = filters => ({
     type:    SET_CASH_ACCOUNTING_FILTERS,
     payload: filters,
+});
+
+
+export const setAnalyticsFetchingState = (val) => ({
+    type: SET_ANALYTICS_FETCHING_STATE,
+    payload: val
 });
 
 // cash orders

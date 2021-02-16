@@ -13,6 +13,7 @@ import {
     setCashOrdersFilters,
     selectCashOrdersFilters,
     setSearchQuery,
+    fetchAnalytics
 } from "core/cash/duck";
 import { onChangeCashOrdersFiltersForm } from "core/forms/cashOrdersFiltersForm/duck";
 
@@ -37,24 +38,32 @@ const Option = Select.Option;
         fetchCashOrders,
         setCashOrdersFilters,
         setSearchQuery,
+        fetchAnalytics,
     },
     debouncedFields: ["query"],
     mapStateToProps: state => ({
         cashStats: selectCashStats(state),
         filters: selectCashOrdersFilters(state),
         cashboxes: state.cash.cashboxes,
+        analytics: state.cash.analytics
     }),
 })
 @injectIntl
 export class CashOrdersFiltersForm extends Component {
     componentDidMount() {
         this.props.fetchCashboxes();
+        this.props.fetchAnalytics();
     }
 
     _onSearch = value => this.props.setSearchQuery(value);
 
     _onCashboxSelect = value => {
         this.props.setCashOrdersFilters({ cashBoxId: value });
+        this.props.fetchCashOrders();
+    };
+
+    _onAnalyticsSelect = value => {
+        this.props.setCashOrdersFilters({ analyticsUniqueId: value });
         this.props.fetchCashOrders();
     };
 
@@ -72,6 +81,7 @@ export class CashOrdersFiltersForm extends Component {
         const {
             cashStats,
             cashboxes,
+            analytics,
             filters,
             intl: { formatMessage },
             form: { getFieldDecorator },
@@ -89,6 +99,20 @@ export class CashOrdersFiltersForm extends Component {
                         }
                         className={Styles.filter}
                     />
+                    <DecoratedSelect
+                        field="analyticsUniqueId"
+                        placeholder={"Analytics"}
+                        getFieldDecorator={getFieldDecorator}
+                        cnStyles={Styles.filter}
+                        onChange={this._onAnalyticsSelect}
+                        allowClear
+                    >
+                        {analytics.map(({ analyticsUniqueId, analyticsName }) => (
+                            <Option value={analyticsUniqueId} key={analyticsUniqueId}>
+                                {analyticsName}
+                            </Option>
+                        ))}
+                    </DecoratedSelect>
                     <DecoratedSelect
                         field="cashBoxId"
                         initialValue={filters.cashBoxId}
