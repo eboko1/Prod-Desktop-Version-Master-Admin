@@ -45,7 +45,6 @@ import {
 import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage, roundCurrentTime} from 'utils';
 import book from 'routes/book';
 import {
-    API_URL,
     confirmDiagnostic,
     createAgreement,
     lockDiagnostic,
@@ -237,6 +236,18 @@ class OrderPage extends Component {
                 return response.json();
             })
             .then(function(data) {
+                data.map((group)=>{
+                    if(group.childs) {
+                        group.childs.map((child)=>{
+                            child.isOperationDisabled = false;
+                            if(child.availableWithScope) {
+                                child.availableWithScope.map((scope)=>{
+                                    child.isOperationDisabled = child.isOperationDisabled || isForbidden(that.props.user, permissions[scope]);
+                                })
+                            }
+                        })
+                    }
+                })
                 that.setState({
                     repairMapData: data,
                 })
@@ -374,7 +385,7 @@ class OrderPage extends Component {
     _getOrderRemainSum = (callback) => {
         const { fetchedOrder } = this.props;
         let token = localStorage.getItem("_my.carbook.pro_token");
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/orders/${this.props.order.id}?onlyLabors=${false}&onlyDetails=${false}`;
         url += params;
         fetch(url, {

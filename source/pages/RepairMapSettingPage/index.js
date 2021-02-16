@@ -367,7 +367,7 @@ export default class RepairMapSettingPage extends Component {
             >
                 {dataSource.map((mapGroup, key)=>{
                     return (
-                        <div key={key}>
+                        <div key={key} className={Styles.group}>
                             <div className={Styles.groupTitle}>
                                 <div>
                                     {mapGroup.name}
@@ -385,6 +385,7 @@ export default class RepairMapSettingPage extends Component {
                                 columns={this.columns}
                                 pagination={ false }
                                 dataSource={ mapGroup.childs }
+                                className={Styles.groupTable}
                             />
                         </div>
                     )

@@ -863,7 +863,7 @@ class DetailsStageButtonsGroup extends Component {
                         </div>
                     ),
                     zIndex: 1000,
-                    okButtonProps: {disabled: !availableCount},
+                    okButtonProps: {disabled: availableCount - reservedCount < 1},
                     onOk() {
                         data.docProducts[0].quantity = availableCount - reservedCount;
                         fetch(url, {

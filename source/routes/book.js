@@ -29,10 +29,12 @@ const book = Object.freeze({
     orderId:                  '/order/:id',
     // AddOrder
     addOrder:                 '/add',
-    // reports
+    // Reports
     reports:                  '/orders/reports',
     reportOrders:             '/report/orders',
     reportLoadKPI:            '/report/load_kpi',
+    // Barcode
+    barcodePage:              '/barcode',
     //
     // Reference book
     //

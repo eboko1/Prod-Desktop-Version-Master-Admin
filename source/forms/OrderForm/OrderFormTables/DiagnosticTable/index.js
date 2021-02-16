@@ -220,7 +220,7 @@ class DiagnosticTable extends Component {
                         <p>{ plan }</p>
                     ) : (
                         <Select
-                            disabled={ this.props.disabled || !isForbidden(this.props.user, permissions.ACCESS_DIAGNOSTICS_ADD_ELEMENTS) }
+                            disabled={ this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_DIAGNOSTICS_ADD_ELEMENTS) }
                             showSearch
                             placeholder={
                                 <FormattedMessage id='order_form_table.diagnostic.plan' />

@@ -31,6 +31,13 @@ export default {
                         isForbidden(user, permissions.SHOW_ORDERS),
                     name: 'navigation.workflow',
                 },
+                /*{
+                    key:      '/barcode',
+                    link:     book.barcodePage,
+                    disabled: user =>
+                        isForbidden(user, permissions.NEW_DOCUMENT),
+                    name: 'navigation.barcode',
+                },*/
                 {
                     key:      '/locations',
                     link:      book.locationsPage,
@@ -56,7 +63,7 @@ export default {
                     key:      '/report/analytics',
                     link:     book.analytics,
                     disabled: user =>
-                        isForbidden(user, permissions.GET_CLIENTS),
+                        isForbidden(user, permissions.GET_CLIENTS) || true,
                     name: 'navigation.analytics',
                 },
                 {
@@ -332,8 +339,7 @@ export default {
                 {
                     key:      '/requisites',
                     disabled: user =>
-                        !isForbidden(user, permissions.ACCESS_CATALOGUE_REQUISITES) &&
-                            !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_REQUISITES),
                     link: book.requisites,
                     name: 'navigation.requisites',
                 },

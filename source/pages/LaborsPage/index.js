@@ -15,11 +15,15 @@ import {
     Switch,
     TreeSelect,
     Pagination,
+    Popconfirm,
 } from 'antd';
 
 // proj
 import { Layout, Spinner } from 'commons';
 import { permissions, isForbidden } from 'utils';
+
+// own
+import Styles from './styles.m.css';
 const { Option } = Select;
 
 const mapStateToProps = state => {
@@ -46,6 +50,7 @@ export default class LaborsPage extends Component {
             filterDefaultName: null,
             filterName: null,
             currentPage: 1,
+            selectedRows: [],
         }
         this.treeData = [];
         this.columns = [
@@ -69,7 +74,6 @@ export default class LaborsPage extends Component {
                 },
                 key:       'laborCode',
                 dataIndex: 'laborCode',
-                width:     '10%',
             },
             {
                 title:  ()=>{
@@ -91,7 +95,6 @@ export default class LaborsPage extends Component {
                 },
                 dataIndex: 'masterLaborId',
                 key:       'masterLaborId',
-                width:     '10%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return !elem.new ? (
@@ -146,7 +149,6 @@ export default class LaborsPage extends Component {
                 },
                 dataIndex: 'productId',
                 key:       'productId',
-                width:     '10%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return !elem.new ? (
@@ -197,7 +199,6 @@ export default class LaborsPage extends Component {
                 },
                 dataIndex: 'defaultName',
                 key:       'defaultName',
-                width:     '20%',
             },
             {
                 title:  ()=>{
@@ -218,7 +219,6 @@ export default class LaborsPage extends Component {
                     )
                 },
                 key:       'name',
-                width:     '25%',
                 render: (elem)=>{
                     const key = elem.key;
                     return (
@@ -228,8 +228,8 @@ export default class LaborsPage extends Component {
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                             value={elem.name?elem.name:null}
                             onChange={(event)=>{
-                                this.state.labors[key].changed = true;
-                                this.state.labors[key].name = event.target.value;
+                                elem.changed = true;
+                                elem.name = event.target.value;
                                 this.setState({
                                     update: true,
                                 });
@@ -240,32 +240,99 @@ export default class LaborsPage extends Component {
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.fixed" />,
-                dataIndex: 'fixed',
-                key:       'fixed',
-                width:     '5%',
-                render: (fixed, elem)=>{
-                    const key = elem.key;
+                title:  ()=>{
                     return (
-                        <Switch
-                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
-                            checked={fixed}
-                            onClick={(event)=>{
-                                this.state.labors[key].changed = true; 
-                                this.state.labors[key].fixed = event;
-                                this.setState({
-                                    update: true,
-                                });
+                        <div>
+                            <p><FormattedMessage id="supplier.show" /></p>
+                            <p>
+                                <Checkbox
+                                    onChange={(event)=>{
+                                        this.state.selectedRows.map((elem)=>{
+                                            elem.changed = true;
+                                            elem.disable = !event.target.checked;
+                                        })
+                                        this.setState({});
+                                    }}
+                                />
+                            </p>    
+                        </div>
+                    )
+                },
+                key:       'disable',
+                dataIndex: 'disable',
+                render: (data, elem)=>{
+                    return (
+                        <Checkbox
+                            checked={!data}
+                            onChange={(event)=>{
+                                elem.disable = !event.target.checked;
+                                elem.changed = true;
+                                this.setState({});
                             }}
                         />
                     )
                 }
             },
             {
-                title:  <FormattedMessage id="hours" />,
+                title:  ()=>{
+                    return (
+                        <div>
+                            <p><FormattedMessage id="order_form_table.fixed" /></p>
+                            <p>
+                                <Switch
+                                    onClick={(value)=>{
+                                        this.state.selectedRows.map((elem)=>{
+                                            elem.changed = true;
+                                            elem.fixed = value;
+                                        })
+                                        this.setState({});
+                                    }}
+                                />
+                            </p>    
+                        </div>
+                    )
+                },
+                dataIndex: 'fixed',
+                key:       'fixed',
+                render: (fixed, elem)=>{
+                    const key = elem.key;
+                    return (
+                        <Switch
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
+                            checked={fixed}
+                            onClick={(value)=>{
+                                elem.changed = true; 
+                                elem.fixed = value;
+                                this.setState({});
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  ()=>{
+                    return (
+                        <div>
+                            <p><FormattedMessage id="hours" /></p>
+                            <p>
+                                <InputNumber
+                                    min={0.1}
+                                    step={0.2}
+                                    onChange={(value)=>{
+                                        this.state.selectedRows.map((elem)=>{
+                                            elem.changed = true;
+                                            elem.normHours = value;
+                                        })
+                                        this.setState({});
+                                    }}
+                                    style={{color: 'var(--text)'}}
+                                />
+                            </p>    
+                        </div>
+                    )
+                },
                 dataIndex: 'normHours',
                 key:       'normHours',
-                width:     '10%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return (
@@ -274,12 +341,10 @@ export default class LaborsPage extends Component {
                             step={0.2}
                             value={data || 1}
                             disabled={elem.fixed || isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
-                            onChange={(event)=>{
-                                this.state.labors[key].changed = true;
-                                this.state.labors[key].normHours = event;
-                                this.setState({
-                                    update: true,
-                                });
+                            onChange={(value)=>{
+                                elem.changed = true;
+                                elem.normHours = value;
+                                this.setState({});
                             }}
                             style={{color: 'var(--text)'}}
                         />
@@ -287,10 +352,28 @@ export default class LaborsPage extends Component {
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.price" />,
+                title:  ()=>{
+                    return (
+                        <div>
+                            <p><FormattedMessage id="order_form_table.price" /></p>
+                            <p>
+                                <InputNumber
+                                    min={1}
+                                    onChange={(value)=>{
+                                        this.state.selectedRows.map((elem)=>{
+                                            elem.changed = true;
+                                            elem.price = value;
+                                        })
+                                        this.setState({});
+                                    }}
+                                    style={{color: 'var(--text)'}}
+                                />
+                            </p>    
+                        </div>
+                    )
+                },
                 dataIndex: 'price',
                 key:       'price',
-                width:     '10%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return (
@@ -298,15 +381,66 @@ export default class LaborsPage extends Component {
                             min={1}
                             value={data || 1}
                             disabled={!elem.fixed || isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
-                            onChange={(event)=>{
-                                this.state.labors[key].changed = true;
-                                this.state.labors[key].price = event;
-                                this.setState({
-                                    update: true,
-                                });
+                            onChange={(value)=>{
+                                elem.changed = true;
+                                elem.price = value;
+                                this.setState({});
                             }}
                             style={{color: 'var(--text)'}}
                         />
+                    )
+                }
+            },
+            {
+                title:  ()=>{
+                    return (
+                        <div>
+                            <Popconfirm
+                                title={
+                                    <FormattedMessage id='add_order_form.delete_confirm' />
+                                }
+                                onConfirm={ () => {
+                                    this.state.selectedRows.map((elem)=>{
+                                        if(elem.businessId)
+                                            elem.deleted = true;
+                                    })
+                                    this.setState({});
+                                } }
+                            >
+                                <Button
+                                    type='danger'
+                                >
+                                    <Icon type='delete'/>
+                                </Button>
+                            </Popconfirm>
+                        </div>
+                    )
+                },
+                key: 'delete',
+                render: (row)=>{
+                    return Boolean(row.businessId) ? (
+                        <Popconfirm
+                            title={
+                                <FormattedMessage id='add_order_form.delete_confirm' />
+                            }
+                            onConfirm={ () => {
+                                row.deleted = true;
+                                this.setState({});
+                            } }
+                        >
+                            <Button
+                                type='danger'
+                            >
+                                <Icon type='delete'/>
+                            </Button>
+                        </Popconfirm>
+                    ) : (
+                        <Button
+                            type='danger'
+                            disabled
+                        >
+                            <Icon type='delete'/>
+                        </Button>
                     )
                 }
             }
@@ -345,12 +479,16 @@ export default class LaborsPage extends Component {
     }
 
     async saveLabors() {
-        var labors = [], newLabors = [];
+        var labors = [], newLabors = [], deletedLabors = [];
         this.state.labors.map((elem)=>{
-            if(elem.changed && !elem.new) {
+            if(elem.deleted) {
+                deletedLabors.push(elem.laborId);
+            }
+            else if(elem.changed && !elem.new) {
                 labors.push({
                     masterLaborId: elem.masterLaborId,
                     productId: elem.productId,
+                    disable: Boolean(elem.disable),
                 });
                 if(elem.laborId) labors[labors.length-1].laborId = elem.laborId;
                 if(elem.name) labors[labors.length-1].name = elem.name;
@@ -363,10 +501,11 @@ export default class LaborsPage extends Component {
                     labors[labors.length-1].normHours = elem.normHours ? elem.normHours : 1;
                 }
             }
-            if(elem.new && elem.masterLaborId && elem.productId) {
+            else if(elem.new && elem.masterLaborId && elem.productId) {
                 newLabors.push({
                     masterLaborId: elem.masterLaborId,
                     productId: elem.productId,
+                    disable: Boolean(elem.disable),
                 });
                 if(elem.name) newLabors[newLabors.length-1].name = elem.name;
                 if(elem.fixed) {
@@ -390,6 +529,28 @@ export default class LaborsPage extends Component {
                 'Authorization': token,
             },
             body: JSON.stringify(newLabors),
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            //console.log(data);
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+
+        await fetch(url + `?laborIds=[${deletedLabors}]`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': token,
+            },
         })
         .then(function (response) {
             if (response.status !== 200) {
@@ -435,7 +596,7 @@ export default class LaborsPage extends Component {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__;
-        let params = `/labors`;
+        let params = `/labors?all=true`;
         url += params;
         fetch(url, {
             method: 'GET',
@@ -453,6 +614,7 @@ export default class LaborsPage extends Component {
             return response.json()
         })
         .then(function (data) {
+            console.log(data);
             data.labors.sort((a, b) => a.masterLaborId < b.masterLaborId ? -1 : (a.masterLaborId > b.masterLaborId ? 1 : 0));
             data.labors.map((elem, index)=>{
                 elem.key = index;
@@ -567,6 +729,14 @@ export default class LaborsPage extends Component {
     }
 
     render() {
+        const rowSelection = {
+            onChange: (selectedRowKeys, selectedRows) => {
+                this.setState({
+                    selectedRows,
+                })
+            },
+        };
+
         const { labors, filterCode, filterId, filterDetail, filterDefaultName, filterName, currentPage } = this.state;
         if(
             !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD) && 
@@ -589,7 +759,7 @@ export default class LaborsPage extends Component {
         }
         const columns = this.columns;
         var dataSource = [...labors];
-
+        dataSource = dataSource.filter((elem)=>!elem.deleted);
         if(filterCode) dataSource = dataSource.filter((data, i) => data.laborCode.includes(filterCode));
         if(filterId) dataSource = dataSource.filter((data, i) => String(data.masterLaborId).includes(String(filterId)));
         if(filterDetail) dataSource = dataSource.filter((data, i) => String(data.productId).includes(String(filterDetail)));
@@ -626,6 +796,7 @@ export default class LaborsPage extends Component {
             >
                 <Table
                     dataSource={dataSource}
+                    rowSelection={rowSelection}
                     columns={columns}
                     locale={{
                         emptyText: <FormattedMessage id='no_data' />,

@@ -361,6 +361,10 @@ class StorageDocumentPage extends Component {
                 break;
         }
 
+        if(formData.status == DONE && formData.type == EXPENSE) {
+            return;
+        } 
+
         var productsError = false;
 
         formData.docProducts.map((elem)=>{
@@ -490,7 +494,6 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (warehouses) {
-            console.log(warehouses)
             const type = that.props.location.state && that.props.location.state.formData.type;
             const documentType = that.props.location.state && that.props.location.state.formData.documentType;
             var mainWarehouseId, reserveWarehouseId, toolWarehouseId, repairAreaWarehouseId;
