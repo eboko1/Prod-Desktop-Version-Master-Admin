@@ -45,6 +45,7 @@ export const DecoratedSelect = memo(
             optionFilterProp,
             labelInValue,
             optionLabelProp,
+            loading,
 
             cnStyles,
             dropdownMatchSelectWidth,
@@ -69,6 +70,7 @@ export const DecoratedSelect = memo(
                 onChange={ onChange }
                 onSearch={ onSearch }
                 onSelect={ onSelect }
+                loading={loading}
                 onBlur={ onBlur }
                 placeholder={ placeholder }
                 notFoundContent={
