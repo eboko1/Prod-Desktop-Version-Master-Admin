@@ -776,9 +776,11 @@ export class CashOrderForm extends Component {
                         formItem
                         // Initial value depends on a specific analytics field so we leave only those which has that field
                         initialValue={
-                            ((editMode || printMode) && activeCashOrder.analyticsUniqueId)
+                            (editMode && activeCashOrder.analyticsUniqueId)
                                 ? activeCashOrder.analyticsUniqueId
-                                : (_.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId'))
+                                : (printMode)
+                                    ? void 0
+                                    : (_.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId'))
                         }
                         getFieldDecorator={getFieldDecorator}
                         getPopupContainer={trigger =>
@@ -790,6 +792,7 @@ export class CashOrderForm extends Component {
                         rules={[
                             { required: true, message: 'Analytics must be selected!!!' },
                         ]}
+                        // options={analytics.filter(ana => ana.analyticsOrderType == orderType) || []}
                         options={analytics || []}
                         optionValue="analyticsUniqueId" //Will be sent as var
                         optionLabel="analyticsName"
