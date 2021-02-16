@@ -523,10 +523,12 @@ export class CashOrderForm extends Component {
             form: { getFieldDecorator, getFieldValue },
 
             analyticsFetchingState,
-            analytics
+            analytics,
+            activeCashOrder
         } = this.props;
 
         const cashOrderId = getFieldValue("id");
+        const orderType = getFieldValue('type');
 
         //https://github.com/ant-design/ant-design/issues/8880#issuecomment-402590493
         // getFieldDecorator("clientId", { initialValue: void 0 });
@@ -765,27 +767,19 @@ export class CashOrderForm extends Component {
                         formatter={numeralFormatter}
                         parser={numeralParser}
                     />
-                    {/* <DecoratedInput
-                        fields={{}}
-                        field="tag"
-                        getFieldDecorator={getFieldDecorator}
-                        formItem
-                        label={formatMessage({
-                            id: "cash-table.tag",
-                        })}
-                        formItemLayout={formItemLayout}
-                        className={Styles.styledFormItem}
-                    /> */}
-
-                    {/* TODO analyticsId has to be selected by default */}
                     <DecoratedSelect
-                        field="analyticsId"
+                        field="analyticsUniqueId"
                         showSearch
                         loading={analyticsFetchingState}
                         disabled={printMode || analyticsFetchingState}
                         allowClear
                         formItem
-                        // initialValue={initValues.catalogId}
+                        // Initial value depends on a specific analytics field so we leave only those which has that field
+                        initialValue={
+                            ((editMode || printMode) && activeCashOrder.analyticsUniqueId)
+                                ? activeCashOrder.analyticsUniqueId
+                                : (_.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId'))
+                        }
                         getFieldDecorator={getFieldDecorator}
                         getPopupContainer={trigger =>
                             trigger.parentNode
@@ -797,7 +791,7 @@ export class CashOrderForm extends Component {
                             { required: true, message: 'Analytics must be selected!!!' },
                         ]}
                         options={analytics || []}
-                        optionValue="analyticsId" //Will be sent as var
+                        optionValue="analyticsUniqueId" //Will be sent as var
                         optionLabel="analyticsName"
 
                         formItemLayout={formItemLayout}
