@@ -8,32 +8,43 @@ const prefix = `cpb/${moduleName}`;
 export const CREATE_ANALYTICS_ANALYTICS_FORM = `${prefix}/CREATE_ANALYTICS_ANALYTICS_FORM`;
 export const CREATE_ANALYTICS_ANALYTICS_FORM_SUCCESS = `${prefix}/CREATE_ANALYTICS_ANALYTICS_FORM_SUCCESS`;
 
+export const UPDATE_ANALYTICS_ANALYTICS_FORM = `${prefix}/UPDATE_ANALYTICS_ANALYTICS_FORM`;
+export const UPDATE_ANALYTICS_ANALYTICS_FORM_SUCCESS = `${prefix}/UPDATE_ANALYTICS_ANALYTICS_FORM_SUCCESS`; 
+
 export const CHANGE_CURRENT_FORM = `${prefix}/CHANGE_CURRENT_FORM`;
 
 export const FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM = `${prefix}/FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM`;
 export const FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM_SUCCESS = `${prefix}/FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM_SUCCESS`;
 
-// export const ON_CHANGE_ADD_CLIENT_FORM = `${prefix}/ON_CHANGE_ADD_CLIENT_FORM`;
-
-// export const ADD_ERROR = `${prefix}/ADD_ERROR`;
-// export const HANDLE_ERROR = `${prefix}/HANDLE_ERROR`;
-
-//Which form is currently focused(two types available)
+/**
+ * Which form is currently focused(two types available)
+ */
 export const formKeys = {
     catalogForm: 'CATALOG_FORM',
     analyticsForm: 'ANALYTICS_FORM'
 }
 
+/**
+ * Each analytics has its tree level respectivly
+ */
 export const analyticsLevels = {
     catalog: 1,
     analytics: 2
 }
 
 /**
+ * Help to define how data have to be represented inside forms and what to do after submit button
+ */
+export const formModes = {
+    EDIT: "EDIT",
+    VIEW: "VIEW",
+    ADD: "ADD"
+}
+
+/**
  * Reducer
  * */
 
-// let errorId = 1;
 
 const ReducerState = {
     fields: {
@@ -62,32 +73,18 @@ export default function reducer(state = ReducerState, action) {
                 currentForm: payload
             };
 
+        case FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM:
+            return {
+                ...state,
+                analyticsCatalogsLoading: true,//Fetching started started
+            };
+
         case FETCH_ANALYTICS_CATALOGS_ANALYTICS_FORM_SUCCESS:
             return {
                 ...state,
-                analyticsCatalogs: payload
+                analyticsCatalogs: payload,
+                analyticsCatalogsLoading: false, //Fetching finished
             };
-
-        // case ON_CHANGE_ADD_CLIENT_FORM:
-        //     return {
-        //         ...state,
-        //         fields: {
-        //             ...state.fields,
-        //             ...payload,
-        //         },
-        //     };
-
-        // case ADD_ERROR:
-        //     return {
-        //         ...state,
-        //         errors: [ ...state.errors, { id: errorId++, ...payload }],
-        //     };
-
-        // case HANDLE_ERROR:
-        //     return {
-        //         ...state,
-        //         errors: state.errors.filter(({ id }) => id !== payload),
-        //     };
 
         default:
             return state;
@@ -123,6 +120,16 @@ export const createAnalyticsSuccess = () => ({
     type: CREATE_ANALYTICS_ANALYTICS_FORM_SUCCESS
 });
 
+export const updateAnalytics = ({analyticsId, newAnalyticsEntity}) => ({
+    type: UPDATE_ANALYTICS_ANALYTICS_FORM,
+    payload: {analyticsId, newAnalyticsEntity}
+
+});
+
+export const updateAnalyticsSuccess = () => ({
+    type: UPDATE_ANALYTICS_ANALYTICS_FORM_SUCCESS
+});
+
 /**
  * Takes constant string representing form(form key, constants are located in the duck file
  * @param {string} newCurrentForm New form to be set
@@ -131,20 +138,3 @@ export const changeCurrentForm = (newCurrentForm) => ({
     type: CHANGE_CURRENT_FORM,
     payload: newCurrentForm
 });
-
-// export const onChangeAddClientForm = (fields, { form, field }) => ({
-//     type:    ON_CHANGE_ADD_CLIENT_FORM,
-//     payload: fields,
-//     meta:    { form, field },
-// });
-
-// export const addError = error => ({
-//     type:    ADD_ERROR,
-//     payload: error,
-//     error:   true,
-// });
-
-// export const handleError = id => ({
-//     type:    HANDLE_ERROR,
-//     payload: id,
-// });

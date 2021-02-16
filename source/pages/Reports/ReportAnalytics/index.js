@@ -12,21 +12,21 @@ Author: Anatolii Kotvytskyi;
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import {Input, Button} from 'antd';
+import {Input} from 'antd';
 import _ from "lodash";
 
 const Search = Input.Search;
 
 // proj
-import {
-    fetchReportAnalytics,
-} from 'core/reports/reportAnalytics/duck';
 import { ReportAnalyticsModal } from 'modals';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
-import {fetchAPI} from 'utils';
-
 import { Layout, StyledButton } from "commons";
-import { ReportOrdersTable, ReportOrdersFilter } from "components";
+import {fetchAPI} from 'utils';
+import {
+    fetchReportAnalytics,
+    deleteReportAnalytics
+} from 'core/reports/reportAnalytics/duck';
+
 
 // own
 import Styles from "./styles.m.css";
@@ -35,10 +35,14 @@ import AnalyticsDropdown from './AnalyticsDropdown';
 const mapStateToProps = state => ({
     analytics: state.reportAnalytics.analytics,
     modal: state.modals.modal,
+
+    modalProps: state.modals.modalProps,
 });
 
 const mapDispatchToProps = {
     fetchReportAnalytics,
+    deleteReportAnalytics,
+
     setModal,
     resetModal
 };
@@ -52,20 +56,36 @@ export default class ReportAnalyticsPage extends Component {
     constructor(props) {
         super(props);
 
-        this.onAnalyticsBtn = this.onAnalyticsBtn.bind(this);
         this.onAnalyticsModalCancel = this.onAnalyticsModalCancel.bind(this);
+        this._onDeleteAnalytics = this._onDeleteAnalytics.bind(this);
+        this.openAnalyticsModal = this.openAnalyticsModal.bind(this);
     }
 
     componentDidMount() {
         this.props.fetchReportAnalytics();
     }
 
-    onAnalyticsBtn() {
-        this.props.setModal(MODALS.REPORT_ANALYTICS);
-    }
-
     onAnalyticsModalCancel() {
         this.props.resetModal();
+    }
+    
+    openAnalyticsModal(mode, initialTab, analyticsEntity) {
+        //Open modal
+        this.props.setModal(MODALS.REPORT_ANALYTICS, {mode, initialTab, analyticsEntity});
+    }
+
+    /**
+     * Very danger zone, be carefull. If you will not provide correct analytics Id
+     * all changes of the user will be lost forever!!!
+     * @param {int} analyticsId Analytics or analytics catalog Id
+     */
+    _onDeleteAnalytics(analyticsId) {
+        const {deleteReportAnalytics} = this.props;
+
+        if(analyticsId)
+            deleteReportAnalytics(analyticsId); //Delete specific analytics
+        else
+            deleteReportAnalytics(undefined);//Delete all changes on user's page
     }
 
     
@@ -74,7 +94,7 @@ export default class ReportAnalyticsPage extends Component {
         const {
             analytics,
             modal,
-            fetchReportAnalytics
+            fetchReportAnalytics,
         } = this.props;
         
         
@@ -93,12 +113,16 @@ export default class ReportAnalyticsPage extends Component {
                                 fetchReportAnalytics();
                             }
                         }>Reset all</StyledButton>
-                        <StyledButton type="secondary" onClick={this.onAnalyticsBtn}>Create</StyledButton>
+                        <StyledButton type="secondary" onClick={() => this.openAnalyticsModal()/*Call with defaults*/}>Create</StyledButton>
                     </div>
                 }
                 paper={false}
             >
-                <AnalyticsDropdown analytics={analytics}/>
+                <AnalyticsDropdown
+                    analytics={analytics}
+                    onDeleteAnalytics={this._onDeleteAnalytics}
+                    openAnalyticsModal={this.openAnalyticsModal}
+                />
 
                 <ReportAnalyticsModal 
                     visible={modal}

@@ -13,8 +13,10 @@ import {
     onChangeCashOrderForm,
     fetchCashOrderNextId,
     fetchCashOrderForm,
+    fetchAnalytics,
     createCashOrder,
     selectCounterpartyList,
+    selectAnalytics,
     selectClient,
     selectOrder,
     onClientSelect,
@@ -89,6 +91,7 @@ const getActiveFieldsMap = activeCashOrder => {
         fetchCashboxes,
         fetchCashOrderNextId,
         fetchCashOrderForm,
+        fetchAnalytics,
         createCashOrder,
         onClientSelect,
         onOrderSelect,
@@ -104,7 +107,9 @@ const getActiveFieldsMap = activeCashOrder => {
             client: selectClient(state),
             clientFetching: state.ui.clientFetching,
             clientOrdersFetching: state.ui.clientOrdersFetching,
+            analyticsFetchingState: state.forms.cashOrderForm.analyticsFetchingState,
             counterpartyList: selectCounterpartyList(state),
+            analytics: selectAnalytics(state),
             nextId: _.get(state, "forms.cashOrderForm.fields.nextId"),
             order: selectOrder(state),
         };
@@ -147,6 +152,7 @@ export class CashOrderForm extends Component {
             activeCashOrder,
             fetchCashOrderNextId,
             fetchCashboxes,
+            fetchAnalytics,
             cashboxes,
             intl: { formatMessage },
             form: { setFieldsValue },
@@ -155,6 +161,9 @@ export class CashOrderForm extends Component {
         const defaultTagValue = `${formatMessage({
             id: `cash-order-form.dafault_tag`,
         })}`;
+
+        //We need analytics in all modes
+        fetchAnalytics();
 
         if (editMode || printMode) {
             this._setFormFields(activeCashOrder);
@@ -512,9 +521,14 @@ export class CashOrderForm extends Component {
             editMode,
             intl: { formatMessage },
             form: { getFieldDecorator, getFieldValue },
+
+            analyticsFetchingState,
+            analytics,
+            activeCashOrder
         } = this.props;
 
         const cashOrderId = getFieldValue("id");
+        const orderType = getFieldValue('type');
 
         //https://github.com/ant-design/ant-design/issues/8880#issuecomment-402590493
         // getFieldDecorator("clientId", { initialValue: void 0 });
@@ -753,17 +767,40 @@ export class CashOrderForm extends Component {
                         formatter={numeralFormatter}
                         parser={numeralParser}
                     />
-                    <DecoratedInput
-                        fields={{}}
-                        field="tag"
-                        getFieldDecorator={getFieldDecorator}
+                    <DecoratedSelect
+                        field="analyticsUniqueId"
+                        showSearch
+                        loading={analyticsFetchingState}
+                        disabled={printMode || analyticsFetchingState}
+                        allowClear
                         formItem
+                        // Initial value depends on a specific analytics field so we leave only those which has that field
+                        initialValue={
+                            (editMode && activeCashOrder.analyticsUniqueId)
+                                ? activeCashOrder.analyticsUniqueId
+                                : (printMode)
+                                    ? void 0
+                                    : (_.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId'))
+                        }
+                        getFieldDecorator={getFieldDecorator}
+                        getPopupContainer={trigger =>
+                            trigger.parentNode
+                        }
                         label={formatMessage({
                             id: "cash-table.tag",
                         })}
+                        rules={[
+                            { required: true, message: 'Analytics must be selected!!!' },
+                        ]}
+                        // options={analytics.filter(ana => ana.analyticsOrderType == orderType) || []}
+                        options={analytics || []}
+                        optionValue="analyticsUniqueId" //Will be sent as var
+                        optionLabel="analyticsName"
+
                         formItemLayout={formItemLayout}
                         className={Styles.styledFormItem}
                     />
+
                     <DecoratedTextArea
                         fields={{}}
                         field="description"
