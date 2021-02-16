@@ -20,6 +20,8 @@ import { CashOrderModal } from "modals";
 import { CashOrdersFiltersForm } from "forms";
 import { CashOrdersTable } from "components";
 import { isForbidden, permissions } from "utils";
+import {formModes} from 'core/forms/reportAnalyticsForm/duck';
+import { ReportAnalyticsModal } from 'modals';
 
 // own
 import Styles from "./styles.m.css";
@@ -85,13 +87,37 @@ export default class CashFlowPage extends Component {
     };
 
     _onOpenEditCashOrderModal = cashOrderEntity => {
-        console.log(cashOrderEntity);
         this.props.setModal(MODALS.CASH_ORDER, {
             editMode: true,
             printMode: false,
             cashOrderEntity: cashOrderEntity,
         });
         this.setState({ cashOrderModalMounted: true });
+    };
+
+    //When we want to open analytics modal from the inside of a cash order modal
+    _onOpenReportAnalyticsModal = () => {
+        //Close current cash order modal
+        // this.props.resetModal();
+        // this.setState({ cashOrderModalMounted: false });
+
+        this._onCloseCashOrderModal();
+
+        //Open analytics modal
+        this.props.setModal(MODALS.REPORT_ANALYTICS, {
+            mode: formModes.ADD
+        });
+    };
+
+    _onCloseReportAnallyticsModal = () => {
+        //Close analytics modal
+        this.props.resetModal();
+
+        // //Open cash order modal
+        // this.props.setModal(MODALS.CASH_ORDER);
+
+        //Reset closed cash order modas(entered values(fields) has to be saved)
+        // this.setState({ cashOrderModalMounted: true });
     };
 
     render() {
@@ -108,6 +134,7 @@ export default class CashFlowPage extends Component {
             user,
             fetchCashOrders,
             printCashOrder,
+            resetModal
         } = this.props;
 
         const canEditCashOrders = !isForbidden(
@@ -166,9 +193,15 @@ export default class CashFlowPage extends Component {
                         resetModal={this._onCloseCashOrderModal}
                         visible={modal}
                         clearCashOrderForm={clearCashOrderForm}
+                        onOpenAnalyticsModal={this._onOpenReportAnalyticsModal}
                         modalProps={modalProps}
                     />
                 ) : null}
+
+                <ReportAnalyticsModal 
+                    visible={modal}
+                    onCancel={this._onCloseReportAnallyticsModal}
+                />
             </Layout>
         );
     }

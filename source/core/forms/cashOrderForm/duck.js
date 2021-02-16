@@ -514,7 +514,7 @@ export const setSelectedClientOrdersFilters = filters => ({
     payload: filters,
 });
 
-export const setanalyticsFetchingState = (val) => ({
+export const setAnalyticsFetchingState = (val) => ({
     type: SET_ANALYTICS_FETCHING_STATE,
     payload: val
 });

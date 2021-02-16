@@ -1,10 +1,9 @@
 // vendor
 import React, { Component } from "react";
-import { Form, Select, Button, Radio, Icon, message } from "antd";
+import { Form, Select, Button, Radio, Icon, Row, Col } from "antd";
 import { injectIntl } from "react-intl";
 import _ from "lodash";
 import moment from "moment";
-import { v4 } from "uuid";
 import classNames from "classnames/bind";
 
 // proj
@@ -28,7 +27,7 @@ import {
     selectClientOrders,
 } from "core/forms/cashOrderForm/duck";
 
-import { Loader } from "commons";
+import { Loader, StyledButton } from "commons";
 import { ClientsSearchTable } from "forms/OrderForm/OrderFormTables";
 import { CashSelectedClientOrdersTable } from "components";
 import {
@@ -524,7 +523,8 @@ export class CashOrderForm extends Component {
 
             analyticsFetchingState,
             analytics,
-            activeCashOrder
+            activeCashOrder,
+            onOpenAnalyticsModal
         } = this.props;
 
         const cashOrderId = getFieldValue("id");
@@ -767,39 +767,58 @@ export class CashOrderForm extends Component {
                         formatter={numeralFormatter}
                         parser={numeralParser}
                     />
-                    <DecoratedSelect
-                        field="analyticsUniqueId"
-                        showSearch
-                        loading={analyticsFetchingState}
-                        disabled={printMode || analyticsFetchingState}
-                        allowClear
-                        formItem
-                        // Initial value depends on a specific analytics field so we leave only those which has that field
-                        initialValue={
-                            (editMode && activeCashOrder.analyticsUniqueId)
-                                ? activeCashOrder.analyticsUniqueId
-                                : (printMode)
-                                    ? void 0
-                                    : (_.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId'))
-                        }
-                        getFieldDecorator={getFieldDecorator}
-                        getPopupContainer={trigger =>
-                            trigger.parentNode
-                        }
-                        label={formatMessage({
-                            id: "cash-table.tag",
-                        })}
-                        rules={[
-                            { required: true, message: 'Analytics must be selected!!!' },
-                        ]}
-                        // options={analytics.filter(ana => ana.analyticsOrderType == orderType) || []}
-                        options={analytics || []}
-                        optionValue="analyticsUniqueId" //Will be sent as var
-                        optionLabel="analyticsName"
 
-                        formItemLayout={formItemLayout}
-                        className={Styles.styledFormItem}
-                    />
+                    <div className={Styles.analyticsCont}>
+                        <DecoratedSelect
+                            field="analyticsUniqueId"
+                            showSearch
+                            loading={analyticsFetchingState}
+                            disabled={printMode || analyticsFetchingState}
+                            allowClear
+                            formItem
+                            // Initial value depends on a specific analytics field so we leave only those which has that field
+                            initialValue={
+                                (editMode && activeCashOrder.analyticsUniqueId)
+                                    ? activeCashOrder.analyticsUniqueId
+                                    : (printMode)
+                                        ? void 0
+                                        : (_.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId'))
+                            }
+                            getFieldDecorator={getFieldDecorator}
+                            getPopupContainer={trigger =>
+                                trigger.parentNode
+                            }
+                            label={formatMessage({
+                                id: "cash-table.tag",
+                            })}
+                            rules={[
+                                { required: true, message: 'Analytics must be selected!!!' },
+                            ]}
+                            // options={analytics.filter(ana => ana.analyticsOrderType == orderType) || []}
+                            options={analytics || []}
+                            optionValue="analyticsUniqueId" //Will be sent as var
+                            optionLabel="analyticsName"
+
+                            formItemLayout={formItemLayout}
+                            className={Styles.styledFormItem}
+                        />
+
+                        <Row>
+                            <Col span={8}></Col>
+                            <Col span={10}>
+                                <div className={Styles.createAnalyticsButton}>
+                                    <StyledButton
+                                        type="secondary"
+                                        onClick={() => onOpenAnalyticsModal()}
+                                    >
+                                        <Icon type="plus-circle" />
+                                        Add analytics
+                                    </StyledButton>
+                                </div>
+                            </Col>
+                            <Col span={6}></Col>
+                        </Row>
+                    </div>
 
                     <DecoratedTextArea
                         fields={{}}

@@ -16,11 +16,15 @@ import _ from 'lodash';
 //proj
 import { setCashOrdersFetchingState, emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
+import {analyticsLevels} from 'core/forms/reportAnalyticsForm/duck'
+
 
 // own
 import {
     fetchCashboxes,
     fetchCashboxesSuccess,
+    fetchAnalyticsSuccess,
+    setAnalyticsFetchingState,
     createCashboxSuccess,
     deleteCashboxSuccess,
     fetchCashOrders,
@@ -33,6 +37,7 @@ import {
     FETCH_CASHBOXES,
     FETCH_CASHBOXES_BALANCE,
     FETCH_CASHBOXES_ACTIVITY,
+    FETCH_ANALYTICS,
     CREATE_CASHBOX,
     DELETE_CASHBOX,
     FETCH_CASH_ORDERS,
@@ -113,6 +118,26 @@ export function* fetchCashOrdersSaga() {
             yield put(emitError(error));
         } finally {
             yield put(setCashOrdersFetchingState(false));
+        }
+    }
+}
+
+export function* fetchAnalyticsSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_ANALYTICS);
+            yield put(setAnalyticsFetchingState(true));
+            
+            const filters = {
+                level: analyticsLevels.analytics
+            }
+
+            const {analytics} = yield call(fetchAPI, 'GET', '/report/analytics', {filters});
+
+            yield put(fetchAnalyticsSuccess(analytics));
+            yield put(setAnalyticsFetchingState(false));
+        } catch (error) {
+            yield put(emitError(error));
         }
     }
 }
@@ -202,6 +227,7 @@ export function* saga() {
         call(deleteCashboxSaga),
         call(printCashOrdersSaga),
         call(fetchCashOrdersSaga),
+        call(fetchAnalyticsSaga),
         takeLatest(SET_SEARCH_QUERY, handleCashOrdersSearchSaga),
     ]);
 }

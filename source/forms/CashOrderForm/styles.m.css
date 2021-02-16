@@ -11,6 +11,21 @@
     margin: 0;
 }
 
+.analyticsCont > .styledFormItem {
+    margin: 0;
+}
+
+.createAnalyticsButton {
+    /* height: 100px; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    /* background-color: grey; */
+    margin-bottom: 16px;
+}
+
+
+
 .styledFormItem,
 .buttonGroup {
     display: flex;
