@@ -8,6 +8,7 @@ import { permissions, isForbidden } from "utils";
 // proj
 import { Layout } from "commons";
 import { BarcodeContainer } from "containers";
+import { Barcode } from "components";
 // own
 
 const mapStateToProps = state => ({
@@ -25,6 +26,11 @@ export default class BarcodePage extends Component {
         return (
             <Layout
             	title={ <FormattedMessage id='navigation.barcode' /> }
+                controls={
+                    <Barcode
+                        value={"TEST"}
+                    />
+                }
             >
                 <BarcodeContainer/>
             </Layout>

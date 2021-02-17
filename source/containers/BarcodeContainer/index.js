@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
+import { Barcode } from "jsbarcode";
 import { Button, Input } from "antd";
 import { permissions, isForbidden } from "utils";
 

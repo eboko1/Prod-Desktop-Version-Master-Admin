@@ -48,6 +48,7 @@ import AvailabilityIndicator from './AvailabilityIndicator';
 import RepairMapIndicator from './RepairMapIndicator';
 import ReportLoadKPIFilter from './ReportFilters/ReportLoadKPIFilter';
 import { DateRangePicker, SingleDatePicker } from './DatePicker';
+import Barcode from './Barcode';
 
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
@@ -108,4 +109,5 @@ export {
     ReportLoadKPIFilter,
     DateRangePicker,
     SingleDatePicker,
+    Barcode,
 };
