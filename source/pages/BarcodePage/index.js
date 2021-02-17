@@ -28,7 +28,7 @@ export default class BarcodePage extends Component {
             	title={ <FormattedMessage id='navigation.barcode' /> }
                 controls={
                     <Barcode
-                        value={"TEST"}
+                        value={"1"}
                     />
                 }
             >
