@@ -39,7 +39,7 @@ export default class AnalyticsDropdown extends React.Component {
             return (
                 <div>
                     <Row className={Style.row}>
-                        <Col className={Style.colHeader} span={20}>{analytics.analyticsName} {analytics.analyticsId}</Col>
+                        <Col className={Style.colHeader} span={20}>{analytics.analyticsName}</Col>
                         <Col className={Style.colCentered} span={2}>
                             {
                                 /* EDIT btn | Buttons only for non-custom fields otherwise just place an icon */
@@ -79,7 +79,7 @@ export default class AnalyticsDropdown extends React.Component {
             return (
                 <div className={Style.analyticsCont} key={chil.analyticsId}>
                     <Row className={Style.row}>
-                        <Col className={Style.col} span={8}>{chil.analyticsName} {chil.analyticsId}</Col>
+                        <Col className={Style.col} span={8}>{chil.analyticsName}</Col>
 
                         <Col className={Style.col} span={4}>{chil.analyticsBookkeepingAccount}</Col>
                         <Col className={Style.col} span={4}>{chil.analyticsOrderType}</Col>
