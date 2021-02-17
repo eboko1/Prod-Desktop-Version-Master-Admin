@@ -11,6 +11,7 @@ import {
     fetchCashOrders,
     selectCashOrdersFilters,
     printCashOrder,
+    fetchAnalytics
 } from "core/cash/duck";
 import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
 import { setModal, resetModal, MODALS } from "core/modals/duck";
@@ -45,6 +46,7 @@ const mapDispatchToProps = {
     fetchCashOrders,
     clearCashOrderForm,
     printCashOrder,
+    fetchAnalytics,
 };
 
 @connect(
@@ -114,12 +116,16 @@ export default class CashFlowPage extends Component {
 
     _onCloseReportAnallyticsModalEventHandler = () => {
         const {editMode, printMode, cashOrderEntity, cashBoxId} = (this.state && this.state.prevModalProps) || {};
+        const {fetchAnalytics} = this.props;
 
         //Open cash order modal with old params depending on mode
         if(editMode) 
             this._onOpenEditCashOrderModal(cashOrderEntity);
         else if(!printMode)
             this._onOpenCashOrderModal();
+
+        //Reload analytics for this page because we added new one (this is used by filter)
+        fetchAnalytics();
     };
 
     render() {
