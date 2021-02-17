@@ -56,7 +56,6 @@ export default class ReportAnalyticsPage extends Component {
     constructor(props) {
         super(props);
 
-        this.onAnalyticsModalCancel = this.onAnalyticsModalCancel.bind(this);
         this._onDeleteAnalytics = this._onDeleteAnalytics.bind(this);
         this.openAnalyticsModal = this.openAnalyticsModal.bind(this);
     }
@@ -65,9 +64,7 @@ export default class ReportAnalyticsPage extends Component {
         this.props.fetchReportAnalytics();
     }
 
-    onAnalyticsModalCancel() {
-        this.props.resetModal();
-    }
+    
     
     openAnalyticsModal(mode, initialTab, analyticsEntity) {
         //Open modal
@@ -126,7 +123,6 @@ export default class ReportAnalyticsPage extends Component {
 
                 <ReportAnalyticsModal 
                     visible={modal}
-                    onCancel={this.onAnalyticsModalCancel}
                 />
             </Layout>
         );
