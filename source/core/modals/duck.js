@@ -27,9 +27,14 @@ export const MODALS = {
     PDF_VIEWER:             'PDF_VIEWER',
     STORE_GROUP:            'STORE_GROUP',
     STORE_PRODUCT:          'STORE_PRODUCT',
+
+    //Report modals
     REPORT_ORDERS_FILTER:   'REPORT_ORDERS_FILTER',
     REPORT_ORDERS_EXPORT:   'REPORT_ORDERS_EXPORT',
     REPORT_ANALYTICS:       'REPORT_ANALYTICS',
+
+    //Common modals
+    CONFIRM:                'CONFIRM'
 };
 
 //

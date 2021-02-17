@@ -12,19 +12,16 @@ Author: Anatolii Kotvytskyi;
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import {Input} from 'antd';
 import _ from "lodash";
 
-const Search = Input.Search;
-
 // proj
-import { ReportAnalyticsModal } from 'modals';
+import { ReportAnalyticsModal, ConfirmModal } from 'modals';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { Layout, StyledButton } from "commons";
-import {fetchAPI} from 'utils';
 import {
     fetchReportAnalytics,
-    deleteReportAnalytics
+    deleteReportAnalytics,
+    resetAllReportAnalytics
 } from 'core/reports/reportAnalytics/duck';
 
 
@@ -42,6 +39,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchReportAnalytics,
     deleteReportAnalytics,
+    resetAllReportAnalytics,
 
     setModal,
     resetModal
@@ -56,8 +54,12 @@ export default class ReportAnalyticsPage extends Component {
     constructor(props) {
         super(props);
 
-        this._onDeleteAnalytics = this._onDeleteAnalytics.bind(this);
         this.openAnalyticsModal = this.openAnalyticsModal.bind(this);
+        this._onDeleteAnalytics = this._onDeleteAnalytics.bind(this);
+        this.onOpenConfirm = this.onOpenConfirm.bind(this);
+        this._onResettingAllAnalyticsConfirmed = this._onResettingAllAnalyticsConfirmed.bind(this);
+        this.onResettingAllAnalyticsCanceled = this.onResettingAllAnalyticsCanceled.bind(this);
+
     }
 
     componentDidMount() {
@@ -67,22 +69,31 @@ export default class ReportAnalyticsPage extends Component {
     
     
     openAnalyticsModal(mode, initialTab, analyticsEntity) {
-        //Open modal
         this.props.setModal(MODALS.REPORT_ANALYTICS, {mode, initialTab, analyticsEntity});
     }
 
     /**
      * Very danger zone, be carefull. If you will not provide correct analytics Id
-     * all changes of the user will be lost forever!!!
+     * you will receive error, if you want to reset all analytics(remove all) use anothe action
      * @param {int} analyticsId Analytics or analytics catalog Id
      */
     _onDeleteAnalytics(analyticsId) {
         const {deleteReportAnalytics} = this.props;
 
-        if(analyticsId)
-            deleteReportAnalytics(analyticsId); //Delete specific analytics
-        else
-            deleteReportAnalytics(undefined);//Delete all changes on user's page
+        analyticsId && deleteReportAnalytics(analyticsId); //Delete specific analytics
+    }
+
+    onOpenConfirm(e) {
+        this.props.setModal(MODALS.CONFIRM, {});
+    }
+
+    _onResettingAllAnalyticsConfirmed() {
+        this.props.resetAllReportAnalytics({areYouSureToDeleteAll: true})
+        this.props.resetModal();
+    }
+
+    onResettingAllAnalyticsCanceled() {
+        this.props.resetModal();
     }
 
     
@@ -91,7 +102,6 @@ export default class ReportAnalyticsPage extends Component {
         const {
             analytics,
             modal,
-            fetchReportAnalytics,
         } = this.props;
         
         
@@ -104,12 +114,7 @@ export default class ReportAnalyticsPage extends Component {
                 }
                 controls={
                     <div className={Styles.buttonGroup}>
-                        <StyledButton type="primary" onClick={
-                            () => {
-                                fetchAPI('DELETE', 'report/analytics');
-                                fetchReportAnalytics();
-                            }
-                        }>Reset all</StyledButton>
+                        <StyledButton type="primary" onClick={this.onOpenConfirm}>Reset all</StyledButton>
                         <StyledButton type="secondary" onClick={() => this.openAnalyticsModal()/*Call with defaults*/}>Create</StyledButton>
                     </div>
                 }
@@ -119,6 +124,14 @@ export default class ReportAnalyticsPage extends Component {
                     analytics={analytics}
                     onDeleteAnalytics={this._onDeleteAnalytics}
                     openAnalyticsModal={this.openAnalyticsModal}
+                />
+
+                <ConfirmModal
+                    visible={modal}
+                    title="Confirm dialog"
+                    modalContent="Hello, it's me."
+                    onOk={this._onResettingAllAnalyticsConfirmed}
+                    onCancel={this.onResettingAllAnalyticsCanceled}
                 />
 
                 <ReportAnalyticsModal 
