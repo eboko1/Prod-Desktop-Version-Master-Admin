@@ -53,10 +53,6 @@ const formItemLayout = {
     wrapperCol: { span: 15 },
 };
 
-//const expandedWrapperFormItemLayout = {
-//    wrapperCol: { span: 24 },
-//};
-
 const reverseFromItemLayout = {
     labelCol: { span: 15 },
     wrapperCol: { span: 7 },
@@ -809,7 +805,8 @@ export class CashOrderForm extends Component {
                                 <div className={Styles.createAnalyticsButton}>
                                     <StyledButton
                                         type="secondary"
-                                        onClick={() => onOpenAnalyticsModal()}
+                                        disabled={printMode}
+                                        onClick={() => onOpenAnalyticsModal({editMode, printMode, cashOrderEntity: activeCashOrder})}
                                     >
                                         <Icon type="plus-circle" />
                                         Add analytics

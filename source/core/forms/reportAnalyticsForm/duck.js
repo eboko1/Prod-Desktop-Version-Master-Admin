@@ -1,3 +1,5 @@
+import {fetchReportAnalytics} from 'core/reports/reportAnalytics/duck';
+
 /**
  * Constants
  * */
@@ -44,8 +46,6 @@ export const formModes = {
 /**
  * Reducer
  * */
-
-
 const ReducerState = {
     fields: {
         catalogName: undefined,
@@ -116,9 +116,18 @@ export const createAnalytics = ({analyticsEntity}) => ({
 
 });
 
-export const createAnalyticsSuccess = () => ({
-    type: CREATE_ANALYTICS_ANALYTICS_FORM_SUCCESS
-});
+// export const createAnalyticsSuccess = () => ({
+//     type: CREATE_ANALYTICS_ANALYTICS_FORM_SUCCESS
+// });
+
+export const createAnalyticsSuccess = () => {
+    return function(dispatch) {
+        dispatch(fetchReportAnalytics()); //Update after deleting
+        return dispatch({
+            type: CREATE_ANALYTICS_ANALYTICS_FORM_SUCCESS
+        });
+    }
+};
 
 export const updateAnalytics = ({analyticsId, newAnalyticsEntity}) => ({
     type: UPDATE_ANALYTICS_ANALYTICS_FORM,
@@ -126,9 +135,14 @@ export const updateAnalytics = ({analyticsId, newAnalyticsEntity}) => ({
 
 });
 
-export const updateAnalyticsSuccess = () => ({
-    type: UPDATE_ANALYTICS_ANALYTICS_FORM_SUCCESS
-});
+export const updateAnalyticsSuccess = () => {
+    return function(dispatch) {
+        dispatch(fetchReportAnalytics()); //Update after deleting
+        return dispatch({
+            type: UPDATE_ANALYTICS_ANALYTICS_FORM_SUCCESS
+        });
+    }
+};
 
 /**
  * Takes constant string representing form(form key, constants are located in the duck file
