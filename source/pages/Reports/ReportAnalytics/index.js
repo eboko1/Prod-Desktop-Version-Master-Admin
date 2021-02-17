@@ -21,8 +21,9 @@ import { Layout, StyledButton } from "commons";
 import {
     fetchReportAnalytics,
     deleteReportAnalytics,
-    resetAllReportAnalytics
+    resetAllReportAnalytics,
 } from 'core/reports/reportAnalytics/duck';
+import { updateAnalytics } from 'core/forms/reportAnalyticsForm/duck';
 
 
 // own
@@ -40,6 +41,7 @@ const mapDispatchToProps = {
     fetchReportAnalytics,
     deleteReportAnalytics,
     resetAllReportAnalytics,
+    updateAnalytics,
 
     setModal,
     resetModal
@@ -59,14 +61,13 @@ export default class ReportAnalyticsPage extends Component {
         this.onOpenConfirm = this.onOpenConfirm.bind(this);
         this._onResettingAllAnalyticsConfirmed = this._onResettingAllAnalyticsConfirmed.bind(this);
         this.onResettingAllAnalyticsCanceled = this.onResettingAllAnalyticsCanceled.bind(this);
+        this.onUpdateAnalytics = this.onUpdateAnalytics.bind(this);
 
     }
 
     componentDidMount() {
         this.props.fetchReportAnalytics();
     }
-
-    
     
     openAnalyticsModal(mode, initialTab, analyticsEntity) {
         this.props.setModal(MODALS.REPORT_ANALYTICS, {mode, initialTab, analyticsEntity});
@@ -96,6 +97,9 @@ export default class ReportAnalyticsPage extends Component {
         this.props.resetModal();
     }
 
+    onUpdateAnalytics({analyticsId, newAnalyticsEntity}) {
+        this.props.updateAnalytics({analyticsId, newAnalyticsEntity});
+    }
     
     render() {
 
@@ -124,6 +128,7 @@ export default class ReportAnalyticsPage extends Component {
                     analytics={analytics}
                     onDeleteAnalytics={this._onDeleteAnalytics}
                     openAnalyticsModal={this.openAnalyticsModal}
+                    onUpdateAnalytics={this.onUpdateAnalytics}
                 />
 
                 <ConfirmModal

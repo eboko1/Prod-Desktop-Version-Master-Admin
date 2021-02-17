@@ -11,7 +11,6 @@ import _ from 'lodash';
 //proj
 import {
     formKeys,
-    analyticsLevels,
     formModes
 } from 'core/forms/reportAnalyticsForm/duck';
 
@@ -32,7 +31,8 @@ export default class AnalyticsDropdown extends React.Component {
 
         const {
             onDeleteAnalytics,
-            openAnalyticsModal
+            openAnalyticsModal,
+            onUpdateAnalytics
         } = this.props;
 
         const genParentHeader = (analytics) => {
@@ -84,7 +84,19 @@ export default class AnalyticsDropdown extends React.Component {
                         <Col className={Style.col} span={4}>{chil.analyticsBookkeepingAccount}</Col>
                         <Col className={Style.col} span={4}>{chil.analyticsOrderType}</Col>
 
-                        <Col className={Style.colCentered} span={2}><Switch size='small' checked={!chil.analyticsDisabled}/></Col>
+                        <Col className={Style.colCentered} span={2}>
+                            <Switch
+                                size='small'
+                                checked={!chil.analyticsDisabled}
+                                onClick={() => {
+                                    //Update anlytics by changing ist's "disabled" value prop
+                                    onUpdateAnalytics({
+                                        analyticsId: chil.analyticsId,
+                                        newAnalyticsEntity: {analyticsDisabled: !chil.analyticsDisabled}
+                                    });
+                                }}
+                            />
+                        </Col>
                         <Col className={Style.colCentered} span={2}>
                             {
                                 /* VIEW btn | Buttons only for non-custom fields otherwise just place an icon */
