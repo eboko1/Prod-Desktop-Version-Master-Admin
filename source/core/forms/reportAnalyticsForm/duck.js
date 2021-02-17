@@ -116,9 +116,18 @@ export const createAnalytics = ({analyticsEntity}) => ({
 
 });
 
-export const createAnalyticsSuccess = () => ({
-    type: CREATE_ANALYTICS_ANALYTICS_FORM_SUCCESS
-});
+// export const createAnalyticsSuccess = () => ({
+//     type: CREATE_ANALYTICS_ANALYTICS_FORM_SUCCESS
+// });
+
+export const createAnalyticsSuccess = () => {
+    return function(dispatch) {
+        dispatch(fetchReportAnalytics()); //Update after deleting
+        return dispatch({
+            type: CREATE_ANALYTICS_ANALYTICS_FORM_SUCCESS
+        });
+    }
+};
 
 export const updateAnalytics = ({analyticsId, newAnalyticsEntity}) => ({
     type: UPDATE_ANALYTICS_ANALYTICS_FORM,

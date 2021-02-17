@@ -52,7 +52,7 @@ export const deleteReportAnalytics = (analyticsId) => ({
     payload: {analyticsId}
 });
 
-//Make sync actions after analytics was deleted
+//Make sync update actions after analytics was deleted
 export const deleteReportAnalyticsSuccess = () => {
     return function(dispatch) {
         return dispatch(fetchReportAnalytics()); //Update after deleting

@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Modal, Form, Button, Col, Row, Checkbox, Radio, Tabs, Input, Select } from 'antd';
+import { Modal, Tabs} from 'antd';
 
 // proj
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
@@ -17,7 +17,6 @@ import {
     changeCurrentForm,
     fetchAnalyticsCatalogs
 } from 'core/forms/reportAnalyticsForm/duck';
-import {fetchReportAnalytics} from 'core/reports/reportAnalytics/duck';
 
 // own
 import Styles from './styles.m.css';
@@ -40,7 +39,6 @@ const mapDispatchToProps = {
     updateAnalytics,
     changeCurrentForm,
     fetchAnalyticsCatalogs,
-    fetchReportAnalytics
 };
 
 @injectIntl
@@ -118,7 +116,6 @@ export default class ReportAnalyticsModal extends Component {
         this.catalogForm && this.catalogForm.resetFields();
 
         //Finishing touches
-        this.props.fetchReportAnalytics();
         this.props.resetModal();
     }
 
