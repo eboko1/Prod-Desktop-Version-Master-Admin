@@ -41,7 +41,7 @@ import {
     selectClientOrdersFilters,
     selectSearchOrdersResultFilters,
     setOrderSearchFilters,
-    setanalyticsFetchingState,
+    setAnalyticsFetchingState,
     //
     fetchSelectedClientOrdersSuccess,
     fetchSearchOrderSuccess,
@@ -213,7 +213,7 @@ export function* fetchAnalyticsSaga() {
     while (true) {
         try {
             yield take(FETCH_ANALYTICS);
-            yield put(setanalyticsFetchingState(true));
+            yield put(setAnalyticsFetchingState(true));
             
             const filters = {
                 level: analyticsLevels.analytics
@@ -222,7 +222,7 @@ export function* fetchAnalyticsSaga() {
             const {analytics} = yield call(fetchAPI, 'GET', '/report/analytics', {filters});
 
             yield put(fetchAnalyticsSuccess(analytics));
-            yield put(setanalyticsFetchingState(false));
+            yield put(setAnalyticsFetchingState(false));
         } catch (error) {
             yield put(emitError(error));
         }
