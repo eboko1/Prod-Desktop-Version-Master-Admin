@@ -28,7 +28,16 @@ export default class BarcodePage extends Component {
             	title={ <FormattedMessage id='navigation.barcode' /> }
                 controls={
                     <Barcode
-                        value={"1"}
+                        barcodeValue={"123456789012"}
+                        iconStyle={{
+                            fontSize: 24,
+                        }}
+                        options={{
+                            height: 90,
+                            fontSize: 18,
+                            width: 3,
+                            margin: 0,
+                        }}
                     />
                 }
             >
