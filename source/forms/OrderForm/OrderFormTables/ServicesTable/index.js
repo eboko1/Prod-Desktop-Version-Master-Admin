@@ -24,6 +24,7 @@ import {
     LaborsNormHourModal,
     ComplexesModal,
 } from 'modals';
+import { Barcode } from "components";
 
 // own
 import Styles from './styles.m.css';
@@ -53,7 +54,10 @@ class ServicesTable extends Component {
         this.columns = [
             {
                 title: ()=>(
-                            <div style={{textAlign: 'center'}}>
+                            <div className={Styles.headerActions}>
+                                <Barcode
+                                    button
+                                />
                                 {!isForbidden(this.props.user, permissions.ACCESS_ORDER_LABORS_COMPLEXES) &&
                                     <ComplexesModal
                                         disabled={this.props.disabled}
@@ -65,22 +69,6 @@ class ServicesTable extends Component {
                                         reloadOrderForm={this.props.reloadOrderForm}
                                     />
                                 }
-                                <InputNumber
-                                    disabled={isForbidden(this.props.user, permissions.ACCESS_NORM_HOURS_MODAL_WINDOW)}
-                                    title='Коэффициент норматива'
-                                    style={ { fontWeight: 700 } }
-                                    defaultValue={ this.props.laborTimeMultiplier || 1 }
-                                    step={ 0.1 }
-                                    min={ 0 }
-                                    formatter={ value => `${Math.round(value * 100)}%` }
-                                    parser={ value =>
-                                        Math.round(value.replace('%', '') / 100)
-                                    }
-                                    onChange={ value => this.updateTimeMultiplier(value) }
-                                    title={ this.props.intl.formatMessage({
-                                        id: 'labors_table.mark_up',
-                                    }) }
-                                />
                             </div>
                             
                         ),

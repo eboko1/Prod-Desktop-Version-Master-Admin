@@ -1,0 +1,14 @@
+.barcodeWrapp {
+	text-align: center;
+}
+
+.barcodeActions {
+	text-align: end;
+    margin: -18px 0 4px 0;
+    padding: 0 28px 0 0;
+    font-size: 18px;
+
+    & > i {
+    	margin-left: 8px;
+    }
+}

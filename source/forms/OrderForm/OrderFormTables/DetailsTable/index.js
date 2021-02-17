@@ -23,6 +23,7 @@ import { DetailProductModal, FavouriteDetailsModal, StoreProductTrackingModal } 
 import { AvailabilityIndicator } from 'components';
 import { StoreProductModal } from 'modals';
 import { MODALS, setModal } from 'core/modals/duck';
+import { Barcode } from "components";
 
 // own
 import Styles from './styles.m.css';
@@ -71,6 +72,18 @@ class DetailsTable extends Component {
 
         this.columns = [
             {
+                title:      ()=>(
+                                <div className={Styles.headerActions}>
+                                    <Barcode
+                                        button
+                                    />
+                                    <div style={{opacity: 0, pointerEvents: 'none'}}>
+                                        <Barcode
+                                            button
+                                        />
+                                    </div>
+                                </div>
+                            ),
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {

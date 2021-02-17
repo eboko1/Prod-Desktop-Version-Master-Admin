@@ -430,12 +430,14 @@ export default class OrderFormTabs extends React.PureComponent {
                             fields={discountTabFieldsProps}
                             form={form}
                             forbidden={areServicesForbidden || isForbidden(user, permissions.ACCESS_ORDER_LABORS_DISCOUNTS)}
+                            isServiceMarkupForbidden={areServicesForbidden || isForbidden(user, permissions.ACCESS_NORM_HOURS_MODAL_WINDOW)}
                             price={priceServices}
                             discountFieldName={"servicesDiscount"}
                             fetchedOrder={fetchedOrder}
                             totalServicesProfit={totalServicesProfit}
                             servicesMode
                             reloadOrderForm={this.props.reloadOrderForm}
+                            laborTimeMultiplier={this.props.laborTimeMultiplier}
                         />
                     </TabPane>
                 )}

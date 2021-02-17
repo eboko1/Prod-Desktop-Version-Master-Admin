@@ -18,6 +18,7 @@ import {
 import book from "routes/book";
 import { permissions, isForbidden } from "utils";
 import { VehicleLocationModal } from "modals";
+import { Barcode } from "components";
 
 // own
 import Styles from "./styles.m.css";
@@ -380,13 +381,24 @@ export default class OrderFormBody extends Component {
                     )}
                     ref={this.clientRef}
                 />
-                {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
-                    <Icon
-                        type="plus"
-                        className={Styles.addClientIcon}
-                        onClick={() => this.props.setAddClientModal()}
-                    />
-                ) : null}
+                {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? 
+                    _.get(fields, "searchClientQuery") ? (
+                        <Icon
+                            type="plus"
+                            className={Styles.addClientIcon}
+                            onClick={() => this.props.setAddClientModal()}
+                        />
+                    ) : (
+                        <Barcode
+                            iconStyle={{
+                                fontSize: 24,
+                                color: 'var(--primary)',
+                                fontWeight: 700,
+                                margin: "28px 0 0 10px",
+                            }}
+                        /> 
+                    )
+                : null}
             </div>
         ) : null;
     };
