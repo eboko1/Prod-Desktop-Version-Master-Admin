@@ -31,13 +31,13 @@ export default {
                         isForbidden(user, permissions.SHOW_ORDERS),
                     name: 'navigation.workflow',
                 },
-                /*{
+                {
                     key:      '/barcode',
                     link:     book.barcodePage,
                     disabled: user =>
                         isForbidden(user, permissions.NEW_DOCUMENT),
                     name: 'navigation.barcode',
-                },*/
+                },
                 {
                     key:      '/locations',
                     link:      book.locationsPage,

@@ -18,6 +18,32 @@ class DiscountPanel extends Component {
         return !_.isEqual(nextProps, this.props);
     }
 
+    async updateTimeMultiplier(multiplier) {
+        this.laborTimeMultiplier = multiplier;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}`;
+        url += params;
+        try {
+            const response = await fetch(url, {
+                method:  'PUT',
+                headers: {
+                    Authorization:  token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ laborTimeMultiplier: multiplier }),
+            });
+            const result = await response.json();
+            if (result.success) {
+                console.log('OK', result);
+            } else {
+                console.log('BAD', result);
+            }
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
+    }
+
     render() {
         const {
             form: { getFieldDecorator },
@@ -29,6 +55,8 @@ class DiscountPanel extends Component {
             forbidden,
             detailsMode,
             servicesMode,
+            isServiceMarkupForbidden,
+            laborTimeMultiplier,
         } = this.props;
 
         const discount = this.props.form.getFieldValue(discountFieldName);
@@ -39,6 +67,23 @@ class DiscountPanel extends Component {
 
         return (
             <Catcher>
+                {servicesMode &&
+                    <div className={Styles.servicesMarkup}>
+                        <InputNumber
+                            disabled={isServiceMarkupForbidden}
+                            style={ { fontWeight: 700, margin: '0 12px 0 12px' } }
+                            defaultValue={ laborTimeMultiplier || 1 }
+                            step={ 0.1 }
+                            min={ 0 }
+                            formatter={ value => `${Math.round(value * 100)}%` }
+                            parser={ value =>
+                                Math.round(value.replace('%', '') / 100)
+                            }
+                            onChange={ value => this.updateTimeMultiplier(value) }
+                        />
+                        <FormattedMessage id='labors_table.mark_up' />
+                    </div>
+                }
                 <div className={ Styles.discountPanel }>
                     <DecoratedInputNumber
                         field={ discountFieldName }

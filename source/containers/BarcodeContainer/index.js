@@ -7,6 +7,7 @@ import { permissions, isForbidden } from "utils";
 
 // proj
 import { Catcher } from "commons";
+import { Barcode } from "components";
 
 // own
 import Styles from "./styles.m.css";
@@ -164,6 +165,11 @@ export default class BarcodeContainer extends Component {
 	                	<Input
 	                		placeholder={formatMessage({id: 'Введите или отсканируйте штрих-код'})}
 	                	/>
+                        <Barcode
+                            iconStyle={{
+                                marginLeft: 8,
+                            }}
+                        />
 	                </div>
 	                <div className={Styles.buttonBlockWrapp}>
 	                	{pageData.map(({title, childs}, key)=>(

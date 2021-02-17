@@ -1,11 +1,18 @@
 .container {
-	padding: 16px 24px;
+	padding: 16px 18px;
 }
 
 .barcodeInput {
 	display: flex;
     white-space: nowrap;
-    align-items: baseline;
+    align-items: center;
+    margin: 0 0 14px;
+    height: 36px;
+
+    & > input {
+        height: 100%;
+        font-size: 15px;
+    }
 }
 
 .buttonBlockWrapp {

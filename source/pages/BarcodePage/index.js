@@ -8,6 +8,7 @@ import { permissions, isForbidden } from "utils";
 // proj
 import { Layout } from "commons";
 import { BarcodeContainer } from "containers";
+import { Barcode } from "components";
 // own
 
 const mapStateToProps = state => ({
@@ -25,6 +26,20 @@ export default class BarcodePage extends Component {
         return (
             <Layout
             	title={ <FormattedMessage id='navigation.barcode' /> }
+                controls={
+                    <Barcode
+                        barcodeValue={"123456789012"}
+                        iconStyle={{
+                            fontSize: 24,
+                        }}
+                        options={{
+                            height: 90,
+                            fontSize: 18,
+                            width: 3,
+                            margin: 0,
+                        }}
+                    />
+                }
             >
                 <BarcodeContainer/>
             </Layout>
