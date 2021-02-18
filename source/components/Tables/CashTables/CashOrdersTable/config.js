@@ -146,9 +146,9 @@ export function columnsConfig(props) {
             ),
     };
 
-    const tagCol = {
-        title:     <FormattedMessage id='cash-table.tag' />,
-        dataIndex: 'tag',
+    const analyticsCol = {
+        title:     <FormattedMessage id='cash-table.analytics' />,
+        dataIndex: 'analyticsName',
         width:     '10%',
     };
 
@@ -187,7 +187,7 @@ export function columnsConfig(props) {
         orderCol,
         activityCol,
         sumCol,
-        tagCol,
+        analyticsCol,
         descriptionCol,
         actionsCol,
     ];
