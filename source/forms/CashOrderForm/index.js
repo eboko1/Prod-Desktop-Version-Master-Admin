@@ -42,7 +42,7 @@ import {
 import { withReduxForm2, numeralFormatter, numeralParser } from "utils";
 
 // own
-import { cashOrderTypes, cashOrderCounterpartyTypes } from "./config.js";
+import { cashOrderTypes, cashOrderCounterpartyTypes, adjustmentSumTypes } from "./config.js";
 import Styles from "./styles.m.css";
 const cx = classNames.bind(Styles);
 const Option = Select.Option;
@@ -57,6 +57,7 @@ const reverseFromItemLayout = {
     labelCol: { span: 15 },
     wrapperCol: { span: 7 },
 };
+
 
 const getActiveFieldsMap = activeCashOrder => {
     return _.pickBy(
@@ -177,10 +178,8 @@ export class CashOrderForm extends Component {
     componentDidUpdate(prevProps) {
         const {
             editMode,
-            fromOrder,
-            activeCashOrder,
             fields,
-            form: { getFieldValue, setFieldsValue, resetFields },
+            form: { getFieldValue, setFieldsValue },
         } = this.props;
 
         if (
@@ -331,40 +330,70 @@ export class CashOrderForm extends Component {
         });
     };
 
+    _filterAnalytics(type) {
+        const {
+            analytics,
+            form: {getFieldValue}
+        } = this.props;
+
+        let filteredAnlytics = undefined;
+
+        if(type == cashOrderTypes.INCOME || type == cashOrderTypes.EXPENSE) {
+            filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == type));
+        } else if(type == cashOrderTypes.ADJUSTMENT) {
+            //There are two cases for this type of cash order, and we have to return swapped values
+            const sumType = this.state.sumType || adjustmentSumTypes.INCOME; //Get field or its init value
+
+            if(sumType == adjustmentSumTypes.INCOME) {
+                // We have to retrun expense analytics only in this case
+                filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == cashOrderTypes.EXPENSE));
+            } else if(sumType == adjustmentSumTypes.EXPENSE) {
+                //Return "income" analytics
+                filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == cashOrderTypes.INCOME));
+            }
+        }
+
+        return filteredAnlytics || [];
+    }
+
+    /**
+     * Updates analytics field depending on a selected order type,
+     * You can reset this filed if no value were provided
+     * @param {*} value order type
+     */
+    updateAnalyticsField (value) {
+        const {
+            form: { setFieldsValue },
+            editMode,
+            printMode,
+            analytics
+        } = this.props;
+
+        //Get default for this order type analytics or reset field
+        let ans = null;
+        if(value)
+            ans =  _.get(analytics.filter(ana => (ana.analyticsOrderType == value && ana.analyticsDefaultOrderType == value)), '[0]');
+        
+        if(!ans) {
+            setFieldsValue({ analyticsUniqueId: null })
+        } else if (!editMode && !printMode) {
+            setFieldsValue({ analyticsUniqueId: ans.analyticsUniqueId });
+        }
+    }
+
     /**
      * This method is used to update analytics value when new order type was selected.
      * "tag" field is out of date, analyticsUniqueId is used instead as it is separate module
      * @param {*} value Selected cash order type
      */
     _selectOrderType = value => {
-        const {
-            form: { setFieldsValue },
-            intl: { formatMessage },
-            editMode,
-            printMode,
-            analytics
-        } = this.props;
-
-        /**
-         * Updates analytics field depending on selected order type
-         * @param {*} value order type
-         */
-        const updateAnalyticsField = (value) => {
-            //Get default for this order type analytics
-            const ans = _.get(analytics.filter(ana => (ana.analyticsOrderType == value && ana.analyticsDefaultOrderType == value)), '[0]');
-            
-            if(!ans) {
-                setFieldsValue({ analyticsUniqueId: null })
-            } else if (!editMode && !printMode) {
-                setFieldsValue({ analyticsUniqueId: ans.analyticsUniqueId });
-            }
-        }
+        const {form: { setFieldsValue }} = this.props;
 
         switch (value) {
             case cashOrderTypes.INCOME:
                 return this.setState(prevState => {
                     setFieldsValue({ [prevState.sumType]: null });
-                    updateAnalyticsField(value);
+                    this.updateAnalyticsField(value);
 
                     return {
                         sumType: "increase",
@@ -375,7 +404,7 @@ export class CashOrderForm extends Component {
             case cashOrderTypes.EXPENSE:
                 return this.setState(prevState => {
                     setFieldsValue({ [prevState.sumType]: null });
-                    updateAnalyticsField(value);
+                    this.updateAnalyticsField(value);
 
                     return {
                         sumType: "decrease",
@@ -387,7 +416,7 @@ export class CashOrderForm extends Component {
                 if (!this.props.editMode) {
                     return this.setState(prevState => {
                         setFieldsValue({ [prevState.sumType]: null });
-                        updateAnalyticsField(value);
+                        this.updateAnalyticsField(value);
 
                         return {
                             sumType: "increase",
@@ -404,6 +433,9 @@ export class CashOrderForm extends Component {
 
     _setSumType = e => {
         const sumType = e.target.value;
+
+        this.updateAnalyticsField(null); //Reset field
+
         this.setState(prevState => {
             this.props.form.setFieldsValue({
                 sumType,
@@ -434,11 +466,6 @@ export class CashOrderForm extends Component {
     };
 
     _setCounterpartyType = type => {
-        const counterparty = _.get(this.props.fields, "counterpartyType.value");
-        const activeCounterparty = _.get(
-            this._getActiveCounterpartyType(),
-            "counterpartyType",
-        );
 
         if (type === cashOrderCounterpartyTypes.CLIENT) {
             this._resetClientCounterparty();
@@ -800,7 +827,7 @@ export class CashOrderForm extends Component {
                             rules={[
                                 { required: true, message: 'Analytics must be selected!!!' },
                             ]}
-                            options={analytics.filter(ana => ana.analyticsOrderType == orderType) || []}
+                            options={this._filterAnalytics(orderType)}
                             optionValue="analyticsUniqueId" //Will be sent as var
                             optionLabel="analyticsName"
                             getPopupContainer={trigger => trigger.parentNode}
