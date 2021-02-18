@@ -73,7 +73,7 @@ const getActiveFieldsMap = activeCashOrder => {
             "decrease",
             "otherCounterparty",
             "datetime",
-            "tag",
+            "analyticsUniqueId",
         ]),
         value => !_.isNil(value),
     );
@@ -153,11 +153,6 @@ export class CashOrderForm extends Component {
             form: { setFieldsValue },
         } = this.props;
 
-        const defaultTagValue = `${formatMessage({
-            id: `cash-order-form.dafault_tag`,
-        })}`;
-
-        //We need analytics in all modes
         fetchAnalytics();
 
         if (editMode || printMode) {
@@ -168,7 +163,7 @@ export class CashOrderForm extends Component {
         if (!editMode && !printMode && !fromOrder) {
             fetchCashOrderNextId();
             fetchCashboxes();
-            setFieldsValue({ tag: defaultTagValue, cashBoxId: activeCashOrder.cashBoxId || _.get(cashboxes, "[0].id")});
+            setFieldsValue({cashBoxId: activeCashOrder.cashBoxId || _.get(cashboxes, "[0].id")});
         }
 
         if(fromOrder) {
@@ -364,10 +359,6 @@ export class CashOrderForm extends Component {
                 setFieldsValue({ analyticsUniqueId: ans.analyticsUniqueId });
             }
         }
-
-        // const defaultTagValue = `${formatMessage({
-        //     id: `cash-order-form.dafault_tag`,
-        // })}`;
 
         switch (value) {
             case cashOrderTypes.INCOME:
@@ -804,13 +795,12 @@ export class CashOrderForm extends Component {
                                 trigger.parentNode
                             }
                             label={formatMessage({
-                                id: "cash-table.tag",
+                                id: "cash-table.analytics",
                             })}
                             rules={[
                                 { required: true, message: 'Analytics must be selected!!!' },
                             ]}
                             options={analytics.filter(ana => ana.analyticsOrderType == orderType) || []}
-                            // options={analytics || []}
                             optionValue="analyticsUniqueId" //Will be sent as var
                             optionLabel="analyticsName"
                             getPopupContainer={trigger => trigger.parentNode}
