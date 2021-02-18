@@ -811,7 +811,7 @@ export class CashOrderForm extends Component {
                             formItem
                             // Initial value depends on a specific analytics field so we leave only those which has that field
                             initialValue={
-                                (editMode && activeCashOrder.analyticsUniqueId)
+                                (editMode && activeCashOrder && activeCashOrder.analyticsUniqueId)
                                     ? activeCashOrder.analyticsUniqueId
                                     : (printMode)
                                         ? void 0
