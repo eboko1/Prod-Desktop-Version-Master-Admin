@@ -11,7 +11,6 @@ import {
     fetchCashOrders,
     selectCashOrdersFilters,
     printCashOrder,
-    fetchAnalytics
 } from "core/cash/duck";
 import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
 import { setModal, resetModal, MODALS } from "core/modals/duck";
@@ -21,8 +20,6 @@ import { CashOrderModal } from "modals";
 import { CashOrdersFiltersForm } from "forms";
 import { CashOrdersTable } from "components";
 import { isForbidden, permissions } from "utils";
-import {formModes} from 'core/forms/reportAnalyticsForm/duck';
-import { ReportAnalyticsModal } from 'modals';
 
 // own
 import Styles from "./styles.m.css";
@@ -46,7 +43,6 @@ const mapDispatchToProps = {
     fetchCashOrders,
     clearCashOrderForm,
     printCashOrder,
-    fetchAnalytics,
 };
 
 @connect(
@@ -95,37 +91,6 @@ export default class CashFlowPage extends Component {
             cashOrderEntity: cashOrderEntity,
         });
         this.setState({ cashOrderModalMounted: true });
-    };
-
-    //When we want to open analytics modal from the inside of a cash order modal
-    _onOpenReportAnalyticsModal = ({editMode, printMode, cashOrderEntity, cashBoxId}) => {
-        //Save previous modal's props
-        this.setState({
-            prevModalProps: {editMode, printMode, cashOrderEntity, cashBoxId}
-        });
-
-        //Close current cash order modal
-        this.props.resetModal();
-        this.setState({ cashOrderModalMounted: false });
-
-        //Open analytics modal
-        this.props.setModal(MODALS.REPORT_ANALYTICS, {
-            mode: formModes.ADD
-        });
-    };
-
-    _onCloseReportAnallyticsModalEventHandler = () => {
-        const {editMode, printMode, cashOrderEntity, cashBoxId} = (this.state && this.state.prevModalProps) || {};
-        const {fetchAnalytics} = this.props;
-
-        //Open cash order modal with old params depending on mode
-        if(editMode) 
-            this._onOpenEditCashOrderModal(cashOrderEntity);
-        else if(!printMode)
-            this._onOpenCashOrderModal();
-
-        //Reload analytics for this page because we added new one (this is used by filter)
-        fetchAnalytics();
     };
 
     render() {
@@ -200,16 +165,9 @@ export default class CashFlowPage extends Component {
                         resetModal={this._onCloseCashOrderModal}
                         visible={modal}
                         clearCashOrderForm={clearCashOrderForm}
-                        onOpenAnalyticsModal={this._onOpenReportAnalyticsModal}
                         modalProps={modalProps}
                     />
                 ) : null}
-
-                <ReportAnalyticsModal 
-                    visible={modal}
-                    onOkTrigger={this._onCloseReportAnallyticsModalEventHandler}
-                    onCancelTrigger={this._onCloseReportAnallyticsModalEventHandler}
-                />
             </Layout>
         );
     }

@@ -303,7 +303,7 @@ export class CashOrderForm extends Component {
 
     _submit = event => {
         event.preventDefault();
-        const { form, createCashOrder, resetModal, editMode, fromOrder, fetchOrder } = this.props;
+        const { form, createCashOrder, onCloseModal, editMode, fromOrder, fetchOrder } = this.props;
 
         form.validateFields(async (err, values) => {
             if (_.has(err, "clientId") || _.has(err, "orderId")) {
@@ -323,18 +323,19 @@ export class CashOrderForm extends Component {
                 };
                 await createCashOrder(cashOrder);
                 form.resetFields();
-                resetModal();
+                onCloseModal();
 
                 if(fromOrder) await fetchOrder();
             }
         });
     };
 
-    _filterAnalytics(type) {
-        const {
-            analytics,
-            form: {getFieldValue}
-        } = this.props;
+    /**
+     * Gets analytics depending on a cash order type or parameters like adjustment cash order type type
+     * @param {*} type cash order type
+     */
+    _getFilterAnalytics(type) {
+        const { analytics } = this.props;
 
         let filteredAnlytics = undefined;
 
@@ -557,7 +558,8 @@ export class CashOrderForm extends Component {
             analyticsFetchingState,
             analytics,
             activeCashOrder,
-            onOpenAnalyticsModal
+            onOpenAnalyticsModal,
+            fromOrder
         } = this.props;
 
         const cashOrderId = getFieldValue("id");
@@ -827,7 +829,7 @@ export class CashOrderForm extends Component {
                             rules={[
                                 { required: true, message: 'Analytics must be selected!!!' },
                             ]}
-                            options={this._filterAnalytics(orderType)}
+                            options={this._getFilterAnalytics(orderType)}
                             optionValue="analyticsUniqueId" //Will be sent as var
                             optionLabel="analyticsName"
                             getPopupContainer={trigger => trigger.parentNode}
@@ -842,7 +844,7 @@ export class CashOrderForm extends Component {
                                     <StyledButton
                                         type="secondary"
                                         disabled={printMode}
-                                        onClick={() => onOpenAnalyticsModal({editMode, printMode, cashOrderEntity: activeCashOrder})}
+                                        onClick={() => onOpenAnalyticsModal({editMode, printMode, cashOrderEntity: activeCashOrder, fromOrder})}
                                     >
                                         <Icon type="plus-circle" />
                                         Add analytics
