@@ -48,6 +48,7 @@ const cx = classNames.bind(Styles);
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 
+//Layout describes how Form Item will pe divided into parts Example: (______label_______: ______Input________)
 const formItemLayout = {
     labelCol: { span: 7 },
     wrapperCol: { span: 15 },
@@ -108,14 +109,15 @@ const getActiveFieldsMap = activeCashOrder => {
             analytics: selectAnalytics(state),
             nextId: _.get(state, "forms.cashOrderForm.fields.nextId"),
             order: selectOrder(state),
+            modalProps: state.modals.modalProps
         };
     },
 })
 @injectIntl
 export class CashOrderForm extends Component {
     state = {
-        sumType: "increase",
-        sumTypeRadio: null,
+        sumType: "increase", //This is used to define which input field is visible
+        sumTypeRadio: null, //Defines which type of input is now used(INCOME or EXPENSE)
         clientSearchType: "client",
         editing: false,
         errorValidationPanel: false,
@@ -150,7 +152,7 @@ export class CashOrderForm extends Component {
             fetchCashboxes,
             fetchAnalytics,
             cashboxes,
-            intl: { formatMessage },
+            modalProps,
             form: { setFieldsValue },
         } = this.props;
 
@@ -172,6 +174,18 @@ export class CashOrderForm extends Component {
             await fetchCashboxes();
             await this._selectOrderType(_.get(activeCashOrder, "type"));
             await setFieldsValue(activeCashOrder);
+        }
+
+        //Report analytics modal after closing passes some saved values which are set here
+        if(modalProps && modalProps.sumTypeStateVal) {
+            //If we reopened this modal and value from previous state has to be set
+            this.setState(prevState => {
+                setFieldsValue({ [prevState.sumType]: null });
+                return {
+                    sumType: modalProps.sumTypeStateVal,
+                    sumTypeRadio: modalProps.sumTypeRadioStateVal,
+                };
+            });
         }
     }
 
@@ -303,7 +317,7 @@ export class CashOrderForm extends Component {
 
     _submit = event => {
         event.preventDefault();
-        const { form, createCashOrder, resetModal, editMode, fromOrder, fetchOrder } = this.props;
+        const { form, createCashOrder, onCloseModal, editMode, fromOrder, fetchOrder } = this.props;
 
         form.validateFields(async (err, values) => {
             if (_.has(err, "clientId") || _.has(err, "orderId")) {
@@ -323,18 +337,19 @@ export class CashOrderForm extends Component {
                 };
                 await createCashOrder(cashOrder);
                 form.resetFields();
-                resetModal();
+                onCloseModal();
 
                 if(fromOrder) await fetchOrder();
             }
         });
     };
 
-    _filterAnalytics(type) {
-        const {
-            analytics,
-            form: {getFieldValue}
-        } = this.props;
+    /**
+     * Gets analytics depending on a cash order type or parameters like adjustment cash order type type
+     * @param {*} type cash order type
+     */
+    _getFilterAnalytics(type) {
+        const { analytics } = this.props;
 
         let filteredAnlytics = undefined;
 
@@ -557,7 +572,8 @@ export class CashOrderForm extends Component {
             analyticsFetchingState,
             analytics,
             activeCashOrder,
-            onOpenAnalyticsModal
+            onOpenAnalyticsModal,
+            fromOrder
         } = this.props;
 
         const cashOrderId = getFieldValue("id");
@@ -827,7 +843,7 @@ export class CashOrderForm extends Component {
                             rules={[
                                 { required: true, message: 'Analytics must be selected!!!' },
                             ]}
-                            options={this._filterAnalytics(orderType)}
+                            options={this._getFilterAnalytics(orderType)}
                             optionValue="analyticsUniqueId" //Will be sent as var
                             optionLabel="analyticsName"
                             getPopupContainer={trigger => trigger.parentNode}
@@ -842,7 +858,16 @@ export class CashOrderForm extends Component {
                                     <StyledButton
                                         type="secondary"
                                         disabled={printMode}
-                                        onClick={() => onOpenAnalyticsModal({editMode, printMode, cashOrderEntity: activeCashOrder})}
+                                        onClick={() => {
+                                            onOpenAnalyticsModal({
+                                                editMode,
+                                                printMode,
+                                                fromOrder,
+                                                cashOrderEntity: activeCashOrder,
+                                                sumTypeStateVal: this.state.sumType,
+                                                sumTypeRadioStateVal: this.state.sumTypeRadio
+                                            });
+                                        }}
                                     >
                                         <Icon type="plus-circle" />
                                         Add analytics
