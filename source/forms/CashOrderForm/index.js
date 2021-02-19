@@ -42,25 +42,23 @@ import {
 import { withReduxForm2, numeralFormatter, numeralParser } from "utils";
 
 // own
-import { cashOrderTypes, cashOrderCounterpartyTypes } from "./config.js";
+import { cashOrderTypes, cashOrderCounterpartyTypes, adjustmentSumTypes } from "./config.js";
 import Styles from "./styles.m.css";
 const cx = classNames.bind(Styles);
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 
+//Layout describes how Form Item will pe divided into parts Example: (______label_______: ______Input________)
 const formItemLayout = {
     labelCol: { span: 7 },
     wrapperCol: { span: 15 },
 };
 
-//const expandedWrapperFormItemLayout = {
-//    wrapperCol: { span: 24 },
-//};
-
 const reverseFromItemLayout = {
     labelCol: { span: 15 },
     wrapperCol: { span: 7 },
 };
+
 
 const getActiveFieldsMap = activeCashOrder => {
     return _.pickBy(
@@ -77,7 +75,7 @@ const getActiveFieldsMap = activeCashOrder => {
             "decrease",
             "otherCounterparty",
             "datetime",
-            "tag",
+            "analyticsUniqueId",
         ]),
         value => !_.isNil(value),
     );
@@ -111,14 +109,15 @@ const getActiveFieldsMap = activeCashOrder => {
             analytics: selectAnalytics(state),
             nextId: _.get(state, "forms.cashOrderForm.fields.nextId"),
             order: selectOrder(state),
+            modalProps: state.modals.modalProps
         };
     },
 })
 @injectIntl
 export class CashOrderForm extends Component {
     state = {
-        sumType: "increase",
-        sumTypeRadio: null,
+        sumType: "increase", //This is used to define which input field is visible
+        sumTypeRadio: null, //Defines which type of input is now used(INCOME or EXPENSE)
         clientSearchType: "client",
         editing: false,
         errorValidationPanel: false,
@@ -153,15 +152,10 @@ export class CashOrderForm extends Component {
             fetchCashboxes,
             fetchAnalytics,
             cashboxes,
-            intl: { formatMessage },
+            modalProps,
             form: { setFieldsValue },
         } = this.props;
 
-        const defaultTagValue = `${formatMessage({
-            id: `cash-order-form.dafault_tag`,
-        })}`;
-
-        //We need analytics in all modes
         fetchAnalytics();
 
         if (editMode || printMode) {
@@ -172,7 +166,7 @@ export class CashOrderForm extends Component {
         if (!editMode && !printMode && !fromOrder) {
             fetchCashOrderNextId();
             fetchCashboxes();
-            setFieldsValue({ tag: defaultTagValue, cashBoxId: activeCashOrder.cashBoxId || _.get(cashboxes, "[0].id")});
+            setFieldsValue({cashBoxId: activeCashOrder.cashBoxId || _.get(cashboxes, "[0].id")});
         }
 
         if(fromOrder) {
@@ -181,15 +175,25 @@ export class CashOrderForm extends Component {
             await this._selectOrderType(_.get(activeCashOrder, "type"));
             await setFieldsValue(activeCashOrder);
         }
+
+        //Report analytics modal after closing passes some saved values which are set here
+        if(modalProps && modalProps.sumTypeStateVal) {
+            //If we reopened this modal and value from previous state has to be set
+            this.setState(prevState => {
+                setFieldsValue({ [prevState.sumType]: null });
+                return {
+                    sumType: modalProps.sumTypeStateVal,
+                    sumTypeRadio: modalProps.sumTypeRadioStateVal,
+                };
+            });
+        }
     }
 
     componentDidUpdate(prevProps) {
         const {
             editMode,
-            fromOrder,
-            activeCashOrder,
             fields,
-            form: { getFieldValue, setFieldsValue, resetFields },
+            form: { getFieldValue, setFieldsValue },
         } = this.props;
 
         if (
@@ -313,7 +317,7 @@ export class CashOrderForm extends Component {
 
     _submit = event => {
         event.preventDefault();
-        const { form, createCashOrder, resetModal, editMode, fromOrder, fetchOrder } = this.props;
+        const { form, createCashOrder, onCloseModal, editMode, fromOrder, fetchOrder } = this.props;
 
         form.validateFields(async (err, values) => {
             if (_.has(err, "clientId") || _.has(err, "orderId")) {
@@ -333,31 +337,78 @@ export class CashOrderForm extends Component {
                 };
                 await createCashOrder(cashOrder);
                 form.resetFields();
-                resetModal();
+                onCloseModal();
 
                 if(fromOrder) await fetchOrder();
             }
         });
     };
 
-    _selectOrderType = value => {
+    /**
+     * Gets analytics depending on a cash order type or parameters like adjustment cash order type type
+     * @param {*} type cash order type
+     */
+    _getFilterAnalytics(type) {
+        const { analytics } = this.props;
+
+        let filteredAnlytics = undefined;
+
+        if(type == cashOrderTypes.INCOME || type == cashOrderTypes.EXPENSE) {
+            filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == type));
+        } else if(type == cashOrderTypes.ADJUSTMENT) {
+            //There are two cases for this type of cash order, and we have to return swapped values
+            const sumType = this.state.sumType || adjustmentSumTypes.INCOME; //Get field or its init value
+
+            if(sumType == adjustmentSumTypes.INCOME) {
+                // We have to retrun expense analytics only in this case
+                filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == cashOrderTypes.EXPENSE));
+            } else if(sumType == adjustmentSumTypes.EXPENSE) {
+                //Return "income" analytics
+                filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == cashOrderTypes.INCOME));
+            }
+        }
+
+        return filteredAnlytics || [];
+    }
+
+    /**
+     * Updates analytics field depending on a selected order type,
+     * You can reset this filed if no value were provided
+     * @param {*} value order type
+     */
+    updateAnalyticsField (value) {
         const {
             form: { setFieldsValue },
-            intl: { formatMessage },
             editMode,
             printMode,
+            analytics
         } = this.props;
 
-        const defaultTagValue = `${formatMessage({
-            id: `cash-order-form.dafault_tag`,
-        })}`;
+        //Get default for this order type analytics or reset field
+        let ans = null;
+        if(value)
+            ans =  _.get(analytics.filter(ana => (ana.analyticsOrderType == value && ana.analyticsDefaultOrderType == value)), '[0]');
+        
+        if(!ans) {
+            setFieldsValue({ analyticsUniqueId: null })
+        } else if (!editMode && !printMode) {
+            setFieldsValue({ analyticsUniqueId: ans.analyticsUniqueId });
+        }
+    }
+
+    /**
+     * This method is used to update analytics value when new order type was selected.
+     * "tag" field is out of date, analyticsUniqueId is used instead as it is separate module
+     * @param {*} value Selected cash order type
+     */
+    _selectOrderType = value => {
+        const {form: { setFieldsValue }} = this.props;
 
         switch (value) {
             case cashOrderTypes.INCOME:
                 return this.setState(prevState => {
                     setFieldsValue({ [prevState.sumType]: null });
-                    if (!editMode && !printMode)
-                        setFieldsValue({ tag: defaultTagValue });
+                    this.updateAnalyticsField(value);
 
                     return {
                         sumType: "increase",
@@ -368,7 +419,7 @@ export class CashOrderForm extends Component {
             case cashOrderTypes.EXPENSE:
                 return this.setState(prevState => {
                     setFieldsValue({ [prevState.sumType]: null });
-                    if (!editMode && !printMode) setFieldsValue({ tag: null });
+                    this.updateAnalyticsField(value);
 
                     return {
                         sumType: "decrease",
@@ -380,8 +431,7 @@ export class CashOrderForm extends Component {
                 if (!this.props.editMode) {
                     return this.setState(prevState => {
                         setFieldsValue({ [prevState.sumType]: null });
-                        if (!editMode && !printMode)
-                            setFieldsValue({ tag: null });
+                        this.updateAnalyticsField(value);
 
                         return {
                             sumType: "increase",
@@ -398,6 +448,9 @@ export class CashOrderForm extends Component {
 
     _setSumType = e => {
         const sumType = e.target.value;
+
+        this.updateAnalyticsField(null); //Reset field
+
         this.setState(prevState => {
             this.props.form.setFieldsValue({
                 sumType,
@@ -428,11 +481,6 @@ export class CashOrderForm extends Component {
     };
 
     _setCounterpartyType = type => {
-        const counterparty = _.get(this.props.fields, "counterpartyType.value");
-        const activeCounterparty = _.get(
-            this._getActiveCounterpartyType(),
-            "counterpartyType",
-        );
 
         if (type === cashOrderCounterpartyTypes.CLIENT) {
             this._resetClientCounterparty();
@@ -524,7 +572,8 @@ export class CashOrderForm extends Component {
             analyticsFetchingState,
             analytics,
             activeCashOrder,
-            onOpenAnalyticsModal
+            onOpenAnalyticsModal,
+            fromOrder
         } = this.props;
 
         const cashOrderId = getFieldValue("id");
@@ -778,7 +827,7 @@ export class CashOrderForm extends Component {
                             formItem
                             // Initial value depends on a specific analytics field so we leave only those which has that field
                             initialValue={
-                                (editMode && activeCashOrder.analyticsUniqueId)
+                                (editMode && activeCashOrder && activeCashOrder.analyticsUniqueId)
                                     ? activeCashOrder.analyticsUniqueId
                                     : (printMode)
                                         ? void 0
@@ -789,16 +838,15 @@ export class CashOrderForm extends Component {
                                 trigger.parentNode
                             }
                             label={formatMessage({
-                                id: "cash-table.tag",
+                                id: "cash-table.analytics",
                             })}
                             rules={[
                                 { required: true, message: 'Analytics must be selected!!!' },
                             ]}
-                            // options={analytics.filter(ana => ana.analyticsOrderType == orderType) || []}
-                            options={analytics || []}
+                            options={this._getFilterAnalytics(orderType)}
                             optionValue="analyticsUniqueId" //Will be sent as var
                             optionLabel="analyticsName"
-
+                            getPopupContainer={trigger => trigger.parentNode}
                             formItemLayout={formItemLayout}
                             className={Styles.styledFormItem}
                         />
@@ -809,7 +857,17 @@ export class CashOrderForm extends Component {
                                 <div className={Styles.createAnalyticsButton}>
                                     <StyledButton
                                         type="secondary"
-                                        onClick={() => onOpenAnalyticsModal()}
+                                        disabled={printMode}
+                                        onClick={() => {
+                                            onOpenAnalyticsModal({
+                                                editMode,
+                                                printMode,
+                                                fromOrder,
+                                                cashOrderEntity: activeCashOrder,
+                                                sumTypeStateVal: this.state.sumType,
+                                                sumTypeRadioStateVal: this.state.sumTypeRadio
+                                            });
+                                        }}
                                     >
                                         <Icon type="plus-circle" />
                                         Add analytics

@@ -173,6 +173,9 @@ class ReportAnalytics extends React.Component {
                             {
                                 getFieldDecorator('bookkeepingAccount', {
                                     initialValue: initValues.bookkeepingAccount,
+                                    rules: [
+                                        { pattern: /^\d+$/, message: 'Please enter a valid positive number!' }
+                                    ]
                                 })(
                                     <Input
                                         disabled={(fieldsDisabled)}

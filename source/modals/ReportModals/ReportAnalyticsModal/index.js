@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Modal, Form, Button, Col, Row, Checkbox, Radio, Tabs, Input, Select } from 'antd';
+import { Modal, Tabs} from 'antd';
 
 // proj
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
@@ -17,7 +17,6 @@ import {
     changeCurrentForm,
     fetchAnalyticsCatalogs
 } from 'core/forms/reportAnalyticsForm/duck';
-import {fetchReportAnalytics} from 'core/reports/reportAnalytics/duck';
 
 // own
 import Styles from './styles.m.css';
@@ -40,7 +39,6 @@ const mapDispatchToProps = {
     updateAnalytics,
     changeCurrentForm,
     fetchAnalyticsCatalogs,
-    fetchReportAnalytics
 };
 
 @injectIntl
@@ -50,7 +48,12 @@ const mapDispatchToProps = {
 )
 /**
  * To open this modal you have to use standard core/modal/duck methods because it uses modal props to store
- * some important values. This modal uses two forms one for catalogs and one for analytics itself
+ * some important values. This modal uses two forms one for catalogs and one for analytics itself.
+ * There is a triggers which are called when onOk or onCancel event occurs, it automatically handle all fetching stuff,
+ * the only you need to do to open default model is to use "setModal(MODALS.REPORT_ANALYTICS, {mode: formModes.ADD})".
+ * You can find all constants in "my.carbook.pro/source/core/forms/reportAnalyticsForm/duck" file.
+ * 
+ * This modal was made to be completely autonomous
  */
 export default class ReportAnalyticsModal extends Component {
 
@@ -73,6 +76,7 @@ export default class ReportAnalyticsModal extends Component {
 
         //Binds
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.onCancel = this.onCancel.bind(this);
         this.saveCatalogFormRef = this.saveCatalogFormRef.bind(this);
         this.saveAnalyticsFormRef = this.saveAnalyticsFormRef.bind(this);
         this.analyticsRequest = this.analyticsRequest.bind(this)
@@ -112,16 +116,20 @@ export default class ReportAnalyticsModal extends Component {
         this.catalogForm && this.catalogForm.resetFields();
 
         //Finishing touches
-        this.props.fetchReportAnalytics();
         this.props.resetModal();
     }
 
+    /**
+     * Handle submit depending on mode is currently used
+     * @param {*} e Event
+     */
     handleSubmit(e) {
         e.preventDefault();
 
         const {
             currentForm,
-            modalProps
+            modalProps,
+            onOkTrigger //It will be called when modal will trigerr submit event
         } = this.props;
 
         const {
@@ -167,8 +175,23 @@ export default class ReportAnalyticsModal extends Component {
             });
         } else {
             console.log("Error, cannot detect current form or instance is missing");
-        }        
+        }
+        
+        //Call onOk trigger
+        onOkTrigger && onOkTrigger();
     };
+
+    /**
+     * on cancel event, it calls onCancel trigger
+     */
+    onCancel() {
+        const {onCancelTrigger} = this.props;
+
+        this.props.resetModal();
+
+        //Call onCancel trigger
+        onCancelTrigger && onCancelTrigger();
+    }
 
     saveCatalogFormRef = (ref) => {
         this.catalogForm = ref;
@@ -187,7 +210,6 @@ export default class ReportAnalyticsModal extends Component {
             analyticsCatalogsLoading,
 
             visible,
-            onCancel,
             
             modalProps,
             fetchAnalyticsCatalogs
@@ -203,7 +225,7 @@ export default class ReportAnalyticsModal extends Component {
                 width={ '80%' }
                 visible={ visible === MODALS.REPORT_ANALYTICS }
                 onOk={ this.handleSubmit }
-                onCancel={ onCancel }
+                onCancel={ this.onCancel }
                 title={
                     <div className={Styles.title}>
                         {

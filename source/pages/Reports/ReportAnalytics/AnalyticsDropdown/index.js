@@ -11,7 +11,6 @@ import _ from 'lodash';
 //proj
 import {
     formKeys,
-    analyticsLevels,
     formModes
 } from 'core/forms/reportAnalyticsForm/duck';
 
@@ -32,14 +31,15 @@ export default class AnalyticsDropdown extends React.Component {
 
         const {
             onDeleteAnalytics,
-            openAnalyticsModal
+            openAnalyticsModal,
+            onUpdateAnalytics
         } = this.props;
 
         const genParentHeader = (analytics) => {
             return (
                 <div>
                     <Row className={Style.row}>
-                        <Col className={Style.colHeader} span={20}>{analytics.analyticsName} {analytics.analyticsId}</Col>
+                        <Col className={Style.colHeader} span={20}>{analytics.analyticsName}</Col>
                         <Col className={Style.colCentered} span={2}>
                             {
                                 /* EDIT btn | Buttons only for non-custom fields otherwise just place an icon */
@@ -79,12 +79,24 @@ export default class AnalyticsDropdown extends React.Component {
             return (
                 <div className={Style.analyticsCont} key={chil.analyticsId}>
                     <Row className={Style.row}>
-                        <Col className={Style.col} span={8}>{chil.analyticsName} {chil.analyticsId}</Col>
+                        <Col className={Style.col} span={8}>{chil.analyticsName}</Col>
 
                         <Col className={Style.col} span={4}>{chil.analyticsBookkeepingAccount}</Col>
                         <Col className={Style.col} span={4}>{chil.analyticsOrderType}</Col>
 
-                        <Col className={Style.colCentered} span={2}><Switch size='small' checked={!chil.analyticsDisabled}/></Col>
+                        <Col className={Style.colCentered} span={2}>
+                            <Switch
+                                size='small'
+                                checked={!chil.analyticsDisabled}
+                                onClick={() => {
+                                    //Update anlytics by changing ist's "disabled" value prop
+                                    onUpdateAnalytics({
+                                        analyticsId: chil.analyticsId,
+                                        newAnalyticsEntity: {analyticsDisabled: !chil.analyticsDisabled}
+                                    });
+                                }}
+                            />
+                        </Col>
                         <Col className={Style.colCentered} span={2}>
                             {
                                 /* VIEW btn | Buttons only for non-custom fields otherwise just place an icon */
