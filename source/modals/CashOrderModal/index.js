@@ -40,23 +40,39 @@ export default class CashOrderModal extends Component {
         this._onCloseModal = this._onCloseModal.bind(this);
     }
 
+    /**
+     * Reopens cash order modal, it passes saved values
+     */
     reopenCashOrderModal() {
-        const {editMode, printMode, cashOrderEntity, cashBoxId, fromOrder} = (this.state && this.state.prevModalProps) || {};
+        const {editMode, printMode, cashBoxId, fromOrder, sumTypeStateVal, sumTypeRadioStateVal, cashOrderEntity} = (this.state && this.state.prevModalProps) || {};
 
         this.props.setModal(MODALS.CASH_ORDER, {
             cashBoxId: cashBoxId,
             editMode: editMode,
             printMode: printMode,
             fromOrder: fromOrder,
-            cashOrderEntity: cashOrderEntity,
+            cashOrderEntity,
+            sumTypeStateVal: sumTypeStateVal,
+            sumTypeRadioStateVal: sumTypeRadioStateVal
         });
     }
 
-    //When we want to open analytics modal from the inside of a cash order modal
-    _onOpenReportAnalyticsModal = ({editMode, printMode, cashOrderEntity, cashBoxId, fromOrder}) => {
+    /**
+     * When we want to open analytics modal from the inside of a cash order modal
+     * @param {*} param0 Values to passed agter analytics modal will be closed
+     */
+    _onOpenReportAnalyticsModal({editMode, printMode, cashBoxId, fromOrder, sumTypeStateVal, sumTypeRadioStateVal, cashOrderEntity}) {
         //Save previous modal's props
         this.setState({
-            prevModalProps: {editMode, printMode, cashOrderEntity, cashBoxId, fromOrder}
+            prevModalProps: {
+                editMode,
+                printMode,
+                cashBoxId,
+                fromOrder,
+                sumTypeStateVal,
+                sumTypeRadioStateVal,
+                cashOrderEntity: _.omit(cashOrderEntity, ['type']),// Remove some fields to make cash order modal apper sa expected
+            }
         });
 
         //Close current cash order modal
@@ -100,7 +116,7 @@ export default class CashOrderModal extends Component {
                     maskClosable={false}
                 >
                     <CashOrderForm
-                        onCloseModal={ this.onCloseModal }
+                        onCloseModal={ this._onCloseModal }
                         printMode={ printMode }
                         editMode={ editMode }
                         fromOrder={ fromOrder }
@@ -109,6 +125,7 @@ export default class CashOrderModal extends Component {
                         onOpenAnalyticsModal={this._onOpenReportAnalyticsModal}
                     />
                 </Modal>
+                {/* This modal is placed here to be able to be opened it from cash order modal(old cash order have to be saved and then reused afler analytics modal is closed) */}
                 <ReportAnalyticsModal 
                     visible={modal}
                     onOkTrigger={this._onCloseReportAnallyticsModalEventHandler}
