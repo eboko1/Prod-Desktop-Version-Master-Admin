@@ -21,6 +21,7 @@ import {
 // proj
 import { Layout, Spinner } from 'commons';
 import { permissions, isForbidden } from 'utils';
+import { Barcode } from 'components';
 
 // own
 import Styles from './styles.m.css';
@@ -74,6 +75,20 @@ export default class LaborsPage extends Component {
                 },
                 key:       'laborCode',
                 dataIndex: 'laborCode',
+                render: (data, row)=>{
+                    return (
+                        <div style={{display: 'flex'}}>
+                            {data}
+                            <Barcode
+                                barcodeValue={`LBS-${this.props.user.businessId}-${row.laborId}`}
+                                iconStyle={{
+                                    margin: "0 0 0 8px",
+                                    fornSize: 18,
+                                }}
+                            />
+                        </div>  
+                    )
+                }
             },
             {
                 title:  ()=>{

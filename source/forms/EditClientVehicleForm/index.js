@@ -16,6 +16,7 @@ import {
     handleError,
 } from "core/forms/editClientVehicleForm/duck";
 import { permissions, isForbidden } from "utils";
+import { Barcode } from "components";
 
 // own
 import Styles from "./styles.m.css";
@@ -165,7 +166,7 @@ export class EditClientVehicleForm extends Component {
                     <List.Item className={Styles.listItem}>
                         <Form>
                             <Row gutter={8} type="flex" align="bottom">
-                                <Col span={8}>
+                                <Col span={6}>
                                     {vehicleLabel(item, index)}{" "}
                                     {editableItem === index && !editVehicle && (
                                         <Button
@@ -234,7 +235,7 @@ export class EditClientVehicleForm extends Component {
                                         item.number
                                     )}
                                 </Col>
-                                <Col span={4}>
+                                <Col span={3}>
                                     {editableItem === index ? (
                                         <DecoratedInput
                                             fields={{}}
@@ -283,6 +284,14 @@ export class EditClientVehicleForm extends Component {
                                             vehicles={clientEntity.vehicles}
                                         />
                                     ) : null}
+                                </Col>
+                                <Col span={3}>
+                                    <Barcode
+                                        barcodeValue={`CVH-${item.id}`}
+                                        iconStyle={{
+                                            fontSize: 24
+                                        }}
+                                    />
                                 </Col>
                                 <Col span={3}>
                                     {!isEditForbidden ? (

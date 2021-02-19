@@ -16,6 +16,8 @@ import book from 'routes/book';
 import { type } from 'ramda';
 import { DetailStorageModal } from 'modals';
 import { permissions, isForbidden } from 'utils';
+import { Barcode } from 'components';
+
 // own
 const Option = Select.Option;
 const { error } = Modal;
@@ -876,12 +878,18 @@ class StorageDocumentPage extends Component {
                     </div>
                 }
                 controls={
-                    <div style={{display: 'flex'}}>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
                         {id ? 
-                        <div style={{display: 'flex'}}>
-                            {formData.status != DONE && 
+                        <div style={{display: 'flex', alignItems: 'center'}}>
+                            {formData.status != DONE ? 
                                 <ChangeStatusDropdown
                                     updateDocument={this.updateFormData}
+                                /> :
+                                <Barcode
+                                    barcodeValue={formData.documentNumber}
+                                    iconStyle={{
+                                        fontSize: 24
+                                    }}
                                 />
                             }
                             <ReportsDropdown

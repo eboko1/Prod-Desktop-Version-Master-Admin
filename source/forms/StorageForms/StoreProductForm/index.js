@@ -1,7 +1,7 @@
 // vendor
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Button, Checkbox, InputNumber } from 'antd';
+import { Form, Select, Button, Checkbox, InputNumber, Col } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import styled from 'styled-components';
@@ -28,6 +28,7 @@ import {
     DecoratedCheckbox,
 } from 'forms/DecoratedFields';
 import { MeasureUnitSelect, PriceGroupSelect } from 'forms/_formkit';
+import { Barcode } from "components";
 
 // own
 const Option = Select.Option;
@@ -343,18 +344,22 @@ const ProductForm = props => {
                 getFieldDecorator={ form.getFieldDecorator }
                 initialValue={ _.get(props, 'product.certificate') }
             />
-            <div style={{margin: '0 0 16px 0'}}>
-                <FormattedMessage id='storage_document.store_in_warehouse' />
-                <Checkbox
-                    style={{marginLeft: 5}}
-                    checked={storeInWarehouse}
-                    onChange={()=>{
-                        setStoreInWarehouse(!storeInWarehouse);
-                    }}
-                />
+            <div>
+                <Col span={7} style={{textAlign: 'right'}}>
+                    <FormattedMessage id='storage_document.store_in_warehouse' />
+                </Col>
+                <Col span={15}>
+                    <Checkbox
+                        style={{marginLeft: 5}}
+                        checked={storeInWarehouse}
+                        onChange={()=>{
+                            setStoreInWarehouse(!storeInWarehouse);
+                        }}
+                    />            
+                </Col>
             </div>
             {storeInWarehouse &&
-                <div style={{display: 'flex', justifyContent: 'space-between', margin: '0 0 16px 0'}}>
+                <div style={{display: 'flex', justifyContent: 'space-evenly', margin: '24px 0'}}>
                     <div>
                         <span style={{marginRight: 8}}><FormattedMessage id='storage_document.multiplicity'/></span>
                         <InputNumber
@@ -389,6 +394,20 @@ const ProductForm = props => {
                         />
                     </div>
                 </div>
+            }
+            {props.editing && 
+                <Barcode
+                    barcodeValue={`STP-${_.get(props, 'product.id')}`}
+                    displayBarcode
+                    options={{
+                        displayValue: true,
+                        width: 3,
+                        height: 90
+                    }}
+                    style={{
+                        margin: '12px 0 36px 0',
+                    }}
+                />
             }
             <ButtonGroup>
                 { props.editing ? (
