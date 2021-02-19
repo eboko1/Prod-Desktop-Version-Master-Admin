@@ -28,7 +28,7 @@ export default class EmployeesTable extends Component {
             {
                 title: <FormattedMessage id="employee-table.employee" />,
                 dataIndex: "name",
-                width: "25%",
+                width: "auto",
                 render: (text, record) => (
                     <div>
                         {isForbidden(this.props.user, permissions.ACCESS_EMPLOYEE) ? 
@@ -54,7 +54,7 @@ export default class EmployeesTable extends Component {
             {
                 title: <FormattedMessage id="employee-table.status" />,
                 dataIndex: "fireDate",
-                width: "20%",
+                width: "auto",
                 render: (data, record) =>
                     record.fireDate ? (
                         <div className={Styles.fired}>
@@ -72,7 +72,7 @@ export default class EmployeesTable extends Component {
             {
                 title: <FormattedMessage id="employee-table.manager" />,
                 dataIndex: "isManager",
-                width: "10%",
+                width: "auto",
                 render: (isManager, { managerEnabled }) =>
                     isManager ? (
                         <Icon
@@ -86,7 +86,7 @@ export default class EmployeesTable extends Component {
             {
                 title: <FormattedMessage id="employee-table.hire_date" />,
                 dataIndex: "hireDate",
-                width: "25%",
+                width: "auto",
                 render: (text, record) => (
                     <div>
                         {record.hireDate &&
@@ -101,7 +101,7 @@ export default class EmployeesTable extends Component {
             {
                 title: <FormattedMessage id="employee-table.rating" />,
                 dataIndex: "rating",
-                width: "20%",
+                width: "auto",
                 render: value => value && this._renderRatingStars(value),
             },
         ];

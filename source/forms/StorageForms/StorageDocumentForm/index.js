@@ -9,8 +9,8 @@ import _ from 'lodash';
 import moment from 'moment';
 
 // proj
-import { Catcher } from 'commons';
-import { Numeral } from "commons";
+import { Catcher, Numeral } from 'commons';
+import { Barcode } from "components";
 import { withReduxForm, isForbidden, permissions } from "utils";
 import { DetailStorageModal } from "modals";
 // own
@@ -614,6 +614,14 @@ class DocProductsTable extends React.Component {
         const actionColWidth = !this.props.disabled ? '3%' : '0';
         this.columns = [
             {
+                title:     ()=>(
+                                <div>
+                                    <Barcode
+                                        button
+                                        disabled={this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_STOCK)}
+                                    />
+                                </div>
+                            ),
                 width:     actionColWidth,
                 key:       'edit',
                 render:     (elem)=>{

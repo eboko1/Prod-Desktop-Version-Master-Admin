@@ -1,3 +1,8 @@
+.formWrapper {
+    margin: 24px 56px;
+    text-align: center;
+}
+
 .dateTimePickerBlock {
     display: flex;
     flex-direction: row;

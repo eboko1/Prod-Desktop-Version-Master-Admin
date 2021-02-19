@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { MODALS } from 'core/modals/duck';
 import { ActionIcons } from 'commons/_uikit';
 import { permissions, isForbidden } from 'utils';
+import { Barcode } from 'components';
 
 export default props => {
     const editable = !isForbidden(
@@ -18,7 +19,7 @@ export default props => {
             id: 'storage.product_code',
         }),
         dataIndex: 'code',
-        width:     '20%',
+        width:     'auto',
         render:    (key, { id, name, code }) => (
             <div
                 onClick={ () =>
@@ -40,7 +41,7 @@ export default props => {
             id: 'storage.name',
         }),
         dataIndex: 'name',
-        width:     '20%',
+        width:     'auto',
     };
 
     const brandName = {
@@ -48,7 +49,7 @@ export default props => {
             id: 'storage.brand',
         }),
         dataIndex: 'brand',
-        width:     '20%',
+        width:     'auto',
         render:    (key, data) => {
             if (data.brandName) {
                 return data.brandName;
@@ -63,15 +64,15 @@ export default props => {
             id: 'storage.markup',
         }),
         dataIndex: 'priceGroup',
-        width:     '20%',
+        width:     'auto',
         render:    (key, data) => (
             <div>{ _.get(data, 'priceGroup.multiplier') }</div>
         ),
     };
 
-    const actions = {
+    const editAction = {
         width:     'auto',
-        dataIndex: 'delete',
+        dataIndex: 'edit',
         render:    (key, { id, name, code }) => {
             return (
                 <ActionIcons
@@ -83,11 +84,34 @@ export default props => {
                             editing: true,
                         })
                     }
+                />
+            );
+        },
+    };
+
+    const deleteAction = {
+        width:     'auto',
+        dataIndex: 'delete',
+        render:    (key, { id, name, code }) => {
+            return (
+                <ActionIcons
                     delete={ () => props.deleteProduct(id) }
                 />
             );
         },
     };
+
+    const barcode = {
+        width:     'auto',
+        render:    (data) => (
+            <Barcode
+                barcodeValue={`STP-${data.id}`}
+                iconStyle={{
+                    fontSize: 24
+                }}
+            />
+        ),
+    }
 
     if (editable) {
         return [
@@ -95,7 +119,9 @@ export default props => {
             name,
             brandName,
             markup,
-            actions,
+            editAction,
+            deleteAction,
+            barcode,
         ];
     }
 
@@ -104,5 +130,6 @@ export default props => {
         name,
         brandName,
         markup,
+        barcode,
     ];
 };
