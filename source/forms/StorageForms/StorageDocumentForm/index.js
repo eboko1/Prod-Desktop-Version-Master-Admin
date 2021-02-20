@@ -88,9 +88,10 @@ class StorageDocumentForm extends Component {
         })
     }
 
-    componentDidUpdate() {
+    getClientOption() {
         if(this.props.formData.documentType == CLIENT && this.props.formData.counterpartId && !this.state.counterpartOptionInfo.value) {
-            const client = this.props.clientList.find((client)=>client.clientId==this.props.formData.counterpartId)
+            const client = this.props.clientList.find((client)=>client.clientId==this.props.formData.counterpartId);
+            console.log(client);
             if(client) {
                 this.setState({
                     counterpartOptionInfo: {
@@ -100,6 +101,14 @@ class StorageDocumentForm extends Component {
                 })
             }
         }
+    }
+
+    componentDidUpdate() {
+       this.getClientOption();
+    }
+
+    componentDidMount() {
+        this.getClientOption();
     }
  
     render() {

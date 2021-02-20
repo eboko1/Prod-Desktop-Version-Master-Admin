@@ -26,7 +26,7 @@ export default class BarcodePage extends Component {
         return (
             <Layout
             	title={ <FormattedMessage id='navigation.barcode' /> }
-                controls={
+                /*controls={
                     <Barcode
                         barcodeValue={"123456789012"}
                         iconStyle={{
@@ -39,7 +39,7 @@ export default class BarcodePage extends Component {
                             margin: 0,
                         }}
                     />
-                }
+                }*/
             >
                 <BarcodeContainer/>
             </Layout>

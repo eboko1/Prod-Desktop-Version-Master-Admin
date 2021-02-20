@@ -35,12 +35,17 @@ import {
     onChangeOrderSearchQuery,
     onChangeOrderSearchQueryRequest,
     onChangeOrderSearchQuerySuccess,
+    onChangeStoreDocSearchQuery,
+    onChangeStoreDocSearchQueryRequest,
+    onChangeStoreDocSearchQuerySuccess,
     //
     onClientSelectSuccess,
     selectClient,
     selectClientOrdersFilters,
     selectSearchOrdersResultFilters,
+    selectSearchStoreDocsResultFilters,
     setOrderSearchFilters,
+    setStoreDocSearchFilters,
     setAnalyticsFetchingState,
     //
     fetchSelectedClientOrdersSuccess,
@@ -56,7 +61,9 @@ import {
     ON_CHANGE_CASH_ORDER_FORM,
     ON_CHANGE_CLIENT_SEARCH_QUERY,
     ON_CHANGE_ORDER_SEARCH_QUERY,
+    ON_CHANGE_STORE_DOC_SEARCH_QUERY,
     FETCH_SEARCH_ORDER,
+    FETCH_SEARCH_STORE_DOC,
     ON_CLIENT_SELECT,
     // ON_CLIENT_SELECT_SUCCESS,
     FETCH_SELECTED_CLIENT_ORDERS,
@@ -104,6 +111,9 @@ export function* onChangeCashOrderFormSaga() {
             if (field === 'searchOrderQuery') {
                 yield put(onChangeOrderSearchQuery(payload[ field ].value));
             }
+            if (field === 'searchStoreDocQuery') {
+                yield put(onChangeStoreDocSearchQuery(payload[ field ].value));
+            }
         } catch (error) {
             yield put(emitError(error));
         }
@@ -141,6 +151,28 @@ export function* handleOrderSearchSaga({ payload }) {
             yield put(onChangeOrderSearchQuerySuccess(response));
         } else {
             yield put(onChangeOrderSearchQuerySuccess([]));
+        }
+        yield put(setClientOrdersFetchingState(false));
+    } catch (error) {
+        yield put(emitError(error));
+    }
+}
+
+export function* handleStoreDocSearchSaga({ payload }) {
+    try {
+        yield put(onChangeStoreDocSearchQueryRequest());
+        yield delay(1000);
+        yield put(setClientOrdersFetchingState(true));
+        yield put(setStoreDocSearchFilters({ query: payload }));
+        if (payload.length >= 1) {
+            const response = yield call(fetchAPI, 'GET', 'store_docs', {
+                type: "EXPENSE",
+                documentType: "CLIENT",
+                status: "DONE",
+            });
+            yield put(onChangeStoreDocSearchQuerySuccess(response));
+        } else {
+            yield put(onChangeStoreDocSearchQuerySuccess([]));
         }
         yield put(setClientOrdersFetchingState(false));
     } catch (error) {
@@ -198,6 +230,26 @@ export function* fetchSearchOrderSaga() {
 
             const data = yield call(fetchAPI, 'GET', 'orders', {
                 sumRemains: true,
+                ...filters,
+            });
+
+            yield put(fetchSearchOrderSuccess(data));
+            yield put(setClientFetchingState(false));
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
+
+export function* fetchSearchStoreDocSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_SEARCH_STORE_DOC);
+            yield put(setClientFetchingState(true));
+            const filters = yield select(selectSearchStoreDocsResultFilters);
+
+            const data = yield call(fetchAPI, 'GET', 'store_docs', {
+                //sumRemains: true,
                 ...filters,
             });
 
@@ -296,10 +348,12 @@ export function* saga() {
         call(handleClientSelectSaga),
         call(fetchSelectedClientOrders),
         call(fetchSearchOrderSaga),
+        call(fetchSearchStoreDocSaga),
         call(fetchAnalyticsSaga),
         call(printCashOrderSaga),
         takeLatest(FETCH_CASH_ORDER_NEXT_ID, fetchCashOrderNextIdSaga),
         takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga),
         takeLatest(ON_CHANGE_ORDER_SEARCH_QUERY, handleOrderSearchSaga),
+        takeLatest(ON_CHANGE_STORE_DOC_SEARCH_QUERY, handleStoreDocSearchSaga),
     ]);
 }

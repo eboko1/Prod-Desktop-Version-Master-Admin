@@ -286,12 +286,14 @@ export class EditClientVehicleForm extends Component {
                                     ) : null}
                                 </Col>
                                 <Col span={3}>
-                                    <Barcode
-                                        barcodeValue={`CVH-${item.id}`}
-                                        iconStyle={{
-                                            fontSize: 24
-                                        }}
-                                    />
+                                    {item.barcode && 
+                                        <Barcode
+                                            barcodeValue={item.barcode}
+                                            iconStyle={{
+                                                fontSize: 24
+                                            }}
+                                        />
+                                    }
                                 </Col>
                                 <Col span={3}>
                                     {!isEditForbidden ? (

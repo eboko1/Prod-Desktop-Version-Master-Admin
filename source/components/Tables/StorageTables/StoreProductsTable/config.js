@@ -103,9 +103,10 @@ export default props => {
 
     const barcode = {
         width:     'auto',
-        render:    (data) => (
+        dataIndex: 'barcode',
+        render:    (data) => data && (
             <Barcode
-                barcodeValue={`STP-${data.id}`}
+                barcodeValue={data}
                 iconStyle={{
                     fontSize: 24
                 }}

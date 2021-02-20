@@ -303,19 +303,6 @@ class StorageDocumentsContainer extends Component {
                 }s`} /> }
                 controls={
                     <>
-                        {listType == 'EXPENSE' &&
-                            <Icon
-                                type='dollar'
-                                onClick={()=>{
-                                    setModal(MODALS.CASH_ORDER);
-                                }}
-                                style={ {
-                                    fontSize: 24,
-                                    cursor:   'pointer',
-                                    margin:   '0 10px',
-                                } }
-                            />
-                        }
                         <StorageDocumentsFilters
                             isFetched={Boolean(filtredDocumentsList.length)}
                             type={newDocType}
@@ -326,6 +313,19 @@ class StorageDocumentsContainer extends Component {
                             documentTypeFilter={ this.documentTypeFilter }
                             documentStatusFilter={ this.documentStatusFilter }
                         />
+                        {listType == 'EXPENSE' &&
+                            <Button
+                                style={ {
+                                    margin:   '0 15px 0 0',
+                                    fontSize: 18,
+                                } }
+                                onClick={()=>{
+                                    setModal(MODALS.CASH_ORDER);
+                                }}
+                            >
+                                <Icon type='dollar'/>
+                            </Button>
+                        }
                         <Link
                             to={!isCRUDForbidden && {
                                 pathname: book.storageDocument,
