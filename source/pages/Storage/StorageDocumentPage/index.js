@@ -8,13 +8,14 @@ import { Dropdown, Button, Icon, Menu, notification, Modal, Table, Input, InputN
 import _ from 'lodash';
 import moment from 'moment';
 import { saveAs } from 'file-saver';
+import {setModal, resetModal, MODALS} from 'core/modals/duck';
 
 // proj
 import { Layout, Spinner } from 'commons';
 import { StorageDocumentForm } from 'forms';
 import book from 'routes/book';
 import { type } from 'ramda';
-import { DetailStorageModal } from 'modals';
+import { DetailStorageModal, ToSuccessModal } from 'modals';
 import { permissions, isForbidden } from 'utils';
 import { Barcode } from 'components';
 
@@ -26,7 +27,14 @@ const dateFormat = 'DD.MM.YYYY';
 const mapStateToProps = state => {
     return {
         user: state.auth,
+        modal:                 state.modals.modal,
+        modalProps:            state.modals.modalProps,
     };
+};
+
+const mapDispatchToProps = {
+    setModal,
+    resetModal,
 };
 
 const headerIconStyle = {
@@ -74,7 +82,7 @@ const typeToDocumentType = {
 
 @connect(
     mapStateToProps,
-    null,
+    mapDispatchToProps,
 )
 @injectIntl
 class StorageDocumentPage extends Component {
@@ -362,10 +370,6 @@ class StorageDocumentPage extends Component {
                 createData.counterpartBusinessSupplierId = formData.counterpartId;
                 break;
         }
-
-        if(formData.status == DONE && formData.type == EXPENSE) {
-            return;
-        } 
 
         var productsError = false;
 
@@ -847,7 +851,9 @@ class StorageDocumentPage extends Component {
             toolWarehouseId,
             repairAreaWarehouseId,
         } = this.state;
-        const { id, intl: {formatMessage}, user } = this.props;
+
+        const { id, intl: {formatMessage}, user, modal, setModal, resetModal } = this.props;
+
         const dateTime = formData.createdDatetime || new Date();
         const titleType = " " + formatMessage({id: `storage_document.docType.${formData.type}.${formData.documentType}`}).toLowerCase();
 
@@ -883,7 +889,10 @@ class StorageDocumentPage extends Component {
                         <div style={{display: 'flex', alignItems: 'center'}}>
                             {formData.status != DONE ? 
                                 <ChangeStatusDropdown
+                                    type={formData.type}
+                                    documentType={formData.documentType}
                                     updateDocument={this.updateFormData}
+                                    setModal={setModal}
                                 /> :
                                 <Barcode
                                     barcodeValue={formData.documentNumber}
@@ -1016,6 +1025,18 @@ class StorageDocumentPage extends Component {
                     toolWarehouseId={toolWarehouseId}
                     repairAreaWarehouseId={repairAreaWarehouseId}
                 />
+                <ToSuccessModal
+                    visible={modal}
+                    resetModal={resetModal}
+                    remainPrice={formData.sum}
+                    clientId={
+                        formData.documentType == CLIENT ? 
+                            formData.counterpartId : 
+                            undefined
+                    }
+                    onSubmit={()=>{this.updateFormData({status: DONE}, true)}}
+                    storeDocId={id}
+                />
             </Layout>
         );
     }
@@ -1026,6 +1047,10 @@ export default StorageDocumentPage;
 class ChangeStatusDropdown extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            payModalVisible: false,
+        }
     }
 
     render() {
@@ -1034,7 +1059,11 @@ class ChangeStatusDropdown extends React.Component {
             <Menu>
                 <Menu.Item
                     onClick={()=>{
-                        this.props.updateDocument({status: DONE}, true)
+                        if(this.props.type == EXPENSE) {
+                            this.props.setModal(MODALS.TO_SUCCESS)
+                        } else {
+                            this.props.updateDocument({status: DONE}, true);
+                        }
                     }}
                 >
                     <FormattedMessage id='storage_document.status_confirmed' />

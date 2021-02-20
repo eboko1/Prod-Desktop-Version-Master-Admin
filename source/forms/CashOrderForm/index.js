@@ -21,6 +21,8 @@ import {
     onClientSelect,
     onClientReset,
     onOrderReset,
+    onStoreDocReset,
+    onStoreDocSelect,
     printCashOrder,
     onOrderSelect,
     onClientFieldsReset,
@@ -69,6 +71,7 @@ const getActiveFieldsMap = activeCashOrder => {
             "cashBoxId",
             "clientId",
             "orderId",
+            "storeDocId",
             "description",
             "employeeId",
             "increase",
@@ -92,9 +95,11 @@ const getActiveFieldsMap = activeCashOrder => {
         createCashOrder,
         onClientSelect,
         onOrderSelect,
+        onStoreDocSelect,
         onClientReset,
         onClientFieldsReset,
         onOrderReset,
+        onStoreDocReset,
         printCashOrder,
     },
     mapStateToProps: state => {
@@ -161,6 +166,11 @@ export class CashOrderForm extends Component {
         if (editMode || printMode) {
             this._setFormFields(activeCashOrder);
             this._selectOrderType(_.get(activeCashOrder, "type"));
+            if(_.get(activeCashOrder, "clientId") && _.get(activeCashOrder, "storeDocId")) {
+                this.setState({
+                    clientSearchType: "storeDoc",
+                })
+            }
         }
 
         if (!editMode && !printMode && !fromOrder) {
@@ -192,7 +202,9 @@ export class CashOrderForm extends Component {
     componentDidUpdate(prevProps) {
         const {
             editMode,
+            printMode,
             fields,
+            activeCashOrder,
             form: { getFieldValue, setFieldsValue },
         } = this.props;
 
@@ -236,12 +248,25 @@ export class CashOrderForm extends Component {
                 };
             });
         }
+
+        if(editMode && prevProps.activeCashOrder === undefined) {
+            
+            if(
+                _.get(activeCashOrder, "clientId", null) &&
+                _.get(activeCashOrder, "storeDocId", null)
+            ) {
+                this.setState({
+                    clientSearchType: "storeDoc",
+                })
+            }
+        }
     }
 
     _setNullToFieldsValue = () => {
         this.props.form.setFieldsValue({
             clientId: null,
             orderId: null,
+            storeDocId: null,
             employeeId: null,
             businessSupplierId: null,
             otherCounterparty: null,
@@ -289,6 +314,7 @@ export class CashOrderForm extends Component {
                 counterpartyType: cashOrderCounterpartyTypes.CLIENT,
                 clientId: fieldsMap.clientId,
                 orderId: fieldsMap.orderId,
+                storeDocId: fieldsMap.storeDocId,
             };
         }
         if (fieldsMap.employeeId) {
@@ -320,7 +346,7 @@ export class CashOrderForm extends Component {
         const { form, createCashOrder, onCloseModal, editMode, fromOrder, fetchOrder } = this.props;
 
         form.validateFields(async (err, values) => {
-            if (_.has(err, "clientId") || _.has(err, "orderId")) {
+            if (_.has(err, "clientId") || _.has(err, "orderId") || _.has(err, "storeDocId")) {
                 this._handleErrorValidationPanel();
             }
 
@@ -331,6 +357,9 @@ export class CashOrderForm extends Component {
                         : null,
                     orderId: values.hasOwnProperty("orderId")
                         ? values.orderId
+                        : null,
+                    storeDocId: values.hasOwnProperty("storeDocId")
+                        ? values.storeDocId
                         : null,
                     editMode,
                     ...values,
@@ -480,6 +509,15 @@ export class CashOrderForm extends Component {
         this.props.onOrderSelect(order);
     };
 
+    _handleStoreDocSelection = storeDoc => {
+        this.props.form.setFieldsValue({ 
+            storeDocId: storeDoc.id,
+            clientId: storeDoc.counterpartClientId,
+            increase: Math.abs(storeDoc.sellingSum),
+        });
+        this.props.onStoreDocSelect(storeDoc);
+    };
+
     _setCounterpartyType = type => {
 
         if (type === cashOrderCounterpartyTypes.CLIENT) {
@@ -503,6 +541,7 @@ export class CashOrderForm extends Component {
         this.props.form.setFieldsValue({
             clientId: null,
             orderId: null,
+            storeDocId: null,
         });
         this.props.onClientReset();
 
@@ -514,6 +553,15 @@ export class CashOrderForm extends Component {
     _resetOrder = editMode => {
         this.props.form.setFieldsValue({ orderId: null });
         this.props.onOrderReset();
+
+        if (editMode) {
+            this.setState({ editing: true });
+        }
+    };
+
+    _resetStoreDoc = editMode => {
+        this.props.form.setFieldsValue({ storeDocId: null, clientId: null });
+        this.props.onStoreDocReset();
 
         if (editMode) {
             this.setState({ editing: true });
@@ -578,6 +626,8 @@ export class CashOrderForm extends Component {
 
         const cashOrderId = getFieldValue("id");
         const orderType = getFieldValue('type');
+
+        console.log(this)
 
         //https://github.com/ant-design/ant-design/issues/8880#issuecomment-402590493
         // getFieldDecorator("clientId", { initialValue: void 0 });
@@ -926,6 +976,7 @@ export class CashOrderForm extends Component {
             client,
             activeCashOrder,
             order,
+            selectedStoreDoc,
             form: { getFieldValue },
             intl: { formatMessage },
         } = this.props;
@@ -938,6 +989,7 @@ export class CashOrderForm extends Component {
             _.get(client, "clientId") || this.state.editing
                 ? _.get(client, "clientId") || getFieldValue("clientId")
                 : _.get(activeCashOrder, "clientId");
+        const storeDocId = _.get(selectedStoreDoc, "id") || getFieldValue("storeDocId") ||_.get(activeCashOrder, "storeDocId");
 
         const clientSearch = this._renderClientSearch();
         const clientSearchTable = this._renderClientSearchTable();
@@ -945,11 +997,13 @@ export class CashOrderForm extends Component {
 
         const orderSearchField = this._renderOrderSearch();
         const orderField = this._renderOrderField();
+        
+        const storeDocFieldSearch = this._renderStoreDocSearch();
+        const storeDocField = this._renderStoreDocField();
 
         const isActive =
             getFieldValue("counterpartyType") ===
             cashOrderCounterpartyTypes.CLIENT;
-
         return (
             <>
                 {!printMode &&
@@ -960,7 +1014,7 @@ export class CashOrderForm extends Component {
                                 {...reverseFromItemLayout}
                                 label={formatMessage({
                                     id:
-                                        "cash-order-form.search_by_client_or_order",
+                                        "cash-order-form.search_by_client_or_document",
                                 })}
                             >
                                 <RadioGroup
@@ -978,6 +1032,12 @@ export class CashOrderForm extends Component {
                                         {formatMessage({
                                             id:
                                                 "cash-order-form.switch_by_order",
+                                        })}
+                                    </Radio>
+                                    <Radio value="storeDoc">
+                                        {formatMessage({
+                                            id:
+                                                "cash-order-form.switch_by_document",
                                         })}
                                     </Radio>
                                 </RadioGroup>
@@ -1034,6 +1094,34 @@ export class CashOrderForm extends Component {
                                             />
                                         ) : null)}
                                     {orderField}
+                                </>
+                            )}
+                            {this.state.clientSearchType === "storeDoc" && (
+                                <>
+                                    {Boolean(!storeDocId) && storeDocFieldSearch}
+                                    {Boolean(!storeDocId) &&
+                                        (this.props.form.getFieldValue(
+                                            "searchStoreDocQuery",
+                                        ) ? (
+                                            <CashSelectedClientOrdersTable
+                                                type="storeDoc"
+                                                selectStoreDoc={
+                                                    this._handleStoreDocSelection
+                                                }
+                                                searchStoreDocsResult={
+                                                    this.props
+                                                        .searchStoreDocsResult
+                                                }
+                                                searching={
+                                                    this.props
+                                                        .clientOrdersFetching
+                                                }
+                                                searchStoreDocQuery={this.props.form.getFieldValue(
+                                                    "searchStoreDocQuery",
+                                                )}
+                                            />
+                                        ) : null)}
+                                    {storeDocField}
                                 </>
                             )}
                         </>
@@ -1157,6 +1245,47 @@ export class CashOrderForm extends Component {
         );
     };
 
+    _renderStoreDocSearch = () => {
+        const {
+            fields,
+            errors,
+            form: { getFieldDecorator, getFieldValue },
+            intl: { formatMessage },
+        } = this.props;
+
+        const isActive =
+            getFieldValue("counterpartyType") ===
+                cashOrderCounterpartyTypes.CLIENT &&
+            this.state.clientSearchType === "storeDoc";
+
+        return (
+            <DecoratedInput
+                field="searchStoreDocQuery"
+                errors={errors}
+                defaultGetValueProps
+                fieldValue={_.get(fields, "searchStoreDocQuery")}
+                formItem
+                label={formatMessage({
+                    id: "cash-order-form.search",
+                })}
+                formItemLayout={formItemLayout}
+                getFieldDecorator={getFieldDecorator}
+                placeholder={formatMessage({
+                    id: "cash-order-form.search_by_document",
+                })}
+                className={this._hiddenFormItemStyles(isActive)}
+                rules={[
+                    {
+                        required: isActive,
+                        message: formatMessage({
+                            id: "required_field",
+                        }),
+                    },
+                ]}
+            />
+        );
+    };
+
     _renderOrderSearch = () => {
         const {
             fields,
@@ -1250,6 +1379,89 @@ export class CashOrderForm extends Component {
                                 <Icon
                                     type="close"
                                     onClick={() => this._resetOrder(editMode)}
+                                    className={Styles.resetIcon}
+                                />
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                <DecoratedInput
+                    field="clientId"
+                    // initialValue={editMode ? clientId : void 0}
+                    getFieldDecorator={getFieldDecorator}
+                    cnStyles={Styles.hiddenField}
+                    disabled
+                    rules={[
+                        {
+                            required: isActive,
+                            message: formatMessage({
+                                id: "required_field",
+                            }),
+                        },
+                    ]}
+                />
+                {this.state.clientSearchType !== "client" && (
+                    <div className={this._hiddenResetStyles(clientId)}>
+                        <span>
+                            {clientName}
+                            {clientSurname}
+                        </span>
+                    </div>
+                )}
+            </>
+        );
+    };
+
+    _renderStoreDocField = () => {
+        const {
+            printMode,
+            editMode,
+            selectedStoreDoc,
+            activeCashOrder,
+            form: { getFieldDecorator, getFieldValue },
+            intl: { formatMessage },
+        } = this.props;
+
+        const storeDocId = _.get(selectedStoreDoc, "id") || getFieldValue("storeDocId") ||_.get(activeCashOrder, "storeDocId");
+        const clientId = _.get(selectedStoreDoc, "counterpartClientId") || getFieldValue("clientId") || _.get(activeCashOrder, "clientId");
+
+        const num = _.get(selectedStoreDoc, "documentNumber") || _.get(activeCashOrder, "docNum");
+        const clientName =
+            _.get(selectedStoreDoc, "counterpartClientName") || _.get(activeCashOrder, "clientName");
+        const clientSurname =
+            _.get(selectedStoreDoc, "clientSurname") ||
+            _.get(activeCashOrder, "clientSurname");
+
+        const isActive =
+            getFieldValue("counterpartyType") ===
+            cashOrderCounterpartyTypes.CLIENT;
+
+        return (
+            <>
+                <div className={Styles.clientField}>
+                    <DecoratedInput
+                        field="storeDocId"
+                        // initialValue={editMode ? orderId : void 0}
+                        getFieldDecorator={getFieldDecorator}
+                        cnStyles={Styles.hiddenField}
+                        disabled
+                        rules={[
+                            {
+                                required: isActive,
+                                message: formatMessage({
+                                    id: "required_field",
+                                }),
+                            },
+                        ]}
+                    />
+                    {isActive && (
+                        <div className={this._hiddenResetStyles(storeDocId)}>
+                            <span>{num}</span>
+                            {!printMode && (
+                                <Icon
+                                    type="close"
+                                    onClick={() => this._resetStoreDoc(editMode)}
                                     className={Styles.resetIcon}
                                 />
                             )}

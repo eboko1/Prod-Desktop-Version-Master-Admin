@@ -115,15 +115,17 @@ export default class CashOrderModal extends Component {
                     destroyOnClose
                     maskClosable={false}
                 >
-                    <CashOrderForm
-                        onCloseModal={ this._onCloseModal }
-                        printMode={ printMode }
-                        editMode={ editMode }
-                        fromOrder={ fromOrder }
-                        cashOrderEntity={ cashOrderEntity }
-                        fetchOrder={ fetchOrder }
-                        onOpenAnalyticsModal={this._onOpenReportAnalyticsModal}
-                    />
+                    {visible === MODALS.CASH_ORDER &&
+                        <CashOrderForm
+                            onCloseModal={ this._onCloseModal }
+                            printMode={ printMode }
+                            editMode={ editMode }
+                            fromOrder={ fromOrder }
+                            cashOrderEntity={ cashOrderEntity }
+                            fetchOrder={ fetchOrder }
+                            onOpenAnalyticsModal={this._onOpenReportAnalyticsModal}
+                        />
+                    }
                 </Modal>
                 {/* This modal is placed here to be able to be opened it from cash order modal(old cash order have to be saved and then reused afler analytics modal is closed) */}
                 <ReportAnalyticsModal 

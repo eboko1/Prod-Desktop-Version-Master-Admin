@@ -395,7 +395,7 @@ const ProductForm = props => {
                     </div>
                 </div>
             }
-            {props.editing && 
+            {props.editing &&  _.get(props, 'product.barcode') && 
                 <Barcode
                     barcodeValue={`STP-${_.get(props, 'product.id')}`}
                     displayBarcode

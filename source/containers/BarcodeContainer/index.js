@@ -167,7 +167,8 @@ export default class BarcodeContainer extends Component {
 	                	/>
                         <Barcode
                             iconStyle={{
-                                marginLeft: 8,
+                                marginLeft: 14,
+								fontSize: 24,
                             }}
                         />
 	                </div>
