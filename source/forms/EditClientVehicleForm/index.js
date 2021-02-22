@@ -166,7 +166,7 @@ export class EditClientVehicleForm extends Component {
                     <List.Item className={Styles.listItem}>
                         <Form>
                             <Row gutter={8} type="flex" align="bottom">
-                                <Col span={6}>
+                                <Col span={5}>
                                     {vehicleLabel(item, index)}{" "}
                                     {editableItem === index && !editVehicle && (
                                         <Button
@@ -254,7 +254,50 @@ export class EditClientVehicleForm extends Component {
                                         item.vin
                                     )}
                                 </Col>
-                                <Col span={3}>
+                                <Col span={2}>
+                                    {!isForbidden(user, permissions.ACCESS_CLIENTS_VEHICLE_TRANSFER) && !isEditForbidden && editableItem != index ? (
+                                        <ClientVehicleTransfer
+                                            clientId={clientId}
+                                            vehicleId={item.id}
+                                            vehicles={clientEntity.vehicles}
+                                        />
+                                    ) : null}
+                                </Col>
+                                <Col span={4}>
+                                    {editableItem === index ? (
+                                        <div style={{display: "flex", alignItems: "center"}}>
+                                        <DecoratedInput
+                                            formItem
+                                            className={
+                                                Styles.editClientVehicleFormItem
+                                            }
+                                            field={`clientVehicles[${index}].barcode`}
+                                            initialValue={item.barcode}
+                                            hasFeedback
+                                            getFieldDecorator={
+                                                this.props.form
+                                                    .getFieldDecorator
+                                            }
+                                        />
+                                        <Barcode
+                                            value={item.barcode}
+                                            iconStyle={{
+                                                fontSize: 24,
+                                                marginLeft: 4,
+                                            }}
+                                        />
+                                        </div>
+                                    ) : (
+                                        item.barcode && 
+                                        <Barcode
+                                            value={item.barcode}
+                                            iconStyle={{
+                                                fontSize: 24
+                                            }}
+                                        />
+                                    )}
+                                </Col>
+                                <Col span={2}>
                                     {!isEditForbidden ? (
                                         editableItem === index ? (
                                             this.renderSubmitEditIcon(
@@ -276,26 +319,7 @@ export class EditClientVehicleForm extends Component {
                                         )
                                     ) : null}
                                 </Col>
-                                <Col span={3}>
-                                    {!isForbidden(user, permissions.ACCESS_CLIENTS_VEHICLE_TRANSFER) && !isEditForbidden && editableItem != index ? (
-                                        <ClientVehicleTransfer
-                                            clientId={clientId}
-                                            vehicleId={item.id}
-                                            vehicles={clientEntity.vehicles}
-                                        />
-                                    ) : null}
-                                </Col>
-                                <Col span={3}>
-                                    {item.barcode && 
-                                        <Barcode
-                                            barcodeValue={item.barcode}
-                                            iconStyle={{
-                                                fontSize: 24
-                                            }}
-                                        />
-                                    }
-                                </Col>
-                                <Col span={3}>
+                                <Col span={2}>
                                     {!isEditForbidden ? (
                                         <Icon
                                             type="delete"

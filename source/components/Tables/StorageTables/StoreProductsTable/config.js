@@ -106,7 +106,7 @@ export default props => {
         dataIndex: 'barcode',
         render:    (data) => data && (
             <Barcode
-                barcodeValue={data}
+                value={data}
                 iconStyle={{
                     fontSize: 24
                 }}

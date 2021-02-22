@@ -140,51 +140,56 @@ export class CashOrderForm extends Component {
                 )
                     ? "increase"
                     : "decrease",
-                editing: true,
+                editing: false,
             };
         }
 
         return null;
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         const {
             editMode,
             printMode,
             fromOrder,
+            fromClient,
+            fromStoreDoc,
             activeCashOrder,
             fetchCashOrderNextId,
             fetchCashboxes,
             fetchAnalytics,
             cashboxes,
             modalProps,
+            analytics,
+            fields,
             form: { setFieldsValue },
         } = this.props;
 
+        if(fromStoreDoc || _.get(activeCashOrder, "clientId") && _.get(activeCashOrder, "storeDocId")) {
+            this.setState({
+                clientSearchType: "storeDoc",
+            })
+        }
+
         fetchAnalytics();
+        fetchCashboxes();
 
         if (editMode || printMode) {
             this._setFormFields(activeCashOrder);
             this._selectOrderType(_.get(activeCashOrder, "type"));
-            if(_.get(activeCashOrder, "clientId") && _.get(activeCashOrder, "storeDocId")) {
-                this.setState({
-                    clientSearchType: "storeDoc",
-                })
+        } else {
+            fetchCashOrderNextId();
+
+            if(fromOrder || fromStoreDoc || fromClient) {
+                this._setFormFields(activeCashOrder);
+
+                if(fromStoreDoc) {
+                    //this.props.onStoreDocSelect(_.get(activeCashOrder, "storeDoc"), {});
+                }
             }
         }
 
-        if (!editMode && !printMode && !fromOrder) {
-            fetchCashOrderNextId();
-            fetchCashboxes();
-            setFieldsValue({cashBoxId: activeCashOrder.cashBoxId || _.get(cashboxes, "[0].id")});
-        }
-
-        if(fromOrder) {
-            await fetchCashOrderNextId();
-            await fetchCashboxes();
-            await this._selectOrderType(_.get(activeCashOrder, "type"));
-            await setFieldsValue(activeCashOrder);
-        }
+        
 
         //Report analytics modal after closing passes some saved values which are set here
         if(modalProps && modalProps.sumTypeStateVal) {
@@ -203,8 +208,12 @@ export class CashOrderForm extends Component {
         const {
             editMode,
             printMode,
+            fromOrder,
+            fromStoreDoc,
+            cashboxes,
             fields,
             activeCashOrder,
+            analytics,
             form: { getFieldValue, setFieldsValue },
         } = this.props;
 
@@ -248,17 +257,61 @@ export class CashOrderForm extends Component {
                 };
             });
         }
+        
+        if(!this.state.editing) this.setFieldsValueWhileError();
+    }
 
-        if(editMode && prevProps.activeCashOrder === undefined) {
-            
-            if(
-                _.get(activeCashOrder, "clientId", null) &&
-                _.get(activeCashOrder, "storeDocId", null)
-            ) {
-                this.setState({
-                    clientSearchType: "storeDoc",
-                })
-            }
+    setFieldsValueWhileError() {
+        const {
+            editMode,
+            printMode,
+            fromOrder,
+            fromStoreDoc,
+            cashboxes,
+            fields,
+            activeCashOrder,
+            analytics,
+            form: { getFieldDecorator, setFieldsValue },
+        } = this.props;
+
+        // getFieldDecorator('cashBoxId', { initialValue: _.get(activeCashOrder, "cashBoxId") || _.get(cashboxes, "[0].id") });
+        // getFieldDecorator('analyticsUniqueId', { initialValue: _.get(activeCashOrder, "analyticsUniqueId") || _.get(cashboxes, "[0].id") ||
+        // _.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId') });
+        // getFieldDecorator('clientId', { initialValue: _.get(activeCashOrder, "clientId")});
+        // getFieldDecorator('orderId', { initialValue: _.get(activeCashOrder, "orderId")});
+        // getFieldDecorator('storeDocId', { initialValue: _.get(activeCashOrder, "storeDocId")});
+        // getFieldDecorator('increase', { initialValue: _.get(activeCashOrder, "increase")});
+        // getFieldDecorator('decrease', { initialValue: _.get(activeCashOrder, "decrease")});
+        
+        if((_.get(activeCashOrder, "cashBoxId") || _.get(cashboxes, "[0].id")) && _.get(fields, "cashBoxId") && !_.get(fields, "cashBoxId.value")) {
+            setFieldsValue({
+                cashBoxId: 
+                    _.get(activeCashOrder, "cashBoxId") ||
+                    _.get(cashboxes, "[0].id")
+            })
+        }
+        if((_.get(activeCashOrder, "analyticsUniqueId") || analytics) && _.get(fields, "analyticsUniqueId") && !_.get(fields, "analyticsUniqueId.value")) {
+            const orderType = _.get(fields, "type.value");
+            setFieldsValue({
+                analyticsUniqueId: _.get(activeCashOrder, "analyticsUniqueId") || 
+                                   _.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId')
+            })
+        }
+
+        if(_.get(activeCashOrder, "clientId") && !printMode && _.get(fields, "clientId.name") && !_.get(fields, "clientId.value") ) {
+            setFieldsValue({clientId: _.get(activeCashOrder, "clientId")})
+        }
+        if(_.get(activeCashOrder, "orderId") && this.state.clientSearchType != 'storeDoc' && _.get(fields, "orderId.name") && !_.get(fields, "orderId.value") ) {
+            setFieldsValue({orderId: _.get(activeCashOrder, "orderId")})
+        }
+        if(_.get(activeCashOrder, "storeDocId") && this.state.clientSearchType == 'storeDoc' && _.get(fields, "storeDocId.name") && !_.get(fields, "storeDocId.value") ) {
+            setFieldsValue({storeDocId: _.get(activeCashOrder, "storeDocId")})
+        }
+        if(_.get(activeCashOrder, "increase") && _.get(fields, "increase.name") && !_.get(fields, "increase.value") ) {
+            setFieldsValue({increase: _.get(activeCashOrder, "increase")})
+        }
+        if(_.get(activeCashOrder, "decrease") && _.get(fields, "decrease.name") && !_.get(fields, "decrease.value") ) {
+            setFieldsValue({decrease: _.get(activeCashOrder, "decrease")})
         }
     }
 
@@ -286,9 +339,9 @@ export class CashOrderForm extends Component {
         }
     };
 
-    _setFormFields = () => {
+    _setFormFields = (activeCashOrder) => {
         const { form } = this.props;
-        const fieldsMap = getActiveFieldsMap(this.props.activeCashOrder);
+        const fieldsMap = getActiveFieldsMap(activeCashOrder);
         const counterparty = this._getActiveCounterpartyType();
         const normalizedDatetime = moment(fieldsMap.datetime);
         const sumType = !_.isNil(fieldsMap.increase) ? "increase" : "decrease";
@@ -513,7 +566,7 @@ export class CashOrderForm extends Component {
         this.props.form.setFieldsValue({ 
             storeDocId: storeDoc.id,
             clientId: storeDoc.counterpartClientId,
-            increase: Math.abs(storeDoc.sellingSum),
+            increase: Math.abs(storeDoc.remainingSum || 10),
         });
         this.props.onStoreDocSelect(storeDoc);
     };
@@ -626,8 +679,6 @@ export class CashOrderForm extends Component {
 
         const cashOrderId = getFieldValue("id");
         const orderType = getFieldValue('type');
-
-        console.log(this)
 
         //https://github.com/ant-design/ant-design/issues/8880#issuecomment-402590493
         // getFieldDecorator("clientId", { initialValue: void 0 });
@@ -951,6 +1002,7 @@ export class CashOrderForm extends Component {
                         type={printMode ? "primary" : "default"}
                         className={printMode ? Styles.printButton : ""}
                         icon="printer"
+                        disabled={!cashOrderId}
                         onClick={() => this.props.printCashOrder(cashOrderId)}
                     >
                         {formatMessage({ id: "cash-order-form.print" })}
@@ -989,7 +1041,9 @@ export class CashOrderForm extends Component {
             _.get(client, "clientId") || this.state.editing
                 ? _.get(client, "clientId") || getFieldValue("clientId")
                 : _.get(activeCashOrder, "clientId");
-        const storeDocId = _.get(selectedStoreDoc, "id") || getFieldValue("storeDocId") ||_.get(activeCashOrder, "storeDocId");
+        const storeDocId =  _.get(selectedStoreDoc, "id") || this.state.editing
+            ? _.get(selectedStoreDoc, "storeDocId") || getFieldValue("storeDocId")
+            : _.get(activeCashOrder, "storeDocId");
 
         const clientSearch = this._renderClientSearch();
         const clientSearchTable = this._renderClientSearchTable();
@@ -1423,10 +1477,17 @@ export class CashOrderForm extends Component {
             intl: { formatMessage },
         } = this.props;
 
-        const storeDocId = _.get(selectedStoreDoc, "id") || getFieldValue("storeDocId") ||_.get(activeCashOrder, "storeDocId");
-        const clientId = _.get(selectedStoreDoc, "counterpartClientId") || getFieldValue("clientId") || _.get(activeCashOrder, "clientId");
+        const storeDocId =  _.get(selectedStoreDoc, "id") || this.state.editing
+            ? _.get(selectedStoreDoc, "storeDocId") || getFieldValue("storeDocId")
+            : _.get(activeCashOrder, "storeDocId");
+        const clientId = _.get(selectedStoreDoc, "counterpartClientId") || this.state.editing
+                ? _.get(selectedStoreDoc, "counterpartClientId") || getFieldValue("clientId")
+                : _.get(activeCashOrder, "clientId");
 
-        const num = _.get(selectedStoreDoc, "documentNumber") || _.get(activeCashOrder, "docNum");
+        // const storeDocId = _.get(selectedStoreDoc, "id") || _.get(activeCashOrder, "storeDocId") || getFieldValue("storeDocId");
+        // const clientId = _.get(selectedStoreDoc, "counterpartClientId") || getFieldValue("clientId") || _.get(activeCashOrder, "clientId");
+
+        const num = _.get(selectedStoreDoc, "documentNumber") || _.get(activeCashOrder, "orderNum") || _.get(activeCashOrder, "docNum");
         const clientName =
             _.get(selectedStoreDoc, "counterpartClientName") || _.get(activeCashOrder, "clientName");
         const clientSurname =

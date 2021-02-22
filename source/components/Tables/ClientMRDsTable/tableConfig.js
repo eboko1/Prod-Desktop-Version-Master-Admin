@@ -2,13 +2,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 import { FormattedMessage } from 'react-intl';
+import { Icon } from 'antd';
 
 //proj
 import { Numeral } from "commons";
 import { FormattedDatetime } from 'components';
 import book from "routes/book";
 
-export default function columnsConfig() {
+export default function columnsConfig(props) {
     
     const orderNumCol = {
         title:     <FormattedMessage id="client-mrds-table.mrd_number"/>,
@@ -58,16 +59,27 @@ export default function columnsConfig() {
         dataIndex: 'dueAmountWithTaxes',
         width:     '10%',
         align: 'right',
-        render: dueAmount => {
+        render: (dueAmount, row) => {
             let strVal = Number(dueAmount).toFixed(2);
 
             return (
-                <span>
-                    { dueAmount ? 
-                        `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-                        : 0
+                <>
+                    {dueAmount && 
+                        <Icon
+                            type='dollar'
+                            onClick={()=>{
+                                props.showCashOrderModal(row);
+                            }}
+                            className={'dollar-icon'}
+                        />
                     }
-                </span>
+                    <span>
+                        { dueAmount ? 
+                            `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            : 0
+                        }
+                    </span>
+                </>
             );
         },
     };

@@ -28,6 +28,7 @@ export default class ClientMRDsTable extends Component {
             clientMRDsPage,
             clientId,
             openPrint,
+            showCashOrderModal,
             } = this.props
 
         const pagination = {
@@ -49,11 +50,13 @@ export default class ClientMRDsTable extends Component {
         return <div className={Style.tableContainer}>
             <Table
                 size='small'
-                columns={ columnsConfig() }
+                columns={ columnsConfig({
+                    showCashOrderModal: showCashOrderModal
+                }) }
                 dataSource={ mrds }
                 pagination={pagination}
                 loading={ isFetching }
-                defaultExpandAllRows
+                //defaultExpandAllRows
                 //Apply styles for each row
                 rowClassName={(record) => {
                     if(record.isOverdue) return Style.overdueMRD;

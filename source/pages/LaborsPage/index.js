@@ -78,14 +78,15 @@ export default class LaborsPage extends Component {
                 render: (data, row)=>{
                     return (
                         <div style={{display: 'flex'}}>
-                            {data}
                             <Barcode
-                                barcodeValue={`LBS-${this.props.user.businessId}-${row.laborId}`}
+                                value={`LBS-${this.props.user.businessId}-${row.laborId}`}
                                 iconStyle={{
-                                    margin: "0 0 0 8px",
+                                    margin: "0 8px 0 0",
                                     fornSize: 18,
+                                    verticalAlign: "sub",
                                 }}
                             />
+                            {data}
                         </div>  
                     )
                 }

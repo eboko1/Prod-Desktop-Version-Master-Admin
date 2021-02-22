@@ -42,6 +42,7 @@ export function* saveEmployee() {
                 sendSmsNewOrder:    false,
                 surname:            employee.surname,
                 isMechanic:         employee.isMechanic,
+                barcode:            employee.barcode,
             };
 
             const data = yield call(

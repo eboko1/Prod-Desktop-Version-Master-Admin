@@ -415,7 +415,6 @@ export function columnsConfig(
                         })
                         .then(function(data) {
                             window.location.reload();
-                            console.log(data);
                         })
                         .catch(function(error) {
                             console.log('error', error);

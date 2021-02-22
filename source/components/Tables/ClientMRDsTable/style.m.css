@@ -6,3 +6,13 @@
     background-color: rgba(255, 0, 0, 0.3);
     color: black;
 }
+
+:global(.dollar-icon) {
+    font-size: 18px;
+    vertical-align: sub;
+    margin-right: 4px;
+
+    &:hover {
+        color: var(--antd-wave-shadow-color);
+    }
+}

@@ -104,6 +104,8 @@ export default class CashOrderModal extends Component {
         const printMode = _.get(modalProps, 'printMode');
         const editMode = _.get(modalProps, 'editMode');
         const fromOrder = _.get(modalProps, 'fromOrder'); //Used when we open this modal from order page
+        const fromStoreDoc = _.get(modalProps, 'fromStoreDoc');
+        const fromClient = _.get(modalProps, 'fromClient');
 
         return (
             <>
@@ -114,6 +116,7 @@ export default class CashOrderModal extends Component {
                     onCancel={ this._onCloseModal }
                     destroyOnClose
                     maskClosable={false}
+                    width={860}
                 >
                     {visible === MODALS.CASH_ORDER &&
                         <CashOrderForm
@@ -121,6 +124,8 @@ export default class CashOrderModal extends Component {
                             printMode={ printMode }
                             editMode={ editMode }
                             fromOrder={ fromOrder }
+                            fromStoreDoc={ fromStoreDoc }
+                            fromClient={ fromClient }
                             cashOrderEntity={ cashOrderEntity }
                             fetchOrder={ fetchOrder }
                             onOpenAnalyticsModal={this._onOpenReportAnalyticsModal}

@@ -13,7 +13,6 @@ export function convertFieldsValuesToDbEntity(
     status = 'not_complete',
     user,
 ) {
-    //console.log(orderFields);
     const services = _(orderFields.services)
         .filter(Boolean)
         .filter(service => _.get(service, 'serviceName'))

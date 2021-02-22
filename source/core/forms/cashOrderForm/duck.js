@@ -562,9 +562,9 @@ export const onOrderReset = () => ({
     type: ON_ORDER_RESET,
 });
 
-export const onStoreDocSelect = order => ({
+export const onStoreDocSelect = storeDoc => ({
     type:    ON_STORE_DOC_SELECT,
-    payload: order,
+    payload: storeDoc,
 });
 
 export const onStoreDocReset = () => ({

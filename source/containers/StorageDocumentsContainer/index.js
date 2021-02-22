@@ -72,7 +72,6 @@ const fetchStorage = (type, action) => {
         return response.json();
     })
     .then(function(data) {
-        console.log(data);
         data.list = data.list.filter((elem)=>elem.documentNumber.substr(0, 3) != 'RES');
         action(data);
     })
@@ -320,7 +319,9 @@ class StorageDocumentsContainer extends Component {
                                     fontSize: 18,
                                 } }
                                 onClick={()=>{
-                                    setModal(MODALS.CASH_ORDER);
+                                    setModal(MODALS.CASH_ORDER, {
+                                        fromStoreDoc: true,
+                                    });
                                 }}
                             >
                                 <Icon type='dollar'/>
@@ -354,6 +355,7 @@ class StorageDocumentsContainer extends Component {
                     isCRUDForbidden={isCRUDForbidden}
                 />
                 <CashOrderModal
+                    fromStoreDoc
                     visible={modal}
                     modalProps={modalProps}
                     resetModal={ () => {

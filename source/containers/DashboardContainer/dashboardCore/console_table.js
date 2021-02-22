@@ -18,9 +18,6 @@ module.exports = blocks => {
             }
         });
 
-        console.log(tableData);
         const output = table(tableData);
-
-        console.log(output);
     }
 };

@@ -11,8 +11,11 @@ import moment from 'moment';
 // proj
 import { Catcher, Numeral } from 'commons';
 import { Barcode } from "components";
-import { withReduxForm, isForbidden, permissions } from "utils";
+import { withReduxForm, isForbidden, permissions, goTo } from "utils";
 import { DetailStorageModal } from "modals";
+import {MODALS} from 'core/modals/duck';
+import book from "routes/book";
+
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
@@ -91,7 +94,6 @@ class StorageDocumentForm extends Component {
     getClientOption() {
         if(this.props.formData.documentType == CLIENT && this.props.formData.counterpartId && !this.state.counterpartOptionInfo.value) {
             const client = this.props.clientList.find((client)=>client.clientId==this.props.formData.counterpartId);
-            console.log(client);
             if(client) {
                 this.setState({
                     counterpartOptionInfo: {
@@ -102,6 +104,16 @@ class StorageDocumentForm extends Component {
             }
         }
     }
+
+    _redirectToCashFlow = () => {
+        if (!isForbidden(this.props.user, permissions.ACCESS_ACCOUNTING)) {
+            goTo(book.cashFlowPage, {
+                cashFlowFilters: {
+                    storeDocId: this.props.id,
+                },
+            });
+        }
+    };
 
     componentDidUpdate() {
        this.getClientOption();
@@ -131,6 +143,7 @@ class StorageDocumentForm extends Component {
             reserveWarehouseId,
             toolWarehouseId,
             repairAreaWarehouseId,
+            setModal,
         } = this.props;
 
         const {
@@ -141,6 +154,7 @@ class StorageDocumentForm extends Component {
             docProducts,
             status,
             sum,
+            sellingSum,
             payUntilDatetime,
             incomeWarehouseId,
             expenseWarehouseId,
@@ -275,12 +289,13 @@ class StorageDocumentForm extends Component {
                         documentType == ADJUSTMENT ||
                         documentType == ORDERINCOME ||
                         documentType == TOOL ||
-                        documentType == REPAIR_AREA) 
-                    && 
+                        documentType == REPAIR_AREA ||
+                        documentType == OWN_CONSUMPTION
+                    ) && 
                     <div style={{position: 'relative'}}>
                         <FormattedMessage id={`storage.${
                             documentType == ORDERINCOME || documentType == ADJUSTMENT ? 'supplier' :
-                            documentType == TOOL || documentType == REPAIR_AREA ? 'employee' :
+                            documentType == TOOL || documentType == REPAIR_AREA || documentType == OWN_CONSUMPTION ? 'employee' :
                             documentType.toLowerCase()}`
                         }/>{requiredField()}
                         <Select
@@ -327,7 +342,7 @@ class StorageDocumentForm extends Component {
                                     </Option>
                                 )
                             })}
-                            {(documentType == TOOL || documentType == REPAIR_AREA) && 
+                            {(documentType == TOOL || documentType == REPAIR_AREA || documentType == OWN_CONSUMPTION) && 
                                 employees.map((employee, i)=>{
                                     return (
                                         <Option
@@ -499,7 +514,7 @@ class StorageDocumentForm extends Component {
                                             id: "currency",
                                         })}
                                     >
-                                        {sum || 0}
+                                        {type == EXPENSE ? sellingSum : sum}
                                     </Numeral>
                                 </div>
                                 <div className={Styles.sumWrapper} style={{color: onlySum ? 'var(--text2)' : null}}>
@@ -534,16 +549,21 @@ class StorageDocumentForm extends Component {
                                     }}
                                 >
                                     <FormattedMessage id="remain" />
-                                    <Numeral
-                                        mask={mask}
-                                        className={Styles.sumNumeral}
-                                        nullText="0"
-                                        currency={this.props.intl.formatMessage({
-                                            id: "currency",
-                                        })}
+                                    <span
+                                        onClick={()=>this._redirectToCashFlow()}
+                                        className={Styles.remainSum}
                                     >
-                                        {sum}
-                                    </Numeral>
+                                        <Numeral
+                                            mask={mask}
+                                            className={Styles.sumNumeral}
+                                            nullText="0"
+                                            currency={this.props.intl.formatMessage({
+                                                id: "currency",
+                                            })}
+                                        >
+                                            {type == EXPENSE ? sellingSum : sum}
+                                        </Numeral>
+                                    </span>
                                 </p>
                             </div>
                         </div>
@@ -623,7 +643,7 @@ class DocProductsTable extends React.Component {
         const actionColWidth = !this.props.disabled ? '3%' : '0';
         this.columns = [
             {
-                title:     ()=>(
+                title:     ()=> !this.props.disabled && (
                                 <div>
                                     <Barcode
                                         button
@@ -1325,6 +1345,7 @@ class AddProductModal extends React.Component {
                     this.handleCancel();
                 }}
                 maskClosable={false}
+                zIndex={200}
             >
                 <div
                     style={{
@@ -1591,6 +1612,7 @@ export class AddStoreProductModal extends React.Component {
             measureUnit: measureUnitsOptions.PIECE,
             tradeCode: undefined,
             certificate: undefined,
+            barcode: undefined,
             priceGroupNumber: undefined,
             priceGroups: [],
             defaultWarehouseId: undefined,
@@ -1666,7 +1688,6 @@ export class AddStoreProductModal extends React.Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(postData, data);
         })
         .catch(function(error) {
             console.log("error", error);
@@ -1685,6 +1706,7 @@ export class AddStoreProductModal extends React.Component {
             tradeCode,
             brandName,
             certificate,
+            barcode,
             defaultWarehouseId,
             multiplicity,
             min,
@@ -1708,6 +1730,7 @@ export class AddStoreProductModal extends React.Component {
             measureUnit: measureUnit,
             tradeCode: tradeCode,
             certificate: certificate,
+            barcode: undefined,
             priceGroupNumber: priceGroupNumber,
             defaultWarehouseId: defaultWarehouseId,
         }
@@ -1784,6 +1807,7 @@ export class AddStoreProductModal extends React.Component {
             defaultWarehouseId,
             tradeCode,
             certificate,
+            barcode,
             storeInWarehouse,
             multiplicity,
             min,
@@ -1801,6 +1825,7 @@ export class AddStoreProductModal extends React.Component {
                     }}
                     onCancel={cancelAlertModal}
                     maskClosable={false}
+                    zIndex={300}
                 >
                     {this.props.children}
                 </Modal>
@@ -1814,8 +1839,9 @@ export class AddStoreProductModal extends React.Component {
                         this.setState({visible: false});
                     }}
                     maskClosable={false}
+                    zIndex={350}
                 >
-                    <div>
+                    <div className={Styles.addProductModalOtemWrap}>
                         <FormattedMessage id='order_form_table.detail_code' />{requiredField()}
                         <AutoComplete
                             value={detailCode}
@@ -1867,7 +1893,7 @@ export class AddStoreProductModal extends React.Component {
                             }
                         </AutoComplete>
                     </div>
-                    <div>
+                    <div className={Styles.addProductModalOtemWrap}>
                         <FormattedMessage id='order_form_table.brand' />{requiredField()}
                         <Select
                             showSearch
@@ -1911,7 +1937,7 @@ export class AddStoreProductModal extends React.Component {
                             }
                         </Select>
                     </div>
-                    <div>
+                    <div className={Styles.addProductModalOtemWrap}>
                         <FormattedMessage id='order_form_table.store_group'/>{requiredField()}
                         <TreeSelect
                             showSearch
@@ -1933,7 +1959,7 @@ export class AddStoreProductModal extends React.Component {
                             }}
                         />
                     </div>
-                    <div>
+                    <div className={Styles.addProductModalOtemWrap}>
                         <FormattedMessage id='order_form_table.detail_name' />{requiredField()}
                         <Input
                             value={detailName}
@@ -1944,7 +1970,7 @@ export class AddStoreProductModal extends React.Component {
                             }}
                         />
                     </div>
-                    <div>
+                    <div className={Styles.addProductModalOtemWrap}>
                         <FormattedMessage id='storage.measure_units' />
                         <Select
                             value={measureUnit}
@@ -1963,7 +1989,7 @@ export class AddStoreProductModal extends React.Component {
                             </Option>
                         </Select>
                     </div>
-                    <div>
+                    <div className={Styles.addProductModalOtemWrap}>
                         <FormattedMessage id='storage.price_group' />
                         <Select
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
@@ -1989,7 +2015,7 @@ export class AddStoreProductModal extends React.Component {
                             )) }
                         </Select>
                     </div>
-                    <div>
+                    <div className={Styles.addProductModalOtemWrap}>
                         <FormattedMessage id='storage.default_warehouse' />
                         <Select
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
@@ -2012,7 +2038,7 @@ export class AddStoreProductModal extends React.Component {
                             })}
                         </Select>
                     </div>
-                    <div>
+                    <div className={Styles.addProductModalOtemWrap}>
                         <FormattedMessage id='storage.trade_code' />
                         <Input
                             value={tradeCode}
@@ -2023,7 +2049,7 @@ export class AddStoreProductModal extends React.Component {
                             }}
                         />
                     </div>
-                    <div>
+                    <div className={Styles.addProductModalOtemWrap}>
                         <FormattedMessage id='storage.certificate' />
                         <Input
                             value={certificate}
@@ -2034,10 +2060,30 @@ export class AddStoreProductModal extends React.Component {
                             }}
                         />
                     </div>
-                    <div>
+                    <div className={Styles.addProductModalOtemWrap}>
+                        <FormattedMessage id='navigation.barcode' />
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                            <Input
+                                value={barcode}
+                                onChange={(event)=>{
+                                    this.setState({
+                                        barcode: event.target.value,
+                                    })
+                                }}
+                            />
+                            <Barcode
+                                value={barcode}
+                                iconStyle={{
+                                    fontSize: 18,
+                                    marginLeft: 8
+                                }}
+                            />
+                        </div>
+                    </div>
+                    <div className={Styles.addProductModalOtemWrap}>
                         <FormattedMessage id='storage_document.store_in_warehouse' />
                         <Checkbox
-                            style={{marginLeft: 5}}
+                            style={{marginLeft: 8}}
                             onChange={()=>{
                                 this.setState({
                                     storeInWarehouse: !storeInWarehouse,
@@ -2046,7 +2092,7 @@ export class AddStoreProductModal extends React.Component {
                         />
                     </div>
                     {storeInWarehouse &&
-                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <div className={Styles.addProductModalOtemWrap} style={{display: 'flex', justifyContent: 'space-between'}}>
                             <div>
                                 <span style={{marginRight: 8}}><FormattedMessage id='storage_document.multiplicity'/></span>
                                 <InputNumber

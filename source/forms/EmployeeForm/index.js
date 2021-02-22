@@ -80,6 +80,7 @@ export class EmployeeForm extends Component {
         const { formatMessage } = this.props.intl;
         const managerEnabled = Boolean(getFieldValue("managerEnabled"));
         const passwordField = this._renderPasswordField();
+        const barcode = getFieldValue("barcode");
 
         return (
             <Form layout="horizontal">
@@ -218,6 +219,32 @@ export class EmployeeForm extends Component {
                         getPopupContainer={trigger => trigger.parentNode}
                         getFieldDecorator={getFieldDecorator}
                     />
+                    <FormItem
+                        label={<FormattedMessage id="navigation.barcode" />}
+                        {...formItemLayout}
+                        className={Styles.selectMargin}
+                    >
+                        <DecoratedInput
+                            field="barcode"
+                            placeholder={formatMessage({
+                                id: "navigation.barcode",
+                            })}
+                            formItem
+                            formItemLayout={formItemLayout}
+                            initialValue={_.get(initialEmployee, "barcode")}
+                            className={Styles.selectMargin}
+                            getPopupContainer={trigger => trigger.parentNode}
+                            getFieldDecorator={getFieldDecorator}
+                            style={{minWidth: 240}}
+                        />
+                        <Barcode
+                            value={barcode}
+                            iconStyle={{
+                                fontSize: 18,
+                                marginLeft: 8
+                            }}
+                        />
+                    </FormItem>
                     <DecoratedCheckbox
                         fields={{}}
                         field="managerEnabled"

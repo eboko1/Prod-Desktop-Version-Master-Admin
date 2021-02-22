@@ -98,7 +98,6 @@ export function columnsConfig({formatMessage, type}) {
         key:       'totalSum',
         width:     140,
         render:    (_, order) => {
-            console.log(order);
             const sum = order.isTaxPayer ? order.totalSumWithTax : order.servicesTotalSum + order.detailsTotalSum
             return (
                     <Numeral

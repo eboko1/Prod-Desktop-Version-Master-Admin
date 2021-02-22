@@ -25,7 +25,7 @@ export default class Barcode extends Component {
         super(props);
         this.state = {
             visible: false,
-            scanedBarcodeValue: undefined,
+            scanedvalue: undefined,
         };
 
         this.id = _.uniqueId("barcode-");
@@ -74,13 +74,13 @@ export default class Barcode extends Component {
     updateBarcode = () => {
         const id = this.id;
         const displayBarcode = _.get(this.props, 'displayBarcode', false);
-        const barcodeValue = _.get(this.props, 'barcodeValue', "").padEnd(4, "0");
+        const value = (_.get(this.props, 'value', "") || "0000");
 
         const defaultOptions = displayBarcode ? this.defaultBarcodeOptions : this.defaultModalBarcodeOptions;
         const options = _.get(this.props, 'options', {});
 
         try {
-            JsBarcode(`#${id}`, barcodeValue, {
+            JsBarcode(`#${id}`, value, {
                 ...defaultOptions,
                 ...options,
             });
@@ -98,7 +98,7 @@ export default class Barcode extends Component {
     }
 
     render() {
-        const { user, showIcon, displayBarcode, iconStyle, barcodeValue, button, disabled, style } = this.props;
+        const { user, showIcon, displayBarcode, iconStyle, value, button, disabled, style } = this.props;
         const { visible } = this.state;
         const id = this.id;
         return !displayBarcode ? (
@@ -135,12 +135,12 @@ export default class Barcode extends Component {
                     zIndex={500}
                 >
                     <div className={Styles.barcodeWrapp}>
-                        {barcodeValue &&
+                        {value &&
                             <div className={Styles.barcodeActions}>
                                 <Icon
                                     type="copy"
                                     onClick={() => {
-                                        navigator.clipboard.writeText(barcodeValue);
+                                        navigator.clipboard.writeText(value);
                                         message.success('Coppied!');
                                     }}
                                 />

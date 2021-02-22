@@ -9,7 +9,7 @@ import { Layout, Spinner } from 'commons';
 import { ClientContainer } from 'containers';
 
 const mapStateToProps = state => ({
-    isFetching:   state.ui.clientFetching,
+    // isFetching:   state.ui.clientFetching,
     clientEntity: state.client.clientEntity,
 });
 
