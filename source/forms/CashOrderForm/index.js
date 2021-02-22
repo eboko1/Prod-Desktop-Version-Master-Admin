@@ -258,7 +258,7 @@ export class CashOrderForm extends Component {
             });
         }
         
-        //if(!this.state.editing) this.setFieldsValueWhileError();
+        if(!this.state.editing) this.setFieldsValueWhileError();
     }
 
     setFieldsValueWhileError() {
@@ -273,6 +273,8 @@ export class CashOrderForm extends Component {
             analytics,
             form: { getFieldDecorator, setFieldsValue },
         } = this.props;
+
+        console.log(this);
 
         // getFieldDecorator('cashBoxId', { initialValue: _.get(activeCashOrder, "cashBoxId") || _.get(cashboxes, "[0].id") });
         // getFieldDecorator('analyticsUniqueId', { initialValue: _.get(activeCashOrder, "analyticsUniqueId") || _.get(cashboxes, "[0].id") ||
@@ -290,7 +292,7 @@ export class CashOrderForm extends Component {
                     _.get(cashboxes, "[0].id")
             })
         }
-        if((_.get(activeCashOrder, "analyticsUniqueId") || analytics) && _.get(fields, "analyticsUniqueId") && !_.get(fields, "analyticsUniqueId.value")) {
+        if((_.get(activeCashOrder, "analyticsUniqueId") || analytics && analytics.length > 0) && _.get(fields, "analyticsUniqueId") && !_.get(fields, "analyticsUniqueId.value")) {
             const orderType = _.get(fields, "type.value");
             setFieldsValue({
                 analyticsUniqueId: _.get(activeCashOrder, "analyticsUniqueId") || 
@@ -298,13 +300,13 @@ export class CashOrderForm extends Component {
             })
         }
 
-        if(_.get(activeCashOrder, "clientId") && !printMode && _.get(fields, "clientId.name") && !_.get(fields, "clientId.value") ) {
+        if(_.get(activeCashOrder, "clientId") && !printMode &&  !_.get(fields, "clientId.value") ) {
             setFieldsValue({clientId: _.get(activeCashOrder, "clientId")})
         }
-        if(_.get(activeCashOrder, "orderId") && this.state.clientSearchType != 'storeDoc' && _.get(fields, "orderId.name") && !_.get(fields, "orderId.value") ) {
+        if(_.get(activeCashOrder, "orderId") && this.state.clientSearchType != 'storeDoc' && !_.get(fields, "orderId.value") ) {
             setFieldsValue({orderId: _.get(activeCashOrder, "orderId")})
         }
-        if(_.get(activeCashOrder, "storeDocId") && this.state.clientSearchType == 'storeDoc' && _.get(fields, "storeDocId.name") && !_.get(fields, "storeDocId.value") ) {
+        if(_.get(activeCashOrder, "storeDocId") && this.state.clientSearchType == 'storeDoc' && !_.get(fields, "storeDocId.value") ) {
             setFieldsValue({storeDocId: _.get(activeCashOrder, "storeDocId")})
         }
         if(_.get(activeCashOrder, "increase") && _.get(fields, "increase.name") && !_.get(fields, "increase.value") ) {
@@ -676,8 +678,6 @@ export class CashOrderForm extends Component {
             onOpenAnalyticsModal,
             fromOrder
         } = this.props;
-
-        console.log(this);
 
         const cashOrderId = getFieldValue("id");
         const orderType = getFieldValue('type');
