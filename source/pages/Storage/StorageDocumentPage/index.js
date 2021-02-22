@@ -15,7 +15,7 @@ import { Layout, Spinner } from 'commons';
 import { StorageDocumentForm } from 'forms';
 import book from 'routes/book';
 import { type } from 'ramda';
-import { DetailStorageModal, ToSuccessModal } from 'modals';
+import { DetailStorageModal, ToSuccessModal, CashOrderModal } from 'modals';
 import { permissions, isForbidden } from 'utils';
 import { Barcode } from 'components';
 
@@ -275,6 +275,9 @@ class StorageDocumentPage extends Component {
                 else if(formData.documentType == CLIENT) {
                     createData.counterpartClientId = formData.counterpartId;
                 }
+                else if(formData.documentType == OWN_CONSUMPTION) {
+                    createData.counterpartEmployeeId = formData.counterpartId;
+                }
                 break;
             case TRANSFER:
                 createData.type = EXPENSE;
@@ -435,7 +438,6 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             if(data.updated) {
                 that.getStorageDocument();
             } else {
@@ -726,6 +728,9 @@ class StorageDocumentPage extends Component {
 
             data.counterpartId = data.counterpartBusinessSupplierId || data.counterpartClientId || data.counterpartEmployeeId;
             data.payUntilDatetime = data.payUntilDatetime && moment(data.payUntilDatetime);
+            data.sum = Math.abs(data.sum);
+            data.sellingSum = Math.abs(data.sellingSum);
+            data.quantity = Math.abs(data.quantity);
             data.docProducts.map((elem, key)=>{
                 elem.brandId = elem.product.brandId;
                 elem.brandName = elem.product.brand && elem.product.brand.name;
@@ -798,7 +803,6 @@ class StorageDocumentPage extends Component {
                 loading: false,
                 fetched: true,
             })
-            console.log(that);
         })
         .catch(function (error) {
             console.log('error', error);
@@ -852,7 +856,7 @@ class StorageDocumentPage extends Component {
             repairAreaWarehouseId,
         } = this.state;
 
-        const { id, intl: {formatMessage}, user, modal, setModal, resetModal } = this.props;
+        const { id, intl: {formatMessage}, user, modal, setModal, resetModal, modalProps } = this.props;
 
         const dateTime = formData.createdDatetime || new Date();
         const titleType = " " + formatMessage({id: `storage_document.docType.${formData.type}.${formData.documentType}`}).toLowerCase();
@@ -894,12 +898,39 @@ class StorageDocumentPage extends Component {
                                     updateDocument={this.updateFormData}
                                     setModal={setModal}
                                 /> :
-                                <Barcode
-                                    barcodeValue={formData.documentNumber}
-                                    iconStyle={{
-                                        fontSize: 24
-                                    }}
-                                />
+                                <> 
+                                    {formData.type == EXPENSE &&
+                                    formData.documentType == CLIENT &&
+                                        <Icon
+                                            type='dollar'
+                                            onClick={()=>{
+                                                const client = clientList.find((client)=>client.clientId==formData.counterpartId);
+                                                setModal(MODALS.CASH_ORDER, {
+                                                    cashOrderEntity: {
+                                                        storeDocId: id,
+                                                        clientId: formData.counterpartClientId,
+                                                        orderNum: formData.documentNumber,
+                                                        clientName: client.name,
+                                                        clientSurname: client.surname,
+                                                        increase: Math.round(formData.sellingSum*100)/100,
+                                                        type: "INCOME",
+                                                        storeDoc: formData,
+                                                    },
+                                                    fromStoreDoc: true,
+                                                })
+                                            }}
+                                            style={ {
+                                                ...headerIconStyle,
+                                            } }
+                                        />
+                                    }
+                                    <Barcode
+                                        value={formData.documentNumber}
+                                        iconStyle={{
+                                            ...headerIconStyle,
+                                        }}
+                                    />
+                                </>
                             }
                             <ReportsDropdown
                                 id={id}
@@ -1024,18 +1055,30 @@ class StorageDocumentPage extends Component {
                     reserveWarehouseId={reserveWarehouseId}
                     toolWarehouseId={toolWarehouseId}
                     repairAreaWarehouseId={repairAreaWarehouseId}
+                    setModal={setModal}
                 />
                 <ToSuccessModal
                     visible={modal}
                     resetModal={resetModal}
-                    remainPrice={formData.sum}
+                    remainPrice={formData.sellingSum}
                     clientId={
                         formData.documentType == CLIENT ? 
                             formData.counterpartId : 
                             undefined
                     }
-                    onSubmit={()=>{this.updateFormData({status: DONE}, true)}}
                     storeDocId={id}
+                    onSubmit={()=>{
+                        this.updateFormData({status: DONE}, true);
+                        window.location.reload();
+                    }}
+                />
+                <CashOrderModal
+                    fromStoreDoc
+                    visible={modal}
+                    modalProps={modalProps}
+                    fetchStoreDoc={()=>{
+                        getStorageDocument();
+                    }}
                 />
             </Layout>
         );
@@ -1059,7 +1102,7 @@ class ChangeStatusDropdown extends React.Component {
             <Menu>
                 <Menu.Item
                     onClick={()=>{
-                        if(this.props.type == EXPENSE) {
+                        if(this.props.type == EXPENSE && this.props.documentType == CLIENT) {
                             this.props.setModal(MODALS.TO_SUCCESS)
                         } else {
                             this.props.updateDocument({status: DONE}, true);
@@ -1270,7 +1313,6 @@ class ReturnModal extends React.Component {
     }
 
     getStorageProducts() {
-        console.log(this);
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/store_products?all=true`;
@@ -1328,7 +1370,7 @@ class ReturnModal extends React.Component {
             data.map((elem, i)=>{
                 elem.key = i;
                 elem.quantity = elem.returnQuantity;
-                elem.sum = Math.abs(elem.sum);
+                elem.sum = elem.sum;
             })
             that.setState({
                 returnDataSource: data,
@@ -2016,7 +2058,6 @@ class AutomaticOrderCreationModal extends React.Component {
                     elem.groupId = elem.storeGroupId;
                     elem.tradeCode = elem.supplierPartNumber;
                     elem.checked = that.props.documentType == SUPPLIER;
-                    console.log(elem)
                 })
                 that.setState({
                     dataSource: data,

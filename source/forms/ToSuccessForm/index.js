@@ -12,6 +12,8 @@ import {
     createCashOrder,
     fetchCashOrderNextId,
     selectCashOrderNextId,
+    fetchAnalytics,
+    selectAnalytics,
 } from "core/forms/cashOrderForm/duck";
 import { fetchCashboxes } from "core/cash/duck";
 
@@ -37,15 +39,25 @@ const Option = Select.Option;
         createCashOrder,
         fetchCashboxes,
         fetchCashOrderNextId,
+        fetchAnalytics,
     },
     mapStateToProps: state => ({
         businessName: state.auth.businessName,
         user: state.auth,
         cashboxes: state.cash.cashboxes,
         cashOrderNextId: selectCashOrderNextId(state),
+        analytics: selectAnalytics(state),
     }),
 })
 export class ToSuccessForm extends Component {
+    componentDidMount() {
+        const { 
+            fetchAnalytics
+        } = this.props;
+
+        fetchAnalytics();
+    }
+
     componentDidUpdate(nextProps) {
         if (nextProps.fields.withPayment !== this.props.fields.withPayment) {
             if (_.isEmpty(this.props.cashboxes)) {
@@ -72,6 +84,7 @@ export class ToSuccessForm extends Component {
             clientId,
             storeDocId,
             onSubmit,
+            analytics,
         } = this.props;
 
         const smsMessage = form.getFieldValue("smsMessage");
@@ -96,6 +109,7 @@ export class ToSuccessForm extends Component {
                         orderId: orderId,
                         type: cashOrderTypes.INCOME,
                         storeDocId: storeDocId,
+                        analyticsUniqueId: analytics && analytics[0].analyticsUniqueId,
                     });
                 }
 
@@ -137,6 +151,7 @@ export class ToSuccessForm extends Component {
         } = this.props.form;
 
         const { formatMessage } = this.props.intl;
+
 
         return (
             <Form layout="vertical">

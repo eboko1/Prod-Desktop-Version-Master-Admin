@@ -113,7 +113,6 @@ export default class SyncConflictsModal extends Component {
             return response.json();
         })
         .then(function (data) {
-            console.log(data);
             /*data[0] = {
                 id: 32,
                 syncId: 168,
@@ -351,7 +350,6 @@ export default class SyncConflictsModal extends Component {
     render() {
     	const { type, visible, intl: {formatMessage} } = this.props;
         const { conflictsData, conflictsTableData, conflictModalData } = this.state;
-        console.log(conflictsTableData)
     	return (
     		<Modal
     			title={<FormattedMessage id='export_import_pages.conflicts'/>}
@@ -376,7 +374,6 @@ export default class SyncConflictsModal extends Component {
                     dataSource={conflictsTableData}
                     rowSelection={{
                         onChange: (selectedRowKeys, selectedRows) => {
-                            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
                             this.setState({
                                 selectedRows: selectedRows
                             })

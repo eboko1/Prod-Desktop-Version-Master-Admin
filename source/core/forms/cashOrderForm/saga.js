@@ -169,6 +169,7 @@ export function* handleStoreDocSearchSaga({ payload }) {
                 type: "EXPENSE",
                 documentType: "CLIENT",
                 status: "DONE",
+                query:  payload,
             });
             yield put(onChangeStoreDocSearchQuerySuccess(response));
         } else {

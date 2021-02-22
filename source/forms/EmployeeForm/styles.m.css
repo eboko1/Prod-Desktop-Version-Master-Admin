@@ -15,6 +15,10 @@
     width: 168px;
 }
 
+.barcodeInput {
+    
+}
+
 .passwordFieldEditing {
     border: 2px dashed var(--warning);
     border-radius: 4px;

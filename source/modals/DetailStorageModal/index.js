@@ -157,7 +157,6 @@ class DetailStorageModal extends React.Component{
                 sorter: (a, b) => a.supplierName && a.supplierName.localeCompare(b.supplierName),
                 sortDirections: ['descend', 'ascend'],
                 render: (data, elem)=>{
-                    console.log(elem);
                     //<div>{getSupplier(elem.suplierId, elem.partNumber)}</div>
                     return (
                        <div>{data}</div>

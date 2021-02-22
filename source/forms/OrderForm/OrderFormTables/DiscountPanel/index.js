@@ -34,11 +34,6 @@ class DiscountPanel extends Component {
                 body: JSON.stringify({ laborTimeMultiplier: multiplier }),
             });
             const result = await response.json();
-            if (result.success) {
-                console.log('OK', result);
-            } else {
-                console.log('BAD', result);
-            }
         } catch (error) {
             console.error('ERROR:', error);
         }

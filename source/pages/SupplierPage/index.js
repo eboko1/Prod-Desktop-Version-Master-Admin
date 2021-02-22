@@ -94,7 +94,6 @@ export default class SupplierPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.list.map((elem,key)=>{elem.key=key});
             that.setState({
                 orders: data.list,
@@ -125,7 +124,6 @@ export default class SupplierPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.list.map((elem,key)=>{elem.key=key});
             that.setState({
                 supplies: data.list,
@@ -156,7 +154,6 @@ export default class SupplierPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.requisites.map((elem, key)=>{
                 elem.key = key;
             });

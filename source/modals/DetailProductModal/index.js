@@ -627,7 +627,6 @@ class DetailProductModal extends React.Component{
                     })
                 }
             });
-            console.log(data);
             this.addDetailsAndLabors(data);
         }
         this.props.hideModal();
@@ -656,7 +655,6 @@ class DetailProductModal extends React.Component{
                 },
             });
             const result = await response.json();
-            console.log(result)
             this.setState({
                 relatedDetails: result.storeGroups.map((detail, key)=>{
                     let formattedDetail = {

@@ -13,7 +13,7 @@ import {
     DecoratedDatePicker,
 } from "forms/DecoratedFields";
 
-import { ArrayInput } from "components";
+import { ArrayInput, Barcode } from "components";
 
 // own
 import Styles from "./styles.m.css";
@@ -38,8 +38,8 @@ export class AbstractClientForm extends Component {
     }
 
     render() {
-        const { client, errors, searchQuery } = this.props;
-        const { getFieldDecorator } = this.props.form;
+        const { client, errors, searchQuery, intl: {formatMessage} } = this.props;
+        const { getFieldDecorator, getFieldValue } = this.props.form;
 
         const searchQueryNumber = searchQuery
             ? searchQuery
@@ -58,7 +58,7 @@ export class AbstractClientForm extends Component {
                     componentError.response.message
                 ];
 
-                const errorTitle = this.props.intl.formatMessage({
+                const errorTitle = formatMessage({
                     id: "add_client_form.error_title",
                 });
 
@@ -88,7 +88,7 @@ export class AbstractClientForm extends Component {
                                     rules={[
                                         {
                                             required: true,
-                                            message: this.props.intl.formatMessage(
+                                            message: formatMessage(
                                                 {
                                                     id: "required_field",
                                                 },
@@ -144,7 +144,7 @@ export class AbstractClientForm extends Component {
                                     options={[
                                         {
                                             id: "male",
-                                            title: this.props.intl.formatMessage(
+                                            title: formatMessage(
                                                 {
                                                     id: "add_client_form.male",
                                                 },
@@ -152,7 +152,7 @@ export class AbstractClientForm extends Component {
                                         },
                                         {
                                             id: "femail",
-                                            title: this.props.intl.formatMessage(
+                                            title: formatMessage(
                                                 {
                                                     id:
                                                         "add_client_form.female",
@@ -180,7 +180,7 @@ export class AbstractClientForm extends Component {
                                     options={[
                                         {
                                             id: "permanent",
-                                            title: this.props.intl.formatMessage(
+                                            title: formatMessage(
                                                 {
                                                     id:
                                                         "add_client_form.permanent",
@@ -189,7 +189,7 @@ export class AbstractClientForm extends Component {
                                         },
                                         {
                                             id: "premium",
-                                            title: this.props.intl.formatMessage(
+                                            title: formatMessage(
                                                 {
                                                     id:
                                                         "add_client_form.premium",
@@ -213,9 +213,7 @@ export class AbstractClientForm extends Component {
                                         <FormattedMessage id="add_client_form.birthday" />
                                     }
                                     formItem
-                                    formatMessage={
-                                        this.props.intl.formatMessage
-                                    }
+                                    formatMessage={formatMessage}
                                     getFieldDecorator={getFieldDecorator}
                                     value={null}
                                     getCalendarContainer={trigger =>
@@ -246,6 +244,34 @@ export class AbstractClientForm extends Component {
                                     ]}
                                 />
                             </Col>
+                            <Col span={8}>
+                                <DecoratedInput
+                                    label={
+                                        <div style={{display: "flex"}}>
+                                            <FormattedMessage id="navigation.barcode" />
+                                            <Barcode
+                                                value={getFieldValue("barcode") || _.get(client, "barcode")}
+                                                iconStyle={{
+                                                    fontSize: 18,
+                                                    marginLeft: 8,
+                                                    verticalAlign: "middle",
+                                                }}
+                                            />
+                                        </div>
+                                    }
+                                    field="barcode"
+                                    placeholder={formatMessage({
+                                        id: "navigation.barcode",
+                                    })}
+                                    formItem
+                                    initialValue={_.get(client, "barcode")}
+                                    getFieldDecorator={getFieldDecorator}
+                                    style={{
+                                        width: "100%",
+                                    }}
+                                />
+                                
+                            </Col>
                         </Row>
 
                         <Row gutter={24} type="flex">
@@ -265,7 +291,7 @@ export class AbstractClientForm extends Component {
                                     rules={[
                                         {
                                             required: true,
-                                            message: this.props.intl.formatMessage(
+                                            message: formatMessage(
                                                 {
                                                     id: "required_field",
                                                 },
@@ -274,7 +300,7 @@ export class AbstractClientForm extends Component {
                                         {
                                             pattern: /^[\d]{9}$/,
                                             transform: value => String(value),
-                                            message: this.props.intl.formatMessage(
+                                            message: formatMessage(
                                                 {
                                                     id:
                                                         "add_client_form.invalid_phone_format",
@@ -351,11 +377,11 @@ export class AbstractClientForm extends Component {
                                         },
                                         {
                                             id: "RECOMENDATION",
-                                            title: this.props.intl.formatMessage({id:"add_client_form.recomendetion"}),
+                                            title: formatMessage({id:"add_client_form.recomendetion"}),
                                         },
                                         {
                                             id: "OTHER",
-                                            title: this.props.intl.formatMessage({id:"other"}),
+                                            title: formatMessage({id:"other"}),
                                         },
                                     ]}
                                     optionValue="id"
