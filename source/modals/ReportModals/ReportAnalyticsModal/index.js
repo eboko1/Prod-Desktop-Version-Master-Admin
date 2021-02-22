@@ -88,7 +88,9 @@ export default class ReportAnalyticsModal extends Component {
         const initialTab = _.get(this.props, "modalProps.initialTab", this.defaultModalProps.initialTab);
 
         //If modal was reopened(with new initialTab) we need to swith to new a tab if it is not undefined
-        (initialTab && prevProps.modalProps && prevProps.modalProps.initialTab != initialTab) && this.props.changeCurrentForm(initialTab);
+        if(initialTab && prevProps.visible  != MODALS.REPORT_ANALYTICS && this.props.visible == MODALS.REPORT_ANALYTICS) {
+            this.props.changeCurrentForm(initialTab);
+        }
     }
 
     /**
@@ -231,6 +233,7 @@ export default class ReportAnalyticsModal extends Component {
 
         return (
             <Modal
+                destroyOnClose
                 width={ '80%' }
                 visible={ visible === MODALS.REPORT_ANALYTICS }
                 onOk={ this.handleSubmit }
