@@ -210,6 +210,7 @@ export class CashOrderForm extends Component {
             printMode,
             fromOrder,
             fromStoreDoc,
+            fromClient,
             cashboxes,
             fields,
             activeCashOrder,
@@ -274,7 +275,7 @@ export class CashOrderForm extends Component {
             form: { getFieldDecorator, setFieldsValue },
         } = this.props;
 
-        const orderType = _.get(fields, "type.value");
+        const orderType = _.get(fields, "type.value") || cashOrderTypes.INCOME;
         //Get all filtered analytics
         let filteredAnalytics = this._getFilteredAnalytics(orderType).filter(ana => ana.analyticsDefaultOrderType == orderType);
 
@@ -321,10 +322,10 @@ export class CashOrderForm extends Component {
         if(_.get(activeCashOrder, "storeDocId") && this.state.clientSearchType == 'storeDoc' && !_.get(fields, "storeDocId.value") && !printMode ) {
             setFieldsValue({storeDocId: _.get(activeCashOrder, "storeDocId")})
         }
-        if(_.get(activeCashOrder, "increase") && _.get(fields, "increase.name") && !_.get(fields, "increase.value") ) {
+        if(_.get(activeCashOrder, "increase") && _.get(fields, "increase.name") && !_.get(fields, "increase.value") && orderType != cashOrderTypes.EXPENSE) {
             setFieldsValue({increase: _.get(activeCashOrder, "increase")})
         }
-        if(_.get(activeCashOrder, "decrease") && _.get(fields, "decrease.name") && !_.get(fields, "decrease.value") ) {
+        if(_.get(activeCashOrder, "decrease") && _.get(fields, "decrease.name") && !_.get(fields, "decrease.value") && orderType != cashOrderTypes.INCOME ) {
             setFieldsValue({decrease: _.get(activeCashOrder, "decrease")})
         }
     }
@@ -410,7 +411,7 @@ export class CashOrderForm extends Component {
 
     _submit = event => {
         event.preventDefault();
-        const { form, createCashOrder, onCloseModal, editMode, fromOrder, fetchOrder } = this.props;
+        const { form, createCashOrder, onCloseModal, editMode, fromOrder, fromStoreDoc, fetchOrder, fetchStoreDoc } = this.props;
 
         form.validateFields(async (err, values) => {
             if (_.has(err, "clientId") || _.has(err, "orderId") || _.has(err, "storeDocId")) {
@@ -436,6 +437,7 @@ export class CashOrderForm extends Component {
                 onCloseModal();
 
                 if(fromOrder) await fetchOrder();
+                if(fromStoreDoc) await fetchStoreDoc();
             }
         });
     };
@@ -864,6 +866,7 @@ export class CashOrderForm extends Component {
                         </Radio>
                     </DecoratedRadio>
                     <DecoratedInputNumber
+                        min={0}
                         fields={{}}
                         field="increase"
                         getFieldDecorator={getFieldDecorator}
@@ -900,6 +903,7 @@ export class CashOrderForm extends Component {
                         parser={numeralParser}
                     />
                     <DecoratedInputNumber
+                        min={0}
                         fields={{}}
                         field="decrease"
                         getFieldDecorator={getFieldDecorator}

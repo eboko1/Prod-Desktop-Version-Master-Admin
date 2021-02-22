@@ -901,6 +901,7 @@ class StorageDocumentPage extends Component {
                                 <> 
                                     {formData.type == EXPENSE &&
                                     formData.documentType == CLIENT &&
+                                    formData.remainSum > 0 &&
                                         <Icon
                                             type='dollar'
                                             onClick={()=>{

@@ -31,12 +31,6 @@ export default {
                         isForbidden(user, permissions.SHOW_ORDERS),
                     name: 'navigation.workflow',
                 },
-                {
-                    key:      '/mytasks',
-                    link:     book.myTasksPage,
-                    disabled: user => isForbidden(user, permissions.GET_TASKS),
-                    name:     'navigation.mytasks',
-                },
             ],
         },
         /* Reference Book submenu */
@@ -45,13 +39,6 @@ export default {
             iconType: 'contacts',
             name:     'navigation.catalog',
             items:    [
-                {
-                    key:      '/report/analytics',
-                    link:     book.analytics,
-                    disabled: user =>
-                        isForbidden(user, permissions.GET_CLIENTS),
-                    name: 'navigation.analytics',
-                },
                 {
                     key:      '/clients',
                     link:     book.clients,
@@ -67,58 +54,11 @@ export default {
                     name: 'navigation.employees',
                 },
                 {
-                    key:      '/warehouses',
-                    link:     book.warehouses,
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_CATALOGUE_STOCK),
-                    name: 'navigation.warehouses',
-                },
-                {
-                    key:      '/suppliers',
-                    link:     book.suppliersPage,
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_SUPPLIERS),
-                    name: 'navigation.suppliers',
-                },
-                {
-                    key:      '/products-groups',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_STORE_GROUPS),
-                    link: book.productsGroups,
-                    name: 'navigation.products_groups',
-                },
-                {
-                    key:      '/price-groups',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_PRICE_GROUPS),
-                    link: book.priceGroups,
-                    name: 'navigation.price_groups',
-                },
-                {
-                    key:      '/products',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_STORE_PRODUCTS),
-                    link: book.products,
-                    name: 'navigation.products',
-                },
-                {
                     key:      '/labors',
                     link:     book.laborsPage,
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_LABOR_CATALOGUE),
                     name: 'navigation.labors_page',
-                },
-                {
-                    key:      '/repair-map',
-                    link: book.repairMapSetting,
-                    name: 'navigation.repair_map',
-                },
-                {
-                    key:      '/location-settings',
-                    link: book.locationSettings,
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_CATALOGUE_LOCATIONS),
-                    name: 'navigation.locations_settings',
                 },
             ],
         },
@@ -151,63 +91,6 @@ export default {
                 },
             ],
         },
-        /* Storage */
-        {
-            key:      'storage',
-            iconType: 'inbox',
-            name:     'navigation.storage',
-            items:    [
-                {
-                    key:      '/storage-balance',
-                    disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE),
-                    link: book.storageBalance,
-                    name: 'navigation.storage_balance',
-                },
-                {
-                    key:      '/storage-orders',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_SUPPLIER_ORDER_STORE_DOCS),
-                    link: book.storageOrders,
-                    name: 'navigation.orders',
-                },
-                {
-                    key:      '/storage-incomes',
-                    disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE),
-                    link: book.storageIncomes,
-                    name: 'navigation.incomes',
-                },
-                {
-                    key:      '/storage-expenses',
-                    disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE),
-                    link: book.storageExpenses,
-                    name: 'navigation.expenses',
-                },
-                {
-                    key:      '/storage-transfers',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_TRANSFER_STORE_DOCS),
-                    link: book.storageTransfers,
-                    name: 'navigation.transfers',
-                },
-                {
-                    key:      '/storage-movement',
-                    disabled: user =>
-                        isForbidden(user, permissions.VIEW_STORE),
-                    link: book.storageMovement,
-                    name: 'navigation.storage_movement',
-                },
-                {
-                    key:      '/storage-inventory',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_STOCK_INVENTORIZATION) || true,
-                    link: book.storageInventory,
-                    name: 'navigation.inventory',
-                },
-            ],
-        },
         /* Statistics and reports submenu*/
         {
             key:      'reports',
@@ -231,54 +114,12 @@ export default {
                     name: 'navigation.feedback',
                 },
                 {
-                    key:      '/calls',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_CALL_STATISTICS) &&
-                        !isAdmin(user),
-                    link: book.calls,
-                    name: 'navigation.call_statistics',
-                },
-                {
                     key:      '/report/orders',
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_REPORT_PROFIT_FROM_ORDERS) &&
                         !isAdmin(user),
                     link: book.reportOrders,
                     name: 'navigation.report_orders',
-                },
-                {
-                    key:      '/report/load_kpi',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_REPORT_TIME_EFFICIENCY) &&
-                        !isAdmin(user),
-                    link: book.reportLoadKPI,
-                    name: 'navigation.report_load_kpi',
-                },
-            ],
-        },
-        /* Payment submenu */
-        {
-            key:      'payment',
-            iconType: 'wallet',
-            name:     'navigation.payment',
-            items:    [
-                // {
-                //     key:  '/payment',
-                //     //disabled: user => !isForbidden(user, permissions.DEMO),
-                //     link: book.paymentPage,
-                //     name: 'navigation.payment',
-                // },
-                {
-                    key:  '/subscription/history',
-                    //disabled: user => !isForbidden(user, permissions.DEMO),
-                    link: book.subscriptionHistoryPage,
-                    name: 'navigation.subscription_history',
-                },
-                {
-                    key:  '/subscription/packages',
-                    //disabled: user => !isForbidden(user, permissions.DEMO),
-                    link: book.subscriptionPackagesPage,
-                    name: 'navigation.subscription_packages',
                 },
             ],
         },
@@ -290,13 +131,6 @@ export default {
             disabled: user => isForbidden(user, permissions.ACCESS_SETTINGS),
             items:    [
                 {
-                    key:      '/settings',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
-                    link: book.oldApp.settings,
-                    name: 'navigation.main_settings',
-                },
-                {
                     key:      '/cash/settings',
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_CATALOGUE_CASH),
@@ -304,76 +138,11 @@ export default {
                     name: 'navigation.cash_settings',
                 },
                 {
-                    key:      '/storage',
-                    disabled: user =>
-                        !isForbidden(user, permissions.VIEW_STORE) &&
-                            !isAdmin(user) ||
-                        true,
-                    link: book.storage,
-                    name: 'navigation.storage',
-                },
-                {
                     key:      '/requisites',
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_CATALOGUE_REQUISITES),
                     link: book.requisites,
                     name: 'navigation.requisites',
-                },
-                {
-                    key:      '/prices',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
-                    link: book.oldApp.settingsSpecialization,
-                    name: 'navigation.specialization_and_prices',
-                },
-                {
-                    key:      '/services',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
-                    link: book.oldApp.settingsServices,
-                    name: 'navigation.services',
-                },
-                {
-                    key:      '/stocks',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
-                    link: book.oldApp.settingsOffers,
-                    name: 'navigation.special_offers',
-                },
-                {
-                    key:      '/news',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
-                    link: book.oldApp.settingsNews,
-                    name: 'navigation.news',
-                },
-                {
-                    key:      '/articles',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
-                    link: book.oldApp.settingsArticles,
-                    name: 'navigation.articles',
-                },
-                {
-                    key:      '/media',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
-                    link: book.oldApp.settingsGallery,
-                    name: 'navigation.media_files',
-                },
-                {
-                    key:      '/managers',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
-                    link: book.oldApp.settingsManagers,
-                    name: 'navigation.managers',
-                },
-                {
-                    key:      '/notice',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
-                    link: book.oldApp.settingsNotifications,
-                    name: 'navigation.notifications',
                 },
             ],
         },
@@ -407,36 +176,6 @@ export default {
                     link:    book.managerRolePage,
                     visible: user => !isForbidden(user, permissions.GRANT),
                     name:    'navigation.manager_roles',
-                },
-                {
-                    key:     '/administration/services',
-                    link:    book.servicesPage,
-                    visible: user => isAdmin(user),
-                    name:    'navigation.services-spare_parts',
-                },
-                {
-                    key:     '/administration/brands',
-                    link:    book.brandsPage,
-                    visible: user => isAdmin(user),
-                    name:    'navigation.priority_brands',
-                },
-                {
-                    key:     '/administration/availabilities',
-                    link:    book.availabilitiesPage,
-                    visible: user => !isForbidden(user, permissions.ACCESS_DISTRIBUTORS),
-                    name:    'navigation.availabilities',
-                },
-                {
-                    key:     '/administration/sync-import',
-                    link:    book.syncImportPage,
-                    visible: user => !isForbidden(user, permissions.ACCESS_SYNC_IMPORT),
-                    name:    'navigation.sync_import',
-                },
-                {
-                    key:     '/administration/sync-export',
-                    link:    book.syncExportPage,
-                    visible: user => !isForbidden(user, permissions.ACCESS_SYNC_EXPORT),
-                    name:    'navigation.sync_export',
                 },
             ],
         },
