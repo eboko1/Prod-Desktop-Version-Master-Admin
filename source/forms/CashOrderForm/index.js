@@ -274,6 +274,8 @@ export class CashOrderForm extends Component {
             form: { getFieldDecorator, setFieldsValue },
         } = this.props;
 
+        console.log(this);
+
         //console.log(this, analyticsUniqueId);
         const orderType = _.get(fields, "type.value");
         const analyticsUniqueId = _.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId');
@@ -297,7 +299,8 @@ export class CashOrderForm extends Component {
         if(
             analytics && analytics.length > 0 && 
             (_.get(activeCashOrder, "analyticsUniqueId") || analyticsUniqueId) && 
-            !_.get(fields, "analyticsUniqueId.value")
+            !_.get(fields, "analyticsUniqueId.value") &&
+            !printMode
         ) {
             
             setFieldsValue({
@@ -305,13 +308,13 @@ export class CashOrderForm extends Component {
             })
         }
 
-        if(_.get(activeCashOrder, "clientId") && !printMode &&  !_.get(fields, "clientId.value") ) {
+        if(_.get(activeCashOrder, "clientId") && !printMode &&  !_.get(fields, "clientId.value") && !printMode ) {
             setFieldsValue({clientId: _.get(activeCashOrder, "clientId")})
         }
-        if(_.get(activeCashOrder, "orderId") && this.state.clientSearchType != 'storeDoc' && !_.get(fields, "orderId.value") ) {
+        if(_.get(activeCashOrder, "orderId") && this.state.clientSearchType != 'storeDoc' && !_.get(fields, "orderId.value") && !printMode ) {
             setFieldsValue({orderId: _.get(activeCashOrder, "orderId")})
         }
-        if(_.get(activeCashOrder, "storeDocId") && this.state.clientSearchType == 'storeDoc' && !_.get(fields, "storeDocId.value") ) {
+        if(_.get(activeCashOrder, "storeDocId") && this.state.clientSearchType == 'storeDoc' && !_.get(fields, "storeDocId.value") && !printMode ) {
             setFieldsValue({storeDocId: _.get(activeCashOrder, "storeDocId")})
         }
         if(_.get(activeCashOrder, "increase") && _.get(fields, "increase.name") && !_.get(fields, "increase.value") ) {
@@ -1010,7 +1013,7 @@ export class CashOrderForm extends Component {
                         type={printMode ? "primary" : "default"}
                         className={printMode ? Styles.printButton : ""}
                         icon="printer"
-                        disabled={!cashOrderId}
+                        disabled={!cashOrderId || (!printMode && !editMode)}
                         onClick={() => this.props.printCashOrder(cashOrderId)}
                     >
                         {formatMessage({ id: "cash-order-form.print" })}

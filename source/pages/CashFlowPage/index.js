@@ -117,6 +117,7 @@ export default class CashFlowPage extends Component {
         return (
             <Layout
                 title={<FormattedMessage id="navigation.flow_of_money" />}
+                description={""}
                 controls={
                     <div className={Styles.buttonGroup}>
                         <Icon
