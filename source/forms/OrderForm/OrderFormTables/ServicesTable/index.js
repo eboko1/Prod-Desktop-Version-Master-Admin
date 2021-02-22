@@ -574,7 +574,6 @@ class ServicesTable extends Component {
         ) {
             data.services[ 0 ].agreement = labor.agreement;
         }
-        console.log(data);
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
         let params = `/orders/${this.props.orderId}`;

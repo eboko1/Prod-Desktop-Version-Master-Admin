@@ -25,11 +25,13 @@ export default class Barcode extends Component {
         super(props);
         this.state = {
             visible: false,
-            scanedBarcodeValue: undefined,
+            scanedvalue: undefined,
         };
 
+        this.id = _.uniqueId("barcode-");
+
         this.defaultBarcodeOptions = {
-            format: "EAN13",
+            //format: "EAN13",
             lineColor: "#000",
             background: "transparent",
             width:2,
@@ -37,21 +39,22 @@ export default class Barcode extends Component {
             fontSize: 14,
             fontOptions: "",
             textAlign: "center",
-            textPosition: "bottom",
+            textPosition: "left",
             textMargin: 2,
-            margin: 12,
+            margin: 4,
             marginTop: undefined,
             marginBottom: undefined,
             marginLeft: undefined,
             marginRight: undefined,
             flat: true,
+            displayValue: false,
         };
 
         this.defaultModalBarcodeOptions = {
-            format: "EAN13",
+            //format: "EAN13",
             lineColor: "#000",
             background: "transparent",
-            width:3,
+            width:2,
             height:90,
             fontSize: 14,
             fontOptions: "",
@@ -64,20 +67,20 @@ export default class Barcode extends Component {
             marginLeft: undefined,
             marginRight: undefined,
             flat: true,
+            displayValue: true,
         }
     }
 
-    updateBarcode() {
-        const { displayBarcode } = this.props;
-        const barcodeValue = _.get(this.props, 'barcodeValue', "")
-                                .replace(/\D/g,'')
-                                .padEnd(12, "0");
+    updateBarcode = () => {
+        const id = this.id;
+        const displayBarcode = _.get(this.props, 'displayBarcode', false);
+        const value = (_.get(this.props, 'value', "") || "0000");
 
         const defaultOptions = displayBarcode ? this.defaultBarcodeOptions : this.defaultModalBarcodeOptions;
         const options = _.get(this.props, 'options', {});
 
         try {
-            JsBarcode("#barcode", barcodeValue, {
+            JsBarcode(`#${id}`, value, {
                 ...defaultOptions,
                 ...options,
             });
@@ -95,13 +98,15 @@ export default class Barcode extends Component {
     }
 
     render() {
-        const { user, showIcon, displayBarcode, iconStyle, barcodeValue, button } = this.props;
+        const { user, showIcon, displayBarcode, iconStyle, value, button, disabled, style } = this.props;
         const { visible } = this.state;
+        const id = this.id;
         return !displayBarcode ? (
             <div >
                 {button ? 
                     <Button
                         //type={'primary'}
+                        disabled={disabled || true}
                         onClick={()=>this.setState({visible: true})}
                     >
                         <Icon
@@ -116,6 +121,8 @@ export default class Barcode extends Component {
                         style={{
                             fontSize: 18,
                             ...iconStyle,
+                            pointerEvents: "none",
+                            color: "var(--text4)"
                         }}
                         onClick={()=>this.setState({visible: true})}
                     />
@@ -126,16 +133,16 @@ export default class Barcode extends Component {
                     forceRender
                     onCancel={()=>this.setState({visible: false})}
                     footer={null}
-                    width={390}
+                    width={620}
                     zIndex={500}
                 >
                     <div className={Styles.barcodeWrapp}>
-                        {barcodeValue &&
+                        {value &&
                             <div className={Styles.barcodeActions}>
                                 <Icon
                                     type="copy"
                                     onClick={() => {
-                                        navigator.clipboard.writeText(barcodeValue);
+                                        navigator.clipboard.writeText(value);
                                         message.success('Coppied!');
                                     }}
                                 />
@@ -148,13 +155,15 @@ export default class Barcode extends Component {
                             </div> 
                         }
                         <div className={Styles.barcode}>
-                            <canvas id="barcode"></canvas>
+                            <canvas id={id}></canvas>
                         </div>
                     </div>
                 </Modal>
             </div>
         ) : (
-            <canvas id="barcode"></canvas>
+            <div className={Styles.barcode} style={style}>
+                <canvas id={id}></canvas>
+            </div>
         );
     }
 }

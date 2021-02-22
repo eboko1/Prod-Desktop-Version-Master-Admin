@@ -20,6 +20,8 @@ export default class ToSuccessModal extends Component {
             resetModal,
             clientId,
             orderId,
+            storeDocId,
+            onSubmit,
         } = this.props;
 
         return (
@@ -40,6 +42,8 @@ export default class ToSuccessModal extends Component {
                     remainPrice={ remainPrice }
                     clientId={ clientId }
                     orderId={ orderId }
+                    storeDocId={ storeDocId }
+                    onSubmit={ onSubmit }
                 />
             </Modal>
         );

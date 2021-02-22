@@ -9,7 +9,7 @@ import _ from "lodash";
 import { onChangeEmployeeForm } from "core/forms/employeeForm/duck";
 
 import { Loader } from "commons";
-import { PhoneNumberInput } from "components";
+import { PhoneNumberInput, Barcode } from "components";
 import {
     DecoratedInput,
     DecoratedDatePicker,
@@ -80,59 +80,11 @@ export class EmployeeForm extends Component {
         const { formatMessage } = this.props.intl;
         const managerEnabled = Boolean(getFieldValue("managerEnabled"));
         const passwordField = this._renderPasswordField();
+        const barcode = getFieldValue("barcode");
 
         return (
             <Form layout="horizontal">
-                <div>
-                    <DecoratedCheckbox
-                        fields={{}}
-                        field="managerEnabled"
-                        formItem
-                        label={
-                            <FormattedMessage id="employee.manager_access" />
-                        }
-                        formItemLayout={formItemLayout}
-                        getFieldDecorator={getFieldDecorator}
-                        initialValue={Boolean(
-                            _.get(initialEmployee, "managerEnabled"),
-                        )}
-                        onChange={() => this._setPasswordField()}
-                    />
-                    <DecoratedCheckbox
-                        field="isMechanic"
-                        formItem
-                        label={<FormattedMessage id="employee.is_mechanic" />}
-                        formItemLayout={formItemLayout}
-                        getFieldDecorator={getFieldDecorator}
-                        initialValue={Boolean(
-                            _.get(initialEmployee, "isMechanic"),
-                        )}
-                    />
-                    <DecoratedDatePicker
-                        field="hireDate"
-                        label={<FormattedMessage id="employee.hireDate" />}
-                        formItem
-                        formItemLayout={formItemLayout}
-                        formatMessage={formatMessage}
-                        // className={ Styles.selectMargin }
-                        getFieldDecorator={getFieldDecorator}
-                        getCalendarContainer={trigger => trigger.parentNode}
-                        initialValue={
-                            initialEmployee && moment(initialEmployee.hireDate)
-                        }
-                        rules={[
-                            {
-                                required: true,
-                                message: formatMessage({
-                                    id: "required_field",
-                                }),
-                            },
-                        ]}
-                        format={"YYYY-MM-DD"}
-                        placeholder={
-                            <FormattedMessage id="order_task_modal.deadlineDate_placeholder" />
-                        }
-                    />
+                <div className={Styles.formWrapper}>
                     <DecoratedInput
                         field="name"
                         label={<FormattedMessage id="employee.name" />}
@@ -198,6 +150,31 @@ export class EmployeeForm extends Component {
                             ]}
                         />
                     </FormItem>
+                    <DecoratedDatePicker
+                        field="hireDate"
+                        label={<FormattedMessage id="employee.hireDate" />}
+                        formItem
+                        formItemLayout={formItemLayout}
+                        formatMessage={formatMessage}
+                        // className={ Styles.selectMargin }
+                        getFieldDecorator={getFieldDecorator}
+                        getCalendarContainer={trigger => trigger.parentNode}
+                        initialValue={
+                            initialEmployee && moment(initialEmployee.hireDate)
+                        }
+                        rules={[
+                            {
+                                required: true,
+                                message: formatMessage({
+                                    id: "required_field",
+                                }),
+                            },
+                        ]}
+                        format={"YYYY-MM-DD"}
+                        placeholder={
+                            <FormattedMessage id="order_task_modal.deadlineDate_placeholder" />
+                        }
+                    />
                     <DecoratedInput
                         field="email"
                         label={<FormattedMessage id="employee.email" />}
@@ -241,6 +218,57 @@ export class EmployeeForm extends Component {
                         className={Styles.selectMargin}
                         getPopupContainer={trigger => trigger.parentNode}
                         getFieldDecorator={getFieldDecorator}
+                    />
+                    <FormItem
+                        label={<FormattedMessage id="navigation.barcode" />}
+                        {...formItemLayout}
+                        className={Styles.selectMargin}
+                    >
+                        <DecoratedInput
+                            field="barcode"
+                            placeholder={formatMessage({
+                                id: "navigation.barcode",
+                            })}
+                            disabled
+                            formItem
+                            formItemLayout={formItemLayout}
+                            initialValue={_.get(initialEmployee, "barcode")}
+                            className={Styles.selectMargin}
+                            getPopupContainer={trigger => trigger.parentNode}
+                            getFieldDecorator={getFieldDecorator}
+                            style={{minWidth: 240}}
+                        />
+                        <Barcode
+                            value={barcode}
+                            iconStyle={{
+                                fontSize: 18,
+                                marginLeft: 8
+                            }}
+                        />
+                    </FormItem>
+                    <DecoratedCheckbox
+                        fields={{}}
+                        field="managerEnabled"
+                        formItem
+                        label={
+                            <FormattedMessage id="employee.manager_access" />
+                        }
+                        formItemLayout={formItemLayout}
+                        getFieldDecorator={getFieldDecorator}
+                        initialValue={Boolean(
+                            _.get(initialEmployee, "managerEnabled"),
+                        )}
+                        onChange={() => this._setPasswordField()}
+                    />
+                    <DecoratedCheckbox
+                        field="isMechanic"
+                        formItem
+                        label={<FormattedMessage id="employee.is_mechanic" />}
+                        formItemLayout={formItemLayout}
+                        getFieldDecorator={getFieldDecorator}
+                        initialValue={Boolean(
+                            _.get(initialEmployee, "isMechanic"),
+                        )}
                     />
                     {passwordField}
                     <DecoratedInput

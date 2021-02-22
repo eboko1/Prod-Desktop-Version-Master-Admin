@@ -426,8 +426,6 @@ class SyncImportExportParametersModal extends Component {
 		    	}
 	    	}
 
-	    	console.log(payload);
-    	
 	        let url = __API_URL__ + `/sync/export/${fileType}`;
 	        fetch(url, {
 	            method: 'POST',
@@ -446,7 +444,6 @@ class SyncImportExportParametersModal extends Component {
 	            return response.blob();
 	        })
 	        .then(function (file) {
-	            console.log(file)
            		saveAs(file, `backup-${moment().format('YYYY-MM-DD')}.${fileType}`);
            		hideMainModal();
 	        })
@@ -480,7 +477,6 @@ class SyncImportExportParametersModal extends Component {
 	            	},
 			  	});
 			  	const result = await response.json();
-			  	console.log(result);
 			  	this.setState({
 	    			confirmLoading: true,
 	    		});

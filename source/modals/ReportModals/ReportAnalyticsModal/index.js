@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Modal, Tabs} from 'antd';
+import _ from "lodash";
 
 // proj
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
@@ -83,10 +84,11 @@ export default class ReportAnalyticsModal extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const {initialTab} = this.props.modalProps;
+        //const {initialTab} = this.props.modalProps;
+        const initialTab = _.get(this.props, "modalProps.initialTab", this.defaultModalProps.initialTab);
 
         //If modal was reopened(with new initialTab) we need to swith to new a tab if it is not undefined
-        (initialTab && prevProps.modalProps.initialTab != initialTab) && this.props.changeCurrentForm(initialTab);
+        (initialTab && prevProps.modalProps && prevProps.modalProps.initialTab != initialTab) && this.props.changeCurrentForm(initialTab);
     }
 
     /**
@@ -103,7 +105,8 @@ export default class ReportAnalyticsModal extends Component {
             modalProps
         } = this.props;
 
-        const {mode = this.defaultModalProps.mode} = modalProps;
+        const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
+        //const {mode = this.defaultModalProps.mode} = modalProps;
 
         if(mode == formModes.ADD) {
             createAnalytics({analyticsEntity});
@@ -132,10 +135,13 @@ export default class ReportAnalyticsModal extends Component {
             onOkTrigger //It will be called when modal will trigerr submit event
         } = this.props;
 
-        const {
-            mode = this.defaultModalProps.mode,
-            analyticsEntity = this.defaultModalProps.analyticsEntity, //Used only in EDIT or VIEW mode,
-        } = modalProps;
+        // const {
+        //     mode = this.defaultModalProps && this.defaultModalProps.mode,
+        //     analyticsEntity = this.defaultModalProps.analyticsEntity, //Used only in EDIT or VIEW mode,
+        // } = modalProps;
+
+        const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
+        const analyticsEntity = _.get(modalProps, "analyticsEntity", this.defaultModalProps.analyticsEntity);
 
         //Do nothing for view mode except resetting all
         if(mode == formModes.VIEW) {
@@ -216,10 +222,13 @@ export default class ReportAnalyticsModal extends Component {
             fetchAnalyticsCatalogs
         } = this.props;
 
-        const {
-            mode = this.defaultModalProps.mode, //Can be "EDIT", "VIEW", "ADD", default ADD,
-            analyticsEntity = this.defaultModalProps.analyticsEntity, //Used only in EDIT or VIEW mode,
-        } = modalProps;
+        // const {
+        //     mode = this.defaultModalProps && this.defaultModalProps.mode, //Can be "EDIT", "VIEW", "ADD", default ADD,
+        //     analyticsEntity = this.defaultModalProps.analyticsEntity, //Used only in EDIT or VIEW mode,
+        // } = modalProps;
+
+        const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
+        const analyticsEntity = _.get(modalProps, "analyticsEntity", this.defaultModalProps.analyticsEntity);
 
         return (
             <Modal

@@ -104,6 +104,8 @@ export default class CashOrderModal extends Component {
         const printMode = _.get(modalProps, 'printMode');
         const editMode = _.get(modalProps, 'editMode');
         const fromOrder = _.get(modalProps, 'fromOrder'); //Used when we open this modal from order page
+        const fromStoreDoc = _.get(modalProps, 'fromStoreDoc');
+        const fromClient = _.get(modalProps, 'fromClient');
 
         return (
             <>
@@ -114,16 +116,21 @@ export default class CashOrderModal extends Component {
                     onCancel={ this._onCloseModal }
                     destroyOnClose
                     maskClosable={false}
+                    width={860}
                 >
-                    <CashOrderForm
-                        onCloseModal={ this._onCloseModal }
-                        printMode={ printMode }
-                        editMode={ editMode }
-                        fromOrder={ fromOrder }
-                        cashOrderEntity={ cashOrderEntity }
-                        fetchOrder={ fetchOrder }
-                        onOpenAnalyticsModal={this._onOpenReportAnalyticsModal}
-                    />
+                    {visible === MODALS.CASH_ORDER &&
+                        <CashOrderForm
+                            onCloseModal={ this._onCloseModal }
+                            printMode={ printMode }
+                            editMode={ editMode }
+                            fromOrder={ fromOrder }
+                            fromStoreDoc={ fromStoreDoc }
+                            fromClient={ fromClient }
+                            cashOrderEntity={ cashOrderEntity }
+                            fetchOrder={ fetchOrder }
+                            onOpenAnalyticsModal={this._onOpenReportAnalyticsModal}
+                        />
+                    }
                 </Modal>
                 {/* This modal is placed here to be able to be opened it from cash order modal(old cash order have to be saved and then reused afler analytics modal is closed) */}
                 <ReportAnalyticsModal 

@@ -1,6 +1,7 @@
 {
   "en": {
     "to_success.title": "Are you sure you want to complete the order?",
+    "to_success_store_doc.title": "Are you sure you want to confirm store document?",
     "to_success.sms1": "Your order at ",
     "to_success.sms2": " completed, you can pick up your car",
     "to_success.create_new": "Create new application with reminder",
@@ -10,6 +11,7 @@
   },
   "ru": {
     "to_success.title": "Выполнить заказ?",
+    "to_success_store_doc.title": "Утвертить документ?",
     "to_success.sms1": "Ваш заказа на ",
     "to_success.sms2": " выполнен, Вы можете забрать авто",
     "to_success.create_new": "Создать обращение с напоминанием о новом заезде",
@@ -19,6 +21,7 @@
   },
   "uk": {
     "to_success.title": "Виконати наряд-замовлення?",
+    "to_success_store_doc.title": "Затвердити документ?",
     "to_success.sms1": "Ваше замовлення на ",
     "to_success.sms2": " виконано, Ви можете забрати авто",
     "to_success.create_ne": "Створити звернення з нагадуванням про новий заїзд",

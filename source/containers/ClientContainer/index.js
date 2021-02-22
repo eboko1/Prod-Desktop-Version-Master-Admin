@@ -125,7 +125,7 @@ export default class ClientContainer extends Component {
                         tab={<FormattedMessage id={ 'client_container.debt'}/>}
                         key='clientDebt'
                     >
-                        <ClientMRDsTab clientId={clientId}/>
+                        <ClientMRDsTab clientId={clientId} client={clientEntity}/>
                     </TabPane>
                 </Tabs>
             </Catcher>

@@ -1,7 +1,7 @@
 // vendor
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Button, Checkbox, InputNumber } from 'antd';
+import { Form, Select, Button, Checkbox, InputNumber, Col } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import styled from 'styled-components';
@@ -28,9 +28,11 @@ import {
     DecoratedCheckbox,
 } from 'forms/DecoratedFields';
 import { MeasureUnitSelect, PriceGroupSelect } from 'forms/_formkit';
+import { Barcode } from "components";
 
 // own
 const Option = Select.Option;
+const FormItem = Form.Item;
 
 const StyledForm = styled(Form)`
     display: flex;
@@ -75,7 +77,6 @@ const ProductForm = props => {
     }, []);
 
     useEffect(() => {
-        console.log(props);
         setStoreInWarehouse(Boolean(_.get(props, 'product.min')));
         setMin(_.get(props, 'product.min') || 1);
         setMax(_.get(props, 'product.max') || 1);
@@ -174,6 +175,8 @@ const ProductForm = props => {
             </Option>
         );
     };
+
+    const barcode = form.getFieldValue("barcode");
 
     return (
         <StyledForm onSubmit={ _submit }>
@@ -343,18 +346,46 @@ const ProductForm = props => {
                 getFieldDecorator={ form.getFieldDecorator }
                 initialValue={ _.get(props, 'product.certificate') }
             />
-            <div style={{margin: '0 0 16px 0'}}>
-                <FormattedMessage id='storage_document.store_in_warehouse' />
-                <Checkbox
-                    style={{marginLeft: 5}}
-                    checked={storeInWarehouse}
-                    onChange={()=>{
-                        setStoreInWarehouse(!storeInWarehouse);
+            <FormItem
+                label={<FormattedMessage id="navigation.barcode" />}
+                {...formItemLayout}
+            >
+                <DecoratedInput
+                    field="barcode"
+                    placeholder={formatMessage({
+                        id: "navigation.barcode",
+                    })}
+                    formItem
+                    formItemLayout={formItemLayout}
+                    initialValue={_.get(props, "product.barcode")}
+                    getFieldDecorator={form.getFieldDecorator}
+                    style={{minWidth: 240}}
+                    disabled
+                />
+                <Barcode
+                    value={barcode || _.get(props, "product.barcode")}
+                    iconStyle={{
+                        fontSize: 18,
+                        marginLeft: 8
                     }}
                 />
+            </FormItem>
+            <div style={{display: 'flex', justifyContent: 'space-evenly', margin: '-14px 0 24px 0'}}>
+                <Col span={7} style={{textAlign: 'right'}}>
+                    <FormattedMessage id='storage_document.store_in_warehouse' />
+                </Col>
+                <Col span={15}>
+                    <Checkbox
+                        style={{marginLeft: 5}}
+                        checked={storeInWarehouse}
+                        onChange={()=>{
+                            setStoreInWarehouse(!storeInWarehouse);
+                        }}
+                    />            
+                </Col>
             </div>
             {storeInWarehouse &&
-                <div style={{display: 'flex', justifyContent: 'space-between', margin: '0 0 16px 0'}}>
+                <div style={{display: 'flex', justifyContent: 'space-evenly', margin: '0 0 24px 0'}}>
                     <div>
                         <span style={{marginRight: 8}}><FormattedMessage id='storage_document.multiplicity'/></span>
                         <InputNumber
@@ -389,6 +420,20 @@ const ProductForm = props => {
                         />
                     </div>
                 </div>
+            }
+            {props.editing &&  _.get(props, 'product.barcode') && 
+                <Barcode
+                    value={`STP-${_.get(props, 'product.id')}`}
+                    displayBarcode
+                    options={{
+                        displayValue: true,
+                        width: 3,
+                        height: 90
+                    }}
+                    style={{
+                        margin: '12px 0 36px 0',
+                    }}
+                />
             }
             <ButtonGroup>
                 { props.editing ? (

@@ -2,18 +2,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 import { FormattedMessage } from 'react-intl';
+import { Icon } from 'antd';
 
 //proj
 import { Numeral } from "commons";
 import { FormattedDatetime } from 'components';
 import book from "routes/book";
 
-export default function columnsConfig() {
+export default function columnsConfig(props) {
     
     const orderNumCol = {
         title:     <FormattedMessage id="client-mrds-table.mrd_number"/>,
         dataIndex: 'orderNum',
-        width:     '10%',
+        width:     'auto',
         align: 'right',
         render:    (orderNum, mrd) => (
             <Link
@@ -27,7 +28,7 @@ export default function columnsConfig() {
     const orderDatetimeCol = {
         title:     <FormattedMessage id="client-mrds-table.date"/>,
         dataIndex: 'orderDatetime',
-        width:     '10%',
+        width:     'auto',
         align: 'right',
         render:    date => (
             <FormattedDatetime datetime={ date } format={ 'DD.MM.YYYY' } />
@@ -37,7 +38,7 @@ export default function columnsConfig() {
     const amountWithTaxesCol = {
         title:     <FormattedMessage id="client-mrds-table.amount"/>,
         dataIndex: 'amountWithTaxes',
-        width:     '10%',
+        width:     'auto',
         align: 'right',
         render: amount => {
             let strVal = Number(amount).toFixed(2);
@@ -56,18 +57,29 @@ export default function columnsConfig() {
     const dueAmountWithTaxesCol = {
         title:     <FormattedMessage id="client-mrds-table.due_amount"/>,
         dataIndex: 'dueAmountWithTaxes',
-        width:     '10%',
+        width:     'auto',
         align: 'right',
-        render: dueAmount => {
+        render: (dueAmount, row) => {
             let strVal = Number(dueAmount).toFixed(2);
 
             return (
-                <span>
-                    { dueAmount ? 
-                        `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-                        : 0
+                <>
+                    {Boolean(dueAmount) && 
+                        <Icon
+                            type='dollar'
+                            onClick={()=>{
+                                props.showCashOrderModal(row);
+                            }}
+                            className={'dollar-icon'}
+                        />
                     }
-                </span>
+                    <span>
+                        { dueAmount ? 
+                            `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            : 0
+                        }
+                    </span>
+                </>
             );
         },
     };

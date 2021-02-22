@@ -84,7 +84,6 @@ class StorageDocumentsFilters extends Component {
             } = this.state;
 
             const value = this.props.location.state.formData.documentType;
-            console.log(value)
             if(type == ORDER) {
                 if(value == null) {
                     typeFilter(null);

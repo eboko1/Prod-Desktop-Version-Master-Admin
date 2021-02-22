@@ -48,11 +48,6 @@ export async function confirmAgreement(sessionId, data, lang) {
             body: JSON.stringify(data),
         });
         const result = await response.json();
-        if (result.success) {
-            console.log('OK', result);
-        } else {
-            console.log('BAD', result);
-        }
     } catch (error) {
         console.error('ERROR:', error);
     }

@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
+import { Icon, Button } from 'antd';
 
 // proj
 import {
@@ -14,12 +15,15 @@ import {
 } from 'core/storage/products';
 import { MODALS, setModal } from 'core/modals/duck';
 
-import { Layout, StyledButton } from 'commons';
-import { ExcelReader, StoreProductsTable } from 'components';
+import { Layout, StyledButton, Paper } from 'commons';
+import { ExcelReader, StoreProductsTable, Barcode } from 'components';
 import { ProductsExcelForm } from 'forms';
 import { StoreProductModal } from 'modals';
 import { withErrorMessage, permissions, isForbidden } from 'utils';
 import { SearchField } from 'forms/_formkit';
+
+// own
+import Styles from './styles.m.css';
 
 const ButtonGroup = styled.div`
     display: flex;
@@ -27,7 +31,7 @@ const ButtonGroup = styled.div`
 `;
 
 const AddButton = styled(StyledButton)`
-    margin-left: 32px;
+    margin-left: 18px;
 `;
 
 const StoreProducts = withErrorMessage()(props => {
@@ -36,20 +40,20 @@ const StoreProducts = withErrorMessage()(props => {
     return (
         <Layout
             title={ <FormattedMessage id='navigation.products' /> }
+            paper={false}
             controls={
-                <>
-                    <SearchField setFilters={ props.setStoreProductsFilters } />
-                    <ButtonGroup>
+                <> 
+                        
                         { !props.importing ? (
                             <>
                                 <StyledButton
+                                    className={Styles.download }
                                     type='secondary'
-                                    icon='download'
-                                    resetRadius
                                     onClick={ () =>
                                         props.downloadExcelTemplate()
                                     }
                                 >
+                                    <Icon type="download" style={{fontSize: 18, marginRight: 4}}/>
                                     <FormattedMessage id='storage.download_excel_template' />
                                 </StyledButton>
                                 <ExcelReader
@@ -77,11 +81,15 @@ const StoreProducts = withErrorMessage()(props => {
                                 <FormattedMessage id='storage.please_finish.import' />
                             </div>
                         ) }
-                    </ButtonGroup>
                 </>
             }
         >
-            { props.importing ? <ProductsExcelForm /> : <StoreProductsTable /> }
+            <Paper>
+                <SearchField setFilters={ props.setStoreProductsFilters } style={{width: "100%"}}/>
+            </Paper>
+            <Paper>
+                { props.importing ? <ProductsExcelForm /> : <StoreProductsTable /> }
+            </Paper>
             <StoreProductModal />
         </Layout>
     );

@@ -135,6 +135,7 @@ export class CashOrdersFiltersForm extends Component {
                         ))}
                     </DecoratedSelect>
                     <DateRangePicker
+                        minimize
                         dateRange={[
                             moment(filters.startDate),
                             moment(filters.endDate),
