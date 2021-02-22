@@ -274,9 +274,15 @@ export class CashOrderForm extends Component {
             form: { getFieldDecorator, setFieldsValue },
         } = this.props;
 
-        //console.log(this, analyticsUniqueId);
         const orderType = _.get(fields, "type.value");
-        const analyticsUniqueId = _.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId');
+        //Get all filtered analytics
+        let filteredAnalytics = this._getFilteredAnalytics(orderType).filter(ana => ana.analyticsDefaultOrderType == orderType);
+
+        //If no analytics found set at least first item else we will receive an error
+        filteredAnalytics = (filteredAnalytics.length > 0)
+            ? filteredAnalytics
+            : analytics.filter(ana => ana.analyticsDefaultOrderType == orderType);
+        const analyticsUniqueId = _.get(filteredAnalytics, '[0].analyticsUniqueId');
 
         // getFieldDecorator('cashBoxId', { initialValue: _.get(activeCashOrder, "cashBoxId") || _.get(cashboxes, "[0].id") });
         // getFieldDecorator('analyticsUniqueId', { initialValue: _.get(activeCashOrder, "analyticsUniqueId") || _.get(cashboxes, "[0].id") ||
@@ -935,7 +941,6 @@ export class CashOrderForm extends Component {
                             showSearch
                             loading={analyticsFetchingState}
                             disabled={printMode || analyticsFetchingState}
-                            allowClear
                             formItem
                             // Initial value depends on a specific analytics field so we leave only those which has that field
                             initialValue={
