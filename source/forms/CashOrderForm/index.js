@@ -348,8 +348,11 @@ export class CashOrderForm extends Component {
      * Gets analytics depending on a cash order type or parameters like adjustment cash order type type
      * @param {*} type cash order type
      */
-    _getFilterAnalytics(type) {
-        const { analytics } = this.props;
+    _getFilteredAnalytics(type) {
+        let { analytics } = this.props;
+
+        //Remove disabled analytics from list
+        analytics = analytics.filter(ans => !ans.analyticsDisabled);
 
         let filteredAnlytics = undefined;
 
@@ -843,7 +846,7 @@ export class CashOrderForm extends Component {
                             rules={[
                                 { required: true, message: 'Analytics must be selected!!!' },
                             ]}
-                            options={this._getFilterAnalytics(orderType)}
+                            options={this._getFilteredAnalytics(orderType)}
                             optionValue="analyticsUniqueId" //Will be sent as var
                             optionLabel="analyticsName"
                             getPopupContainer={trigger => trigger.parentNode}

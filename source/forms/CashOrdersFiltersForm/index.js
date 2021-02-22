@@ -107,7 +107,9 @@ export class CashOrdersFiltersForm extends Component {
                         onChange={this._onAnalyticsSelect}
                         allowClear
                     >
-                        {analytics.map(({ analyticsUniqueId, analyticsName }) => (
+                        {analytics
+                            .filter(ans => !ans.analyticsDisabled)
+                            .map(({ analyticsUniqueId, analyticsName }) => (
                             <Option value={analyticsUniqueId} key={analyticsUniqueId}>
                                 {analyticsName}
                             </Option>
