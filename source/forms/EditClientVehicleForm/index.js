@@ -268,6 +268,7 @@ export class EditClientVehicleForm extends Component {
                                         <div style={{display: "flex", alignItems: "center"}}>
                                         <DecoratedInput
                                             formItem
+                                            disabled
                                             className={
                                                 Styles.editClientVehicleFormItem
                                             }

@@ -259,6 +259,7 @@ export class AbstractClientForm extends Component {
                                             />
                                         </div>
                                     }
+                                    disabled
                                     field="barcode"
                                     placeholder={formatMessage({
                                         id: "navigation.barcode",

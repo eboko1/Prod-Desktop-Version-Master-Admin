@@ -106,7 +106,7 @@ export default class Barcode extends Component {
                 {button ? 
                     <Button
                         //type={'primary'}
-                        disabled={disabled}
+                        disabled={disabled || true}
                         onClick={()=>this.setState({visible: true})}
                     >
                         <Icon
@@ -121,6 +121,8 @@ export default class Barcode extends Component {
                         style={{
                             fontSize: 18,
                             ...iconStyle,
+                            pointerEvents: "none",
+                            color: "var(--text4)"
                         }}
                         onClick={()=>this.setState({visible: true})}
                     />

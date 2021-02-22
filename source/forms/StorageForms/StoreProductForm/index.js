@@ -360,6 +360,7 @@ const ProductForm = props => {
                     initialValue={_.get(props, "product.barcode")}
                     getFieldDecorator={form.getFieldDecorator}
                     style={{minWidth: 240}}
+                    disabled
                 />
                 <Barcode
                     value={barcode || _.get(props, "product.barcode")}

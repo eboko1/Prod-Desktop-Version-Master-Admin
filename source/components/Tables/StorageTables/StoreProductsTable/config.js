@@ -122,7 +122,7 @@ export default props => {
             markup,
             editAction,
             deleteAction,
-            barcode,
+            //barcode,
         ];
     }
 
@@ -131,6 +131,6 @@ export default props => {
         name,
         brandName,
         markup,
-        barcode,
+        //barcode,
     ];
 };

@@ -2065,6 +2065,7 @@ export class AddStoreProductModal extends React.Component {
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                             <Input
                                 value={barcode}
+                                disabled
                                 onChange={(event)=>{
                                     this.setState({
                                         barcode: event.target.value,

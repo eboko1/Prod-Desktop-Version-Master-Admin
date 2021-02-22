@@ -274,7 +274,7 @@ export class CashOrderForm extends Component {
             form: { getFieldDecorator, setFieldsValue },
         } = this.props;
 
-        console.log(this, analyticsUniqueId);
+        //console.log(this, analyticsUniqueId);
         const orderType = _.get(fields, "type.value");
         const analyticsUniqueId = _.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId');
 
