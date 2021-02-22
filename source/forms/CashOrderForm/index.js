@@ -275,6 +275,10 @@ export class CashOrderForm extends Component {
             form: { getFieldDecorator, setFieldsValue },
         } = this.props;
 
+        const { sumType } = this.state;
+
+        console.log(this);
+
         const orderType = _.get(fields, "type.value") || cashOrderTypes.INCOME;
         //Get all filtered analytics
         let filteredAnalytics = this._getFilteredAnalytics(orderType).filter(ana => ana.analyticsDefaultOrderType == orderType);
@@ -322,10 +326,10 @@ export class CashOrderForm extends Component {
         if(_.get(activeCashOrder, "storeDocId") && this.state.clientSearchType == 'storeDoc' && !_.get(fields, "storeDocId.value") && !printMode ) {
             setFieldsValue({storeDocId: _.get(activeCashOrder, "storeDocId")})
         }
-        if(_.get(activeCashOrder, "increase") && _.get(fields, "increase.name") && !_.get(fields, "increase.value") && orderType != cashOrderTypes.EXPENSE) {
+        if(_.get(activeCashOrder, "increase") && _.get(fields, "increase.name") && !_.get(fields, "increase.value") && sumType == 'increase') {
             setFieldsValue({increase: _.get(activeCashOrder, "increase")})
         }
-        if(_.get(activeCashOrder, "decrease") && _.get(fields, "decrease.name") && !_.get(fields, "decrease.value") && orderType != cashOrderTypes.INCOME ) {
+        if(_.get(activeCashOrder, "decrease") && _.get(fields, "decrease.name") && !_.get(fields, "decrease.value") && sumType == 'decrease') {
             setFieldsValue({decrease: _.get(activeCashOrder, "decrease")})
         }
     }
@@ -411,7 +415,7 @@ export class CashOrderForm extends Component {
 
     _submit = event => {
         event.preventDefault();
-        const { form, createCashOrder, onCloseModal, editMode, fromOrder, fromStoreDoc, fetchOrder, fetchStoreDoc } = this.props;
+        const { form, createCashOrder, onCloseModal, editMode, fromOrder, fromStoreDoc, fetchOrder, fetchStoreDoc, fromClient } = this.props;
 
         form.validateFields(async (err, values) => {
             if (_.has(err, "clientId") || _.has(err, "orderId") || _.has(err, "storeDocId")) {
@@ -438,6 +442,7 @@ export class CashOrderForm extends Component {
 
                 if(fromOrder) await fetchOrder();
                 if(fromStoreDoc) await fetchStoreDoc();
+                if(fromClient) await window.location.reload();
             }
         });
     };

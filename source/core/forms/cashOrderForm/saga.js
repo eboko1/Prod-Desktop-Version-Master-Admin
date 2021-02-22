@@ -292,6 +292,7 @@ export function* createCashOrderSaga() {
                 'editMode',
                 payload.editMode && 'id',
             ]);
+            console.log(cashOrder);
             yield call(
                 fetchAPI,
                 payload.editMode ? 'PUT' : 'POST',
