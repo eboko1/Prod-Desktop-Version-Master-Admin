@@ -112,11 +112,11 @@ class ReportAnalytics extends React.Component {
         const orderTypes = [
             {
                 value: 'INCOME',
-                label: <FormattedMessage id="report_analytics_page.income_cash_order" />
+                label: formatMessage({id: 'report_analytics_page.income_cash_order'})
             },
             {
                 value: 'EXPENSE',
-                label: <FormattedMessage id="report_analytics_page.expense_cash_order" />
+                label: formatMessage({id: 'report_analytics_page.expense_cash_order'})
             }
         ];
         
