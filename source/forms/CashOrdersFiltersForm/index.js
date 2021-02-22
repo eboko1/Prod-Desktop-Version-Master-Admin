@@ -101,13 +101,17 @@ export class CashOrdersFiltersForm extends Component {
                     />
                     <DecoratedSelect
                         field="analyticsUniqueId"
-                        placeholder={"Analytics"}
+                        placeholder={formatMessage({
+                            id: "orders-filter.analytics",
+                        })}
                         getFieldDecorator={getFieldDecorator}
                         cnStyles={Styles.filter}
                         onChange={this._onAnalyticsSelect}
                         allowClear
                     >
-                        {analytics.map(({ analyticsUniqueId, analyticsName }) => (
+                        {analytics
+                            .filter(ans => !ans.analyticsDisabled)
+                            .map(({ analyticsUniqueId, analyticsName }) => (
                             <Option value={analyticsUniqueId} key={analyticsUniqueId}>
                                 {analyticsName}
                             </Option>

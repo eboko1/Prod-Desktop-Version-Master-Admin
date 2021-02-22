@@ -5,7 +5,7 @@ This module contains two forms, each purpose is to work with specific analytics(
 //vendor
 import React from 'react';
 import { FormattedMessage, injectIntl } from "react-intl";
-import { Form, Col, Row, Checkbox, Radio, Tabs, Input } from 'antd';
+import { Form, Col, Row, Input } from 'antd';
 
 //proj
 import {
@@ -36,7 +36,8 @@ class ReportAnalyticsCatalog extends React.Component {
         const {
             mode,
             analyticsEntity,
-            form
+            form,
+            intl: {formatMessage}
         } = this.props;
         
         const { getFieldDecorator} = form;
@@ -52,12 +53,12 @@ class ReportAnalyticsCatalog extends React.Component {
         return (
             <Form>
                 <Row className={Styles.row}>
-                    <Col span={6}>Catalog name: </Col>
+                    <Col span={6}><FormattedMessage id='report_analytics_form.catalog_name'/>: </Col>
                     <Col span={18}>
                         <FItem>
                             {
                                 getFieldDecorator('catalogName', {
-                                    rules: [{ required: true, whitespace: true, message: 'Catalog name please!!!' }],
+                                    rules: [{ required: true, whitespace: true, message: formatMessage({id: 'report_analytics_form.catalog_name_is_required_message'}) }],
                                     initialValue: initValues.catalogName
                                 })(
                                     <Input
@@ -93,6 +94,7 @@ class ReportAnalytics extends React.Component {
             analyticsCatalogsLoading,
             mode,
             analyticsEntity,
+            intl: {formatMessage}
         } = this.props;
 
         //Initial values are generally used for EDIT or VIEW mode
@@ -110,18 +112,18 @@ class ReportAnalytics extends React.Component {
         const orderTypes = [
             {
                 value: 'INCOME',
-                label: 'Income'
+                label: formatMessage({id: 'report_analytics_page.income_cash_order'})
             },
             {
                 value: 'EXPENSE',
-                label: 'Expense'
+                label: formatMessage({id: 'report_analytics_page.expense_cash_order'})
             }
         ];
         
         return (
             <Form>
                 <Row className={Styles.row}>
-                    <Col span={6}>Select catalog: </Col>
+                    <Col span={6}><FormattedMessage id='report_analytics_form.select_catalog'/>: </Col>
                     <Col span={18}>
                         <FItem>
                             <DecoratedSelect
@@ -138,7 +140,7 @@ class ReportAnalytics extends React.Component {
                                     trigger.parentNode
                                 }
                                 rules={[
-                                    { required: true, message: 'Catalog must be selected!!!' },
+                                    { required: true, message: formatMessage({id: 'report_analytics_form.catalog_must_be_selected_message'}) },
                                 ]}
                                 options={analyticsCatalogs}
                                 optionValue="analyticsId" //Will be sent as var
@@ -149,12 +151,12 @@ class ReportAnalytics extends React.Component {
                 </Row>
                 {/* ==================================================== */}
                 <Row className={Styles.row}>
-                    <Col span={6}>Analytics name: </Col>
+                    <Col span={6}><FormattedMessage id='report_analytics_form.analytics_name'/>: </Col>
                     <Col span={18}>
                         <FItem>
                             {
                                 getFieldDecorator('analyticsName', {
-                                    rules: [{ required: true, whitespace: true, message: 'Analytics name please!!!' }],
+                                    rules: [{ required: true, whitespace: true, message: formatMessage({id: 'report_analytics_form.analytics_name_message'}) }],
                                     initialValue: initValues.analyticsName,
                                 })(
                                     <Input
@@ -167,14 +169,14 @@ class ReportAnalytics extends React.Component {
                 </Row>
                 {/* ==================================================== */}
                 <Row className={Styles.row}>
-                    <Col span={6}>Bookkeeping account: </Col>
+                    <Col span={6}><FormattedMessage id='report_analytics_form.bookkeeping_account'/>: </Col>
                     <Col span={18}>
                         <FItem>
                             {
                                 getFieldDecorator('bookkeepingAccount', {
                                     initialValue: initValues.bookkeepingAccount,
                                     rules: [
-                                        { pattern: /^\d+$/, message: 'Please enter a valid positive number!' }
+                                        { pattern: /^\d+$/, message: formatMessage({id: 'report_analytics_form.invalid_bookkeeping_account_message'}) }
                                     ]
                                 })(
                                     <Input
@@ -187,7 +189,7 @@ class ReportAnalytics extends React.Component {
                 </Row>
                 {/* ==================================================== */}
                 <Row className={Styles.row}>
-                    <Col span={6}>Order type: </Col>
+                    <Col span={6}><FormattedMessage id='report_analytics_form.order_type'/>: </Col>
                     <Col span={18}>
                         <FItem>
                             <DecoratedSelect
@@ -203,7 +205,7 @@ class ReportAnalytics extends React.Component {
                                     trigger.parentNode
                                 }
                                 rules= {[
-                                    { required: true, message: 'Order type must be selected!!!' }
+                                    { required: true, message: formatMessage({id: 'report_analytics_form.order_type_must_me_selected_message'}) }
                                 ]}
                                 options={orderTypes}
                                 optionValue="value" //Will be sent as var
