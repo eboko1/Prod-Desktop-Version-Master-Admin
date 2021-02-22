@@ -258,7 +258,7 @@ export class CashOrderForm extends Component {
             });
         }
         
-        if(!this.state.editing) this.setFieldsValueWhileError();
+        //if(!this.state.editing) this.setFieldsValueWhileError();
     }
 
     setFieldsValueWhileError() {
@@ -676,6 +676,8 @@ export class CashOrderForm extends Component {
             onOpenAnalyticsModal,
             fromOrder
         } = this.props;
+
+        console.log(this);
 
         const cashOrderId = getFieldValue("id");
         const orderType = getFieldValue('type');
