@@ -229,6 +229,7 @@ export class EmployeeForm extends Component {
                             placeholder={formatMessage({
                                 id: "navigation.barcode",
                             })}
+                            disabled
                             formItem
                             formItemLayout={formItemLayout}
                             initialValue={_.get(initialEmployee, "barcode")}

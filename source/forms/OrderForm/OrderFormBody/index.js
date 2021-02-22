@@ -381,7 +381,7 @@ export default class OrderFormBody extends Component {
                     )}
                     ref={this.clientRef}
                 />
-                {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? 
+                {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) || true ? 
                     _.get(fields, "searchClientQuery") ? (
                         <Icon
                             type="plus"

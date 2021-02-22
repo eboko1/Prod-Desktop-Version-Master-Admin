@@ -14,7 +14,7 @@ export default function columnsConfig(props) {
     const orderNumCol = {
         title:     <FormattedMessage id="client-mrds-table.mrd_number"/>,
         dataIndex: 'orderNum',
-        width:     '10%',
+        width:     'auto',
         align: 'right',
         render:    (orderNum, mrd) => (
             <Link
@@ -28,7 +28,7 @@ export default function columnsConfig(props) {
     const orderDatetimeCol = {
         title:     <FormattedMessage id="client-mrds-table.date"/>,
         dataIndex: 'orderDatetime',
-        width:     '10%',
+        width:     'auto',
         align: 'right',
         render:    date => (
             <FormattedDatetime datetime={ date } format={ 'DD.MM.YYYY' } />
@@ -38,7 +38,7 @@ export default function columnsConfig(props) {
     const amountWithTaxesCol = {
         title:     <FormattedMessage id="client-mrds-table.amount"/>,
         dataIndex: 'amountWithTaxes',
-        width:     '10%',
+        width:     'auto',
         align: 'right',
         render: amount => {
             let strVal = Number(amount).toFixed(2);
@@ -57,14 +57,14 @@ export default function columnsConfig(props) {
     const dueAmountWithTaxesCol = {
         title:     <FormattedMessage id="client-mrds-table.due_amount"/>,
         dataIndex: 'dueAmountWithTaxes',
-        width:     '10%',
+        width:     'auto',
         align: 'right',
         render: (dueAmount, row) => {
             let strVal = Number(dueAmount).toFixed(2);
 
             return (
                 <>
-                    {dueAmount && 
+                    {Boolean(dueAmount) && 
                         <Icon
                             type='dollar'
                             onClick={()=>{
