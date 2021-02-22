@@ -208,6 +208,7 @@ export default class ReportAnalyticsModal extends Component {
             analyticsCatalogs,
             changeCurrentForm,
             analyticsCatalogsLoading,
+            intl: {formatMessage},
 
             visible,
             
@@ -230,11 +231,11 @@ export default class ReportAnalyticsModal extends Component {
                     <div className={Styles.title}>
                         {
                             (mode == formModes.ADD)
-                            ? "Create analytics"
+                            ? <FormattedMessage id='report_analytics_modal.create_analytics'/>
                             : (
                                 (mode ==formModes.EDIT)
-                                ? "Edit analytics"
-                                : "Analytics"
+                                ? <FormattedMessage id='report_analytics_modal.edit_analytics'/>
+                                : <FormattedMessage id='report_analytics_modal.view_analytics'/>
                             )
                         }
                     </div>
@@ -254,7 +255,7 @@ export default class ReportAnalyticsModal extends Component {
                             }
                         }}
                     >
-                        <TPane tab="Create catalog" key={formKeys.catalogForm}>
+                        <TPane tab={formatMessage({id: 'report_analytics_modal.create_analytics_catalog'})} key={formKeys.catalogForm}>
                             <ReportAnalyticsCatalogForm
                                 getFormRefCB={this.saveCatalogFormRef}//Get form refference
                                 analyticsEntity={analyticsEntity}
@@ -262,7 +263,7 @@ export default class ReportAnalyticsModal extends Component {
                                 analyticsEntity={analyticsEntity}
                             />
                         </TPane>
-                        <TPane  tab="Create analytics" key={formKeys.analyticsForm}>
+                        <TPane  tab={formatMessage({id: 'report_analytics_modal.create_analytics_analytics'})} key={formKeys.analyticsForm}>
                             <ReportAnalyticsForm
                                 getFormRefCB={this.saveAnalyticsFormRef}//Get form refference
                                 analyticsCatalogs={analyticsCatalogs}

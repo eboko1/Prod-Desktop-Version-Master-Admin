@@ -101,7 +101,9 @@ export class CashOrdersFiltersForm extends Component {
                     />
                     <DecoratedSelect
                         field="analyticsUniqueId"
-                        placeholder={"Analytics"}
+                        placeholder={formatMessage({
+                            id: "orders-filter.analytics",
+                        })}
                         getFieldDecorator={getFieldDecorator}
                         cnStyles={Styles.filter}
                         onChange={this._onAnalyticsSelect}

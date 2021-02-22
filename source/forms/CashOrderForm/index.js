@@ -873,7 +873,7 @@ export class CashOrderForm extends Component {
                                         }}
                                     >
                                         <Icon type="plus-circle" />
-                                        Add analytics
+                                        {formatMessage({ id: "report_analytics_modal.create_analytics" })}
                                     </StyledButton>
                                 </div>
                             </Col>
