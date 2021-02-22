@@ -14,7 +14,7 @@ export const StoreProductsSetting = connect(mapStateToProps)(
     ({ setModal, storeGroup, user }) => {
         const renderEditing = () => {
             return (
-                <>
+                <div>
                     <Icon
                         type={ 'edit' }
                         onClick={ () =>
@@ -26,6 +26,7 @@ export const StoreProductsSetting = connect(mapStateToProps)(
                         style={ {
                             fontSize: '16px',
                             color:    'var(--secondary)',
+                            margin:   '0 4px',
                         } }
                     />
                     <Icon
@@ -39,9 +40,10 @@ export const StoreProductsSetting = connect(mapStateToProps)(
                         style={ {
                             fontSize: '16px',
                             color:    'var(--warning)',
+                            margin:   '0 0 0 12px',
                         } }
                     />
-                </>
+                </div>
             );
         };
 

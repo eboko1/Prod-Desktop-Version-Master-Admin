@@ -9,6 +9,10 @@ import { Collapse, Row, Col, Switch, Button, Icon } from 'antd';
 import _ from 'lodash';
 
 //proj
+import {
+    formKeys,
+    formModes
+} from 'core/forms/reportAnalyticsForm/duck';
 
 //own
 import Style from './styles.m.css';
@@ -20,33 +24,129 @@ export default class AnalyticsDropdown extends React.Component {
         super(props);
     }
 
+    
+
     //Generate panel with all it's children components for one parent analytics
     genPanel(parent, children) {
-        // console.log("Parent: ", parent, '\n', "Cld: ", children);
 
-        const genParentHeader = (ana) => {
-            return (<div>
-                {ana.analyticsName} {ana.analyticsId}
-            </div>);
+        const {
+            onDeleteAnalytics,
+            openAnalyticsModal,
+            onUpdateAnalytics
+        } = this.props;
+
+        const genParentHeader = (analytics) => {
+            return (
+                <div>
+                    <Row className={Style.row}>
+                        <Col className={Style.colHeader} span={20}>{analytics.analyticsName}</Col>
+                        <Col className={Style.colCentered} span={2}>
+                            {
+                                /* EDIT btn | Buttons only for non-custom fields otherwise just place an icon */
+                                (() => {
+                                    if(analytics.analyticsIsCustom) {
+                                        return (
+                                            <Button size="large" onClick={() => openAnalyticsModal(formModes.EDIT, formKeys.catalogForm, analytics)}> 
+                                                <Icon type="edit" />
+                                            </Button>
+                                        );
+                                    } else return "";
+                                })()
+                            }
+                            
+                        </Col>
+                        <Col className={Style.colCentered} span={2}>
+                            {
+                                /* DELETE btn | Buttons only for non-custom fields in another case just place an icon */
+                                (() => {
+                                    if(analytics.analyticsIsCustom) {
+                                        return (
+                                            <Button size="large" onClick={() => onDeleteAnalytics(analytics.analyticsId)}> 
+                                                <Icon type="delete" />
+                                            </Button>
+                                        );
+                                    } else return (<Icon type="global" />);
+                                })()
+                            }
+                            
+                        </Col>
+                    </Row>
+                </div>
+            );
         }
 
         const genChildren = (chil) => {
             return (
-                <div className={Style.analyticsCont}>
+                <div className={Style.analyticsCont} key={chil.analyticsId}>
                     <Row className={Style.row}>
-                        <Col className={Style.col} span={20}>{chil.analyticsName} {chil.nalalyticsId}</Col>
-                        <Col className={Style.colCentered} span={2}><Switch size='small'/></Col>
+                        <Col className={Style.col} span={8}>{chil.analyticsName}</Col>
+
+                        <Col className={Style.col} span={4}>{chil.analyticsBookkeepingAccount}</Col>
+                        <Col className={Style.col} span={4}>{chil.analyticsOrderType}</Col>
+
                         <Col className={Style.colCentered} span={2}>
-                            <Button size="small">
-                                <Icon type="delete" />
-                            </Button>
+                            <Switch
+                                size='small'
+                                checked={!chil.analyticsDisabled}
+                                onClick={() => {
+                                    //Update anlytics by changing ist's "disabled" value prop
+                                    onUpdateAnalytics({
+                                        analyticsId: chil.analyticsId,
+                                        newAnalyticsEntity: {analyticsDisabled: !chil.analyticsDisabled}
+                                    });
+                                }}
+                            />
+                        </Col>
+                        <Col className={Style.colCentered} span={2}>
+                            {
+                                /* VIEW btn | Buttons only for non-custom fields otherwise just place an icon */
+                                (() => {
+                                    if(chil.analyticsIsCustom) {
+                                        return (
+                                            <Button size="small" onClick={() => openAnalyticsModal(formModes.VIEW, formKeys.analyticsForm, chil)}> 
+                                                <Icon type="eye" />
+                                            </Button>
+                                        );
+                                    } else return "";
+                                })()
+                            }
+                            
+                        </Col>
+                        <Col className={Style.colCentered} span={2}>
+                            {
+                                /* EDIT btn | Buttons only for non-custom fields otherwise just place an icon */
+                                (() => {
+                                    if(chil.analyticsIsCustom) {
+                                        return (
+                                            <Button size="small" onClick={() => openAnalyticsModal(formModes.EDIT, formKeys.analyticsForm, chil)}> 
+                                                <Icon type="edit" />
+                                            </Button>
+                                        );
+                                    } else return "";
+                                })()
+                            }
+                            
+                        </Col>
+                        <Col className={Style.colCentered} span={2}>
+                            {
+                                /* DELETE btn | Buttons only for non-custom fields in another case just place an icon */
+                                (() => {
+                                    if(chil.analyticsIsCustom) {
+                                        return (
+                                            <Button size="small" onClick={() => onDeleteAnalytics(chil.analyticsId)}> 
+                                                <Icon type="delete" />
+                                            </Button>
+                                        );
+                                    } else return (<Icon type="global" />);
+                                })()
+                            }
+                            
                         </Col>
                     </Row>
                     
                 </div>
             );
         }
-
 
         return (
             <Panel header={genParentHeader(parent)} key={parent.analyticsId}>

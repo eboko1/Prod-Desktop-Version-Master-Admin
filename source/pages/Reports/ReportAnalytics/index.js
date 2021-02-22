@@ -12,21 +12,19 @@ Author: Anatolii Kotvytskyi;
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import {Input, Button} from 'antd';
 import _ from "lodash";
 
-const Search = Input.Search;
-
 // proj
+import { ReportAnalyticsModal, ConfirmModal } from 'modals';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import { Layout, StyledButton } from "commons";
 import {
     fetchReportAnalytics,
+    deleteReportAnalytics,
+    resetAllReportAnalytics,
 } from 'core/reports/reportAnalytics/duck';
-import { ReportAnalyticsModal } from 'modals';
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
-import {fetchAPI} from 'utils';
+import { updateAnalytics } from 'core/forms/reportAnalyticsForm/duck';
 
-import { Layout, StyledButton } from "commons";
-import { ReportOrdersTable, ReportOrdersFilter } from "components";
 
 // own
 import Styles from "./styles.m.css";
@@ -35,10 +33,16 @@ import AnalyticsDropdown from './AnalyticsDropdown';
 const mapStateToProps = state => ({
     analytics: state.reportAnalytics.analytics,
     modal: state.modals.modal,
+
+    modalProps: state.modals.modalProps,
 });
 
 const mapDispatchToProps = {
     fetchReportAnalytics,
+    deleteReportAnalytics,
+    resetAllReportAnalytics,
+    updateAnalytics,
+
     setModal,
     resetModal
 };
@@ -52,29 +56,56 @@ export default class ReportAnalyticsPage extends Component {
     constructor(props) {
         super(props);
 
-        this.onAnalyticsBtn = this.onAnalyticsBtn.bind(this);
-        this.onAnalyticsModalCancel = this.onAnalyticsModalCancel.bind(this);
+        this.openAnalyticsModal = this.openAnalyticsModal.bind(this);
+        this._onDeleteAnalytics = this._onDeleteAnalytics.bind(this);
+        this.onOpenConfirm = this.onOpenConfirm.bind(this);
+        this._onResettingAllAnalyticsConfirmed = this._onResettingAllAnalyticsConfirmed.bind(this);
+        this.onResettingAllAnalyticsCanceled = this.onResettingAllAnalyticsCanceled.bind(this);
+        this.onUpdateAnalytics = this.onUpdateAnalytics.bind(this);
+
     }
 
     componentDidMount() {
         this.props.fetchReportAnalytics();
     }
-
-    onAnalyticsBtn() {
-        this.props.setModal(MODALS.REPORT_ANALYTICS);
+    
+    openAnalyticsModal(mode, initialTab, analyticsEntity) {
+        this.props.setModal(MODALS.REPORT_ANALYTICS, {mode, initialTab, analyticsEntity});
     }
 
-    onAnalyticsModalCancel() {
+    /**
+     * Very danger zone, be carefull. If you will not provide correct analytics Id
+     * you will receive error, if you want to reset all analytics(remove all) use anothe action
+     * @param {int} analyticsId Analytics or analytics catalog Id
+     */
+    _onDeleteAnalytics(analyticsId) {
+        const {deleteReportAnalytics} = this.props;
+
+        analyticsId && deleteReportAnalytics(analyticsId); //Delete specific analytics
+    }
+
+    onOpenConfirm(e) {
+        this.props.setModal(MODALS.CONFIRM, {});
+    }
+
+    _onResettingAllAnalyticsConfirmed() {
+        this.props.resetAllReportAnalytics({areYouSureToDeleteAll: true})
         this.props.resetModal();
     }
 
+    onResettingAllAnalyticsCanceled() {
+        this.props.resetModal();
+    }
+
+    onUpdateAnalytics({analyticsId, newAnalyticsEntity}) {
+        this.props.updateAnalytics({analyticsId, newAnalyticsEntity});
+    }
     
     render() {
 
         const {
             analytics,
             modal,
-            fetchReportAnalytics
         } = this.props;
         
         
@@ -87,22 +118,29 @@ export default class ReportAnalyticsPage extends Component {
                 }
                 controls={
                     <div className={Styles.buttonGroup}>
-                        <StyledButton type="primary" onClick={
-                            () => {
-                                fetchAPI('DELETE', 'report/analytics');
-                                fetchReportAnalytics();
-                            }
-                        }>Reset all</StyledButton>
-                        <StyledButton type="secondary" onClick={this.onAnalyticsBtn}>Create</StyledButton>
+                        <StyledButton type="primary" onClick={this.onOpenConfirm}>Reset all</StyledButton>
+                        <StyledButton type="secondary" onClick={() => this.openAnalyticsModal()/*Call with defaults*/}>Create</StyledButton>
                     </div>
                 }
                 paper={false}
             >
-                <AnalyticsDropdown analytics={analytics}/>
+                <AnalyticsDropdown
+                    analytics={analytics}
+                    onDeleteAnalytics={this._onDeleteAnalytics}
+                    openAnalyticsModal={this.openAnalyticsModal}
+                    onUpdateAnalytics={this.onUpdateAnalytics}
+                />
+
+                <ConfirmModal
+                    visible={modal}
+                    title="Confirm dialog"
+                    modalContent="Hello, it's me."
+                    onOk={this._onResettingAllAnalyticsConfirmed}
+                    onCancel={this.onResettingAllAnalyticsCanceled}
+                />
 
                 <ReportAnalyticsModal 
                     visible={modal}
-                    onCancel={this.onAnalyticsModalCancel}
                 />
             </Layout>
         );

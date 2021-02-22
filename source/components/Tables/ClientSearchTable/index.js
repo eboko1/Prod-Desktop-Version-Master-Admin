@@ -112,7 +112,6 @@ export default class ClientSearchTable extends Component {
             return response.json();
         })
         .then(function(data) {
-            console.log(data)
             that.setState({
                 clients: that.duplicate(data.clients),
             })
@@ -147,7 +146,6 @@ export default class ClientSearchTable extends Component {
                     pagination={ false }
                     loading={ loading }
                     onRow={ client => {
-                        console.log(client)
                         return {
                             onClick: () => {
                                 onSelect(client);

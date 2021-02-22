@@ -2,6 +2,13 @@
     vertical-align: top;
 }
 
+.headerActions {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
 .sum :global(.ant-input-number-input[disabled]) {
     color: rgba(0, 0, 0, 1);
 }

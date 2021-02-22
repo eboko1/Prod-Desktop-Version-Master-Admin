@@ -19,7 +19,6 @@ export function getData(func) {
         return response.json()
     })
     .then(function (data) {
-        console.log(data);
         func(data);
     })
     .catch(function (error) {
@@ -45,7 +44,6 @@ export function deleteRequisite(id, func) {
         return response.json()
     })
     .then(function (data) {
-        console.log(data);
         func();
     })
     .catch(function (error) {
@@ -54,7 +52,6 @@ export function deleteRequisite(id, func) {
 }
 
 export function postRequisite(data, func) {
-    console.log(data);
     let url = __API_URL__ + `/businesses/requisites`;
     fetch(url, {
         method: 'POST',
@@ -73,7 +70,6 @@ export function postRequisite(data, func) {
         return response.json()
     })
     .then(function (data) {
-        console.log(data);
         func();
     })
     .catch(function (error) {
@@ -82,7 +78,6 @@ export function postRequisite(data, func) {
 }
 
 export function updateRequisite(id, data, func) {
-    console.log(data);
     let url = __API_URL__ + `/businesses/requisites/${id}`;
     fetch(url, {
         method: 'PUT',
@@ -101,7 +96,6 @@ export function updateRequisite(id, data, func) {
         return response.json()
     })
     .then(function (data) {
-        console.log(data);
         func();
     })
     .catch(function (error) {
@@ -153,7 +147,6 @@ export function deleteClientRequisite(id, func) {
         return response.json()
     })
     .then(function (data) {
-        console.log(data);
         func();
     })
     .catch(function (error) {
@@ -162,7 +155,6 @@ export function deleteClientRequisite(id, func) {
 }
 
 export function postClientRequisite(data, func, clientId) {
-    console.log(data);
     let url = __API_URL__ + `/clients/${clientId}/requisites`;
     fetch(url, {
         method: 'POST',
@@ -181,7 +173,6 @@ export function postClientRequisite(data, func, clientId) {
         return response.json()
     })
     .then(function (data) {
-        console.log(data);
         func();
     })
     .catch(function (error) {
@@ -190,7 +181,6 @@ export function postClientRequisite(data, func, clientId) {
 }
 
 export function updateClientRequisite(id, data, func) {
-    console.log(data);
     let url = __API_URL__ + `/clients/requisites/${id}`;
     fetch(url, {
         method: 'PUT',
@@ -209,7 +199,6 @@ export function updateClientRequisite(id, data, func) {
         return response.json()
     })
     .then(function (data) {
-        console.log(data);
         func();
     })
     .catch(function (error) {
@@ -235,7 +224,6 @@ export function deleteSupplierRequisite(id, func) {
         return response.json()
     })
     .then(function (data) {
-        console.log(data);
         func();
     })
     .catch(function (error) {
@@ -244,7 +232,6 @@ export function deleteSupplierRequisite(id, func) {
 }
 
 export function postSupplierRequisite(data, func, id) {
-    console.log(data);
     let url = __API_URL__ + `/business_suppliers/${id}/requisites`;
     fetch(url, {
         method: 'POST',
@@ -263,7 +250,6 @@ export function postSupplierRequisite(data, func, id) {
         return response.json()
     })
     .then(function (data) {
-        console.log(data);
         func();
     })
     .catch(function (error) {
@@ -272,7 +258,6 @@ export function postSupplierRequisite(data, func, id) {
 }
 
 export function updateSupplierRequisite(id, data, func) {
-    console.log(data);
     let url = __API_URL__ + `/business_suppliers/requisites/${id}`;
     fetch(url, {
         method: 'PUT',
@@ -291,7 +276,6 @@ export function updateSupplierRequisite(id, data, func) {
         return response.json()
     })
     .then(function (data) {
-        console.log(data);
         func();
     })
     .catch(function (error) {

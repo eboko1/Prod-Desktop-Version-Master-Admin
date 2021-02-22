@@ -15,7 +15,7 @@ import {
 import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
 import { setModal, resetModal, MODALS } from "core/modals/duck";
 
-import { Layout, Paper, Spinner, StyledButton } from "commons";
+import { Layout, Paper, StyledButton } from "commons";
 import { CashOrderModal } from "modals";
 import { CashOrdersFiltersForm } from "forms";
 import { CashOrdersTable } from "components";
@@ -85,7 +85,6 @@ export default class CashFlowPage extends Component {
     };
 
     _onOpenEditCashOrderModal = cashOrderEntity => {
-        console.log(cashOrderEntity);
         this.props.setModal(MODALS.CASH_ORDER, {
             editMode: true,
             printMode: false,

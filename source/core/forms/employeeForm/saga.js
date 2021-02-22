@@ -42,6 +42,7 @@ export function* saveEmployee() {
 				isMechanic: employee.isMechanic,
 				isCashier: employee.isCashier,
 				cashierApiToken: employee.cashierApiToken,
+				barcode: employee.barcode,
 			};
 
 			const data = yield call(

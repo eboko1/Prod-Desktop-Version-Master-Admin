@@ -9,7 +9,7 @@ import _ from 'lodash';
 import { onChangeEmployeeForm } from 'core/forms/employeeForm/duck';
 
 import { Loader } from 'commons';
-import { PhoneNumberInput } from 'components';
+import { PhoneNumberInput, Barcode } from 'components';
 import {
 	DecoratedInput,
 	DecoratedDatePicker,
@@ -79,6 +79,7 @@ export class EmployeeForm extends Component {
 		const { formatMessage } = this.props.intl;
 		const managerEnabled = Boolean(getFieldValue('managerEnabled'));
 		const passwordField = this._renderPasswordField();
+		const barcode = getFieldValue('barcode');
 
 		return (
 			<Form layout='vertical'>
@@ -116,6 +117,33 @@ export class EmployeeForm extends Component {
 						/>
 					</Col>
 				</Row>
+				<FormItem
+					label={<FormattedMessage id='navigation.barcode' />}
+					{...formItemLayout}
+					className={Styles.selectMargin}
+				>
+					<DecoratedInput
+						field='barcode'
+						placeholder={formatMessage({
+							id: 'navigation.barcode',
+						})}
+						disabled
+						formItem
+						formItemLayout={formItemLayout}
+						initialValue={_.get(initialEmployee, 'barcode')}
+						className={Styles.selectMargin}
+						getPopupContainer={(trigger) => trigger.parentNode}
+						getFieldDecorator={getFieldDecorator}
+						style={{ minWidth: 240 }}
+					/>
+					<Barcode
+						value={barcode}
+						iconStyle={{
+							fontSize: 18,
+							marginLeft: 8,
+						}}
+					/>
+				</FormItem>
 				<DecoratedInput
 					field='cashierApiToken'
 					label={<FormattedMessage id='employee.cashier_api_token' />}

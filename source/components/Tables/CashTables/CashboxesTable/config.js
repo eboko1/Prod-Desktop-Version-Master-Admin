@@ -47,7 +47,7 @@ export function columnsConfig(props) {
 				<Popconfirm
 					title={`${props.formatMessage({ id: 'delete' })} ?`}
 					onConfirm={() => {
-						if (props.isCRUDForbidden) props.deleteCashbox(id);
+						if (!props.isCRUDForbidden) props.deleteCashbox(id);
 					}}
 				>
 					<Icon
@@ -77,6 +77,5 @@ export function columnsConfig(props) {
 				</Tooltip>
 			),
 	};
-
 	return [numberCol, nameCol, typeCol, fiscalNumberCol, infoCol, deleteCol];
 }

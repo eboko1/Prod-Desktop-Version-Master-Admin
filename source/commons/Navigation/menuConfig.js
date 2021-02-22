@@ -32,6 +32,13 @@ export default {
                     name: 'navigation.workflow',
                 },
                 {
+                    key:      '/barcode',
+                    link:     book.barcodePage,
+                    disabled: user =>
+                        isForbidden(user, permissions.NEW_DOCUMENT) || true,
+                    name: 'navigation.barcode',
+                },
+                {
                     key:      '/locations',
                     link:      book.locationsPage,
                     disabled: user =>
@@ -56,7 +63,7 @@ export default {
                     key:      '/report/analytics',
                     link:     book.analytics,
                     disabled: user =>
-                        isForbidden(user, permissions.GET_CLIENTS) || true,
+                        isForbidden(user, permissions.GET_CLIENTS),
                     name: 'navigation.analytics',
                 },
                 {

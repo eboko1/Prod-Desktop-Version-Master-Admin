@@ -185,7 +185,6 @@ export default class ImportExportTable extends Component {
                                         return response.blob();
                                     })
                                     .then(function (file) {
-                                        console.log(file)
                                         saveAs(file, `backup-${moment(row.datetime).format('YYYY-MM-DD')}.${row.format.toLowerCase()}`);
                                         fetchTable();
                                     })
@@ -209,7 +208,6 @@ export default class ImportExportTable extends Component {
                                             },
                                         });
                                         const result = await response.json();
-                                        console.log(result);
                                         this.setState({
                                             retryButtonLoadindId: undefined,
                                         });

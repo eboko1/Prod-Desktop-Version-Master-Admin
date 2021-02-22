@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Button, Icon, notification, Popconfirm, Modal} from 'antd';
+import {Icon, notification, Popconfirm, Modal} from 'antd';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -26,7 +26,6 @@ import {
     saveOrderTask,
     changeModalStatus,
 } from 'core/forms/orderTaskForm/duck';
-import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
 import {fetchAddClientForm} from 'core/forms/addClientForm/duck';
 import {getReport, fetchReport} from 'core/order/duck';
 import {setModal, resetModal, MODALS} from 'core/modals/duck';
@@ -145,7 +144,6 @@ const mapDispatchToProps = {
     resetOrderTasksForm,
     saveOrderTask,
     changeModalStatus,
-    clearCashOrderForm,
 };
 
 @withRouter
@@ -692,7 +690,6 @@ class OrderPage extends Component {
             businessLocations,
             user,
             initialOrderTask,
-            clearCashOrderForm,
             fetchedOrder,
         } = this.props;
         const {num, status, datetime, diagnosis, repairMapIndicator, totalSumWithTax} = this.props.order;
@@ -1055,10 +1052,6 @@ class OrderPage extends Component {
                 <CashOrderModal
                     visible={modal}
                     modalProps={modalProps}
-                    resetModal={ () => {
-                        resetModal();
-                        clearCashOrderForm();
-                    } }
                     fetchOrder={()=>{
                         fetchOrderForm(id);
                     }}
@@ -1069,4 +1062,3 @@ class OrderPage extends Component {
 }
 
 export default OrderPage;
-// moment(datetime).format('DD MMMM YYYY, HH:mm')
