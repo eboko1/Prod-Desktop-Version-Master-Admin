@@ -254,15 +254,6 @@ export class EditClientVehicleForm extends Component {
                                         item.vin
                                     )}
                                 </Col>
-                                <Col span={2}>
-                                    {!isForbidden(user, permissions.ACCESS_CLIENTS_VEHICLE_TRANSFER) && !isEditForbidden && editableItem != index ? (
-                                        <ClientVehicleTransfer
-                                            clientId={clientId}
-                                            vehicleId={item.id}
-                                            vehicles={clientEntity.vehicles}
-                                        />
-                                    ) : null}
-                                </Col>
                                 <Col span={4}>
                                     {editableItem === index ? (
                                         <div style={{display: "flex", alignItems: "center"}}>
@@ -318,6 +309,15 @@ export class EditClientVehicleForm extends Component {
                                                 }
                                             />
                                         )
+                                    ) : null}
+                                </Col>
+                                <Col span={2}>
+                                    {!isForbidden(user, permissions.ACCESS_CLIENTS_VEHICLE_TRANSFER) && !isEditForbidden ? (
+                                        <ClientVehicleTransfer
+                                            clientId={clientId}
+                                            vehicleId={item.id}
+                                            vehicles={clientEntity.vehicles}
+                                        />
                                     ) : null}
                                 </Col>
                                 <Col span={2}>

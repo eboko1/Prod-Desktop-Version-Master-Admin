@@ -227,24 +227,6 @@ export class AbstractClientForm extends Component {
 
                         <Row gutter={24} type="flex">
                             <Col span={8}>
-                                <DecoratedInputNumber
-                                    field="paymentRespite"
-                                    label={
-                                        <FormattedMessage id="add_client_form.payment_respite" />
-                                    }
-                                    formItem
-                                    initialValue={_.get(client, "paymentRespite", 0)}
-                                    min={0}
-                                    max={1000}
-                                    getFieldDecorator={getFieldDecorator}
-                                    rules={[
-                                        {
-                                            required: false,
-                                        },
-                                    ]}
-                                />
-                            </Col>
-                            <Col span={8}>
                                 <DecoratedInput
                                     label={
                                         <div style={{display: "flex"}}>
@@ -273,8 +255,68 @@ export class AbstractClientForm extends Component {
                                 />
                                 
                             </Col>
+                            <Col span={8}>
+                                <DecoratedSelect
+                                    field="source"
+                                    initialValue={_.get(client, "source")}
+                                    formItem
+                                    hasFeedback
+                                    getFieldDecorator={getFieldDecorator}
+                                    getPopupContainer={trigger =>
+                                        trigger.parentNode
+                                    }
+                                    label={
+                                        <FormattedMessage id="add_client_form.source" />
+                                    }
+                                    options={[
+                                        {
+                                            id: "CARBOOK",
+                                            title: "CarBook",
+                                        },
+                                        {
+                                            id: "GOOGLE",
+                                            title: "Google",
+                                        },
+                                        {
+                                            id: "FACEBOOK",
+                                            title: "Facebook",
+                                        },
+                                        {
+                                            id: "INSTAGRAM",
+                                            title: "Instagram",
+                                        },
+                                        {
+                                            id: "RECOMENDATION",
+                                            title: formatMessage({id:"add_client_form.recomendetion"}),
+                                        },
+                                        {
+                                            id: "OTHER",
+                                            title: formatMessage({id:"other"}),
+                                        },
+                                    ]}
+                                    optionValue="id"
+                                    optionLabel="title"
+                                />
+                            </Col>
+                            <Col span={8}>
+                                <DecoratedInputNumber
+                                    field="paymentRespite"
+                                    label={
+                                        <FormattedMessage id="add_client_form.payment_respite" />
+                                    }
+                                    formItem
+                                    initialValue={_.get(client, "paymentRespite", 0)}
+                                    min={0}
+                                    max={1000}
+                                    getFieldDecorator={getFieldDecorator}
+                                    rules={[
+                                        {
+                                            required: false,
+                                        },
+                                    ]}
+                                />
+                            </Col>
                         </Row>
-
                         <Row gutter={24} type="flex">
                             <Col span={8}>
                                 <ArrayInput
@@ -344,49 +386,6 @@ export class AbstractClientForm extends Component {
                                     buttonText={
                                         <FormattedMessage id="add_client_form.add_email" />
                                     }
-                                />
-                            </Col>
-                            <Col span={8}>
-                                <DecoratedSelect
-                                    field="source"
-                                    initialValue={_.get(client, "source")}
-                                    formItem
-                                    hasFeedback
-                                    getFieldDecorator={getFieldDecorator}
-                                    getPopupContainer={trigger =>
-                                        trigger.parentNode
-                                    }
-                                    label={
-                                        <FormattedMessage id="add_client_form.source" />
-                                    }
-                                    options={[
-                                        {
-                                            id: "CARBOOK",
-                                            title: "CarBook",
-                                        },
-                                        {
-                                            id: "GOOGLE",
-                                            title: "Google",
-                                        },
-                                        {
-                                            id: "FACEBOOK",
-                                            title: "Facebook",
-                                        },
-                                        {
-                                            id: "INSTAGRAM",
-                                            title: "Instagram",
-                                        },
-                                        {
-                                            id: "RECOMENDATION",
-                                            title: formatMessage({id:"add_client_form.recomendetion"}),
-                                        },
-                                        {
-                                            id: "OTHER",
-                                            title: formatMessage({id:"other"}),
-                                        },
-                                    ]}
-                                    optionValue="id"
-                                    optionLabel="title"
                                 />
                             </Col>
                         </Row>
