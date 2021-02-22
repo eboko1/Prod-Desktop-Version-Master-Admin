@@ -90,7 +90,7 @@ export function columnsConfig(props) {
     const orderCol = {
         title:     <FormattedMessage id='cash-table.order' />,
         width:  'auto',
-        render:    ({orderId, storeDocId, orderNum}) => {
+        render:    ({orderId, storeDocId, orderNum, documentNumber}) => {
             return orderId ? (
                 <Link
                     to={ `${book.order}/${orderId}` }
@@ -103,7 +103,7 @@ export function columnsConfig(props) {
                     to={ `${book.storageDocument}/${storeDocId}` }
                     style={ { color: 'var(--link' } }
                 >
-                    { storeDocId }
+                    { documentNumber }
                 </Link>
             )
         },

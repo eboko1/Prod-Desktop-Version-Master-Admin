@@ -297,6 +297,11 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 selectedOrder: payload,
+                storeDocId: {
+                    name:  'storeDocId',
+                    value: payload.id,
+                },
+                selectedStoreDoc: ReducerState.selectedStoreDoc
             };
 
         case ON_CLIENT_FIELDS_RESET:

@@ -909,10 +909,10 @@ class StorageDocumentPage extends Component {
                                                     cashOrderEntity: {
                                                         storeDocId: id,
                                                         clientId: formData.counterpartClientId,
-                                                        orderNum: formData.documentNumber,
+                                                        documentNumber: formData.documentNumber,
                                                         clientName: client.name,
                                                         clientSurname: client.surname,
-                                                        increase: Math.round(formData.sellingSum*100)/100,
+                                                        increase: Math.round(formData.remainSum*100)/100,
                                                         type: "INCOME",
                                                         storeDoc: formData,
                                                     },
@@ -1060,7 +1060,7 @@ class StorageDocumentPage extends Component {
                 <ToSuccessModal
                     visible={modal}
                     resetModal={resetModal}
-                    remainPrice={formData.sellingSum}
+                    remainPrice={formData.remainSum}
                     clientId={
                         formData.documentType == CLIENT ? 
                             formData.counterpartId : 
