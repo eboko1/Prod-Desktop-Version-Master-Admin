@@ -118,12 +118,12 @@ class StorageDocumentPage extends Component {
         this.editDocProduct = this.editDocProduct.bind(this);
     }
 
-    updateFormData(formData, saveMode = false) {
+    updateFormData(formData, saveMode = false, callback) {
         Object.entries(formData).map((field)=>{
             this.state.formData[field[0]] = field[1];
         })
         if(saveMode) {
-            this.updateDocument(saveMode);
+            this.updateDocument(saveMode, callback);
         }
         else {
             this.setState({
@@ -338,7 +338,7 @@ class StorageDocumentPage extends Component {
         });
     }
 
-    updateDocument(saveMode = false) {
+    updateDocument(saveMode = false, callback) {
         this.setState({loading: true});
         if(!this.verifyFields()) {
             return;
@@ -440,6 +440,7 @@ class StorageDocumentPage extends Component {
         .then(function (data) {
             if(data.updated) {
                 that.getStorageDocument();
+                if(callback) callback;
             } else {
                 const availableInfo = [];
                 data.notAvailableProducts.map(({available, reservedCount, productId: {product}})=>{
@@ -1069,8 +1070,9 @@ class StorageDocumentPage extends Component {
                     }
                     storeDocId={id}
                     onSubmit={()=>{
-                        this.updateFormData({status: DONE}, true);
-                        window.location.reload();
+                        this.updateFormData({status: DONE}, true, ()=>{
+                            window.location.reload()
+                        });
                     }}
                 />
                 <CashOrderModal
