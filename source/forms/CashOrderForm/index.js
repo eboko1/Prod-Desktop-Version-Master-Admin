@@ -561,6 +561,7 @@ export class CashOrderForm extends Component {
     };
 
     _handleOrderSelection = order => {
+        console.log(order)
         this.props.form.setFieldsValue({
             orderId: order.id,
             clientId: order.clientId,
@@ -1494,7 +1495,9 @@ export class CashOrderForm extends Component {
         // const storeDocId = _.get(selectedStoreDoc, "id") || _.get(activeCashOrder, "storeDocId") || getFieldValue("storeDocId");
         // const clientId = _.get(selectedStoreDoc, "counterpartClientId") || getFieldValue("clientId") || _.get(activeCashOrder, "clientId");
 
-        const num = _.get(selectedStoreDoc, "documentNumber") || _.get(activeCashOrder, "orderNum") || _.get(activeCashOrder, "docNum");
+        const documentNumber =  _.get(selectedStoreDoc, "documentNumber") || this.state.editing
+        ? _.get(selectedStoreDoc, "documentNumber") || getFieldValue("documentNumber")
+        : _.get(activeCashOrder, "documentNumber");
         const clientName =
             _.get(selectedStoreDoc, "counterpartClientName") || _.get(activeCashOrder, "clientName");
         const clientSurname =
@@ -1525,7 +1528,7 @@ export class CashOrderForm extends Component {
                     />
                     {isActive && (
                         <div className={this._hiddenResetStyles(storeDocId)}>
-                            <span>{num}</span>
+                            <span>{documentNumber}</span>
                             {!printMode && (
                                 <Icon
                                     type="close"

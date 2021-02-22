@@ -158,6 +158,7 @@ class StorageDocumentForm extends Component {
             payUntilDatetime,
             incomeWarehouseId,
             expenseWarehouseId,
+            remainSum,
         } = this.props.formData;
         const dateFormat = 'DD.MM.YYYY';
         const disabled = status == DONE;
@@ -527,7 +528,7 @@ class StorageDocumentForm extends Component {
                                         })}
                                         nullText="0"
                                     >
-                                        {0}
+                                        {type == EXPENSE ? sellingSum - remainSum : sum - remainSum}
                                     </Numeral>
                                 </div>
                             </div>
@@ -561,7 +562,7 @@ class StorageDocumentForm extends Component {
                                                 id: "currency",
                                             })}
                                         >
-                                            {type == EXPENSE ? sellingSum : sum}
+                                            {remainSum}
                                         </Numeral>
                                     </span>
                                 </p>
