@@ -274,7 +274,9 @@ export class CashOrderForm extends Component {
             form: { getFieldDecorator, setFieldsValue },
         } = this.props;
 
-        console.log(this);
+        console.log(this, analyticsUniqueId);
+        const orderType = _.get(fields, "type.value");
+        const analyticsUniqueId = _.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId');
 
         // getFieldDecorator('cashBoxId', { initialValue: _.get(activeCashOrder, "cashBoxId") || _.get(cashboxes, "[0].id") });
         // getFieldDecorator('analyticsUniqueId', { initialValue: _.get(activeCashOrder, "analyticsUniqueId") || _.get(cashboxes, "[0].id") ||
@@ -292,11 +294,14 @@ export class CashOrderForm extends Component {
                     _.get(cashboxes, "[0].id")
             })
         }
-        if((_.get(activeCashOrder, "analyticsUniqueId") || analytics && analytics.length > 0) && _.get(fields, "analyticsUniqueId") && !_.get(fields, "analyticsUniqueId.value")) {
-            const orderType = _.get(fields, "type.value");
+        if(
+            analytics && analytics.length > 0 && 
+            (_.get(activeCashOrder, "analyticsUniqueId") || analyticsUniqueId) && 
+            !_.get(fields, "analyticsUniqueId.value")
+        ) {
+            
             setFieldsValue({
-                analyticsUniqueId: _.get(activeCashOrder, "analyticsUniqueId") || 
-                                   _.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId')
+                analyticsUniqueId: _.get(activeCashOrder, "analyticsUniqueId") || analyticsUniqueId
             })
         }
 
