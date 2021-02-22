@@ -45,6 +45,7 @@ import RequisiteSettingPage from 'pages/RequisiteSettingPage/messages';
 import NewDocumentPage from 'pages/NewDocumentPage/messages';
 import SupplierPage from 'pages/SupplierPage/messages';
 import ReportOrdersPage from 'pages/Reports/ReportOrdersPage/messages';
+import ReportAnalyticsPage from 'pages/Reports/ReportAnalyticsPage/messages';
 import ReportLoadKPIPage from 'pages/Reports/ReportLoadKPIPage/messages';
 import RepairMapSettingPage from 'pages/RepairMapSettingPage/messages';
 import Locations from 'pages/Locations/messages';
@@ -179,6 +180,7 @@ const messages = merge.all([
     NewDocumentPage,
     SupplierPage,
     ReportOrdersPage,
+    ReportAnalyticsPage,
     ReportLoadKPIPage,
     RepairMapSettingPage,
     Locations,
