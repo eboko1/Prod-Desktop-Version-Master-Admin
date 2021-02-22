@@ -45,6 +45,7 @@ import RequisiteSettingPage from 'pages/RequisiteSettingPage/messages';
 import NewDocumentPage from 'pages/NewDocumentPage/messages';
 import SupplierPage from 'pages/SupplierPage/messages';
 import ReportOrdersPage from 'pages/Reports/ReportOrdersPage/messages';
+import ReportAnalyticsPage from 'pages/Reports/ReportAnalyticsPage/messages';
 import ReportLoadKPIPage from 'pages/Reports/ReportLoadKPIPage/messages';
 import RepairMapSettingPage from 'pages/RepairMapSettingPage/messages';
 import Locations from 'pages/Locations/messages';
@@ -88,6 +89,7 @@ import SpreadBusinessBrandsForm from 'forms/SpreadBusinessBrandsForm/messages';
 import CashCreationForm from 'forms/CashCreationForm/messages';
 import CashOrderForm from 'forms/CashOrderForm/messages';
 import ReportOrdersFilterForm from 'forms/ReportForms/ReportOrdersFilterForm/messages';
+import ReportAnalyticsForm from 'forms/ReportForms/ReportAnalyticsForms/messages';
 
 // OrderForm
 import OrderForm from 'forms/OrderForm/messages';
@@ -111,6 +113,7 @@ import SupplierModal from 'modals/SupplierModal/messages';
 import TecDocInfoModal from 'modals/TecDocInfoModal/messages'
 import VehicleLocationModal from 'modals/VehicleLocationModal/messages';
 import ReportOrdersExportModal from 'modals/ReportModals/ReportOrdersExportModal/messages';
+import ReportAnalyticsModal from 'modals/ReportModals/ReportAnalyticsModal/messages'
 
 // components
 import StatusIcons from 'components/StatusIcons/messages';
@@ -147,12 +150,15 @@ import Footer from 'commons/Footer/messages';
 const messages = merge.all([
     global,
     errorMessage,
+    
     //locales
     Storage,
+
     // commons
     Navigation,
     Header,
     Footer,
+
     // pages
     ProfilePage,
     OrdersPage,
@@ -179,10 +185,12 @@ const messages = merge.all([
     NewDocumentPage,
     SupplierPage,
     ReportOrdersPage,
+    ReportAnalyticsPage,
     ReportLoadKPIPage,
     RepairMapSettingPage,
     Locations,
     SyncImportExport,
+
     // containers
     OrdersContainer,
     OrdersFilterContainer,
@@ -198,6 +206,7 @@ const messages = merge.all([
     ClientRequisitesContainer,
     ReviewsContainer,
     StorageDocumentsContainer,
+
     // forms
     ProfileForm,
     UniversalFiltersForm,
@@ -225,6 +234,8 @@ const messages = merge.all([
     SubscribeForm,
     DiagnosticTable,
     ReportOrdersFilterForm,
+    ReportAnalyticsForm,
+
     // modals
     UniversalFiltersModal,
     AddClientModal,
@@ -236,6 +247,8 @@ const messages = merge.all([
     TecDocInfoModal,
     VehicleLocationModal,
     ReportOrdersExportModal,
+    ReportAnalyticsModal,
+
     // components
     StatusIcons,
     OrderFormTables,

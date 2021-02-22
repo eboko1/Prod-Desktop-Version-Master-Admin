@@ -106,6 +106,7 @@ export default class ReportAnalyticsPage extends Component {
         const {
             analytics,
             modal,
+            intl: {formatMessage}
         } = this.props;
         
         
@@ -113,13 +114,13 @@ export default class ReportAnalyticsPage extends Component {
             <Layout
                 title={
                     <div>
-                        Title
+                        <div><FormattedMessage id="navigation.report_analytics" /></div>
                     </div>
                 }
                 controls={
                     <div className={Styles.buttonGroup}>
-                        <StyledButton type="primary" onClick={this.onOpenConfirm}>Reset all</StyledButton>
-                        <StyledButton type="secondary" onClick={() => this.openAnalyticsModal()/*Call with defaults*/}>Create</StyledButton>
+                        <StyledButton type="primary" onClick={this.onOpenConfirm}><FormattedMessage id="report_analytics_page.reset_all" /></StyledButton>
+                        <StyledButton type="secondary" onClick={() => this.openAnalyticsModal()/*Call with defaults*/}><FormattedMessage id="report_analytics_page.add" /></StyledButton>
                     </div>
                 }
                 paper={false}
@@ -133,8 +134,8 @@ export default class ReportAnalyticsPage extends Component {
 
                 <ConfirmModal
                     visible={modal}
-                    title="Confirm dialog"
-                    modalContent="Hello, it's me."
+                    title={formatMessage({id: 'report_analytics_page.confirm_dialog'})}
+                    modalContent={formatMessage({id: 'report_analytics_page.confirm_dialog_content'})}
                     onOk={this._onResettingAllAnalyticsConfirmed}
                     onCancel={this.onResettingAllAnalyticsCanceled}
                 />

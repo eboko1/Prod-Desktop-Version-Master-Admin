@@ -76,7 +76,7 @@ export default class ReportLoadKPIFilter extends Component {
                 <div className={Styles.inputCont}>
                     <Input
                         className={Styles.input}
-                        placeholder={this.props.intl.formatMessage({ id: "report_orders_page_page.search" })}
+                        placeholder={this.props.intl.formatMessage({ id: "report_orders_page.search" })}
                         onChange={this.onSearch}
                         defaultValue={filter.query}
                         allowClear

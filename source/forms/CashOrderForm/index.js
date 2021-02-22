@@ -274,11 +274,15 @@ export class CashOrderForm extends Component {
             form: { getFieldDecorator, setFieldsValue },
         } = this.props;
 
-        console.log(this);
-
-        //console.log(this, analyticsUniqueId);
         const orderType = _.get(fields, "type.value");
-        const analyticsUniqueId = _.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId');
+        //Get all filtered analytics
+        let filteredAnalytics = this._getFilteredAnalytics(orderType).filter(ana => ana.analyticsDefaultOrderType == orderType);
+
+        //If no analytics found set at least first item else we will receive an error
+        filteredAnalytics = (filteredAnalytics.length > 0)
+            ? filteredAnalytics
+            : analytics.filter(ana => ana.analyticsDefaultOrderType == orderType);
+        const analyticsUniqueId = _.get(filteredAnalytics, '[0].analyticsUniqueId');
 
         // getFieldDecorator('cashBoxId', { initialValue: _.get(activeCashOrder, "cashBoxId") || _.get(cashboxes, "[0].id") });
         // getFieldDecorator('analyticsUniqueId', { initialValue: _.get(activeCashOrder, "analyticsUniqueId") || _.get(cashboxes, "[0].id") ||
@@ -440,8 +444,11 @@ export class CashOrderForm extends Component {
      * Gets analytics depending on a cash order type or parameters like adjustment cash order type type
      * @param {*} type cash order type
      */
-    _getFilterAnalytics(type) {
-        const { analytics } = this.props;
+    _getFilteredAnalytics(type) {
+        let { analytics } = this.props;
+
+        //Remove disabled analytics from list
+        analytics = analytics.filter(ans => !ans.analyticsDisabled);
 
         let filteredAnlytics = undefined;
 
@@ -935,7 +942,6 @@ export class CashOrderForm extends Component {
                             showSearch
                             loading={analyticsFetchingState}
                             disabled={printMode || analyticsFetchingState}
-                            allowClear
                             formItem
                             // Initial value depends on a specific analytics field so we leave only those which has that field
                             initialValue={
@@ -955,7 +961,7 @@ export class CashOrderForm extends Component {
                             rules={[
                                 { required: true, message: 'Analytics must be selected!!!' },
                             ]}
-                            options={this._getFilterAnalytics(orderType)}
+                            options={this._getFilteredAnalytics(orderType)}
                             optionValue="analyticsUniqueId" //Will be sent as var
                             optionLabel="analyticsName"
                             getPopupContainer={trigger => trigger.parentNode}
@@ -982,7 +988,7 @@ export class CashOrderForm extends Component {
                                         }}
                                     >
                                         <Icon type="plus-circle" />
-                                        Add analytics
+                                        {formatMessage({ id: "report_analytics_modal.create_analytics" })}
                                     </StyledButton>
                                 </div>
                             </Col>

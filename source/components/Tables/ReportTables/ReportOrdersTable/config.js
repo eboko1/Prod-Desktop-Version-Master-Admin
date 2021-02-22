@@ -232,7 +232,7 @@ export function columnsConfig(props) {
                             <FormattedMessage id='report-orders-table.client_name' />
                             <Input
                                 onChange={onSearchInput}
-                                placeholder={formatMessage({ id: "report_orders_page_page.search" })}
+                                placeholder={formatMessage({ id: "report_orders_page.search" })}
                                 defaultValue={filter.query}
                             />
                         </div>,
