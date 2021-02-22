@@ -46,52 +46,52 @@ export default class Stats extends React.Component {
         return <div className={Styles.statsMainCont}>
             <div className={Styles.statsCont}>
                 <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.labors_sum'} /></div>
+                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page.labors_sum'} /></div>
                     <div className={Styles.statsText}><Numeral>{parseInt(totalServicesSum)}</Numeral></div>
                 </div>
 
                 <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.parts_sum'} /></div>
+                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page.parts_sum'} /></div>
                     <div className={Styles.statsText}><Numeral>{parseInt(totalAppurtenanciesSum)}</Numeral></div>
                 </div>
 
                 <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_sum'} /></div>
+                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page.total_sum'} /></div>
                     <div className={Styles.statsText}><Numeral>{parseInt(totalSum)}</Numeral></div>
                 </div>
 
                 <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.labors_profit'} /></div>
+                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page.labors_profit'} /></div>
                     <div className={Styles.statsText}><Numeral>{parseInt(totalServicesProfit)}</Numeral></div>
                 </div>
 
                 <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.parts_profit'} /></div>
+                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page.parts_profit'} /></div>
                     <div className={Styles.statsText}><Numeral>{parseInt(totalAppurtenanciesProfit)}</Numeral></div>
                 </div>
 
                 <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_profit'} /></div>
+                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page.total_profit'} /></div>
                     <div className={Styles.statsText}><Numeral>{parseInt(totalProfit)}</Numeral></div>
                 </div>
 
                 <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.labors_margin'} /></div>
+                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page.labors_margin'} /></div>
                     <div className={Styles.statsText}>{totalLaborsMargin}</div>
                 </div>
 
                 <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.parts_margin'} /></div>
+                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page.parts_margin'} /></div>
                     <div className={Styles.statsText}>{totalAppurtenanciesMargin}</div>
                 </div>
 
                 <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_margin'} /></div>
+                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page.total_margin'} /></div>
                     <div className={Styles.statsText}>{totalMargin}</div>
                 </div>
 
                 <div className={Styles.statsBlock}>
-                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page_page.total_rows'} /></div>
+                    <div className={Styles.statsHeader}><FormattedMessage id={'report_orders_page.total_rows'} /></div>
                     <div className={Styles.statsText}><Numeral>{totalRowsCount}</Numeral></div>
                 </div>
             </div>
