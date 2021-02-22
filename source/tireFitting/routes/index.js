@@ -4,14 +4,14 @@ import { Switch, Route, Redirect } from 'react-router';
 
 // proj
 import {
-    DashboardPage,
-} from "pages";
-
-import {
+    ExceptionPage,
     NewDocumentPage,
+    DashboardPage,
+    ProfilePage,
+    LaborsPage,
 } from 'tireFitting';
 
-import tireFittingBook from './book';
+import book from 'routes/book';
 
 export default class TireFittingRoutes extends Component {
     render() {
@@ -21,15 +21,31 @@ export default class TireFittingRoutes extends Component {
                 <Route
                     exact
                     render={ props => <NewDocumentPage { ...props } /> }
-                    path={ tireFittingBook.newDocumentPage }
+                    path={ book.newDocumentPage }
                 />
                 <Route
                     exact
                     render={ props => <DashboardPage { ...props } /> }
-                    path={ tireFittingBook.dashboard }
+                    path={ book.dashboard }
                 />
-                <Redirect exact from='/' to={ tireFittingBook.dashboard } />
-                <Redirect to={ `${tireFittingBook.exception}/404` } />
+                { /* Reference book */ }
+                <Route
+                    exact
+                    component={ LaborsPage }
+                    path={ book.laborsPage }
+                />
+                { /* Global */ }
+                <Route
+                    exact
+                    component={ ProfilePage }
+                    path={ book.profile }
+                />
+                <Route
+                    component={ ExceptionPage }
+                    path={ book.exceptionStatusCode }
+                />
+                <Redirect exact from='/' to={ book.dashboard } />
+                <Redirect to={ `${book.exception}/404` } />
             </Switch>
         );
     }

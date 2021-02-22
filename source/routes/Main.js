@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { hot } from "react-hot-loader";
 
 // proj
-import { getToken, setTireFittingRoutes } from "utils";
+import { getToken, getTireFittingToken } from "utils";
 
 // own
 import Private from "./Private";
@@ -15,7 +15,7 @@ export default class Routes extends Component {
     render() {
         return  !getToken() ?
                     <Public /> : 
-                    setTireFittingRoutes() ? 
+                    getTireFittingToken() ? 
                         <Private /> :
                         <TireFittingRoutes /> ;
     }
