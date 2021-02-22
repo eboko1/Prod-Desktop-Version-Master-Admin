@@ -49,7 +49,7 @@ export class CashSelectedClientOrdersTable extends Component {
     }
 
     _onRowClick = (row) => {
-        if (this.props.type === "order") {
+        if (this.props.type === "order" || this.props.type === "client") {
             this.props.selectOrder(row)
         } else if (this.props.type === "storeDoc") {
             this.props.selectStoreDoc(row)
