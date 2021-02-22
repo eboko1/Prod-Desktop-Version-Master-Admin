@@ -20,6 +20,8 @@ export const getToken = () => localStorage.getItem('_my.carbook.pro_token');
 export const removeToken = () =>
     localStorage.removeItem('_my.carbook.pro_token');
 
+export const setTireFittingRoutes = () => localStorage.getItem('_my.carbook.pro_token')
+
 // locale
 const fallbackLocale =
     window.navigator.language || window.navigator.userLanguage;
