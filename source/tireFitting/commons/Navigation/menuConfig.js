@@ -11,13 +11,6 @@ export default {
             name:     'navigation.operations',
             items:    [
                 {
-                    key:      '/new-document',
-                    link:     book.newDocumentPage,
-                    disabled: user =>
-                        isForbidden(user, permissions.NEW_DOCUMENT),
-                    name: 'navigation.new_document',
-                },
-                {
                     key:      '/dashboard',
                     link:     book.dashboard,
                     disabled: user =>
@@ -75,20 +68,6 @@ export default {
                     link: book.cashFlowPage,
                     name: 'navigation.flow_of_money',
                 },
-                {
-                    key:      '/cash/clients-debts',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_FINANCE_RECEIVABLE),
-                    link: book.cashClientsDebtsPage,
-                    name: 'navigation.clients_debts',
-                },
-                {
-                    key:      '/cash/bank',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_FINANCE_CASH),
-                    link: book.cashBankPage,
-                    name: 'navigation.cash_bank',
-                },
             ],
         },
         /* Statistics and reports submenu*/
@@ -104,14 +83,6 @@ export default {
                         !isAdmin(user),
                     link: book.chart,
                     name: 'navigation.service_indicators',
-                },
-                {
-                    key:      '/feedback',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_FEEDBACK) &&
-                        !isAdmin(user),
-                    link: book.feedback,
-                    name: 'navigation.feedback',
                 },
                 {
                     key:      '/report/orders',
@@ -131,18 +102,18 @@ export default {
             disabled: user => isForbidden(user, permissions.ACCESS_SETTINGS),
             items:    [
                 {
+                    key:      '/settings',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
+                    link: book.oldApp.settings,
+                    name: 'navigation.main_settings',
+                },
+                {
                     key:      '/cash/settings',
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_CATALOGUE_CASH),
                     link: book.cashSettingsPage,
                     name: 'navigation.cash_settings',
-                },
-                {
-                    key:      '/requisites',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_CATALOGUE_REQUISITES),
-                    link: book.requisites,
-                    name: 'navigation.requisites',
                 },
             ],
         },
@@ -154,38 +125,12 @@ export default {
             name:     'navigation.administration',
             items:    [
                 {
-                    key:     '/packages',
-                    link:    book.packagePage,
-                    visible: user => isAdmin(user),
-                    name:    'navigation.package',
-                },
-                {
-                    key:     '/roles',
-                    link:    book.rolePage,
-                    visible: user => isAdmin(user),
-                    name:    'navigation.roles',
-                },
-                {
-                    key:     '/businesses/packages',
-                    link:    book.businessPackagePage,
-                    visible: user => isAdmin(user),
-                    name:    'navigation.business_packages',
-                },
-                {
                     key:     '/managers/roles',
                     link:    book.managerRolePage,
                     visible: user => !isForbidden(user, permissions.GRANT),
                     name:    'navigation.manager_roles',
                 },
             ],
-        },
-        {
-            key:      '/suggest-idea',
-            iconType: 'bulb',
-            disabled: user =>
-                !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-            link: book.oldApp.feedback,
-            name: 'navigation.suggest_idea',
         },
     ],
 
