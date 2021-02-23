@@ -64,7 +64,7 @@ export default function columnsConfig(props) {
 
             return (
                 <>
-                    {Boolean(dueAmount) && 
+                    {Boolean(dueAmount) && dueAmount > 0 &&
                         <Icon
                             type='dollar'
                             onClick={()=>{

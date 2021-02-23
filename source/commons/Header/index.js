@@ -66,7 +66,7 @@ class Header extends Component {
                         />
                     </Tooltip>
                     { <HeaderMenu { ...this.props } /> }
-                    {isAdmin(user) || false &&
+                    {isAdmin(user) &&
                         <Switch
                             style={{marginLeft: 14}}
                             checked={Boolean(getTireFittingToken())}
