@@ -16,7 +16,7 @@ export default class Routes extends Component {
         return  !getToken() ?
                     <Public /> : 
                     getTireFittingToken() ? 
-                        <TireFittingRoutes /> :
+                        <Private /> :
                         <Private /> ;
     }
 }
