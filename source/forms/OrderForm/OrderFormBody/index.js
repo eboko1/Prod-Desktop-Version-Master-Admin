@@ -381,14 +381,13 @@ export default class OrderFormBody extends Component {
                     )}
                     ref={this.clientRef}
                 />
-                {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) || true ? 
-                    _.get(fields, "searchClientQuery") ? (
+                {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? 
+                    <>
                         <Icon
                             type="plus"
                             className={Styles.addClientIcon}
                             onClick={() => this.props.setAddClientModal()}
                         />
-                    ) : (
                         <Barcode
                             iconStyle={{
                                 fontSize: 24,
@@ -397,7 +396,7 @@ export default class OrderFormBody extends Component {
                                 margin: "28px 0 0 10px",
                             }}
                         /> 
-                    )
+                    </>
                 : null}
             </div>
         ) : null;
