@@ -12,6 +12,8 @@ import {
     createCashOrder,
     fetchCashOrderNextId,
     selectCashOrderNextId,
+    fetchAnalytics,
+    selectAnalytics,
 } from "core/forms/cashOrderForm/duck";
 import { fetchCashboxes } from "core/cash/duck";
 
@@ -37,15 +39,25 @@ const Option = Select.Option;
         createCashOrder,
         fetchCashboxes,
         fetchCashOrderNextId,
+        fetchAnalytics,
     },
     mapStateToProps: state => ({
         businessName: state.auth.businessName,
         user: state.auth,
         cashboxes: state.cash.cashboxes,
         cashOrderNextId: selectCashOrderNextId(state),
+        analytics: selectAnalytics(state),
     }),
 })
 export class ToSuccessForm extends Component {
+    componentDidMount() {
+        const { 
+            fetchAnalytics
+        } = this.props;
+
+        fetchAnalytics();
+    }
+
     componentDidUpdate(nextProps) {
         if (nextProps.fields.withPayment !== this.props.fields.withPayment) {
             if (_.isEmpty(this.props.cashboxes)) {
@@ -68,25 +80,36 @@ export class ToSuccessForm extends Component {
             onStatusChange,
             createCashOrder,
             resetModal,
+            orderId,
+            clientId,
+            storeDocId,
+            onSubmit,
+            analytics,
         } = this.props;
 
         const smsMessage = form.getFieldValue("smsMessage");
 
         form.validateFields((err, values) => {
             if (!err) {
-                onStatusChange("success", void 0, {
-                    smsMessage,
-                });
+                if(onStatusChange) {
+                    onStatusChange("success", void 0, {
+                        smsMessage,
+                    });
+                }else if(onSubmit) {
+                    onSubmit();
+                }
 
                 if (values.withPayment && Boolean(values.paymentSum)) {
                     createCashOrder({
                         cashBoxId: values.cashBoxId,
-                        clientId: this.props.clientId,
+                        clientId: clientId,
                         datetime: moment(),
                         id: this.props.cashOrderNextId,
                         increase: values.paymentSum,
-                        orderId: this.props.orderId,
+                        orderId: orderId,
                         type: cashOrderTypes.INCOME,
+                        storeDocId: storeDocId,
+                        analyticsUniqueId: analytics && analytics[0].analyticsUniqueId,
                     });
                 }
 
@@ -118,6 +141,7 @@ export class ToSuccessForm extends Component {
             businessName,
             remainPrice,
             cashboxes,
+            storeDocId,
         } = this.props;
 
         const {
@@ -128,10 +152,15 @@ export class ToSuccessForm extends Component {
 
         const { formatMessage } = this.props.intl;
 
+
         return (
             <Form layout="vertical">
                 <div className={Styles.title}>
-                    <FormattedMessage id="to_success.title" />
+                    {!Boolean(storeDocId) ?
+                        <FormattedMessage id="to_success.title" /> :
+                        <FormattedMessage id="to_success_store_doc.title" />
+                    }
+                    
                 </div>
                 <div className={Styles.submit}>
                     <Button
@@ -248,23 +277,25 @@ export class ToSuccessForm extends Component {
                         />
                     </div>
                 )}
-                <div>
-                    <div className={Styles.checkbox}>
-                        <DecoratedCheckbox
-                            field="smsMessage"
-                            getFieldDecorator={getFieldDecorator}
-                        >
-                            <FormattedMessage id="to_success.send_message" />
-                            {businessName && (
-                                <p className={Styles.text}>
-                                    <FormattedMessage id="to_success.sms1" />
-                                    {businessName}
-                                    <FormattedMessage id="to_success.sms2" />
-                                </p>
-                            )}
-                        </DecoratedCheckbox>
+                {!Boolean(storeDocId) &&
+                    <div>
+                        <div className={Styles.checkbox}>
+                            <DecoratedCheckbox
+                                field="smsMessage"
+                                getFieldDecorator={getFieldDecorator}
+                            >
+                                <FormattedMessage id="to_success.send_message" />
+                                {businessName && (
+                                    <p className={Styles.text}>
+                                        <FormattedMessage id="to_success.sms1" />
+                                        {businessName}
+                                        <FormattedMessage id="to_success.sms2" />
+                                    </p>
+                                )}
+                            </DecoratedCheckbox>
+                        </div>
                     </div>
-                </div>
+                }
             </Form>
         );
     }

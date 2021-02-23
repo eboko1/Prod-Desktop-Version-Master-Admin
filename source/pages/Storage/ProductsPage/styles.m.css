@@ -1,0 +1,16 @@
+.excelWrap {
+    display: flex;
+    justify-content: center;
+}
+
+.download {
+    margin-right: 18px;
+}
+
+.excel {
+    z-index: 2;
+}
+
+.upload {
+    
+}

@@ -158,7 +158,6 @@ export class SuppliersTable extends Component {
                                             },
                                         });
                                         const result = await response.json();
-                                        console.log(result)
                                         if(result.deleted) {
                                             props.fetchSuppliers();
                                         } else {

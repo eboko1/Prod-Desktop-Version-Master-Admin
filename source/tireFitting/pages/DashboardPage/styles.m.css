@@ -1,0 +1,21 @@
+.dashboardPage {
+    margin-top: 24px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 40px 50px auto 50px 40px;
+}
+
+.dashboard_mobile_tabs div[class^="ant-tabs-nav-container"]{
+
+}
+
+.dashboard_mobile_tabs div[class^="ant-tabs-extra-content"]{
+    float: none !important;
+}
+
+.dashboard_mobile_tabs div[class^="ant-tabs-extra-content"] > div{
+    justify-content: center;
+    margin-bottom: 15px;
+}

@@ -1,0 +1,14 @@
+{
+    "en": {
+        "profile.title": "Profile",
+        "profile.description": "Manage your profile settings"
+    },
+    "ru": {
+        "profile.title": "Профиль",
+        "profile.description": "Управление настройками Вашего профиля"
+    },
+    "uk": {
+        "profile.title": "Профіль",
+        "profile.description": "Керуваня налаштуваннями Вашого профілю"
+    }
+}

@@ -1,30 +1,27 @@
 // vendor
 import { call, put, all, take, select } from 'redux-saga/effects';
-// import nprogress from 'nprogress';
-// import { saveAs } from 'file-saver';
 
 //proj
 import { fetchAPI } from 'utils';
-// import {setReportOrdersFetching, emitError} from 'core/ui/duck';
+import { emitError} from 'core/ui/duck';
 
 // own
 import {
     fetchReportAnalyticsSuccess,
     deleteReportAnalyticsSuccess,
-    createReportAnalyticsSuccess
+    resetAllReportAnalyticsSuccess,
 } from './duck';
 
 import {
     FETCH_REPORT_ANALYTICS,
     DELETE_REPORT_ANALYTICS,
-    CREATE_REPORT_ANALYTICS
+    RESET_ALL_REPORT_ANALYTICS
 } from './duck';
 
 export function* fetchReportAnalyticsSaga() {
     while (true) {
         try {
             yield take(FETCH_REPORT_ANALYTICS);
-            // yield put(setReportOrdersFetching(true));
 
             const data = yield call(
                 fetchAPI,
@@ -32,8 +29,8 @@ export function* fetchReportAnalyticsSaga() {
                 `/report/analytics`
             );
             yield put(fetchReportAnalyticsSuccess(data));
-        } finally {
-            // yield put(setReportOrdersFetching(false));
+        } catch(err) {
+            emitError(err);
         }
     }
 }
@@ -41,42 +38,38 @@ export function* fetchReportAnalyticsSaga() {
 export function* deleteReportAnalyticsSaga() {
     while (true) {
         try {
-            yield take(DELETE_REPORT_ANALYTICS);
-            // yield put(setReportOrdersFetching(true));
+            const {payload: {analyticsId}} = yield take(DELETE_REPORT_ANALYTICS);
+
+            const filters = {analyticsId};
 
             yield call(
                 fetchAPI,
                 'DELETE',
-                `/report/analytics`
+                `/report/analytics`,
+                {filters}
             );
             yield put(deleteReportAnalyticsSuccess());
-        } finally {
-            // yield put(setReportOrdersFetching(false));
+        } catch(err) {
+            emitError(err);
         }
     }
 }
 
-// export function* createReportAnalyticsSaga() {
-//     while (true) {
-//         try {
-//             const {analyticsEntity} = yield take(CREATE_REPORT_ANALYTICS);
-//             // yield put(setReportOrdersFetching(true));
+export function* resetAllReportAnalytics() {
+    while(true) {
+        try {
+            const {payload: {areYouSureToDeleteAll}} = yield take(RESET_ALL_REPORT_ANALYTICS);
 
-//             yield call(
-//                 fetchAPI,
-//                 'POST',
-//                 `/report/analytics`,
-//                 null,
-//                 analyticsEntity
-//             );
-//             yield put(createReportAnalyticsSuccess());
-//         } finally {
-//             // yield put(setReportOrdersFetching(false));
-//         }
-//     }
-// }
+            yield call(fetchAPI, 'DELETE', `/report/analytics`, {areYouSureToDeleteAll});
+
+            yield put(resetAllReportAnalyticsSuccess());
+        } catch(err) {
+            emitError(err);
+        }
+    }
+}
 
 
 export function* saga() {
-    yield all([ call(fetchReportAnalyticsSaga), call(deleteReportAnalyticsSaga) ]);
+    yield all([ call(fetchReportAnalyticsSaga), call(deleteReportAnalyticsSaga), call(resetAllReportAnalytics) ]);
 }

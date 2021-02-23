@@ -68,7 +68,6 @@ export default class ComplexesModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.buildComplexTree(data);
             that.setState({
                 fetched: true,
@@ -84,7 +83,6 @@ export default class ComplexesModal extends React.Component{
     }
 
     async addDetailsAndLabors(data) {
-        console.log(data);
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/orders/${this.props.orderId}`;
         try {

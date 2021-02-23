@@ -64,6 +64,22 @@ export default class ClientMRDsTab extends Component {
         this.onDatePicker = this.onDatePicker.bind(this);
     }
 
+    _showCashOrderModal = (order) => {
+        const {clientId, client, setModal} = this.props;
+
+        setModal(MODALS.CASH_ORDER, {
+            cashOrderEntity: {
+                clientId: clientId,
+                clientName: client.name,
+                clientSurname: client.surname,
+                increase: order.dueAmountWithTaxes,
+                orderId: order.orderId,
+                orderNum: order.orderNum,
+            },
+            fromClient: true,
+        })
+    }
+
     componentDidMount() {
         const { clientId } = this.props;
         
@@ -169,16 +185,13 @@ export default class ClientMRDsTab extends Component {
                     fetchCashOrderEntity={fetchCashOrderEntity}
                     // openPrint={() => this._onOpenPrintCashOrderModal(cashOrderEntity)}
                     openPrint={this._loadPrintModal}
+                    showCashOrderModal={this._showCashOrderModal}
                 />
 
-                {cashOrderModalMounted ? (
-                    <CashOrderModal
-                        resetModal={this._onCloseCashOrderModal}
-                        visible={modal}
-                        clearCashOrderForm={clearCashOrderForm}
-                        modalProps={modalProps}
-                    />
-                ) : null}
+                <CashOrderModal
+                    visible={modal}
+                    modalProps={modalProps}
+                />
             </>
         );
     }

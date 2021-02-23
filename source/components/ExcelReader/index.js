@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Icon } from 'antd';
+import { Button, Icon } from 'antd';
 import XLSX from 'xlsx';
 import styled from 'styled-components';
 
@@ -77,9 +77,14 @@ export class ExcelReader extends Component {
     render() {
         return (
             <StyledUpload>
+                
                 <label htmlFor='file'>
-                    <Icon type='upload' />
-                    <FormattedMessage id='storage.import_excel_with_products' />
+                    <div>
+                        <Button type={'primary'} style={{pointerEvents: "none"}}>
+                            <Icon type='upload' style={{fontSize: 18, marginRight: 4}}/>
+                            <FormattedMessage id='storage.import_excel_with_products' />
+                        </Button>
+                    </div>
                 </label>
                 <input
                     type='file'
@@ -94,15 +99,11 @@ export class ExcelReader extends Component {
 }
 
 const StyledUpload = styled.div`
-    background: var(--primary);
-    color: white;
-    padding: 7px;
-    flex-wrap: nowrap;
-    display: flex;
-    border: 1px solid var(--primary);
-
+    
     & > label {
         cursor: pointer;
+        z-index: 200;
+        display: block;
     }
 
     & > input {

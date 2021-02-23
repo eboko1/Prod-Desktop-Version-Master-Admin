@@ -54,7 +54,6 @@ export default class SyncExportPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.setState({
             	tableData: data,
             })

@@ -21,6 +21,12 @@ export const FETCH_SELECTED_CLIENT_ORDERS_SUCCESS = `${prefix}/FETCH_SELECTED_CL
 export const FETCH_SEARCH_ORDER = `${prefix}/FETCH_SEARCH_ORDER`;
 export const FETCH_SEARCH_ORDER_SUCCESS = `${prefix}/FETCH_SEARCH_ORDER_SUCCESS`;
 
+export const FETCH_SEARCH_STORE_DOC = `${prefix}/FETCH_SEARCH_STORE_DOC`;
+export const FETCH_SEARCH_STORE_DOC_SUCCESS = `${prefix}/FETCH_SEARCH_STORE_DOC_SUCCESS`;
+
+export const FETCH_ANALYTICS = `${prefix}/FETCH_ANALYTICS`;
+export const FETCH_ANALYTICS_SUCCESS = `${prefix}/FETCH_ANALYTICS_SUCCESS`;
+
 export const SET_SELECTED_CLIENT_ORDERS_FILTERS = `${prefix}/SET_SELECTED_CLIENT_ORDERS_FILTERS`;
 
 export const CREATE_CASH_ORDER = `${prefix}/CREATE_CASH_ORDER`;
@@ -43,6 +49,10 @@ export const ON_CHANGE_ORDER_SEARCH_QUERY = `${prefix}/ON_CHANGE_ORDER_SEARCH_QU
 export const ON_CHANGE_ORDER_SEARCH_QUERY_REQUEST = `${prefix}/ON_CHANGE_ORDER_SEARCH_QUERY_REQUEST`;
 export const ON_CHANGE_ORDER_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_ORDER_SEARCH_QUERY_SUCCESS`;
 
+export const ON_CHANGE_STORE_DOC_SEARCH_QUERY = `${prefix}/ON_CHANGE_STORE_DOC_SEARCH_QUERY`;
+export const ON_CHANGE_STORE_DOC_SEARCH_QUERY_REQUEST = `${prefix}/ON_CHANGE_STORE_DOC_SEARCH_QUERY_REQUEST`;
+export const ON_CHANGE_STORE_DOC_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_STORE_DOC_SEARCH_QUERY_SUCCESS`;
+
 export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
 export const ON_CLIENT_SELECT_SUCCESS = `${prefix}/ON_CLIENT_SELECT_SUCCESS`;
 export const ON_CLIENT_RESET = `${prefix}/ON_CLIENT_RESET`;
@@ -50,7 +60,13 @@ export const ON_CLIENT_RESET = `${prefix}/ON_CLIENT_RESET`;
 export const ON_ORDER_SELECT = `${prefix}/ON_ORDER_SELECT`;
 export const ON_ORDER_RESET = `${prefix}/ON_ORDER_RESET`;
 
+export const ON_STORE_DOC_SELECT = `${prefix}/ON_STORE_DOC_SELECT`;
+export const ON_STORE_DOC_RESET = `${prefix}/ON_STORE_DOC_RESET`;
+
 export const SET_ORDER_SEARCH_FILTERS = `${prefix}/SET_ORDER_SEARCH_FILTERS`;
+export const SET_ANALYTICS_FETCHING_STATE = `${prefix}/SET_ANALYTICS_FETCHING_STATE`;
+
+export const SET_STORE_DOC_SEARCH_FILTERS = `${prefix}/SET_STORE_DOC_SEARCH_FILTERS`;
 
 export const ON_CLIENT_FIELDS_RESET = `${prefix}/ON_CLIENT_FIELDS_RESET`;
 
@@ -98,6 +114,13 @@ const ReducerState = {
             page: 1,
         },
     },
+    searchStoreDocsResult: {
+        searching: true,
+        storeDocs: [],
+        filters:   {
+            page: 1,
+        },
+    },
     counterpartyList: [],
     selectedClient:   {
         clientOrders: {},
@@ -106,6 +129,9 @@ const ReducerState = {
         },
     },
     selectedOrder: {},
+    selectedStoreDoc: {},
+    analytics: [],
+    analyticsFetchingState: false,
 };
 /* eslint-disable complexity */
 export default function reducer(state = ReducerState, action) {
@@ -128,6 +154,12 @@ export default function reducer(state = ReducerState, action) {
                     ...state.fields,
                     ...payload,
                 },
+            };
+
+        case FETCH_ANALYTICS_SUCCESS:
+            return {
+                ...state,
+                analytics: payload
             };
 
         case FETCH_CASH_ORDER_FORM_SUCCESS:
@@ -165,6 +197,16 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case ON_CHANGE_STORE_DOC_SEARCH_QUERY_REQUEST:
+            return {
+                ...state,
+                searchStoreDocsResult: {
+                    ...state.searchStoreDocsResult,
+                    storeDocs: [],
+                    searching: true,
+                },
+            };
+
         case ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS:
             return {
                 ...state,
@@ -182,6 +224,17 @@ export default function reducer(state = ReducerState, action) {
                     orders:    duplicate(payload.orders),
                     searching: false,
                     count:     payload.count,
+                },
+            };
+
+        case ON_CHANGE_STORE_DOC_SEARCH_QUERY_SUCCESS:
+            return {
+                ...state,
+                searchStoreDocsResult: {
+                    ...state.searchStoreDocsResult,
+                    storeDocs: payload.list,
+                    searching: false,
+                    count:     payload.stats.count,
                 },
             };
 
@@ -220,9 +273,14 @@ export default function reducer(state = ReducerState, action) {
                         name:  'orderId',
                         value: null,
                     },
+                    storeDocId: {
+                        name:  'storeDocId',
+                        value: null,
+                    },
                 },
-                selectedClient: ReducerState.selectedClient,
-                selectedOrder:  ReducerState.selectedOrder,
+                selectedClient:   ReducerState.selectedClient,
+                selectedOrder:    ReducerState.selectedOrder,
+                selectedStoreDoc: ReducerState.selectedStoreDoc,
             };
         }
 
@@ -239,6 +297,11 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 selectedOrder: payload,
+                storeDocId: {
+                    name:  'storeDocId',
+                    value: payload.id,
+                },
+                selectedStoreDoc: ReducerState.selectedStoreDoc
             };
 
         case ON_CLIENT_FIELDS_RESET:
@@ -271,6 +334,41 @@ export default function reducer(state = ReducerState, action) {
             };
         }
 
+        case ON_STORE_DOC_SELECT:
+            return {
+                ...state,
+                selectedStoreDoc: payload,
+                fields: {
+                    ...state.fields,
+                    storeDocId: {
+                        name:  'storeDocId',
+                        value: payload.id,
+                    },
+                    clientId: {
+                        name:  'clientId',
+                        value: payload.counterpartClientId,
+                    },
+                },
+            };
+
+        case ON_STORE_DOC_RESET: {
+            return {
+                ...state,
+                fields: {
+                    ...state.fields,
+                    storeDocId: {
+                        name:  'storeDocId',
+                        value: null,
+                    },
+                    clientId: {
+                        name:  'clientId',
+                        value: null,
+                    },
+                },
+                selectedStoreDoc: ReducerState.selectedStoreDoc
+            };
+        }
+
         case SET_SELECTED_CLIENT_ORDERS_FILTERS:
             return {
                 ...state,
@@ -294,6 +392,24 @@ export default function reducer(state = ReducerState, action) {
                     },
                 },
             };
+        
+        case SET_STORE_DOC_SEARCH_FILTERS:
+            return {
+                ...state,
+                searchStoreDocsResult: {
+                    ...state.searchStoreDocsResult,
+                    filters: {
+                        ...state.searchStoreDocsResult.filters,
+                        ...payload,
+                    },
+                },
+            };
+        
+        case SET_ANALYTICS_FETCHING_STATE: 
+            return {
+                ...state,
+                analyticsFetchingState: payload
+            };
 
         case FETCH_SELECTED_CLIENT_ORDERS_SUCCESS:
             return {
@@ -309,6 +425,17 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 searchOrdersResult: {
                     ...state.searchOrdersResult,
+                    orders:    duplicate(payload.orders),
+                    searching: false,
+                    count:     payload.count,
+                },
+            };
+
+        case FETCH_SEARCH_STORE_DOC_SUCCESS:
+            return {
+                ...state,
+                searchStoreDocsResult: {
+                    ...state.searchStoreDocsResult,
                     orders:    duplicate(payload.orders),
                     searching: false,
                     count:     payload.count,
@@ -332,6 +459,9 @@ export const selectCashOrderNextId = state =>
 export const selectCounterpartyList = state =>
     state.forms.cashOrderForm.counterpartyList;
 
+export const selectAnalytics = state =>
+    state.forms.cashOrderForm.analytics;
+
 export const selectClientOrders = state =>
     state.forms.cashOrderForm.selectedClient.clientOrders;
 
@@ -341,9 +471,14 @@ export const selectClientOrdersFilters = state =>
 export const selectSearchOrdersResultFilters = state =>
     state.forms.cashOrderForm.searchOrdersResult.filters;
 
+export const selectSearchStoreDocsResultFilters = state =>
+    state.forms.cashOrderForm.searchStoreDocsResult.filters;
+
 export const selectClient = state => state.forms.cashOrderForm.selectedClient;
 
 export const selectOrder = state => state.forms.cashOrderForm.selectedOrder;
+
+export const selectStoreDoc = state => state.forms.cashOrderForm.selectStoreDoc;
 
 /**
  * Action Creators
@@ -375,6 +510,15 @@ export const fetchCashOrderForm = endpoint => ({
 export const fetchCashOrderFormSuccess = data => ({
     type:    FETCH_CASH_ORDER_FORM_SUCCESS,
     payload: data,
+});
+
+export const fetchAnalytics = () => ({
+    type: FETCH_ANALYTICS,
+});
+
+export const fetchAnalyticsSuccess = (analytics) => ({
+    type: FETCH_ANALYTICS_SUCCESS,
+    payload: analytics
 });
 
 export const createCashOrder = payload => ({
@@ -423,6 +567,15 @@ export const onOrderReset = () => ({
     type: ON_ORDER_RESET,
 });
 
+export const onStoreDocSelect = storeDoc => ({
+    type:    ON_STORE_DOC_SELECT,
+    payload: storeDoc,
+});
+
+export const onStoreDocReset = () => ({
+    type: ON_STORE_DOC_RESET,
+});
+
 export const onClientSelectSuccess = clientOrders => ({
     type:    ON_CLIENT_SELECT_SUCCESS,
     payload: clientOrders,
@@ -456,8 +609,27 @@ export const onChangeOrderSearchQuerySuccess = data => ({
     payload: data,
 });
 
+export const onChangeStoreDocSearchQuery = searchQuery => ({
+    type:    ON_CHANGE_STORE_DOC_SEARCH_QUERY,
+    payload: searchQuery,
+});
+
+export const onChangeStoreDocSearchQueryRequest = () => ({
+    type: ON_CHANGE_STORE_DOC_SEARCH_QUERY_REQUEST,
+});
+
+export const onChangeStoreDocSearchQuerySuccess = data => ({
+    type:    ON_CHANGE_STORE_DOC_SEARCH_QUERY_SUCCESS,
+    payload: data,
+});
+
 export const setOrderSearchFilters = filters => ({
     type:    SET_ORDER_SEARCH_FILTERS,
+    payload: filters,
+});
+
+export const setStoreDocSearchFilters = filters => ({
+    type:    SET_STORE_DOC_SEARCH_FILTERS,
     payload: filters,
 });
 
@@ -479,9 +651,23 @@ export const fetchSearchOrderSuccess = orders => ({
     payload: orders,
 });
 
+export const fetchSearchStoreDoc = () => ({
+    type: FETCH_SEARCH_STORE_DOC,
+});
+
+export const fetchSearchStoreDocSuccess = storeDocs => ({
+    type:    FETCH_SEARCH_STORE_DOC_SUCCESS,
+    payload: orders,
+});
+
 export const setSelectedClientOrdersFilters = filters => ({
     type:    SET_SELECTED_CLIENT_ORDERS_FILTERS,
     payload: filters,
+});
+
+export const setAnalyticsFetchingState = (val) => ({
+    type: SET_ANALYTICS_FETCHING_STATE,
+    payload: val
 });
 
 export const onClientFieldsReset = () => ({

@@ -12,12 +12,14 @@
     "cash-order-form.sum": "Sum",
     "cash-order-form.sum.placeholder": "Enter sum",
     "cash-order-form.print": "Print",
-    "cash-order-form.search_by_client_or_order": "Search by client or order",
+    "cash-order-form.search_by_client_or_document": "Search by client or document",
     "cash-order-form.switch_by_client": "by client",
     "cash-order-form.switch_by_order": "by order",
+    "cash-order-form.switch_by_document": "by document",
     "cash-order-form.search": "Search",
     "cash-order-form.search_by_client": "Search by client",
     "cash-order-form.search_by_order": "Search by order",
+    "cash-order-form.search_by_document": "Search by document",
     "cash-order-form.search_by_employees": "Search by employees",
     "cash-order-form.search_by_suppliers": "Search by suppliers",
     "cash-order-form.select_employee": "Select employee",
@@ -32,8 +34,7 @@
     "cash-order-form.increase": "Earnings",
     "cash-order-form.decrease": "Spending",
     "cash-order-form.other_counterparty.placeholder": "Enter your counterparty",
-    "cash-order-form.client_and_order_are_required": "Client and order are required!",
-    "cash-order-form.dafault_tag" : "Parts & labors sales"
+    "cash-order-form.client_and_order_are_required": "Client and order are required!"
   },
   "ru": {
     "cash-order-form.cash_order_num": "№ ордера",
@@ -48,12 +49,14 @@
     "cash-order-form.sum": "Сумма",
     "cash-order-form.sum.placeholder": "Введите сумму",
     "cash-order-form.print": "Печатать",
-    "cash-order-form.search_by_client_or_order": "Искать по клиенту или заказу",
+    "cash-order-form.search_by_client_or_document": "Искать по клиенту или документу",
     "cash-order-form.switch_by_client": "по клиенту",
     "cash-order-form.switch_by_order": "по заказу",
+    "cash-order-form.switch_by_document": "по документу",
     "cash-order-form.search": "Поиск",
     "cash-order-form.search_by_client": "Искать по клиенту",
     "cash-order-form.search_by_order": "Искать по заказу",
+    "cash-order-form.search_by_document": "Искать по документу",
     "cash-order-form.search_by_employees": "Искать по сотрудникам",
     "cash-order-form.search_by_suppliers": "Искать по поставщикам",
     "cash-order-form.select_employee": "Выберите сотрудника",
@@ -69,8 +72,7 @@
     "cash-order-form.decrease": "Расход",
     "cash-order-form.other_counterparty": "Введите контрагента",
     "cash-order-form.other_counterparty.placeholder": "Укажите контрагента",
-    "cash-order-form.client_and_order_are_required": "Клиент и заказ обязательны!",
-    "cash-order-form.dafault_tag" : "Продажа услуг / запчастей"
+    "cash-order-form.client_and_order_are_required": "Клиент и заказ обязательны!"
   },
   "uk": {
     "cash-order-form.cash_order_num": "№ ордера",
@@ -85,12 +87,14 @@
     "cash-order-form.sum": "Сума",
     "cash-order-form.sum.placeholder": "Вкажіть суму",
     "cash-order-form.print": "Друкувати",
-    "cash-order-form.search_by_client_or_order": "Шукати за клієнтом або замовленням",
+    "cash-order-form.search_by_client_or_document": "Шукати за клієнтом або документом",
     "cash-order-form.switch_by_client": "за клієнтом",
     "cash-order-form.switch_by_order": "за замовленням",
+    "cash-order-form.switch_by_document": "за документом",
     "cash-order-form.search": "Пошук",
     "cash-order-form.search_by_client": "Шукати за клієнтом",
     "cash-order-form.search_by_order": "Шукати за замовленням",
+    "cash-order-form.search_by_document": "Шукати за документом",
     "cash-order-form.search_by_employees": "Шукати за співробітниками",
     "cash-order-form.search_by_suppliers": "Шукати за постачальниками",
     "cash-order-form.select_employee": "Оберіть співробітника",
@@ -105,7 +109,6 @@
     "cash-order-form.increase": "Дохід",
     "cash-order-form.decrease": "Витрата",
     "cash-order-form.other_counterparty.placeholder": "Вкажіть контрагента",
-    "cash-order-form.client_and_order_are_required": "Клієнт та замовлення обов'язкові!",
-    "cash-order-form.dafault_tag" : "Продаж послуг / запчастин"
+    "cash-order-form.client_and_order_are_required": "Клієнт та замовлення обов'язкові!"
   }
 }

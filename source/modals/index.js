@@ -27,12 +27,17 @@ import OilModal from './OilModal';
 import ComplexesModal from './ComplexesModal';
 import VehicleLocationModal from './VehicleLocationModal';
 import LocationHistoryModal from './LocationHistoryModal';
-import ReportOrdersFilterModal from './ReportModals/ReportOrdersFilterModal';
-import ReportOrdersExportModal from './ReportModals/ReportOrdersExportModal';
-import ReportAnalyticsModal from './ReportModals/ReportAnalyticsModal';
 import StoreProductTrackingModal from './StoreProductTrackingModal';
 import SyncImportExportModal from './SyncImportExportModal';
 import SyncConflictsModal from './SyncConflictsModal';
+
+//Report modals
+import ReportOrdersFilterModal from './ReportModals/ReportOrdersFilterModal';
+import ReportOrdersExportModal from './ReportModals/ReportOrdersExportModal';
+import ReportAnalyticsModal from './ReportModals/ReportAnalyticsModal';
+
+//Common modals
+import ConfirmModal from './CommonModals/ConfirmModal';
 
 export {
     UniversalFiltersModal,
@@ -67,6 +72,7 @@ export {
     ReportOrdersFilterModal,
     ReportOrdersExportModal,
     ReportAnalyticsModal,
+    ConfirmModal,
     StoreProductTrackingModal,
     SyncImportExportModal,
     SyncConflictsModal,

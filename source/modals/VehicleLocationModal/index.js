@@ -124,7 +124,6 @@ export default class VehicleLocationModal extends Component {
             postData.counterpartBusinessLocationId = selectedLocation;
         }
 
-        console.log(postData)
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/business_locations/movements`;

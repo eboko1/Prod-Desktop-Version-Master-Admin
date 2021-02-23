@@ -72,6 +72,7 @@ const StoreProductModal = props => {
             footer={ null }
             width={ 720 }
             maskClosable={false}
+            zIndex={300}
         >
             <StoreProductForm
                 editing={ editing }

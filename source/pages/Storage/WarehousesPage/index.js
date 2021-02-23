@@ -21,7 +21,6 @@ const MAIN = 'MAIN',
       REPAIR_AREA= 'REPAIR_AREA';
 
 const mapStateToProps = state => {
-    console.log(state);
     return {
         user: state.auth,
         warehouses: state.warehouses.warehouses,
@@ -238,7 +237,6 @@ class WarehousesPage extends Component {
     }
 
     render() {
-        console.log(this);
         const { warehouses, isMain, isReserve, isTool, isRepairArea, editMode, warehouse, modalVisible } = this.state;
         return (
             <Layout

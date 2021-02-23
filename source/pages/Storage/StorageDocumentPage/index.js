@@ -8,14 +8,17 @@ import { Dropdown, Button, Icon, Menu, notification, Modal, Table, Input, InputN
 import _ from 'lodash';
 import moment from 'moment';
 import { saveAs } from 'file-saver';
+import {setModal, resetModal, MODALS} from 'core/modals/duck';
 
 // proj
 import { Layout, Spinner } from 'commons';
 import { StorageDocumentForm } from 'forms';
 import book from 'routes/book';
 import { type } from 'ramda';
-import { DetailStorageModal } from 'modals';
+import { DetailStorageModal, ToSuccessModal, CashOrderModal } from 'modals';
 import { permissions, isForbidden } from 'utils';
+import { Barcode } from 'components';
+
 // own
 const Option = Select.Option;
 const { error } = Modal;
@@ -24,7 +27,14 @@ const dateFormat = 'DD.MM.YYYY';
 const mapStateToProps = state => {
     return {
         user: state.auth,
+        modal:                 state.modals.modal,
+        modalProps:            state.modals.modalProps,
     };
+};
+
+const mapDispatchToProps = {
+    setModal,
+    resetModal,
 };
 
 const headerIconStyle = {
@@ -72,7 +82,7 @@ const typeToDocumentType = {
 
 @connect(
     mapStateToProps,
-    null,
+    mapDispatchToProps,
 )
 @injectIntl
 class StorageDocumentPage extends Component {
@@ -108,12 +118,12 @@ class StorageDocumentPage extends Component {
         this.editDocProduct = this.editDocProduct.bind(this);
     }
 
-    updateFormData(formData, saveMode = false) {
+    updateFormData(formData, saveMode = false, callback) {
         Object.entries(formData).map((field)=>{
             this.state.formData[field[0]] = field[1];
         })
         if(saveMode) {
-            this.updateDocument(saveMode);
+            this.updateDocument(saveMode, callback);
         }
         else {
             this.setState({
@@ -265,6 +275,9 @@ class StorageDocumentPage extends Component {
                 else if(formData.documentType == CLIENT) {
                     createData.counterpartClientId = formData.counterpartId;
                 }
+                else if(formData.documentType == OWN_CONSUMPTION) {
+                    createData.counterpartEmployeeId = formData.counterpartId;
+                }
                 break;
             case TRANSFER:
                 createData.type = EXPENSE;
@@ -325,7 +338,7 @@ class StorageDocumentPage extends Component {
         });
     }
 
-    updateDocument(saveMode = false) {
+    updateDocument(saveMode = false, callback) {
         this.setState({loading: true});
         if(!this.verifyFields()) {
             return;
@@ -360,10 +373,6 @@ class StorageDocumentPage extends Component {
                 createData.counterpartBusinessSupplierId = formData.counterpartId;
                 break;
         }
-
-        if(formData.status == DONE && formData.type == EXPENSE) {
-            return;
-        } 
 
         var productsError = false;
 
@@ -429,9 +438,9 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             if(data.updated) {
                 that.getStorageDocument();
+                if(callback) callback;
             } else {
                 const availableInfo = [];
                 data.notAvailableProducts.map(({available, reservedCount, productId: {product}})=>{
@@ -720,6 +729,9 @@ class StorageDocumentPage extends Component {
 
             data.counterpartId = data.counterpartBusinessSupplierId || data.counterpartClientId || data.counterpartEmployeeId;
             data.payUntilDatetime = data.payUntilDatetime && moment(data.payUntilDatetime);
+            data.sum = Math.abs(data.sum);
+            data.sellingSum = Math.abs(data.sellingSum);
+            data.quantity = Math.abs(data.quantity);
             data.docProducts.map((elem, key)=>{
                 elem.brandId = elem.product.brandId;
                 elem.brandName = elem.product.brand && elem.product.brand.name;
@@ -792,7 +804,6 @@ class StorageDocumentPage extends Component {
                 loading: false,
                 fetched: true,
             })
-            console.log(that);
         })
         .catch(function (error) {
             console.log('error', error);
@@ -845,7 +856,9 @@ class StorageDocumentPage extends Component {
             toolWarehouseId,
             repairAreaWarehouseId,
         } = this.state;
-        const { id, intl: {formatMessage}, user } = this.props;
+
+        const { id, intl: {formatMessage}, user, modal, setModal, resetModal, modalProps } = this.props;
+
         const dateTime = formData.createdDatetime || new Date();
         const titleType = " " + formatMessage({id: `storage_document.docType.${formData.type}.${formData.documentType}`}).toLowerCase();
 
@@ -876,13 +889,50 @@ class StorageDocumentPage extends Component {
                     </div>
                 }
                 controls={
-                    <div style={{display: 'flex'}}>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
                         {id ? 
-                        <div style={{display: 'flex'}}>
-                            {formData.status != DONE && 
+                        <div style={{display: 'flex', alignItems: 'center'}}>
+                            {formData.status != DONE ? 
                                 <ChangeStatusDropdown
+                                    type={formData.type}
+                                    documentType={formData.documentType}
                                     updateDocument={this.updateFormData}
-                                />
+                                    setModal={setModal}
+                                /> :
+                                <> 
+                                    {formData.type == EXPENSE &&
+                                    formData.documentType == CLIENT &&
+                                    formData.remainSum > 0 &&
+                                        <Icon
+                                            type='dollar'
+                                            onClick={()=>{
+                                                const client = clientList.find((client)=>client.clientId==formData.counterpartId);
+                                                setModal(MODALS.CASH_ORDER, {
+                                                    cashOrderEntity: {
+                                                        storeDocId: id,
+                                                        clientId: formData.counterpartClientId,
+                                                        documentNumber: formData.documentNumber,
+                                                        clientName: client.name,
+                                                        clientSurname: client.surname,
+                                                        increase: Math.round(formData.remainSum*100)/100,
+                                                        type: "INCOME",
+                                                        storeDoc: formData,
+                                                    },
+                                                    fromStoreDoc: true,
+                                                })
+                                            }}
+                                            style={ {
+                                                ...headerIconStyle,
+                                            } }
+                                        />
+                                    }
+                                    <Barcode
+                                        value={formData.documentNumber}
+                                        iconStyle={{
+                                            ...headerIconStyle,
+                                        }}
+                                    />
+                                </>
                             }
                             <ReportsDropdown
                                 id={id}
@@ -1007,6 +1057,31 @@ class StorageDocumentPage extends Component {
                     reserveWarehouseId={reserveWarehouseId}
                     toolWarehouseId={toolWarehouseId}
                     repairAreaWarehouseId={repairAreaWarehouseId}
+                    setModal={setModal}
+                />
+                <ToSuccessModal
+                    visible={modal}
+                    resetModal={resetModal}
+                    remainPrice={formData.remainSum}
+                    clientId={
+                        formData.documentType == CLIENT ? 
+                            formData.counterpartId : 
+                            undefined
+                    }
+                    storeDocId={id}
+                    onSubmit={()=>{
+                        this.updateFormData({status: DONE}, true, ()=>{
+                            window.location.reload()
+                        });
+                    }}
+                />
+                <CashOrderModal
+                    fromStoreDoc
+                    visible={modal}
+                    modalProps={modalProps}
+                    fetchStoreDoc={()=>{
+                        getStorageDocument();
+                    }}
                 />
             </Layout>
         );
@@ -1018,6 +1093,10 @@ export default StorageDocumentPage;
 class ChangeStatusDropdown extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            payModalVisible: false,
+        }
     }
 
     render() {
@@ -1026,7 +1105,11 @@ class ChangeStatusDropdown extends React.Component {
             <Menu>
                 <Menu.Item
                     onClick={()=>{
-                        this.props.updateDocument({status: DONE}, true)
+                        if(this.props.type == EXPENSE && this.props.documentType == CLIENT) {
+                            this.props.setModal(MODALS.TO_SUCCESS)
+                        } else {
+                            this.props.updateDocument({status: DONE}, true);
+                        }
                     }}
                 >
                     <FormattedMessage id='storage_document.status_confirmed' />
@@ -1233,7 +1316,6 @@ class ReturnModal extends React.Component {
     }
 
     getStorageProducts() {
-        console.log(this);
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/store_products?all=true`;
@@ -1291,7 +1373,7 @@ class ReturnModal extends React.Component {
             data.map((elem, i)=>{
                 elem.key = i;
                 elem.quantity = elem.returnQuantity;
-                elem.sum = Math.abs(elem.sum);
+                elem.sum = elem.sum;
             })
             that.setState({
                 returnDataSource: data,
@@ -1979,7 +2061,6 @@ class AutomaticOrderCreationModal extends React.Component {
                     elem.groupId = elem.storeGroupId;
                     elem.tradeCode = elem.supplierPartNumber;
                     elem.checked = that.props.documentType == SUPPLIER;
-                    console.log(elem)
                 })
                 that.setState({
                     dataSource: data,
