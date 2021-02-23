@@ -73,7 +73,7 @@
     "navigation.locations_movement": "Vehicles Movement",
     "navigation.sync_import": "Synchronization / Import",
     "navigation.sync_export": "Synchronization / Backup",
-    "navigation.analytics": "Analytics",
+    "navigation.report_analytics": "Analytics",
     "navigation.barcode": "Barcode"
   },
   "ru": {
@@ -150,7 +150,7 @@
     "navigation.locations_movement": "Движение Авто по локациям",
     "navigation.sync_import": "Синхронизация / Импорт",
     "navigation.sync_export": "Синхронизация / Бэкап",
-    "navigation.analytics": "Аналитика",
+    "navigation.report_analytics": "Аналитика",
     "navigation.barcode": "Штрих-код"
   },
   "uk": {
@@ -227,7 +227,7 @@
     "navigation.locations_movement": "Рух Авто по локаціям",
     "navigation.sync_import": "Синхронізація / Імпорт",
     "navigation.sync_export": "Синхронізація / Бекап",
-    "navigation.analytics": "Аналітика",
+    "navigation.report_analytics": "Аналітика",
     "navigation.barcode": "Штрих-код"
   }
 }

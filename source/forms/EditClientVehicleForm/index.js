@@ -16,6 +16,7 @@ import {
     handleError,
 } from "core/forms/editClientVehicleForm/duck";
 import { permissions, isForbidden } from "utils";
+import { Barcode } from "components";
 
 // own
 import Styles from "./styles.m.css";
@@ -165,7 +166,7 @@ export class EditClientVehicleForm extends Component {
                     <List.Item className={Styles.listItem}>
                         <Form>
                             <Row gutter={8} type="flex" align="bottom">
-                                <Col span={8}>
+                                <Col span={5}>
                                     {vehicleLabel(item, index)}{" "}
                                     {editableItem === index && !editVehicle && (
                                         <Button
@@ -234,7 +235,7 @@ export class EditClientVehicleForm extends Component {
                                         item.number
                                     )}
                                 </Col>
-                                <Col span={4}>
+                                <Col span={3}>
                                     {editableItem === index ? (
                                         <DecoratedInput
                                             fields={{}}
@@ -253,7 +254,42 @@ export class EditClientVehicleForm extends Component {
                                         item.vin
                                     )}
                                 </Col>
-                                <Col span={3}>
+                                <Col span={4}>
+                                    {editableItem === index ? (
+                                        <div style={{display: "flex", alignItems: "center"}}>
+                                        <DecoratedInput
+                                            formItem
+                                            disabled
+                                            className={
+                                                Styles.editClientVehicleFormItem
+                                            }
+                                            field={`clientVehicles[${index}].barcode`}
+                                            initialValue={item.barcode}
+                                            hasFeedback
+                                            getFieldDecorator={
+                                                this.props.form
+                                                    .getFieldDecorator
+                                            }
+                                        />
+                                        <Barcode
+                                            value={item.barcode}
+                                            iconStyle={{
+                                                fontSize: 24,
+                                                marginLeft: 4,
+                                            }}
+                                        />
+                                        </div>
+                                    ) : (
+                                        item.barcode && 
+                                        <Barcode
+                                            value={item.barcode}
+                                            iconStyle={{
+                                                fontSize: 24
+                                            }}
+                                        />
+                                    )}
+                                </Col>
+                                <Col span={2}>
                                     {!isEditForbidden ? (
                                         editableItem === index ? (
                                             this.renderSubmitEditIcon(
@@ -275,8 +311,8 @@ export class EditClientVehicleForm extends Component {
                                         )
                                     ) : null}
                                 </Col>
-                                <Col span={3}>
-                                    {!isForbidden(user, permissions.ACCESS_CLIENTS_VEHICLE_TRANSFER) && !isEditForbidden && editableItem != index ? (
+                                <Col span={2}>
+                                    {!isForbidden(user, permissions.ACCESS_CLIENTS_VEHICLE_TRANSFER) && !isEditForbidden ? (
                                         <ClientVehicleTransfer
                                             clientId={clientId}
                                             vehicleId={item.id}
@@ -284,7 +320,7 @@ export class EditClientVehicleForm extends Component {
                                         />
                                     ) : null}
                                 </Col>
-                                <Col span={3}>
+                                <Col span={2}>
                                     {!isEditForbidden ? (
                                         <Icon
                                             type="delete"

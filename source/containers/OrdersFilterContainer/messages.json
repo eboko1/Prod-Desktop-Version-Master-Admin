@@ -1,19 +1,17 @@
 {
     "en": {
-        "orders-filter.search_placeholder":
-            "Search by number, client, mechanic, phone, car...",
-        "orders-filter.filter_by_refusal_reason": "Filter by 'Refusal reason'"
+        "orders-filter.search_placeholder": "Search by number, client, mechanic, phone, car...",
+        "orders-filter.filter_by_refusal_reason": "Filter by 'Refusal reason'",
+        "orders-filter.analytics": "Analytics"
     },
     "ru": {
-        "orders-filter.search_placeholder":
-            "Поиск по номеру, клиенту, мастеру, телефону, авто...",
-        "orders-filter.filter_by_refusal_reason":
-            "Фильтровать по 'Причине отмены'"
+        "orders-filter.search_placeholder": "Поиск по номеру, клиенту, мастеру, телефону, авто...",
+        "orders-filter.filter_by_refusal_reason": "Фильтровать по 'Причине отмены'",
+        "orders-filter.analytics": "Аналитика"
     },
     "uk": {
-        "orders-filter.search_placeholder":
-            "Шукати по номеру, клієнту, майстру, телефону, авто...",
-        "orders-filter.filter_by_refusal_reason":
-            "Фільтрувати за 'Причиною відміни'"
+        "orders-filter.search_placeholder": "Шукати по номеру, клієнту, майстру, телефону, авто...",
+        "orders-filter.filter_by_refusal_reason": "Фільтрувати за 'Причиною відміни'",
+        "orders-filter.analytics": "Аналітика"
     }
 }

@@ -32,6 +32,7 @@
     "deepmerge": "^3.1.0",
     "file-saver": "^2.0.0",
     "history": "~4.7.2",
+    "jsbarcode": "^3.11.3",
     "less": "^3.9.0",
     "localforage": "^1.7.3",
     "lodash": "^4.17.19",
@@ -157,5 +158,14 @@
     "webpack-merge": "~4.2.1",
     "webpack-serve": "~2.0.3",
     "whatwg-fetch": "^3.0.0"
-  }
+  },
+  "description": "## Project flow",
+  "main": ".commitlintrc.js",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.carbook.ua/carbook/my.carbook.pro"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

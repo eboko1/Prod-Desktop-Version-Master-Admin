@@ -15,7 +15,7 @@ import {
     RolePage,
     ClientsPage,
     ClientPage,
-    AnalyticsPage,
+    ReportAnalyticsPage,
     EmployeesPage,
     AddEmployeePage,
     EditEmployeePage,
@@ -121,7 +121,7 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
-                    component={AnalyticsPage}
+                    component={ReportAnalyticsPage}
                     path={book.analytics}
                 />
                 <Route

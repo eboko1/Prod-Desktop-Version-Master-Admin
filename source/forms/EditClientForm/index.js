@@ -61,6 +61,7 @@ export class EditClientForm extends Component {
                                         sex: clientFormData.sex,
                                         status: clientFormData.status,
                                         source: clientFormData.source,
+                                        barcode: clientFormData.barcode,
                                         paymentRespite: clientFormData.paymentRespite,
                                         phones: clientFormData.phones
                                             .filter(

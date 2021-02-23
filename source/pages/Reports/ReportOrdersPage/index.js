@@ -218,7 +218,7 @@ export default class ReportOrdersPage extends Component {
                             onClick={this.onOpenExportModal}
                             disabled={isForbidden(user, permissions.ACCESS_REPORT_PROFIT_FROM_ORDERS_PRINT)}
                         >
-                            <FormattedMessage id="report_orders_page_page.download_report" />
+                            <FormattedMessage id="report_orders_page.download_report" />
                         </StyledButton>
                     </div>
                 }

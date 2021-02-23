@@ -21,6 +21,7 @@ import {
 // proj
 import { Layout, Spinner } from 'commons';
 import { permissions, isForbidden } from 'utils';
+import { Barcode } from 'components';
 
 // own
 import Styles from './styles.m.css';
@@ -74,6 +75,21 @@ export default class LaborsPage extends Component {
                 },
                 key:       'laborCode',
                 dataIndex: 'laborCode',
+                render: (data, row)=>{
+                    return (
+                        <div style={{display: 'flex'}}>
+                            <Barcode
+                                value={`LBS-${this.props.user.businessId}-${row.laborId}`}
+                                iconStyle={{
+                                    margin: "0 8px 0 0",
+                                    fornSize: 18,
+                                    verticalAlign: "sub",
+                                }}
+                            />
+                            {data}
+                        </div>  
+                    )
+                }
             },
             {
                 title:  ()=>{
@@ -401,7 +417,7 @@ export default class LaborsPage extends Component {
                                 }
                                 onConfirm={ () => {
                                     this.state.selectedRows.map((elem)=>{
-                                        if(elem.businessId)
+                                        if(elem.laborBusinessId)
                                             elem.deleted = true;
                                     })
                                     this.setState({});
@@ -418,7 +434,7 @@ export default class LaborsPage extends Component {
                 },
                 key: 'delete',
                 render: (row)=>{
-                    return Boolean(row.businessId) ? (
+                    return Boolean(row.laborBusinessId) ? (
                         <Popconfirm
                             title={
                                 <FormattedMessage id='add_order_form.delete_confirm' />

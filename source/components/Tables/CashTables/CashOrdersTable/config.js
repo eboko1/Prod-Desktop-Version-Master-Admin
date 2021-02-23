@@ -58,7 +58,7 @@ export function columnsConfig(props) {
     const numberCol = {
         title:     <FormattedMessage id='cash-table.cashbox_num' />,
         dataIndex: 'cashBoxId',
-        width:     '10%',
+        width:  'auto',
         render:    (cashBoxId, { cashBoxName }) => (
             <div className={ Styles.breakWord }>
                 { cashBoxId } { cashBoxName }
@@ -69,13 +69,13 @@ export function columnsConfig(props) {
     const cashOrderCol = {
         title:     <FormattedMessage id='cash-table.order_num' />,
         dataIndex: 'id',
-        width:     '10%',
+        width:  'auto',
     };
 
     const dateCol = {
         title:     <FormattedMessage id='cash-table.date' />,
         dataIndex: 'datetime',
-        width:     '10%',
+        width:  'auto',
         render:    date => (
             <FormattedDatetime datetime={ date } format={ 'DD.MM.YYYY' } />
         ),
@@ -83,29 +83,36 @@ export function columnsConfig(props) {
 
     const conterpartyCol = {
         title:     <FormattedMessage id='cash-table.conterparty' />,
-        dataIndex: 'conterparty',
-        width:     '10%',
+        width:  'auto',
         render:    (key, cashOrder) => renderCounterparty(cashOrder),
     };
 
     const orderCol = {
         title:     <FormattedMessage id='cash-table.order' />,
-        dataIndex: 'orderId',
-        width:     '10%',
-        render:    orderId => (
-            <Link
-                to={ `${book.order}/${orderId}` }
-                style={ { color: 'var(--link' } }
-            >
-                { orderId }
-            </Link>
-        ),
+        width:  'auto',
+        render:    ({orderId, storeDocId, orderNum, documentNumber}) => {
+            return orderId ? (
+                <Link
+                    to={ `${book.order}/${orderId}` }
+                    style={ { color: 'var(--link' } }
+                >
+                    { orderNum }
+                </Link>
+            ) : (
+                <Link
+                    to={ `${book.storageDocument}/${storeDocId}` }
+                    style={ { color: 'var(--link' } }
+                >
+                    { documentNumber }
+                </Link>
+            )
+        },
     };
 
     const activityCol = {
         title:     <FormattedMessage id='cash-table.activity' />,
         dataIndex: 'type',
-        width:     '10%',
+        width:  'auto',
         render:    type => (
             <div className={ Styles.noBreak }>
                 <FormattedMessage id={ `cash-order-form.type.${type}` } />
@@ -116,7 +123,7 @@ export function columnsConfig(props) {
     const sumCol = {
         title:     <FormattedMessage id='cash-table.sum' />,
         dataIndex: 'sum',
-        width:     '10%',
+        width:  'auto',
         render:    (key, { increase, decrease }) =>
             increase ? (
                 <div
@@ -146,16 +153,16 @@ export function columnsConfig(props) {
             ),
     };
 
-    const tagCol = {
-        title:     <FormattedMessage id='cash-table.tag' />,
-        dataIndex: 'tag',
-        width:     '10%',
+    const analyticsCol = {
+        title:     <FormattedMessage id='cash-table.analytics' />,
+        dataIndex: 'analyticsName',
+        width:  'auto',
     };
 
     const descriptionCol = {
         title:     <FormattedMessage id='cash-table.comment' />,
         dataIndex: 'description',
-        width:     '10%',
+        width:  'auto',
     };
 
     const actionsCol = {
@@ -187,7 +194,7 @@ export function columnsConfig(props) {
         orderCol,
         activityCol,
         sumCol,
-        tagCol,
+        analyticsCol,
         descriptionCol,
         actionsCol,
     ];

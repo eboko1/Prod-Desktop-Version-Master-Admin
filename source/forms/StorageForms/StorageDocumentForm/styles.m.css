@@ -35,6 +35,14 @@
     justify-content: space-between;
 }
 
+.remainSum {
+    cursor: pointer;
+    text-decoration: underline;
+    &:hover {
+        text-decoration: none;
+    }
+}
+
 .total {
     align-items: flex-end;
     width: 100%;
@@ -56,4 +64,8 @@
 
 .hiddenColumn {
     display: none;
+}
+
+.addProductModalOtemWrap {
+    margin: 8px 0 0 0;
 }

@@ -1184,7 +1184,6 @@ class CommentaryButton extends React.Component {
                         value: elem.code,
                     };
                 });
-                //console.log(data);
             });
             if (this._isMounted) {
                 this.setState({

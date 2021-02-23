@@ -52,6 +52,7 @@ export class DateRangePicker extends React.Component {
             autoMinimize,
             style,
             overlayStyle,
+            type,
             intl: { formatMessage }
         } = this.props;
 
@@ -319,7 +320,7 @@ export class DateRangePicker extends React.Component {
         return minimizeMode ? (
             <div className={Styles.minimized} style={style} title={formatMessage({id: 'date'})}>
                 <Popover content={datePicker} trigger="click" overlayStyle={overlayStyle}>
-                    <Button>
+                    <Button type={type}>
                         <Icon style={{fontSize: 16}} type='calendar' />
                     </Button>
                 </Popover>

@@ -1,12 +1,27 @@
 // core
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { Icon, Tooltip } from 'antd';
+import { Icon, Tooltip, Switch } from 'antd';
 
 // own
 import HeaderMenu from './HeaderMenu';
 import Styles from './styles.m.css';
+import { values } from 'office-ui-fabric-react';
+import { permissions, isForbidden, isAdmin } from 'utils';
 
+import { setTireFittingToken, getTireFittingToken, removeTireFittingToken } from "utils";
+
+const mapStateToProps = state => {
+    return {
+        user: state.auth,
+    };
+};
+
+@connect(
+    mapStateToProps,
+    void 0,
+)
 class Header extends Component {
     state = {
         sidebarTooltip: false,
@@ -22,7 +37,7 @@ class Header extends Component {
     };
 
     render() {
-        const { collapsed } = this.props;
+        const { collapsed, user } = this.props;
 
         return (
             <header
@@ -51,6 +66,18 @@ class Header extends Component {
                         />
                     </Tooltip>
                     { <HeaderMenu { ...this.props } /> }
+                    {isAdmin(user) && false &&
+                        <Switch
+                            style={{marginLeft: 14}}
+                            checked={Boolean(getTireFittingToken())}
+                            onChange={(checked)=>{
+                                if(checked) setTireFittingToken("666");
+                                else removeTireFittingToken();
+
+                                window.location.reload();
+                            }}
+                        />
+                    }
                 </div>
             </header>
         );

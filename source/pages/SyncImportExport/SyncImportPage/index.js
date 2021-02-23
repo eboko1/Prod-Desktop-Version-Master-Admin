@@ -55,7 +55,6 @@ export default class SyncImportPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.setState({
             	tableData: data,
             })
@@ -210,7 +209,6 @@ class ErrorsModal extends Component {
             data.map((elem, key)=>{
                 elem.key = key;
             })
-            console.log(data);
             that.setState({
                 errors: data,
             })
