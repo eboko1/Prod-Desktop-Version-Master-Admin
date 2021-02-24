@@ -8,7 +8,7 @@ import { saga as authSaga } from 'core/auth/saga';
 import { saga as uiSaga } from 'core/ui/saga';
 import { saga as subscriptionSaga } from 'core/subscription/saga';
 
-//core
+// core
 import { saga as myTasksContainerSaga } from 'core/myTasks/saga';
 import { saga as packagesSaga } from 'core/package/saga';
 import { saga as businessPackageSaga } from 'core/businessPackage/saga';
@@ -18,11 +18,14 @@ import { saga as clientSaga } from 'core/client/saga';
 import { saga as clientRequisitesSaga } from 'core/clientRequisite/saga';
 import { saga as clientOrdersSaga } from 'core/clientOrders/saga';
 import { saga as clientMRDsSaga } from 'core/clientMRDs/saga';
+import { saga as employeesSaga } from 'core/employees/saga';
+
+// Reports
 import { saga as reportOrdersSaga } from 'core/reports/reportOrders/saga';
 import { saga as reportsSaga } from 'core/reports/reports/saga';
 import { saga as reportLoadKPISaga } from 'core/reports/reportLoadKPI/saga';
 import { saga as reportAnalyticsSaga } from 'core/reports/reportAnalytics/saga';
-import { saga as employeesSaga } from 'core/employees/saga';
+import { saga as reportCashFlowSaga } from 'core/reports/reportCashFlow/saga';
 
 // containers
 import { saga as dashboardSaga } from 'core/dashboard/saga';
@@ -105,11 +108,15 @@ export default function* rootSaga() {
         editClientFormSaga(),
         clientOrdersSaga(),
         clientMRDsSaga(),
+
+        // Reports
         reportOrdersSaga(),
         reportAnalyticsSaga(),
         reportAnalyticsFormSaga(),
         reportsSaga(),
         reportLoadKPISaga(),
+        reportCashFlowSaga(),
+        
         clientRequisitesSaga(),
         orderTaskFormSaga(),
         employeesSaga(),
