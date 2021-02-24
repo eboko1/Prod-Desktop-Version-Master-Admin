@@ -1,0 +1,7 @@
+/* .orderFormsTabs :global(.ant-table-thead > tr > th, .ant-table-tbody > tr > td) {
+    padding: 4px;
+} */
+
+.orderTaskModalButton {
+    margin-bottom: 10px;
+}

@@ -66,9 +66,12 @@ class Header extends Component {
                         />
                     </Tooltip>
                     { <HeaderMenu { ...this.props } /> }
-                    {isAdmin(user) && false &&
+                    {isAdmin(user) &&
                         <Switch
-                            style={{marginLeft: 14}}
+                            style={{
+                                marginLeft: 14,
+                                backgroundColor: !Boolean(getTireFittingToken()) && "var(--cancel)",
+                            }}
                             checked={Boolean(getTireFittingToken())}
                             onChange={(checked)=>{
                                 if(checked) setTireFittingToken("666");

@@ -1,0 +1,151 @@
+.editOrderIcon {
+    cursor: pointer;
+    font-size: 25px;
+}
+
+/* .ordersTableWrapper {
+    position: relative;
+} */
+
+.paper {
+    overflow: initial;
+    min-height: 360px;
+    transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 10px,
+        rgba(0, 0, 0, 0.23) 0px 3px 10px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    box-sizing: border-box;
+    background-color: rgb(255, 255, 255);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ordernLink {
+    margin-right: 5px;
+}
+
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.datetime {
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    /* text-align: center; */
+    /* margin: 0 auto; */
+    width: 75px;
+}
+
+.client {
+    display: flex;
+    flex-direction: column;
+    color: var(--text);
+}
+
+.clientVehicle {
+    color: var(--text4);
+}
+
+.clientPhone {
+    color: var(--link);
+}
+
+.inviteActions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.serviceNames,
+.recommendation,
+.cancelReason {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 188px;
+    /* width 188 + 16*2(padding) = 220px for 220px width orders num col */
+}
+
+.serviceNames {
+    color: var(--text2);
+}
+
+.recommendation {
+    color: var(--secondary);
+}
+
+.cancelReason {
+    color: var(--not_complete);
+}
+
+.nps,
+.npsMid,
+.npsLow {
+    border-radius: 50px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.nps {
+    background: var(--secondary);
+}
+
+.npsMid {
+    background: var(--approve);
+}
+
+.npsLow {
+    background: var(--not_complete);
+}
+
+.ordersTable table::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+}
+
+.ordersTable :global(.ant-pagination) {
+    float: none;
+    justify-content: center;
+    display: flex;
+}
+
+.ordersTable :global(.ant-table-thead > tr > th) {
+    text-transform: uppercase;
+    word-break: none;
+    white-space: nowrap;
+}
+
+.ordersTable :global(.ant-table-tbody > tr > th) {
+    word-break: none;
+}
+
+.verticalCenterModal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.verticalCenterModal :global(.ant-modal) {
+    top: 0;
+}
+
+.verticalCenterModal :global(.ant-modal-footer) {
+    text-align: center;
+}
+
+.inviteLink {
+    font-size: 16px;
+    color: #52b3ff;
+
+    &:hover {
+        color: #9b59b6;
+    }
+}
+
+.delayedRow,
+.delayedProgressRow {
+    background: rgba(var(--warningRGB), .3);
+}
