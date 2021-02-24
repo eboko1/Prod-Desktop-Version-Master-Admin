@@ -1,5 +1,5 @@
 /*
-This is cash flow report page, it uses analytics to provide report.
+This is cash flow report page, it uses analytics to provide report(it is base of this report).
 Each analytics level has it's sum values.
 Each analytics is grouped accordingly to its level in a binary tree(parent analytics and its dependencies)
 
@@ -22,7 +22,7 @@ import {
 
 // own
 import Styles from "./styles.m.css";
-import AnalyticsDropdown from './AnalyticsDropdown';
+import CashFlowItemsDropdown from './CashFlowItemsDropdown'
 
 const mapStateToProps = state => ({
     tableData: state.reportCashFlow.tableData,
@@ -53,8 +53,6 @@ export default class ReportAnalyticsPage extends Component {
             intl: {formatMessage}
         } = this.props;
 
-        console.log("Table data", tableData);
-        
         return (
             <Layout
                 title={
@@ -69,13 +67,9 @@ export default class ReportAnalyticsPage extends Component {
                 }
                 paper={false}
             >
-                {/* <AnalyticsDropdown
-                    analytics={analytics}
-                    onDeleteAnalytics={this._onDeleteAnalytics}
-                    openAnalyticsModal={this.openAnalyticsModal}
-                    onUpdateAnalytics={this.onUpdateAnalytics}
-                /> */}
-                Hello world
+                <CashFlowItemsDropdown
+                    tableData={tableData}
+                />
             </Layout>
         );
     }
