@@ -36,6 +36,7 @@ const mapStateToProps = state => ({
     filters: selectCashOrdersFilters(state),
     cashFlowFilters: _.get(state, "router.location.state.cashFlowFilters"),
     isFetching: state.ui.cashOrdersFetching,
+    isMobile: state.ui.views.isMobile,
 });
 
 const mapDispatchToProps = {
@@ -109,6 +110,7 @@ export default class CashFlowPage extends Component {
             user,
             fetchCashOrders,
             printCashOrder,
+            isMobile,
         } = this.props;
 
         const canEditCashOrders = !isForbidden(
@@ -148,6 +150,7 @@ export default class CashFlowPage extends Component {
                 </section>
                 <Paper className={Styles.content}>
                     <CashOrdersTable
+                        isMobile={isMobile}
                         totalCount={stats.totalCount}
                         setCashOrdersPage={setCashOrdersPage}
                         fetchCashOrders={fetchCashOrders}

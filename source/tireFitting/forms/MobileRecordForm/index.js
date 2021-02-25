@@ -212,7 +212,8 @@ export class MobileRecordForm extends Component {
 
         return (
             <Tabs
-
+                type='line'
+                size='default'
             >
                 <TabPane
                     forceRender

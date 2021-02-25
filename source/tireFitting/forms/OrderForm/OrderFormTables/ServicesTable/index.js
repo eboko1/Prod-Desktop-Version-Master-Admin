@@ -67,10 +67,6 @@ class ServicesTable extends Component {
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {
-                    const confirmed = elem.agreement && elem.agreement.toLowerCase(),
-                          backgroundColor = confirmed != 'undefined' || this.props.disabled ? 'black' : 'white';
-                    const stageDisabled = elem.stage != INACTIVE;
-
                     return (
                         <div
                             style={ {
@@ -80,10 +76,7 @@ class ServicesTable extends Component {
                         >
                             <Button
                                 type='primary'
-                                disabled={
-                                    confirmed != 'undefined' ||
-                                    this.props.disabled
-                                }
+                                disabled={this.props.disabled}
                                 onClick={ () => {
                                     this.showServiceProductModal(data);
                                 } }
@@ -95,7 +88,7 @@ class ServicesTable extends Component {
                                     style={ {
                                         width:           18,
                                         height:          18,
-                                        backgroundColor: backgroundColor,
+                                        backgroundColor: this.props.disabled ? 'black' : 'white',
                                         mask:       `url(${images.wrenchIcon}) no-repeat center / contain`,
                                         WebkitMask: `url(${images.wrenchIcon}) no-repeat center / contain`,
                                         transform:  'scale(-1, 1)',
@@ -213,14 +206,9 @@ class ServicesTable extends Component {
             {
                 key:    'delete',
                 render: elem => {
-                    const confirmed = elem.agreement && elem.agreement.toLowerCase();
-                    const disabled =
-                        confirmed != 'undefined' || this.props.disabled;
-                    const stageDisabled = elem.stage != INACTIVE;
-
                     return (
                         <Popconfirm
-                            disabled={ disabled || stageDisabled }
+                            disabled={ this.props.disabled }
                             title={
                                 <FormattedMessage id='add_order_form.delete_confirm' />
                             }
@@ -254,7 +242,7 @@ class ServicesTable extends Component {
                             <Icon
                                 type='delete'
                                 className={
-                                    disabled || stageDisabled
+                                    this.props.disabled
                                         ? Styles.disabledIcon
                                         : Styles.deleteIcon
                                 }
@@ -456,7 +444,7 @@ class ServicesTable extends Component {
                     onRow={(record, rowIndex) => {
                         return {
                             onClick: event => {
-                                this.showServiceProductModal(rowIndex);
+                                isMobile && this.showServiceProductModal(rowIndex);
                             },
                             onDoubleClick: event => {},
                         };

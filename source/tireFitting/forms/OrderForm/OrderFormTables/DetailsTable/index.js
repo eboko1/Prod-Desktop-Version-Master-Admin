@@ -26,16 +26,6 @@ import Styles from './styles.m.css';
 import { value } from 'numeral';
 const Option = Select.Option;
 const { confirm, warning } = Modal;
-const INACTIVE = 'INACTIVE',
-      AGREED = 'AGREED',
-      ORDERED = 'ORDERED',
-      ACCEPTED = 'ACCEPTED',
-      RESERVED = 'RESERVED',
-      GIVEN = 'GIVEN',
-      INSTALLED = 'INSTALLED',
-      NO_SPARE_PART = 'NO_SPARE_PART',
-      RETURNED = 'RETURNED',
-      CANCELED = 'CANCELED';
 
 @injectIntl
 class DetailsTable extends Component {
@@ -71,8 +61,6 @@ class DetailsTable extends Component {
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {
-                    const confirmed = elem.agreement && elem.agreement.toLowerCase();
-                    const stageDisabled = elem.stage == AGREED || elem.stage == ORDERED || elem.stage == ACCEPTED || elem.stage == RESERVED || elem.stage == GIVEN || elem.stage == INSTALLED;
                     return (
                         <div
                             style={ {
@@ -83,10 +71,7 @@ class DetailsTable extends Component {
                             <Button
                                 type='primary'
                                 disabled={
-                                    confirmed != 'undefined' ||
-                                    this.props.disabled ||
-                                    elem.reserved ||
-                                    stageDisabled
+                                    this.props.disabled
                                 }
                                 onClick={ () => {
                                     this.showDetailProductModal(data);
@@ -100,10 +85,7 @@ class DetailsTable extends Component {
                                         width:           18,
                                         height:          18,
                                         backgroundColor:
-                                            confirmed != 'undefined' ||
-                                            this.props.disabled ||
-                                            elem.reserved ||
-                                            stageDisabled
+                                            this.props.disabled
                                                 ? 'black'
                                                 : 'white',
                                         mask:       `url(${images.pistonIcon}) no-repeat center / contain`,
@@ -215,14 +197,9 @@ class DetailsTable extends Component {
             {
                 key:    'delete',
                 render: elem => {
-                    const confirmed = elem.agreement && elem.agreement.toLowerCase();
-                    const stageDisabled = elem.stage == AGREED || elem.stage == ORDERED || elem.stage == ACCEPTED || elem.stage == RESERVED || elem.stage == GIVEN || elem.stage == INSTALLED;
-                    const disabled =
-                        confirmed != 'undefined' || this.props.disabled || elem.reserved;
-
                     return (
                         <Popconfirm
-                            disabled={ disabled || stageDisabled }
+                            disabled={ this.props.disabled }
                             title={
                                 <FormattedMessage id='add_order_form.delete_confirm' />
                             }
@@ -256,7 +233,7 @@ class DetailsTable extends Component {
                             <Icon
                                 type='delete'
                                 className={
-                                    disabled || stageDisabled
+                                    this.props.disabled
                                         ? Styles.disabledIcon
                                         : Styles.deleteIcon
                                 }
@@ -448,7 +425,7 @@ class DetailsTable extends Component {
                     onRow={(record, rowIndex) => {
                         return {
                             onClick: event => {
-                                this.showDetailProductModal(rowIndex);
+                                isMobile && this.showDetailProductModal(rowIndex);
                             },
                             onDoubleClick: event => {},
                         };

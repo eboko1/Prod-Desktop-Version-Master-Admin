@@ -199,10 +199,14 @@ export default class OrdersPage extends Component {
                         </section>
                     </> :
                     <>
-                        
-                        <OrdersContainer
-                            isMobile={isMobile}
-                        />
+                        <section className={ Styles.mobileFunelFilter }>
+                            <OrdersFilterContainer status={ status } onlySearch/>
+                        </section>
+                        <section className={Styles.ordersWrrapperMobile}>
+                            <OrdersContainer
+                                isMobile={isMobile}
+                            />
+                        </section>
                     </>
                 }
             </Layout>

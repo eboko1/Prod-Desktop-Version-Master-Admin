@@ -45,7 +45,7 @@ class DetailProductModal extends React.Component{
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
                             style={{minWidth: 240, color: 'var(--text)'}}
                             value={data}
-                            dropdownStyle={{ maxHeight: 400, maxWidth: 340, overflow: 'auto', zIndex: "9999" }}
+                            dropdownStyle={{ maxHeight: 400, maxWidth: '95%', overflow: 'auto', zIndex: "9999" }}
                             treeData={this.props.treeData}
                             filterTreeNode={(input, node) => {
                                 return (
