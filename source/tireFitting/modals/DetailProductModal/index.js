@@ -10,6 +10,7 @@ import { permissions, isForbidden, images } from 'utils';
 import Styles from './styles.m.css';
 const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 const { TreeNode } = TreeSelect;
+const { confirm } = Modal;
 const Option = Select.Option;
 
 @injectIntl
@@ -286,6 +287,44 @@ class DetailProductModal extends React.Component{
         this.servicesOptions = [...servicesOptions];
     }
 
+    deleteDetail = async () => {
+        let token = localStorage.getItem(
+            '_my.carbook.pro_token',
+        );
+        let url = __API_URL__;
+        let params = `/orders/${this.props.orderId}/details?ids=[${this.props.detail.id}]`;
+        url += params;
+        try {
+            const response = await fetch(url, {
+                method:  'DELETE',
+                headers: {
+                    Authorization:  token,
+                    'Content-Type': 'application/json',
+                },
+            });
+            const result = await response.json();
+            if (result.success) {
+                this.props.updateDataSource();
+            } else {
+                console.log('BAD', result);
+            }
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
+    }
+
+    confirmDelete = () => {
+        const { formatMessage } = this.props.intl;
+        const that = this;
+        confirm({
+            title: formatMessage({id: 'add_order_form.delete_confirm'}),
+            onOk() {
+                that.deleteDetail();
+            },
+            okType: 'danger',
+        });
+    }
+
     getMobileForm() {
         const { mainTableSource } = this.state;
         const dataSource = mainTableSource[0] || {};
@@ -294,7 +333,7 @@ class DetailProductModal extends React.Component{
 
         return columns.map(({title, key, render, dataIndex})=>{
             return (
-                <div className={Styles.mobileTable}>
+                <div className={`${Styles.mobileTable} ${(key == 'price' || key == 'count' || key == 'sum') && Styles.mobileTableNumber}`}>
                     {title}
                     <div>
                         {dataIndex ? 
@@ -323,6 +362,7 @@ class DetailProductModal extends React.Component{
 
     render() {
         const { visible, tableMode, isMobile } = this.props;
+        const { editing } = this.state;
         return (
             <div>
                 <Modal
@@ -335,8 +375,34 @@ class DetailProductModal extends React.Component{
                     style={!isMobile ? {
                         minWidth: 560,
                     } : {
-                        minWidth: '85%',
+                        minWidth: '95%',
                     }}
+                    footer={
+                        isMobile && editing ? 
+                        <div>
+                            <Button
+                                type='danger'
+                                style={{
+                                    float:'left'
+                                }}
+                                onClick={()=>this.confirmDelete()}
+                            >
+                                <Icon type='delete'/>
+                            </Button>
+                            <Button
+                                onClick={()=>this.handleCancel()}
+                            >
+                                <FormattedMessage id="cancel"/>
+                            </Button>
+                            <Button 
+                                type='primary'
+                                onClick={()=>this.handleOk()}
+                            >
+                                <FormattedMessage id="save"/>
+                            </Button>
+                        </div> :
+                        void 0
+                    }
                 >
                     <div className={Styles.tableWrap}>
                         <div className={Styles.modalSectionTitle}>

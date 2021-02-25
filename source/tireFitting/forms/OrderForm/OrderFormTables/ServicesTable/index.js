@@ -471,6 +471,7 @@ class ServicesTable extends Component {
                         }}
                     >
                         <ComplexesModal
+                            isMobile={isMobile}
                             disabled={this.props.disabled}
                             tecdocId={this.props.tecdocId}
                             labors={this.props.labors}

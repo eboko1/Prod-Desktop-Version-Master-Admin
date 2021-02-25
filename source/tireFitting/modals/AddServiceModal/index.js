@@ -11,6 +11,7 @@ import { DetailStorageModal, DetailSupplierModal, LaborsNormHourModal, DetailPro
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
+const { confirm } = Modal;
 const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 @injectIntl
@@ -358,6 +359,44 @@ class AddServiceModal extends React.Component{
         ))
     };
 
+    deleteService = async () => {
+        let token = localStorage.getItem(
+            '_my.carbook.pro_token',
+        );
+        let url = __API_URL__;
+        let params = `/orders/${this.props.orderId}/labors?ids=[${this.props.labor.id}]`;
+        url += params;
+        try {
+            const response = await fetch(url, {
+                method:  'DELETE',
+                headers: {
+                    Authorization:  token,
+                    'Content-Type': 'application/json',
+                },
+            });
+            const result = await response.json();
+            if (result.success) {
+                this.props.updateDataSource();
+            } else {
+                console.log('BAD', result);
+            }
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
+    }
+
+    confirmDelete = () => {
+        const { formatMessage } = this.props.intl;
+        const that = this;
+        confirm({
+            title: formatMessage({id: 'add_order_form.delete_confirm'}),
+            onOk() {
+                that.deleteService();
+            },
+            okType: 'danger',
+        });
+    }
+
     getMobileForm() {
         const { mainTableSource } = this.state;
         const dataSource = mainTableSource[0] || {};
@@ -366,7 +405,7 @@ class AddServiceModal extends React.Component{
 
         return columns.map(({title, key, render, dataIndex})=>{
             return (
-                <div className={Styles.mobileTable}>
+                <div className={`${Styles.mobileTable} ${(key == 'price' || key == 'count' || key == 'sum') && Styles.mobileTableNumber}`}>
                     {title}
                     <div>
                         {dataIndex ? 
@@ -405,6 +444,7 @@ class AddServiceModal extends React.Component{
         return (
             <>
                 <Modal
+                    zIndex={200}
                     width={'min-content'}
                     visible={visible}
                     title={null}
@@ -414,8 +454,34 @@ class AddServiceModal extends React.Component{
                     style={!isMobile ? {
                         minWidth: 560,
                     } : {
-                        minWidth: '85%',
+                        minWidth: '95%',
                     }}
+                    footer={
+                        isMobile && editing ? 
+                        <div>
+                            <Button
+                                type='danger'
+                                style={{
+                                    float:'left'
+                                }}
+                                onClick={()=>this.confirmDelete()}
+                            >
+                                <Icon type='delete'/>
+                            </Button>
+                            <Button
+                                onClick={()=>this.handleCancel()}
+                            >
+                                <FormattedMessage id="cancel"/>
+                            </Button>
+                            <Button 
+                                type='primary'
+                                onClick={()=>this.handleOk()}
+                            >
+                                <FormattedMessage id="save"/>
+                            </Button>
+                        </div> :
+                        void 0
+                    }
                 >
                     
                         <div className={Styles.tableWrap}>
