@@ -428,7 +428,9 @@ export class OrderForm extends React.PureComponent {
         const totalPrice = detailsTotalPrice + servicesTotalPrice;
         const totalSumWithTax = this.totalSumWithTax;
         const isTaxPayer = this.isTaxPayer;
-        const remainPrice = isTaxPayer ? totalSumWithTax - cashSum : totalPrice - cashSum;
+        const remainPrice = isTaxPayer ? 
+            Math.round((totalSumWithTax - cashSum)*100)/100 : 
+            Math.round((totalPrice - cashSum)*100)/100;
 
         return (
             <Form className={Styles.form} layout="horizontal">
