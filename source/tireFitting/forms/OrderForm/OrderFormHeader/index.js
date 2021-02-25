@@ -12,6 +12,7 @@ import {
     DecoratedTimePicker,
     DecoratedSelect,
     DecoratedSlider,
+    DecoratedInput,
 } from "forms/DecoratedFields";
 import { Numeral } from "commons";
 import book from "routes/book";
@@ -195,21 +196,6 @@ export default class OrderFormHeader extends Component {
             this.setState({
                 beginDatetimeConfig: this._getBeginDatetimeConfig(),
             });
-        }
-
-        if(prevProps.focusedRef != this.props.focusedRef) {
-            if(this.props.focusedRef == 'HEADER_STATION') {
-                this.stationRef.current.focus();
-                this.props.focusOnRef(undefined);
-            }
-            if(this.props.focusedRef == 'HEADER_EMPLOYEE') {
-                this.employeeRef.current.focus();
-                this.props.focusOnRef(undefined);
-            }
-            if(this.props.focusedRef == 'HEADER_REQUISITES') {
-                this.requisitesRef.current.focus();
-                this.props.focusOnRef(undefined);
-            }
         }
     }
     // TODO: move into utils
@@ -620,6 +606,19 @@ export default class OrderFormHeader extends Component {
                     step={0.5}
                     max={8}
                 />
+                <DecoratedInput
+                    errors={errors}
+                    fieldValue={_.get(fields, "stationLoads[0].status")}
+                    defaultGetValueProps
+                    field="stationLoads[0].status"
+                    hiddeninput="hiddeninput"
+                    formItem
+                    formItemLayout={formHeaderItemLayout}
+                    colon={false}
+                    disabled={this.bodyUpdateIsForbidden()}
+                    initialValue={"TO_DO"}
+                    getFieldDecorator={getFieldDecorator}
+                    />
             </div>
         );
     };

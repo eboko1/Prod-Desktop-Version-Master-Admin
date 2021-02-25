@@ -257,7 +257,7 @@ export function* fetchSearchStoreDocSaga() {
             yield put(fetchSearchOrderSuccess(data));
             yield put(setClientFetchingState(false));
         } catch (error) {
-            //yield put(emitError(error));
+            yield put(emitError(error));
         }
     }
 }
