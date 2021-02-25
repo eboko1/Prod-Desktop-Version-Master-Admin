@@ -11,6 +11,7 @@ import _ from 'lodash';
 
 //proj
 import { Numeral } from 'commons';
+import { StatsPanel } from 'components'
 
 //own
 import Style from './styles.m.css';
@@ -33,15 +34,15 @@ export default class AnalyticsDropdown extends React.Component {
                 <Row className={Style.row}>
                     <Col className={Style.colHeader} span={12}>{parent.analyticsName}</Col>
 
-                    <Col className={Style.colCentered} span={4}>
+                    <Col className={Style.col} span={4}>
                         <Numeral mask='0,0.00'>{parent.totalIncreaseSum}</Numeral>
                     </Col>
 
-                    <Col className={Style.colCentered} span={4}>
+                    <Col className={Style.col} span={4}>
                         <Numeral mask='0,0.00'>{parent.totalIncreaseSum}</Numeral>
                     </Col>
 
-                    <Col className={Style.colCentered} span={4}>
+                    <Col className={Style.col} span={4}>
                         <Numeral mask='0,0.00'>{parent.totalIncreaseSum}</Numeral>
                     </Col>
                 </Row>
@@ -60,15 +61,15 @@ export default class AnalyticsDropdown extends React.Component {
                 <Row className={Style.row}>
                     <Col className={Style.col} span={12}>{chil.analyticsName}</Col>
 
-                    <Col className={Style.colCentered} span={4}>
+                    <Col className={Style.col} span={4}>
                         <Numeral mask='0,0.00'>{chil.totalIncreaseSum}</Numeral>
                     </Col>
 
-                    <Col className={Style.colCentered} span={4}>
+                    <Col className={Style.col} span={4}>
                         <Numeral mask='0,0.00'>{chil.totalIncreaseSum}</Numeral>
                     </Col>
 
-                    <Col className={Style.colCentered} span={4}>
+                    <Col className={Style.col} span={4}>
                         <Numeral mask='0,0.00'>{chil.totalIncreaseSum}</Numeral>
                     </Col>
                 </Row>
@@ -84,7 +85,6 @@ export default class AnalyticsDropdown extends React.Component {
      * @param {*} children children components
      */
     generatePanel(parent, children) {
-        console.log("Active key: ", parent.analyticsUniqueId);
         return (
             <Panel header={this.genParentHeader(parent)} key={parent.analyticsUniqueId} showArrow={false}>
                 {_.map(children, (o) => this.generateChildrenBlock(o))}
@@ -92,9 +92,31 @@ export default class AnalyticsDropdown extends React.Component {
         )
     }
 
+    getNormalizedStats(stats) {
+        const normalizedStats = [
+            {
+                label: 'Total increase',
+                value: stats.totalIncreaseSum,
+            },
+            {
+                label: 'Total decrease',
+                value: stats.totalDecreaseSum,
+            },
+            {
+                label: 'Total balance',
+                value: stats.totalBalance,
+            }
+        ];
+
+        // console.log(stats);
+
+        return normalizedStats;
+    }
+
     render() {
         const {
-            tableData
+            tableData,
+            stats
         } = this.props;
 
         //Get default active keys, it is used to open all panels as init state
@@ -105,19 +127,25 @@ export default class AnalyticsDropdown extends React.Component {
 
         keys = _.compact(keys);
 
-        console.log(keys);
+        const normalizedStats= this.getNormalizedStats(stats);
 
         return (
             <div className={Style.mainCont}>
-                <Row className={Style.row}>
-                    <Col className={Style.col} span={12}>Analytics name</Col>
+                <div className={Style.statsCont}>
+                    <StatsPanel extended stats={normalizedStats}/>
+                </div>
 
-                    <Col className={Style.colCentered} span={4}>Increase</Col>
+                <div>
+                    <Row className={Style.row}>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={12}>Analytics name</Col>
 
-                    <Col className={Style.colCentered} span={4}>Decrese</Col>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>Increase</Col>
 
-                    <Col className={Style.colCentered} span={4}>Balance</Col>
-                </Row>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>Decrese</Col>
+
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>Balance</Col>
+                    </Row>
+                </div>
                 <Collapse activeKey={keys}>
                     {
                         _.map(tableData, (obj) => {

@@ -13,6 +13,7 @@ export const FETCH_REPORT_CASH_FLOW_SUCCESS = `${prefix}/FETCH_REPORT_ANALYTICS_
 
 const ReducerState = {
     tableData: [],
+    stats: {},
     filter:    {},
 };
 
@@ -21,10 +22,11 @@ export default function reducer(state = ReducerState, action) {
 
     switch (type) {
         case FETCH_REPORT_CASH_FLOW_SUCCESS:
-            const {tableData} = payload;
+            const {tableData, stats} = payload;
             return {
                 ...state,
-                tableData: tableData
+                tableData: tableData,
+                stats: stats
             };
 
         default:
@@ -40,7 +42,7 @@ export const fetchReportCashFlow = () => ({
     type:    FETCH_REPORT_CASH_FLOW,
 });
 
-export const fetchReportCashFlowSuccess = ({tableData}) => ({
+export const fetchReportCashFlowSuccess = ({tableData, stats}) => ({
     type:    FETCH_REPORT_CASH_FLOW_SUCCESS,
-    payload: {tableData},
+    payload: {tableData, stats},
 });

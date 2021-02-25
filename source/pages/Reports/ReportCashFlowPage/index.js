@@ -26,6 +26,7 @@ import CashFlowItemsDropdown from './CashFlowItemsDropdown'
 
 const mapStateToProps = state => ({
     tableData: state.reportCashFlow.tableData,
+    stats: state.reportCashFlow.stats
 });
 
 const mapDispatchToProps = {
@@ -50,6 +51,7 @@ export default class ReportAnalyticsPage extends Component {
 
         const {
             tableData,
+            stats,
             intl: {formatMessage}
         } = this.props;
 
@@ -69,6 +71,7 @@ export default class ReportAnalyticsPage extends Component {
             >
                 <CashFlowItemsDropdown
                     tableData={tableData}
+                    stats={stats}
                 />
             </Layout>
         );

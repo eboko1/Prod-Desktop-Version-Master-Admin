@@ -71,7 +71,9 @@ export function* fetchReportCashFlowSaga() {
                 }
             ];
 
-            yield put(fetchReportCashFlowSuccess({tableData}));
+            const stats = {totalIncreaseSum: 293032.3892, totalDecreaseSum: 1032.98, totalBalance: 100};
+
+            yield put(fetchReportCashFlowSuccess({tableData, stats}));
         } catch(err) {
             emitError(err);
         }
