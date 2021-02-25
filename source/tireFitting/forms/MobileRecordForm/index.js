@@ -252,6 +252,9 @@ export class MobileRecordForm extends Component {
                         defaultEmployeeId={this.props.order.employeeId}
                         labors={allServices}
                         details={this.details}
+                        reloadOrderForm={()=>{
+                            fetchOrderForm(orderId)
+                        }}
                     />
                 </TabPane>
                 <TabPane
@@ -270,7 +273,9 @@ export class MobileRecordForm extends Component {
                         orderDetails={orderDetails}
                         allDetails={allDetails}
                         user={user}
-                        reloadOrderForm={this.props.reloadOrderForm}
+                        reloadOrderForm={()=>{
+                            fetchOrderForm(orderId)
+                        }}
                         detailsTreeData={this.state.detailsTreeData}
                     />
                 </TabPane>

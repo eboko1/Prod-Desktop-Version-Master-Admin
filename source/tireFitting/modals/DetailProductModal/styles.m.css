@@ -28,6 +28,10 @@
     
 }
 
+.mobileTable {
+    margin: 0px 0px 8px;
+}
+
 .detailNumberInput input{
     text-align: right;
     padding-right: 25px;

@@ -29,6 +29,7 @@ const mapStateToProps = state => ({
     stats:             state.clients.stats,
     universalFilter:   state.clients.universalFilter,
     searchQuery:       state.clients.searchQuery,
+    isMobile:              state.ui.views.isMobile,
 });
 
 const mapDispatchToProps = {
@@ -57,6 +58,7 @@ export default class ClientsPage extends Component {
             collapsed,
             stats,
             setSearchQuery,
+            isMobile,
         } = this.props;
 
         return (
@@ -84,18 +86,20 @@ export default class ClientsPage extends Component {
                         Styles.filtersCollapsed}` }
                 >
                     <ClientsFilterContainer setSearchQuery={ setSearchQuery } />
-                    <UniversalFilters
-                        areFiltersDisabled={ isForbidden(
-                            this.props.user,
-                            permissions.FILTER_CLIENTS,
-                        ) }
-                        universalFilter={ this.props.universalFilter }
-                        setUniversalFilter={ this.props.setUniversalFilters }
-                        stats={ stats }
-                    />
+                    {!isMobile &&
+                        <UniversalFilters
+                            areFiltersDisabled={ isForbidden(
+                                this.props.user,
+                                permissions.FILTER_CLIENTS,
+                            ) }
+                            universalFilter={ this.props.universalFilter }
+                            setUniversalFilter={ this.props.setUniversalFilters }
+                            stats={ stats }
+                        />
+                    }
                 </section>
-                <section className={ Styles.table }>
-                    <ClientsContainer />
+                <section className={ !isMobile ? Styles.table : Styles.mobileTable }>
+                    <ClientsContainer isMobile={isMobile} />
                 </section>
                 <AddClientModal
                     searchQuery={ this.props.searchQuery }

@@ -26,6 +26,7 @@ export function columnsConfig(
     sort,
     user,
     formatMessage,
+    isMobile
 ) {
     const sortOptions = {
         asc:  'ascend',
@@ -79,10 +80,10 @@ export function columnsConfig(
     };
 
     const datetimeCol = {
-        title:     <FormattedMessage id='orders.creation_date' />,
+        title:     !isMobile ? <FormattedMessage id='orders.creation_date' /> : <FormattedMessage id='date' />,
         dataIndex: 'datetime',
         key:       'datetime',
-        sorter:    true,
+        sorter:    !isMobile,
         sortOrder: sort.field === 'datetime' ? sortOptions[ sort.order ] : false,
         width:     'auto',
         render:    (_, order) => (
@@ -183,11 +184,49 @@ export function columnsConfig(
         ),
     };
 
+    const orderAndClientCol = {
+        title:      <div>
+                        <p><FormattedMessage id='orders.order' /></p>
+                        <p><FormattedMessage id='orders.client' /></p>
+                    </div>,
+        width:     'auto',
+        dataIndex: 'num',
+        key:       'orderAndClient',
+        // fixed:     'left',
+        render:    (_, order) => (
+            <>
+                <Link
+                    className={ Styles.ordernLink }
+                    to={ `${book.order}/${order.id}` }
+                >
+                    { order.num }
+                </Link>
+                <OrderStatusIcon status={ order.status } />
+                <div className={ Styles.client }>
+                <span className={ Styles.clientFullname }>
+                        { `${order.clientName || '-'} ${order.clientSurname || ''}` }
+                    </span>
+                    <span className={ Styles.clientVehicle }>
+                        { `${order.vehicleMakeName ||
+                            '-'} ${order.vehicleModelName ||
+                            '-'} ${order.vehicleYear || '-'}` }
+                    </span>
+                    <a
+                        className={ Styles.clientPhone }
+                        href={ `tel:${order.clientPhone}` }
+                    >
+                        { order.clientPhone || '-' }
+                    </a>
+                </div>
+            </>
+        ),
+    };
+
     const sumCol = {
-        title:     <FormattedMessage id='orders.sum_without_VAT' /> ,
+        title:     !isMobile ? <FormattedMessage id='orders.sum_without_VAT' /> : <FormattedMessage id='orders.sum' /> ,
         dataIndex: 'totalSum',
         key:       'totalSum',
-        sorter:    true,
+        sorter:    !isMobile,
         sortOrder: sort.field === 'totalSum' ? sortOptions[ sort.order ] : false,
         width:     'auto',
         render:    (_, order) => (
@@ -370,6 +409,14 @@ export function columnsConfig(
             </Link>
         ),
     };
+
+    if(isMobile) {
+        return [
+            datetimeCol,
+            orderAndClientCol,
+            sumCol,
+        ]
+    }
 
     switch (activeRoute) {
         case '/orders/appointments':

@@ -12,7 +12,7 @@ import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
 
-export function columnsConfig(sort, user, formatMessage, setInvite) {
+export function columnsConfig(sort, user, formatMessage, setInvite, isMobile) {
     const { GET_CLIENTS_BASIC_INFORMATION, CREATE_INVITE_ORDER } = permissions;
     const isClientInformationForbidden = isForbidden(
         user,
@@ -51,6 +51,43 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
                 { phones[ 0 ] }
             </a>
         ),
+    };
+
+    const clientAndPhone = {
+        title:      <>
+                        <p><FormattedMessage id='clients-table.client' /></p>
+                        <p><FormattedMessage id='clients-table.phone' /></p>
+                    </>,
+        width:     'auto',
+        dataIndex: 'name',
+        key:       'name',
+        // fixed:     'left',
+        render:    (_, client) =>
+            !isForbidden(user, permissions.GET_CLIENTS_BASIC_INFORMATION) ? (
+                <>
+                <Link
+                    className={ Styles.client }
+                    to={ `${book.client}/${client.clientId}` }
+                >
+                    { client.name } { client.surname }
+                </Link>
+                <div>
+                    <a className={ Styles.phone } href={ `tel:${client.phones[ 0 ]}` }>
+                        { client.phones[ 0 ] }
+                    </a>
+                </div>
+                </>
+                
+            ) : (
+                <>
+                    <p>{ client.name } { client.surname }</p>
+                    <div>
+                        <a className={ Styles.phone } href={ `tel:${client.phones[ 0 ]}` }>
+                            { client.phones[ 0 ] }
+                        </a>
+                    </div>
+                </>
+            ),
     };
 
     const currentDebtWithTaxes = {
@@ -200,6 +237,13 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
             </div>
         ),
     };
+
+    if(isMobile) {
+        return [
+            clientAndPhone,
+            vehicles,
+        ]
+    }
 
     return [
         client,

@@ -262,7 +262,7 @@ class OrdersContainer extends Component {
     setIniviteModal = () => this.props.setModal(MODALS.INVITE);
 
     render() {
-        const { orders } = this.props;
+        const { orders, isMobile } = this.props;
         const { formatMessage } = this.props.intl;
         const { activeRoute, selectedRowKeys } = this.state;
 
@@ -275,6 +275,7 @@ class OrdersContainer extends Component {
             this.props.sort,
             this.props.user,
             formatMessage,
+            isMobile,
         );
 
         const rows = rowsConfig(
@@ -331,31 +332,42 @@ class OrdersContainer extends Component {
         return (
             <Catcher>
                 <div className={ Styles.paper }>
-                    <Table
-                        size='small'
-                        className={ Styles.ordersTable }
-                        columns={ columns }
-                        rowSelection={ rows }
-                        rowClassName={ ({
-                            datetime,
-                            deliveryDatetime,
-                            status,
-                        }) =>
-                            _rowClassName(
+                    {!isMobile ?
+                        <Table
+                            size='small'
+                            className={ Styles.ordersTable }
+                            columns={ columns }
+                            rowSelection={ rows }
+                            rowClassName={ ({
                                 datetime,
                                 deliveryDatetime,
                                 status,
-                            )
-                        }
-                        dataSource={ orders }
-                        scroll={ scrollConfig(activeRoute) }
-                        loading={ this.props.ordersFetching }
-                        locale={ {
-                            emptyText: <FormattedMessage id='no_data' />,
-                        } }
-                        pagination={ pagination }
-                        onChange={ handleTableChange }
-                    />
+                            }) =>
+                                _rowClassName(
+                                    datetime,
+                                    deliveryDatetime,
+                                    status,
+                                )
+                            }
+                            dataSource={ orders }
+                            scroll={ scrollConfig(activeRoute) }
+                            loading={ this.props.ordersFetching }
+                            locale={ {
+                                emptyText: <FormattedMessage id='no_data' />,
+                            } }
+                            pagination={ pagination }
+                            onChange={ handleTableChange }
+                        /> :
+                        <Table
+                            columns={ columns }
+                            dataSource={ orders }
+                            locale={ {
+                                emptyText: <FormattedMessage id='no_data' />,
+                            } }
+                            pagination={ pagination }
+                            onChange={ handleTableChange }
+                        />
+                    }
                 </div>
                 <InviteModal
                     // wrappedComponentRef={ this.saveFormRef }

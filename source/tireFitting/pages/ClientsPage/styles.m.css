@@ -32,6 +32,14 @@
     }
 }
 
+.filters :global(.ant-input-search) {
+    margin-bottom: 0px;
+}
+
 .table {
     padding: 116px 0 0 0;
+}
+
+.mobileTable {
+    padding: 64px 0 0 0;
 }

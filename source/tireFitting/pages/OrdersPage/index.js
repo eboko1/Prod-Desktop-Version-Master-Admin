@@ -45,7 +45,7 @@ const mapState = state => ({
     collapsed:             state.ui.collapsed,
     user:                  state.auth,
     daterange:             state.orders.daterange,
-    // isMobile:              state.ui.views.isMobile,
+    isMobile:              state.ui.views.isMobile,
 });
 
 const mapDispatch = {
@@ -164,37 +164,47 @@ export default class OrdersPage extends Component {
                     </div>
                 }
             >
-                <section className={ funelSectionStyles }>
-                    <FunelContainer />
-                    <OrdersFilterContainer status={ status } />
-                </section>
-                { (status === 'success' || status === 'cancel') && (
-                    <section
-                        className={ `${Styles.universalFilters} ${collapsed &&
-                            Styles.universalFiltersCollapsed}` }
-                    >
-                        <UniversalFilters
-                            areFiltersDisabled={ isForbidden(
-                                this.props.user,
-                                permissions.SHOW_FILTERS,
-                            ) }
-                            stats={ this.props.universalStats }
-                            universalFilter={ this.props.universalFilter }
-                            setUniversalFilter={ this.props.setUniversalFilter }
+                {!isMobile ? 
+                    <>
+                        <section className={ funelSectionStyles }>
+                            <FunelContainer />
+                            <OrdersFilterContainer status={ status } />
+                        </section>
+                        { (status === 'success' || status === 'cancel') && (
+                            <section
+                                className={ `${Styles.universalFilters} ${collapsed &&
+                                    Styles.universalFiltersCollapsed}` }
+                            >
+                                <UniversalFilters
+                                    areFiltersDisabled={ isForbidden(
+                                        this.props.user,
+                                        permissions.SHOW_FILTERS,
+                                    ) }
+                                    stats={ this.props.universalStats }
+                                    universalFilter={ this.props.universalFilter }
+                                    setUniversalFilter={ this.props.setUniversalFilter }
+                                />
+                            </section>
+                        ) }
+                        <section
+                            className={
+                                [ 'success', 'cancel' ].indexOf(status) > -1
+                                    ? `${Styles.ordersWrrapper} ${
+                                        Styles.ordersWrrapperUF
+                                    }`
+                                    : Styles.ordersWrrapper
+                            }
+                        >
+                            <OrdersContainer />
+                        </section>
+                    </> :
+                    <>
+                        
+                        <OrdersContainer
+                            isMobile={isMobile}
                         />
-                    </section>
-                ) }
-                <section
-                    className={
-                        [ 'success', 'cancel' ].indexOf(status) > -1
-                            ? `${Styles.ordersWrrapper} ${
-                                Styles.ordersWrrapperUF
-                            }`
-                            : Styles.ordersWrrapper
-                    }
-                >
-                    <OrdersContainer />
-                </section>
+                    </>
+                }
             </Layout>
         );
     }

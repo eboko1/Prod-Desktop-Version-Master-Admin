@@ -281,52 +281,9 @@ class DetailsTable extends Component {
     }
 
     fetchData() {
-        if(!isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK)) {
-            var that = this;
-            let token = localStorage.getItem('_my.carbook.pro_token');
-            let url = __API_URL__ + `/warehouses`;
-            fetch(url, {
-                method:  'GET',
-                headers: {
-                    Authorization: token,
-                },
-            })
-            .then(function(response) {
-                if (response.status !== 200) {
-                    return Promise.reject(new Error(response.statusText));
-                }
-                return Promise.resolve(response);
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                const warehousesData = {};
-                data.map((warehouse)=>{
-                    if(warehouse.attribute == 'MAIN') {
-                        warehousesData.main = warehouse.id;
-                    }
-                    if(warehouse.attribute == 'RESERVE') {
-                        warehousesData.reserve = warehouse.id;
-                    }
-                })
-                that.setState({
-                    mainWarehouseId: warehousesData.main,
-                    reserveWarehouseId: warehousesData.reserve,
-                    fetched: true,
-                })
-            })
-            .catch(function(error) {
-                console.log('error', error);
-                that.setState({
-                    fetched: true,
-                })
-            });
-        } else {
-            this.setState({
-                fetched: true,
-            })
-        }
+        this.setState({
+            fetched: true,
+        })
         this.storeGroups = this.props.details;
     }
 
@@ -359,47 +316,13 @@ class DetailsTable extends Component {
         }
 
         this.state.dataSource[ key ] = detail;
-        const newDetail = detail.productId ? 
-        {
-            id: detail.id,
-            storeGroupId: detail.storeGroupId,
-            name: detail.detailName,
-            productId: detail.storeId || detail.productId,
-            productCode: detail.detailCode,
-            purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
-            count: detail.count ? detail.count : 1,
-            price: detail.price ? Math.round(detail.price*10)/10  : 1,
-            reservedFromWarehouseId: detail.reservedFromWarehouseId || this.state.mainWarehouseId,
-            reserved: detail.reserved,
-            reservedCount: detail.reservedCount,
-            supplierBrandId: detail.supplierBrandId || detail.brandId,
-            supplierId: detail.supplierId,
-            supplierOriginalCode: detail.supplierOriginalCode,
-            supplierProductNumber: detail.supplierProductNumber,
-            supplierPartNumber: detail.supplierPartNumber,
-            comment: detail.comment || {
-                comment: undefined,
-                positions: [],
-            },
-        } : 
+        const newDetail = 
         {
             id:              detail.id,
             storeGroupId:    detail.storeGroupId,
             name:            detail.detailName,
-            productCode:     detail.detailCode ? detail.detailCode : null,
-            supplierId:      detail.supplierId,
-            supplierBrandId: detail.supplierBrandId || detail.brandId,
-            supplierOriginalCode: detail.supplierOriginalCode,
-            supplierProductNumber: detail.supplierProductNumber,
-            supplierPartNumber: detail.supplierPartNumber,
-            purchasePrice:
-                Math.round(detail.purchasePrice * 10) / 10 || 0,
             count:   detail.count,
             price:   detail.price ? Math.round(detail.price * 10) / 10 : 1,
-            comment: detail.comment || {
-                comment:   undefined,
-                positions: [],
-            },
         }
         const data = {
             updateMode: true,
@@ -407,14 +330,6 @@ class DetailsTable extends Component {
                 newDetail,
             ],
         };
-        if (
-            !isForbidden(
-                this.props.user,
-                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
-            )
-        ) {
-            data.details[ 0 ].agreement = detail.agreement;
-        }
 
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -497,9 +412,9 @@ class DetailsTable extends Component {
             clearOilData,
             isMobile,
         } = this.props;
-        const { fetched, dataSource, productModalVisible, productModalKey, reserveModalVisible, reserveModalData } = this.state;
+        const { fetched, dataSource, productModalVisible, productModalKey } = this.state;
 
-        const columns = !isMobile ? this.columns : this.columns.slice(1);
+        const columns = !isMobile ? this.columns : this.columns.filter(({key})=>key != "delete" && key != "buttonGroup");
         if ( 
             !isMobile && (
                 dataSource.length == 0 ||
@@ -512,18 +427,9 @@ class DetailsTable extends Component {
                 storeGroupId: undefined,
                 detailId:     undefined,
                 detailName:   undefined,
-                detailCode:   undefined,
-                brandId:      undefined,
-                brandName:    undefined,
-                comment:      {
-                    comment:   undefined,
-                    positions: [],
-                },
                 count:         0,
                 price:         0,
-                purchasePrice: 0,
                 sum:           0,
-                agreement:     'UNDEFINED',
             });
         }
 
@@ -548,6 +454,21 @@ class DetailsTable extends Component {
                         };
                     }}
                 />
+                {isMobile &&
+                    <div
+                        style={{
+                            margin: '12px 0px 8px',
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                        }}
+                    >
+                        <Button
+                            onClick={()=>this.showDetailProductModal(this.state.dataSource.length)}
+                        >
+                            <FormattedMessage id='add' />
+                        </Button>
+                    </div>
+                }
                 <DetailProductModal
                     isMobile={isMobile}
                     labors={ labors }
