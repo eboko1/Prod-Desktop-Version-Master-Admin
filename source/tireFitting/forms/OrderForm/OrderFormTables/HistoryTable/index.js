@@ -24,7 +24,7 @@ export default class HistoryTable extends Component {
                 title: <FormattedMessage id="date" />,
                 dateIndex: "datetime",
                 key: "history-date",
-                width: "10%",
+                width: "auto",
                 render: (text, record) => (
                     <div style={{ wordBreak: "normal" }}>
                         {record.beginDatetime
@@ -39,7 +39,7 @@ export default class HistoryTable extends Component {
                 title: <FormattedMessage id="order" />,
                 dataIndex: "num",
                 key: "history-num",
-                width: "15%",
+                width: "auto",
                 render: (text, record) => (
                     <>
                         <Link
@@ -66,14 +66,14 @@ export default class HistoryTable extends Component {
                 title: <FormattedMessage id="order_form_table.vehicle" />,
                 dataIndex: "vehicleMakeName",
                 key: "history-vehicle",
-                width: "20%",
+                width: "auto",
                 render: text => <div>{text}</div>,
             },
             {
                 title: <FormattedMessage id="orders.sum_without_VAT" />,
                 // dataIndex: 'servicesTotalSum',
                 key: "history-sum",
-                width: "15%",
+                width: "auto",
                 render: (text, record) => (
                     <Numeral
                         currency={this.props.intl.formatMessage({
@@ -84,24 +84,6 @@ export default class HistoryTable extends Component {
                     </Numeral>
                 ),
             },
-            {
-                title: (
-                    <FormattedMessage id="order_form_table.recommendation" />
-                ),
-                // dataIndex: 'servicesTotalSum',
-                key: "history-recommendation",
-                width: "20%",
-                render: (text, record) => <div>{record.recommendation}</div>,
-            },
-            {
-                title: <FormattedMessage id="order_form_table.cancel_reason" />,
-                // dataIndex: 'servicesTotalSum',
-                key: "history-cancel-reason",
-                width: "20%",
-                render: (text, record) => (
-                    <div>{record.cancelStatusReason}</div>
-                ),
-            },
         ];
     }
 
@@ -110,8 +92,8 @@ export default class HistoryTable extends Component {
     }
 
     render() {
-        const { orderHistory } = this.props;
-        const columns = this.columns;
+        const { orderHistory, isMobile } = this.props;
+        const columns = !isMobile ? this.columns : this.columns.filter(({key})=>key!="history-vehicle");
         const dataSource = orderHistory.orders;
 
         return (

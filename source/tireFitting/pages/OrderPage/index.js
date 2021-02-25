@@ -692,6 +692,7 @@ class OrderPage extends Component {
             user,
             initialOrderTask,
             fetchedOrder,
+            order,
         } = this.props;
         const {num, status, datetime, diagnosis, totalSumWithTax} = this.props.order;
         const { clientId, name, surname } = this.props.selectedClient;
@@ -881,16 +882,24 @@ class OrderPage extends Component {
             >
                 <MobileView>
                     <MobileRecordForm
-                        orderStatus={ status }
-                        wrappedComponentRef={ this.saveOrderFormRef }
-                        onStatusChange={ this._onStatusChange }
+                        isMobile={isMobile}
+                        order={ order }
+                        fetchedOrder={ fetchedOrder }
+                        errors={ this.state.errors }
                         user={ this.props.user }
-                        orderTasks={ this.props.orderTasks }
-                        orderHistory={ this.props.orderHistory }
                         orderId={ id }
-                        orderDiagnostic={ diagnosis }
+                        wrappedComponentRef={ this.saveOrderFormRef }
+                        orderHistory={ this.props.orderHistory }
                         allDetails={ this.props.allDetails }
-                        onClose={ this._close }
+                        allServices={ this.props.allServices }
+                        employees={ this.props.employees }
+                        setModal={ setModal }
+                        changeModalStatus={ this.props.changeModalStatus }
+                        location={ false }
+                        fetchOrderForm={ fetchOrderForm }
+                        onStatusChange={ this._onStatusChange }
+                        reloadOrderPageComponents = { this.reloadOrderPageComponents }
+                        orderStatus={ status }
                     />
                 </MobileView>
                 <ResponsiveView
@@ -912,7 +921,6 @@ class OrderPage extends Component {
                         filteredDetails={ this.props.filteredDetails }
                         setModal={ setModal }
                         changeModalStatus={ this.props.changeModalStatus }
-                        // location={ this.props.history.location }
                         location={ false }
                         fetchOrderForm={ fetchOrderForm }
                         fetchOrderTask={ fetchOrderTask }

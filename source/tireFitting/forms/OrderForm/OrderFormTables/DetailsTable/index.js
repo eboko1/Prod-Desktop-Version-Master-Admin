@@ -495,13 +495,16 @@ class DetailsTable extends Component {
             showOilModal,
             oilModalData,
             clearOilData,
+            isMobile,
         } = this.props;
         const { fetched, dataSource, productModalVisible, productModalKey, reserveModalVisible, reserveModalData } = this.state;
 
-        const columns = this.columns;
-        if (
-            dataSource.length == 0 ||
-            dataSource[ dataSource.length - 1 ].detailName != undefined
+        const columns = !isMobile ? this.columns : this.columns.slice(1);
+        if ( 
+            !isMobile && (
+                dataSource.length == 0 ||
+                dataSource[ dataSource.length - 1 ].detailName != undefined
+            )
         ) {
             dataSource.push({
                 key:          dataSource.length,
@@ -536,8 +539,17 @@ class DetailsTable extends Component {
                     columns={ columns }
                     dataSource={ dataSource }
                     pagination={ false }
+                    onRow={(record, rowIndex) => {
+                        return {
+                            onClick: event => {
+                                this.showDetailProductModal(rowIndex);
+                            },
+                            onDoubleClick: event => {},
+                        };
+                    }}
                 />
                 <DetailProductModal
+                    isMobile={isMobile}
                     labors={ labors }
                     treeData={ detailsTreeData }
                     user={ user }

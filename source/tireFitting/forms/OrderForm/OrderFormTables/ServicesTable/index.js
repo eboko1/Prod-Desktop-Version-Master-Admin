@@ -469,9 +469,12 @@ class ServicesTable extends Component {
     }
 
     render() {
+        const { isMobile } = this.props;
         if (
-            this.state.dataSource.length == 0 ||
-            this.state.dataSource[ this.state.dataSource.length - 1 ].serviceName != undefined 
+            !isMobile && (
+                this.state.dataSource.length == 0 ||
+                this.state.dataSource[ this.state.dataSource.length - 1 ].serviceName != undefined
+            )
         ) {
             this.state.dataSource.push({
                 key:         this.state.dataSource.length,
@@ -496,10 +499,19 @@ class ServicesTable extends Component {
                 <Table
                     className={ Styles.serviceTable }
                     dataSource={ this.state.dataSource }
-                    columns={ this.columns }
+                    columns={ !isMobile ? this.columns : this.columns.slice(1) }
                     pagination={ false }
+                    onRow={(record, rowIndex) => {
+                        return {
+                            onClick: event => {
+                                this.showServiceProductModal(rowIndex);
+                            },
+                            onDoubleClick: event => {},
+                        };
+                    }}
                 />
                 <AddServiceModal
+                    isMobile={isMobile}
                     laborTimeMultiplier={ this.laborTimeMultiplier }
                     defaultEmployeeId={ this.props.defaultEmployeeId }
                     normHourPrice={ this.props.normHourPrice }
