@@ -67,7 +67,7 @@ export default class HistoryTable extends Component {
                 dataIndex: "vehicleMakeName",
                 key: "history-vehicle",
                 width: "auto",
-                render: text => <div>{text}</div>,
+                render: text => <div style={{whiteSpace: 'nowrap'}}>{text}</div>,
             },
             {
                 title: <FormattedMessage id="orders.sum_without_VAT" />,

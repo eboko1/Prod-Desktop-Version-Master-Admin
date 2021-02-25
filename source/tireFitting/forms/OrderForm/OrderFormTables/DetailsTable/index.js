@@ -71,7 +71,7 @@ class DetailsTable extends Component {
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {
-                    const confirmed = elem.agreement.toLowerCase();
+                    const confirmed = elem.agreement && elem.agreement.toLowerCase();
                     const stageDisabled = elem.stage == AGREED || elem.stage == ORDERED || elem.stage == ACCEPTED || elem.stage == RESERVED || elem.stage == GIVEN || elem.stage == INSTALLED;
                     return (
                         <div
@@ -215,7 +215,7 @@ class DetailsTable extends Component {
             {
                 key:    'delete',
                 render: elem => {
-                    const confirmed = elem.agreement.toLowerCase();
+                    const confirmed = elem.agreement && elem.agreement.toLowerCase();
                     const stageDisabled = elem.stage == AGREED || elem.stage == ORDERED || elem.stage == ACCEPTED || elem.stage == RESERVED || elem.stage == GIVEN || elem.stage == INSTALLED;
                     const disabled =
                         confirmed != 'undefined' || this.props.disabled || elem.reserved;

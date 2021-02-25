@@ -405,6 +405,7 @@ class AddServiceModal extends React.Component{
         return (
             <>
                 <Modal
+                    width={'min-content'}
                     visible={visible}
                     title={null}
                     onCancel={this.handleCancel}
@@ -412,9 +413,8 @@ class AddServiceModal extends React.Component{
                     maskClosable={false}
                     style={!isMobile ? {
                         minWidth: 560,
-                        width: '"min-content',
                     } : {
-                        width: '95%',
+                        minWidth: '85%',
                     }}
                 >
                     

@@ -326,6 +326,7 @@ class DetailProductModal extends React.Component{
         return (
             <div>
                 <Modal
+                    width={'min-content'}
                     visible={visible}
                     title={null}
                     onCancel={this.handleCancel}
@@ -333,9 +334,8 @@ class DetailProductModal extends React.Component{
                     maskClosable={false}
                     style={!isMobile ? {
                         minWidth: 560,
-                        width: '"min-content',
                     } : {
-                        width: '95%',
+                        minWidth: '85%',
                     }}
                 >
                     <div className={Styles.tableWrap}>

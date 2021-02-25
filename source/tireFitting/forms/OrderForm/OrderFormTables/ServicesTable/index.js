@@ -67,7 +67,7 @@ class ServicesTable extends Component {
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {
-                    const confirmed = elem.agreement.toLowerCase(),
+                    const confirmed = elem.agreement && elem.agreement.toLowerCase(),
                           backgroundColor = confirmed != 'undefined' || this.props.disabled ? 'black' : 'white';
                     const stageDisabled = elem.stage != INACTIVE;
 
@@ -213,7 +213,7 @@ class ServicesTable extends Component {
             {
                 key:    'delete',
                 render: elem => {
-                    const confirmed = elem.agreement.toLowerCase();
+                    const confirmed = elem.agreement && elem.agreement.toLowerCase();
                     const disabled =
                         confirmed != 'undefined' || this.props.disabled;
                     const stageDisabled = elem.stage != INACTIVE;
