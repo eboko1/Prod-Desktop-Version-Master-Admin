@@ -84,8 +84,9 @@ export default class AnalyticsDropdown extends React.Component {
      * @param {*} children children components
      */
     generatePanel(parent, children) {
+        console.log("Active key: ", parent.analyticsUniqueId);
         return (
-            <Panel header={this.genParentHeader(parent)} key={parent.analyticsId}>
+            <Panel header={this.genParentHeader(parent)} key={parent.analyticsUniqueId} showArrow={false}>
                 {_.map(children, (o) => this.generateChildrenBlock(o))}
             </Panel>
         )
@@ -96,10 +97,20 @@ export default class AnalyticsDropdown extends React.Component {
             tableData
         } = this.props;
 
+        //Get default active keys, it is used to open all panels as init state
+        let keys = _.reduce(tableData, (arr, obj) => {
+            const newVal = _.get(obj, 'analyticsUniqueId', undefined);
+            return [...arr, newVal]
+        }, [])
+
+        keys = _.compact(keys);
+
+        console.log(keys);
+
         return (
             <div className={Style.mainCont}>
                 <Row className={Style.row}>
-                    <Col className={Style.colCentered} span={12}>Analytics name</Col>
+                    <Col className={Style.col} span={12}>Analytics name</Col>
 
                     <Col className={Style.colCentered} span={4}>Increase</Col>
 
@@ -107,7 +118,7 @@ export default class AnalyticsDropdown extends React.Component {
 
                     <Col className={Style.colCentered} span={4}>Balance</Col>
                 </Row>
-                <Collapse defaultActiveKey={['1']}>
+                <Collapse activeKey={keys}>
                     {
                         _.map(tableData, (obj) => {
                             const children = obj.children; //Get children items
