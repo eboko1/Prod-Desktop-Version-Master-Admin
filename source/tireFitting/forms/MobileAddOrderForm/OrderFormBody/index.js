@@ -736,29 +736,6 @@ export default class OrderFormBody extends Component {
                 >
                     {this.state.employeesOptions}
                 </DecoratedSelect>
-                <DecoratedSelect
-                    errors={errors}
-                    formItem
-                    fieldValue={_.get(fields, "appurtenanciesResponsible")}
-                    defaultGetValueProps
-                    field="appurtenanciesResponsible"
-                    label={this._getLocalization(
-                        "order_form_table.appurtenancies_responsible",
-                    )}
-                    className={Styles.durationPanelItem}
-                    disabled={this.bodyUpdateIsForbidden()}
-                    getFieldDecorator={getFieldDecorator}
-                    initialValue={_.get(
-                        fetchedOrder,
-                        "order.appurtenanciesResponsibleId",
-                    )}
-                    placeholder={this._getLocalization(
-                        "add_order_form.select_appurtenancies_responsible",
-                    )}
-                    formItemLayout={formHeaderItemLayout}
-                >
-                    {this.state.employeesOptions}
-                </DecoratedSelect>
             </div>
         );
     };

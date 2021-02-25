@@ -772,7 +772,7 @@ class OrderPage extends Component {
                                 { inviteOrderId }
                             </Link>
                         ) }
-                        { isInviteVisible && !inviteOrderId ? (
+                        { !isMobile && isInviteVisible && !inviteOrderId ? (
                             <StyledButton
                                 type='secondary'
                                 disabled={
