@@ -54,7 +54,7 @@ class AddServiceModal extends React.Component{
                 title:  <FormattedMessage id="services_table.store_group" />,
                 key:       'storeGroupId',
                 dataIndex: 'storeGroupId',
-                width:     '10%',
+                width:     'auto',
                 render: (data, elem)=>{
                     return (
                         <TreeSelect
@@ -88,7 +88,7 @@ class AddServiceModal extends React.Component{
                 title: <FormattedMessage id='order_form_table.service_type'/>,
                 key:       'masterLaborId',
                 dataIndex: 'masterLaborId',
-                width:     '10%',
+                width:     'auto',
                 render: (data, elem)=>{
                     return (
                         <TreeSelect
@@ -120,7 +120,7 @@ class AddServiceModal extends React.Component{
                 title:  <><FormattedMessage id="services_table.labor" /> <span style={{color: 'red'}}>*</span></>,
                 key:       'laborId',
                 dataIndex: 'laborId',
-                width:     '15%',
+                width:     'auto',
                 render: (data, elem)=>{
                     const currentServiceOption = this.servicesOptions.find((labor)=>labor.laborId==data);
                     return (
@@ -205,7 +205,7 @@ class AddServiceModal extends React.Component{
                 title:  <FormattedMessage id="order_form_table.detail_name" />,
                 key:       'serviceName',
                 dataIndex: 'serviceName',
-                width:     '15%',
+                width:     'auto',
                 render: (data, elem)=>{
                     return (
                         <Input
@@ -226,7 +226,7 @@ class AddServiceModal extends React.Component{
                 title:  <FormattedMessage id="services_table.employee" />,
                 key:       'employeeId',
                 dataIndex: 'employeeId',
-                width:     '10%',
+                width:     'auto',
                 render: (data, elem)=>{
                     return (
                         <Select
@@ -256,7 +256,7 @@ class AddServiceModal extends React.Component{
                 title:  <FormattedMessage id="comment" />,
                 key:       'comment',
                 dataIndex: 'comment',
-                width:     '3%',
+                width:     'auto',
                 render: (data, elem)=>{
                     var detail = elem.serviceName;
                     if(detail && detail.indexOf(' - ') > -1) {
@@ -291,7 +291,7 @@ class AddServiceModal extends React.Component{
                 title: <FormattedMessage id="order_form_table.purchasePrice" />,
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
-                width:     '3%',
+                width:     'auto',
                 render: (data, elem)=>{
                     return (
                         <InputNumber
@@ -325,7 +325,7 @@ class AddServiceModal extends React.Component{
                         </div>,
                 key:       'price',
                 dataIndex: 'price',
-                width:     '3%',
+                width:     'auto',
                 render: (data, elem)=>{
                     return (
                         <InputNumber
@@ -351,7 +351,7 @@ class AddServiceModal extends React.Component{
                 title:  <FormattedMessage id="order_form_table.count" />,
                 key:       'count',
                 dataIndex: 'count',
-                width:     '3%',
+                width:     'auto',
                 render: (data, elem)=>{
                     const value = data ? Number(data).toFixed(2) : 1;
                     return (
@@ -379,7 +379,7 @@ class AddServiceModal extends React.Component{
                 title:  <FormattedMessage id="services_table.norm_hours" />,
                 key:       'hours',
                 dataIndex: 'hours',
-                width:     '3%',
+                width:     'auto',
                 render: (data, elem)=>{
                     return (
                         <LaborsNormHourModal
@@ -408,7 +408,7 @@ class AddServiceModal extends React.Component{
                             </p>
                         </div>,
                 key:       'sum',
-                width:     '5%',
+                width:     'auto',
                 render: (elem)=>{
                     const sum = elem.price *  (elem.count || 1);
                     return (
@@ -429,7 +429,7 @@ class AddServiceModal extends React.Component{
             },
             {
                 key:       'delete',
-                width:     '3%',
+                width: 'min-content',
                 render: (elem)=>{
                     return (
                         <Icon

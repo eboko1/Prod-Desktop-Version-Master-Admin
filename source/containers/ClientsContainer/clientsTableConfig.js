@@ -22,7 +22,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
 
     const client = {
         title:     <FormattedMessage id='clients-table.client' />,
-        width:     220,
+        width:     'auto',
         dataIndex: 'name',
         key:       'name',
         // fixed:     'left',
@@ -43,7 +43,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
 
     const phone = {
         title:     <FormattedMessage id='clients-table.phone' />,
-        width:     200,
+        width:     'auto',
         dataIndex: 'phones',
         key:       'phones',
         render:    phones => (
@@ -55,7 +55,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
 
     const currentDebtWithTaxes = {
         title:     <FormattedMessage id='clients-table.debt' />,
-        width:     100,
+        width:     'auto',
         dataIndex: 'totalDebtWithTaxes',
         key:       'totalDebtWithTaxes',
         render:    (totalDebtWithTaxes, client) => {
@@ -89,7 +89,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
 
     const vehicles = {
         title:     <FormattedMessage id='clients-table.vehicles' />,
-        width:     400,
+        width:     'auto',
         dataIndex: 'vehicles',
         key:       'vehicles',
         render:    (data, client) =>
@@ -114,7 +114,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
 
     const lastOrder = {
         title:     <FormattedMessage id='clients-table.last_order' />,
-        width:     140,
+        width:     'auto',
         dataIndex: 'lastOrderId',
         key:       'lastOrderId',
         render:    (data, order) => (
@@ -134,7 +134,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
 
     const orders = {
         title:     <FormattedMessage id='clients-table.orders' />,
-        width:     100,
+        width:     'auto',
         // sorter:    true,
         // sortOrder: sort.field === 'totalSum' ? sortOptions[ sort.order ] : false,
         dataIndex: 'orders',
@@ -146,7 +146,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
     const invitation = {
         title:  <FormattedMessage id='clients-table.invitation' />,
         key:    'invite',
-        width:  150,
+        width:     'auto',
         render: client => {
             if (!client.inviteId) {
                 return (
