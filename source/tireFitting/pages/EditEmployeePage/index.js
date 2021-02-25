@@ -36,6 +36,7 @@ const mapStateToProps = state => ({
     employeeName:    state.forms.employeeForm.employeeName,
     initialEmployee: selectInitialEmployee(state),
     user:            state.auth,
+    isMobile:        state.ui.views.isMobile,
 });
 
 const mapDispatchToProps = {
@@ -86,6 +87,7 @@ export default class EditEmployeePage extends Component {
     };
 
     render() {
+        const { isMobile } = this.props;
         const employeeTabs = this._renderEmployeeTabs();
         const employeesList = this._renderEmployeesList();
 
@@ -106,17 +108,21 @@ export default class EditEmployeePage extends Component {
                     <section
                         className={ `${Styles.employeeSection} ${
                             Styles.employeeTabs
+                        } ${
+                            isMobile && Styles.employeeMobileSection
                         }` }
                     >
                         { employeeTabs }
                     </section>
-                    <section
-                        className={ `${Styles.employeeSection} ${
-                            Styles.employeesList
-                        }` }
-                    >
-                        { employeesList }
-                    </section>
+                    {!isMobile &&
+                        <section
+                            className={ `${Styles.employeeSection} ${
+                                Styles.employeesList
+                            }` }
+                        >
+                            { employeesList }
+                        </section>
+                    }
                 </div>
             </Layout>
         ) : (

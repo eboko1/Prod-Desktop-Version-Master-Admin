@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { Button } from 'antd';
 
 // proj
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
@@ -68,8 +69,8 @@ export default class ClientsPage extends Component {
                 description={ <FormattedMessage id='clients-page.description' /> }
                 controls={
                     <div className={ Styles.buttonGroup }>
-                        <StyledButton
-                            type='secondary'
+                        <Button
+                            type='primary'
                             disabled={ isForbidden(
                                 this.props.user,
                                 permissions.CREATE_EDIT_DELETE_CLIENTS,
@@ -77,7 +78,7 @@ export default class ClientsPage extends Component {
                             onClick={ () => setModal(MODALS.ADD_CLIENT) }
                         >
                             <FormattedMessage id='clients-page.add_client' />
-                        </StyledButton>
+                        </Button>
                     </div>
                 }
             >

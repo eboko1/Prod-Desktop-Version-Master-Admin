@@ -23,6 +23,7 @@ const mapStateToProps = state => ({
     chartData:  state.chart.chartData,
     filter:     state.chart.filter,
     isFetching: state.ui.chartFetching,
+    isMobile:   state.ui.views.isMobile,
 });
 
 const mapDispatchToProps = {
@@ -54,6 +55,7 @@ export default class ChartPage extends Component {
 
     render() {
         const {
+            isMobile,
             chartData,
             filter,
             isFetching,
@@ -69,6 +71,7 @@ export default class ChartPage extends Component {
                 title={ <FormattedMessage id='chart-page.title' /> }
                 description={ <FormattedMessage id='chart-page.description' /> }
                 controls={
+                    !isMobile &&
                     <DatePickerGroup
                         date={ date }
                         loading={ isFetching }

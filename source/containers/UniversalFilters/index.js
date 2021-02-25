@@ -85,6 +85,12 @@ export default class UniversalFilters extends Component {
         return (
             <Catcher>
                 <section className={Styles.filters}>
+                    <UniversalFiltersTags
+                        universalLinkedFields={universalLinkedFields}
+                        tagFields={tagFields}
+                        filter={formFilters}
+                        clearUniversalFilters={this.clearFilters}
+                    />
                     <StyledButton
                         type="secondary"
                         disabled={areFiltersDisabled}
@@ -92,12 +98,6 @@ export default class UniversalFilters extends Component {
                     >
                         <FormattedMessage id="universal-filters-container.filter" />
                     </StyledButton>
-                    <UniversalFiltersTags
-                        universalLinkedFields={universalLinkedFields}
-                        tagFields={tagFields}
-                        filter={formFilters}
-                        clearUniversalFilters={this.clearFilters}
-                    />
                 </section>
                 <UniversalFiltersModal
                     {...filters}

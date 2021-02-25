@@ -105,6 +105,80 @@ export default class EmployeesTable extends Component {
                 render: value => value && this._renderRatingStars(value),
             },
         ];
+
+        this.mobileColumns = [
+            {
+                title: <FormattedMessage id="employee-table.employee" />,
+                dataIndex: "name",
+                width: "auto",
+                render: (text, record) => {
+                    const status = record.fireDate ? (
+                            <div className={Styles.fired}>
+                                <FormattedMessage id="employee-table.fired" />
+                                <div className={Styles.fireReason}>
+                                    {record.fireReason}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className={Styles.working}>
+                                <FormattedMessage id="employee-table.working" />
+                            </div>
+                        );
+                    return (
+                        <div>
+                            {isForbidden(this.props.user, permissions.ACCESS_EMPLOYEE) ? 
+                                <>
+                                    {`${record.name} ${record.surname}`}
+                                    <div className={Styles.jobTitle}>
+                                        {record.jobTitle}
+                                    </div>
+                                    {status}
+                                </> :
+                                <Link
+                                    className={Styles.employeeName}
+                                    to={book.editEmployee.replace(":id", record.id)}
+                                >
+                                    {`${record.name} ${record.surname}`}
+                                    <div className={Styles.jobTitle}>
+                                        {record.jobTitle}
+                                    </div>
+                                    {status}
+                                </Link>
+                            }
+                        </div>
+                    )
+                }
+            },
+            {
+                title: <FormattedMessage id="employee-table.manager" />,
+                dataIndex: "isManager",
+                width: "auto",
+                render: (isManager, { managerEnabled }) =>
+                    isManager ? (
+                        <Icon
+                            type="check-circle"
+                            className={this._managerIconClassName(
+                                managerEnabled,
+                            )}
+                        />
+                    ) : null,
+            },
+            {
+                title: <FormattedMessage id="date" />,
+                dataIndex: "hireDate",
+                width: "auto",
+                render: (text, record) => (
+                    <div>
+                        {record.hireDate &&
+                            moment(record.hireDate).format("DD.MM.YYYY")}
+                        {record.fireDate &&
+                            ` - ${moment(record.fireDate).format(
+                                "DD.MM.YYYY",
+                            )}`}
+                    </div>
+                ),
+            },
+        ];
     }
 
     _setEmployeesFilterStatus = ({ status, disabled }) => {
@@ -119,8 +193,9 @@ export default class EmployeesTable extends Component {
         });
 
     render() {
-        const { employees } = this.props;
+        const { employees, isMobile } = this.props;
         const columns = this.columns;
+        const mobileColumns = this.mobileColumns;
         const statusFilter = this._renderEmployeeStatusFilter();
 
         return (
@@ -136,12 +211,13 @@ export default class EmployeesTable extends Component {
                               }))
                             : null
                     }
-                    columns={columns}
-                    scroll={{ x: 840 }}
+                    columns={!isMobile ? columns : mobileColumns}
+                    scroll={!isMobile && { x: 840 }}
                     pagination={false}
                     locale={{
                         emptyText: <FormattedMessage id="no_data" />,
                     }}
+                    style={{marginTop: 18}}
                 />
             </Catcher>
         );

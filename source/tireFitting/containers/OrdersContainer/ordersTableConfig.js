@@ -84,7 +84,7 @@ export function columnsConfig(
         dataIndex: 'datetime',
         key:       'datetime',
         sorter:    !isMobile,
-        sortOrder: sort.field === 'datetime' ? sortOptions[ sort.order ] : false,
+        sortOrder: sort.field === 'datetime' && !isMobile ? sortOptions[ sort.order ] : false,
         width:     'auto',
         render:    (_, order) => (
             <div className={ Styles.datetime }>
@@ -227,7 +227,7 @@ export function columnsConfig(
         dataIndex: 'totalSum',
         key:       'totalSum',
         sorter:    !isMobile,
-        sortOrder: sort.field === 'totalSum' ? sortOptions[ sort.order ] : false,
+        sortOrder: sort.field === 'totalSum' && !isMobile ? sortOptions[ sort.order ] : false,
         width:     'auto',
         render:    (_, order) => (
             <Numeral

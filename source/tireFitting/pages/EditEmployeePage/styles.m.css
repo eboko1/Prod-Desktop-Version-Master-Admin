@@ -23,6 +23,12 @@
     flex: 0 1 80%;
 }
 
+.employeeMobileSection {
+    width: 100%;
+    flex: 1;
+    transition: none;
+}
+
 .employeesList {
     overflow: initial;
     min-height: 360px;

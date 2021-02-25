@@ -37,11 +37,19 @@
 }
 
 @media screen and (max-width: 1199px) {
+    .filters {
+        top: 112px;
+        z-index: 100;
+        width: 100%;
+    }
     .filtersCollapsed {
         width: 100%;
+    }
+    .content {
+        margin: 172px 10px 0;
     }
 }
 
 .content {
-    margin: 172px 16px 0;
+    margin: 152px 16px 0;
 }

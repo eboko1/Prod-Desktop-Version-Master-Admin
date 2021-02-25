@@ -46,7 +46,7 @@ class AddServiceModal extends React.Component{
                             placeholder={this.props.intl.formatMessage({id: 'services_table.labor'})}
                             value={data}
                             style={{minWidth: 240, color: 'var(--text)'}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", maxWidth: 340 }}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", maxWidth: '95%' }}
                             filterOption={(input, option) => {
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -146,7 +146,7 @@ class AddServiceModal extends React.Component{
                             placeholder={this.props.intl.formatMessage({id: 'services_table.employee'})}
                             value={data ? data : undefined}
                             style={{minWidth: 80}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", maxWidth: 340}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", maxWidth: '95%'}}
                             filterOption={(input, option) => {
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 

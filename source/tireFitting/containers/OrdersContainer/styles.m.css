@@ -21,6 +21,12 @@
     flex-direction: column;
 }
 
+@media screen and (max-width: 1199px) {
+    .paper {
+        margin: 8px;
+    }
+}
+
 .ordernLink {
     margin-right: 5px;
 }
