@@ -26,6 +26,7 @@ export function columnsConfig(
     sort,
     user,
     formatMessage,
+    isMobile,
 ) {
     const sortOptions = {
         asc:  'ascend',
@@ -432,6 +433,15 @@ export function columnsConfig(
             </Link>
         ),
     };
+
+    if(isMobile) {
+        return [
+            orderCol,
+            datetimeCol,
+            clientCol,
+            sumCol,
+        ]
+    }
 
     switch (activeRoute) {
         case '/orders/appointments':

@@ -41,7 +41,6 @@ class ServicesTable extends Component {
             dataSource:          [],
         };
 
-        this.laborTimeMultiplier = this.props.laborTimeMultiplier || 1;
         this.updateLabor = this.updateLabor.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
         this.masterLabors = [];
@@ -267,31 +266,6 @@ class ServicesTable extends Component {
         ];
     }
 
-    async updateTimeMultiplier(multiplier) {
-        this.laborTimeMultiplier = multiplier;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__;
-        let params = `/orders/${this.props.orderId}`;
-        url += params;
-        try {
-            const response = await fetch(url, {
-                method:  'PUT',
-                headers: {
-                    Authorization:  token,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ laborTimeMultiplier: multiplier }),
-            });
-            const result = await response.json();
-            if (result.success) {
-                console.log('OK', result);
-            } else {
-                console.log('BAD', result);
-            }
-        } catch (error) {
-            console.error('ERROR:', error);
-        }
-    }
 
     showServiceProductModal(key) {
         this.setState({
@@ -333,27 +307,12 @@ class ServicesTable extends Component {
                     serviceId:     labor.laborId,
                     serviceName:   labor.serviceName,
                     employeeId:    labor.employeeId || null,
-                    serviceHours:  labor.hours,
-                    purchasePrice: Math.round(labor.purchasePrice * 10) / 10,
                     count:         labor.count,
                     servicePrice:  Math.round(labor.price * 10) / 10,
-                    comment:       labor.comment || {
-                        comment:   undefined,
-                        positions: [],
-                        problems:  [],
-                    },
-                    //stage: labor.stage,
                 },
             ],
         };
-        if (
-            !isForbidden(
-                this.props.user,
-                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
-            )
-        ) {
-            data.services[ 0 ].agreement = labor.agreement;
-        }
+       
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__;
         let params = `/orders/${this.props.orderId}`;
@@ -481,16 +440,9 @@ class ServicesTable extends Component {
                 id:          undefined,
                 laborId:     undefined,
                 serviceName: undefined,
-                comment:     {
-                    comment:   undefined,
-                    positions: [],
-                    problems:  [],
-                },
                 count:         0,
                 price:         0,
-                purchasePrice: 0,
                 sum:           0,
-                agreement:     'UNDEFINED',
             });
         }
 
@@ -499,7 +451,7 @@ class ServicesTable extends Component {
                 <Table
                     className={ Styles.serviceTable }
                     dataSource={ this.state.dataSource }
-                    columns={ !isMobile ? this.columns : this.columns.slice(1) }
+                    columns={ !isMobile ? this.columns : this.columns.filter(({key})=>key != "delete" && key != "buttonGroup" && key != "employeeId") }
                     pagination={ false }
                     onRow={(record, rowIndex) => {
                         return {
@@ -510,6 +462,33 @@ class ServicesTable extends Component {
                         };
                     }}
                 />
+                {isMobile &&
+                    <div
+                        style={{
+                            margin: '12px 0px 8px',
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                        }}
+                    >
+                        <ComplexesModal
+                            disabled={this.props.disabled}
+                            tecdocId={this.props.tecdocId}
+                            labors={this.props.labors}
+                            details={this.props.details}
+                            detailsTreeData={this.props.detailsTreeData}
+                            orderId={this.props.orderId}
+                            reloadOrderForm={this.props.reloadOrderForm}
+                        />
+                        <Button
+                            style={{
+                                margin: '0px 0px 0px 8px',
+                            }}
+                            onClick={()=>this.showServiceProductModal(this.state.dataSource.length)}
+                        >
+                            <FormattedMessage id='add' />
+                        </Button>
+                    </div>
+                }
                 <AddServiceModal
                     isMobile={isMobile}
                     laborTimeMultiplier={ this.laborTimeMultiplier }

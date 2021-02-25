@@ -104,6 +104,7 @@ export class LayoutComponent extends Component {
                         )}
                         {title && (
                             <ModuleHeader
+                                user={user}
                                 title={title}
                                 description={description}
                                 controls={controls}

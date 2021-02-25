@@ -20,8 +20,6 @@ class AddServiceModal extends React.Component{
         this.state = {
             editing: false,
             mainTableSource: [],
-            relatedServices: [],
-            relatedServicesCheckbox: false,
             laborSearchValue: "",
         }
         this.labors = [];
@@ -31,7 +29,6 @@ class AddServiceModal extends React.Component{
         this.brandOptions = [];
         this.servicesOptions = [];
         this.employeeOptions = [];
-        this.relatedDetailsOptions = [];
 
         this.mainTableColumns = [
             {
@@ -46,9 +43,9 @@ class AddServiceModal extends React.Component{
                             disabled={this.state.editing || elem.related}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.labor'})}
-                            value={!elem.related ? data : elem.name}
+                            value={data}
                             style={{minWidth: 240, color: 'var(--text)'}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 380 }}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", maxWidth: 340 }}
                             filterOption={(input, option) => {
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -66,13 +63,11 @@ class AddServiceModal extends React.Component{
                                     elem.count = count;
                                     elem.price = price;
                                     elem.sum = price * count;
-                                    if(!elem.related) this.getRelatedLabors(value);
                                 } else {
                                     elem.laborId = value;
                                     elem.serviceName = value;
                                     elem.masterLaborId = value;
                                     elem.storeGroupId = value;
-                                    this.state.relatedLabors = [];
                                 }
                                 this.setState({});
                             }}
@@ -149,8 +144,8 @@ class AddServiceModal extends React.Component{
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.employee'})}
                             value={data ? data : undefined}
-                            style={{maxWidth: 180, minWidth: 80}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220}}
+                            style={{minWidth: 80}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", maxWidth: 340}}
                             filterOption={(input, option) => {
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -269,11 +264,8 @@ class AddServiceModal extends React.Component{
                                 elem.storeGroupId = this.state.editing || elem.related ? elem.storeGroupId : undefined;
                                 elem.masterLaborId = this.state.editing || elem.related ? elem.masterLaborId : undefined;
                                 elem.serviceName = undefined;
-                                elem.comment = undefined;
-                                elem.purchasePrice = 0;
                                 elem.price = 1;
                                 elem.count = 1;
-                                elem.hours = 0;
                                 elem.sum = undefined;
                                 this.setState({});
                             }}
@@ -306,35 +298,11 @@ class AddServiceModal extends React.Component{
                     serviceId: element.laborId,
                     serviceName: element.serviceName,
                     employeeId: element.employeeId || null,
-                    serviceHours: element.hours ? element.hours : 0,
                     purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                     count: element.count ? element.count : 1,
                     servicePrice:  Math.round(element.price*10)/10 || 1,
-                    comment: element.comment || {
-                        comment: undefined,
-                        positions: [],
-                    },
                 })
             });
-            if(relatedServicesCheckbox) {
-                relatedServices.map((element)=>{
-                    if(element.checked) {
-                        data.services.push({
-                            serviceId: element.laborId,
-                            serviceName: element.serviceName,
-                            employeeId: element.employeeId,
-                            serviceHours: element.hours ? element.hours : 0,
-                            purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
-                            count: element.count ? element.count : 1,
-                            servicePrice:  Math.round(element.price*10)/10 || 1,
-                            comment: element.comment || {
-                                comment: undefined,
-                                positions: [],
-                            },
-                        })
-                    }
-                });
-            }
             this.addDetailsAndLabors(data);
         }
         this.props.hideModal();
@@ -349,45 +317,7 @@ class AddServiceModal extends React.Component{
         this.props.hideModal();
     };
 
-    async getRelatedLabors(id) {
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/labors/related?id=${id}`;
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': token,
-                    'Content-Type': 'application/json',
-                },
-            });
-            const result = await response.json();
-            if(result.labors && result.labors.length) {
-                this.setState({
-                    relatedServices: result.labors[0].relatedLabors.map((labor, key)=>{
-                        return ({
-                            ...labor,
-                            key: key,
-                            related: true,
-                            serviceName: labor.name,
-                            storeGroupId: labor.productId,
-                            defaultName: labor.name,
-                            count: labor.normHours || 1,
-                            employeeId: this.props.defaultEmployeeId,
-                            comment: {
-                                comment: undefined,
-                                positions: [],
-                                problems: [],
-                            },
-                            checked: true,
-                        })
-                    })
-                })
-            }
-        } catch (error) {
-            console.error('ERROR:', error);
-        }
-    }
-
+    
     async addDetailsAndLabors(data) {
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/orders/${this.props.orderId}`;
@@ -428,18 +358,6 @@ class AddServiceModal extends React.Component{
         ))
     };
 
-    filterOptions(masterLaborId, storeGroupId) {
-        var servicesOptions = [...this.labors];
-        if(masterLaborId) {
-            servicesOptions = servicesOptions.filter((elem, index)=>elem.masterLaborId == masterLaborId);
-        }
-        if(storeGroupId) {
-            servicesOptions = servicesOptions.filter((elem, index)=>elem.productId == storeGroupId);
-        }
-
-        this.servicesOptions = [...servicesOptions];
-    }
-
     getMobileForm() {
         const { mainTableSource } = this.state;
         const dataSource = mainTableSource[0] || {};
@@ -448,7 +366,7 @@ class AddServiceModal extends React.Component{
 
         return columns.map(({title, key, render, dataIndex})=>{
             return (
-                <div>
+                <div className={Styles.mobileTable}>
                     {title}
                     <div>
                         {dataIndex ? 
@@ -467,7 +385,7 @@ class AddServiceModal extends React.Component{
 
     componentDidUpdate(prevState) {
         if(prevState.visible == false && this.props.visible) {
-            const editing = Boolean(this.props.labor.laborId);
+            const editing = Boolean(this.props.labor && this.props.labor.laborId);
             this.getOptions();
             this.state.mainTableSource = [{...this.props.labor}];
             

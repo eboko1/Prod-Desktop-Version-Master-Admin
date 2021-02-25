@@ -18,12 +18,7 @@ class DetailProductModal extends React.Component{
         super(props);
         this.state = {
             editing: false,
-            radioValue: 1,
             mainTableSource: [],
-            relatedDetails: [],
-            relatedServices: [],
-            relatedDetailsCheckbox: false,
-            relatedServicesCheckbox: false,
             brandSearchValue: "",
             defaultBrandName: undefined,
         }
@@ -33,10 +28,6 @@ class DetailProductModal extends React.Component{
         this.treeData = [];
         this.servicesOptions = [];
         this.suppliersOptions = [];
-
-        this.setCode = this.setCode.bind(this);
-        this.setSupplier = this.setSupplier.bind(this);
-        this.setVinDetail = this.setVinDetail.bind(this);
 
         this.mainTableColumns = [
             {
@@ -53,7 +44,7 @@ class DetailProductModal extends React.Component{
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
                             style={{minWidth: 240, color: 'var(--text)'}}
                             value={data}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            dropdownStyle={{ maxHeight: 400, maxWidth: 340, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.props.treeData}
                             filterTreeNode={(input, node) => {
                                 return (
@@ -65,8 +56,6 @@ class DetailProductModal extends React.Component{
                                 elem.storeGroupId = value;
                                 elem.detailName = option.props.name;
                                 elem.multiplier = option.props.multiplier;
-                                if(this.state.radioValue != 2) this.getDefaultValues(value);
-                                if(!elem.related) this.getRelatedDetails(value);
                                 this.filterOptions(value);
                                 this.setState({});
                             }}
@@ -81,7 +70,7 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <Input
-                            disabled={elem.storeGroupId == null && this.state.radioValue == 1}
+                            disabled={elem.storeGroupId == null}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                             style={{minWidth: 240}}
                             value={data}
@@ -109,7 +98,7 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
+                            disabled={elem.storeGroupId == null}
                             value={Math.round(data*10)/10 || 1}
                             className={Styles.detailNumberInput}
                             min={1}
@@ -135,7 +124,7 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
+                            disabled={elem.storeGroupId == null}
                             value={Math.round(data*10)/10 || 1}
                             className={Styles.detailNumberInput}
                             min={0.1}
@@ -193,18 +182,6 @@ class DetailProductModal extends React.Component{
                             onClick={()=>{
                                 elem.storeGroupId = this.state.editing || elem.related ? elem.storeGroupId : undefined;
                                 elem.detailName = undefined;
-                                elem.comment = {
-                                    comment: undefined,
-                                    positions: [],
-                                };
-                                elem.brandId = undefined;
-                                elem.brandName = undefined;
-                                elem.detailCode = undefined;
-                                elem.supplierName = undefined;
-                                elem.supplierId = undefined;
-                                elem.supplierBrandId = undefined;
-                                elem.store = null;
-                                elem.purchasePrice = 0;
                                 elem.price = 1;
                                 elem.count = 1;
                                 elem.sum = undefined;
@@ -218,7 +195,7 @@ class DetailProductModal extends React.Component{
     }
 
     handleOk = () => {
-        const { editing, mainTableSource, relatedServices, relatedDetails, relatedDetailsCheckbox } = this.state;
+        const { editing, mainTableSource } = this.state;
         if(editing) {
             this.props.updateDetail(this.props.tableKey, {...mainTableSource[0]});
         }
@@ -229,95 +206,12 @@ class DetailProductModal extends React.Component{
                 services: [],
             }
             mainTableSource.map((element)=>{
-                if(!element.productId) {
-                    data.details.push({
-                        storeGroupId: element.storeGroupId,
-                        name: element.detailName,
-                        productCode: element.detailCode,
-                        supplierId: element.supplierId,
-                        supplierBrandId: element.supplierBrandId || element.brandId,
-                        supplierOriginalCode: element.supplierOriginalCode,
-                        supplierProductNumber: element.supplierProductNumber,
-                        supplierPartNumber: element.supplierPartNumber,
-                        reservedFromWarehouseId: element.reservedFromWarehouseId || null,
-                        purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
-                        count: element.count ? element.count : 1,
-                        price: element.price ? Math.round(element.price*10)/10 : 1,
-                        comment: element.comment || {
-                            comment: undefined,
-                            positions: [],
-                        },
-                    })
-                } else {
-                    data.details.push({
-                        storeGroupId: element.storeGroupId,
-                        name: element.detailName,
-                        productId: element.productId,
-                        productCode: element.detailCode,
-                        supplierBrandId: element.supplierBrandId || element.brandId,
-                        purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
-                        count: element.count ? element.count : 1,
-                        price: element.price ? Math.round(element.price*10)/10  : 1,
-                        reservedFromWarehouseId: element.reservedFromWarehouseId || null,
-                        supplierId: element.supplierId,
-                        comment: element.comment || {
-                            comment: undefined,
-                            positions: [],
-                        },
-                    })
-                }
-            });
-            if(relatedDetailsCheckbox) {
-                relatedDetails.map((element)=>{
-                    if(element.checked) {
-                        if(!element.productId) {
-                            data.details.push({
-                                storeGroupId: element.storeGroupId,
-                                name: element.detailName,
-                                productCode: element.detailCode,
-                                supplierId: element.supplierId,
-                                supplierBrandId: element.supplierBrandId || element.brandId,
-                                supplierOriginalCode: element.supplierOriginalCode,
-                                supplierProductNumber: element.supplierProductNumber,
-                                supplierPartNumber: element.supplierPartNumber,
-                                reservedFromWarehouseId: element.reservedFromWarehouseId || null,
-                                purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
-                                count: element.count ? element.count : 1,
-                                price: element.price ? Math.round(element.price*10)/10 : 1,
-                                comment: element.comment || {
-                                    comment: undefined,
-                                    positions: [],
-                                },
-                            })
-                        } else {
-                            data.details.push({
-                                storeGroupId: element.storeGroupId,
-                                name: element.detailName,
-                                productId: element.productId,
-                                productCode: element.detailCode,
-                                supplierBrandId: element.supplierBrandId || element.brandId,
-                                purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
-                                count: element.count ? element.count : 1,
-                                price: element.price ? Math.round(element.price*10)/10  : 1,
-                                reservedFromWarehouseId: element.reservedFromWarehouseId || null,
-                                supplierId: element.supplierId,
-                                comment: element.comment || {
-                                    comment: undefined,
-                                    positions: [],
-                                },
-                            })
-                        }
-                    }
-                });
-            }
-            relatedServices.map((element)=>{
-                if(element.laborId) {
-                    data.services.push({
-                        serviceId: element.laborId,
-                        serviceHours: element.hours ? element.hours : 1,
-                        servicePrice: element.price ? element.price : 0,
-                    })
-                }
+                data.details.push({
+                    storeGroupId: element.storeGroupId,
+                    name: element.detailName,
+                    count: element.count ? element.count : 1,
+                    price: element.price ? Math.round(element.price*10)/10  : 1,
+                })
             });
             this.addDetailsAndLabors(data);
         }
@@ -326,231 +220,10 @@ class DetailProductModal extends React.Component{
     
     handleCancel = () => {
         this.setState({
-            radioValue: 1,
             mainTableSource: [],
-            relatedDetails: [],
-            relatedDetailsCheckbox: false,
         });
         this.props.hideModal();
     };
-
-    async getRelatedDetails(id) {
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/store_groups/related?id=${id}&limit=3&excludePricelist=false`;
-        if(this.props.tecdocId) url += `&modificationId=${this.props.tecdocId}`;
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': token,
-                    'Content-Type': 'application/json',
-                },
-            });
-            const result = await response.json();
-            this.setState({
-                relatedDetails: result.storeGroups.map((detail, key)=>{
-                    let formattedDetail = {
-                        ...detail,
-                        key: key,
-                        related: true,
-                        detailName: detail.name,
-                        storeGroupId: detail.id,
-                        detailCode: detail.partNumber,
-                        comment: {
-                            comment: undefined,
-                            positions: [],
-                            problems: [],
-                        },
-                        checked: true,
-                    };
-
-                    delete formattedDetail.supplierName;
-                    delete formattedDetail.supplierId;
-
-                    if(detail.price) {
-                        const { id, itemName, partNumber, supplierBrandId, businessSupplierId, businessSupplierName, store, purchasePrice, supplierOriginalCode, supplierProductNumber, supplierPartNumber, isFromStock, defaultWarehouseId } = detail.price;
-                        let markup = detail.markup ? detail.markup : 1.4;
-
-                        formattedDetail={
-                            ...formattedDetail,
-                            detailName: itemName,
-                            supplierBrandId: supplierBrandId,
-                            supplierId: businessSupplierId,
-                            supplierName: businessSupplierName,
-                            productId: businessSupplierId == 0 ? id : undefined,
-                            store: store,
-                            purchasePrice: Math.round(purchasePrice*10)/10,
-                            price: Math.round(purchasePrice * markup*10)/10,
-                            supplierOriginalCode: supplierOriginalCode,
-                            supplierProductNumber: supplierProductNumber,
-                            supplierPartNumber: supplierPartNumber,
-                            isFromStock: isFromStock,
-                            defaultWarehouseId: defaultWarehouseId,
-                        };
-                    }
-
-                    return formattedDetail;
-                })
-            })
-        } catch (error) {
-            console.error('ERROR:', error);
-        }
-    }
-
-    async getDefaultValues(storeGroupId) {
-        if(storeGroupId == undefined) {
-            return;
-        }
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__;
-        let params = `/store_groups/default_detail?storeGroupId=${storeGroupId}&modificationId=${this.props.tecdocId}`;
-        if(this.state.editing) params += `&excludePricelist=true`;
-        url += params;
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': token,
-                    'Content-Type': 'application/json',
-                },
-            });
-            const result = await response.json();
-            if(result) {
-                let brands = that.props.brands.slice(0);
-                brands.sort((x,y)=>{ 
-                    return x.brandId == result.brandId ? -1 : y.brandId == result.brandId ? 1 : 0; 
-                });
-                that.state.defaultBrandName = result.brandName;
-                if(!that.state.editing) {
-                    this.state.mainTableSource[0]={
-                            ...this.state.mainTableSource[0],
-                            brandId: result.brandId,
-                            brandName: result.brandName,
-                            detailCode: result.partNumber,
-                            count: 1,
-                        };
-                    if(result.price) {
-                        const { id, supplierBrandId, businessSupplierId, businessSupplierName, store, purchasePrice, supplierOriginalCode, supplierProductNumber, supplierPartNumber, isFromStock, defaultWarehouseId } = result.price;
-                        let markup = result.markup ? result.markup : 1.4;
-
-                        this.state.mainTableSource[0]={
-                            ...this.state.mainTableSource[0],
-                            supplierBrandId: supplierBrandId,
-                            supplierId: businessSupplierId,
-                            supplierName: businessSupplierName,
-                            productId: businessSupplierId == 0 ? id : undefined,
-                            store: store,
-                            purchasePrice: Math.round(purchasePrice*10)/10,
-                            price: Math.round(purchasePrice * markup*10)/10,
-                            supplierOriginalCode: supplierOriginalCode,
-                            supplierProductNumber: supplierProductNumber,
-                            supplierPartNumber: supplierPartNumber,
-                            isFromStock: isFromStock,
-                            defaultWarehouseId: defaultWarehouseId,
-                        };
-                    }
-                }
-                that.setState({});
-            }
-        } catch (error) {
-            console.error('ERROR:', error);
-        }
-    }
-
-    setCode(related, code, brandId, productId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber, supplierPartNumber) {
-        const { mainTableSource, relatedDetails, radioValue } = this.state;
-        const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
-        const currentDetail = related ? relatedDetails[key] : mainTableSource[key];
-        this.unsetSupplier(key, related);
-
-        currentDetail.detailCode = code;
-        currentDetail.brandId = brandId;
-        currentDetail.brandName = brand.brandName;
-        currentDetail.productId = productId;
-        currentDetail.supplierOriginalCode = supplierOriginalCode;
-        currentDetail.supplierProductNumber = supplierProductNumber;
-        currentDetail.supplierPartNumber = supplierPartNumber;
-        if(radioValue == 3 || radioValue == 4 || radioValue == 5) {
-            currentDetail.storeGroupId = storeGroupId;
-            currentDetail.detailName = String(storeGroupName);
-        }
-
-        if(related) relatedDetails[key] = currentDetail;
-        else mainTableSource[key] = currentDetail;
-
-        this.setState({});
-    }
-
-    setSupplier(related, supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, supplierPartNumber, key, isFromStock, defaultWarehouseId, productId, brandId) {
-        const { mainTableSource, relatedDetails } = this.state;
-        const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
-        const currentDetail = related ? relatedDetails[key] : mainTableSource[key];
-
-        currentDetail.supplierId = supplierId;
-        currentDetail.supplierName = supplierName;
-        currentDetail.supplierBrandId = supplierBrandId;
-        currentDetail.purchasePrice = purchasePrice;
-        currentDetail.price = price;
-        currentDetail.store = store;
-        currentDetail.supplierOriginalCode = supplierOriginalCode;
-        currentDetail.supplierProductNumber = supplierProductNumber;
-        currentDetail.supplierPartNumber = supplierPartNumber;
-        currentDetail.isFromStock = isFromStock;
-        currentDetail.reservedFromWarehouseId = defaultWarehouseId;
-        currentDetail.productId = isFromStock ? productId : undefined;
-        if(brand) {
-            currentDetail.brandId = brandId;
-            currentDetail.brandName = brand && brand.brandName;
-        }
-
-        if(related) relatedDetails[key] = currentDetail;
-        else mainTableSource[key] = currentDetail;
-
-        this.setState({});
-    }
-
-    unsetSupplier(key = 0, related) {
-        const { mainTableSource, relatedDetails, radioValue } = this.state;
-        const currentDetail = related ? relatedDetails[key] : mainTableSource[key];
-        if(radioValue == 5) {
-            currentDetail.supplierId = 0;
-            currentDetail.supplierName = this.props.intl.formatMessage({id: 'navigation.storage'});
-        } else {
-            currentDetail.productId = undefined;
-            currentDetail.isFromStock = false;
-            currentDetail.supplierId = null;
-            currentDetail.supplierName = undefined;
-            currentDetail.supplierBrandId = undefined;
-            currentDetail.supplierOriginalCode = undefined;
-            currentDetail.supplierProductNumber = undefined;
-            currentDetail.supplierPartNumber = undefined;
-            currentDetail.store = undefined;
-            currentDetail.reservedFromWarehouseId = undefined;
-        }
-
-        if(related) relatedDetails[key] = currentDetail;
-        else mainTableSource[key] = currentDetail;
-
-        this.setState({});
-    }
-
-    setVinDetail(code, name, key, related) {
-        this.unsetSupplier(key, related);
-        this.state.mainTableSource[0].detailName = name;
-        this.state.mainTableSource[0].detailCode = code;
-        
-        const oesBrand = this.props.brands.find((brand)=>brand.brandId==8000);
-        this.state.mainTableSource[0].brandName = oesBrand ? oesBrand.brandName : undefined;
-        this.state.mainTableSource[0].brandId = oesBrand ? oesBrand.brandId : undefined;
-        this.state.radioValue = 3;
-
-        this.state.mainTableSource[0].purchasePrice = undefined;
-        this.state.mainTableSource[0].price = 0;
-        this.state.mainTableSource[0].count = 1;
-
-        this.setState({});
-    }
 
     async addDetailsAndLabors(data) {
         let token = localStorage.getItem('_my.carbook.pro_token');
@@ -579,35 +252,7 @@ class DetailProductModal extends React.Component{
     }
 
     fetchData() {
-        this.labors = this.props.labors;
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url =  __API_URL__ + '/business_suppliers?all=true';
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            data.map((elem, index)=>{
-                elem.key = index;
-            })
-            that.suppliers = data;
-            that.getOptions();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        })
+        
     }
 
 
@@ -649,7 +294,7 @@ class DetailProductModal extends React.Component{
 
         return columns.map(({title, key, render, dataIndex})=>{
             return (
-                <div>
+                <div className={Styles.mobileTable}>
                     {title}
                     <div>
                         {dataIndex ? 
@@ -668,20 +313,11 @@ class DetailProductModal extends React.Component{
 
     componentDidUpdate(prevProps) {
         if(prevProps.visible == false && this.props.visible) {
-            const editing = Boolean(this.props.detail.storeGroupId);
+            const editing = Boolean(this.props.detail && this.props.detail.storeGroupId);
             this.setState({
                 editing: editing,
                 mainTableSource: [{...this.props.detail, key: 0}],
             })
-            this.getDefaultValues(this.props.detail.storeGroupId);
-        }
-        if(!prevProps.showOilModal && this.props.showOilModal) {
-            this.setState({
-                radioValue: 4,
-            })
-        }
-        if(isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_FIND_FROM_VEHICLE) && this.state.radioValue == 1) {
-            this.setState({radioValue: 2});
         }
     }
 
