@@ -440,6 +440,27 @@ class AddServiceModal extends React.Component{
         this.servicesOptions = [...servicesOptions];
     }
 
+    getMobileForm() {
+        const { mainTableSource } = this.state;
+        const dataSource = mainTableSource[0] || {};
+        const columns = [...this.mainTableColumns];
+        columns.pop();
+
+        return columns.map(({title, key, render, dataIndex})=>{
+            return (
+                <div>
+                    {title}
+                    <div>
+                        {dataIndex ? 
+                            render(dataSource[dataIndex], dataSource) :
+                            render(dataSource)
+                        }
+                    </div>
+                </div>
+            )
+        })
+    }
+
     componentDidMount() {
         this.fetchData();
     }
@@ -461,31 +482,37 @@ class AddServiceModal extends React.Component{
     }
 
     render() {
-        const { visible } = this.props;
+        const { visible, isMobile } = this.props;
         const { relatedServicesCheckbox, mainTableSource, relatedServices, editing } = this.state;
         return (
             <>
                 <Modal
-                    width={"min-content"}
                     visible={visible}
                     title={null}
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                     maskClosable={false}
-                    style={{
-                        minWidth: 560
+                    style={!isMobile ? {
+                        minWidth: 560,
+                        width: '"min-content',
+                    } : {
+                        width: '95%',
                     }}
                 >
-                    <div className={Styles.tableWrap}>
-                        <div className={Styles.modalSectionTitle}>
-                            <div style={{display: 'block'}}><FormattedMessage id='services_table.labor'/></div>
+                    
+                        <div className={Styles.tableWrap}>
+                            <div className={Styles.modalSectionTitle}>
+                                <div style={{display: 'block'}}><FormattedMessage id='services_table.labor'/></div>
+                            </div>
+                            {!isMobile ?
+                                <Table
+                                    dataSource={mainTableSource}
+                                    columns={this.mainTableColumns}
+                                    pagination={false}
+                                /> :
+                                this.getMobileForm()
+                            }
                         </div>
-                        <Table
-                            dataSource={mainTableSource}
-                            columns={this.mainTableColumns}
-                            pagination={false}
-                        />
-                    </div>
                 </Modal>
             </>
         )

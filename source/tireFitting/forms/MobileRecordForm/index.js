@@ -12,435 +12,285 @@ import {
     Upload,
     notification,
     InputNumber,
+    Tabs,
 } from "antd";
 import { v4 } from "uuid";
 import _ from "lodash";
 import moment from "moment";
-import {
-    API_URL,
-    getPartProblems,
-    addNewDiagnosticRow,
-    addNewDiagnosticTemplate,
-    getDiagnosticsTemplates,
-    sendMessage,
-    sendDiagnosticAnswer,
-    deleteDiagnosticProcess,
-    deleteDiagnosticTemplate,
-} from "core/forms/orderDiagnosticForm/saga";
 
 // proj
-// import { onChangeMobileRecordForm } from 'core/forms/mobileRecordForm/duck';
+import { OrderMobileForm } from './OrderMobileForm';
 import book from "routes/book";
 import { onChangeOrderForm } from "core/forms/orderForm/duck";
 
-import {
-    DecoratedInput,
-    DecoratedSelect,
-    DecoratedTextArea,
-    DecoratedDatePicker,
-    DecoratedTimePicker,
-    DecoratedSlider,
-} from "forms/DecoratedFields";
-
-import { withReduxForm } from "utils";
 import { permissions, isForbidden } from "utils";
 
-import Styles from "./styles.m.css";
+import {
+    DetailsTable,
+    ServicesTable,
+    DiscountPanel,
+    HistoryTable,
+} from "../OrderForm/OrderFormTables";
 
-const FormItem = Form.Item;
 const Option = Select.Option;
-
-const formItemLayout = {
-    labelCol: {
-        xl: { span: 24 },
-        xxl: { span: 4 },
-    },
-    wrapperCol: {
-        xl: { span: 24 },
-        xxl: { span: 20 },
-    },
-    colon: false,
-};
+const TabPane = Tabs.TabPane;
 
 @injectIntl
-@withReduxForm({
-    name: "orderForm",
-    debouncedFields: [
-        "comment",
-        "recommendation",
-        "vehicleCondition",
-        "businessComment",
-    ],
-    actions: {
-        change: onChangeOrderForm,
-    },
-})
 export class MobileRecordForm extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            workshopModalVisible: false,
-            stockModalVisible: false,
+            detailsTreeData: [],
         };
+
+        this.details = [];
     }
 
-    showStockModal() {
+    _fetchLaborsAndDetails = async () => {
+        var that = this;
+        let token = localStorage.getItem("_my.carbook.pro_token");
+        let url = __API_URL__ + `/store_groups`;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+            return Promise.resolve(response);
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            data.map((elem, index) => {
+                elem.key = index;
+            });
+            that.details = data;
+            that.setState({
+                details: data,
+            });
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+    };
+
+    buildStoreGroupsTree() {
+        var treeData = [];
+        for (let i = 0; i < this.details.length; i++) {
+            const parentGroup = this.details[ i ];
+            treeData.push({
+                title:      `${parentGroup.name} (#${parentGroup.id})`,
+                name:       parentGroup.name,
+                value:      parentGroup.id,
+                key:        `${i}`,
+                selectable: false,
+                children:   [],
+                multiplier: parentGroup.priceGroupMultiplier,
+            });
+            for (let j = 0; j < parentGroup.childGroups.length; j++) {
+                const childGroup = parentGroup.childGroups[ j ];
+                treeData[ i ].children.push({
+                    title:      `${childGroup.name} (#${childGroup.id})`,
+                    name:       childGroup.name,
+                    value:      childGroup.id,
+                    key:        `${i}-${j}`,
+                    selectable: false,
+                    children:   [],
+                    multiplier: childGroup.priceGroupMultiplier,
+                });
+                for (let k = 0; k < childGroup.childGroups.length; k++) {
+                    const lastNode = childGroup.childGroups[ k ];
+                    treeData[ i ].children[ j ].children.push({
+                        title:     `${lastNode.name} (#${lastNode.id})`,
+                        name:      lastNode.name,
+                        value:     lastNode.id,
+                        key:       `${i}-${j}-${k}`,
+                        children:  [],
+                        multiplier: lastNode.priceGroupMultiplier,
+                    });
+                    for (let l = 0; l < lastNode.childGroups.length; l++) {
+                        const elem = lastNode.childGroups[ l ];
+                        treeData[ i ].children[ j ].children[ k ].children.push({
+                            title:     `${elem.name} (#${elem.id})`,
+                            name:      elem.name,
+                            value:     elem.id,
+                            key:       `${i}-${j}-${k}-${l}`,
+                            multiplier: elem.priceGroupMultiplier,
+                        });
+                    }
+                }
+            }
+        }
         this.setState({
-            stockModalVisible: true,
+            detailsTreeData: treeData,
         })
     }
 
-    hideStockModal() {
-        this.setState({
-            stockModalVisible: false,
-        })
+    componentDidMount() {;
+        if (this.props.allDetails.brands.length) {
+            this._fetchLaborsAndDetails();
+        }
     }
 
-    showWorkshopModal() {
-        this.setState({
-            workshopModalVisible: true,
-        })
+    componentDidUpdate(prevProps, prevState) {
+        if(!this.state.detailsTreeData.length && this.details.length) {
+            this.buildStoreGroupsTree();
+        }
     }
 
-    hideWorkshopModal() {
-        this.setState({
-            workshopModalVisible: false,
-        })
-    }
 
     render() {
         const {
-            selectedClient,
-            stations,
+            isMobile,
+            orderStatus,
+            wrappedComponentRef,
             onStatusChange,
-            orderDiagnostic,
-            order: { status },
+            user,
+            orderTasks,
+            orderHistory,
+            orderId,
+            allDetails,
+            allServices,
             onClose,
+            employees,
+            fetchedOrder,
+            order,
+            fetchOrderForm,
         } = this.props;
-        const { getFieldDecorator, getFieldsValue } = this.props.form;
         const { formatMessage } = this.props.intl;
 
-        const vehicle = selectedClient.vehicles.find((vehicle)=>vehicle.id == this.props.order.clientVehicleId) || undefined;
+        const orderServices = _.get(fetchedOrder, "orderServices", []);
+        const orderDetails = _.get(fetchedOrder, "orderDetails", []);
 
-        const isDurationDisabled = _.every(
-            getFieldsValue([
-                "stationLoads[0].beginDate",
-                "stationLoads[0].beginTime",
-                "stationLoads[0].station",
-            ]),
-        );
+        var orderServicesSize = 0,
+            orderDetailsSize = 0;
+
+        orderServices.map((x)=>{if(x.id) orderServicesSize++});
+        orderDetails.map((x)=>{if(x.id) orderDetailsSize++});
+
+        var countDetails = orderServices.length,
+            priceDetails = 0,
+            totalDetailsProfit = 0,
+            detailsDiscount = order.detailsDiscount;
+        for (let i = 0; i < orderDetails.length; i++) {
+            if (orderDetails[i].agreement != "REJECTED") {
+                priceDetails += orderDetails[i].sum;
+                totalDetailsProfit +=
+                    orderDetails[i].sum -
+                    (orderDetails[i].sum * detailsDiscount) / 100 -
+                    orderDetails[i].purchasePrice *
+                        orderDetails[i].count;
+            }
+        }
+        priceDetails = Math.round(priceDetails);
+        totalDetailsProfit = Math.round(totalDetailsProfit);
+
+        var countServices = orderServices.length,
+            priceServices = 0,
+            totalServicesProfit = 0,
+            servicesDiscount = order.servicesDiscount;
+        for (let i = 0; i < orderServices.length; i++) {
+            if (orderServices[i].agreement != "REJECTED") {
+                priceServices += orderServices[i].sum;
+                totalServicesProfit +=
+                    orderServices[i].sum -
+                    (orderServices[i].sum * servicesDiscount) / 100 -
+                    orderServices[i].purchasePrice *
+                        orderServices[i].count;
+            }
+        }
+        priceServices = Math.round(priceServices);
+        totalServicesProfit = Math.round(totalServicesProfit);
+
+        console.log(this);
+
         return (
-            <Form layout="horizontal">
-                <div style={{ display: "none" }}>
-                    <DecoratedInput
-                        field="stationLoads[0].status"
-                        hiddeninput="hiddeninput"
-                        formItem
-                        initialValue={"TO_DO"}
-                        getFieldDecorator={getFieldDecorator}
+            <Tabs
+
+            >
+                <TabPane
+                    forceRender
+                    tab={formatMessage({
+                        id: "add_order_form.general",
+                        defaultMessage: "General",
+                    })}
+                    key="general"
+                >
+                    <OrderMobileForm
+                        orderStatus={ orderStatus }
+                        wrappedComponentRef={ wrappedComponentRef }
+                        onStatusChange={ onStatusChange }
+                        user={ user }
+                        orderTasks={ orderTasks }
+                        orderHistory={ orderHistory }
+                        orderId={ orderId }
+                        allDetails={ allDetails }
+                        onClose={ onClose }
                     />
-                </div>
-                <div className={Styles.mobileRecordFormFooter} style={{display: 'none'}}>
-                    {status !== "cancel" && status !== "approve" && (
-                        <Button
-                            className={Styles.mobileRecordSubmitBtn}
-                            type="primary"
-                            onClick={() => onStatusChange("approve")}
-                        >
-                            <FormattedMessage id="add_order_form.save_appointment" />
-                        </Button>
-                    )}
-                    {status !== "cancel" && (
-                        <Button
-                            className={Styles.mobileRecordSubmitBtn}
-                            onClick={() =>
-                                onStatusChange(
-                                    status,
-                                    undefined,
-                                    undefined,
-                                    `${book.dashboard}`,
-                                )
-                            }
-                        >
-                            <FormattedMessage id="close" />
-                        </Button>
-                    )}
-                </div>
-                <FormItem
-                    label={<FormattedMessage id="add_order_form.name" />}
-                    {...formItemLayout}
+                </TabPane>
+                <TabPane
+                    forceRender
+                    tab={`${formatMessage({
+                        id: "add_order_form.services",
+                        defaultMessage: "Services",
+                    })} (${orderServicesSize})`}
+                    key="services"
                 >
-                    <Input
-                        placeholder={formatMessage({
-                            id: "add_order_form.select_name",
-                            defaultMessage: "Select client",
-                        })}
-                        disabled
-                        value={
-                            selectedClient.name || selectedClient.surname
-                                ? (selectedClient.surname
-                                      ? selectedClient.surname + " "
-                                      : "") + `${selectedClient.name}`
-                                : void 0
-                        }
+                    <ServicesTable
+                        isMobile={isMobile}
+                        orderId={ orderId }
+                        user={user}
+                        fetchedOrder={fetchedOrder}
+                        orderServices={ orderServices }
+                        employees={ employees }
+                        defaultEmployeeId={this.props.order.employeeId}
+                        labors={allServices}
+                        details={this.details}
                     />
-                </FormItem>
-                <DecoratedSelect
-                    label={<FormattedMessage id="add_order_form.phone" />}
-                    field="clientPhone"
-                    initialValue={this.props.order.clientPhone}
-                    formItem
-                    formItemLayout={formItemLayout}
-                    hasFeedback
-                    className={Styles.clientCol}
-                    colon={false}
-                    rules={[
-                        {
-                            required: true,
-                            message: formatMessage({
-                                id: "required_field",
-                            }),
-                        },
-                    ]}
-                    getFieldDecorator={getFieldDecorator}
-                    placeholder={formatMessage({
-                        id: "add_order_form.select_client_phone",
-                    })}
+                </TabPane>
+                <TabPane
+                    forceRender
+                    tab={`${formatMessage({
+                        id: "add_order_form.details",
+                        defaultMessage: "Details",
+                    })} (${orderDetailsSize})`}
+                    key="details"
                 >
-                    {selectedClient.phones.filter(Boolean).map(phone => (
-                        <Option value={phone} key={v4()}>
-                            {phone}
-                        </Option>
-                    ))}
-                </DecoratedSelect>
-                <DecoratedSelect
-                    field="clientVehicle"
-                    initialValue={this.props.order.clientVehicleId}
-                    formItem
-                    hasFeedback
-                    label={<FormattedMessage id="add_order_form.car" />}
-                    formItemLayout={formItemLayout}
-                    colon={false}
-                    className={Styles.clientCol}
-                    getFieldDecorator={getFieldDecorator}
-                    rules={[
-                        {
-                            required: true,
-                            message: formatMessage({
-                                id: "required_field",
-                            }),
-                        },
-                    ]}
-                    placeholder={formatMessage({
-                        id: "add_order_form.select_client_vehicle",
-                    })}
-                    optionDisabled="enabled"
-                >
-                    {selectedClient.vehicles.map(vehicle => (
-                        <Option value={vehicle.id} key={v4()}>
-                            {`${vehicle.make} ${
-                                vehicle.model
-                            } ${vehicle.number || vehicle.vin || ""}`}
-                        </Option>
-                    ))}
-                </DecoratedSelect>
-                <hr />
-                <DecoratedSelect
-                    field="manager"
-                    initialValue={this.props.order.managerId}
-                    formItem
-                    getFieldDecorator={getFieldDecorator}
-                    rules={[
-                        {
-                            required: true,
-                            message: formatMessage({
-                                id: "required_field",
-                            }),
-                        },
-                    ]}
-                    label={<FormattedMessage id="add_order_form.manager" />}
-                    hasFeedback
-                    colon={false}
-                    className={Styles.datePanelItem}
-                    placeholder={formatMessage({
-                        id: "add_order_form.select_manager",
-                    })}
-                >
-                    {this.props.managers.map(manager => (
-                        <Option
-                            disabled={manager.disabled}
-                            value={manager.id}
-                            key={v4()}
-                        >
-                            {`${manager.managerName} ${manager.managerSurname}`}
-                        </Option>
-                    ))}
-                </DecoratedSelect>
-                <hr />
-                <div style={{ fontSize: "18px", marginBottom: "10px" }}>
-                    <FormattedMessage id="add_order_form.appointment_details" />
-                </div>
-                <DecoratedSelect
-                    field="stationLoads[0].station"
-                    initialValue={this.props.order.stationNum}
-                    rules={[
-                        {
-                            required: true,
-                            message: formatMessage({
-                                id: "required_field",
-                            }),
-                        },
-                    ]}
-                    formItem
-                    label={<FormattedMessage id="add_order_form.station" />}
-                    colon={false}
-                    hasFeedback
-                    className={Styles.datePanelItem}
-                    getFieldDecorator={getFieldDecorator}
-                    placeholder={
-                        <FormattedMessage id="add_order_form.select_station" />
+                    <DetailsTable
+                        isMobile={isMobile}
+                        orderId={orderId}
+                        labors={allServices}
+                        details={this.details}
+                        orderDetails={orderDetails}
+                        allDetails={allDetails}
+                        user={user}
+                        reloadOrderForm={this.props.reloadOrderForm}
+                        detailsTreeData={this.state.detailsTreeData}
+                    />
+                </TabPane>
+                <TabPane
+                    forceRender
+                    tab={
+                        formatMessage({
+                            id: "order_form_table.history",
+                        }) + ` (${orderHistory.orders.length})`
                     }
-                    options={stations}
-                    optionValue="num"
-                    optionLabel="name"
-                />
-                <DecoratedDatePicker
-                    formItem
-                    initialValue={moment(
-                        this.props.order.beginDatetime,
-                    ).toISOString()}
-                    field="stationLoads[0].beginDate"
-                    hasFeedback
-                    label={<FormattedMessage id="date" />}
-                    className={Styles.datePanelItem}
-                    getFieldDecorator={getFieldDecorator}
-                    formatMessage={formatMessage}
-                    allowClear={false}
-                    {...formItemLayout}
-                />
-                <DecoratedTimePicker
-                    field="stationLoads[0].beginTime"
-                    initialValue={moment(
-                        this.props.order.beginDatetime,
-                    ).toISOString()}
-                    formItem
-                    hasFeedback
-                    inputReadOnly
-                    allowClear={false}
-                    disabled={
-                        !this.props.form.getFieldValue(
-                            "stationLoads[0].beginDate",
-                        ) ||
-                        !this.props.form.getFieldValue(
-                            "stationLoads[0].station",
-                        )
-                    }
-                    disabledHours={() => {
-                        const availableHours = _.get(
-                            this.props.availableHours,
-                            "0",
-                            [],
-                        );
-
-                        return _.difference(
-                            Array(24)
-                                .fill(1)
-                                .map((value, index) => index),
-                            availableHours.map(availableHour =>
-                                Number(moment(availableHour).format("HH")),
-                            ),
-                        );
-                    }}
-                    disabledMinutes={hour => {
-                        const availableHours = _.get(
-                            this.props.availableHours,
-                            "0",
-                            [],
-                        );
-
-                        const availableMinutes = availableHours
-                            .map(availableHour => moment(availableHour))
-                            .filter(
-                                availableHour =>
-                                    Number(availableHour.format("HH")) === hour,
-                            )
-                            .map(availableHour =>
-                                Number(availableHour.format("mm")),
-                            );
-
-                        return _.difference([0, 30], availableMinutes);
-                    }}
-                    // disabledSeconds={ disabledSeconds }
-                    label={<FormattedMessage id="time" />}
-                    formatMessage={formatMessage}
-                    className={Styles.datePanelItem}
-                    getFieldDecorator={getFieldDecorator}
-                    minuteStep={30}
-                />
-
-                <DecoratedSlider
-                    formItem
-                    label={<FormattedMessage id="add_order_form.duration" />}
-                    field="stationLoads[0].duration"
-                    initialValue={this.props.order.duration}
-                    getFieldDecorator={getFieldDecorator}
-                    disabled={!isDurationDisabled}
-                    min={0}
-                    step={0.5}
-                    max={8}
-                    {...formItemLayout}
-                />
-                <DecoratedTextArea
-                    formItem
-                    initialValue={this.props.order.comment}
-                    label={
-                        <FormattedMessage id="add_order_form.client_comments" />
-                    }
-                    getFieldDecorator={getFieldDecorator}
-                    field="comment"
-                    rules={[
-                        {
-                            max: 2000,
-                            message: formatMessage({
-                                id: "field_should_be_below_2000_chars",
-                            }),
-                        },
-                    ]}
-                    placeholder={formatMessage({
-                        id: "add_order_form.client_comments",
-                        defaultMessage: "Client_comments",
-                    })}
-                    autoSize={{ minRows: 2, maxRows: 6 }}
-                />
-                <div 
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        margin: '12px 0',
-                    }}
+                    key="history"
                 >
-                    {status !== "cancel" && status !== "approve" && (
-                        <Button
-                            style={status !== "cancel" && status !== "approve" ? {width: '49%'} : {width: '100%'}}
-                            type="primary"
-                            onClick={() => onStatusChange("approve")}
-                        >
-                            <FormattedMessage id="add_order_form.save_appointment" />
-                        </Button>
-                    )}
-                    {status !== "cancel" && (
-                        <Button
-                            style={status !== "cancel" && status !== "approve" ? {width: '49%'} : {width: '100%'}}
-                            onClick={() =>
-                                onClose()
-                            }
-                        >
-                            <FormattedMessage id="close" />
-                        </Button>
-                    )}
-                </div>
-            </Form>
-        );
+                    <HistoryTable
+                        isMobile={isMobile}
+                        orderHistory={orderHistory}
+                        fetchOrderForm={fetchOrderForm}
+                        user={user}
+                    />
+                </TabPane>
+            </Tabs>
+        )
     }
 }

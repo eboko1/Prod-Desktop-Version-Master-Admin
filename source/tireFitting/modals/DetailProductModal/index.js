@@ -641,6 +641,27 @@ class DetailProductModal extends React.Component{
         this.servicesOptions = [...servicesOptions];
     }
 
+    getMobileForm() {
+        const { mainTableSource } = this.state;
+        const dataSource = mainTableSource[0] || {};
+        const columns = [...this.mainTableColumns];
+        columns.pop();
+
+        return columns.map(({title, key, render, dataIndex})=>{
+            return (
+                <div>
+                    {title}
+                    <div>
+                        {dataIndex ? 
+                            render(dataSource[dataIndex], dataSource) :
+                            render(dataSource)
+                        }
+                    </div>
+                </div>
+            )
+        })
+    }
+
     componentWillMount() {
         this.fetchData();
     }
@@ -665,18 +686,20 @@ class DetailProductModal extends React.Component{
     }
 
     render() {
-        const { visible, tableMode } = this.props;
+        const { visible, tableMode, isMobile } = this.props;
         return (
             <div>
                 <Modal
-                    width={"min-content"}
                     visible={visible}
                     title={null}
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                     maskClosable={false}
-                    style={{
-                        minWidth: 560
+                    style={!isMobile ? {
+                        minWidth: 560,
+                        width: '"min-content',
+                    } : {
+                        width: '95%',
                     }}
                 >
                     <div className={Styles.tableWrap}>
@@ -685,11 +708,14 @@ class DetailProductModal extends React.Component{
                                 <FormattedMessage id="order_form_table.diagnostic.detail"/>
                             </div>
                         </div>
-                        <Table
-                            dataSource={this.state.mainTableSource}
-                            columns={this.mainTableColumns}
-                            pagination={false}
-                        />
+                        {!isMobile ?
+                            <Table
+                                dataSource={this.state.mainTableSource}
+                                columns={this.mainTableColumns}
+                                pagination={false}
+                            /> :
+                            this.getMobileForm()
+                        }
                     </div>
                 </Modal>
             </div>
