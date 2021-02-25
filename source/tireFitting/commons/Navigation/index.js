@@ -14,6 +14,7 @@ const Navigation = props => {
             getContainer={ null }
             level={ null }
             open={ !collapsed }
+            handler={ !collapsed ? void 0 : false }
             handleChild={ <i className='drawer-handle-icon' /> }
             onHandleClick={ () => props.onCollapse(!collapsed) }
             onMaskClick={ () => props.onCollapse(true) }

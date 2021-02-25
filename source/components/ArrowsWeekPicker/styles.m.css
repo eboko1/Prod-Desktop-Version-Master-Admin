@@ -3,6 +3,16 @@
     align-items: center;
 }
 
+.mobileWeekPicker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    & > :global(.ant-calendar-picker) {
+        width: 100%;
+    }
+}
+
 .icon {
     cursor: pointer;
     padding: 0 10px;

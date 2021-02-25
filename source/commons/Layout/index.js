@@ -108,6 +108,7 @@ export class LayoutComponent extends Component {
                                 controls={controls}
                                 collapsed={collapsed}
                                 isMobile={isMobile}
+                                onCollapse={this._toggleNavigation}
                             />
                         )}
                         <main

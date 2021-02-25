@@ -26,6 +26,7 @@ const { TabPane } = Tabs;
 
 const mapStateToProps = state => ({
     user: state.auth,
+    isMobile: state.ui.views.isMobile,
 });
 
 const mapDispatchToProps = {
@@ -38,7 +39,7 @@ const mapDispatchToProps = {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class ClientContainer extends Component {
     render() {
-        const { clientEntity, clientId, user, specificTab } = this.props;
+        const { clientEntity, clientId, user, specificTab, isMobile } = this.props;
         const {
             CREATE_EDIT_DELETE_CLIENTS,
             GET_CLIENTS_ADDITIONAL_INFORMATION,
@@ -50,7 +51,7 @@ export default class ClientContainer extends Component {
             <Catcher>
                 <Tabs
                     defaultActiveKey= {specificTab ? specificTab :'generalInfo'}
-                    tabPosition='right'
+                    tabPosition={!isMobile ? 'right' : 'top'}
                     type='card'
                 >
                     <TabPane

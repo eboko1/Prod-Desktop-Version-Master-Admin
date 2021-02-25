@@ -461,25 +461,6 @@ export default class OrderFormHeader extends Component {
                         </div>
                     )}
                 </div>
-                <DecoratedInputNumber
-                    errors={errors}
-                    defaultGetValueProps
-                    field="odometerValue"
-                    fieldValue={_.get(fields, "odometerValue")}
-                    disabled={this.bodyUpdateIsForbidden()}
-                    formItem
-                    initialValue={_.get(fetchedOrder, "order.odometerValue")}
-                    colon={false}
-                    label={this._getLocalization("add_order_form.odometr")}
-                    formItemLayout={formVerticalLayout}
-                    getFieldDecorator={getFieldDecorator}
-                    className={Styles.odometr}
-                    placeholder={this._getLocalization(
-                        "add_order_form.provide_odometr",
-                    )}
-                    rules={this.requiredNumberFieldRules}
-                    min={0}
-                />
             </div>
         );
     };
