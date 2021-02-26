@@ -11,6 +11,8 @@ import {DateRangePicker} from 'components';
 import {
     setCashOrderFromDate,
     setCashOrderToDate,
+    setFiltersAnalyticsUniqueIds,
+    setFiltersCashbox,
     DEFAULT_DATE_FORMAT
 } from 'core/reports/reportCashFlow/duck';
 
@@ -28,7 +30,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     setCashOrderFromDate,
-    setCashOrderToDate
+    setCashOrderToDate,
+    setFiltersAnalyticsUniqueIds,
+    setFiltersCashbox
 };
 
 @connect(
@@ -42,6 +46,8 @@ export default class CashFlowFilter extends React.Component {
 
         this.onDateChange = this.onDateChange.bind(this);
         this.getDaterange = this.getDateRange.bind(this);
+        this.onCashboxSelect = this.onCashboxSelect.bind(this);
+        this.onAnalyticsSelect = this.onAnalyticsSelect.bind(this);
     }
 
     onDateChange(arr) {
@@ -79,6 +85,22 @@ export default class CashFlowFilter extends React.Component {
         return dateRange;
     }
 
+    onCashboxSelect(cashboxId) {
+        const {
+            setFiltersCashbox
+        } = this.props;
+
+        setFiltersCashbox(cashboxId);
+    }
+
+    onAnalyticsSelect(analyticsIds) {
+        const {
+            setFiltersAnalyticsUniqueIds
+        } = this.props;
+
+        setFiltersAnalyticsUniqueIds(analyticsIds);
+    }
+
     render() {
 
         const {
@@ -98,6 +120,7 @@ export default class CashFlowFilter extends React.Component {
                         allowClear
                         placeholder={formatMessage({id: 'report_cash_flow_page.cashbox'})}
                         disabled={analyticsIsFetching}
+                        onChange={this.onCashboxSelect}
                     >
                         {_.map(cashboxes, obj => (
                             <Select.Option key={obj.id} value={obj.id}>
@@ -114,6 +137,7 @@ export default class CashFlowFilter extends React.Component {
                         mode="multiple" //To enable multiple select
                         placeholder={formatMessage({id: 'report_cash_flow_page.analytics'})}
                         disabled={cashboxesIsFetching}
+                        onChange={this.onAnalyticsSelect}
                     >
                         {_.map(analytics, ans => (
                             <Select.Option key={ans.analyticsUniqueId} value={ans.analyticsUniqueId}>

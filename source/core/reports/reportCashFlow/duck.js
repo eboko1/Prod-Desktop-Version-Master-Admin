@@ -15,8 +15,11 @@ export const FETCH_ANALYTICS_SUCCESS = `${prefix}/FETCH_ANALYTICS_SUCCESS`;
 export const FETCH_CASHBOXES = `${prefix}/FETCH_CASHBOXES`;
 export const FETCH_CASHBOXES_SUCCESS = `${prefix}/FETCH_CASHBOXES_SUCCESS`;
 
-export const SET_CASH_ORDER_FROM_DATE = `${prefix}/SET_CASH_ORDER_FROM_DATE`;
-export const SET_CASH_ORDER_TO_DATE = `${prefix}/SET_CASH_ORDER_TO_DATE`;
+export const SET_FILTERS_CASH_ORDER_FROM_DATE = `${prefix}/SET_FILTERS_CASH_ORDER_FROM_DATE`;
+export const SET_FILTERS_CASH_ORDER_TO_DATE = `${prefix}/SET_FILTERS_CASH_ORDER_TO_DATE`;
+export const SET_FILTERS_ANALYTICS_UNIQIE_IDS = `${prefix}/SET_FILTERS_ANALYTICS_UNIQIE_IDS`;
+export const SET_FILTERS_CASHBOX = `${prefix}/SET_FILTERS_CASHBOX`;
+
 export const SET_ANALYTICS_FETCHING_STATE = `${prefix}/SET_ANALYTICS_FETCHING_STATE`;
 export const SET_CASHBOXES_FETCHING_STATE = `${prefix}/SET_CASHBOXES_FETCHING_STATE`;
 
@@ -73,7 +76,7 @@ export default function reducer(state = ReducerState, action) {
                 cashboxes: cashboxes
             };
 
-        case SET_CASH_ORDER_FROM_DATE:
+        case SET_FILTERS_CASH_ORDER_FROM_DATE:
             return {
                 ...state,
                 filters: {
@@ -82,12 +85,30 @@ export default function reducer(state = ReducerState, action) {
                 }
             };
 
-        case SET_CASH_ORDER_TO_DATE:
+        case SET_FILTERS_CASH_ORDER_TO_DATE:
             return {
                 ...state,
                 filters: {
                     ...state.filters,
                     createdToDate: payload
+                }
+            };
+
+        case SET_FILTERS_ANALYTICS_UNIQIE_IDS:
+            return {
+                ...state,
+                filters: {
+                    ...state.filters,
+                    analyticsUniqueId: payload
+                }
+            };
+
+        case SET_FILTERS_CASHBOX:
+            return {
+                ...state,
+                filters: {
+                    ...state.filters,
+                    cashboxId: payload
                 }
             };
 
@@ -152,13 +173,23 @@ export const fetchCashboxesSuccess = ({cashboxes}) => ({
 });
 
 export const setCashOrderFromDate = (strDate) => ({
-    type: SET_CASH_ORDER_FROM_DATE,
+    type: SET_FILTERS_CASH_ORDER_FROM_DATE,
     payload: strDate
 });
 
 export const setCashOrderToDate = (strDate) => ({
-    type: SET_CASH_ORDER_TO_DATE,
+    type: SET_FILTERS_CASH_ORDER_TO_DATE,
     payload: strDate
+})
+
+export const setFiltersAnalyticsUniqueIds = (analyticsUniqueIds) => ({
+    type: SET_FILTERS_ANALYTICS_UNIQIE_IDS,
+    payload: analyticsUniqueIds
+})
+
+export const setFiltersCashbox = (cashboxId) => ({
+    type: SET_FILTERS_CASHBOX,
+    payload: cashboxId
 })
 
 export const setAnalyticsFetchingState = (val) => ({
