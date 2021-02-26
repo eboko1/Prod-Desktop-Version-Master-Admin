@@ -15,7 +15,6 @@ import {
     RolePage,
     ClientsPage,
     ClientPage,
-    ReportAnalyticsPage,
     EmployeesPage,
     AddEmployeePage,
     EditEmployeePage,
@@ -57,8 +56,10 @@ import {
     NewDocumentPage,
     SupplierPage,
     RepairMapSettingPage,
+    ReportAnalyticsPage,
     ReportOrdersPage,
     ReportLoadKPIPage,
+    ReportCashFlowPage,
     LocationsPage,
     LocationSettingsPage,
     LocationsDocumentPage,
@@ -121,11 +122,6 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
-                    component={ReportAnalyticsPage}
-                    path={book.analytics}
-                />
-                <Route
-                    exact
                     render={ props => <ClientPage { ...props } /> }
                     path={ book.clientId }
                 />
@@ -168,8 +164,8 @@ export default class Private extends Component {
                     exact
                     path={ book.supplierPage }
                      render={ props => (
-                        <SupplierPage id={ props.match.params.id } { ...props } />
-                    ) }
+                         <SupplierPage id={ props.match.params.id } { ...props } />
+                         ) }
                 />
                 { /* Cash */ }
                 <Route
@@ -249,14 +245,14 @@ export default class Private extends Component {
                     path={ book.storageDocumentId }
                     render={ props => (
                         <StorageDocumentPage id={ props.match.params.id } { ...props } />
-                    ) }
+                        ) }
                 />
                 <Route
                     exact
                     path={ book.productsTracking }
                     render={ props => (
                         <ProductsTrackingPage type={ props.location.type } { ...props } />
-                    ) }
+                        ) }
                 />
                 <Route
                     exact
@@ -289,6 +285,7 @@ export default class Private extends Component {
                     component={ LocationsMovementPage }
                     path={ book.locationsMovement }
                 />
+                
                 { /* Statistics and reports */ }
                 <Route
                     exact
@@ -312,6 +309,11 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
+                    component={ ReportAnalyticsPage }
+                    path={book.analytics}
+                />
+                <Route
+                    exact
                     component={ ReportOrdersPage }
                     path={ book.reportOrders }
                 />
@@ -320,6 +322,12 @@ export default class Private extends Component {
                     component={ ReportLoadKPIPage }
                     path={ book.reportLoadKPI }
                 />
+                <Route
+                    exact
+                    component={ ReportCashFlowPage }
+                    path={ book.reportCashFlow }
+                />
+
                 { /* Payment */ }
                 <Route
                     exact

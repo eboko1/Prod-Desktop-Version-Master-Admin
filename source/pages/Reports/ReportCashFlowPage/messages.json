@@ -1,0 +1,39 @@
+{
+    "en": {
+        "report_cash_flow_page.download_full_report": "Download report",
+        "report_cash_flow_page.cashbox": "Cashbox",
+        "report_cash_flow_page.analytics": "Analytics",
+        "report_cash_flow_page.total_increase": "Total increase",
+        "report_cash_flow_page.total_decrease": "Total decrease",
+        "report_cash_flow_page.total_balance": "Total balance",
+        "report_cash_flow_page.analytics_name": "Analytics name",
+        "report_cash_flow_page.increase": "Increase",
+        "report_cash_flow_page.decrease": "Decrease",
+        "report_cash_flow_page.balance": "Balance"
+        
+    },
+    "ru": {
+        "report_cash_flow_page.download_full_report": "Загрузить отчет",
+        "report_cash_flow_page.cashbox": "Касса",
+        "report_cash_flow_page.analytics": "Аналитика",
+        "report_cash_flow_page.total_increase": "Общие доходы",
+        "report_cash_flow_page.total_decrease": "Общие расходы",
+        "report_cash_flow_page.total_balance": "Общее сальдо",
+        "report_cash_flow_page.analytics_name": "Название аналитики",
+        "report_cash_flow_page.increase": "Доходы",
+        "report_cash_flow_page.decrease": "Расходы",
+        "report_cash_flow_page.balance": "Сальдо"
+    },
+    "uk": {
+        "report_cash_flow_page.download_full_report": "Завантажити звіт",
+        "report_cash_flow_page.cashbox": "Каса",
+        "report_cash_flow_page.analytics": "Аналітика",
+        "report_cash_flow_page.total_increase": "Загальні доходи",
+        "report_cash_flow_page.total_decrease": "Загальні витрати",
+        "report_cash_flow_page.total_balance": "Загальне сальдо",
+        "report_cash_flow_page.analytics_name": "Назва аналітики",
+        "report_cash_flow_page.increase": "Прибуток",
+        "report_cash_flow_page.decrease": "Витрати",
+        "report_cash_flow_page.balance": "Сальдо"
+    }
+}
