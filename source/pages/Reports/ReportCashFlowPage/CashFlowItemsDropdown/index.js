@@ -94,7 +94,6 @@ export default class CashFlowDropdown extends React.Component {
     render() {
         const {
             tableData,
-            stats
         } = this.props;
 
         //Get default active keys, it is used to open all panels as init state
@@ -109,13 +108,21 @@ export default class CashFlowDropdown extends React.Component {
             <div className={Style.mainCont}>
                 <div>
                     <Row className={Style.row}>
-                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={12}>Analytics name</Col>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={12}>
+                            <FormattedMessage id='report_cash_flow_page.analytics_name'/>
+                        </Col>
 
-                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>Increase</Col>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>
+                            <FormattedMessage id='report_cash_flow_page.increase'/>
+                        </Col>
 
-                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>Decrese</Col>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>
+                            <FormattedMessage id='report_cash_flow_page.decrease'/>
+                        </Col>
 
-                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>Balance</Col>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>
+                            <FormattedMessage id='report_cash_flow_page.balance'/>
+                        </Col>
                     </Row>
                 </div>
 

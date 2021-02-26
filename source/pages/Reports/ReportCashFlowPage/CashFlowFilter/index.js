@@ -2,6 +2,7 @@
 import React from 'react';
 import {Select} from 'antd'
 import { connect } from "react-redux";
+import { FormattedMessage, injectIntl } from "react-intl";
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -34,6 +35,7 @@ const mapDispatchToProps = {
     mapStateToProps,
     mapDispatchToProps,
 )
+@injectIntl
 export default class CashFlowFilter extends React.Component {
     constructor(props) {
         super(props);
@@ -84,7 +86,8 @@ export default class CashFlowFilter extends React.Component {
             cashboxes,
 
             analyticsIsFetching,
-            cashboxesIsFetching
+            cashboxesIsFetching,
+            intl: {formatMessage}
         } = this.props;
 
         return (
@@ -93,7 +96,7 @@ export default class CashFlowFilter extends React.Component {
                     <Select
                         style={{width: '100%'}}
                         allowClear
-                        placeholder="Cashbox"
+                        placeholder={formatMessage({id: 'report_cash_flow_page.cashbox'})}
                         disabled={analyticsIsFetching}
                     >
                         {_.map(cashboxes, obj => (
@@ -109,7 +112,7 @@ export default class CashFlowFilter extends React.Component {
                         style={{width: '100%'}}
                         allowClear
                         mode="multiple" //To enable multiple select
-                        placeholder="Analytics"
+                        placeholder={formatMessage({id: 'report_cash_flow_page.analytics'})}
                         disabled={cashboxesIsFetching}
                     >
                         {_.map(analytics, ans => (

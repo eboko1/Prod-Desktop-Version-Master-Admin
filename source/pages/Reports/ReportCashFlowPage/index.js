@@ -58,17 +58,22 @@ export default class ReportCashFlowPage extends Component {
     }
 
     getNormalizedStats(stats) {
+
+        const {
+            intl: {formatMessage}
+        } = this.props;
+
         const normalizedStats = [
             {
-                label: 'Total increase',
+                label: formatMessage({id: 'report_cash_flow_page.total_increase'}),
                 value: stats.totalIncreaseSum,
             },
             {
-                label: 'Total decrease',
+                label: formatMessage({id: 'report_cash_flow_page.total_decrease'}),
                 value: stats.totalDecreaseSum,
             },
             {
-                label: 'Total balance',
+                label: formatMessage({id: 'report_cash_flow_page.total_balance'}),
                 value: stats.totalBalance,
             }
         ];
@@ -96,7 +101,7 @@ export default class ReportCashFlowPage extends Component {
                 }
                 controls={
                     <div className={Styles.buttonGroup}>
-                        <StyledButton type="primary">Download full report</StyledButton>
+                        <StyledButton type="primary"><FormattedMessage id='report_cash_flow_page.download_full_report'/></StyledButton>
                     </div>
                 }
                 paper={false}

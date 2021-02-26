@@ -1,29 +1,39 @@
 {
     "en": {
-        "report_analytics_page.reset_all": "Reset all",
-        "report_analytics_page.add": "Add analytics",
-        "report_analytics_page.confirm_dialog": "Do you want to reset all?",
-        "report_analytics_page.confirm_dialog_content": "Are you sure? All analytics will be deleted permanently.",
-        "report_analytics_page.income_cash_order": "Income",
-        "report_analytics_page.expense_cash_order": "Expense",
-        "report_analytics_page.adjustment_cash_order": "Adjustment"
+        "report_cash_flow_page.download_full_report": "Download report",
+        "report_cash_flow_page.cashbox": "Cashbox",
+        "report_cash_flow_page.analytics": "Analytics",
+        "report_cash_flow_page.total_increase": "Total increase",
+        "report_cash_flow_page.total_decrease": "Total decrease",
+        "report_cash_flow_page.total_balance": "Total balance",
+        "report_cash_flow_page.analytics_name": "Analytics name",
+        "report_cash_flow_page.increase": "Increase",
+        "report_cash_flow_page.decrease": "Decrease",
+        "report_cash_flow_page.balance": "Balance"
+        
     },
     "ru": {
-        "report_analytics_page.reset_all": "Сбросить все",
-        "report_analytics_page.add": "Добавить аналитику",
-        "report_analytics_page.confirm_dialog": "Вы хотите сбросить все?",
-        "report_analytics_page.confirm_dialog_content": "Уверены ли вы? Вся аналитика будет удалена навсегда.",
-        "report_analytics_page.income_cash_order": "Приходный",
-        "report_analytics_page.expense_cash_order": "Расходный",
-        "report_analytics_page.adjustment_cash_order": "Корректирующий"
+        "report_cash_flow_page.download_full_report": "Загрузить отчет",
+        "report_cash_flow_page.cashbox": "Касса",
+        "report_cash_flow_page.analytics": "Аналитика",
+        "report_cash_flow_page.total_increase": "Общие доходы",
+        "report_cash_flow_page.total_decrease": "Общие расходы",
+        "report_cash_flow_page.total_balance": "Общее сальдо",
+        "report_cash_flow_page.analytics_name": "Название аналитики",
+        "report_cash_flow_page.increase": "Доходы",
+        "report_cash_flow_page.decrease": "Расходы",
+        "report_cash_flow_page.balance": "Сальдо"
     },
     "uk": {
-        "report_analytics_page.reset_all": "Скинути все",
-        "report_analytics_page.add": "Додати аналітику",
-        "report_analytics_page.confirm_dialog": "Скинути все?",
-        "report_analytics_page.confirm_dialog_content": "Ви впевнені? Вся аналітика буде видалена назавжди.",
-        "report_analytics_page.income_cash_order": "Прибутковий",
-        "report_analytics_page.expense_cash_order": "Витратний",
-        "report_analytics_page.adjustment_cash_order": "Корегуючий"
+        "report_cash_flow_page.download_full_report": "Завантажити звіт",
+        "report_cash_flow_page.cashbox": "Каса",
+        "report_cash_flow_page.analytics": "Аналітика",
+        "report_cash_flow_page.total_increase": "Загальні доходи",
+        "report_cash_flow_page.total_decrease": "Загальні витрати",
+        "report_cash_flow_page.total_balance": "Загальне сальдо",
+        "report_cash_flow_page.analytics_name": "Назва аналітики",
+        "report_cash_flow_page.increase": "Прибуток",
+        "report_cash_flow_page.decrease": "Витрати",
+        "report_cash_flow_page.balance": "Сальдо"
     }
 }
