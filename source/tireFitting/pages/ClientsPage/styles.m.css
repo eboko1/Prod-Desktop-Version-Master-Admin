@@ -1,0 +1,52 @@
+.buttonGroup {
+    & > button {
+        margin: 0 4px;
+    }
+}
+
+.filters {
+    display: flex;
+    position: fixed;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: initial;
+    box-sizing: border-box;
+    background-color: rgb(255, 255, 255);
+    padding: 16px;
+    margin-bottom: 24px;
+    z-index: 210;
+    width: calc(100% - 256px);
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 10px,
+        rgba(0, 0, 0, 0.23) 0px 3px 10px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    /* width: calc(100% - 310px); */
+}
+
+.filtersCollapsed {
+    width: calc(100% - 80px);
+}
+
+@media screen and (max-width: 1199px) {
+    .filtersCollapsed {
+        width: 100%;
+    }
+
+    .filters {
+        width: 100%;
+        z-index: 100;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px -3px 10px,
+            rgba(0, 0, 0, 0.23) 0px -1px 10px;
+    }
+}
+
+.filters :global(.ant-input-search) {
+    margin-bottom: 0px;
+}
+
+.table { 
+    padding: 128px 12px;
+}
+
+.mobileTable {
+    padding: 64px 0 0 0;
+}

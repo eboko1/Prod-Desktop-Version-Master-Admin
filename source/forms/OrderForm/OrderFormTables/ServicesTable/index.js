@@ -17,7 +17,6 @@ import _ from 'lodash';
 // proj
 import { Catcher } from 'commons';
 import { permissions, isForbidden, images } from 'utils';
-import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import {
     FavouriteServicesModal,
     AddServiceModal,
@@ -391,7 +390,7 @@ class ServicesTable extends Component {
                                 let token = localStorage.getItem(
                                     '_my.carbook.pro_token',
                                 );
-                                let url = API_URL;
+                                let url = __API_URL__;
                                 let params = '/orders/frequent/labors';
                                 if (elem.frequentLaborId) { params += `?ids=[${elem.frequentLaborId}]`; }
                                 url += params;
@@ -450,7 +449,7 @@ class ServicesTable extends Component {
                                 let token = localStorage.getItem(
                                     '_my.carbook.pro_token',
                                 );
-                                let url = API_URL;
+                                let url = __API_URL__;
                                 let params = `/orders/${this.props.orderId}/labors?ids=[${elem.id}] `;
                                 url += params;
                                 try {
@@ -490,7 +489,7 @@ class ServicesTable extends Component {
     async updateTimeMultiplier(multiplier) {
         this.laborTimeMultiplier = multiplier;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/orders/${this.props.orderId}`;
         url += params;
         try {
@@ -575,7 +574,7 @@ class ServicesTable extends Component {
             data.services[ 0 ].agreement = labor.agreement;
         }
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/orders/${this.props.orderId}`;
         url += params;
         try {

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Button, Modal, Icon, Input, Checkbox, InputNumber, Spin, TreeSelect, Select } from 'antd';
+import { Button, Modal, Icon, Input, Checkbox, InputNumber, Spin, TreeSelect, Select, Tabs } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { permissions, isForbidden, images } from "utils";
 // own
 import Styles from './styles.m.css';
 const { Option } = Select;
+const TabPane = Tabs.TabPane;
 const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 @injectIntl
@@ -128,14 +129,14 @@ export default class ComplexesModal extends React.Component{
             data.modificationId = this.props.tecdocId;
         }
         laborsDataSource.map((element)=>{
-            if(element.checked && element.id != null) {
+            if(element.checked && element.id) {
                 data.services.push({
                     serviceName:
                         element.commentary && element.commentary.positions.length ?
                         element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
                         element.name,
                     serviceId: element.id,
-                    count: element.count,
+                    count: element.count || 1,
                     servicePrice: element.price ? Number(element.price) : 0,
                     serviceHours: element.normHours || 0,
                     comment: element.commentary,
@@ -143,14 +144,14 @@ export default class ComplexesModal extends React.Component{
             }
         });
         detailsDataSource.map((element)=>{
-            if(element.checked && element.id != null) {
+            if(element.checked && element.id) {
                 data.details.push({
                     name:
                         element.commentary &&  element.commentary.positions.length ?
                         element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
                         element.name,
                     storeGroupId: element.id,
-                    count: element.count,
+                    count: element.count || 1,
                     comment: element.commentary,
                 })
             }
@@ -165,11 +166,11 @@ export default class ComplexesModal extends React.Component{
         } 
     }
 
-    renderLaborsBlock() {
+    renderLaborsBlock(tabMode) {
         const { laborsDataSource } = this.state;
         const { labors } = this.props;
         return (
-            <div className={Styles.laborsList}>
+            <div className={Styles.laborsList} style={tabMode && {width: '100%'}}>
                 <div className={Styles.listTitle}>
                     <FormattedMessage id='add_order_form.services' />
                 </div>
@@ -310,11 +311,11 @@ export default class ComplexesModal extends React.Component{
         )
     }
 
-    renderDetailsBlock() {
+    renderDetailsBlock(tabMode) {
         const { detailsDataSource } = this.state;
         const { detailsTreeData } = this.props;
         return (
-            <div className={Styles.detailsList}>
+            <div className={Styles.detailsList} style={tabMode && {width: '100%'}}>
                 <div className={Styles.listTitle}>
                     <FormattedMessage id='add_order_form.details' />
                 </div>
@@ -443,7 +444,7 @@ export default class ComplexesModal extends React.Component{
     }
 
     render() { 
-        const { disabled } = this.props;
+        const { disabled, isMobile } = this.props;
         const { dataSource, selectedComplex, laborsDataSource, detailsDataSource } = this.state;
 
         return (
@@ -468,7 +469,7 @@ export default class ComplexesModal extends React.Component{
                     ></div>
                 </Button>
                 <Modal
-                    width="75%"
+                    width={isMobile ? '95%' : '75%'}
                     visible={this.state.visible}
                     title={<FormattedMessage id='services_table.complexes'/>}
                     onCancel={this.handleCancel}
@@ -519,10 +520,36 @@ export default class ComplexesModal extends React.Component{
                                     }}
                                 />
                             </div>
-                            <div className={Styles.listsWrapper}>
-                                {this.renderLaborsBlock()}
-                                {this.renderDetailsBlock()}
-                            </div>
+                            {!isMobile ?
+                                <div className={Styles.listsWrapper}>
+                                    {this.renderLaborsBlock()}
+                                    {this.renderDetailsBlock()}
+                                </div> :
+                                <Tabs
+                                    type="card"
+                                >
+                                    <TabPane
+                                        forceRender
+                                        tab={this.props.intl.formatMessage({
+                                            id: "add_order_form.services",
+                                            defaultMessage: "Services",
+                                        })}
+                                        key="services"
+                                    >
+                                        {this.renderLaborsBlock(true)}
+                                    </TabPane>
+                                    <TabPane
+                                        forceRender
+                                        tab={this.props.intl.formatMessage({
+                                            id: "add_order_form.details",
+                                            defaultMessage: "Details",
+                                        })}
+                                        key="details"
+                                    >
+                                        {this.renderDetailsBlock(true)}
+                                    </TabPane>
+                                </Tabs>
+                            }
                         </div>
                         :
                         <Spin indicator={spinIcon} />

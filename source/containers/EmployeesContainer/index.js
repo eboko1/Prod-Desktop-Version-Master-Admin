@@ -26,6 +26,7 @@ const mapStateToProps = state => ({
     employees: state.employees.employees,
     status: state.employees.status,
     user: state.auth,
+    isMobile: state.ui.views.isMobile,
 });
 
 const mapDispatchToProps = {
@@ -54,6 +55,7 @@ export default class EmployeesContainer extends Component {
             setEmployeesStatus,
             fetchEmployees,
             status,
+            isMobile,
         } = this.props;
 
         return (
@@ -67,6 +69,7 @@ export default class EmployeesContainer extends Component {
                         status={status}
                         setEmployeesStatus={setEmployeesStatus}
                         fetchEmployees={fetchEmployees}
+                        isMobile={isMobile}
                     />
                 ) : (
                     <Tabs type="cards">
@@ -84,6 +87,7 @@ export default class EmployeesContainer extends Component {
                                 status={status}
                                 setEmployeesStatus={setEmployeesStatus}
                                 fetchEmployees={fetchEmployees}
+                                isMobile={isMobile}
                             />
                         </TabPane>
                         <TabPane
