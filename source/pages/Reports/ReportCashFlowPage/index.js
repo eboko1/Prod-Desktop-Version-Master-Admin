@@ -15,14 +15,18 @@ import _ from "lodash";
 
 // proj
 import { Layout, StyledButton } from "commons";
+import { StatsPanel } from 'components'
 import {
     fetchReportCashFlow,
+    fetchAnalytics,
+    fetchCashboxes,
 } from 'core/reports/reportCashFlow/duck';
 
 
 // own
 import Styles from "./styles.m.css";
-import CashFlowItemsDropdown from './CashFlowItemsDropdown'
+import CashFlowItemsDropdown from './CashFlowItemsDropdown';
+import CashFlowFilter from './CashFlowFilter';
 
 const mapStateToProps = state => ({
     tableData: state.reportCashFlow.tableData,
@@ -30,7 +34,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    fetchReportCashFlow
+    fetchReportCashFlow,
+    fetchAnalytics,
+    fetchCashboxes
 };
 
 @connect(
@@ -38,13 +44,36 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 @injectIntl
-export default class ReportAnalyticsPage extends Component {
+export default class ReportCashFlowPage extends Component {
     constructor(props) {
         super(props);
     }
 
     componentDidMount() {
         this.props.fetchReportCashFlow();
+
+        //For filter
+        this.props.fetchAnalytics();
+        this.props.fetchCashboxes();
+    }
+
+    getNormalizedStats(stats) {
+        const normalizedStats = [
+            {
+                label: 'Total increase',
+                value: stats.totalIncreaseSum,
+            },
+            {
+                label: 'Total decrease',
+                value: stats.totalDecreaseSum,
+            },
+            {
+                label: 'Total balance',
+                value: stats.totalBalance,
+            }
+        ];
+
+        return normalizedStats;
     }
     
     render() {
@@ -54,6 +83,9 @@ export default class ReportAnalyticsPage extends Component {
             stats,
             intl: {formatMessage}
         } = this.props;
+
+        const normalizedStats= this.getNormalizedStats(stats);
+
 
         return (
             <Layout
@@ -69,9 +101,18 @@ export default class ReportAnalyticsPage extends Component {
                 }
                 paper={false}
             >
+                <div className={Styles.header}>
+                    <div className={Styles.filterCont}>
+                        <CashFlowFilter />
+                    </div>
+
+                    <div>
+                        <StatsPanel extended stats={normalizedStats}/>
+                    </div>
+                </div>
+                
                 <CashFlowItemsDropdown
                     tableData={tableData}
-                    stats={stats}
                 />
             </Layout>
         );

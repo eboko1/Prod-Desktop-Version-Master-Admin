@@ -5,13 +5,12 @@ It creates one header dropdown and its subobjects(children) blocks.
 
 //vendor
 import React from 'react';
-import { Collapse, Row, Col, Switch, Button, Icon } from 'antd';
+import { Collapse, Row, Col } from 'antd';
 import { FormattedMessage, injectIntl } from "react-intl";
 import _ from 'lodash';
 
 //proj
 import { Numeral } from 'commons';
-import { StatsPanel } from 'components'
 
 //own
 import Style from './styles.m.css';
@@ -19,7 +18,7 @@ import Style from './styles.m.css';
 const { Panel } = Collapse;
 
 @injectIntl
-export default class AnalyticsDropdown extends React.Component {
+export default class CashFlowDropdown extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -92,27 +91,6 @@ export default class AnalyticsDropdown extends React.Component {
         )
     }
 
-    getNormalizedStats(stats) {
-        const normalizedStats = [
-            {
-                label: 'Total increase',
-                value: stats.totalIncreaseSum,
-            },
-            {
-                label: 'Total decrease',
-                value: stats.totalDecreaseSum,
-            },
-            {
-                label: 'Total balance',
-                value: stats.totalBalance,
-            }
-        ];
-
-        // console.log(stats);
-
-        return normalizedStats;
-    }
-
     render() {
         const {
             tableData,
@@ -127,14 +105,8 @@ export default class AnalyticsDropdown extends React.Component {
 
         keys = _.compact(keys);
 
-        const normalizedStats= this.getNormalizedStats(stats);
-
         return (
             <div className={Style.mainCont}>
-                <div className={Style.statsCont}>
-                    <StatsPanel extended stats={normalizedStats}/>
-                </div>
-
                 <div>
                     <Row className={Style.row}>
                         <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={12}>Analytics name</Col>
@@ -146,6 +118,7 @@ export default class AnalyticsDropdown extends React.Component {
                         <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>Balance</Col>
                     </Row>
                 </div>
+
                 <Collapse activeKey={keys}>
                     {
                         _.map(tableData, (obj) => {

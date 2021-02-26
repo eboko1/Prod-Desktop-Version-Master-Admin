@@ -11,3 +11,13 @@
 .mainCont {
     background-color: white;
 }
+
+.header {
+    background-color: white;
+    padding: 10px;
+    margin-bottom: 2em;
+}
+
+.filterCont {
+    margin-bottom: 1em;
+}
