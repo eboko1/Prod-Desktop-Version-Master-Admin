@@ -373,33 +373,6 @@ export class OrderMobileForm extends Component {
                     })}
                     autoSize={{ minRows: 2, maxRows: 6 }}
                 />
-                <div 
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        margin: '12px 0',
-                    }}
-                >
-                    {status !== "cancel" && status !== "approve" && (
-                        <Button
-                            style={status !== "cancel" && status !== "approve" ? {width: '49%'} : {width: '100%'}}
-                            type="primary"
-                            onClick={() => onStatusChange("approve")}
-                        >
-                            <FormattedMessage id="add_order_form.save_appointment" />
-                        </Button>
-                    )}
-                    {status !== "cancel" && (
-                        <Button
-                            style={status !== "cancel" && status !== "approve" ? {width: '49%'} : {width: '100%'}}
-                            onClick={() =>
-                                onClose()
-                            }
-                        >
-                            <FormattedMessage id="close" />
-                        </Button>
-                    )}
-                </div>
             </Form>
         );
     }
