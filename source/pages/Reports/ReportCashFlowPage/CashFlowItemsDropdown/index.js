@@ -97,12 +97,12 @@ export default class CashFlowDropdown extends React.Component {
         } = this.props;
 
         //Get default active keys, it is used to open all panels as init state
-        let keys = _.reduce(tableData, (arr, obj) => {
-            const newVal = _.get(obj, 'analyticsId', undefined);
-            return [...arr, newVal]
-        }, [])
+        // let keys = _.reduce(tableData, (arr, obj) => {
+        //     const newVal = _.get(obj, 'analyticsId', undefined);
+        //     return [...arr, newVal]
+        // }, [])
 
-        keys = _.compact(keys);
+        // keys = _.compact(keys);
 
         return (
             <div className={Style.mainCont}>
@@ -126,7 +126,8 @@ export default class CashFlowDropdown extends React.Component {
                     </Row>
                 </div>
 
-                <Collapse activeKey={keys}>
+                {/* activeKey={keys} - set this if you want sropdons to be opened by default*/}
+                <Collapse>
                     {
                         _.map(tableData, (obj) => {
                             const children = obj.children; //Get children items
