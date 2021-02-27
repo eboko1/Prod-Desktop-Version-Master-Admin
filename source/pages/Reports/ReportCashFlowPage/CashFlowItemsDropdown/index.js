@@ -15,6 +15,8 @@ import { Numeral } from 'commons';
 //own
 import Style from './styles.m.css';
 
+const DEF_NULL_TEXT = '\u2012';
+
 const { Panel } = Collapse;
 
 @injectIntl
@@ -34,15 +36,16 @@ export default class CashFlowDropdown extends React.Component {
                     <Col className={Style.colHeader} span={12}>{parent.analyticsName}</Col>
 
                     <Col className={Style.col} span={4}>
-                        <Numeral mask='0,0.00'>{parent.totalIncreaseSum}</Numeral>
+                        <Numeral nullText={DEF_NULL_TEXT} mask='0,0.00'>{parent.totalIncreaseSum}</Numeral>
                     </Col>
 
                     <Col className={Style.col} span={4}>
-                        <Numeral mask='0,0.00'>{parent.totalIncreaseSum}</Numeral>
+                        {/* TT requires decreasing sums to be with minus before nuber */}
+                        <Numeral nullText={DEF_NULL_TEXT} mask='0,0.00'>{-parent.totalDecreaseSum}</Numeral>
                     </Col>
 
                     <Col className={Style.col} span={4}>
-                        <Numeral mask='0,0.00'>{parent.totalIncreaseSum}</Numeral>
+                        <Numeral nullText={DEF_NULL_TEXT} mask='0,0.00'>{parent.totalBalanceSum}</Numeral>
                     </Col>
                 </Row>
             </div>
@@ -56,20 +59,21 @@ export default class CashFlowDropdown extends React.Component {
     generateChildrenBlock(chil) {
 
         return (
-            <div className={Style.analyticsCont} key={chil.analyticsUniqueId}>
+            <div className={Style.analyticsCont} key={chil.analyticsId}>
                 <Row className={Style.row}>
                     <Col className={Style.col} span={12}>{chil.analyticsName}</Col>
 
                     <Col className={Style.col} span={4}>
-                        <Numeral mask='0,0.00'>{chil.totalIncreaseSum}</Numeral>
+                        <Numeral nullText={DEF_NULL_TEXT} mask='0,0.00'>{chil.totalIncreaseSum}</Numeral>
                     </Col>
 
                     <Col className={Style.col} span={4}>
-                        <Numeral mask='0,0.00'>{chil.totalIncreaseSum}</Numeral>
+                        {/* TT requires decreasing sums to be with minus before nuber */}
+                        <Numeral nullText={DEF_NULL_TEXT} mask='0,0.00'>{-chil.totalDecreaseSum}</Numeral>
                     </Col>
 
                     <Col className={Style.col} span={4}>
-                        <Numeral mask='0,0.00'>{chil.totalIncreaseSum}</Numeral>
+                        <Numeral nullText={DEF_NULL_TEXT} mask='0,0.00'>{chil.totalBalanceSum}</Numeral>
                     </Col>
                 </Row>
             </div>
@@ -85,7 +89,7 @@ export default class CashFlowDropdown extends React.Component {
      */
     generatePanel(parent, children) {
         return (
-            <Panel header={this.genParentHeader(parent)} key={parent.analyticsUniqueId} showArrow={false}>
+            <Panel header={this.genParentHeader(parent)} key={parent.analyticsId} showArrow={false}>
                 {_.map(children, (o) => this.generateChildrenBlock(o))}
             </Panel>
         )
@@ -97,36 +101,37 @@ export default class CashFlowDropdown extends React.Component {
         } = this.props;
 
         //Get default active keys, it is used to open all panels as init state
-        let keys = _.reduce(tableData, (arr, obj) => {
-            const newVal = _.get(obj, 'analyticsUniqueId', undefined);
-            return [...arr, newVal]
-        }, [])
+        // let keys = _.reduce(tableData, (arr, obj) => {
+        //     const newVal = _.get(obj, 'analyticsId', undefined);
+        //     return [...arr, newVal]
+        // }, [])
 
-        keys = _.compact(keys);
+        // keys = _.compact(keys);
 
         return (
             <div className={Style.mainCont}>
                 <div>
                     <Row className={Style.row}>
-                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={12}>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()].join(' ')} span={12}>
                             <FormattedMessage id='report_cash_flow_page.analytics_name'/>
                         </Col>
 
-                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()].join(' ')} span={4}>
                             <FormattedMessage id='report_cash_flow_page.increase'/>
                         </Col>
 
-                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()].join(' ')} span={4}>
                             <FormattedMessage id='report_cash_flow_page.decrease'/>
                         </Col>
 
-                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()].join(' ')} span={4}>
                             <FormattedMessage id='report_cash_flow_page.balance'/>
                         </Col>
                     </Row>
                 </div>
 
-                <Collapse activeKey={keys}>
+                {/* activeKey={keys} - set this if you want sropdons to be opened by default*/}
+                <Collapse>
                     {
                         _.map(tableData, (obj) => {
                             const children = obj.children; //Get children items

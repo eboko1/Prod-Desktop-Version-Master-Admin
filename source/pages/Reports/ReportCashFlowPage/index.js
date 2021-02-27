@@ -20,6 +20,7 @@ import {
     fetchReportCashFlow,
     fetchAnalytics,
     fetchCashboxes,
+    fetchExcelFileReport
 } from 'core/reports/reportCashFlow/duck';
 
 
@@ -36,7 +37,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchReportCashFlow,
     fetchAnalytics,
-    fetchCashboxes
+    fetchCashboxes,
+    fetchExcelFileReport
 };
 
 @connect(
@@ -47,6 +49,8 @@ const mapDispatchToProps = {
 export default class ReportCashFlowPage extends Component {
     constructor(props) {
         super(props);
+
+        this.onGetExelFileReport = this.onGetExelFileReport.bind(this);
     }
 
     componentDidMount() {
@@ -70,15 +74,24 @@ export default class ReportCashFlowPage extends Component {
             },
             {
                 label: formatMessage({id: 'report_cash_flow_page.total_decrease'}),
-                value: stats.totalDecreaseSum,
+                // TT requires decreasing sums to be with minus before nuber
+                value: -stats.totalDecreaseSum,
             },
             {
                 label: formatMessage({id: 'report_cash_flow_page.total_balance'}),
-                value: stats.totalBalance,
+                value: stats.totalBalanceSum,
             }
         ];
 
         return normalizedStats;
+    }
+
+    onGetExelFileReport(e) {
+        const {
+            fetchExcelFileReport
+        } = this.props;
+
+        fetchExcelFileReport();
     }
     
     render() {
@@ -101,7 +114,12 @@ export default class ReportCashFlowPage extends Component {
                 }
                 controls={
                     <div className={Styles.buttonGroup}>
-                        <StyledButton type="primary"><FormattedMessage id='report_cash_flow_page.download_full_report'/></StyledButton>
+                        <StyledButton
+                            type="primary"
+                            onClick={this.onGetExelFileReport}
+                        >
+                            <FormattedMessage id='report_cash_flow_page.download_full_report'/>
+                        </StyledButton>
                     </div>
                 }
                 paper={false}

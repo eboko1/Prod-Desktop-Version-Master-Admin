@@ -1,5 +1,7 @@
 // vendor
 import { call, put, all, take, select } from 'redux-saga/effects';
+import nprogress from 'nprogress';
+import { saveAs } from 'file-saver';
 
 //proj
 import { fetchAPI } from 'utils';
@@ -10,8 +12,10 @@ import {
     fetchReportCashFlowSuccess,
     fetchAnalyticsSuccess,
     fetchCashboxesSuccess,
+    fetchExcelFileReportSuccess,
 
     selectAnalyticsFilters,
+    selectCashFlowFilters,
 
     setAnalyticsFetchingState,
     setCashboxesFetchingState
@@ -20,7 +24,8 @@ import {
 import {
     FETCH_REPORT_CASH_FLOW,
     FETCH_ANALYTICS,
-    FETCH_CASHBOXES
+    FETCH_CASHBOXES,
+    FETCH_EXCEL_FILE_REPORT
 } from './duck';
 
 export function* fetchReportCashFlowSaga() {
@@ -28,59 +33,9 @@ export function* fetchReportCashFlowSaga() {
         try {
             yield take(FETCH_REPORT_CASH_FLOW);
 
-            // const {tableData} = yield call( fetchAPI, 'GET', `/report/cash-flow`);
+            const filters = yield select(selectCashFlowFilters);
 
-            //TEMP: while route is not work yet replace result with a plug
-            const tableData = [
-                {
-                    analyticsName: 'Test Profit',
-                    analyticsUniqueId: 1,
-                    totalIncreaseSum: 200,
-                    totalDecreaseSum: 400,
-                    totalBalance: -200,
-                    children: [
-                        {
-                            analyticsName: 'Test anali 1',
-                            analyticsUniqueId: 2,
-                            totalIncreaseSum: 100,
-                            totalDecreaseSum: 200,
-                            totalBalance: -100,
-                        },
-                        {
-                            analyticsName: 'Test anali 2',
-                            analyticsUniqueId: 3,
-                            totalIncreaseSum: 100,
-                            totalDecreaseSum: 200,
-                            totalBalance: -100,
-                        },
-                    ]
-                },
-                {
-                    analyticsName: 'Another Test Profit',
-                    analyticsUniqueId: 4,
-                    totalIncreaseSum: 1500,
-                    totalDecreaseSum: 600,
-                    totalBalance: 900,
-                    children: [
-                        {
-                            analyticsName: 'Test anali 1',
-                            analyticsUniqueId: 5,
-                            totalIncreaseSum: 1000,
-                            totalDecreaseSum: 200,
-                            totalBalance: -100,
-                        },
-                        {
-                            analyticsName: 'Test anali 2',
-                            analyticsUniqueId: 6,
-                            totalIncreaseSum: 500,
-                            totalDecreaseSum: 400,
-                            totalBalance: -100,
-                        },
-                    ]
-                }
-            ];
-
-            const stats = {totalIncreaseSum: 293032.3892, totalDecreaseSum: 1032.98, totalBalance: 100};
+            const {tableData, stats} = yield call( fetchAPI, 'GET', `/report/cash_flow`, {filters});
 
             yield put(fetchReportCashFlowSuccess({tableData, stats}));
         } catch(err) {
@@ -127,6 +82,34 @@ export function* fetchCashboxesSaga() {
     }
 }
 
+export function* fetchExcelFileReportSaga() {
+    while(true){
+        try {
+            yield take(FETCH_EXCEL_FILE_REPORT);
+
+            yield nprogress.start();
+
+            const filters = yield select(selectCashFlowFilters);
+
+            const response = yield call(fetchAPI, 'GET', '/report/cash_flow_report_excel', {filters}, null, {
+                rawResponse: true,
+            });
+
+            const reportFile = yield response.blob();
+
+            const contentDispositionHeader = response.headers.get('content-disposition');
+            const fileName = contentDispositionHeader.match(/^attachment; filename="(.*)"/)[ 1 ];
+
+            yield saveAs(reportFile, fileName);
+            yield put(fetchExcelFileReportSuccess());        
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
 export function* saga() {
-    yield all([ call(fetchReportCashFlowSaga), call(fetchAnalyticsSaga), call(fetchCashboxesSaga) ]);
+    yield all([ call(fetchReportCashFlowSaga), call(fetchAnalyticsSaga), call(fetchCashboxesSaga), call(fetchExcelFileReportSaga) ]);
 }

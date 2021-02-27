@@ -7,13 +7,16 @@ export const moduleName = 'reportCashFlow';
 const prefix = `cpb/${moduleName}`;
 
 export const FETCH_REPORT_CASH_FLOW = `${prefix}/FETCH_REPORT_CASH_FLOW`;
-export const FETCH_REPORT_CASH_FLOW_SUCCESS = `${prefix}/FETCH_REPORT_ANALYTICS_SUCCESS`;
+export const FETCH_REPORT_CASH_FLOW_SUCCESS = `${prefix}/FETCH_REPORT_CASH_FLOW_SUCCESS`;
 
 export const FETCH_ANALYTICS = `${prefix}/FETCH_ANALYTICS`;
 export const FETCH_ANALYTICS_SUCCESS = `${prefix}/FETCH_ANALYTICS_SUCCESS`;
 
 export const FETCH_CASHBOXES = `${prefix}/FETCH_CASHBOXES`;
 export const FETCH_CASHBOXES_SUCCESS = `${prefix}/FETCH_CASHBOXES_SUCCESS`;
+
+export const FETCH_EXCEL_FILE_REPORT = `${prefix}/FETCH_EXCEL_FILE_REPORT`;
+export const FETCH_EXCEL_FILE_REPORT_SUCCESS = `${prefix}/FETCH_EXCEL_FILE_REPORT_SUCCESS`;
 
 export const SET_FILTERS_CASH_ORDER_FROM_DATE = `${prefix}/SET_FILTERS_CASH_ORDER_FROM_DATE`;
 export const SET_FILTERS_CASH_ORDER_TO_DATE = `${prefix}/SET_FILTERS_CASH_ORDER_TO_DATE`;
@@ -46,7 +49,7 @@ const ReducerState = {
         createdFromDate: undefined,
         createdToDate: undefined,
         cashboxId: undefined,
-        analyticsUniqueId: undefined,
+        analyticsUniqueIds: undefined,
     },
 };
 
@@ -99,7 +102,7 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 filters: {
                     ...state.filters,
-                    analyticsUniqueId: payload
+                    analyticsUniqueIds: payload
                 }
             };
 
@@ -134,6 +137,7 @@ export default function reducer(state = ReducerState, action) {
  */
 
 export const selectAnalyticsFilters = (state) => state[moduleName].analyticsFilters
+export const selectCashFlowFilters = (state) => state[moduleName].filters
 
 /**
  * Action creators
@@ -170,6 +174,14 @@ export const fetchCashboxes = () => ({
 export const fetchCashboxesSuccess = ({cashboxes}) => ({
     type: FETCH_CASHBOXES_SUCCESS,
     payload: {cashboxes}
+});
+
+export const fetchExcelFileReport = () => ({
+    type: FETCH_EXCEL_FILE_REPORT
+});
+
+export const fetchExcelFileReportSuccess = () => ({
+    type: FETCH_EXCEL_FILE_REPORT_SUCCESS
 });
 
 export const setCashOrderFromDate = (strDate) => ({
