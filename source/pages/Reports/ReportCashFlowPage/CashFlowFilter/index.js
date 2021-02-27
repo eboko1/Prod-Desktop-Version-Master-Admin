@@ -13,6 +13,8 @@ import {
     setCashOrderToDate,
     setFiltersAnalyticsUniqueIds,
     setFiltersCashbox,
+    fetchReportCashFlow,
+
     DEFAULT_DATE_FORMAT
 } from 'core/reports/reportCashFlow/duck';
 
@@ -32,7 +34,8 @@ const mapDispatchToProps = {
     setCashOrderFromDate,
     setCashOrderToDate,
     setFiltersAnalyticsUniqueIds,
-    setFiltersCashbox
+    setFiltersCashbox,
+    fetchReportCashFlow
 };
 
 @connect(
@@ -56,12 +59,15 @@ export default class CashFlowFilter extends React.Component {
 
         const {
             setCashOrderFromDate,
-            setCashOrderToDate
+            setCashOrderToDate,
+            fetchReportCashFlow
         } = this.props;
 
         //Call action for specific date
         createdFromDate.isValid() && setCashOrderFromDate(createdFromDate.format(DEFAULT_DATE_FORMAT));
         createdToDate.isValid() && setCashOrderToDate(createdToDate.format(DEFAULT_DATE_FORMAT));
+
+        fetchReportCashFlow();
 
     }
 
@@ -87,18 +93,22 @@ export default class CashFlowFilter extends React.Component {
 
     onCashboxSelect(cashboxId) {
         const {
-            setFiltersCashbox
+            setFiltersCashbox,
+            fetchReportCashFlow
         } = this.props;
 
         setFiltersCashbox(cashboxId);
+        fetchReportCashFlow();
     }
 
     onAnalyticsSelect(analyticsIds) {
         const {
-            setFiltersAnalyticsUniqueIds
+            setFiltersAnalyticsUniqueIds,
+            fetchReportCashFlow
         } = this.props;
 
         setFiltersAnalyticsUniqueIds(analyticsIds);
+        fetchReportCashFlow();
     }
 
     render() {
