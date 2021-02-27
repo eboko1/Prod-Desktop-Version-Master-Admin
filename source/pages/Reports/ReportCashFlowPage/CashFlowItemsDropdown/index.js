@@ -15,6 +15,8 @@ import { Numeral } from 'commons';
 //own
 import Style from './styles.m.css';
 
+const DEF_NULL_TEXT = '\u2012';
+
 const { Panel } = Collapse;
 
 @injectIntl
@@ -34,15 +36,16 @@ export default class CashFlowDropdown extends React.Component {
                     <Col className={Style.colHeader} span={12}>{parent.analyticsName}</Col>
 
                     <Col className={Style.col} span={4}>
-                        <Numeral mask='0,0.00'>{parent.totalIncreaseSum}</Numeral>
+                        <Numeral nullText={DEF_NULL_TEXT} mask='0,0.00'>{parent.totalIncreaseSum}</Numeral>
                     </Col>
 
                     <Col className={Style.col} span={4}>
-                        <Numeral mask='0,0.00'>{parent.totalIncreaseSum}</Numeral>
+                        {/* TT requires decreasing sums to be with minus before nuber */}
+                        <Numeral nullText={DEF_NULL_TEXT} mask='0,0.00'>{-parent.totalDecreaseSum}</Numeral>
                     </Col>
 
                     <Col className={Style.col} span={4}>
-                        <Numeral mask='0,0.00'>{parent.totalIncreaseSum}</Numeral>
+                        <Numeral nullText={DEF_NULL_TEXT} mask='0,0.00'>{parent.totalBalanceSum}</Numeral>
                     </Col>
                 </Row>
             </div>
@@ -61,15 +64,16 @@ export default class CashFlowDropdown extends React.Component {
                     <Col className={Style.col} span={12}>{chil.analyticsName}</Col>
 
                     <Col className={Style.col} span={4}>
-                        <Numeral mask='0,0.00'>{chil.totalIncreaseSum}</Numeral>
+                        <Numeral nullText={DEF_NULL_TEXT} mask='0,0.00'>{chil.totalIncreaseSum}</Numeral>
                     </Col>
 
                     <Col className={Style.col} span={4}>
-                        <Numeral mask='0,0.00'>{chil.totalIncreaseSum}</Numeral>
+                        {/* TT requires decreasing sums to be with minus before nuber */}
+                        <Numeral nullText={DEF_NULL_TEXT} mask='0,0.00'>{-chil.totalDecreaseSum}</Numeral>
                     </Col>
 
                     <Col className={Style.col} span={4}>
-                        <Numeral mask='0,0.00'>{chil.totalIncreaseSum}</Numeral>
+                        <Numeral nullText={DEF_NULL_TEXT} mask='0,0.00'>{chil.totalBalanceSum}</Numeral>
                     </Col>
                 </Row>
             </div>

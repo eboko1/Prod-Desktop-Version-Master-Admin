@@ -70,7 +70,8 @@ export default class ReportCashFlowPage extends Component {
             },
             {
                 label: formatMessage({id: 'report_cash_flow_page.total_decrease'}),
-                value: stats.totalDecreaseSum,
+                // TT requires decreasing sums to be with minus before nuber
+                value: -stats.totalDecreaseSum,
             },
             {
                 label: formatMessage({id: 'report_cash_flow_page.total_balance'}),
