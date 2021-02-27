@@ -74,7 +74,7 @@ export default class ReportCashFlowPage extends Component {
             },
             {
                 label: formatMessage({id: 'report_cash_flow_page.total_balance'}),
-                value: stats.totalBalance,
+                value: stats.totalBalanceSum,
             }
         ];
 

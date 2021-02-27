@@ -56,7 +56,7 @@ export default class CashFlowDropdown extends React.Component {
     generateChildrenBlock(chil) {
 
         return (
-            <div className={Style.analyticsCont} key={chil.analyticsUniqueId}>
+            <div className={Style.analyticsCont} key={chil.analyticsId}>
                 <Row className={Style.row}>
                     <Col className={Style.col} span={12}>{chil.analyticsName}</Col>
 
@@ -85,7 +85,7 @@ export default class CashFlowDropdown extends React.Component {
      */
     generatePanel(parent, children) {
         return (
-            <Panel header={this.genParentHeader(parent)} key={parent.analyticsUniqueId} showArrow={false}>
+            <Panel header={this.genParentHeader(parent)} key={parent.analyticsId} showArrow={false}>
                 {_.map(children, (o) => this.generateChildrenBlock(o))}
             </Panel>
         )
@@ -98,7 +98,7 @@ export default class CashFlowDropdown extends React.Component {
 
         //Get default active keys, it is used to open all panels as init state
         let keys = _.reduce(tableData, (arr, obj) => {
-            const newVal = _.get(obj, 'analyticsUniqueId', undefined);
+            const newVal = _.get(obj, 'analyticsId', undefined);
             return [...arr, newVal]
         }, [])
 
