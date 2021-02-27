@@ -737,6 +737,7 @@ class OrderPage extends Component {
             <Spinner spin={ spinner }/>
         ) : (
             <Layout
+                className={`orderPageLayout hideHeaderControls`}
                 title={
                     !status || !num ?
                         ''
@@ -792,17 +793,27 @@ class OrderPage extends Component {
                                 <FormattedMessage id='order-page.create_invite_order'/>
                             </StyledButton>
                         ) : null }
-                        { !isMobile && (
-                            <>
-                            <ChangeStatusDropdown
-                                user={ user }
-                                orderStatus={ status }
-                                onStatusChange={ this._onStatusChange }
-                                checkReserved={ this._checkIsAllReserved }
-                                setModal={ setModal }
-                                modals={ MODALS }
-                                isMobile={ isMobile }
+                        <ChangeStatusDropdown
+                            user={ user }
+                            orderStatus={ status }
+                            onStatusChange={ this._onStatusChange }
+                            checkReserved={ this._checkIsAllReserved }
+                            setModal={ setModal }
+                            modals={ MODALS }
+                            isMobile={ isMobile }
+                        />
+                        {!isForbidden(user, permissions.ACCESS_ORDER_PAY) &&
+                            <Icon
+                                type='dollar'
+                                onClick={showCahOrderModal}
+                                style={ {
+                                    fontSize: isMobile ? 14 : 24,
+                                    cursor:   'pointer',
+                                    margin:   '0 10px',
+                                } }
                             />
+                        }
+                        { !isMobile && (
                             <ReportsDropdown
                                 user={ this.props.user }
                                 orderId={ id }
@@ -810,18 +821,6 @@ class OrderPage extends Component {
                                 download={ this.props.getReport }
                                 isMobile={ isMobile }
                             />
-                            {!isForbidden(user, permissions.ACCESS_ORDER_PAY) &&
-                                <Icon
-                                    type='dollar'
-                                    onClick={showCahOrderModal}
-                                    style={ {
-                                        fontSize: isMobile ? 14 : 24,
-                                        cursor:   'pointer',
-                                        margin:   '0 10px',
-                                    } }
-                                />
-                            }
-                            </>
                         ) }
                         { !copyDisabled &&
                             <Icon

@@ -11,6 +11,14 @@ import { setTireFittingToken, getTireFittingToken, removeTireFittingToken } from
 import Styles from './styles.m.css';
 
 export default class ModuleHeader extends Component {
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            showControls: false,
+        };
+    }
+
     render() {
         const {
             user,
@@ -21,6 +29,8 @@ export default class ModuleHeader extends Component {
             isMobile,
             onCollapse,
         } = this.props;
+
+        const { showControls } = this.state;
 
         return isMobile ? (
             <div
@@ -35,7 +45,7 @@ export default class ModuleHeader extends Component {
                     <Icon type="menu-unfold" />
                     <img
                         className={ Styles.logo }
-                        src={ images.carbookLogoWhite }
+                        src={ images.carbookLogo2 }
                         alt='logo'
                     />
                     {isAdmin(user) &&
@@ -65,7 +75,23 @@ export default class ModuleHeader extends Component {
                             </span>
                         ) }
                     </div>
+                    <div className={ Styles.headerContorlsShowIcon }>
+                        <Icon
+                            type="menu"
+                            onClick={()=>this.setState({
+                                showControls: !showControls
+                            })}
+                        />
+                    </div>
                     <div className={ Styles.headerContorls }>{ controls }</div>
+                </div>
+                <div 
+                    className={ Styles.hiddenHeaderContorls } 
+                    style={{
+                        display: showControls ? 'flex' : 'none'
+                    }}
+                >
+                    { controls }
                 </div>
             </div>
         ) : (
