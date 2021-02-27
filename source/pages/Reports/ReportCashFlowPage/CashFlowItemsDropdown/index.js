@@ -108,19 +108,19 @@ export default class CashFlowDropdown extends React.Component {
             <div className={Style.mainCont}>
                 <div>
                     <Row className={Style.row}>
-                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={12}>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()].join(' ')} span={12}>
                             <FormattedMessage id='report_cash_flow_page.analytics_name'/>
                         </Col>
 
-                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()].join(' ')} span={4}>
                             <FormattedMessage id='report_cash_flow_page.increase'/>
                         </Col>
 
-                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()].join(' ')} span={4}>
                             <FormattedMessage id='report_cash_flow_page.decrease'/>
                         </Col>
 
-                        <Col className={[Style.col.toString(), Style.colHeader.toString()]} span={4}>
+                        <Col className={[Style.col.toString(), Style.colHeader.toString()].join(' ')} span={4}>
                             <FormattedMessage id='report_cash_flow_page.balance'/>
                         </Col>
                     </Row>
