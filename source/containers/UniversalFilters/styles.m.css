@@ -1,6 +1,7 @@
 .filters {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: baseline;
+    justify-content: flex-end;
     background: white;
+    margin-top: 16px;
 }

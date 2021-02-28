@@ -186,7 +186,37 @@ export function columnsConfig(props) {
         ),
     };
 
-    return [
+    const orderAndConterpartyCol = {
+        title:     <FormattedMessage id='cash-table.order' />,
+        width:  'auto',
+        render:    (cashOrder) => {
+            const conterparty = renderCounterparty(cashOrder)
+            return cashOrder.orderId ? (
+                <div>
+                    <Link
+                        to={ `${book.order}/${cashOrder.orderId}` }
+                        style={ { color: 'var(--link' } }
+                    >
+                        { cashOrder.orderNum }
+                    </Link>
+                    <div>{conterparty}</div>
+                </div>
+            ) : (
+                <div>
+                    <Link
+                        to={ `${book.storageDocument}/${cashOrder.storeDocId}` }
+                        style={ { color: 'var(--link' } }
+                    >
+                        { cashOrder.documentNumber }
+                    </Link>
+                    <div>{conterparty}</div>
+                </div>
+            )
+        },
+    };
+
+    return !props.isMobile ? 
+    [
         numberCol,
         cashOrderCol,
         dateCol,
@@ -197,5 +227,9 @@ export function columnsConfig(props) {
         analyticsCol,
         descriptionCol,
         actionsCol,
+    ] : [
+        dateCol,
+        orderAndConterpartyCol,
+        sumCol
     ];
 }

@@ -81,10 +81,10 @@ export default class ClientsContainer extends Component {
 
     render() {
         const { clients, invite, user, sort } = this.props;
-        const { setInvite, createInvite } = this.props;
+        const { setInvite, createInvite, isMobile } = this.props;
         const { formatMessage } = this.props.intl;
 
-        const columns = columnsConfig(sort, user, formatMessage, setInvite);
+        const columns = columnsConfig(sort, user, formatMessage, setInvite, isMobile);
 
         const pagination = {
             pageSize: 25,
@@ -101,20 +101,32 @@ export default class ClientsContainer extends Component {
         return (
             <Catcher>
                 <div className={Styles.paper}>
-                    <Table
-                        size="small"
-                        className={Styles.table}
-                        columns={columns}
-                        dataSource={clients}
-                        // scroll={ scrollConfig() }
-                        loading={this.props.clientsFetching}
-                        locale={{
-                            emptyText: <FormattedMessage id="no_data" />,
-                        }}
-                        pagination={pagination}
-                        // onChange={ handleTableChange }
-                        scroll={{ x: 1360 }}
-                    />
+                    {!isMobile ? 
+                        <Table
+                            size="small"
+                            className={Styles.table}
+                            columns={columns}
+                            dataSource={clients}
+                            // scroll={ scrollConfig() }
+                            loading={this.props.clientsFetching}
+                            locale={{
+                                emptyText: <FormattedMessage id="no_data" />,
+                            }}
+                            pagination={pagination}
+                            // onChange={ handleTableChange }
+                            scroll={{ x: 1360 }}
+                        /> : 
+                        <Table
+                            columns={columns}
+                            className={Styles.mobileTable}
+                            dataSource={clients}
+                            loading={this.props.clientsFetching}
+                            locale={{
+                                emptyText: <FormattedMessage id="no_data" />,
+                            }}
+                            pagination={pagination}
+                        />
+                    }
                 </div>
                 <Modal
                     title={<FormattedMessage id="orders.invitation" />}

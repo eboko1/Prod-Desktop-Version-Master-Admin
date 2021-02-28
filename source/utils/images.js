@@ -4,6 +4,9 @@ import exception404 from 'theme/images/exceptions/404.svg';
 import exception500 from 'theme/images/exceptions/500.svg';
 // Logos
 import carbookLogo from 'theme/images/logoCarbookPrimary.png';
+import carbookLogo2 from 'theme/images/carbookLogo2.png';
+import carbookLogoBlack from 'theme/images/carbookLogo.png';
+import carbookLogoWhite from 'theme/images/logoCarbook.png';
 import portmoneLogos from 'theme/images/logos/portmoneLogos.svg';
 // partners logos
 import castrolLogo from 'theme/images/logos/castrolLogo.png';
@@ -57,6 +60,9 @@ export default {
     exception500,
     // Logos
     carbookLogo,
+    carbookLogo2,
+    carbookLogoBlack,
+    carbookLogoWhite,
     castrolLogo,
     portmoneLogos,
     ecatLogo,

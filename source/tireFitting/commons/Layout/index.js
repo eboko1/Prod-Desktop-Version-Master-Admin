@@ -78,6 +78,7 @@ export class LayoutComponent extends Component {
             isMobile,
             header,
             user,
+            className,
         } = this.props;
 
         return (
@@ -90,7 +91,7 @@ export class LayoutComponent extends Component {
                         user={user}
                         logout={this._logout}
                     />
-                    <Layout className={Styles.layout}>
+                    <Layout className={`${Styles.layout} ${className}`}>
                         {!isMobile && (
                             <Layout.Header className={Styles.header}>
                                 <Header
@@ -104,11 +105,13 @@ export class LayoutComponent extends Component {
                         )}
                         {title && (
                             <ModuleHeader
+                                user={user}
                                 title={title}
                                 description={description}
                                 controls={controls}
                                 collapsed={collapsed}
                                 isMobile={isMobile}
+                                onCollapse={this._toggleNavigation}
                             />
                         )}
                         <main

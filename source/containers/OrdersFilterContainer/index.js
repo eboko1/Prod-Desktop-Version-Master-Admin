@@ -109,7 +109,7 @@ export default class OrdersFilterContainer extends Component {
     };
 
     render() {
-        const { status, stats, intl, filter, orderComments } = this.props;
+        const { status, stats, intl, filter, orderComments, onlySearch } = this.props;
         const filterStatus = filter.status;
 
         const marks = {
@@ -183,117 +183,134 @@ export default class OrdersFilterContainer extends Component {
 
         return (
             <Catcher>
-                <div className={Styles.filter}>
-                    <Search
-                        className={Styles.search}
-                        placeholder={intl.formatMessage({
-                            id: "orders-filter.search_placeholder",
-                        })}
-                        // eslint-disable-next-line
-                        onChange={({ target: { value } }) =>
-                            this.handleOrdersSearch(value)
-                        }
-                        // onChange={ this.handleOrdersSearch }
-                        // enterButton
-                        // enterButton={ <Icon type='close' /> }
-                    />
-                    {status === "appointments" && (
-                        <RadioGroup
-                            className={Styles.buttonGroup}
-                            value={filterStatus}
-                        >
-                            <RadioButton
-                                value="not_complete,required,call,reserve"
-                                onClick={() =>
-                                    this._setFilterStatus(
-                                        "not_complete,required,call,reserve",
+                {onlySearch ? 
+                    <div>
+                        <Search
+                            className={Styles.search}
+                            placeholder={intl.formatMessage({
+                                id: "orders-filter.search_placeholder",
+                            })}
+                            // eslint-disable-next-line
+                            onChange={({ target: { value } }) =>
+                                this.handleOrdersSearch(value)
+                            }
+                            // onChange={ this.handleOrdersSearch }
+                            // enterButton
+                            // enterButton={ <Icon type='close' /> }
+                        />
+                    </div> :
+                    <div className={Styles.filter}>
+                        <Search
+                            className={Styles.search}
+                            placeholder={intl.formatMessage({
+                                id: "orders-filter.search_placeholder",
+                            })}
+                            // eslint-disable-next-line
+                            onChange={({ target: { value } }) =>
+                                this.handleOrdersSearch(value)
+                            }
+                            // onChange={ this.handleOrdersSearch }
+                            // enterButton
+                            // enterButton={ <Icon type='close' /> }
+                        />
+                        {status === "appointments" && (
+                            <RadioGroup
+                                className={Styles.buttonGroup}
+                                value={filterStatus}
+                            >
+                                <RadioButton
+                                    value="not_complete,required,call,reserve"
+                                    onClick={() =>
+                                        this._setFilterStatus(
+                                            "not_complete,required,call,reserve",
+                                        )
+                                    }
+                                >
+                                    <FormattedMessage id="all" /> (
+                                    {stats.not_complete +
+                                        stats.required +
+                                        stats.call +
+                                        stats.reserve}
                                     )
+                                </RadioButton>
+                                <RadioButton
+                                    value="not_complete"
+                                    onClick={() =>
+                                        this._setFilterStatus("not_complete")
+                                    }
+                                >
+                                    <FormattedMessage id="not_complete" /> (
+                                    {stats.not_complete})
+                                </RadioButton>
+                                <RadioButton
+                                    value="required"
+                                    onClick={() =>
+                                        this._setFilterStatus("required")
+                                    }
+                                >
+                                    <FormattedMessage id="required" /> (
+                                    {stats.required})
+                                </RadioButton>
+                                <RadioButton
+                                    value="reserve"
+                                    onClick={() => this._setFilterStatus("reserve")}
+                                >
+                                    <FormattedMessage id="reserve" /> (
+                                    {stats.reserve})
+                                </RadioButton>
+                                <RadioButton
+                                    value="call"
+                                    onClick={() => this._setFilterStatus("call")}
+                                >
+                                    <FormattedMessage id="call" /> ({stats.call})
+                                </RadioButton>
+                            </RadioGroup>
+                        )}
+                        {status === "reviews" && (
+                            <div className={Styles.review}>
+                                {/* <Icon style={ { color: preColor } } type='frown-o' /> */}
+                                {/* <div>NPS:</div> */}
+                                <Slider
+                                    range
+                                    defaultValue={[0, 10]}
+                                    min={0}
+                                    max={10}
+                                    // value={ filter.nps }
+                                    onChange={value =>
+                                        this.handleReviewSlider(value)
+                                    }
+                                    marks={marks}
+                                />
+                                {/* <Icon style={ { color: nextColor } } type='smile-o' /> */}
+                            </div>
+                        )}
+                        {status === "cancel" && orderComments && (
+                            <Select
+                                className={Styles.cancelReasonSelect}
+                                getPopupContainer={trigger => trigger.parentNode}
+                                // mode='multiple'
+                                placeholder={
+                                    <FormattedMessage id="orders-filter.filter_by_refusal_reason" />
                                 }
-                            >
-                                <FormattedMessage id="all" /> (
-                                {stats.not_complete +
-                                    stats.required +
-                                    stats.call +
-                                    stats.reserve}
-                                )
-                            </RadioButton>
-                            <RadioButton
-                                value="not_complete"
-                                onClick={() =>
-                                    this._setFilterStatus("not_complete")
-                                }
-                            >
-                                <FormattedMessage id="not_complete" /> (
-                                {stats.not_complete})
-                            </RadioButton>
-                            <RadioButton
-                                value="required"
-                                onClick={() =>
-                                    this._setFilterStatus("required")
-                                }
-                            >
-                                <FormattedMessage id="required" /> (
-                                {stats.required})
-                            </RadioButton>
-                            <RadioButton
-                                value="reserve"
-                                onClick={() => this._setFilterStatus("reserve")}
-                            >
-                                <FormattedMessage id="reserve" /> (
-                                {stats.reserve})
-                            </RadioButton>
-                            <RadioButton
-                                value="call"
-                                onClick={() => this._setFilterStatus("call")}
-                            >
-                                <FormattedMessage id="call" /> ({stats.call})
-                            </RadioButton>
-                        </RadioGroup>
-                    )}
-                    {status === "reviews" && (
-                        <div className={Styles.review}>
-                            {/* <Icon style={ { color: preColor } } type='frown-o' /> */}
-                            {/* <div>NPS:</div> */}
-                            <Slider
-                                range
-                                defaultValue={[0, 10]}
-                                min={0}
-                                max={10}
-                                // value={ filter.nps }
                                 onChange={value =>
-                                    this.handleReviewSlider(value)
+                                    this.handleCancelReasonSelect(value)
                                 }
-                                marks={marks}
-                            />
-                            {/* <Icon style={ { color: nextColor } } type='smile-o' /> */}
-                        </div>
-                    )}
-                    {status === "cancel" && orderComments && (
-                        <Select
-                            className={Styles.cancelReasonSelect}
-                            getPopupContainer={trigger => trigger.parentNode}
-                            // mode='multiple'
-                            placeholder={
-                                <FormattedMessage id="orders-filter.filter_by_refusal_reason" />
-                            }
-                            onChange={value =>
-                                this.handleCancelReasonSelect(value)
-                            }
-                        >
-                            {orderComments
-                                .map(({ status, id, comment }) =>
-                                    status === "cancel" ? (
-                                        <Option value={id} key={v4()}>
-                                            {comment}
-                                        </Option>
-                                    ) : (
-                                        false
-                                    ),
-                                )
-                                .filter(Boolean)}
-                        </Select>
-                    )}
-                </div>
+                            >
+                                {orderComments
+                                    .map(({ status, id, comment }) =>
+                                        status === "cancel" ? (
+                                            <Option value={id} key={v4()}>
+                                                {comment}
+                                            </Option>
+                                        ) : (
+                                            false
+                                        ),
+                                    )
+                                    .filter(Boolean)}
+                            </Select>
+                        )}
+                    </div>
+                }
             </Catcher>
         );
     }

@@ -17,10 +17,15 @@ import {
     onOrderSelect,
 } from "core/forms/cashOrderForm/duck";
 import { Loader } from "commons";
+import { permissions, isForbidden } from "utils";
 
 // own
 import { columnsConfig } from "./config";
 import Styles from "./styles.m.css";
+
+const mapStateToProps = state => ({
+    user: state.auth,
+});
 
 const mapDispatchToProps = {
     setSelectedClientOrdersFilters,
@@ -32,7 +37,7 @@ const mapDispatchToProps = {
     fetchSearchStoreDoc,
 };
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 @injectIntl
 export class CashSelectedClientOrdersTable extends Component {
     constructor(props) {
@@ -45,7 +50,9 @@ export class CashSelectedClientOrdersTable extends Component {
 
     componentDidMount() {
         this.props.fetchSelectedClientOrders();
-        this.props.fetchSearchStoreDoc();
+        if(!isForbidden(this.props.user, permissions.ACCESS_STOCK)) {
+            this.props.fetchSearchStoreDoc();
+        }
     }
 
     _onRowClick = (row) => {

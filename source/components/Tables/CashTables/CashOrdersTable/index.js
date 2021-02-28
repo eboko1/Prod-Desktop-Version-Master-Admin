@@ -13,18 +13,19 @@ import Styles from './styles.m.css';
 export class CashOrdersTable extends Component {
     constructor(props) {
         super(props);
-
-        this.columns = columnsConfig({
-            openPrint: props.openPrint,
-            openEdit:  props.openEdit,
-            // cashOrderEntity: this.state.cashOrderEntity,
-        });
     }
 
     _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
 
     render() {
-        const { cashOrders, cashOrdersFetching, totalCount } = this.props;
+        const { cashOrders, cashOrdersFetching, totalCount, openPrint, openEdit, isMobile } = this.props;
+
+        this.columns = columnsConfig({
+            openPrint: openPrint,
+            openEdit:  openEdit,
+            isMobile:  isMobile,
+            // cashOrderEntity: this.state.cashOrderEntity,
+        });
 
         const pagination = {
             pageSize:         25,
@@ -49,7 +50,7 @@ export class CashOrdersTable extends Component {
                 locale={ {
                     emptyText: <FormattedMessage id='no_data' />,
                 } }
-                scroll={ { x: 1000 } }
+                scroll={ !isMobile && { x: 1000 } }
                 rowKey={ record => record.id }
             />
         );
