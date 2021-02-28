@@ -262,7 +262,7 @@ class OrdersContainer extends Component {
     setIniviteModal = () => this.props.setModal(MODALS.INVITE);
 
     render() {
-        const { orders } = this.props;
+        const { orders, isMobile } = this.props;
         const { formatMessage } = this.props.intl;
         const { activeRoute, selectedRowKeys } = this.state;
 
@@ -275,6 +275,7 @@ class OrdersContainer extends Component {
             this.props.sort,
             this.props.user,
             formatMessage,
+            isMobile,
         );
 
         const rows = rowsConfig(

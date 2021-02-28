@@ -1,0 +1,15 @@
+.mainFilterCont {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 10px;
+    /* background-color: white; */
+}
+
+.selectCont {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 25%;
+    max-width: 30%;
+}

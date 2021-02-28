@@ -21,7 +21,8 @@
 
 @media screen and (max-width: 1199px) {
     .contentModuleHeader {
-        margin-top: 64px;
+        padding-top: 112px;
+        margin: 0;
     }
 }
 

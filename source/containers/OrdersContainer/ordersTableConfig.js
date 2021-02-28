@@ -26,6 +26,7 @@ export function columnsConfig(
     sort,
     user,
     formatMessage,
+    isMobile,
 ) {
     const sortOptions = {
         asc:  'ascend',
@@ -42,7 +43,7 @@ export function columnsConfig(
 
     const orderCol = {
         title:     <FormattedMessage id='orders.order' />,
-        width:     220,
+        width:     'auto',
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
@@ -85,7 +86,7 @@ export function columnsConfig(
         key:       'datetime',
         sorter:    true,
         sortOrder: sort.field === 'datetime' ? sortOptions[ sort.order ] : false,
-        width:     160,
+        width:     'auto',
         render:    (_, order) => (
             <div className={ Styles.datetime }>
                 { order.datetime
@@ -102,7 +103,7 @@ export function columnsConfig(
         sortOrder:
             sort.field === 'beginDatetime' ? sortOptions[ sort.order ] : false,
         sorter: true,
-        width:  160,
+        width:     'auto',
         render: (_, order) => (
             <div className={ Styles.datetime }>
                 { order.beginDatetime
@@ -119,7 +120,7 @@ export function columnsConfig(
         sortOrder:
             sort.field === 'deliveryDatetime' ? sortOptions[ sort.order ] : false,
         sorter: true,
-        width:  160,
+        width:     'auto',
         render: (_, order) => (
             <div className={ Styles.datetime }>
                 { order.deliveryDatetime
@@ -133,7 +134,7 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.success_date' />,
         dataIndex: 'successDatetime',
         key:       'successDatetime',
-        width:     160,
+        width:     'auto',
         render:    (_, order) => (
             <div className={ Styles.datetime }>
                 { order.successDatetime
@@ -149,7 +150,7 @@ export function columnsConfig(
         key:       'datetime',
         sorter:    true,
         sortOrder: sort.field === 'datetime' ? sortOptions[ sort.order ] : false,
-        width:     160,
+        width:     'auto',
         render:    (_, order) => (
             <div className={ Styles.datetime }>
                 { order.datetime
@@ -163,7 +164,7 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.client' />,
         dataIndex: 'clientFullName',
         key:       'clientFullName',
-        width:     220,
+        width:     'auto',
         render:    (_, order) => (
             <div className={ Styles.client }>
                 <span className={ Styles.clientFullname }>
@@ -190,7 +191,7 @@ export function columnsConfig(
         key:       'totalSum',
         sorter:    true,
         sortOrder: sort.field === 'totalSum' ? sortOptions[ sort.order ] : false,
-        width:     140,
+        width:     'auto',
         render:    (_, order) => (
             <Numeral
                 // TODO
@@ -207,7 +208,7 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.remaining_sum' />,
         dataIndex: 'remainingSum',
         key:       'remainingSum',
-        width:     140,
+        width:     'auto',
         render:    remainingSum => (
             <Numeral currency={ formatMessage({ id: 'currency' }) } nullText='0'>
                 { remainingSum }
@@ -219,7 +220,7 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.responsible' />,
         dataIndex: 'managerName',
         key:       'managerName',
-        width:     190,
+        width:     'auto',
         render:    (_, order) => {
             if (order.managerName) {
                 return (
@@ -239,7 +240,7 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.source' />,
         dataIndex: 'changeReason',
         key:       'changeReason',
-        width:     125,
+        width:     'auto',
         render:    (_, order) =>
             order.changeReason ? (
                 <FormattedMessage id={ `orders.${order.changeReason}` } />
@@ -252,7 +253,7 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.tasks' />,
         dataIndex: 'activeTasks',
         key:       'activeTasks',
-        width:     150,
+        width:     'auto',
         render:    (_, order) => {
             if (order.activeTasks) {
                 return (
@@ -270,7 +271,7 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.review' />,
         dataIndex: 'review',
         key:       'review',
-        width:     175,
+        width:     'auto',
         render:    (data, order) => {
             if (_.isNumber(order.nps)) {
                 return (
@@ -310,7 +311,7 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.invitation' />,
         dataIndex: 'invite',
         key:       'invite',
-        width:     150,
+        width:     'auto',
         render:    (_void, order) => {
             if (!order.vehicleInviteExists) {
                 return (
@@ -361,7 +362,7 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.actions' />,
         dataIndex: 'actions',
         key:       'actions',
-        width:     180,
+        width:     'auto',
         render:    () => (
             <div className={ Styles.inviteActions }>
                 <Tooltip
@@ -432,6 +433,15 @@ export function columnsConfig(
             </Link>
         ),
     };
+
+    if(isMobile) {
+        return [
+            orderCol,
+            datetimeCol,
+            clientCol,
+            sumCol,
+        ]
+    }
 
     switch (activeRoute) {
         case '/orders/appointments':

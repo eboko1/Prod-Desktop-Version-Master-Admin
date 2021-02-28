@@ -12,7 +12,7 @@ import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
 
-export function columnsConfig(sort, user, formatMessage, setInvite) {
+export function columnsConfig(sort, user, formatMessage, setInvite, isMobile) {
     const { GET_CLIENTS_BASIC_INFORMATION, CREATE_INVITE_ORDER } = permissions;
     const isClientInformationForbidden = isForbidden(
         user,
@@ -22,7 +22,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
 
     const client = {
         title:     <FormattedMessage id='clients-table.client' />,
-        width:     220,
+        width:     'auto',
         dataIndex: 'name',
         key:       'name',
         // fixed:     'left',
@@ -43,7 +43,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
 
     const phone = {
         title:     <FormattedMessage id='clients-table.phone' />,
-        width:     200,
+        width:     'auto',
         dataIndex: 'phones',
         key:       'phones',
         render:    phones => (
@@ -53,9 +53,46 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
         ),
     };
 
+    const clientAndPhone = {
+        title:      <>
+                        <p><FormattedMessage id='clients-table.client' /></p>
+                        <p><FormattedMessage id='clients-table.phone' /></p>
+                    </>,
+        width:     'auto',
+        dataIndex: 'name',
+        key:       'name',
+        // fixed:     'left',
+        render:    (_, client) =>
+            !isForbidden(user, permissions.GET_CLIENTS_BASIC_INFORMATION) ? (
+                <>
+                <Link
+                    className={ Styles.client }
+                    to={ `${book.client}/${client.clientId}` }
+                >
+                    { client.name } { client.surname }
+                </Link>
+                <div>
+                    <a className={ Styles.phone } href={ `tel:${client.phones[ 0 ]}` }>
+                        { client.phones[ 0 ] }
+                    </a>
+                </div>
+                </>
+                
+            ) : (
+                <>
+                    <p>{ client.name } { client.surname }</p>
+                    <div>
+                        <a className={ Styles.phone } href={ `tel:${client.phones[ 0 ]}` }>
+                            { client.phones[ 0 ] }
+                        </a>
+                    </div>
+                </>
+            ),
+    };
+
     const currentDebtWithTaxes = {
         title:     <FormattedMessage id='clients-table.debt' />,
-        width:     100,
+        width:     'auto',
         dataIndex: 'totalDebtWithTaxes',
         key:       'totalDebtWithTaxes',
         render:    (totalDebtWithTaxes, client) => {
@@ -89,7 +126,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
 
     const vehicles = {
         title:     <FormattedMessage id='clients-table.vehicles' />,
-        width:     400,
+        width:     'auto',
         dataIndex: 'vehicles',
         key:       'vehicles',
         render:    (data, client) =>
@@ -114,7 +151,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
 
     const lastOrder = {
         title:     <FormattedMessage id='clients-table.last_order' />,
-        width:     140,
+        width:     'auto',
         dataIndex: 'lastOrderId',
         key:       'lastOrderId',
         render:    (data, order) => (
@@ -134,7 +171,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
 
     const orders = {
         title:     <FormattedMessage id='clients-table.orders' />,
-        width:     100,
+        width:     'auto',
         // sorter:    true,
         // sortOrder: sort.field === 'totalSum' ? sortOptions[ sort.order ] : false,
         dataIndex: 'orders',
@@ -146,7 +183,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
     const invitation = {
         title:  <FormattedMessage id='clients-table.invitation' />,
         key:    'invite',
-        width:  150,
+        width:     'auto',
         render: client => {
             if (!client.inviteId) {
                 return (
@@ -200,6 +237,13 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
             </div>
         ),
     };
+
+    if(isMobile) {
+        return [
+            clientAndPhone,
+            vehicles,
+        ]
+    }
 
     return [
         client,

@@ -239,6 +239,15 @@ export default {
             name:     'navigation.reports',
             items:    [
                 {
+                    key:      '/report/cash_flow',
+                    disabled: false,
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.ACCESS_REPORT_TIME_EFFICIENCY) &&
+                    //     !isAdmin(user),
+                    link: book.reportCashFlow,
+                    name: 'navigation.report_cash_flow',
+                },
+                {
                     key:      '/chart',
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_KPI) &&

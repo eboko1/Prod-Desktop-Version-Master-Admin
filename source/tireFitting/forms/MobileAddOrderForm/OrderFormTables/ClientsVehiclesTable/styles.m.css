@@ -1,0 +1,5 @@
+.clientsVehiclesTable {
+    display: block;
+    height: 200px;
+    overflow: scroll;
+}

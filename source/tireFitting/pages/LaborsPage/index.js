@@ -29,7 +29,8 @@ const { Option } = Select;
 
 const mapStateToProps = state => {
     return {
-        user: state.auth,
+        user:           state.auth,
+        isMobile:       state.ui.views.isMobile,
     };
 };
 
@@ -460,6 +461,60 @@ export default class LaborsPage extends Component {
                     )
                 }
             }
+        ];
+
+        this.mobileColumns = [
+            {
+                title:  <FormattedMessage id="order_form_table.labors_code" />,
+                key:       'laborCode',
+                dataIndex: 'laborCode',
+                render: (data, row)=>{
+                    return (
+                        <div style={{display: 'flex'}}>
+                            {data}
+                        </div>  
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.detail_name" />,
+                key:       'name',
+                render: (elem)=>{
+                    return elem.name || elem.defaultName;
+                }
+            },
+            {
+                title:  <FormattedMessage id="hours" />,
+                dataIndex: 'normHours',
+                key:       'normHours',
+                render: (data)=>{
+                    return Math.round(data*100)/100;
+                }
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.price" />,
+                dataIndex: 'price',
+                key:       'price',
+                render: (data)=>{
+                    return Math.round(data*100)/100;
+                }
+            },
+            {
+                key:       'disable',
+                dataIndex: 'disable',
+                render: (data, elem)=>{
+                    return (
+                        <Checkbox
+                            checked={!data}
+                            onChange={(event)=>{
+                                elem.disable = !event.target.checked;
+                                elem.changed = true;
+                                this.setState({});
+                            }}
+                        />
+                    )
+                }
+            },
         ]
     }
 
@@ -745,6 +800,7 @@ export default class LaborsPage extends Component {
     }
 
     render() {
+        const { isMobile } = this.props;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 this.setState({
@@ -755,6 +811,7 @@ export default class LaborsPage extends Component {
 
         const { labors, filterCode, filterId, filterDetail, filterDefaultName, filterName, currentPage } = this.state;
         if(
+            !isMobile &&
             !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD) && 
             labors.length && 
             (labors[labors.length-1].defaultName != "" || labors[labors.length-1].masterLaborId != "")
@@ -773,7 +830,7 @@ export default class LaborsPage extends Component {
                 new: true,
             })
         }
-        const columns = this.columns;
+        const columns = !isMobile ? this.columns : this.mobileColumns;
         var dataSource = [...labors];
         dataSource = dataSource.filter((elem)=>!elem.deleted);
         if(filterCode) dataSource = dataSource.filter((data, i) => data.laborCode.includes(filterCode));
@@ -812,7 +869,7 @@ export default class LaborsPage extends Component {
             >
                 <Table
                     dataSource={dataSource}
-                    rowSelection={rowSelection}
+                    rowSelection={!isMobile && rowSelection}
                     columns={columns}
                     locale={{
                         emptyText: <FormattedMessage id='no_data' />,

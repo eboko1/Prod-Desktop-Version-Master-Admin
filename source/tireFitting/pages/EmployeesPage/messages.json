@@ -1,0 +1,32 @@
+{
+    "en": {
+        "employee-page.description": "Managing your employees, their orders and working hours",
+        "employee-page.add_employee": "Add employee",
+        "employee-page.employees": "Employees",
+        "employee-page.workers": "Workers",
+        "employee-page.dismissed": "Dismissed",
+        "employee-page.statistics": "Statistics",
+        "employee-page.feedback": "Feedback",
+        "employee-page.setting_salary": "Salary settings"
+    },
+    "ru": {
+        "employee-page.description": "Управление Вашими сотрудниками, их загрузкой, заказами и временем работы",
+        "employee-page.add_employee": "Добавить сотрудника",
+        "employee-page.employees": "Сотрудники",
+        "employee-page.workers": "Работающие",
+        "employee-page.dismissed": "Уволенные",
+        "employee-page.statistics": "Статистика",
+        "employee-page.feedback": "Отзывы",
+        "employee-page.setting_salary": "Настройка ЗП"
+    },
+    "uk": {
+        "employee-page.description": "Керування Вашими співробітниками, їх завантаженням, замовленнями та часом роботи",
+        "employee-page.add_employee": "Додати працівника",
+        "employee-page.employees": "Співробітники",
+        "employee-page.workers": "Робочі",
+        "employee-page.dismissed": "Звільнені",
+        "employee-page.statistics": "Статистика",
+        "employee-page.feedback": "Відгуки",
+        "employee-page.setting_salary": "Налаштування ЗП"
+    }
+}
