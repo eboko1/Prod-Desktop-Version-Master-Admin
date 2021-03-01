@@ -122,6 +122,8 @@ export default class CashFlowFilter extends React.Component {
             intl: {formatMessage}
         } = this.props;
 
+        const filteredAnalytics = _.filter(analytics, ans => !ans.analyticsDisabled);
+
         return (
             <div className={Styles.mainFilterCont}>
                 <div className={Styles.selectCont}>
@@ -149,7 +151,7 @@ export default class CashFlowFilter extends React.Component {
                         disabled={cashboxesIsFetching}
                         onChange={this.onAnalyticsSelect}
                     >
-                        {_.map(analytics, ans => (
+                        {_.map(filteredAnalytics, ans => (
                             <Select.Option key={ans.analyticsUniqueId} value={ans.analyticsUniqueId}>
                                 {ans.analyticsName}
                             </Select.Option>
