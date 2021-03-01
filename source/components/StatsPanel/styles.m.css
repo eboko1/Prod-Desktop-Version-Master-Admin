@@ -1,0 +1,33 @@
+.stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.extendedStats {
+    display: flex;
+    justify-content: space-between;
+}
+
+.count {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--primary);
+    text-align: center;
+    padding: 8px;
+    flex: 0 0 15%;
+}
+
+.extendedCounts {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--primary);
+    text-align: center;
+    padding: 8px;
+    flex: 0 1 30%;
+}
+
+.statsHeader {
+    color: grey;
+    margin-bottom: 0.4em;
+}

@@ -1,6 +1,7 @@
 import ArrowsNav from './ArrowsNav';
 import ReportsDropdown from './ReportsDropdown';
 import StatsCountsPanel from './StatsCountsPanel';
+import StatsPanel from './StatsPanel';
 import UniversalFiltersTags from './UniversalFiltersTags';
 import ChangeStatusDropdown from './ChangeStatusDropdown';
 import ArrowsWeekPicker from './ArrowsWeekPicker';
@@ -62,6 +63,7 @@ export {
     CallStatusIcon,
     ReportsDropdown,
     StatsCountsPanel,
+    StatsPanel,
     UniversalFiltersTags,
     ArrowsWeekPicker,
     ArrowsDatePicker,

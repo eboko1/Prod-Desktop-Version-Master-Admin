@@ -1,35 +1,41 @@
 {
-  "en": {
-    "cash-creation-form.create_cashbox": "Create Cashbox",
-    "cash-creation-form.name": "Name",
-    "cash-creation-form.name.validation": "Cashbox name is required!",
-    "cash-creation-form.type": "Type",
-    "cash-creation-form.description": "Description",
-    "cash-creation-form.type-CASH": "Cash",
-    "cash-creation-form.type-CASH_2": "Cash 2",
-    "cash-creation-form.type-CASHLESS": "Cashless",
-    "cash-creation-form.type-CREDIT_CARD": "Card"
-  },
-  "ru": {
-    "cash-creation-form.create_cashbox": "Cоздать кассу",
-    "cash-creation-form.name": "Название",
-    "cash-creation-form.name.validation": "Название кассы обязательное!",
-    "cash-creation-form.type": "Тип",
-    "cash-creation-form.description": "Описание",
-    "cash-creation-form.type-CASH": "Наличка",
-    "cash-creation-form.type-CASH_2": "Наличка 2",
-    "cash-creation-form.type-CASHLESS": "Безнал",
-    "cash-creation-form.type-CREDIT_CARD": "Карта"
-  },
-  "uk": {
-    "cash-creation-form.create_cashbox": "Створити касу",
-    "cash-creation-form.name": "Назва",
-    "cash-creation-form.name.validation": "Назва каси обов'язкова!",
-    "cash-creation-form.type": "Тип",
-    "cash-creation-form.description": "Опис",
-    "cash-creation-form.type-CASH": "Готівка",
-    "cash-creation-form.type-CASH_2": "Готівка 2",
-    "cash-creation-form.type-CASHLESS": "Безготівкова",
-    "cash-creation-form.type-CREDIT_CARD": "Карта"
-  }
+	"en": {
+		"cash-creation-form.create_cashbox": "Create Cashbox",
+		"cash-creation-form.name": "Name",
+		"cash-creation-form.name.validation": "Cashbox name is required!",
+		"cash-creation-form.type": "Type",
+		"cash-creation-form.fiscalNumber": "POS Number",
+		"cash-creation-form.fiscalNumber.validation": "POS Number is required!",
+		"cash-creation-form.description": "Description",
+		"cash-creation-form.type-CASH": "Cash",
+		"cash-creation-form.type-CASH_2": "Cash 2",
+		"cash-creation-form.type-CASHLESS": "Cashless",
+		"cash-creation-form.type-CREDIT_CARD": "Card"
+	},
+	"ru": {
+		"cash-creation-form.create_cashbox": "Cоздать кассу",
+		"cash-creation-form.name": "Название",
+		"cash-creation-form.name.validation": "Название кассы обязательное!",
+		"cash-creation-form.type": "Тип",
+		"cash-creation-form.fiscalNumber": "Номер ККМ",
+		"cash-creation-form.fiscalNumber.validation": "Номер ККМ обязательный!",
+		"cash-creation-form.description": "Описание",
+		"cash-creation-form.type-CASH": "Наличка",
+		"cash-creation-form.type-CASH_2": "Наличка 2",
+		"cash-creation-form.type-CASHLESS": "Безнал",
+		"cash-creation-form.type-CREDIT_CARD": "Карта"
+	},
+	"uk": {
+		"cash-creation-form.create_cashbox": "Створити касу",
+		"cash-creation-form.name": "Назва",
+		"cash-creation-form.name.validation": "Назва каси обов'язкова!",
+		"cash-creation-form.type": "Тип",
+		"cash-creation-form.fiscalNumber": "Номер РРО",
+		"cash-creation-form.fiscalNumber.validation": "Номер РРО обов'язковий!",
+		"cash-creation-form.description": "Опис",
+		"cash-creation-form.type-CASH": "Готівка",
+		"cash-creation-form.type-CASH_2": "Готівка 2",
+		"cash-creation-form.type-CASHLESS": "Безготівкова",
+		"cash-creation-form.type-CREDIT_CARD": "Карта"
+	}
 }
