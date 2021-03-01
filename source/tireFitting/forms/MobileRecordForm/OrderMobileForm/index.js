@@ -33,7 +33,10 @@ import {
 
 import { withReduxForm } from "utils";
 import { permissions, isForbidden } from "utils";
-
+import {
+    selectCashSum
+} from "core/forms/orderForm/duck";
+// own
 import Styles from "./styles.m.css";
 
 const FormItem = Form.Item;
@@ -74,6 +77,11 @@ const getDisabledHours = (startTime = 0, endTime = 23) => {
     actions: {
         change: onChangeOrderForm,
     },
+    mapStateToProps: state => ({
+        cashSum:                    selectCashSum(state),
+        schedule:                   state.forms.orderForm.schedule,
+        stationLoads:               state.forms.orderForm.stationLoads,
+    }),
 })
 export class OrderMobileForm extends Component {
     constructor(props) {
@@ -117,13 +125,36 @@ export class OrderMobileForm extends Component {
             orderDiagnostic,
             order: { status },
             onClose,
+            cashSum,
+            schedule,
+            stationLoads,
         } = this.props;
+        console.log(this);
         const { getFieldDecorator, getFieldsValue } = this.props.form;
         const { formatMessage } = this.props.intl;
 
         const vehicle = selectedClient.vehicles.find((vehicle)=>vehicle.id == this.props.order.clientVehicleId) || undefined;
 
-        const disabledHours = getDisabledHours( 8, 20)
+        const dayNumber = moment(_.get(this.props, "stationLoads[0].beginDate")).day();
+        let disabledHours = undefined;
+        if(schedule && dayNumber) {
+            let index;
+            switch (dayNumber) {
+                case 6:
+                    index = 1;
+                    break;
+                case 7:
+                    index = 2;
+                    break;
+                default:
+                    index = 0;
+            }
+
+            disabledHours = getDisabledHours(
+                schedule[index] && schedule[index].beginTime ? schedule[index].beginTime.split(/[.:]/)[0] : 9,
+                schedule[index] && schedule[index].endTime ? schedule[index].endTime.split(/[.:]/)[0] : 20
+            )
+        }
 
         const isDurationDisabled = _.every(
             getFieldsValue([
