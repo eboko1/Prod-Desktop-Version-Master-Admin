@@ -60,6 +60,44 @@ export default class ClientSearchTable extends Component {
                 },
             },
         ];
+
+        this.mobileColumns = [
+            {
+                title:     <FormattedMessage id='name' />,
+                dataIndex: 'name',
+                key:       'name',
+                render: (_, {name, surname}) => {
+                   return (
+                       <div>
+                           <div>{name}</div>
+                           <div>{surname}</div>
+                       </div>
+                   )
+                },
+            },
+            {
+                title:     <FormattedMessage id='add_order_form.phone' />,
+                dataIndex: 'phones',
+                key:       'phones',
+            },
+            {
+                title:  <FormattedMessage id='vehicle' />,
+                key:    'vehicle',
+                render: client => {
+                    const vehicle = _.get(client, 'vehicles[0]');
+                    if (!vehicle) {
+                        return '';
+                    }
+
+                    return vehicle.model ? 
+                    <div>
+                        <div>{vehicle.make} {vehicle.model} {vehicle.year}</div>
+                        <div>{vehicle.number}</div>
+                    </div>
+                        : '';
+                },
+            },
+        ];
     }
 
     render() {
@@ -68,8 +106,9 @@ export default class ClientSearchTable extends Component {
             visible,
             setClientSelection,
             clientsSearching,
+            isMobile,
         } = this.props;
-        const columns = this.columns;
+        const columns = !isMobile ? this.columns : this.mobileColumns;
 
         return (
             <Catcher>

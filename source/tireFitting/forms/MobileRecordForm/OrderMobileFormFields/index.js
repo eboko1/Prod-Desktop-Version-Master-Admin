@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Link } from "react-router-dom";
 import {
     Form,
@@ -123,6 +124,7 @@ export class OrderMobileFormFields extends Component {
             searchClientsResult: { searching: clientsSearching, clients },
             setClientSelection,
             form,
+            isMobile,
         } = this.props;
 
         const formFieldsValues = form.getFieldsValue();
@@ -134,7 +136,80 @@ export class OrderMobileFormFields extends Component {
                 setClientSelection={setClientSelection}
                 visible={searchClientQuery}
                 clients={clients}
+                isMobile={isMobile}
             />
+        );
+    };
+
+    _renderClientColumn = () => {
+        const {
+            selectedClient,
+            fetchedOrder,
+            fields,
+            errors,
+        } = this.props;
+        const { getFieldDecorator } = this.props.form;
+        const hasClient = _.get(fetchedOrder, "order.clientPhone");
+
+        return (
+            <div className={Styles.bodyColumn}>
+                <div className={Styles.bodyColumnContent}>
+                    <div className={Styles.contentWrapper}>
+                        <div className={Styles.comboFieldWrapper}>
+                            <FormattedMessage id="add_order_form.client" />
+                            <div className={Styles.comboField}>
+                                {selectedClient.name || selectedClient.surname
+                                    ? (selectedClient.surname
+                                          ? selectedClient.surname + " "
+                                          : "") + `${selectedClient.name}`
+                                    : void 0}
+                            </div>
+                        </div>
+                        <DecoratedSelect
+                            errors={errors}
+                            defaultGetValueProps
+                            fieldValue={_.get(fields, "clientPhone")}
+                            field="clientPhone"
+                            disabled={this.bodyUpdateIsForbidden()}
+                            initialValue={
+                                _.get(fetchedOrder, "order.clientPhone") ||
+                                (this.bodyUpdateIsForbidden()
+                                    ? void 0
+                                    : _.get(selectedClient, "phones[0]"))
+                            }
+                            formItem
+                            hasFeedback
+                            className={`${Styles.clientCol} ${Styles.comboFieldSelect}`}
+                            colon={false}
+                            rules={this.requiredFieldRules}
+                            getFieldDecorator={getFieldDecorator}
+                            dropdownStyle={this._clientPhoneBorderStyle}
+                        >
+                            {_.get(selectedClient, "phones", []).filter(Boolean).map(phone => (
+                                <Option value={phone} key={v4()}>
+                                    {phone}
+                                </Option>
+                            ))}
+                        </DecoratedSelect>
+                    </div>
+                    {hasClient && (
+                        <div className={Styles.iconsCol}>
+                            <Link
+                                to={`${book.client}/${selectedClient.clientId}`}
+                            >
+                                <Icon type="edit" className={Styles.editIcon} />
+                            </Link>
+                            <CopyToClipboard text={hasClient}>
+                                <Icon
+                                    type="copy"
+                                    theme="outlined"
+                                    className={Styles.copyIcon}
+                                />
+                            </CopyToClipboard>
+                        </div>
+                    )}
+                </div>
+            </div>
         );
     };
 
@@ -209,6 +284,95 @@ export class OrderMobileFormFields extends Component {
         );
     }
 
+    _renderVehicleColumn = () => {
+        const {
+            selectedClient,
+            fetchedOrder,
+            fields,
+            clientVehicle,
+            errors,
+        } = this.props;
+        const { getFieldDecorator } = this.props.form;
+        const selectedVehicleId = _.get(fetchedOrder, 'order.clientVehicleId');
+
+        const selectedVehicle =
+            selectedClient &&
+            selectedVehicleId &&
+            _.find(selectedClient.vehicles, { id: selectedVehicleId });
+
+        return (
+            <div className={Styles.bodyColumn}>
+                <div className={Styles.bodyColumnContent}>
+                    <div className={Styles.contentWrapper}>
+                        <div className={Styles.comboFieldWrapper}>
+                            <FormattedMessage id="add_order_form.car" />
+                            <div className={Styles.comboField}>
+                                {_.get(selectedVehicle, "number") && (
+                                    <div>
+                                        <FormattedMessage id="add_client_form.number" />
+                                        : {_.get(selectedVehicle, "number")}
+                                    </div>
+                                )}
+                                {_.get(selectedVehicle, "vin") && (
+                                    <div>
+                                        <FormattedMessage id="add_client_form.vin" />
+                                        : {_.get(selectedVehicle, "vin")}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <DecoratedSelect
+                            errors={errors}
+                            defaultGetValueProps
+                            fieldValue={_.get(fields, "clientVehicle")}
+                            field="clientVehicle"
+                            disabled={this.bodyUpdateIsForbidden()}
+                            initialValue={
+                                _.get(fetchedOrder, "order.clientVehicleId") ||
+                                (this.bodyUpdateIsForbidden()
+                                    ? void 0
+                                    : _.get(selectedClient, "vehicles[0].id"))
+                            }
+                            formItem
+                            hasFeedback
+                            colon={false}
+                            className={Styles.comboFieldSelect}
+                            getFieldDecorator={getFieldDecorator}
+                            rules={this.requiredFieldRules}
+                            optionDisabled="enabled"
+                        >
+                            {_.get(selectedClient, "vehicles", []).map(vehicle => (
+                                <Option value={vehicle.id} key={v4()}>
+                                    {`${vehicle.make} ${
+                                        vehicle.model
+                                    } ${vehicle.number || vehicle.vin || ""}`}
+                                </Option>
+                            ))}
+                        </DecoratedSelect>
+                    </div>
+                    {selectedVehicle && (
+                        <div className={Styles.iconsCol}>
+                            <Link
+                                to={`${book.client}/${selectedClient.clientId}`}
+                            >
+                                <Icon type="edit" className={Styles.editIcon} />
+                            </Link>
+                            <CopyToClipboard
+                                text={`${selectedVehicle.make} ${selectedVehicle.model}`}
+                            >
+                                <Icon
+                                    type="copy"
+                                    theme="outlined"
+                                    className={Styles.copyIcon}
+                                />
+                            </CopyToClipboard>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
     _saveFormRef = formRef => {
         this.formRef = formRef;
     };
@@ -267,11 +431,15 @@ export class OrderMobileFormFields extends Component {
         const totalBlock = this._renderTotalBlock();
         const clientSearch = this._renderClientSearch();
         const clientsSearchTable = this._renderClientSearchTable();
+        const clientColumn = this._renderClientColumn();
+        const vehicleColumn = this._renderVehicleColumn();
 
         return (
             <div>
                 {clientSearch}
                 {clientsSearchTable}
+                {clientColumn}
+                {vehicleColumn}
                 <div style={{ display: "none" }}>
                     <DecoratedInput
                         field="stationLoads[0].status"
@@ -280,122 +448,97 @@ export class OrderMobileFormFields extends Component {
                         initialValue={"TO_DO"}
                         getFieldDecorator={getFieldDecorator}
                     />
-                </div>
-                <div className={Styles.mobileRecordFormFooter} style={{display: 'none'}}>
-                    {status !== "cancel" && status !== "approve" && (
-                        <Button
-                            className={Styles.mobileRecordSubmitBtn}
-                            type="primary"
-                            onClick={() => onStatusChange("approve")}
-                        >
-                            <FormattedMessage id="add_order_form.save_appointment" />
-                        </Button>
-                    )}
-                    {status !== "cancel" && (
-                        <Button
-                            className={Styles.mobileRecordSubmitBtn}
-                            onClick={() =>
-                                onStatusChange(
-                                    status,
-                                    undefined,
-                                    undefined,
-                                    `${book.dashboard}`,
-                                )
+                
+                    <FormItem
+                        label={<FormattedMessage id="add_order_form.client" />}
+                        {...formItemLayout}
+                    >
+                        <Input
+                            placeholder={formatMessage({
+                                id: "add_order_form.select_name",
+                                defaultMessage: "Select client",
+                            })}
+                            style={{color: "var(--text)"}}
+                            disabled
+                            value={
+                                selectedClient.name || selectedClient.surname
+                                    ? (selectedClient.surname
+                                        ? selectedClient.surname + " "
+                                        : "") + `${selectedClient.name}`
+                                    : void 0
                             }
-                        >
-                            <FormattedMessage id="close" />
-                        </Button>
-                    )}
-                </div>
-                <FormItem
-                    label={<FormattedMessage id="add_order_form.client" />}
-                    {...formItemLayout}
-                >
-                    <Input
-                        placeholder={formatMessage({
-                            id: "add_order_form.select_name",
-                            defaultMessage: "Select client",
-                        })}
-                        style={{color: "var(--text)"}}
-                        disabled
-                        value={
-                            selectedClient.name || selectedClient.surname
-                                ? (selectedClient.surname
-                                      ? selectedClient.surname + " "
-                                      : "") + `${selectedClient.name}`
-                                : void 0
+                        />
+                    </FormItem>
+                    <DecoratedSelect
+                        label={<FormattedMessage id="add_order_form.phone" />}
+                        field="clientPhone"
+                        initialValue={
+                            _.get(fetchedOrder, "order.clientPhone") ||
+                            (this.bodyUpdateIsForbidden()
+                                ? void 0
+                                : _.get(selectedClient, "phones[0]"))
                         }
-                    />
-                </FormItem>
-                <DecoratedSelect
-                    label={<FormattedMessage id="add_order_form.phone" />}
-                    field="clientPhone"
-                    initialValue={
-                        _.get(fetchedOrder, "order.clientPhone") ||
-                        (this.bodyUpdateIsForbidden()
-                            ? void 0
-                            : _.get(selectedClient, "phones[0]"))
-                    }
-                    formItem
-                    formItemLayout={formItemLayout}
-                    hasFeedback
-                    className={Styles.clientCol}
-                    colon={false}
-                    rules={[
-                        {
-                            required: true,
-                            message: formatMessage({
-                                id: "required_field",
-                            }),
-                        },
-                    ]}
-                    getFieldDecorator={getFieldDecorator}
-                    placeholder={formatMessage({
-                        id: "add_order_form.select_client_phone",
-                    })}
-                >
-                    {_.get(selectedClient, "phones", []).filter(Boolean).map(phone => (
-                        <Option value={phone} key={v4()}>
-                            {phone}
-                        </Option>
-                    ))}
-                </DecoratedSelect>
-                <DecoratedSelect
-                    field="clientVehicle"
-                    initialValue={
-                        _.get(fetchedOrder, "order.clientVehicleId") ||
-                        (this.bodyUpdateIsForbidden()
-                            ? void 0
-                            : _.get(selectedClient, "vehicles[0].id"))
-                    }
-                    formItem
-                    hasFeedback
-                    label={<FormattedMessage id="add_order_form.car" />}
-                    formItemLayout={formItemLayout}
-                    colon={false}
-                    className={Styles.clientCol}
-                    getFieldDecorator={getFieldDecorator}
-                    rules={[
-                        {
-                            required: true,
-                            message: formatMessage({
-                                id: "required_field",
-                            }),
-                        },
-                    ]}
-                    placeholder={formatMessage({
-                        id: "add_order_form.select_client_vehicle",
-                    })}
-                    optionDisabled="enabled"
-                >
-                    {_.get(selectedClient, "vehicles", []).map(vehicle => (
-                        <Option value={vehicle.id} key={v4()}>
-                            {`${vehicle.make} ${
-                                vehicle.model
-                            } ${vehicle.number || vehicle.vin || ""}`}
-                        </Option>
-                    ))}
-                </DecoratedSelect>
+                        formItem
+                        formItemLayout={formItemLayout}
+                        hasFeedback
+                        className={Styles.clientCol}
+                        colon={false}
+                        rules={[
+                            {
+                                required: true,
+                                message: formatMessage({
+                                    id: "required_field",
+                                }),
+                            },
+                        ]}
+                        getFieldDecorator={getFieldDecorator}
+                        placeholder={formatMessage({
+                            id: "add_order_form.select_client_phone",
+                        })}
+                    >
+                        {_.get(selectedClient, "phones", []).filter(Boolean).map(phone => (
+                            <Option value={phone} key={v4()}>
+                                {phone}
+                            </Option>
+                        ))}
+                    </DecoratedSelect>
+                    <DecoratedSelect
+                        field="clientVehicle"
+                        initialValue={
+                            _.get(fetchedOrder, "order.clientVehicleId") ||
+                            (this.bodyUpdateIsForbidden()
+                                ? void 0
+                                : _.get(selectedClient, "vehicles[0].id"))
+                        }
+                        formItem
+                        hasFeedback
+                        label={<FormattedMessage id="add_order_form.car" />}
+                        formItemLayout={formItemLayout}
+                        colon={false}
+                        className={Styles.clientCol}
+                        getFieldDecorator={getFieldDecorator}
+                        rules={[
+                            {
+                                required: true,
+                                message: formatMessage({
+                                    id: "required_field",
+                                }),
+                            },
+                        ]}
+                        placeholder={formatMessage({
+                            id: "add_order_form.select_client_vehicle",
+                        })}
+                        optionDisabled="enabled"
+                    >
+                        {_.get(selectedClient, "vehicles", []).map(vehicle => (
+                            <Option value={vehicle.id} key={v4()}>
+                                {`${vehicle.make} ${
+                                    vehicle.model
+                                } ${vehicle.number || vehicle.vin || ""}`}
+                            </Option>
+                        ))}
+                    </DecoratedSelect>
+                </div>
                 <hr />
                 {totalBlock}
                 <hr />

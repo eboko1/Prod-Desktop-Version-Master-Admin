@@ -72,6 +72,7 @@ import Styles from "./styles.m.css";
         storeProducts: selectStoreProductsByQuery(state),
         recommendedPrice: selectRecommendedPrice(state),
         recommendedPriceLoading: selectRecommendedPriceLoading(state),
+        isMobile:                   state.ui.views.isMobile,
     }),
 })
 export class MobileAddOrderForm extends React.PureComponent {
@@ -297,6 +298,7 @@ export class MobileAddOrderForm extends React.PureComponent {
             user,
             location,
             errors,
+            isMobile,
         } = this.props;
 
         const formFieldsValues = form.getFieldsValue();
@@ -328,8 +330,7 @@ export class MobileAddOrderForm extends React.PureComponent {
         );
         const deliveryDate = _.get(formFieldsValues, "deliveryDate");
 
-        const orderFormBodyFields = _.pick(formFieldsValues, [
-            "comment",
+        const orderFormHeaderFields = _.pick(formFieldsValues, [
             "odometerValue",
             "clientVehicle",
             "clientRequisite",
@@ -338,7 +339,7 @@ export class MobileAddOrderForm extends React.PureComponent {
             "searchClientQuery",
         ]);
 
-        const orderFormHeaderFields = _.pick(formFieldsValues, [
+        const orderFormBodyFields = _.pick(formFieldsValues, [
             "stationLoads[0].beginTime",
             "stationLoads[0].station",
             "stationLoads[0].beginDate",
@@ -350,6 +351,7 @@ export class MobileAddOrderForm extends React.PureComponent {
             "appurtenanciesResponsible",
             "paymentMethod",
             "requisite",
+            "comment",
         ]);
 
         let priceDetails = 0;
@@ -382,7 +384,7 @@ export class MobileAddOrderForm extends React.PureComponent {
                 <OrderFormHeader
                     errors={errors}
                     location={location}
-                    fields={orderFormBodyFields}
+                    fields={orderFormHeaderFields}
                     searchClientQuery={searchClientQuery}
                     clientVehicle={clientVehicle}
                     clientPhone={clientPhone}
@@ -397,6 +399,8 @@ export class MobileAddOrderForm extends React.PureComponent {
                     user={user}
                     order={order}
                     setAddClientModal={setAddClientModal}
+                    isMobile={isMobile}
+                    schedule={schedule}
                 />
                 <OrderFormBody
                     allServices={allServices}
@@ -409,7 +413,7 @@ export class MobileAddOrderForm extends React.PureComponent {
                     employees={employees}
                     errors={errors}
                     fetchedOrder={fetchedOrder}
-                    fields={orderFormHeaderFields}
+                    fields={orderFormBodyFields}
                     form={form}
                     location={location}
                     managers={managers}

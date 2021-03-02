@@ -59,6 +59,10 @@ const filterSelectOptions = [
     {
         message: "call",
         value: "call",
+    },
+    {
+        message: "cancels",
+        value: "cancel",
     }
 ]
 
@@ -155,7 +159,7 @@ export default class OrdersPage extends Component {
                                 0 &&*/
                                 headerControls }
                         <div className={ Styles.buttonGroup }>
-                            { (status === 'cancel' || status === 'success') && (
+                            { (status === 'cancel' || status === 'success') && !isMobile && (
                                 <Button
                                     type='primary'
                                     disabled={
