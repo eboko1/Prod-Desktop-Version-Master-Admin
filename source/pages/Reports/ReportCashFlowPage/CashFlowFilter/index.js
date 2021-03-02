@@ -122,15 +122,24 @@ export default class CashFlowFilter extends React.Component {
             intl: {formatMessage}
         } = this.props;
 
+        const filteredAnalytics = _.filter(analytics, ans => !ans.analyticsDisabled);
+
         return (
             <div className={Styles.mainFilterCont}>
                 <div className={Styles.selectCont}>
                     <Select
                         style={{width: '100%'}}
                         allowClear
+                        showSearch
                         placeholder={formatMessage({id: 'report_cash_flow_page.cashbox'})}
                         disabled={analyticsIsFetching}
                         onChange={this.onCashboxSelect}
+                        filterOption={(input, option) => {
+                            return (
+                                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                            )
+                        }}
                     >
                         {_.map(cashboxes, obj => (
                             <Select.Option key={obj.id} value={obj.id}>
@@ -144,12 +153,19 @@ export default class CashFlowFilter extends React.Component {
                     <Select
                         style={{width: '100%'}}
                         allowClear
+                        showSearch
                         mode="multiple" //To enable multiple select
                         placeholder={formatMessage({id: 'report_cash_flow_page.analytics'})}
                         disabled={cashboxesIsFetching}
                         onChange={this.onAnalyticsSelect}
+                        filterOption={(input, option) => {
+                            return (
+                                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                            )
+                        }}
                     >
-                        {_.map(analytics, ans => (
+                        {_.map(filteredAnalytics, ans => (
                             <Select.Option key={ans.analyticsUniqueId} value={ans.analyticsUniqueId}>
                                 {ans.analyticsName}
                             </Select.Option>
