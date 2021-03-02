@@ -90,6 +90,7 @@ export class AddClientVehicleForm extends Component {
             editMode,
             vehicleTypeId,
             wheelRadius,
+            vehicleTypes,
         } = this.props;
 
         const years = Array(new Date().getFullYear() - 1900 + 1)
@@ -101,11 +102,10 @@ export class AddClientVehicleForm extends Component {
             getFieldDecorator,
             validateFields,
             getFieldsValue,
+            setFieldsValue,
         } = this.props.form;
 
         const vehicle = getFieldsValue();
-
-        const isTireFitting = Boolean(getTireFittingToken());
 
         if (this.state.editModeFetching) {
             if (
@@ -357,7 +357,7 @@ export class AddClientVehicleForm extends Component {
                         ))}
                     </DecoratedSelect>
                 )}
-                {isTireFitting && (
+                {vehicleTypes && (
                     <DecoratedSelect
                         field={"vehicleTypeId"}
                         initialValue={vehicleTypeId}
@@ -373,15 +373,18 @@ export class AddClientVehicleForm extends Component {
                             <FormattedMessage id="vehicleTypeId" />
                         }
                         getPopupContainer={trigger => trigger.parentNode}
+                        onChange={(value, option)=>{
+                            setFieldsValue({wheelRadius: option.props.radius})
+                        }}
                     >
-                        {_.get(this.props, 'vehicleTypes', []).map(({ id, name })=>(
-                            <Option value={id} key={v4()}>
+                        {vehicleTypes.map(({ id, name, defaultRadius })=>(
+                            <Option value={id} radius={defaultRadius} key={v4()}>
                                 {name}
                             </Option>
                         ))}
                     </DecoratedSelect>
                 )}
-                {isTireFitting && (
+                {vehicleTypes && (
                     <DecoratedInputNumber
                         field={"wheelRadius"}
                         initialValue={wheelRadius}

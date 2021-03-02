@@ -60,27 +60,13 @@ class ClientsVehiclesTable extends Component {
             },
             {
                 title: this.props.intl.formatMessage({
-                    id: 'vehicleTypeName',
-                }),
-                dataIndex: 'vehicleTypeName',
-                key:       'vehicleTypeName',
-            },
-            {
-                title: this.props.intl.formatMessage({
-                    id: 'wheelRadius',
-                }),
-                dataIndex: 'wheelRadius',
-                key:       'wheelRadius',
-                render: (data)=>data ? data + 'R' : null,
-            },
-            {
-                title: this.props.intl.formatMessage({
                     id: 'edit',
                 }),
                 key:    'edit-vehicle',
                 render: (text, record) => {
                     return (
                         <EditVheliceModal
+                            vehicleTypes={ this.props.vehicleTypes}
                             vehicle={ this.props.vehicles[ record.index ] }
                             addClientVehicle={ this.props.addClientVehicle }
                             index={ record.index }
@@ -166,6 +152,7 @@ class EditVheliceModal extends React.Component {
             addClientVehicle,
             removeClientVehicle,
             index,
+            vehicleTypes,
         } = this.props;
 
         const { visible } = this.state;
@@ -184,6 +171,7 @@ class EditVheliceModal extends React.Component {
                 >
                     <AddClientVehicleForm
                         { ...vehicle }
+                        vehicleTypes={vehicleTypes}
                         editClientVehicle={ this.editClientVehicle }
                         editMode
                     />

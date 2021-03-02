@@ -19,6 +19,7 @@ import { saga as clientRequisitesSaga } from 'core/clientRequisite/saga';
 import { saga as clientOrdersSaga } from 'core/clientOrders/saga';
 import { saga as clientMRDsSaga } from 'core/clientMRDs/saga';
 import { saga as employeesSaga } from 'core/employees/saga';
+import { saga as vehicleTypesSaga } from 'core/vehicleTypes/saga';
 
 // Reports
 import { saga as reportOrdersSaga } from 'core/reports/reportOrders/saga';
@@ -108,6 +109,7 @@ export default function* rootSaga() {
         editClientFormSaga(),
         clientOrdersSaga(),
         clientMRDsSaga(),
+        vehicleTypesSaga(),
 
         // Reports
         reportOrdersSaga(),

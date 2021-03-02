@@ -379,15 +379,19 @@ export default class OrderFormBody extends Component {
             createOrder,
             createStatus,
             updateOrderField,
+            vehicleTypes,
         } = this.props;
         const { getFieldDecorator } = this.props.form;
         const selectedVehicleId = clientVehicle;
         const clientVehicleRadius = Math.round(_.get(fetchedOrder, "order.clientVehicleRadius", 0));
+        const clientVehicleTypeId = _.get(fetchedOrder, "order.clientVehicleTypeId", undefined);
 
         const selectedVehicle =
             selectedClient &&
             selectedVehicleId &&
             _.find(selectedClient.vehicles, { id: selectedVehicleId });
+
+        console.log(clientVehicleTypeId, this);
 
         return (
             <div className={Styles.bodyColumn}>
@@ -410,11 +414,26 @@ export default class OrderFormBody extends Component {
                                         </div>
                                     )}
                                 </div>
-                                {_.get(fetchedOrder, "order.clientVehicleTypeName") &&
-                                    <div className={Styles.vehicleType}>
-                                        {_.get(fetchedOrder, "order.clientVehicleTypeName")}
-                                    </div>
-                                }
+                                <div className={Styles.vehicleType}>
+                                    <DecoratedSelect
+                                        field="clientVehicleTypeId"
+                                        showSearch
+                                        fieldValue={clientVehicleTypeId}
+                                        defaultGetValueProps
+                                        hasFeedback
+                                        onChange={(value, option)=>{
+                                            updateOrderField({
+                                                clientVehicleTypeId: value,
+                                            })
+                                        }}
+                                    >
+                                        {vehicleTypes.map(({ id, name, defaultRadius })=>(
+                                            <Option value={id} radius={defaultRadius} key={id}>
+                                                {name}
+                                            </Option>
+                                        ))}
+                                    </DecoratedSelect>
+                                </div>
                                 <div className={Styles.vehicleRadius}>
                                     <Icon 
                                         type="caret-left"
