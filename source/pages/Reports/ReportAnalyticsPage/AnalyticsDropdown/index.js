@@ -109,6 +109,18 @@ export default class AnalyticsDropdown extends React.Component {
                     <Col span={2}>
                         {chil.analyticsDefaultOrderType=='INCOME' && (<Icon type="check" style={{color: 'green', fontSize: '1em'}}/>)}
                         {chil.analyticsDefaultOrderType=='EXPENSE' && (<Icon type="check" style={{color: 'red', fontSize: '1em'}} />)}
+                        {!chil.analyticsDefaultOrderType && (
+                            <div
+                                className={Style.notDefaultAnalyticsIcon}
+                                onClick={() => {
+                                    //Update anlytics by setting it up to be a default for a specific cash order type
+                                    onUpdateAnalytics({
+                                        analyticsId: chil.analyticsId,
+                                        newAnalyticsEntity: {isDefaultForCurrentCashOrderType: true}
+                                    });
+                                }}
+                            />
+                        )}
                     </Col>
                     <Col className={Style.col} span={4}>{chil.analyticsBookkeepingAccount}</Col>
                     <Col className={Style.col} span={4}>{this.orderStatusesMapper(chil.analyticsOrderType)}</Col>
