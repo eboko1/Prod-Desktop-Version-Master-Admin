@@ -332,12 +332,7 @@ class AddServiceModal extends React.Component{
                 body: JSON.stringify(data),
             });
             const result = await response.json();
-            if(result.success) {
-                this.props.updateDataSource();
-            }
-            else {
-                console.log("BAD", result);
-            }
+            this.props.updateDataSource();
         } catch (error) {
             console.error('ERROR:', error);
         }
@@ -377,6 +372,7 @@ class AddServiceModal extends React.Component{
             const result = await response.json();
             if (result.success) {
                 this.props.updateDataSource();
+                this.handleCancel();
             } else {
                 console.log('BAD', result);
             }
@@ -405,7 +401,7 @@ class AddServiceModal extends React.Component{
 
         return columns.map(({title, key, render, dataIndex})=>{
             return (
-                <div className={`${Styles.mobileTable} ${(key == 'price' || key == 'count' || key == 'sum') && Styles.mobileTableNumber}`}>
+                <div className={`${Styles.mobileTable} ${(key == 'price' || key == 'count' || key == 'sum') && Styles.mobileTableNumber}`} key={key}>
                     {title}
                     <div>
                         {dataIndex ? 

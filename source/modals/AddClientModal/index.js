@@ -31,7 +31,10 @@ import Styles from './styles.m.css';
         removeClientVehicle,
         createClient,
         handleError,
-    },
+    },    
+    mapStateToProps: state => ({
+        isMobile: state.ui.views.isMobile,
+    }),
 })
 export default class AddClientModal extends Component {
     render() {
@@ -42,6 +45,7 @@ export default class AddClientModal extends Component {
             searchQuery,
             vehicles,
             onSubmit,
+            isMobile,
         } = this.props;
 
         const { getFieldsValue, validateFields } = this.props.form;
@@ -53,7 +57,7 @@ export default class AddClientModal extends Component {
         return (
             <Modal
                 className={ Styles.addClientModal }
-                width={ '80%' }
+                width={ isMobile ? '95%' : '80%' }
                 height={ '80%' }
                 style={ { top: 20 } }
                 title={ <>{title}</> }

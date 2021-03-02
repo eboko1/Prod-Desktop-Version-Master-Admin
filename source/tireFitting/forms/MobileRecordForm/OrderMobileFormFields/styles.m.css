@@ -1,0 +1,77 @@
+.mobileRecordFormFooter {
+    display: flex;
+    justify-content: space-around;
+    margin: 24px 48px;
+}
+
+.mobileRecordSubmitBtn {
+    margin: 0 10px;
+    flex: 0 1 40%;
+}
+
+.datePanelItem :global(.ant-calendar-picker),
+.datePanelItem :global(.ant-time-picker) {
+    width: 100%;
+}
+
+.mobileRecordFormTimePicker {
+    width: 100%;
+}
+
+.client {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.clientSearchField {
+    width: 100%;
+}
+
+.addClientIcon {
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--primary);
+    font-weight: bold;
+    margin: 4px 0 0 4px;
+}
+
+.totalBlock {
+    display: flex;
+    justify-content: space-between;
+    margin: 14px 0;
+}
+
+.sum {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 6px 8px 4px;
+}
+
+.sumWrapper {
+    margin: 4px 0;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sumNumeral {
+    margin-left: 8px;
+}
+
+.totalSumWrap {
+    background: var(--static);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 8px;
+    flex-wrap: wrap;
+}
+
+.totalSum {
+    margin-left: 8px;
+    text-decoration: underline;
+    white-space: nowrap;
+}

@@ -65,8 +65,8 @@
     }
 }
 
-.ordersWrrapperMobile {
-    padding-top: 56px;
+.ordersWrapperMobile {
+    padding-top: 96px;
 }
 
 @media screen and (max-width: 1199px) {

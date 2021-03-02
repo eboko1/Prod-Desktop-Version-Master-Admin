@@ -416,7 +416,7 @@ class ServicesTable extends Component {
     }
 
     render() {
-        const { isMobile } = this.props;
+        const { isMobile, orderFetching } = this.props;
         if (
             !isMobile && (
                 this.state.dataSource.length == 0 ||
