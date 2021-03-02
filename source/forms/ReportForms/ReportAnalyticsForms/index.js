@@ -216,28 +216,14 @@ class ReportAnalytics extends React.Component {
                     </Col>
                 </Row>
                 <Row className={Styles.row}>
-                    {/* <Col span={6}><FormattedMessage id='report_analytics_form.order_type'/>: </Col> */}
-                    <Col span={6}>Make default: </Col>
+                    <Col span={6}><FormattedMessage id='report_analytics_form.make_default'/>: </Col>
                     <Col span={18} style={{display: 'flex', alignItems: 'flex-start'}}>
-                        {/* <FItem>
-                            {
-                                getFieldDecorator('isDefaultForCurrentCashOrder', {
-                                    // initialValue: initValues.bookkeepingAccount
-                                })(
-                                    <Checkbox
-                                        disabled={(fieldsDisabled)}
-                                    />
-                                )
-                            }
-                        </FItem> */}
                         <DecoratedCheckbox
                             field="makeDefaultForCurrentCashOrderType"
                             style={{height: '2em'}}
                             formItem
                             disabled={(fieldsDisabled)}
-                            // style={{width: '100%'}}
                             getFieldDecorator={getFieldDecorator}
-                            // initialValue={initValues.orderType}
                             getPopupContainer={trigger =>
                                 trigger.parentNode
                             }
