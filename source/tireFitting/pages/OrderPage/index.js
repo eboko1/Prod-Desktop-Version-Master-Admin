@@ -121,7 +121,7 @@ const mapStateToProps = state => {
         progressStatusOptions: state.forms.orderTaskForm.progressStatusOptions,
         requisites:            state.forms.orderForm.requisites,
         selectedClient:        state.forms.orderForm.selectedClient,
-        spinner:               state.ui.orderFetching,
+        orderFetching:         state.ui.orderFetching,
         stations:              state.forms.orderForm.stations,
         businessLocations:     state.forms.orderForm.businessLocations,
         user:                  state.auth,
@@ -164,10 +164,9 @@ class OrderPage extends Component {
             repairMapData: [],
             focusedRef: undefined,
         };
-        this._fetchRepairMapData = this._fetchRepairMapData.bind(this);
-    }
 
-    
+        this._isMounted = false;
+    }
 
     componentDidMount() {
         const {fetchOrderForm, fetchOrderTask, match: {params: {id}}, user} = this.props;
@@ -177,13 +176,8 @@ class OrderPage extends Component {
         if (viewTasks) {
             fetchOrderTask(id);
         }
-        this._fetchRepairMapData();
-    }
 
-    componentDidUpdate(prevProps) {
-        if(this.props.order.status && this.props.order != prevProps.order) {
-            this._fetchRepairMapData();
-        }
+        this._isMounted = true;
     }
 
     saveFormRef = formRef => {
@@ -211,50 +205,6 @@ class OrderPage extends Component {
         this.setState({
             scrollToMapId: id,
         })
-    }
-
-    _fetchRepairMapData() {
-        if(!isForbidden(this.props.user, permissions.ACCESS_ORDER_TABS_REPAIR_MAP_UPDATE)) {
-            const {id} = this.props.match.params;
-            var that = this;
-            let token = localStorage.getItem('_my.carbook.pro_token');
-            let url = __API_URL__ + `/orders/${id}/repair_map?update=true`;
-            fetch(url, {
-                method:  'GET',
-                headers: {
-                    Authorization: token,
-                },
-            })
-            .then(function(response) {
-                if (response.status !== 200) {
-                    return Promise.reject(new Error(response.statusText));
-                }
-                return Promise.resolve(response);
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                data.map((group)=>{
-                    if(group.childs) {
-                        group.childs.map((child)=>{
-                            child.isOperationDisabled = false;
-                            if(child.availableWithScope) {
-                                child.availableWithScope.map((scope)=>{
-                                    child.isOperationDisabled = child.isOperationDisabled || isForbidden(that.props.user, permissions[scope]);
-                                })
-                            }
-                        })
-                    }
-                })
-                that.setState({
-                    repairMapData: data,
-                })
-            })
-            .catch(function(error) {
-                console.log('error', error);
-            });
-        }
     }
 
     _showOilModal = (oem, oeCode, acea, api, sae) => {
@@ -678,7 +628,7 @@ class OrderPage extends Component {
             fetchOrderTask,
             setModal,
             resetModal,
-            spinner,
+            orderFetching,
             hasInviteStatus,
             isInviteVisible,
             isInviteEnabled,
@@ -733,8 +683,8 @@ class OrderPage extends Component {
             });
         }
 
-        return spinner ? (
-            <Spinner spin={ spinner }/>
+        return  orderFetching ? (
+            <Spinner spin={ orderFetching }/>
         ) : (
             <Layout
                 className={`orderPageLayout hideHeaderControls`}
@@ -881,6 +831,7 @@ class OrderPage extends Component {
             >
                 <MobileView>
                     <MobileRecordForm
+                        orderFetching={orderFetching}
                         isMobile={isMobile}
                         order={ order }
                         fetchedOrder={ fetchedOrder }
@@ -899,6 +850,7 @@ class OrderPage extends Component {
                         onStatusChange={ this._onStatusChange }
                         reloadOrderPageComponents = { this.reloadOrderPageComponents }
                         orderStatus={ status }
+                        setAddClientModal={ this.setAddClientModal }
                     />
                 </MobileView>
                 <ResponsiveView
@@ -933,12 +885,12 @@ class OrderPage extends Component {
                         scrollToMapId={ this.state.scrollToMapId }
                         scrollToMap={ this._scrollToMap }
                         repairMapData={ repairMapData }
-                        fetchRepairMapData={ this._fetchRepairMapData }
                         businessLocations={ businessLocations }
                         focusOnRef={this._focusOnRef}
                         focusedRef={focusedRef}
                         showCahOrderModal={showCahOrderModal}
                         orderStatus={ status }
+                        orderFetching={orderFetching}
                     />
                 </ResponsiveView>
                 <CancelReasonModal

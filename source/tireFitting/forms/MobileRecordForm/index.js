@@ -7,11 +7,7 @@ import {
     Button,
     Input,
     Select,
-    Modal,
     Icon,
-    Upload,
-    notification,
-    InputNumber,
     Tabs,
 } from "antd";
 import { v4 } from "uuid";
@@ -19,12 +15,16 @@ import _ from "lodash";
 import moment from "moment";
 
 // proj
-import { OrderMobileForm } from './OrderMobileForm';
+import { OrderMobileFormFields } from './OrderMobileFormFields';
 import book from "routes/book";
-import { onChangeOrderForm } from "core/forms/orderForm/duck";
-
+import { resetModal } from "core/modals/duck";
+import { withReduxForm } from "utils";
 import { permissions, isForbidden } from "utils";
-
+import {
+    onChangeOrderForm,
+    selectCashSum,
+    setClientSelection,
+} from "core/forms/orderForm/duck";
 import {
     DetailsTable,
     ServicesTable,
@@ -36,12 +36,36 @@ const Option = Select.Option;
 const TabPane = Tabs.TabPane;
 
 @injectIntl
+@withReduxForm({
+    name: "orderForm",
+    /*debouncedFields: [
+        "comment",
+        "recommendation",
+        "vehicleCondition",
+        "businessComment",
+    ],*/
+    actions: {
+        change: onChangeOrderForm,
+        setClientSelection,
+        resetModal,
+    },
+    mapStateToProps: state => ({
+        modal:                      state.modals.modal,
+        user:                       state.auth,
+        cashSum:                    selectCashSum(state),
+        schedule:                   state.forms.orderForm.schedule,
+        stationLoads:               state.forms.orderForm.stationLoads,
+        addClientFormData:          state.forms.addClientForm.data,
+        isMobile:                   state.ui.views.isMobile,
+    }),
+})
 export class MobileRecordForm extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             detailsTreeData: [],
+            fetchedOrder: undefined,
         };
 
         this.details = [];
@@ -79,6 +103,39 @@ export class MobileRecordForm extends Component {
             console.log("error", error);
         });
     };
+
+    _reloadOrderForm = (callback) => {
+        var that = this;
+        let token = localStorage.getItem("_my.carbook.pro_token");
+        let url = __API_URL__;
+        let params = `/orders/${this.props.orderId}?onlyLabors=true&onlyDetails=true`;
+        url += params;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: token,
+            },
+        })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log(data);
+                if(callback) callback(data);
+                that.setState({
+                    fetchedOrder: data,
+                })
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
+    }
 
     buildStoreGroupsTree() {
         var treeData = [];
@@ -132,13 +189,17 @@ export class MobileRecordForm extends Component {
         })
     }
 
-    componentDidMount() {;
+    componentDidMount() {
+        this._reloadOrderForm();
         if (this.props.allDetails.brands.length) {
             this._fetchLaborsAndDetails();
         }
     }
 
     componentDidUpdate(prevProps, prevState) {
+        if(!this.state.fetchedOrder) {
+            this._reloadOrderForm();
+        }
         if(!this.state.detailsTreeData.length && this.details.length) {
             this.buildStoreGroupsTree();
         }
@@ -147,8 +208,10 @@ export class MobileRecordForm extends Component {
 
     render() {
         const {
+            orderFetching,
             isMobile,
             orderStatus,
+            selectedClient,
             wrappedComponentRef,
             onStatusChange,
             user,
@@ -159,144 +222,180 @@ export class MobileRecordForm extends Component {
             allServices,
             onClose,
             employees,
-            fetchedOrder,
-            order,
             fetchOrderForm,
+            setAddClientModal,
+            form,
+            schedule,
+            modal,
+            resetModal,
+            addClientFormData,
+            stationLoads,
+            searchClientsResult,
+            managers,
+            stations,
+            cashSum,
         } = this.props;
         const { formatMessage } = this.props.intl;
 
-        const orderServices = _.get(fetchedOrder, "orderServices", []);
-        const orderDetails = _.get(fetchedOrder, "orderDetails", []);
-
-        var orderServicesSize = 0,
-            orderDetailsSize = 0;
-
-        orderServices.map((x)=>{if(x.id) orderServicesSize++});
-        orderDetails.map((x)=>{if(x.id) orderDetailsSize++});
-
-        var countDetails = orderServices.length,
-            priceDetails = 0,
-            totalDetailsProfit = 0,
-            detailsDiscount = order.detailsDiscount;
-        for (let i = 0; i < orderDetails.length; i++) {
-            if (orderDetails[i].agreement != "REJECTED") {
-                priceDetails += orderDetails[i].sum;
-                totalDetailsProfit +=
-                    orderDetails[i].sum -
-                    (orderDetails[i].sum * detailsDiscount) / 100 -
-                    orderDetails[i].purchasePrice *
-                        orderDetails[i].count;
-            }
-        }
-        priceDetails = Math.round(priceDetails);
-        totalDetailsProfit = Math.round(totalDetailsProfit);
-
-        var countServices = orderServices.length,
-            priceServices = 0,
-            totalServicesProfit = 0,
-            servicesDiscount = order.servicesDiscount;
-        for (let i = 0; i < orderServices.length; i++) {
-            if (orderServices[i].agreement != "REJECTED") {
-                priceServices += orderServices[i].sum;
-                totalServicesProfit +=
-                    orderServices[i].sum -
-                    (orderServices[i].sum * servicesDiscount) / 100 -
-                    orderServices[i].purchasePrice *
-                        orderServices[i].count;
-            }
-        }
-        priceServices = Math.round(priceServices);
-        totalServicesProfit = Math.round(totalServicesProfit);
+        const { fetchedOrder } = this.state;
+        const order = _.get(fetchedOrder, "order", {});
 
         console.log(this);
 
+        const { 
+            totalSum, 
+            totalSumWithTax, 
+            isTaxPayer,
+            servicesDiscount,
+            servicesSum,
+            servicesSumDiscount,
+            servicesTotalSum,
+            detailsDiscount,
+            detailsSum,
+            detailsSumDiscount,
+            detailsTotalSum,
+        } = order;
+
+        const orderServices = _.get(fetchedOrder, "orderServices", []);
+        const orderDetails = _.get(fetchedOrder, "orderDetails", []);
+        
         return (
-            <Tabs
-                type='line'
-                size='default'
-            >
-                <TabPane
-                    forceRender
-                    tab={formatMessage({
-                        id: "add_order_form.general",
-                        defaultMessage: "General",
-                    })}
-                    key="general"
+            <Form layout="horizontal">
+                <Tabs
+                    type='line'
+                    size='default'
                 >
-                    <OrderMobileForm
-                        orderStatus={ orderStatus }
-                        wrappedComponentRef={ wrappedComponentRef }
-                        onStatusChange={ onStatusChange }
-                        user={ user }
-                        orderTasks={ orderTasks }
-                        orderHistory={ orderHistory }
-                        orderId={ orderId }
-                        allDetails={ allDetails }
-                        onClose={ onClose }
-                    />
-                </TabPane>
-                <TabPane
-                    forceRender
-                    tab={`${formatMessage({
-                        id: "add_order_form.services",
-                        defaultMessage: "Services",
-                    })} (${orderServicesSize})`}
-                    key="services"
-                >
-                    <ServicesTable
-                        isMobile={isMobile}
-                        orderId={ orderId }
-                        user={user}
-                        fetchedOrder={fetchedOrder}
-                        orderServices={ orderServices }
-                        employees={ employees }
-                        defaultEmployeeId={this.props.order.employeeId}
-                        labors={allServices}
-                        details={this.details}
-                        reloadOrderForm={()=>{
-                            fetchOrderForm(orderId)
-                        }}
-                    />
-                </TabPane>
-                <TabPane
-                    forceRender
-                    tab={`${formatMessage({
-                        id: "add_order_form.details",
-                        defaultMessage: "Details",
-                    })} (${orderDetailsSize})`}
-                    key="details"
-                >
-                    <DetailsTable
-                        isMobile={isMobile}
-                        orderId={orderId}
-                        labors={allServices}
-                        details={this.details}
-                        orderDetails={orderDetails}
-                        allDetails={allDetails}
-                        user={user}
-                        reloadOrderForm={()=>{
-                            fetchOrderForm(orderId)
-                        }}
-                        detailsTreeData={this.state.detailsTreeData}
-                    />
-                </TabPane>
-                <TabPane
-                    forceRender
-                    tab={
-                        formatMessage({
-                            id: "order_form_table.history",
-                        }) + ` (${orderHistory.orders.length})`
-                    }
-                    key="history"
-                >
-                    <HistoryTable
-                        isMobile={isMobile}
-                        orderHistory={orderHistory}
-                        fetchOrderForm={fetchOrderForm}
-                        user={user}
-                    />
-                </TabPane>
-            </Tabs>
+                    <TabPane
+                        forceRender
+                        tab={formatMessage({
+                            id: "add_order_form.general",
+                            defaultMessage: "General",
+                        })}
+                        key="general"
+                    >
+                        <OrderMobileFormFields
+                            form={form}
+                            orderStatus={ orderStatus }
+                            wrappedComponentRef={ wrappedComponentRef }
+                            onStatusChange={ onStatusChange }
+                            user={ user }
+                            orderTasks={ orderTasks }
+                            orderHistory={ orderHistory }
+                            orderId={ orderId }
+                            allDetails={ allDetails }
+                            onClose={ onClose }
+                            totalSum={ totalSum }
+                            totalSumWithTax={ totalSumWithTax }
+                            isTaxPayer={ isTaxPayer }
+                            cashSum={ cashSum }
+                            setAddClientModal={ setAddClientModal }
+                            schedule={ schedule }
+                            modal={ modal }
+                            resetModal={ resetModal }
+                            addClientFormData={ addClientFormData }
+                            stationLoads={ stationLoads }
+                            order={ order }
+                            selectedClient={ selectedClient }
+                            searchClientsResult={ searchClientsResult }
+                            managers={ managers }
+                            employees={ employees }
+                            stations={ stations }
+                            fetchedOrder={ fetchedOrder }
+                        />
+                    </TabPane>
+                    <TabPane
+                        forceRender
+                        tab={`${formatMessage({
+                            id: "add_order_form.services",
+                            defaultMessage: "Services",
+                        })} (${orderServices.length})`}
+                        key="services"
+                    >
+                        <ServicesTable
+                            orderFetching={orderFetching}
+                            isMobile={isMobile}
+                            orderId={ orderId }
+                            user={user}
+                            fetchedOrder={fetchedOrder}
+                            orderServices={ orderServices }
+                            employees={ employees }
+                            defaultEmployeeId={this.props.order.employeeId}
+                            labors={allServices}
+                            details={this.details}
+                            reloadOrderForm={()=>{
+                                this._reloadOrderForm()
+                            }}
+                        />
+                        <DiscountPanel
+                            isMobile={isMobile}
+                            form={form}
+                            forbidden={isForbidden(user, permissions.ACCESS_ORDER_LABORS_DISCOUNTS)}
+                            price={servicesSum}
+                            discountFieldName={"servicesDiscount"}
+                            fetchedOrder={fetchedOrder}
+                            totalServicesProfit={servicesSumDiscount}
+                            servicesMode
+                            reloadOrderForm={()=>{
+                                this._reloadOrderForm()
+                            }}
+                            orderId={ orderId }
+                        />
+                    </TabPane>
+                    <TabPane
+                        forceRender
+                        tab={`${formatMessage({
+                            id: "add_order_form.details",
+                            defaultMessage: "Details",
+                        })} (${orderDetails.length})`}
+                        key="details"
+                    >
+                        <DetailsTable
+                            orderFetching={orderFetching}
+                            isMobile={isMobile}
+                            orderId={orderId}
+                            labors={allServices}
+                            details={this.details}
+                            orderDetails={orderDetails}
+                            allDetails={allDetails}
+                            user={user}
+                            reloadOrderForm={()=>{
+                                this._reloadOrderForm()
+                            }}
+                            detailsTreeData={this.state.detailsTreeData}
+                        />
+                        <DiscountPanel
+                            isMobile={isMobile}
+                            form={form}
+                            forbidden={isForbidden(user, permissions.ACCESS_ORDER_DETAILS_DISCOUNTS)}
+                            price={detailsSum}
+                            discountFieldName={"detailsDiscount"}
+                            fetchedOrder={fetchedOrder}
+                            totalServicesProfit={detailsSumDiscount}
+                            detailsMode
+                            reloadOrderForm={()=>{
+                                this._reloadOrderForm()
+                            }}
+                            orderId={ orderId }
+                        />
+                    </TabPane>
+                    <TabPane
+                        forceRender
+                        tab={
+                            formatMessage({
+                                id: "order_form_table.history",
+                            }) + ` (${orderHistory.orders.length})`
+                        }
+                        key="history"
+                    >
+                        <HistoryTable
+                            isMobile={isMobile}
+                            orderHistory={orderHistory}
+                            fetchOrderForm={fetchOrderForm}
+                            user={user}
+                        />
+                    </TabPane>
+                </Tabs>
+            </Form>
         )
     }
 }

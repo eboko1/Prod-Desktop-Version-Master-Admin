@@ -18,10 +18,9 @@ import _ from "lodash";
 import moment from "moment";
 
 // proj
-// import { onChangeMobileRecordForm } from 'core/forms/mobileRecordForm/duck';
+import { AddClientModal, ToSuccessModal } from "modals";
 import book from "routes/book";
-import { onChangeOrderForm } from "core/forms/orderForm/duck";
-
+import { Numeral } from "commons";
 import {
     DecoratedInput,
     DecoratedSelect,
@@ -30,12 +29,9 @@ import {
     DecoratedTimePicker,
     DecoratedSlider,
 } from "forms/DecoratedFields";
-
-import { withReduxForm } from "utils";
 import { permissions, isForbidden } from "utils";
-import {
-    selectCashSum
-} from "core/forms/orderForm/duck";
+import { ClientsSearchTable } from "../../OrderForm/OrderFormTables";
+
 // own
 import Styles from "./styles.m.css";
 
@@ -66,24 +62,7 @@ const getDisabledHours = (startTime = 0, endTime = 23) => {
 };
 
 @injectIntl
-@withReduxForm({
-    name: "orderForm",
-    debouncedFields: [
-        "comment",
-        "recommendation",
-        "vehicleCondition",
-        "businessComment",
-    ],
-    actions: {
-        change: onChangeOrderForm,
-    },
-    mapStateToProps: state => ({
-        cashSum:                    selectCashSum(state),
-        schedule:                   state.forms.orderForm.schedule,
-        stationLoads:               state.forms.orderForm.stationLoads,
-    }),
-})
-export class OrderMobileForm extends Component {
+export class OrderMobileFormFields extends Component {
     constructor(props) {
         super(props);
 
@@ -93,45 +72,166 @@ export class OrderMobileForm extends Component {
         };
     }
 
-    showStockModal() {
-        this.setState({
-            stockModalVisible: true,
-        })
+    bodyUpdateIsForbidden() {
+        return isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
     }
 
-    hideStockModal() {
-        this.setState({
-            stockModalVisible: false,
-        })
+    _renderClientSearch = () => {
+        const { getFieldDecorator } = this.props.form;
+        const { user, fields, errors } = this.props;
+        const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
+
+        const disabledClientSearch =
+            (!_.get(this.props, "order.status") ||
+                _.get(this.props, "order.status") !== "reserve") &&
+            _.get(this.props, "order.clientId");
+
+        return !disabledClientSearch ? (
+            <div className={Styles.client}>
+                <DecoratedInput
+                    errors={errors}
+                    defaultGetValueProps
+                    fieldValue={_.get(fields, "searchClientQuery")}
+                    className={Styles.clientSearchField}
+                    field="searchClientQuery"
+                    formItem
+                    colon={false}
+                    label={this.props.intl.formatMessage({
+                        id: "add_order_form.search_client",
+                    })}
+                    getFieldDecorator={getFieldDecorator}
+                    disabled={
+                        Boolean(disabledClientSearch)
+                    }
+                    placeholder={this.props.intl.formatMessage({
+                        id: "add_order_form.search_client.placeholder",
+                    })}
+                />
+                {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
+                    <Icon
+                        type="plus"
+                        className={Styles.addClientIcon}
+                        onClick={() => this.props.setAddClientModal()}
+                    />
+                ) : null}
+            </div>
+        ) : null;
+    };
+
+    _renderClientSearchTable = () => {
+        const {
+            searchClientsResult: { searching: clientsSearching, clients },
+            setClientSelection,
+            form,
+        } = this.props;
+
+        const formFieldsValues = form.getFieldsValue();
+        const searchClientQuery = _.get(formFieldsValues, "searchClientQuery");
+
+        return (
+            <ClientsSearchTable
+                clientsSearching={clientsSearching}
+                setClientSelection={setClientSelection}
+                visible={searchClientQuery}
+                clients={clients}
+            />
+        );
+    };
+
+    _renderTotalBlock = () => {
+        const { totalSum, totalSumWithTax, isTaxPayer, cashSum } = this.props;
+
+        const remainPrice = isTaxPayer ? 
+            Math.round((totalSumWithTax - cashSum)*100)/100 : 
+            Math.round((totalSum - cashSum)*100)/100;
+
+        const mask = "0,0.00";
+
+        return (
+            <div className={Styles.totalBlock}>
+                <div className={Styles.sum}>
+                    <span className={Styles.sumWrapper}>
+                        <FormattedMessage id="sum" />
+                        <Numeral
+                            mask={mask}
+                            className={Styles.sumNumeral}
+                            nullText="0"
+                            currency={this.props.intl.formatMessage({
+                                id: "currency",
+                            })}
+                        >
+                            {totalSum}
+                        </Numeral>
+                    </span>
+                    {isTaxPayer &&
+                        <span className={Styles.sumWrapper}>
+                            <FormattedMessage id="with" /> <FormattedMessage id="VAT" />
+                            <Numeral
+                                mask={mask}
+                                className={Styles.sumNumeral}
+                                nullText="0"
+                                currency={this.props.intl.formatMessage({
+                                    id: "currency",
+                                })}
+                            >
+                                {totalSumWithTax}
+                            </Numeral>
+                        </span>
+                    }
+                    <span className={Styles.sumWrapper}>
+                        <FormattedMessage id="paid" />
+                        <Numeral
+                            mask={mask}
+                            className={Styles.sumNumeral}
+                            nullText="0"
+                            currency={this.props.intl.formatMessage({
+                                id: "currency",
+                            })}
+                        >
+                            {cashSum}
+                        </Numeral>
+                    </span>
+                </div>
+                <div className={Styles.totalSumWrap}>
+                    <FormattedMessage id="remain" />
+                    <Numeral
+                        mask={mask}
+                        className={Styles.totalSum}
+                        currency={this.props.intl.formatMessage({
+                            id: "currency",
+                        })}
+                        nullText="0"
+                    >
+                        {remainPrice || 0}
+                    </Numeral>
+                </div>
+            </div>
+        );
     }
 
-    showWorkshopModal() {
-        this.setState({
-            workshopModalVisible: true,
-        })
-    }
-
-    hideWorkshopModal() {
-        this.setState({
-            workshopModalVisible: false,
-        })
-    }
+    _saveFormRef = formRef => {
+        this.formRef = formRef;
+    };
 
     render() {
         const {
             selectedClient,
             stations,
             onStatusChange,
-            orderDiagnostic,
             order: { status },
-            onClose,
-            cashSum,
             schedule,
-            stationLoads,
+            fetchedOrder,
+            form,
+            modal,
+            resetModal,
+            addClientFormData
         } = this.props;
-        console.log(this);
         const { getFieldDecorator, getFieldsValue } = this.props.form;
         const { formatMessage } = this.props.intl;
+
+
+        const formFieldsValues = form.getFieldsValue();
+        const searchClientQuery = _.get(formFieldsValues, "searchClientQuery");
 
         const vehicle = selectedClient.vehicles.find((vehicle)=>vehicle.id == this.props.order.clientVehicleId) || undefined;
 
@@ -163,8 +263,15 @@ export class OrderMobileForm extends Component {
                 "stationLoads[0].station",
             ]),
         );
+
+        const totalBlock = this._renderTotalBlock();
+        const clientSearch = this._renderClientSearch();
+        const clientsSearchTable = this._renderClientSearchTable();
+
         return (
-            <Form layout="horizontal">
+            <div>
+                {clientSearch}
+                {clientsSearchTable}
                 <div style={{ display: "none" }}>
                     <DecoratedInput
                         field="stationLoads[0].status"
@@ -201,7 +308,7 @@ export class OrderMobileForm extends Component {
                     )}
                 </div>
                 <FormItem
-                    label={<FormattedMessage id="add_order_form.name" />}
+                    label={<FormattedMessage id="add_order_form.client" />}
                     {...formItemLayout}
                 >
                     <Input
@@ -209,6 +316,7 @@ export class OrderMobileForm extends Component {
                             id: "add_order_form.select_name",
                             defaultMessage: "Select client",
                         })}
+                        style={{color: "var(--text)"}}
                         disabled
                         value={
                             selectedClient.name || selectedClient.surname
@@ -222,7 +330,12 @@ export class OrderMobileForm extends Component {
                 <DecoratedSelect
                     label={<FormattedMessage id="add_order_form.phone" />}
                     field="clientPhone"
-                    initialValue={this.props.order.clientPhone}
+                    initialValue={
+                        _.get(fetchedOrder, "order.clientPhone") ||
+                        (this.bodyUpdateIsForbidden()
+                            ? void 0
+                            : _.get(selectedClient, "phones[0]"))
+                    }
                     formItem
                     formItemLayout={formItemLayout}
                     hasFeedback
@@ -241,7 +354,7 @@ export class OrderMobileForm extends Component {
                         id: "add_order_form.select_client_phone",
                     })}
                 >
-                    {selectedClient.phones.filter(Boolean).map(phone => (
+                    {_.get(selectedClient, "phones", []).filter(Boolean).map(phone => (
                         <Option value={phone} key={v4()}>
                             {phone}
                         </Option>
@@ -249,7 +362,12 @@ export class OrderMobileForm extends Component {
                 </DecoratedSelect>
                 <DecoratedSelect
                     field="clientVehicle"
-                    initialValue={this.props.order.clientVehicleId}
+                    initialValue={
+                        _.get(fetchedOrder, "order.clientVehicleId") ||
+                        (this.bodyUpdateIsForbidden()
+                            ? void 0
+                            : _.get(selectedClient, "vehicles[0].id"))
+                    }
                     formItem
                     hasFeedback
                     label={<FormattedMessage id="add_order_form.car" />}
@@ -270,7 +388,7 @@ export class OrderMobileForm extends Component {
                     })}
                     optionDisabled="enabled"
                 >
-                    {selectedClient.vehicles.map(vehicle => (
+                    {_.get(selectedClient, "vehicles", []).map(vehicle => (
                         <Option value={vehicle.id} key={v4()}>
                             {`${vehicle.make} ${
                                 vehicle.model
@@ -279,37 +397,7 @@ export class OrderMobileForm extends Component {
                     ))}
                 </DecoratedSelect>
                 <hr />
-                <DecoratedSelect
-                    field="manager"
-                    initialValue={this.props.order.managerId}
-                    formItem
-                    getFieldDecorator={getFieldDecorator}
-                    rules={[
-                        {
-                            required: true,
-                            message: formatMessage({
-                                id: "required_field",
-                            }),
-                        },
-                    ]}
-                    label={<FormattedMessage id="add_order_form.manager" />}
-                    hasFeedback
-                    colon={false}
-                    className={Styles.datePanelItem}
-                    placeholder={formatMessage({
-                        id: "add_order_form.select_manager",
-                    })}
-                >
-                    {this.props.managers.map(manager => (
-                        <Option
-                            disabled={manager.disabled}
-                            value={manager.id}
-                            key={v4()}
-                        >
-                            {`${manager.managerName} ${manager.managerSurname}`}
-                        </Option>
-                    ))}
-                </DecoratedSelect>
+                {totalBlock}
                 <hr />
                 <div style={{ fontSize: "18px", marginBottom: "10px" }}>
                     <FormattedMessage id="add_order_form.appointment_details" />
@@ -351,6 +439,14 @@ export class OrderMobileForm extends Component {
                     formatMessage={formatMessage}
                     allowClear={false}
                     {...formItemLayout}
+                    rules={[
+                        {
+                            required: true,
+                            message: formatMessage({
+                                id: "required_field",
+                            }),
+                        },
+                    ]}
                 />
                 <DecoratedTimePicker
                     field="stationLoads[0].beginTime"
@@ -368,8 +464,15 @@ export class OrderMobileForm extends Component {
                     getFieldDecorator={getFieldDecorator}
                     minuteStep={30}
                     hideDisabledOptions
+                    rules={[
+                        {
+                            required: true,
+                            message: formatMessage({
+                                id: "required_field",
+                            }),
+                        },
+                    ]}
                 />
-
                 <DecoratedSlider
                     formItem
                     label={<FormattedMessage id="add_order_form.duration" />}
@@ -382,6 +485,69 @@ export class OrderMobileForm extends Component {
                     max={8}
                     {...formItemLayout}
                 />
+                <DecoratedSelect
+                    field="manager"
+                    initialValue={this.props.order.managerId}
+                    formItem
+                    getFieldDecorator={getFieldDecorator}
+                    rules={[
+                        {
+                            required: true,
+                            message: formatMessage({
+                                id: "required_field",
+                            }),
+                        },
+                    ]}
+                    label={<FormattedMessage id="add_order_form.manager" />}
+                    hasFeedback
+                    colon={false}
+                    className={Styles.datePanelItem}
+                    placeholder={formatMessage({
+                        id: "add_order_form.select_manager",
+                    })}
+                    {...formItemLayout}
+                >
+                    {this.props.managers.map(manager => (
+                        <Option
+                            disabled={manager.disabled}
+                            value={manager.id}
+                            key={v4()}
+                        >
+                            {`${manager.managerName} ${manager.managerSurname}`}
+                        </Option>
+                    ))}
+                </DecoratedSelect>
+                <DecoratedSelect
+                    formItem
+                    hasFeedback
+                    defaultGetValueProps
+                    field="employee"
+                    label={<FormattedMessage id="order_form_table.master" />}
+                    className={Styles.datePanelItem}
+                    getFieldDecorator={getFieldDecorator}
+                    initialValue={
+                        _.get(fetchedOrder, "order.employeeId") ||
+                        (location.state ? location.state.employeeId : undefined)
+                    }
+                    placeholder={formatMessage({
+                        id: "order_form_table.select_master",
+                    })}
+                    {...formItemLayout}
+                >
+                    {_.get(this.props, "employees", []).map(employee => {
+                        if (!employee.disabled) {
+                            return (
+                                <Option
+                                    value={employee.id}
+                                    key={`employee-${employee.id}`}
+                                    disabled={employee.disabled}
+                                >
+                                    {`${employee.name} ${employee.surname}`}
+                                </Option>
+                            );
+                        }
+                    })}
+                </DecoratedSelect>
                 <DecoratedTextArea
                     formItem
                     initialValue={this.props.order.comment}
@@ -404,7 +570,14 @@ export class OrderMobileForm extends Component {
                     })}
                     autoSize={{ minRows: 2, maxRows: 6 }}
                 />
-            </Form>
+                <AddClientModal
+                    searchQuery={searchClientQuery}
+                    wrappedComponentRef={this._saveFormRef}
+                    visible={modal}
+                    resetModal={resetModal}
+                    addClientFormData={addClientFormData}
+                />
+            </div>
         );
     }
 }
