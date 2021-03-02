@@ -49,8 +49,6 @@ function formatVehicleLabel(vehicle, formatMessage) {
         modelPart,
         vehicle.year,
         modificationPart,
-        vehicle.number,
-        vehicle.vin,
     ];
 
     return parts
@@ -407,18 +405,20 @@ export default class OrderFormHeader extends Component {
                         <div className={Styles.comboFieldWrapper}>
                             <FormattedMessage id="add_order_form.car" />
                             <div className={Styles.comboField}>
-                                {_.get(selectedVehicle, "number") && (
-                                    <div>
-                                        <FormattedMessage id="add_client_form.number" />
-                                        : {_.get(selectedVehicle, "number")}
-                                    </div>
-                                )}
-                                {_.get(selectedVehicle, "vin") && (
-                                    <div>
-                                        <FormattedMessage id="add_client_form.vin" />
-                                        : {_.get(selectedVehicle, "vin")}
-                                    </div>
-                                )}
+                                <div>
+                                    {_.get(selectedVehicle, "number") && (
+                                        <div>
+                                            <FormattedMessage id="add_client_form.number" />
+                                            : {_.get(selectedVehicle, "number")}
+                                        </div>
+                                    )}
+                                    {_.get(selectedVehicle, "vin") && (
+                                        <div>
+                                            <FormattedMessage id="add_client_form.vin" />
+                                            : {_.get(selectedVehicle, "vin")}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                         <DecoratedSelect

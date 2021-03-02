@@ -6,7 +6,7 @@ import { v4 } from "uuid";
 import _ from "lodash";
 
 // proj
-import { withReduxForm2 } from "utils";
+import { withReduxForm2, getTireFittingToken } from "utils";
 import { VehicleNumberHistory } from "components";
 import {
     MAKE_VEHICLES_INFO_FILTER_TYPE,
@@ -16,7 +16,7 @@ import {
     resetAddClientVehicleForm,
     fetchVehiclesInfo,
 } from "core/forms/addClientVehicleForm/duck";
-import { DecoratedSelect, DecoratedInput } from "forms/DecoratedFields";
+import { DecoratedSelect, DecoratedInput, DecoratedInputNumber } from "forms/DecoratedFields";
 
 // own
 import Styles from "./styles.m.css";
@@ -88,6 +88,8 @@ export class AddClientVehicleForm extends Component {
             lastFilterAction,
             editableVehicle,
             editMode,
+            vehicleTypeId,
+            wheelRadius,
         } = this.props;
 
         const years = Array(new Date().getFullYear() - 1900 + 1)
@@ -102,6 +104,8 @@ export class AddClientVehicleForm extends Component {
         } = this.props.form;
 
         const vehicle = getFieldsValue();
+
+        const isTireFitting = Boolean(getTireFittingToken());
 
         if (this.state.editModeFetching) {
             if (
@@ -149,6 +153,8 @@ export class AddClientVehicleForm extends Component {
                 });
             }
         }
+
+        console.log(this);
 
         return (
             <Form className={Styles.form}>
@@ -351,7 +357,48 @@ export class AddClientVehicleForm extends Component {
                         ))}
                     </DecoratedSelect>
                 )}
-
+                {isTireFitting && (
+                    <DecoratedSelect
+                        field={"vehicleTypeId"}
+                        initialValue={vehicleTypeId}
+                        showSearch
+                        formItem
+                        formItemLayout={formItemLayout}
+                        hasFeedback
+                        label={
+                            <FormattedMessage id="vehicleTypeId" />
+                        }
+                        getFieldDecorator={getFieldDecorator}
+                        placeholder={
+                            <FormattedMessage id="vehicleTypeId" />
+                        }
+                        getPopupContainer={trigger => trigger.parentNode}
+                    >
+                        {_.get(this.props, 'vehicleTypes', []).map(({ id, name })=>(
+                            <Option value={id} key={v4()}>
+                                {name}
+                            </Option>
+                        ))}
+                    </DecoratedSelect>
+                )}
+                {isTireFitting && (
+                    <DecoratedInputNumber
+                        field={"wheelRadius"}
+                        initialValue={wheelRadius}
+                        getFieldDecorator={ getFieldDecorator }
+                        formItem
+                        formItemLayout={formItemLayout}
+                        hasFeedback
+                        label={
+                            <FormattedMessage id='wheelRadius' />
+                        }
+                        min={ 0 }
+                        max={ 100 }
+                        getPopupContainer={trigger => trigger.parentNode}
+                        formatter={ value => `${Math.round(value)}R` }
+                        parser={ value => value.replace('R', '') }
+                    />
+                )}
                 {!this.props.onlyVehicles && (
                     <div className={Styles.numWrapper}>
                         <DecoratedInput

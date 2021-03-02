@@ -191,8 +191,8 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
-                //that.props.onStatusChange(that.props.orderStatus);
-                that.props.fetchOrderForm(that.props.orderId);
+                that._reloadOrderForm();
+                //that.props.fetchOrderForm(that.props.orderId);
             })
             .catch(function(error) {
                 console.log("error", error);
