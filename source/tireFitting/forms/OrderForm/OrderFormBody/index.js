@@ -49,8 +49,6 @@ function formatVehicleLabel(vehicle, formatMessage) {
         modelPart,
         vehicle.year,
         modificationPart,
-        vehicle.number,
-        vehicle.vin,
     ];
 
     return parts
@@ -380,9 +378,11 @@ export default class OrderFormBody extends Component {
             errors,
             createOrder,
             createStatus,
+            updateOrderField,
         } = this.props;
         const { getFieldDecorator } = this.props.form;
         const selectedVehicleId = clientVehicle;
+        const clientVehicleRadius = Math.round(_.get(fetchedOrder, "order.clientVehicleRadius", 0));
 
         const selectedVehicle =
             selectedClient &&
@@ -396,18 +396,44 @@ export default class OrderFormBody extends Component {
                         <div className={Styles.comboFieldWrapper}>
                             <FormattedMessage id="add_order_form.car" />
                             <div className={Styles.comboField}>
-                                {_.get(selectedVehicle, "number") && (
-                                    <div>
-                                        <FormattedMessage id="add_client_form.number" />
-                                        : {_.get(selectedVehicle, "number")}
+                                <div>
+                                    {_.get(selectedVehicle, "number") && (
+                                        <div>
+                                            <FormattedMessage id="add_client_form.number" />
+                                            : {_.get(selectedVehicle, "number")}
+                                        </div>
+                                    )}
+                                    {_.get(selectedVehicle, "vin") && (
+                                        <div>
+                                            <FormattedMessage id="add_client_form.vin" />
+                                            : {_.get(selectedVehicle, "vin")}
+                                        </div>
+                                    )}
+                                </div>
+                                {_.get(fetchedOrder, "order.clientVehicleTypeName") &&
+                                    <div className={Styles.vehicleType}>
+                                        {_.get(fetchedOrder, "order.clientVehicleTypeName")}
                                     </div>
-                                )}
-                                {_.get(selectedVehicle, "vin") && (
-                                    <div>
-                                        <FormattedMessage id="add_client_form.vin" />
-                                        : {_.get(selectedVehicle, "vin")}
-                                    </div>
-                                )}
+                                }
+                                <div className={Styles.vehicleRadius}>
+                                    <Icon 
+                                        type="caret-left"
+                                        onClick={()=>{
+                                            updateOrderField({
+                                                clientVehicleRadius: clientVehicleRadius - 1
+                                            })
+                                        }}
+                                    />
+                                    {clientVehicleRadius + 'R' }
+                                    <Icon
+                                        type="caret-right"
+                                        onClick={()=>{
+                                            updateOrderField({
+                                                clientVehicleRadius: clientVehicleRadius + 1
+                                            })
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </div>
                         <DecoratedSelect

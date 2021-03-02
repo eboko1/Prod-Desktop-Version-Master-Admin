@@ -307,18 +307,30 @@ export class OrderMobileFormFields extends Component {
                         <div className={Styles.comboFieldWrapper}>
                             <FormattedMessage id="add_order_form.car" />
                             <div className={Styles.comboField}>
-                                {_.get(selectedVehicle, "number") && (
-                                    <div>
-                                        <FormattedMessage id="add_client_form.number" />
-                                        : {_.get(selectedVehicle, "number")}
+                                <div>
+                                    {_.get(selectedVehicle, "number") && (
+                                        <div>
+                                            <FormattedMessage id="add_client_form.number" />
+                                            : {_.get(selectedVehicle, "number")}
+                                        </div>
+                                    )}
+                                    {_.get(selectedVehicle, "vin") && (
+                                        <div>
+                                            <FormattedMessage id="add_client_form.vin" />
+                                            : {_.get(selectedVehicle, "vin")}
+                                        </div>
+                                    )}
+                                </div>
+                                {_.get(selectedVehicle, "vehicleTypeName") &&
+                                    <div className={Styles.vehicleType}>
+                                        {_.get(selectedVehicle, "vehicleTypeName")}
                                     </div>
-                                )}
-                                {_.get(selectedVehicle, "vin") && (
-                                    <div>
-                                        <FormattedMessage id="add_client_form.vin" />
-                                        : {_.get(selectedVehicle, "vin")}
+                                }
+                                {_.get(selectedVehicle, "wheelRadius") &&
+                                    <div className={Styles.vehicleRadius}>
+                                        {_.get(selectedVehicle, "wheelRadius") + 'R' }
                                     </div>
-                                )}
+                                }
                             </div>
                         </div>
                         <DecoratedSelect
@@ -343,9 +355,7 @@ export class OrderMobileFormFields extends Component {
                         >
                             {_.get(selectedClient, "vehicles", []).map(vehicle => (
                                 <Option value={vehicle.id} key={v4()}>
-                                    {`${vehicle.make} ${
-                                        vehicle.model
-                                    } ${vehicle.number || vehicle.vin || ""}`}
+                                    {`${vehicle.make} ${vehicle.model}`}
                                 </Option>
                             ))}
                         </DecoratedSelect>

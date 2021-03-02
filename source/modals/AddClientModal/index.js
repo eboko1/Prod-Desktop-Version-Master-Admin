@@ -77,12 +77,16 @@ export default class AddClientModal extends Component {
                                     vin,
                                     number,
                                     year,
+                                    vehicleTypeId,
+                                    wheelRadius,
                                 }) => ({
                                     vehicleModelId:        modelId,
                                     vehicleModificationId: modificationId,
                                     vehicleVin:            vin,
                                     vehicleNumber:         number,
                                     vehicleYear:           year,
+                                    vehicleTypeId:         vehicleTypeId,
+                                    wheelRadius:           wheelRadius,
                                 }),
                             );
 

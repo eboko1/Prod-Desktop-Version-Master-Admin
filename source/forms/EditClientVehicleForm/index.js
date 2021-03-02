@@ -1,13 +1,13 @@
 // vendor
 import React, { Component } from "react";
 import { List, Form, Row, Col, notification, Icon, Button, Modal, Select } from "antd";
-import { injectIntl } from "react-intl";
+import { injectIntl, FormattedMessage } from "react-intl";
 import _ from "lodash";
 
 // proj
 import { withReduxForm2 } from "utils";
 import { AddClientVehicleForm } from "forms";
-import { DecoratedInput, DecoratedCheckbox } from "forms/DecoratedFields";
+import { DecoratedInput, DecoratedCheckbox, DecoratedSelect, DecoratedInputNumber } from "forms/DecoratedFields";
 import {
     onChangeClientVehicleForm,
     setEditableItem,
@@ -166,7 +166,7 @@ export class EditClientVehicleForm extends Component {
                     <List.Item className={Styles.listItem}>
                         <Form>
                             <Row gutter={8} type="flex" align="bottom">
-                                <Col span={5}>
+                                <Col span={4}>
                                     {vehicleLabel(item, index)}{" "}
                                     {editableItem === index && !editVehicle && (
                                         <Button
@@ -194,7 +194,7 @@ export class EditClientVehicleForm extends Component {
                                         </Modal>
                                     )}
                                 </Col>
-                                <Col span={2}>
+                                <Col span={1}>
                                     <DecoratedCheckbox
                                         fields={{}}
                                         field={`clientVehicles[${index}].enabled`}
@@ -235,7 +235,7 @@ export class EditClientVehicleForm extends Component {
                                         item.number
                                     )}
                                 </Col>
-                                <Col span={3}>
+                                <Col span={4}>
                                     {editableItem === index ? (
                                         <DecoratedInput
                                             fields={{}}
@@ -254,7 +254,57 @@ export class EditClientVehicleForm extends Component {
                                         item.vin
                                     )}
                                 </Col>
-                                <Col span={4}>
+                                <Col span={3}>
+                                    {editableItem === index ? (
+                                        <DecoratedSelect
+                                            fields={{}}
+                                            field={`clientVehicles[${index}].vehicleTypeId`}
+                                            showSearch
+                                            formItem
+                                            initialValue={item.vehicleTypeId}
+                                            getFieldDecorator={
+                                                this.props.form
+                                                    .getFieldDecorator
+                                            }
+                                            placeholder={
+                                                <FormattedMessage id="vehicleTypeId" />
+                                            }
+                                            className={
+                                                Styles.editClientVehicleFormItem
+                                            }
+                                        >
+                                            {_.get(this.props, 'vehicleTypes', []).map(({ id, name })=>(
+                                                <Option value={id} key={v4()}>
+                                                    {name}
+                                                </Option>
+                                            ))}
+                                        </DecoratedSelect>
+                                    ) : (
+                                        item.vehicleTypeName
+                                    )}
+                                </Col>
+                                <Col span={2}>
+                                    {editableItem === index ? (
+                                        <DecoratedInputNumber
+                                            formItem
+                                            className={
+                                                Styles.editClientVehicleFormItem
+                                            }
+                                            field={`clientVehicles[${index}].wheelRadius`}
+                                            initialValue={item.wheelRadius}
+                                            getFieldDecorator={
+                                                this.props.form
+                                                    .getFieldDecorator
+                                            }
+                                            formatter={ value => `${Math.round(value)}R` }
+                                            parser={ value => value.replace('R', '') }
+                                            min={0}
+                                        />
+                                    ) : (
+                                        item.wheelRadius ? item.wheelRadius + 'R' : null
+                                    )}
+                                </Col>
+                                <Col span={3}>
                                     {editableItem === index ? (
                                         <div style={{display: "flex", alignItems: "center"}}>
                                         <DecoratedInput
@@ -289,7 +339,7 @@ export class EditClientVehicleForm extends Component {
                                         />
                                     )}
                                 </Col>
-                                <Col span={2}>
+                                <Col span={1}>
                                     {!isEditForbidden ? (
                                         editableItem === index ? (
                                             this.renderSubmitEditIcon(
@@ -311,7 +361,7 @@ export class EditClientVehicleForm extends Component {
                                         )
                                     ) : null}
                                 </Col>
-                                <Col span={2}>
+                                <Col span={1}>
                                     {!isForbidden(user, permissions.ACCESS_CLIENTS_VEHICLE_TRANSFER) && !isEditForbidden ? (
                                         <ClientVehicleTransfer
                                             clientId={clientId}
@@ -320,7 +370,7 @@ export class EditClientVehicleForm extends Component {
                                         />
                                     ) : null}
                                 </Col>
-                                <Col span={2}>
+                                <Col span={1}>
                                     {!isEditForbidden ? (
                                         <Icon
                                             type="delete"

@@ -30,6 +30,7 @@ class AddServiceModal extends React.Component{
         this.brandOptions = [];
         this.servicesOptions = [];
         this.employeeOptions = [];
+        this.tirePriceGroupsOptions = [];
 
         this.mainTableColumns = [
             {
@@ -115,22 +116,31 @@ class AddServiceModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.detail_name" />,
-                key:       'serviceName',
-                dataIndex: 'serviceName',
+                title:  <FormattedMessage id="priceGroup" />,
+                key:       'priceGroup',
+                dataIndex: 'priceGroup',
                 render: (data, elem)=>{
                     return (
-                        <Input
-                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
-                            disabled={this.state.editing && elem.stage != 'INACTIVE'}
-                            style={{minWidth: 240}}
-                            value={data}
-                            onChange={({target})=>{
-                                const { value } = target;
-                                elem.serviceName = value;
+                        <Select
+                            allowClear
+                            showSearch
+                            placeholder={this.props.intl.formatMessage({id: 'priceGroup'})}
+                            value={data ? data : undefined}
+                            style={{minWidth: 80}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", maxWidth: '95%'}}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onChange={(value, option)=>{
+                                elem.priceGroup = value;
                                 this.setState({});
                             }}
-                        />
+                        >
+                            {this.tirePriceGroupsOptions}
+                        </Select>
                     )
                 }
             },
