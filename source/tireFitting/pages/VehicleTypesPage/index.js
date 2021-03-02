@@ -11,21 +11,20 @@ import moment from 'moment';
 // proj
 import { Layout } from 'tireFitting';
 import { permissions, isForbidden } from 'utils';
+import { fetchVehicleTypes } from 'core/vehicleTypes/duck';
 
 // own
 const Option = Select.Option;
-const MAIN = 'MAIN',
-      RESERVE = 'RESERVE',
-      TOOL = 'TOOL',
-      REPAIR_AREA= 'REPAIR_AREA';
 
 const mapStateToProps = state => {
     return {
         user: state.auth,
+        vehicleTypes: state.vehicleTypes.vehicleTypes,
     };
 };
 
 const mapDispatchToProps = {
+    fetchVehicleTypes,
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -247,9 +246,12 @@ export default class VehicleTypesPage extends Component {
 
     componentDidMount() {
         this.fetchData()
+        //this.props.fetchVehicleTypes();
+        
     }
 
     render() {
+        console.log(this);
         const { dataSource } = this.state;
         return (
             <Layout

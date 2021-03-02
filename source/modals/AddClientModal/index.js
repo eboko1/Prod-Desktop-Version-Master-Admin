@@ -46,6 +46,7 @@ export default class AddClientModal extends Component {
             vehicles,
             onSubmit,
             isMobile,
+            vehicleTypes,
         } = this.props;
 
         const { getFieldsValue, validateFields } = this.props.form;
@@ -130,12 +131,14 @@ export default class AddClientModal extends Component {
                 />
                 { !_.isEmpty(vehicles) && (
                     <ClientsVehiclesTable
+                        vehicleTypes={vehicleTypes}
                         removeClientVehicle={ this.props.removeClientVehicle }
                         addClientVehicle={ this.props.addClientVehicle }
                         vehicles={ vehicles }
                     />
                 ) }
                 <AddClientVehicleForm
+                    vehicleTypes={vehicleTypes}
                     addClientVehicle={ this.props.addClientVehicle }
                 />
             </Modal>

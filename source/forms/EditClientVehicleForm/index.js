@@ -101,6 +101,7 @@ export class EditClientVehicleForm extends Component {
             selectedVehicle,
             errors,
             user,
+            vehicleTypes,
 
             setSelectedVehicle,
             setEditVehicle,
@@ -254,56 +255,60 @@ export class EditClientVehicleForm extends Component {
                                         item.vin
                                     )}
                                 </Col>
-                                <Col span={3}>
-                                    {editableItem === index ? (
-                                        <DecoratedSelect
-                                            fields={{}}
-                                            field={`clientVehicles[${index}].vehicleTypeId`}
-                                            showSearch
-                                            formItem
-                                            initialValue={item.vehicleTypeId}
-                                            getFieldDecorator={
-                                                this.props.form
-                                                    .getFieldDecorator
-                                            }
-                                            placeholder={
-                                                <FormattedMessage id="vehicleTypeId" />
-                                            }
-                                            className={
-                                                Styles.editClientVehicleFormItem
-                                            }
-                                        >
-                                            {_.get(this.props, 'vehicleTypes', []).map(({ id, name })=>(
-                                                <Option value={id} key={v4()}>
-                                                    {name}
-                                                </Option>
-                                            ))}
-                                        </DecoratedSelect>
-                                    ) : (
-                                        item.vehicleTypeName
-                                    )}
-                                </Col>
-                                <Col span={2}>
-                                    {editableItem === index ? (
-                                        <DecoratedInputNumber
-                                            formItem
-                                            className={
-                                                Styles.editClientVehicleFormItem
-                                            }
-                                            field={`clientVehicles[${index}].wheelRadius`}
-                                            initialValue={item.wheelRadius}
-                                            getFieldDecorator={
-                                                this.props.form
-                                                    .getFieldDecorator
-                                            }
-                                            formatter={ value => `${Math.round(value)}R` }
-                                            parser={ value => value.replace('R', '') }
-                                            min={0}
-                                        />
-                                    ) : (
-                                        item.wheelRadius ? item.wheelRadius + 'R' : null
-                                    )}
-                                </Col>
+                                {vehicleTypes &&
+                                    <Col span={3}>
+                                        {editableItem === index ? (
+                                            <DecoratedSelect
+                                                fields={{}}
+                                                field={`clientVehicles[${index}].vehicleTypeId`}
+                                                showSearch
+                                                formItem
+                                                initialValue={item.vehicleTypeId}
+                                                getFieldDecorator={
+                                                    this.props.form
+                                                        .getFieldDecorator
+                                                }
+                                                placeholder={
+                                                    <FormattedMessage id="vehicleTypeId" />
+                                                }
+                                                className={
+                                                    Styles.editClientVehicleFormItem
+                                                }
+                                            >
+                                                {vehicleTypes.map(({ id, name, defaultRadius })=>(
+                                                    <Option value={id} radius={defaultRadius} key={id}>
+                                                        {name}
+                                                    </Option>
+                                                ))}
+                                            </DecoratedSelect>
+                                        ) : (
+                                            item.vehicleTypeName
+                                        )}
+                                    </Col>
+                                }
+                                {vehicleTypes &&
+                                    <Col span={2}>
+                                        {editableItem === index ? (
+                                            <DecoratedInputNumber
+                                                formItem
+                                                className={
+                                                    Styles.editClientVehicleFormItem
+                                                }
+                                                field={`clientVehicles[${index}].wheelRadius`}
+                                                initialValue={item.wheelRadius}
+                                                getFieldDecorator={
+                                                    this.props.form
+                                                        .getFieldDecorator
+                                                }
+                                                formatter={ value => `${Math.round(value)}R` }
+                                                parser={ value => value.replace('R', '') }
+                                                min={0}
+                                            />
+                                        ) : (
+                                            item.wheelRadius ? item.wheelRadius + 'R' : null
+                                        )}
+                                    </Col>
+                                }
                                 <Col span={3}>
                                     {editableItem === index ? (
                                         <div style={{display: "flex", alignItems: "center"}}>

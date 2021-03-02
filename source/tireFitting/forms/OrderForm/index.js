@@ -333,7 +333,7 @@ export class OrderForm extends React.PureComponent {
             user,
             location,
             errors,
-            repairMap,
+            vehicleTypes,
             focusOnRef,
             focusedRef,
         } = this.props;
@@ -475,11 +475,13 @@ export class OrderForm extends React.PureComponent {
                     businessLocations={businessLocations}
                     focusOnRef={focusOnRef}
                     focusedRef={focusedRef}
+                    vehicleTypes={vehicleTypes}
                 />
                 <div id="OrderTabs">
                     {tabs}
                 </div>
                 <AddClientModal
+                    vehicleTypes={vehicleTypes}
                     searchQuery={searchClientQuery}
                     wrappedComponentRef={this._saveFormRef}
                     visible={this.props.modal}

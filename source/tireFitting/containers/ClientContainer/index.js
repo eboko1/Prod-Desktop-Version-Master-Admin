@@ -11,7 +11,6 @@ import {
     updateClientVehicle,
     deleteClientVehicle,
 } from "core/client/duck";
-
 import { Catcher } from "commons";
 import { ClientRequisitesContainer } from "containers";
 import {
@@ -39,7 +38,7 @@ const mapDispatchToProps = {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class ClientContainer extends Component {
     render() {
-        const { clientEntity, clientId, user, specificTab, isMobile } = this.props;
+        const { clientEntity, clientId, user, specificTab, isMobile, vehicleTypes } = this.props;
         const {
             CREATE_EDIT_DELETE_CLIENTS,
             GET_CLIENTS_ADDITIONAL_INFORMATION,
@@ -67,6 +66,7 @@ export default class ClientContainer extends Component {
                             clientId={clientId}
                         />
                         <EditClientVehicleForm
+                            vehicleTypes={vehicleTypes}
                             updateClientVehicle={this.props.updateClientVehicle}
                             deleteClientVehicle={this.props.deleteClientVehicle}
                             clientEntity={clientEntity}
@@ -74,6 +74,7 @@ export default class ClientContainer extends Component {
                         />
                         {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
                             <AddClientVehicleForm
+                                vehicleTypes={vehicleTypes}
                                 addClientVehicle={this.props.createClientVehicle.bind(
                                     null,
                                     clientId,

@@ -78,6 +78,9 @@ import paymentsReducer, {
 import warehousesReducer, {
     moduleName as warehousesModule,
 } from 'core/warehouses/duck';
+import vehicleTypesReducer, {
+    moduleName as vehicleTypesModule,
+} from 'core/vehicleTypes/duck';
 // own
 import history from './history';
 
@@ -132,6 +135,7 @@ const appState = {
     [ uiModule ]:                   uiReducer,
     [ vehicleNumberHistoryModule ]: vehicleNumberHistoryReducer,
     [ warehousesModule ]:           warehousesReducer,
+    [ vehicleTypesModule ]:         vehicleTypesReducer,
 };
 
 const appReducer = combineReducers({ ...persistedState, ...appState });
