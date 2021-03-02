@@ -116,7 +116,7 @@ export default class AnalyticsDropdown extends React.Component {
                                     //Update anlytics by setting it up to be a default for a specific cash order type
                                     onUpdateAnalytics({
                                         analyticsId: chil.analyticsId,
-                                        newAnalyticsEntity: {isDefaultForCurrentCashOrderType: true}
+                                        newAnalyticsEntity: {makeDefaultForCurrentCashOrderType: true}
                                     });
                                 }}
                             />

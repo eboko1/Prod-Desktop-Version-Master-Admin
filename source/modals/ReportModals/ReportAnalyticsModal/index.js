@@ -176,7 +176,7 @@ export default class ReportAnalyticsModal extends Component {
                         parentId: values.catalogId,
                         bookkeepingAccount: values.bookkeepingAccount,
                         orderType: values.orderType,
-                        isDefaultForCurrentCashOrderType: values.isDefaultForCurrentCashOrderType,
+                        makeDefaultForCurrentCashOrderType: values.makeDefaultForCurrentCashOrderType,
                     }
     
                     this.analyticsRequest({analyticsId: analyticsEntity.analyticsId, analyticsEntity: newAnalyticsEntity});

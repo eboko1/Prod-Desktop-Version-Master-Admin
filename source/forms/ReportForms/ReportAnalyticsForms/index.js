@@ -217,7 +217,7 @@ class ReportAnalytics extends React.Component {
                 </Row>
                 <Row className={Styles.row}>
                     {/* <Col span={6}><FormattedMessage id='report_analytics_form.order_type'/>: </Col> */}
-                    <Col span={6}>Is default: </Col>
+                    <Col span={6}>Make default: </Col>
                     <Col span={18} style={{display: 'flex', alignItems: 'flex-start'}}>
                         {/* <FItem>
                             {
@@ -231,7 +231,7 @@ class ReportAnalytics extends React.Component {
                             }
                         </FItem> */}
                         <DecoratedCheckbox
-                            field="isDefaultForCurrentCashOrderType"
+                            field="makeDefaultForCurrentCashOrderType"
                             style={{height: '2em'}}
                             formItem
                             disabled={(fieldsDisabled)}
