@@ -198,7 +198,7 @@ class ReportAnalytics extends React.Component {
                                 showSearch
                                 allowClear
                                 formItem
-                                disabled={(fieldsDisabled)}
+                                disabled={(fieldsDisabled || !_.isEmpty(analyticsEntity.analyticsDefaultOrderType) )} //Disable if analytics is default somewhere
                                 style={{width: '100%'}}
                                 getFieldDecorator={getFieldDecorator}
                                 initialValue={initValues.orderType}

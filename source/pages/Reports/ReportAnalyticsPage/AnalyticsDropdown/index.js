@@ -129,6 +129,7 @@ export default class AnalyticsDropdown extends React.Component {
                         <Switch
                             size='small'
                             checked={!chil.analyticsDisabled}
+                            disabled={ !_.isEmpty(chil.analyticsDefaultOrderType)} //Disable if analytics is default somewhere
                             onClick={() => {
                                 //Update anlytics by changing ist's "disabled" value prop
                                 onUpdateAnalytics({
@@ -172,9 +173,13 @@ export default class AnalyticsDropdown extends React.Component {
                         {
                             /* DELETE btn | Buttons only for non-custom fields in another case just place an icon */
                             (() => {
-                                if(chil.analyticsIsCustom) {
+                                if(chil.analyticsIsCustom ) {
                                     return (
-                                        <Button size="small" onClick={() => onDeleteAnalytics(chil.analyticsId)}> 
+                                        <Button
+                                            size="small"
+                                            onClick={() => onDeleteAnalytics(chil.analyticsId)}
+                                            disabled={ !_.isEmpty(chil.analyticsDefaultOrderType)} //Disable if analytics is default somewhere
+                                        > 
                                             <Icon type="delete" />
                                         </Button>
                                     );
