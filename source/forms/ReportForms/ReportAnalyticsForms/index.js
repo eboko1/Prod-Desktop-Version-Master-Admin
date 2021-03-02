@@ -5,7 +5,7 @@ This module contains two forms, each purpose is to work with specific analytics(
 //vendor
 import React from 'react';
 import { FormattedMessage, injectIntl } from "react-intl";
-import { Form, Col, Row, Input } from 'antd';
+import { Form, Col, Row, Input, Checkbox } from 'antd';
 
 //proj
 import {
@@ -15,6 +15,7 @@ import {
 //own
 import Styles from './styles.m.css'
 import {
+    DecoratedCheckbox,
     DecoratedSelect
 } from "forms/DecoratedFields";
 
@@ -121,7 +122,7 @@ class ReportAnalytics extends React.Component {
         ];
         
         return (
-            <Form>
+            <Form layout='vertical'>
                 <Row className={Styles.row}>
                     <Col span={6}><FormattedMessage id='report_analytics_form.select_catalog'/>: </Col>
                     <Col span={18}>
@@ -212,6 +213,35 @@ class ReportAnalytics extends React.Component {
                                 optionLabel="label"
                             />
                         </FItem>
+                    </Col>
+                </Row>
+                <Row className={Styles.row}>
+                    {/* <Col span={6}><FormattedMessage id='report_analytics_form.order_type'/>: </Col> */}
+                    <Col span={6}>Is default: </Col>
+                    <Col span={18} style={{display: 'flex', alignItems: 'flex-start'}}>
+                        {/* <FItem>
+                            {
+                                getFieldDecorator('isDefaultForCurrentCashOrder', {
+                                    // initialValue: initValues.bookkeepingAccount
+                                })(
+                                    <Checkbox
+                                        disabled={(fieldsDisabled)}
+                                    />
+                                )
+                            }
+                        </FItem> */}
+                        <DecoratedCheckbox
+                            field="isDefaultForCurrentCashOrderType"
+                            style={{height: '2em'}}
+                            formItem
+                            disabled={(fieldsDisabled)}
+                            // style={{width: '100%'}}
+                            getFieldDecorator={getFieldDecorator}
+                            // initialValue={initValues.orderType}
+                            getPopupContainer={trigger =>
+                                trigger.parentNode
+                            }
+                        />
                     </Col>
                 </Row>
             </Form>

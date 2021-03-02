@@ -104,8 +104,12 @@ export default class AnalyticsDropdown extends React.Component {
         return (
             <div className={Style.analyticsCont} key={chil.analyticsId}>
                 <Row className={Style.row}>
-                    <Col className={Style.col} span={8}>{chil.analyticsName}</Col>
+                    <Col className={Style.col} span={6}>{chil.analyticsName}</Col>
 
+                    <Col span={2}>
+                        {chil.analyticsDefaultOrderType=='INCOME' && (<Icon type="check" style={{color: 'green', fontSize: '1em'}}/>)}
+                        {chil.analyticsDefaultOrderType=='EXPENSE' && (<Icon type="check" style={{color: 'red', fontSize: '1em'}} />)}
+                    </Col>
                     <Col className={Style.col} span={4}>{chil.analyticsBookkeepingAccount}</Col>
                     <Col className={Style.col} span={4}>{this.orderStatusesMapper(chil.analyticsOrderType)}</Col>
 
