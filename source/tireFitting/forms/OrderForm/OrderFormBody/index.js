@@ -379,8 +379,10 @@ export default class OrderFormBody extends Component {
             createOrder,
             createStatus,
             updateOrderField,
-            vehicleTypes,
         } = this.props;
+
+        const vehicleTypes = _.get(this.props, "vehicleTypes", []) || [];
+
         const { getFieldDecorator } = this.props.form;
         const selectedVehicleId = clientVehicle;
         const clientVehicleRadius = Math.round(_.get(fetchedOrder, "order.clientVehicleRadius", 0));
