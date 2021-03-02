@@ -190,6 +190,7 @@ export class MobileRecordForm extends Component {
     }
 
     componentDidMount() {
+        document.querySelector('.ant-tabs-bar').scrollIntoView({behavior: "smooth", block: "end"});
         this._reloadOrderForm();
         if (this.props.allDetails.brands.length) {
             this._fetchLaborsAndDetails();
@@ -234,13 +235,12 @@ export class MobileRecordForm extends Component {
             managers,
             stations,
             cashSum,
+            setClientSelection,
         } = this.props;
         const { formatMessage } = this.props.intl;
 
         const { fetchedOrder } = this.state;
         const order = _.get(fetchedOrder, "order", {});
-
-        console.log(this);
 
         const { 
             totalSum, 
@@ -260,7 +260,7 @@ export class MobileRecordForm extends Component {
         const orderDetails = _.get(fetchedOrder, "orderDetails", []);
         
         return (
-            <Form layout="horizontal">
+            <Form layout="horizontal" id='orderForm'>
                 <Tabs
                     type='line'
                     size='default'
@@ -301,6 +301,8 @@ export class MobileRecordForm extends Component {
                             employees={ employees }
                             stations={ stations }
                             fetchedOrder={ fetchedOrder }
+                            isMobile={ isMobile }
+                            setClientSelection={ setClientSelection }
                         />
                     </TabPane>
                     <TabPane

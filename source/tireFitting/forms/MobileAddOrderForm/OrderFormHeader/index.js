@@ -258,6 +258,7 @@ export default class OrderFormHeader extends Component {
             searchClientsResult: { searching: clientsSearching, clients },
             setClientSelection,
             searchClientQuery,
+            isMobile,
         } = this.props;
 
         return (
@@ -266,6 +267,7 @@ export default class OrderFormHeader extends Component {
                 setClientSelection={setClientSelection}
                 visible={searchClientQuery}
                 clients={clients}
+                isMobile={isMobile}
             />
         );
     };

@@ -80,10 +80,7 @@ export class DateRangePicker extends React.Component {
                     } }
                 />
                 <div
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'space-between'
-                    }}
+                    className={ Styles.filterDateButtons }
                 >
                     <Dropdown
                         className={Styles.datePickerButton}
