@@ -45,7 +45,7 @@ export default class AnalyticsDropdown extends React.Component {
      * Generates block header using fields from analytics sush as "name".
      * @param {*} analytics Parent analytics
      */
-    genParentHeader (analytics) {
+    genParentHeader (analytics, containsAnalyticsWithDefaultCashOrderType) {
         const {
             onDeleteAnalytics,
             openAnalyticsModal,
@@ -76,7 +76,7 @@ export default class AnalyticsDropdown extends React.Component {
                             (() => {
                                 if(analytics.analyticsIsCustom) {
                                     return (
-                                        <Button size="large" onClick={() => onDeleteAnalytics(analytics.analyticsId)}> 
+                                        <Button disabled={containsAnalyticsWithDefaultCashOrderType} size="large" onClick={() => onDeleteAnalytics(analytics.analyticsId)}> 
                                             <Icon type="delete" />
                                         </Button>
                                     );
@@ -202,8 +202,12 @@ export default class AnalyticsDropdown extends React.Component {
      * @param {*} children children analytics
      */
     genPanel(parent, children) {
+
+        //Check if paret has default analyticst inside it(it means analytics which are default for a specific cash order type)
+        const containsAnalyticsWithDefaultCashOrderType = !_.isEmpty(_.filter(children, chil => chil.analyticsDefaultOrderType));
+
         return (
-            <Panel header={this.genParentHeader(parent)} key={parent.analyticsId}>
+            <Panel header={this.genParentHeader(parent, containsAnalyticsWithDefaultCashOrderType)} key={parent.analyticsId}>
                 {_.map(children, (o) => this.genChildren(o))}
             </Panel>
         )
