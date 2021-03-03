@@ -21,6 +21,8 @@ import {
     ReportOrdersPage,
     ChartPage,
     ManagerRolePage,
+    VehicleTypesPage,
+    TirePriceGroupsPage,
 } from 'tireFitting';
 
 import book from 'routes/book';
@@ -82,6 +84,16 @@ export default class TireFittingRoutes extends Component {
                     exact
                     component={ LaborsPage }
                     path={ book.laborsPage }
+                />
+                <Route
+                    exact
+                    component={ VehicleTypesPage }
+                    path={ book.vehicleTypes }
+                />
+                <Route
+                    exact
+                    component={ TirePriceGroupsPage }
+                    path={ book.tirePriceGroups }
                 />
                 { /* Cash */ }
                 <Route

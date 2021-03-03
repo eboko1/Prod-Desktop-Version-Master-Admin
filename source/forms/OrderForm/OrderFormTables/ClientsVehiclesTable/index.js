@@ -66,6 +66,7 @@ class ClientsVehiclesTable extends Component {
                 render: (text, record) => {
                     return (
                         <EditVheliceModal
+                            vehicleTypes={ this.props.vehicleTypes}
                             vehicle={ this.props.vehicles[ record.index ] }
                             addClientVehicle={ this.props.addClientVehicle }
                             index={ record.index }
@@ -151,6 +152,7 @@ class EditVheliceModal extends React.Component {
             addClientVehicle,
             removeClientVehicle,
             index,
+            vehicleTypes,
         } = this.props;
 
         const { visible } = this.state;
@@ -169,6 +171,7 @@ class EditVheliceModal extends React.Component {
                 >
                     <AddClientVehicleForm
                         { ...vehicle }
+                        vehicleTypes={vehicleTypes}
                         editClientVehicle={ this.editClientVehicle }
                         editMode
                     />

@@ -191,8 +191,8 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
-                //that.props.onStatusChange(that.props.orderStatus);
-                that.props.fetchOrderForm(that.props.orderId);
+                that._reloadOrderForm();
+                //that.props.fetchOrderForm(that.props.orderId);
             })
             .catch(function(error) {
                 console.log("error", error);
@@ -333,7 +333,7 @@ export class OrderForm extends React.PureComponent {
             user,
             location,
             errors,
-            repairMap,
+            vehicleTypes,
             focusOnRef,
             focusedRef,
         } = this.props;
@@ -376,6 +376,7 @@ export class OrderForm extends React.PureComponent {
             "clientPhone",
             "searchClientQuery",
             "businessLocationId",
+            "clientVehicleTypeId",
         ]);
 
         const orderFormHeaderFields = _.pick(formFieldsValues, [
@@ -475,11 +476,13 @@ export class OrderForm extends React.PureComponent {
                     businessLocations={businessLocations}
                     focusOnRef={focusOnRef}
                     focusedRef={focusedRef}
+                    vehicleTypes={vehicleTypes}
                 />
                 <div id="OrderTabs">
                     {tabs}
                 </div>
                 <AddClientModal
+                    vehicleTypes={vehicleTypes}
                     searchQuery={searchClientQuery}
                     wrappedComponentRef={this._saveFormRef}
                     visible={this.props.modal}

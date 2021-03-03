@@ -75,7 +75,9 @@
     "navigation.sync_import": "Synchronization / Import",
     "navigation.sync_export": "Synchronization / Backup",
     "navigation.report_analytics": "Analytics",
-    "navigation.barcode": "Barcode"
+    "navigation.barcode": "Barcode",
+    "navigation.vehicle_types": "Vehicle Types",
+    "navigation.tire_price_groups": "Price Groups"
   },
   "ru": {
     "navigation.operations": "Операции",
@@ -153,7 +155,9 @@
     "navigation.sync_import": "Синхронизация / Импорт",
     "navigation.sync_export": "Синхронизация / Бэкап",
     "navigation.report_analytics": "Аналитика",
-    "navigation.barcode": "Штрих-код"
+    "navigation.barcode": "Штрих-код",
+    "navigation.vehicle_types": "Типы авто",
+    "navigation.tire_price_groups": "Ценовые группы"
   },
   "uk": {
     "navigation.operations": "Операції",
@@ -231,6 +235,8 @@
     "navigation.sync_import": "Синхронізація / Імпорт",
     "navigation.sync_export": "Синхронізація / Бекап",
     "navigation.report_analytics": "Аналітика",
-    "navigation.barcode": "Штрих-код"
+    "navigation.barcode": "Штрих-код",
+    "navigation.vehicle_types": "Типи авто",
+    "navigation.tire_price_groups": "Цінові групи"
   }
 }

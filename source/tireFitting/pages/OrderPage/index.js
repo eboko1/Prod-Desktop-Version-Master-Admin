@@ -44,11 +44,7 @@ import {
 } from 'modals';
 import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage, roundCurrentTime} from 'utils';
 import book from 'routes/book';
-import {
-    confirmDiagnostic,
-    createAgreement,
-    lockDiagnostic,
-} from 'core/forms/orderDiagnosticForm/saga';
+import { fetchVehicleTypes } from 'core/vehicleTypes/duck';
 
 // own
 import Styles from './styles.m.css';
@@ -126,6 +122,7 @@ const mapStateToProps = state => {
         businessLocations:     state.forms.orderForm.businessLocations,
         user:                  state.auth,
         vehicles:              state.forms.orderForm.vehicles,
+        vehicleTypes:          state.vehicleTypes.vehicleTypes,
         ...selectInviteData(state),
     };
 };
@@ -145,6 +142,7 @@ const mapDispatchToProps = {
     resetOrderTasksForm,
     saveOrderTask,
     changeModalStatus,
+    fetchVehicleTypes,
 };
 
 @withRouter
@@ -169,8 +167,9 @@ class OrderPage extends Component {
     }
 
     componentDidMount() {
-        const {fetchOrderForm, fetchOrderTask, match: {params: {id}}, user} = this.props;
+        const {fetchOrderForm, fetchOrderTask, match: {params: {id}}, user, fetchVehicleTypes} = this.props;
         fetchOrderForm(id);
+        fetchVehicleTypes();
 
         const viewTasks = !isForbidden(user, permissions.GET_TASKS);
         if (viewTasks) {
@@ -644,6 +643,7 @@ class OrderPage extends Component {
             fetchedOrder,
             order,
         } = this.props;
+        const vehicleTypes = _.get(this.props, "vehicleTypes", []);
         const {num, status, datetime, diagnosis, totalSumWithTax} = this.props.order;
         const { clientId, name, surname } = this.props.selectedClient;
         const {id} = this.props.match.params;
@@ -851,6 +851,7 @@ class OrderPage extends Component {
                         reloadOrderPageComponents = { this.reloadOrderPageComponents }
                         orderStatus={ status }
                         setAddClientModal={ this.setAddClientModal }
+                        vehicleTypes={ vehicleTypes }
                     />
                 </MobileView>
                 <ResponsiveView
@@ -890,7 +891,8 @@ class OrderPage extends Component {
                         focusedRef={focusedRef}
                         showCahOrderModal={showCahOrderModal}
                         orderStatus={ status }
-                        orderFetching={orderFetching}
+                        orderFetching={ orderFetching }
+                        vehicleTypes={ vehicleTypes }
                     />
                 </ResponsiveView>
                 <CancelReasonModal

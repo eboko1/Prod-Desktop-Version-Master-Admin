@@ -291,9 +291,12 @@ export class OrderMobileFormFields extends Component {
             fields,
             clientVehicle,
             errors,
+            vehicleTypes,
+            updateOrderField,
         } = this.props;
         const { getFieldDecorator } = this.props.form;
         const selectedVehicleId = _.get(fetchedOrder, 'order.clientVehicleId');
+        const clientVehicleRadius = Math.round(_.get(fetchedOrder, "order.clientVehicleRadius", 0));
 
         const selectedVehicle =
             selectedClient &&
@@ -307,18 +310,20 @@ export class OrderMobileFormFields extends Component {
                         <div className={Styles.comboFieldWrapper}>
                             <FormattedMessage id="add_order_form.car" />
                             <div className={Styles.comboField}>
-                                {_.get(selectedVehicle, "number") && (
-                                    <div>
-                                        <FormattedMessage id="add_client_form.number" />
-                                        : {_.get(selectedVehicle, "number")}
-                                    </div>
-                                )}
-                                {_.get(selectedVehicle, "vin") && (
-                                    <div>
-                                        <FormattedMessage id="add_client_form.vin" />
-                                        : {_.get(selectedVehicle, "vin")}
-                                    </div>
-                                )}
+                                <div>
+                                    {_.get(selectedVehicle, "number") && (
+                                        <div>
+                                            <FormattedMessage id="add_client_form.number" />
+                                            : {_.get(selectedVehicle, "number")}
+                                        </div>
+                                    )}
+                                    {_.get(selectedVehicle, "vin") && (
+                                        <div>
+                                            <FormattedMessage id="add_client_form.vin" />
+                                            : {_.get(selectedVehicle, "vin")}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                         <DecoratedSelect
@@ -343,9 +348,7 @@ export class OrderMobileFormFields extends Component {
                         >
                             {_.get(selectedClient, "vehicles", []).map(vehicle => (
                                 <Option value={vehicle.id} key={v4()}>
-                                    {`${vehicle.make} ${
-                                        vehicle.model
-                                    } ${vehicle.number || vehicle.vin || ""}`}
+                                    {`${vehicle.make} ${vehicle.model}`}
                                 </Option>
                             ))}
                         </DecoratedSelect>
@@ -369,6 +372,57 @@ export class OrderMobileFormFields extends Component {
                         </div>
                     )}
                 </div>
+                {vehicleTypes &&
+                    <div className={Styles.vehicleInfo}>
+                        <DecoratedSelect
+                            errors={errors}
+                            defaultGetValueProps
+                            fieldValue={_.get(fields, "clientVehicleTypeId")}
+                            field="clientVehicleTypeId"
+                            disabled={this.bodyUpdateIsForbidden()}
+                            initialValue={
+                                _.get(fetchedOrder, "order.clientVehicleTypeId") ||
+                                (this.bodyUpdateIsForbidden()
+                                    ? void 0
+                                    : _.get(this.props, "vehicleTypes[0].id"))
+                            }
+                            formItem
+                            hasFeedback
+                            getFieldDecorator={getFieldDecorator}
+                            onChange={(value, option)=>{
+                                updateOrderField({
+                                    clientVehicleTypeId: value,
+                                    clientVehicleRadius: option.props.radius,
+                                })
+                            }}
+                        >
+                            {vehicleTypes.map(({ id, name, defaultRadius })=>(
+                                <Option value={id} radius={defaultRadius} key={id}>
+                                    {name}
+                                </Option>
+                            ))}
+                        </DecoratedSelect>
+                        <div className={Styles.vehicleRadius}>
+                            <Icon 
+                                type="caret-left"
+                                onClick={()=>{
+                                    updateOrderField({
+                                        clientVehicleRadius: clientVehicleRadius - 1
+                                    })
+                                }}
+                            />
+                            {clientVehicleRadius + 'R' }
+                            <Icon
+                                type="caret-right"
+                                onClick={()=>{
+                                    updateOrderField({
+                                        clientVehicleRadius: clientVehicleRadius + 1
+                                    })
+                                }}
+                            />
+                        </div>
+                    </div>
+                }
             </div>
         );
     };

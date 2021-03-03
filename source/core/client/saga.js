@@ -61,6 +61,8 @@ export function* createClientVehicleSaga() {
             vin: vehicleVin,
             modelId: vehicleModelId,
             year: vehicleYear,
+            vehicleTypeId: vehicleTypeId,
+            wheelRadius: wheelRadius,
         } = clientVehicle;
 
         const payload = {
@@ -69,6 +71,8 @@ export function* createClientVehicleSaga() {
             vehicleVin,
             vehicleNumber,
             vehicleYear,
+            vehicleTypeId,
+            wheelRadius,
         };
 
         yield call(

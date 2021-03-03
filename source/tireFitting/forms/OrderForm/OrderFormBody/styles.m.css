@@ -97,6 +97,56 @@
     border: 1px solid #d9d9d9;
     border-left: 1px solid #d9d9d9;
     border-right: 1px solid #d9d9d9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 11px;
+}
+
+.vehicleInfo {
+    display: flex;
+    width: 100%;
+    & :global(.ant-form-item) {
+        width: 100%;
+    }
+}
+
+.vehicleRadius {
+    background: var(--db_reserve);
+    font-size: 16px;
+    padding: 4px 2px;
+    font-weight: 700;
+    -webkit-box-shadow: inset 0px 0px 0px 1px #000;
+    -moz-box-shadow: inset 0px 0px 0px 1px #000;
+    box-shadow: inset 0px 0px 0px 1px #000;
+    width: fit-content;
+    height: fit-content;
+    white-space: nowrap;
+    margin: 0 0 0 8px;
+
+    & i {
+        opacity: 0;
+    }
+
+    &:hover i {
+        opacity: 1;
+    }
+}
+
+.vehicleType {
+    min-width: 115px;
+    padding: 4px;
+
+    & :global(.ant-select-selection.ant-select-selection--single) {
+        border-radius: 0;
+        font-size: 16px;
+        font-weight: 700;
+        background: var(--db_reserve);
+        border: none;
+        -webkit-box-shadow: inset 0px 0px 0px 1px #000;
+        -moz-box-shadow: inset 0px 0px 0px 1px #000;
+        box-shadow: inset 0px 0px 0px 1px #000;
+    }
 }
 
 .comboFieldSelect {
