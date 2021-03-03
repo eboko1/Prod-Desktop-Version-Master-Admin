@@ -5,10 +5,11 @@ import { Button, Modal, Icon, Select, Input, InputNumber, message, notification,
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { images } from 'utils';
-import { permissions, isForbidden } from "utils";
+import { permissions, isForbidden, fetchAPI } from "utils";
 import { DetailStorageModal, DetailSupplierModal, LaborsNormHourModal, DetailProductModal } from 'modals'
 // own
 import Styles from './styles.m.css';
+import { values } from 'office-ui-fabric-react';
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
 const { confirm } = Modal;
@@ -71,6 +72,7 @@ class AddServiceModal extends React.Component{
                                     elem.masterLaborId = value;
                                     elem.storeGroupId = value;
                                 }
+                                this.getPrice(value);
                                 this.setState({});
                             }}
                             onSearch={(input)=>{
@@ -320,6 +322,20 @@ class AddServiceModal extends React.Component{
                 }
             },
         ];
+    }
+
+    getPrice = async (laborId) => {
+        const { clientVehicleTypeId, clientVehicleRadius } = this.props;
+        const price = await fetchAPI('GET', `labors/price_groups`, {
+            laborId: laborId,
+            vehicleTypeId: clientVehicleTypeId,
+            radius: Math.round(clientVehicleRadius),
+        })
+        console.log(price);
+        if(price) {
+            this.state.mainTableSource[0].price = price.price;
+            this.setState({});
+        }
     }
 
     handleOk = () => {

@@ -376,6 +376,7 @@ export class OrderForm extends React.PureComponent {
             "clientPhone",
             "searchClientQuery",
             "businessLocationId",
+            "clientVehicleTypeId",
         ]);
 
         const orderFormHeaderFields = _.pick(formFieldsValues, [
