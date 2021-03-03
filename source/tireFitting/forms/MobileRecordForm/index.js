@@ -104,6 +104,52 @@ export class MobileRecordForm extends Component {
         });
     };
 
+    _updateOrderField = (field) => {
+        if(field == 'duration') {
+            let hours = 0;
+            this.orderServices.map(elem => {
+                if(elem.agreement != 'REJECTED') hours += elem.count;
+            });
+
+            if (hours > 8) {
+                message.warning("Количество часов превышает 8. ");
+                hours = 8;
+            }
+
+            field = {duration: Math.round(hours*10)/10};
+        }
+        
+        var that = this;
+        let token = localStorage.getItem("_my.carbook.pro_token");
+        let url = __API_URL__;
+        let params = `/orders/${this.props.orderId}`;
+        url += params;
+        fetch(url, {
+            method: "PUT",
+            headers: {
+                Authorization: token,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(field),
+        })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                that._reloadOrderForm();
+                //that.props.fetchOrderForm(that.props.orderId);
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
+    }
+
     _reloadOrderForm = (callback) => {
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
@@ -236,11 +282,15 @@ export class MobileRecordForm extends Component {
             stations,
             cashSum,
             setClientSelection,
+            vehicleTypes,
         } = this.props;
         const { formatMessage } = this.props.intl;
 
         const { fetchedOrder } = this.state;
         const order = _.get(fetchedOrder, "order", {});
+
+        const clientVehicleTypeId = _.get(fetchedOrder, "order.clientVehicleTypeId");
+        const clientVehicleRadius = _.get(fetchedOrder, "order.clientVehicleRadius");
 
         const { 
             totalSum, 
@@ -274,6 +324,7 @@ export class MobileRecordForm extends Component {
                         key="general"
                     >
                         <OrderMobileFormFields
+                            updateOrderField={this._updateOrderField}
                             form={form}
                             orderStatus={ orderStatus }
                             wrappedComponentRef={ wrappedComponentRef }
@@ -303,6 +354,7 @@ export class MobileRecordForm extends Component {
                             fetchedOrder={ fetchedOrder }
                             isMobile={ isMobile }
                             setClientSelection={ setClientSelection }
+                            vehicleTypes={ vehicleTypes }
                         />
                     </TabPane>
                     <TabPane
@@ -327,6 +379,8 @@ export class MobileRecordForm extends Component {
                             reloadOrderForm={()=>{
                                 this._reloadOrderForm()
                             }}
+                            clientVehicleTypeId={clientVehicleTypeId}
+                            clientVehicleRadius={clientVehicleRadius}
                         />
                         <DiscountPanel
                             isMobile={isMobile}
@@ -364,6 +418,8 @@ export class MobileRecordForm extends Component {
                                 this._reloadOrderForm()
                             }}
                             detailsTreeData={this.state.detailsTreeData}
+                            clientVehicleTypeId={clientVehicleTypeId}
+                            clientVehicleRadius={clientVehicleRadius}
                         />
                         <DiscountPanel
                             isMobile={isMobile}
