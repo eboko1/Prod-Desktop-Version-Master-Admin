@@ -17,7 +17,7 @@ class DiscountPanel extends Component {
     shouldComponentUpdate(nextProps) {
         return !_.isEqual(nextProps, this.props);
     }
-
+    
     async updateTimeMultiplier(multiplier) {
         this.laborTimeMultiplier = multiplier;
         let token = localStorage.getItem('_my.carbook.pro_token');
@@ -39,9 +39,38 @@ class DiscountPanel extends Component {
         }
     }
 
+    _updateOrderField = (field) => {
+        const { reloadOrderForm, orderId } = this.props;
+        let token = localStorage.getItem("_my.carbook.pro_token");
+        let url = __API_URL__;
+        let params = `/orders/${orderId}`;
+        url += params;
+        fetch(url, {
+            method: "PUT",
+            headers: {
+                Authorization: token,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(field),
+        })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                reloadOrderForm(undefined, 'all');
+                return response.json();
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
+    }
+
     render() {
         const {
-            form: { getFieldDecorator },
+            form: { getFieldDecorator, getFieldValue, getFieldsValue },
             price,
             totalDetailsProfit,
             totalServicesProfit,
@@ -54,11 +83,11 @@ class DiscountPanel extends Component {
             laborTimeMultiplier,
         } = this.props;
 
-        const discount = this.props.form.getFieldValue(discountFieldName);
-
-        const total = (price - price * (discount / 100)).toFixed(2);
-
+        const discount = getFieldValue(discountFieldName) || _.get(fetchedOrder, `order.${discountFieldName}`, 0);
+        const total = Math.round((price - price * (discount / 100))*100)/100;
         const profit = servicesMode ? totalServicesProfit : totalDetailsProfit;
+
+        const field = getFieldsValue([discountFieldName]);
 
         return (
             <Catcher>
@@ -100,7 +129,8 @@ class DiscountPanel extends Component {
                         formatter={ value => `${Math.round(value)}%` }
                         parser={ value => value.replace('%', '') }
                         onChange={ value => {
-                            this.props.reloadOrderForm();
+                            field[discountFieldName] = value;
+                            this._updateOrderField(field)
                         } }
                     />
                     <FormItem

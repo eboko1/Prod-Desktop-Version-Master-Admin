@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import { Button, Radio } from 'antd';
+import { Button, Radio, Select } from 'antd';
 import classNames from 'classnames/bind';
 import moment from 'moment';
 
 // proj
 import {
     fetchOrders,
+    setOrdersStatusFilter,
     setOrdersDaterangeFilter,
     setUniversalFilter,
 } from 'core/orders/duck';
@@ -34,8 +35,36 @@ import { withResponsive, getDaterange, permissions, isForbidden } from 'utils';
 import Styles from './styles.m.css';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const Option = Select.Option;
 
 let cx = classNames.bind(Styles);
+
+const filterSelectOptions = [
+    {
+        message: "all",
+        value:  "not_complete,required,call,reserve",
+    },
+    {
+        message: "not_complete",
+        value: "not_complete",
+    },
+    {
+        message: "required",
+        value: "required",
+    },
+    {
+        message: "reserve",
+        value: "reserve",
+    },
+    {
+        message: "call",
+        value: "call",
+    },
+    {
+        message: "cancels",
+        value: "cancel",
+    }
+]
 
 const mapState = state => ({
     ordersDaterangeFilter: state.orders.filter.daterange,
@@ -50,6 +79,7 @@ const mapState = state => ({
 
 const mapDispatch = {
     fetchOrders,
+    setOrdersStatusFilter,
     setOrdersDaterangeFilter,
     setModal,
     fetchUniversalFiltersForm,
@@ -86,6 +116,11 @@ export default class OrdersPage extends Component {
         }
     }
 
+    _setFilterStatus = status => {
+        this.props.setOrdersStatusFilter(status);
+        this.props.fetchOrders();
+    };
+
     _setOrdersDaterange = daterange => {
         const { setOrdersDaterangeFilter, fetchOrders } = this.props;
 
@@ -98,11 +133,13 @@ export default class OrdersPage extends Component {
     };
     // eslint-disable-next-line
     render() {
-        const { collapsed, isMobile, user } = this.props;
+        const { collapsed, isMobile, user, filter } = this.props;
 
         const headerControls = this._renderHeaderContorls();
 
         const status = this.props.match.params.ordersStatuses;
+
+        const filterStatus = filter.status;
 
         let funelSectionStyles = cx({
             funelWithFilters:          true,
@@ -122,7 +159,7 @@ export default class OrdersPage extends Component {
                                 0 &&*/
                                 headerControls }
                         <div className={ Styles.buttonGroup }>
-                            { (status === 'cancel' || status === 'success') && (
+                            { (status === 'cancel' || status === 'success') && !isMobile && (
                                 <Button
                                     type='primary'
                                     disabled={
@@ -200,9 +237,22 @@ export default class OrdersPage extends Component {
                     </> :
                     <>
                         <section className={ Styles.mobileFunelFilter }>
+                            <Select
+                                style={{marginBottom: 8}}
+                                value={filterStatus}
+                                onChange={(value)=>{
+                                    this._setFilterStatus(value)
+                                }}
+                            >
+                                {filterSelectOptions.map(({value, message})=>(
+                                    <Option value={value} key={message}>
+                                        <FormattedMessage id={message} />
+                                    </Option>
+                                ))}
+                            </Select>
                             <OrdersFilterContainer status={ status } onlySearch/>
                         </section>
-                        <section className={Styles.ordersWrrapperMobile}>
+                        <section className={Styles.ordersWrapperMobile}>
                             <OrdersContainer
                                 isMobile={isMobile}
                             />

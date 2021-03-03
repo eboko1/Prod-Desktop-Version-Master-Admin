@@ -53,6 +53,20 @@ export default {
                         isForbidden(user, permissions.ACCESS_LABOR_CATALOGUE),
                     name: 'navigation.labors_page',
                 },
+                {
+                    key:      '/vehicle-types',
+                    link:     book.vehicleTypes,
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_LABOR_CATALOGUE),
+                    name: 'navigation.vehicle_types',
+                },
+                {
+                    key:      '/tire-prices',
+                    link:     book.tirePriceGroups,
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_LABOR_CATALOGUE),
+                    name: 'navigation.tire_price_groups',
+                },
             ],
         },
         /* Accounting */

@@ -217,6 +217,7 @@ export default class OrderFormTabs extends React.PureComponent {
             fetchRepairMapData,
             focusOnRef,
             showCahOrderModal,
+            reloadOrderForm,
         } = this.props;
 
         var orderServicesSize = 0,
@@ -287,6 +288,9 @@ export default class OrderFormTabs extends React.PureComponent {
             "stationLoads",
         ]);
 
+        const clientVehicleTypeId = _.get(fetchedOrder, "order.clientVehicleTypeId");
+        const clientVehicleRadius = _.get(fetchedOrder, "order.clientVehicleRadius");
+
         return (
             <Tabs
                 type="card"
@@ -336,9 +340,12 @@ export default class OrderFormTabs extends React.PureComponent {
                                     ? orderDiagnostic.completed
                                     : null
                             }
-                            reloadOrderForm={this.props.reloadOrderForm}
+                            reloadOrderForm={reloadOrderForm}
                             activeKey={this.state.activeKey}
                             detailsTreeData={this.state.detailsTreeData}
+                            clientVehicleTypeId={clientVehicleTypeId}
+                            clientVehicleRadius={clientVehicleRadius}
+                            
                         />
                         <DiscountPanel
                             fields={discountTabFieldsProps}
@@ -350,8 +357,9 @@ export default class OrderFormTabs extends React.PureComponent {
                             fetchedOrder={fetchedOrder}
                             totalServicesProfit={totalServicesProfit}
                             servicesMode
-                            reloadOrderForm={this.props.reloadOrderForm}
+                            reloadOrderForm={reloadOrderForm}
                             laborTimeMultiplier={this.props.laborTimeMultiplier}
+                            orderId={orderId}
                         />
                     </TabPane>
                 )}
@@ -411,7 +419,7 @@ export default class OrderFormTabs extends React.PureComponent {
                                 fetchedOrder,
                                 "order.agreementCompleted",
                             )}
-                            reloadOrderForm={this.props.reloadOrderForm}
+                            reloadOrderForm={reloadOrderForm}
                             clientVehicleVin={this.props.clientVehicleVin}
                             showOilModal= { showOilModal }
                             oilModalData = { oilModalData }
@@ -429,7 +437,8 @@ export default class OrderFormTabs extends React.PureComponent {
                             discountFieldName={"detailsDiscount"}
                             fetchedOrder={fetchedOrder}
                             detailsMode
-                            reloadOrderForm={this.props.reloadOrderForm}
+                            reloadOrderForm={reloadOrderForm}
+                            orderId={orderId}
                         />
                     </TabPane>
                 )}

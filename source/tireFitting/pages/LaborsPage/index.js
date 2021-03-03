@@ -19,9 +19,8 @@ import {
 } from 'antd';
 
 // proj
-import { Layout } from 'tireFitting';
-import { permissions, isForbidden } from 'utils';
-import { Barcode } from 'components';
+import { Layout, LaborPriceGroupsModal } from 'tireFitting';
+import { permissions, isForbidden, fetchAPI } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -76,21 +75,6 @@ export default class LaborsPage extends Component {
                 },
                 key:       'laborCode',
                 dataIndex: 'laborCode',
-                render: (data, row)=>{
-                    return (
-                        <div style={{display: 'flex'}}>
-                            <Barcode
-                                value={`LBS-${this.props.user.businessId}-${row.laborId}`}
-                                iconStyle={{
-                                    margin: "0 8px 0 0",
-                                    fornSize: 18,
-                                    verticalAlign: "sub",
-                                }}
-                            />
-                            {data}
-                        </div>  
-                    )
-                }
             },
             {
                 title:  ()=>{
@@ -405,6 +389,21 @@ export default class LaborsPage extends Component {
                             }}
                             style={{color: 'var(--text)'}}
                         />
+                    )
+                }
+            },
+            {
+                key:       'priceGroups',
+                render: (data, {laborId})=>{
+                    return (
+                        <Button
+                            type="primary"
+                            onClick={()=>{
+                                this.setState({selectedLaborId: laborId})
+                            }}
+                        >
+                            <Icon type="profile" />
+                        </Button>
                     )
                 }
             },
@@ -809,7 +808,7 @@ export default class LaborsPage extends Component {
             },
         };
 
-        const { labors, filterCode, filterId, filterDetail, filterDefaultName, filterName, currentPage } = this.state;
+        const { labors, filterCode, filterId, filterDetail, filterDefaultName, filterName, currentPage, selectedLaborId } = this.state;
         if(
             !isMobile &&
             !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD) && 
@@ -886,6 +885,15 @@ export default class LaborsPage extends Component {
                             }
                         }
                     }
+                />
+                <LaborPriceGroupsModal
+                    laborId={selectedLaborId}
+                    visible={Boolean(selectedLaborId)}
+                    hideModal={()=>{
+                        this.setState({
+                            selectedLaborId: undefined,
+                        })
+                    }}
                 />
             </Layout>
         );

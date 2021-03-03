@@ -107,7 +107,6 @@ export class CashCreationForm extends Component {
 						field='fiscalNumber'
 						rules={[
 							{
-								required: true,
 								message: formatMessage({
 									id: 'cash-creation-form.fiscalNumber.validation',
 								}),

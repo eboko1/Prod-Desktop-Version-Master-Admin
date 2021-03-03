@@ -416,7 +416,7 @@ class ServicesTable extends Component {
     }
 
     render() {
-        const { isMobile } = this.props;
+        const { isMobile, orderFetching, clientVehicleTypeId, clientVehicleRadius } = this.props;
         if (
             !isMobile && (
                 this.state.dataSource.length == 0 ||
@@ -497,6 +497,8 @@ class ServicesTable extends Component {
                     labors={ this.props.labors }
                     details={ this.props.details }
                     detailsTreeData={this.props.detailsTreeData}
+                    clientVehicleTypeId={clientVehicleTypeId}
+                    clientVehicleRadius={clientVehicleRadius}
                 />
             </Catcher>
         );

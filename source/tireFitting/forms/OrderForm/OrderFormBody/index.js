@@ -49,8 +49,6 @@ function formatVehicleLabel(vehicle, formatMessage) {
         modelPart,
         vehicle.year,
         modificationPart,
-        vehicle.number,
-        vehicle.vin,
     ];
 
     return parts
@@ -380,9 +378,15 @@ export default class OrderFormBody extends Component {
             errors,
             createOrder,
             createStatus,
+            updateOrderField,
         } = this.props;
+
+        const vehicleTypes = _.get(this.props, "vehicleTypes", []) || [];
+
         const { getFieldDecorator } = this.props.form;
         const selectedVehicleId = clientVehicle;
+        const clientVehicleRadius = Math.round(_.get(fetchedOrder, "order.clientVehicleRadius", 0));
+        const clientVehicleTypeId = _.get(fetchedOrder, "order.clientVehicleTypeId", undefined);
 
         const selectedVehicle =
             selectedClient &&
@@ -396,18 +400,21 @@ export default class OrderFormBody extends Component {
                         <div className={Styles.comboFieldWrapper}>
                             <FormattedMessage id="add_order_form.car" />
                             <div className={Styles.comboField}>
-                                {_.get(selectedVehicle, "number") && (
-                                    <div>
-                                        <FormattedMessage id="add_client_form.number" />
-                                        : {_.get(selectedVehicle, "number")}
-                                    </div>
-                                )}
-                                {_.get(selectedVehicle, "vin") && (
-                                    <div>
-                                        <FormattedMessage id="add_client_form.vin" />
-                                        : {_.get(selectedVehicle, "vin")}
-                                    </div>
-                                )}
+                                <div>
+                                    {_.get(selectedVehicle, "number") && (
+                                        <div>
+                                            <FormattedMessage id="add_client_form.number" />
+                                            : {_.get(selectedVehicle, "number")}
+                                        </div>
+                                    )}
+                                    {_.get(selectedVehicle, "vin") && (
+                                        <div>
+                                            <FormattedMessage id="add_client_form.vin" />
+                                            : {_.get(selectedVehicle, "vin")}
+                                        </div>
+                                    )}
+                                </div>
+                                
                             </div>
                         </div>
                         <DecoratedSelect
@@ -478,6 +485,57 @@ export default class OrderFormBody extends Component {
                         </div>
                     )}
                 </div>
+                {vehicleTypes &&
+                    <div className={Styles.vehicleInfo}>
+                        <DecoratedSelect
+                            errors={errors}
+                            defaultGetValueProps
+                            fieldValue={_.get(fields, "clientVehicleTypeId")}
+                            field="clientVehicleTypeId"
+                            disabled={this.bodyUpdateIsForbidden()}
+                            initialValue={
+                                _.get(fetchedOrder, "order.clientVehicleTypeId") ||
+                                (this.bodyUpdateIsForbidden()
+                                    ? void 0
+                                    : _.get(this.props, "vehicleTypes[0].id"))
+                            }
+                            formItem
+                            hasFeedback
+                            getFieldDecorator={getFieldDecorator}
+                            onChange={(value, option)=>{
+                                updateOrderField({
+                                    clientVehicleTypeId: value,
+                                    clientVehicleRadius: option.props.radius,
+                                })
+                            }}
+                        >
+                            {vehicleTypes.map(({ id, name, defaultRadius })=>(
+                                <Option value={id} radius={defaultRadius} key={id}>
+                                    {name}
+                                </Option>
+                            ))}
+                        </DecoratedSelect>
+                        <div className={Styles.vehicleRadius}>
+                            <Icon 
+                                type="caret-left"
+                                onClick={()=>{
+                                    updateOrderField({
+                                        clientVehicleRadius: clientVehicleRadius - 1
+                                    })
+                                }}
+                            />
+                            {clientVehicleRadius + 'R' }
+                            <Icon
+                                type="caret-right"
+                                onClick={()=>{
+                                    updateOrderField({
+                                        clientVehicleRadius: clientVehicleRadius + 1
+                                    })
+                                }}
+                            />
+                        </div>
+                    </div>
+                }
             </div>
         );
     };

@@ -125,7 +125,7 @@ export default class ReportOrdersFilterModal extends Component {
         
         return (
             <Modal
-                width={ '85%' }
+                width={ '95%' }
                 visible={ visible === MODALS.REPORT_ORDERS_FILTER }
                 onOk={ () => {
                     this.onFiltersSubmit();

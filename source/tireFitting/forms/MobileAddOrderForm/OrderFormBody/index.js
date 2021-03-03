@@ -68,6 +68,18 @@ const getAvailableHoursDisabledMinutes = propsAvailableHours => hour => {
     return _.difference([0, 30], availableMinutes);
 };
 
+
+const getDisabledHours = (startTime = 0, endTime = 23) => {
+    const availableHours = [];
+    for(let i = Number(startTime); i <= Number(endTime); i++) {
+        availableHours.push(i);
+    }
+    return _.difference(
+        Array(24).fill(1).map((value, index) => index),
+        availableHours
+    );
+};
+
 @injectIntl
 export default class OrderFormBody extends Component {
     constructor(props) {
@@ -553,6 +565,7 @@ export default class OrderFormBody extends Component {
             zeroStationLoadStation,
             fields,
             errors,
+            schedule,
         } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
@@ -568,6 +581,27 @@ export default class OrderFormBody extends Component {
         const momentBeginDatetime = beginDatetime
             ? moment(beginDatetime).toISOString()
             : void 0;
+
+        const dayNumber = moment(_.get(this.props, "stationLoads[0].beginDate")).day();
+        let disabledHours = undefined;
+        if(schedule && dayNumber) {
+            let index;
+            switch (dayNumber) {
+                case 6:
+                    index = 1;
+                    break;
+                case 7:
+                    index = 2;
+                    break;
+                default:
+                    index = 0;
+            }
+
+            disabledHours = getDisabledHours(
+                schedule[index] && schedule[index].beginTime ? schedule[index].beginTime.split(/[.:]/)[0] : 9,
+                schedule[index] && schedule[index].endTime ? schedule[index].endTime.split(/[.:]/)[0] : 20
+            )
+        }
 
         return (
             <div className={Styles.headerCol}>
@@ -644,8 +678,7 @@ export default class OrderFormBody extends Component {
                     formItem
                     disabled={
                         this.bodyUpdateIsForbidden() ||
-                        !zeroStationLoadBeginDate ||
-                        !zeroStationLoadStation
+                        !zeroStationLoadBeginDate
                     }
                     formItemLayout={formHeaderItemLayout}
                     defaultOpenValue={moment(
@@ -654,8 +687,7 @@ export default class OrderFormBody extends Component {
                     ).toISOString()}
                     field="stationLoads[0].beginTime"
                     hasFeedback
-                    disabledHours={this.state.availableHoursDisabledHours}
-                    disabledMinutes={this.state.availableHoursDisabledMinutes}
+                    disabledHours={()=>disabledHours}
                     label={this._getLocalization("add_order_form.applied_on")}
                     formatMessage={formatMessage}
                     className={Styles.datePanelItem}
@@ -666,6 +698,7 @@ export default class OrderFormBody extends Component {
                     )}
                     minuteStep={30}
                     initialValue={momentBeginDatetime}
+                    hideDisabledOptions
                 />
             </div>
         );
