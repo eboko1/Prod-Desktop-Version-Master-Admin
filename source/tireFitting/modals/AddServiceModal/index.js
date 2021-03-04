@@ -135,7 +135,7 @@ class AddServiceModal extends React.Component{
                                 )
                             }}
                             onChange={(value, option)=>{
-                                elem.priceGroup = value;
+                                elem.tireStationPriceGroupId = value;
                                 this.setState({});
                             }}
                         >
