@@ -121,17 +121,18 @@ export class OrderForm extends React.PureComponent {
     };
 
     _reloadOrderForm = (callback) => {
-        var that = this;
-        let token = localStorage.getItem("_my.carbook.pro_token");
-        let url = API_URL;
-        let params = `/orders/${this.props.orderId}?onlyLabors=true&onlyDetails=true`;
-        url += params;
-        fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: token,
-            },
-        })
+        if(this.props.orderId) {
+            var that = this;
+            let token = localStorage.getItem("_my.carbook.pro_token");
+            let url = API_URL;
+            let params = `/orders/${this.props.orderId}?onlyLabors=true&onlyDetails=true`;
+            url += params;
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                },
+            })
             .then(function(response) {
                 if (response.status !== 200) {
                     return Promise.reject(new Error(response.statusText));
@@ -151,6 +152,7 @@ export class OrderForm extends React.PureComponent {
             .catch(function(error) {
                 console.log("error", error);
             });
+        }
     }
 
     _updateOrderField = (field) => {
