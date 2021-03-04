@@ -539,7 +539,7 @@ export default class LaborsPage extends Component {
             if(elem.deleted) {
                 deletedLabors.push(elem.laborId);
             }
-            else if(elem.changed && !elem.new) {
+            else if(elem.changed && !elem.new && elem.laborBusinessId) {
                 labors.push({
                     masterLaborId: elem.masterLaborId,
                     productId: elem.productId,
@@ -557,7 +557,7 @@ export default class LaborsPage extends Component {
                     labors[labors.length-1].normHours = elem.normHours ? elem.normHours : 1;
                 }
             }
-            else if(elem.new && elem.masterLaborId && elem.productId) {
+            else if((elem.new && elem.masterLaborId && elem.productId) || !elem.laborBusinessId && elem.laborId) {
                 newLabors.push({
                     masterLaborId: elem.masterLaborId,
                     productId: elem.productId,
