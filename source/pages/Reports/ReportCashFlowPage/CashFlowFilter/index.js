@@ -160,10 +160,13 @@ export default class CashFlowFilter extends React.Component {
                         disabled={cashboxesIsFetching}
                         onChange={this.onAnalyticsSelect}
                         filterOption={(input, option) => {
+                            const inputedText = input ? input.toLowerCase() : "";
+                            const children = option.props.children ? option.props.children : "";
+                            
                             return (
-                                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                String(option.props.value).indexOf(input.toLowerCase()) >= 0
-                            )
+                                children.toLowerCase().indexOf(inputedText) >= 0 || 
+                                String(option.props.value).indexOf(inputedText) >= 0
+                            );
                         }}
                     >
                         {_.map(filteredAnalytics, ans => (
