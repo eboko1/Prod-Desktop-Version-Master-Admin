@@ -9,7 +9,7 @@ import { emitError, setAuthFetchingState } from 'core/ui/duck';
 import { fetchHeaderData } from 'core/subscription/duck';
 import { persistConfig } from 'store/rootReducer';
 import book from 'routes/book';
-import { setToken, removeToken, setLocale, removeLocale } from 'utils';
+import { setToken, removeToken, setLocale, removeLocale, setBusinessTypes, removeBusinessTypes } from 'utils';
 
 // own
 import {
@@ -25,8 +25,10 @@ export function* authenticateSaga() {
     while (true) {
         try {
             const { payload: user } = yield take(AUTHENTICATE);
+            console.log(user)
             yield setLocale(user.language);
             yield setToken(user.token);
+            yield setBusinessTypes(user.businessTypes);
             yield putResolve(fetchHeaderData(true));
             yield authenticateSuccess();
         } catch (error) {
@@ -43,6 +45,7 @@ export function* logoutSaga() {
             yield put(setAuthFetchingState(true));
             yield removeLocale();
             yield removeToken();
+            yield removeBusinessTypes();
             yield put(replace(`${book.login}`));
 
             yield purgeStoredState(persistConfig);

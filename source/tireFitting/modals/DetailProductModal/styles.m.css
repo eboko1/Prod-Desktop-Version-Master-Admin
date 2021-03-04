@@ -20,13 +20,12 @@
     vertical-align: top;
 }
 
-.groupsTreeSelect {
-
+.mobileTableSum {
+    width: 33%;
+    display: inline-block;
+    text-align: end;
 }
 
-.groupTreeOption {
-    
-}
 
 .mobileTable {
     margin: 0px 0px 8px;
