@@ -297,6 +297,11 @@ class ServicesTable extends Component {
                     employeeId:    labor.employeeId || null,
                     count:         labor.count,
                     servicePrice:  Math.round(labor.price * 10) / 10,
+                    tireStationPriceGroupId: labor.tireStationPriceGroupId,
+                    comment: labor.comment || {
+                        comment: undefined,
+                        positions: [],
+                    },
                 },
             ],
         };
