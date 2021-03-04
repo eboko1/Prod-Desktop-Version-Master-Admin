@@ -5,7 +5,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 // proj
-import { Catcher } from 'commons';
+import { Catcher, Numeral } from 'commons';
 import { DecoratedInputNumber } from 'forms/DecoratedFields';
 
 // own
@@ -39,9 +39,38 @@ class DiscountPanel extends Component {
         }
     }
 
+    _updateOrderField = (field) => {
+        const { reloadOrderForm, orderId } = this.props;
+        let token = localStorage.getItem("_my.carbook.pro_token");
+        let url = __API_URL__;
+        let params = `/orders/${orderId}`;
+        url += params;
+        fetch(url, {
+            method: "PUT",
+            headers: {
+                Authorization: token,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(field),
+        })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    return Promise.reject(new Error(response.statusText));
+                }
+                return Promise.resolve(response);
+            })
+            .then(function(response) {
+                reloadOrderForm(undefined, 'all');
+                return response.json();
+            })
+            .catch(function(error) {
+                console.log("error", error);
+            });
+    }
+
     render() {
         const {
-            form: { getFieldDecorator },
+            form: { getFieldDecorator, getFieldsValue, getFieldValue },
             price,
             totalDetailsProfit,
             totalServicesProfit,
@@ -52,115 +81,174 @@ class DiscountPanel extends Component {
             servicesMode,
             isServiceMarkupForbidden,
             laborTimeMultiplier,
+            isMobile,
         } = this.props;
 
-        const discount = this.props.form.getFieldValue(discountFieldName);
+        const discount = getFieldValue(discountFieldName) || _.get(fetchedOrder, `order.${discountFieldName}`, 0);
+        const total = Math.round((price - price * (discount / 100))*100)/100;
+        const profit = Math.round((price-total)*100)/100;
+        const mask = "0,0.00";
 
-        const total = (price - price * (discount / 100)).toFixed(2);
-
-        const profit = servicesMode ? totalServicesProfit : totalDetailsProfit;
+        const field = getFieldsValue([discountFieldName]);
 
         return (
             <Catcher>
-                <div className={ Styles.discountPanel }>
-                    <DecoratedInputNumber
-                        field={ discountFieldName }
-                        disabled={ forbidden }
-                        initialValue={
-                            _.get(fetchedOrder, `order.${discountFieldName}`) ||
-                            0
-                        }
-                        getFieldDecorator={ getFieldDecorator }
-                        formItem
-                        label={
-                            <FormattedMessage id='order_form_table.discount' />
-                        }
-                        colon={ false }
-                        className={ Styles.formItem }
-                        min={ -100 }
-                        max={ 100 }
-                        step={ 1 }
-                        formatter={ value => `${Math.round(value)}%` }
-                        parser={ value => value.replace('%', '') }
-                        onChange={ value => {
-                            this.props.reloadOrderForm();
-                        } }
-                    />
-                    <FormItem
-                        label={
-                            <FormattedMessage id='order_form_table.sum_without_discount' />
-                        }
-                        colon={ false }
-                        className={ Styles.formItem }
-                    >
-                        <InputNumber
-                            disabled
-                            style={ { color: 'black' } }
-                            value={ price }
-                            min={ 0 }
-                            formatter={ value =>
-                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                {!isMobile ? 
+                    <div className={ Styles.discountPanel }>
+                        <DecoratedInputNumber
+                            field={ discountFieldName }
+                            disabled={ forbidden }
+                            initialValue={
+                                _.get(fetchedOrder, `order.${discountFieldName}`) || 0
                             }
-                            parser={ value =>
-                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            getFieldDecorator={ getFieldDecorator }
+                            formItem
+                            label={
+                                <FormattedMessage id='order_form_table.discount' />
                             }
+                            colon={ false }
+                            className={ Styles.formItem }
+                            min={ -100 }
+                            max={ 100 }
+                            step={ 1 }
+                            formatter={ value => `${Math.round(value)}%` }
+                            parser={ value => value.replace('%', '') }
+                            onChange={ value => {
+                                field[discountFieldName] = value;
+                                this._updateOrderField(field)
+                            } }
                         />
-                    </FormItem>
-                    <FormItem
-                        label={
-                            <FormattedMessage id='order_form_table.total_sum' />
-                        }
-                        colon={ false }
-                        className={ Styles.formItem }
-                    >
-                        <InputNumber
-                            disabled
-                            style={ { color: 'black' } }
-                            value={ total }
-                            min={ 0 }
-                            formatter={ value =>
-                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-                            }
-                            parser={ value =>
-                                `${value}`.replace(/\$\s?|(\s)/g, '')
-                            }
-                        />
-                    </FormItem>
-                    { (detailsMode || servicesMode) && (
                         <FormItem
                             label={
-                                <FormattedMessage
-                                    id={ `${
-                                        servicesMode
-                                            ? 'order_form_table.services_profit'
-                                            : 'order_form_table.details_profit'
-                                    }` }
-                                />
+                                <FormattedMessage id='order_form_table.sum_without_discount' />
                             }
                             colon={ false }
                             className={ Styles.formItem }
                         >
                             <InputNumber
                                 disabled
-                                value={
-                                    servicesMode
-                                        ? totalServicesProfit
-                                        : totalDetailsProfit
-                                }
-                                style={ { color: profit < 0 ? 'red' : 'black' } }
+                                style={ { color: 'black' } }
+                                value={ price }
+                                min={ 0 }
                                 formatter={ value =>
-                                    `${value}`.replace(
-                                        /\B(?=(\d{3})+(?!\d))/g,
-                                        ' ',
-                                    )
+                                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                                 }
                                 parser={ value =>
                                     `${value}`.replace(/\$\s?|(\s)/g, '')
                                 }
                             />
                         </FormItem>
-                    ) }
-                </div>
+                        { (detailsMode || servicesMode) && (
+                            <FormItem
+                                label={<FormattedMessage id='order_form_table.discount' />}
+                                colon={ false }
+                                className={ Styles.formItem }
+                            >
+                                <InputNumber
+                                    disabled
+                                    value={ profit }
+                                    style={ { color: total < 0 ? 'red' : 'black' } }
+                                    formatter={ value =>
+                                        `${value}`.replace(
+                                            /\B(?=(\d{3})+(?!\d))/g,
+                                            ' ',
+                                        )
+                                    }
+                                    parser={ value =>
+                                        `${value}`.replace(/\$\s?|(\s)/g, '')
+                                    }
+                                />
+                            </FormItem>
+                        ) }
+                        <FormItem
+                            label={
+                                <FormattedMessage id='order_form_table.total_sum' />
+                            }
+                            colon={ false }
+                            className={ Styles.formItem }
+                        >
+                            <InputNumber
+                                disabled
+                                style={ { color: 'black' } }
+                                value={ total }
+                                min={ 0 }
+                                formatter={ value =>
+                                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                                }
+                                parser={ value =>
+                                    `${value}`.replace(/\$\s?|(\s)/g, '')
+                                }
+                            />
+                        </FormItem>
+                    </div> :
+                    <div className={ Styles.mobileDiscountPanel }>
+                        <div className={ Styles.mobileDiscount }>   
+                            <FormattedMessage id='order_form_table.discount' />
+                            <DecoratedInputNumber
+                                field={ discountFieldName }
+                                disabled={ forbidden }
+                                initialValue={
+                                    _.get(fetchedOrder, `order.${discountFieldName}`) ||
+                                    0
+                                }
+                                getFieldDecorator={ getFieldDecorator }
+                                formItem
+                                colon={ false }
+                                className={ Styles.mobileFormItem }
+                                min={ -100 }
+                                max={ 100 }
+                                step={ 1 }
+                                formatter={ value => `${Math.round(value)}%` }
+                                parser={ value => value.replace('%', '') }
+                                onChange={ value => {
+                                    field[discountFieldName] = value;
+                                    this._updateOrderField(field)
+                                } }
+                            />
+                        </div>
+                        <div className={ Styles.mobileSumBlock }>
+                            <div className={ Styles.mobileSumRow }>
+                                <FormattedMessage id='order_form_table.sum_without_discount' />
+                                <Numeral
+                                    mask={mask}
+                                    className={Styles.sumNumeral}
+                                    nullText="0"
+                                    currency={this.props.intl.formatMessage({
+                                        id: "currency",
+                                    })}
+                                >
+                                    {Number(price)}
+                                </Numeral>
+                            </div>
+                            <div className={ Styles.mobileSumRow }>
+                                <FormattedMessage id='order_form_table.discount' />
+                                <Numeral
+                                    mask={mask}
+                                    className={Styles.sumNumeral}
+                                    nullText="0"
+                                    currency={this.props.intl.formatMessage({
+                                        id: "currency",
+                                    })}
+                                >
+                                    {Number(profit)}
+                                </Numeral>
+                            </div>
+                            <div className={ Styles.mobileSumRow }>
+                                <FormattedMessage id='order_form_table.total_sum' />
+                                <Numeral
+                                    mask={mask}
+                                    className={Styles.sumNumeral}
+                                    nullText="0"
+                                    currency={this.props.intl.formatMessage({
+                                        id: "currency",
+                                    })}
+                                >
+                                    {Number(total)}
+                                </Numeral>
+                            </div>
+                        </div>
+                    </div>
+                }
             </Catcher>
         );
     }

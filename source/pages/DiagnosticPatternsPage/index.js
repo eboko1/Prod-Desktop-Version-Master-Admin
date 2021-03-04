@@ -483,7 +483,7 @@ class DiagnosticPatternsPage extends Component {
                                 this.importDefaultDiagnostics()
                             }
                         >
-                            <FormattedMessage id='diagnostic-page.import_default' />
+                            <FormattedMessage id='import_default' />
                         </Button>
                         <Button
                             type='primary'

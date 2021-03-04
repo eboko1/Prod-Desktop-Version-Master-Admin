@@ -5,10 +5,11 @@ import { Button, Modal, Icon, Select, Input, InputNumber, message, notification,
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { images } from 'utils';
-import { permissions, isForbidden } from "utils";
+import { permissions, isForbidden, fetchAPI } from "utils";
 import { DetailStorageModal, DetailSupplierModal, LaborsNormHourModal, DetailProductModal } from 'modals'
 // own
 import Styles from './styles.m.css';
+import { values } from 'office-ui-fabric-react';
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
 const { confirm } = Modal;
@@ -24,12 +25,10 @@ class AddServiceModal extends React.Component{
             laborSearchValue: "",
         }
         this.labors = [];
-        this.masterLabors = [];
-        this.storeGroups = [];
-        this.laborsTreeData = [];
-        this.brandOptions = [];
+        this.priceGroups = [];
         this.servicesOptions = [];
         this.employeeOptions = [];
+        this.priceGroupsOptions = [];
 
         this.mainTableColumns = [
             {
@@ -50,7 +49,8 @@ class AddServiceModal extends React.Component{
                             filterOption={(input, option) => {
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0 ||
+                                    String(option.props.cross_id).indexOf(input.toLowerCase()) >= 0
                                 )
                             }}
                             onChange={(value, option)=>{
@@ -70,6 +70,7 @@ class AddServiceModal extends React.Component{
                                     elem.masterLaborId = value;
                                     elem.storeGroupId = value;
                                 }
+                                this.getPrice(value);
                                 this.setState({});
                             }}
                             onSearch={(input)=>{
@@ -93,6 +94,7 @@ class AddServiceModal extends React.Component{
                                             product_id={elem.productId}
                                             norm_hours={elem.normHours}
                                             price={elem.price}
+                                            cross_id={elem.crossId}
                                         >
                                             {elem.name ? elem.name : elem.defaultName}
                                         </Option>
@@ -115,28 +117,36 @@ class AddServiceModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.detail_name" />,
-                key:       'serviceName',
-                dataIndex: 'serviceName',
+                title:  <FormattedMessage id="tire.priceGroup" />,
+                key:       'tireStationPriceGroupId',
+                dataIndex: 'tireStationPriceGroupId',
                 render: (data, elem)=>{
                     return (
-                        <Input
-                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
-                            disabled={this.state.editing && elem.stage != 'INACTIVE'}
-                            style={{minWidth: 240}}
-                            value={data}
-                            onChange={({target})=>{
-                                const { value } = target;
-                                elem.serviceName = value;
+                        <Select
+                            showSearch
+                            placeholder={this.props.intl.formatMessage({id: 'tire.priceGroup'})}
+                            value={data ? data : undefined}
+                            style={{minWidth: 200}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999"}}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onChange={(value, option)=>{
+                                elem.tireStationPriceGroupId = value;
                                 this.setState({});
                             }}
-                        />
+                        >
+                            {this.priceGroupsOptions}
+                        </Select>
                     )
                 }
             },
             {
                 title:  <FormattedMessage id="services_table.employee" />,
-                key:       'employeeId',
+                key:       'employee',
                 dataIndex: 'employeeId',
                 render: (data, elem)=>{
                     return (
@@ -145,7 +155,7 @@ class AddServiceModal extends React.Component{
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.employee'})}
                             value={data ? data : undefined}
-                            style={{minWidth: 80}}
+                            style={{minWidth: 180}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", maxWidth: '95%'}}
                             filterOption={(input, option) => {
                                 return (
@@ -160,6 +170,41 @@ class AddServiceModal extends React.Component{
                         >
                             {this.employeeOptions}
                         </Select>
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="comment" />,
+                key:       'comment',
+                dataIndex: 'comment',
+                width:     'auto',
+                render: (data, elem)=>{
+                    var detail = elem.serviceName;
+                    if(detail && detail.indexOf(' - ') > -1) {
+                        detail = detail.slice(0, detail.indexOf(' - '));
+                    }
+                    return (
+                        <CommentaryButton
+                            disabled={elem.laborId == null}
+                            commentary={
+                                data || 
+                                {
+                                    comment: undefined,
+                                    positions: [],
+                                    problems: [],
+                                }
+                            }
+                            detail={detail}
+                            setComment={(comment, positions, problems)=>{
+                                elem.comment = {
+                                    comment: comment,
+                                    positions: positions,
+                                    problems: problems,
+                                };
+                                elem.serviceName = comment || elem.serviceName;
+                                this.setState({});
+                            }}
+                        />
                     )
                 }
             },
@@ -277,6 +322,20 @@ class AddServiceModal extends React.Component{
         ];
     }
 
+    getPrice = async (laborId) => {
+        const { clientVehicleTypeId, clientVehicleRadius } = this.props;
+        const price = await fetchAPI('GET', `labors/price_groups`, {
+            laborId: laborId,
+            vehicleTypeId: clientVehicleTypeId,
+            radius: Math.round(clientVehicleRadius),
+        })
+        console.log(price);
+        if(price && price.price) {
+            this.state.mainTableSource[0].price = price.price;
+            this.setState({});
+        }
+    }
+
     handleOk = () => {
         const { editing, mainTableSource, relatedServices, relatedServicesCheckbox } = this.state;
         if(mainTableSource[0].laborId == undefined) {
@@ -302,6 +361,11 @@ class AddServiceModal extends React.Component{
                     purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                     count: element.count ? element.count : 1,
                     servicePrice:  Math.round(element.price*10)/10 || 1,
+                    tireStationPriceGroupId: element.tireStationPriceGroupId,
+                    comment: element.comment || {
+                        comment: undefined,
+                        positions: [],
+                    },
                 })
             });
             this.addDetailsAndLabors(data);
@@ -332,29 +396,28 @@ class AddServiceModal extends React.Component{
                 body: JSON.stringify(data),
             });
             const result = await response.json();
-            if(result.success) {
-                this.props.updateDataSource();
-            }
-            else {
-                console.log("BAD", result);
-            }
+            this.props.updateDataSource();
         } catch (error) {
             console.error('ERROR:', error);
         }
     }
 
-    fetchData() {
-        this.masterLabors = this.props.masterLabors;
+    fetchData = () => {
         this.labors = this.props.labors;
-        this.storeGroups = this.props.details;
         this.getOptions();
     }
 
-    getOptions() {
+    getOptions = async () => {
+        this.priceGroups = await fetchAPI('GET', 'tire_station_price_groups');
         this.servicesOptions = [...this.labors];
         this.employeeOptions = this.props.employees.map((elem, i)=>(
             <Option key={i} value={elem.id}>
                 {elem.name} {elem.surname}
+            </Option>
+        ));
+        this.priceGroupsOptions = this.priceGroups.map((elem, i)=>(
+            <Option key={i} value={elem.id}>
+                {elem.name}
             </Option>
         ))
     };
@@ -377,6 +440,7 @@ class AddServiceModal extends React.Component{
             const result = await response.json();
             if (result.success) {
                 this.props.updateDataSource();
+                this.handleCancel();
             } else {
                 console.log('BAD', result);
             }
@@ -405,8 +469,21 @@ class AddServiceModal extends React.Component{
 
         return columns.map(({title, key, render, dataIndex})=>{
             return (
-                <div className={`${Styles.mobileTable} ${(key == 'price' || key == 'count' || key == 'sum') && Styles.mobileTableNumber}`}>
-                    {title}
+                <div 
+                    className={
+                        `${Styles.mobileTable} ${
+                            (key == 'price' || key == 'count') && Styles.mobileTableNumber
+                        } ${
+                            (key == 'employee') && Styles.mobileTableEmployee
+                        } ${
+                            (key == 'comment') && Styles.mobileTableComment
+                        } ${
+                            (key == 'sum') && Styles.mobileTableSum
+                        } `
+                    } 
+                    key={key}
+                >
+                    {key != 'comment' && title}
                     <div>
                         {dataIndex ? 
                             render(dataSource[dataIndex], dataSource) :
@@ -430,6 +507,8 @@ class AddServiceModal extends React.Component{
             
             if(!editing) {
                 this.state.mainTableSource[0].employeeId = this.props.defaultEmployeeId;
+                const priceGroup = this.priceGroups.find(({id})=>id == this.props.clientVehicleTypeId);
+                if(priceGroup) this.state.mainTableSource[0].tireStationPriceGroupId = priceGroup.id;
             }
             
             this.setState({
@@ -440,7 +519,7 @@ class AddServiceModal extends React.Component{
 
     render() {
         const { visible, isMobile } = this.props;
-        const { relatedServicesCheckbox, mainTableSource, relatedServices, editing } = this.state;
+        const { mainTableSource, editing } = this.state;
         return (
             <>
                 <Modal
@@ -503,3 +582,217 @@ class AddServiceModal extends React.Component{
     }
 }
 export default AddServiceModal;
+
+@injectIntl
+class CommentaryButton extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            loading: false,
+            visible: false,
+            currentCommentaryProps: {
+                name: props.detail,
+                positions : [],
+                problems: [],
+            },
+            currentCommentary: undefined,
+        }
+        this.commentaryInput = React.createRef();
+        this.positions = [
+            "front_axle",
+            "ahead",
+            "overhead",
+            "rear_axle",
+            "behind",
+            "down_below",
+            "Right_wheel",
+            "on_right",
+            "outside",
+            "left_wheel",
+            "left",
+            "inside",
+            "lever_arm",
+            "at_both_sides",
+            "centered",
+        ];
+        this._isMounted = false;
+    }
+
+    showModal = () => {
+        this.setState({
+            currentCommentary: this.props.commentary.comment ? this.props.commentary.comment : this.props.detail,
+            visible: true,
+        });
+        if(this.commentaryInput.current != undefined) {
+            this.commentaryInput.current.focus();
+        }
+    };
+
+    handleOk = async () => {
+        const {currentCommentary, currentCommentaryProps} = this.state;
+        this.setState({
+            loading: true,
+        });
+        this.props.setComment(currentCommentary, currentCommentaryProps.positions, currentCommentaryProps.problems);
+        setTimeout(() => {
+            this.setState({ loading: false, visible: false });
+        }, 500);
+    };
+    
+    handleCancel = () => {
+        this.setState({
+            visible: false,
+            currentCommentary: this.props.detail, 
+            currentCommentaryProps: {
+                name: this.props.detail,
+                positions: [],
+                problems: [],
+            },
+        });
+    };
+
+    renderHeader = () => {
+        return (
+            <div>
+              <p>
+                  {this.props.detail}
+              </p>
+            </div>
+          );
+    }
+
+    getCommentary() {
+        const { currentCommentaryProps } = this.state;
+        var currentCommentary = this.props.detail
+
+        if(currentCommentaryProps.positions.length) {
+            currentCommentary += ' -'
+            currentCommentary += currentCommentaryProps.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) + ';';
+        }
+        this.setState({
+            currentCommentary: currentCommentary
+        });
+    }
+
+    setCommentaryPosition(position) {
+        const { currentCommentaryProps } = this.state;
+        const positionIndex = currentCommentaryProps.positions.indexOf(position);
+        if(positionIndex == -1) {
+            currentCommentaryProps.positions.push(position);
+        }
+        else {
+            currentCommentaryProps.positions = currentCommentaryProps.positions.filter((value, index)=>index != positionIndex);
+        }
+        this.getCommentary();
+    }
+
+
+    componentDidMount() {
+        this._isMounted = true;
+        const { commentary, detail } = this.props;
+        if(this._isMounted) {
+            this.setState({
+                currentCommentaryProps: {
+                    name: detail,
+                    positions: commentary.positions || [],
+                    problems: commentary.problems || [],
+                }
+            })
+        }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    render() {
+        const { TextArea } = Input;
+        const { visible, loading, currentCommentaryProps, currentCommentary } = this.state;
+        const { disabled, commentary } = this.props;
+        const { positions } = this;
+
+        return (
+            <div>
+                {commentary.comment ? (
+                    <Button
+                        className={Styles.commentaryButton}
+                        onClick={this.showModal}
+                        title={this.props.intl.formatMessage({id: "commentary.edit"})}
+                    >
+                        <Icon
+                            className={Styles.commentaryButtonIcon}
+                            style={{color: "rgba(0, 0, 0, 0.65)"}}
+                            type="form"/>
+                    </Button>
+                ) : (
+                    <Button
+                        disabled={disabled}
+                        type="primary"
+                        onClick={this.showModal}
+                        title={this.props.intl.formatMessage({id: "commentary.add"})}
+                    >
+                        <Icon type="message" />
+                    </Button>
+                )}
+                <Modal
+                    visible={visible}
+                    title={this.renderHeader()}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                    footer={disabled?(
+                        null
+                        ):([
+                            <Button key="back" onClick={this.handleCancel}>
+                                {<FormattedMessage id='cancel' />}
+                            </Button>,
+                            <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
+                                {<FormattedMessage id='save' />}
+                            </Button>,
+                        ])
+                    }
+                    maskClosable={false}
+                >
+                    <>
+                    <div className={Styles.commentaryVehicleSchemeWrap}>
+                        <p className={Styles.commentarySectionHeader}>
+                            <FormattedMessage id='commentary_modal.where'/>?
+                        </p>
+                        <div className={Styles.blockButtonsWrap}>
+                            {positions.map((position, key)=> {
+                                return (
+                                    <Button
+                                        key={key}
+                                        type={currentCommentaryProps.positions.findIndex((elem)=>position==elem) > -1 ? 'normal' : 'primary'}
+                                        className={Styles.commentaryBlockButton}
+                                        onClick={()=>{this.setCommentaryPosition(position)}}
+                                    >
+                                        <FormattedMessage id={position}/>
+                                    </Button>
+                                )
+                            })}
+                        </div>
+                    </div>
+                    <div>
+                        <p className={Styles.commentarySectionHeader}>
+                            <FormattedMessage id='order_form_table.diagnostic.commentary' />
+                        </p>
+                        <TextArea
+                            disabled={disabled}
+                            value={currentCommentary}
+                            placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
+                            autoFocus
+                            onChange={()=>{
+                                this.setState({
+                                    currentCommentary: event.target.value,
+                                });
+                            }}
+                            style={{width: '100%', minHeight: '150px', resize:'none'}}
+                            ref={this.commentaryInput}
+                        />
+                    </div>
+                    </>
+                </Modal>
+            </div>
+        );
+    }
+}

@@ -19,9 +19,8 @@ import {
 } from 'antd';
 
 // proj
-import { Layout } from 'tireFitting';
-import { permissions, isForbidden } from 'utils';
-import { Barcode } from 'components';
+import { Layout, LaborPriceGroupsModal } from 'tireFitting';
+import { permissions, isForbidden, fetchAPI } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -47,6 +46,7 @@ export default class LaborsPage extends Component {
             masterLabors: [],
             storeGroups: [],
             filterCode: null,
+            filterCrossId: null,
             filterId: null,
             filterDetail: null,
             filterDefaultName: null,
@@ -76,21 +76,6 @@ export default class LaborsPage extends Component {
                 },
                 key:       'laborCode',
                 dataIndex: 'laborCode',
-                render: (data, row)=>{
-                    return (
-                        <div style={{display: 'flex'}}>
-                            <Barcode
-                                value={`LBS-${this.props.user.businessId}-${row.laborId}`}
-                                iconStyle={{
-                                    margin: "0 8px 0 0",
-                                    fornSize: 18,
-                                    verticalAlign: "sub",
-                                }}
-                            />
-                            {data}
-                        </div>  
-                    )
-                }
             },
             {
                 title:  ()=>{
@@ -192,6 +177,44 @@ export default class LaborsPage extends Component {
                                     update: true
                                 })
                             }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  ()=>{
+                    return (
+                        <div>
+                            <FormattedMessage id="order_form_table.external_id" />
+                            <Input
+                                allowClear
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.external_id'})}
+                                value={this.state.filterCrossId}
+                                onChange={(event)=>{
+                                    this.setState({
+                                        filterCrossId: event.target.value
+                                    })
+                                }}
+                            />
+                        </div>
+                    )
+                },
+                key:       'crossId',
+                dataIndex: 'crossId',
+                render: (data, elem)=>{
+                    const key = elem.key;
+                    return (
+                        <Input
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.external_id'})}
+                            value={data}
+                            onChange={(event)=>{
+                                elem.changed = true;
+                                elem.crossId = event.target.value;
+                                this.setState({
+                                    update: true,
+                                });
+                            }}
+                            style={{color: 'var(--text)'}}
                         />
                     )
                 }
@@ -409,6 +432,21 @@ export default class LaborsPage extends Component {
                 }
             },
             {
+                key:       'priceGroups',
+                render: (data, {laborId})=>{
+                    return (
+                        <Button
+                            type="primary"
+                            onClick={()=>{
+                                this.setState({selectedLaborId: laborId})
+                            }}
+                        >
+                            <Icon type="profile" />
+                        </Button>
+                    )
+                }
+            },
+            {
                 title:  ()=>{
                     return (
                         <div>
@@ -555,11 +593,12 @@ export default class LaborsPage extends Component {
             if(elem.deleted) {
                 deletedLabors.push(elem.laborId);
             }
-            else if(elem.changed && !elem.new) {
+            else if(elem.changed && !elem.new && elem.laborBusinessId) {
                 labors.push({
                     masterLaborId: elem.masterLaborId,
                     productId: elem.productId,
                     disable: Boolean(elem.disable),
+                    crossId: elem.crossId || null,
                 });
                 if(elem.laborId) labors[labors.length-1].laborId = elem.laborId;
                 if(elem.name) labors[labors.length-1].name = elem.name;
@@ -572,11 +611,12 @@ export default class LaborsPage extends Component {
                     labors[labors.length-1].normHours = elem.normHours ? elem.normHours : 1;
                 }
             }
-            else if(elem.new && elem.masterLaborId && elem.productId) {
+            else if((elem.new && elem.masterLaborId && elem.productId) || !elem.laborBusinessId && elem.laborId) {
                 newLabors.push({
                     masterLaborId: elem.masterLaborId,
                     productId: elem.productId,
                     disable: Boolean(elem.disable),
+                    crossId: elem.crossId || null,
                 });
                 if(elem.name) newLabors[newLabors.length-1].name = elem.name;
                 if(elem.fixed) {
@@ -656,6 +696,7 @@ export default class LaborsPage extends Component {
             return response.json()
         })
         .then(function (data) {
+            //that.fetchLabors();
             window.location.reload();
         })
         .catch(function (error) {
@@ -809,7 +850,7 @@ export default class LaborsPage extends Component {
             },
         };
 
-        const { labors, filterCode, filterId, filterDetail, filterDefaultName, filterName, currentPage } = this.state;
+        const { labors, filterCode, filterCrossId, filterId, filterDetail, filterDefaultName, filterName, currentPage, selectedLaborId } = this.state;
         if(
             !isMobile &&
             !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD) && 
@@ -834,6 +875,7 @@ export default class LaborsPage extends Component {
         var dataSource = [...labors];
         dataSource = dataSource.filter((elem)=>!elem.deleted);
         if(filterCode) dataSource = dataSource.filter((data, i) => data.laborCode.includes(filterCode));
+        if(filterCrossId) dataSource = dataSource.filter((data, i) => String(data.crossId).includes(filterCrossId));
         if(filterId) dataSource = dataSource.filter((data, i) => String(data.masterLaborId).includes(String(filterId)));
         if(filterDetail) dataSource = dataSource.filter((data, i) => String(data.productId).includes(String(filterDetail)));
         if(filterDefaultName) dataSource = dataSource.filter((data, i) => data.defaultName.toLowerCase().includes(filterDefaultName.toLowerCase()));
@@ -886,6 +928,15 @@ export default class LaborsPage extends Component {
                             }
                         }
                     }
+                />
+                <LaborPriceGroupsModal
+                    laborId={selectedLaborId}
+                    visible={Boolean(selectedLaborId)}
+                    hideModal={()=>{
+                        this.setState({
+                            selectedLaborId: undefined,
+                        })
+                    }}
                 />
             </Layout>
         );

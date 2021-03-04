@@ -1,13 +1,14 @@
 // vendor
 import { call, put, all, take } from 'redux-saga/effects';
 import { replace } from 'connected-react-router';
+import _ from "lodash";
 
 //proj
 import { intlActions } from 'core/intl/actions';
 import { updateUser } from 'core/auth/duck';
 import { setProfileUpdatingState, emitError } from 'core/ui/duck';
 import { setIntl } from 'store/intl';
-import { fetchAPI } from 'utils';
+import { fetchAPI, setBusinessTypes } from 'utils';
 import book from 'routes/book';
 
 // own
@@ -19,7 +20,15 @@ export function* submitProfileFormSaga() {
             const { payload: user } = yield take(SUBMIT_PROFILE_FORM);
             yield put(setProfileUpdatingState(true));
 
-            yield call(fetchAPI, 'PUT', '/managers', null, user);
+            yield call(fetchAPI, 'POST', '/business_types ', null, {
+                types: user.businessTypes == 'DEFAULT' ? [] : [
+                    user.businessTypes,
+                ]
+            });
+            yield setBusinessTypes(user.businessTypes);
+            delete user.businessTypes;
+            
+            yield call(fetchAPI, 'PUT', '/managers', null, _.omit(user, "businessTypes"));
 
             yield put(updateUser(user));
 

@@ -11,7 +11,7 @@ import moment from 'moment';
 // proj
 import { fetchWarehouses } from 'core/warehouses/duck';
 import { Layout } from 'commons';
-import { permissions, isForbidden } from 'utils';
+import { permissions, isForbidden, fetchAPI } from 'utils';
 
 // own
 const Option = Select.Option;
@@ -144,86 +144,49 @@ class WarehousesPage extends Component {
         ]
     }
 
-    getWarehouses() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + '/warehouses';
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
+    getWarehouses = async () => {
+        const data = await fetchAPI('GET', 'warehouses');
+        this.setState({
+            dataSource: data,
         })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            var isMain = false,
+
+        var isMain = false,
                 isReserve = false,
                 isTool = false,
                 isRepairArea = false;
-            data.map((warehouse, i)=>{
-                warehouse.key = i;
-                if(warehouse.attribute == MAIN) {
-                    isMain = true;
-                }
-                if(warehouse.attribute == RESERVE) {
-                    isReserve = true;
-                }
-                if(warehouse.attribute == TOOL) {
-                    isTool = true;
-                }
-                if(warehouse.attribute == REPAIR_AREA) {
-                    isRepairArea = true;
-                }
-            })
-            that.setState({
-                warehouses: data,
-                isMain: isMain,
-                isReserve: isReserve,
-                isTool: isTool,
-                isRepairArea: isRepairArea,
-            })
+        data.map((warehouse, i)=>{
+            warehouse.key = i;
+            if(warehouse.attribute == MAIN) {
+                isMain = true;
+            }
+            if(warehouse.attribute == RESERVE) {
+                isReserve = true;
+            }
+            if(warehouse.attribute == TOOL) {
+                isTool = true;
+            }
+            if(warehouse.attribute == REPAIR_AREA) {
+                isRepairArea = true;
+            }
         })
-        .catch(function (error) {
-            console.log('error', error)
-        });
+        this.setState({
+            warehouses: data,
+            isMain: isMain,
+            isReserve: isReserve,
+            isTool: isTool,
+            isRepairArea: isRepairArea,
+        })
     }
 
-    deleteWarehouse(id) {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/warehouses/${id}`;
-        fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.getWarehouses()
-        })
-        .catch(function (error) {
-            console.log('error', error);
+    deleteWarehouse= async (id) => {
+        try {
+            await fetchAPI('DELETE', `warehouses/${id}`, undefined, undefined, {handleErrorInternally: true});
+            await this.getWarehouses();
+        } catch(e) {
             notification.error({
                 message: 'Этот склад нельзя удалить',
             });
-        });
+        }
     }
 
     componentDidMount() {
@@ -293,42 +256,18 @@ class AddWarehousesModal extends Component {
         }
     }
 
-    postWarehouse() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + '/warehouses';
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Authorization': token,
-            },
-            body: JSON.stringify({
+    postWarehouse = async () => {
+        await fetchAPI('POST', `warehouses`, undefined, {
                 name: this.state.name,
                 attribute: this.state.attribute || null,
                 considerQuantity: this.state.considerQuantity,
-            })
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.props.getWarehouses();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
+            }, 
+            {handleErrorInternally: true}
+        );
+        await this.props.getWarehouses();
     }
 
-    editWarehouse() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/warehouses/${this.props.warehouse.id}`;
+    editWarehouse = async () => {
         const editData = {
             name: this.state.name,
             attribute: this.state.attribute,
@@ -337,29 +276,10 @@ class AddWarehousesModal extends Component {
 
         if(!this.state.attribute) delete editData.attribute;
 
-
-        fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Authorization': token,
-            },
-            body: JSON.stringify(editData)
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.props.getWarehouses()
-        })
-        .catch(function (error) {
-            console.log('error', error);
-        });
+        await fetchAPI('PUT', `warehouses/${this.props.warehouse.id}`, undefined, editData, 
+            {handleErrorInternally: true}
+        );
+        await this.props.getWarehouses();
     }
 
     handleOk = () => {

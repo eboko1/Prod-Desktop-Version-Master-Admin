@@ -438,6 +438,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             servicesMode
                             reloadOrderForm={this.props.reloadOrderForm}
                             laborTimeMultiplier={this.props.laborTimeMultiplier}
+                            orderId={orderId}
                         />
                     </TabPane>
                 )}
@@ -516,6 +517,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             fetchedOrder={fetchedOrder}
                             detailsMode
                             reloadOrderForm={this.props.reloadOrderForm}
+                            orderId={orderId}
                         />
                     </TabPane>
                 )}

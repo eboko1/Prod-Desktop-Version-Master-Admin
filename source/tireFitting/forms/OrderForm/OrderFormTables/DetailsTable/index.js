@@ -374,7 +374,8 @@ class DetailsTable extends Component {
     }
 
     render() {
-        const { 
+        const {
+            orderFetching,
             detailsSuggestionsFetching,
             suggestionsFetching,
             labors,

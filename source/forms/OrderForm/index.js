@@ -7,7 +7,6 @@ import _ from "lodash";
 import moment from "moment";
 
 //proj
-import { API_URL } from "core/forms/orderDiagnosticForm/saga";
 import {
     onChangeOrderForm,
     setClientSelection,
@@ -81,11 +80,8 @@ export class OrderForm extends React.PureComponent {
             formValues: {},
             labors: [],
             details: [],
+            fetchedOrder: undefined,
         };
-        this.orderDetails = [...props.orderDetails];
-        this.orderServices = [...props.orderServices];
-        this.totalSumWithTax = props.order.totalSumWithTax;
-        this.isTaxPayer = props.order.isTaxPayer;
     }
 
     _isMounted = false;
@@ -123,13 +119,13 @@ export class OrderForm extends React.PureComponent {
         });
     };
 
-    _reloadOrderForm = (callback, type, reloadRepairMap) => {
+    _reloadOrderForm = (callback, type = 'all', reloadRepairMap) => {
         const onlyLabors = type == 'labors' || type == 'all',
               onlyDetails = type == 'details' || type == 'all';
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
-        let url = API_URL;
-        let params = `/orders/${this.props.orderId}?onlyLabors=${onlyLabors}&onlyDetails=${onlyDetails}`;
+        let url = __API_URL__;
+        let params = `/orders/${this.props.orderId}?onlyLabors=true&onlyDetails=true`;
         url += params;
         fetch(url, {
             method: "GET",
@@ -147,16 +143,12 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
-                if(onlyDetails) {
-                    that.orderDetails = data.orderDetails;
-                }
-                if(onlyLabors) {
-                    that.orderServices = data.orderServices;
-                }
-                that.totalSumWithTax = data.order.totalSumWithTax;
+                console.log(data);
                 if(callback) callback(data);
                 if(reloadRepairMap) that.props.fetchRepairMapData(); 
-                that.forceUpdate();
+                that.setState({
+                    fetchedOrder: data,
+                })
             })
             .catch(function(error) {
                 console.log("error", error);
@@ -180,7 +172,7 @@ export class OrderForm extends React.PureComponent {
         
         var that = this;
         let token = localStorage.getItem("_my.carbook.pro_token");
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/orders/${this.props.orderId}`;
         url += params;
         fetch(url, {
@@ -201,7 +193,7 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
-                //that.props.onStatusChange(that.props.orderStatus);
+                that._reloadOrderForm();
                 that.props.fetchOrderForm(that.props.orderId);
             })
             .catch(function(error) {
@@ -236,6 +228,7 @@ export class OrderForm extends React.PureComponent {
         // TODO in order to fix late getFieldDecorator invoke for services
         //this.setState({ initialized: true });
         //this.props.selectedClient.vehicles.push(this.props.vehicle);
+        this._reloadOrderForm();
         this._isMounted = true;
         if (this._isMounted && this.props.allDetails.brands.length) {
             this._fetchLaborsAndDetails();
@@ -283,6 +276,10 @@ export class OrderForm extends React.PureComponent {
                 deliveryDate:  _.get(formValues, "stationLoads[0].beginDate", undefined),
             });
         }
+
+        if(!this.state.fetchedOrder) {
+            this._reloadOrderForm();
+        }
     }
 
     _saveFormRef = formRef => {
@@ -326,14 +323,12 @@ export class OrderForm extends React.PureComponent {
             searchClientsResult,
             setClientSelection,
             selectedClient,
-            order,
             cashSum,
             cashFlowFilters,
             setAddClientModal,
             schedule,
             stations,
             businessLocations,
-            fetchedOrder,
             managers,
             employees,
             requisites,
@@ -399,38 +394,28 @@ export class OrderForm extends React.PureComponent {
             "requisite",
         ]);
 
-        let priceDetails = 0;
-        for (let i = 0; i < this.orderDetails.length; i++) {
-            if (this.orderDetails[i].agreement != "REJECTED") {
-                priceDetails += this.orderDetails[i].sum;
-            }
-        }
-        //priceDetails = Math.round(priceDetails);
-
-        let priceServices = 0;
-        for (let i = 0; i < this.orderServices.length; i++) {
-            if (this.orderServices[i].agreement != "REJECTED") {
-                priceServices += this.orderServices[i].sum;
-            }
-        }
-        //priceServices = Math.round(priceServices);
-
-        const servicesDiscount = _.get(formFieldsValues, "servicesDiscount", 0);
-        const detailsDiscount = _.get(formFieldsValues, "detailsDiscount", 0);
-
         const tabs = this._renderTabs(formFieldsValues);
 
-        const detailsTotalPrice =
-            priceDetails - priceDetails * (detailsDiscount / 100);
-        const servicesTotalPrice =
-            priceServices - priceServices * (servicesDiscount / 100);
+        const { fetchedOrder } = this.state;
+        const order = _.get(fetchedOrder, "order", {});
 
-        const totalPrice = Math.round((detailsTotalPrice + servicesTotalPrice)*100)/100;
-        const totalSumWithTax = this.totalSumWithTax;
-        const isTaxPayer = this.isTaxPayer;
+        const { 
+            totalSum, 
+            totalSumWithTax, 
+            isTaxPayer,
+            servicesDiscount,
+            servicesSum,
+            servicesSumDiscount,
+            servicesTotalSum,
+            detailsDiscount,
+            detailsSum,
+            detailsSumDiscount,
+            detailsTotalSum,
+        } = order;
+
         const remainPrice = isTaxPayer ? 
-                Math.round((totalSumWithTax - cashSum)*100)/100 : 
-                Math.round((totalPrice - cashSum)*100)/100;
+            Math.round((totalSumWithTax - cashSum)*100)/100 : 
+            Math.round((totalSum - cashSum)*100)/100;
 
         return (
             <Form className={Styles.form} layout="horizontal">
@@ -455,7 +440,7 @@ export class OrderForm extends React.PureComponent {
                     servicesDiscount={servicesDiscount}
                     stations={stations}
                     totalHours={totalHours}
-                    totalPrice={totalPrice}
+                    totalPrice={totalSum}
                     user={user}
                     zeroStationLoadBeginDate={zeroStationLoadBeginDate}
                     zeroStationLoadBeginTime={zeroStationLoadBeginTime}
@@ -530,44 +515,6 @@ export class OrderForm extends React.PureComponent {
 
         const tecdocId = this._getTecdocId();
 
-        var countDetails = this.orderDetails.length,
-            priceDetails = 0,
-            totalDetailsProfit = 0,
-            detailsDiscount = this.props.fields.detailsDiscount
-                ? this.props.fields.detailsDiscount.value
-                : this.props.order.detailsDiscount;
-        for (let i = 0; i < this.orderDetails.length; i++) {
-            if (this.orderDetails[i].agreement != "REJECTED") {
-                priceDetails += this.orderDetails[i].sum;
-                totalDetailsProfit +=
-                    this.orderDetails[i].sum -
-                    (this.orderDetails[i].sum * detailsDiscount) / 100 -
-                    this.orderDetails[i].purchasePrice *
-                        this.orderDetails[i].count;
-            }
-        }
-        priceDetails = Math.round(priceDetails);
-        totalDetailsProfit = Math.round(totalDetailsProfit);
-
-        var countServices = this.orderServices.length,
-            priceServices = 0,
-            totalServicesProfit = 0,
-            servicesDiscount = this.props.fields.servicesDiscount
-                ? this.props.fields.servicesDiscount.value
-                : this.props.order.servicesDiscount;
-        for (let i = 0; i < this.orderServices.length; i++) {
-            if (this.orderServices[i].agreement != "REJECTED") {
-                priceServices += this.orderServices[i].sum;
-                totalServicesProfit +=
-                    this.orderServices[i].sum -
-                    (this.orderServices[i].sum * servicesDiscount) / 100 -
-                    this.orderServices[i].purchasePrice *
-                        this.orderServices[i].count;
-            }
-        }
-        priceServices = Math.round(priceServices);
-        totalServicesProfit = Math.round(totalServicesProfit);
-
         // _.values(value).some(_.isNil) gets only filled rows
         const stationsCount = _.get(formFieldsValues, "stationLoads", [])
             .filter(Boolean)
@@ -599,8 +546,6 @@ export class OrderForm extends React.PureComponent {
 
             orderCalls,
             orderHistory,
-            orderServices,
-            orderDetails,
             orderDiagnostic,
             allServices,
             allDetails,
@@ -608,7 +553,6 @@ export class OrderForm extends React.PureComponent {
             selectedClient,
             detailsSuggestions,
             suggestions,
-            fetchedOrder,
             user,
             stations,
 
@@ -635,6 +579,8 @@ export class OrderForm extends React.PureComponent {
             focusOnRef,
             showCahOrderModal,
         } = this.props;
+
+        const { fetchedOrder } = this.state;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
             "comment",
@@ -665,6 +611,34 @@ export class OrderForm extends React.PureComponent {
             (this._bodyUpdateIsForbidden()
                 ? void 0
                 : _.get(location, "state.stationNum"));
+
+        const order = _.get(fetchedOrder, "order", {});
+        const { 
+            totalSum, 
+            totalSumWithTax, 
+            isTaxPayer,
+            servicesDiscount,
+            servicesSum,
+            servicesSumDiscount,
+            servicesTotalSum,
+            detailsDiscount,
+            detailsSum,
+            detailsSumDiscount,
+            detailsTotalSum,
+        } = order;
+
+        const orderServices = _.get(fetchedOrder, "orderServices", []);
+        const orderDetails = _.get(fetchedOrder, "orderDetails", []);
+        let totalDetailsProfit = detailsTotalSum;
+        let totalServicesProfit = servicesTotalSum;
+
+        orderDetails.map(({purchasePrice})=>{
+            totalDetailsProfit -= purchasePrice;
+        });
+        orderServices.map(({purchasePrice})=>{
+            totalServicesProfit -= purchasePrice;
+        })
+
         return (
             <OrderFormTabs
                 orderStatus={this.props.order.status}
@@ -688,8 +662,8 @@ export class OrderForm extends React.PureComponent {
                 suggestionsFetching={suggestionsFetching}
                 orderCalls={orderCalls}
                 orderHistory={orderHistory}
-                orderServices={this.orderServices}
-                orderDetails={this.orderDetails}
+                orderServices={orderServices}
+                orderDetails={orderDetails}
                 orderDiagnostic={orderDiagnostic}
                 labors={allServices}
                 allDetails={allDetails}
@@ -713,10 +687,10 @@ export class OrderForm extends React.PureComponent {
                 orderTasks={orderTasks}
                 stationLoads={stationLoads}
                 schedule={schedule}
-                priceServices={priceServices}
-                priceDetails={priceDetails}
-                countServices={countServices}
-                countDetails={countDetails}
+                priceServices={servicesSum}
+                priceDetails={detailsSum}
+                countServices={orderServices.length}
+                countDetails={orderDetails.length}
                 totalDetailsProfit={totalDetailsProfit}
                 totalServicesProfit={totalServicesProfit}
                 commentsCount={commentsCount}

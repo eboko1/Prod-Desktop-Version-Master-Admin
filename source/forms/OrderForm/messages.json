@@ -128,7 +128,17 @@
         "order_form_table.fields_filter": "Fields filter",
         "stock_table.create_order_to_supplier": "Create and record an order to supplier {name} for this order?",
         "stock_table.create_order_income": "Accept delivery from {name} to the warehouse for this order?",
-        "services_table.complexes": "Complexes"
+        "services_table.complexes": "Complexes",
+        "tire.vehicleType": "Vehicle type",
+        "tire.priceGroup": "Price group",
+        "tire.radius": "Radius",
+        "tire.minRadius": "Radius from",
+        "tire.maxRadius": "Radius to",
+        "tire.defaultRadius": "Default Radius",
+        "tire.group": "Group",
+        "tire.name": "Name",
+        "order_form_table.external_id": "Own code"
+        
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -259,7 +269,16 @@
         "order_form_table.fields_filter": "Фильтр полей",
         "stock_table.create_order_to_supplier": "Створити і врахувати замовлення постачальнику {name} по цьому н/з?",
         "stock_table.create_order_income": "Прийняти на склад поставку від {name} по цьому н/з?",
-        "services_table.complexes": "Комплексы"
+        "services_table.complexes": "Комплексы",
+        "tire.vehicleType": "Тип авто",
+        "tire.priceGroup": "Ценовая группа",
+        "tire.radius": "Радиус",
+        "tire.minRadius": "Радиус от",
+        "tire.maxRadius": "Радиус до",
+        "tire.defaultRadius": "Стандартный радиус",
+        "tire.group": "Группа",
+        "tire.name": "Название",
+        "order_form_table.external_id": "Свой код"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -390,6 +409,15 @@
         "order_form_table.fields_filter": "Фільтр значень",
         "stock_table.create_order_to_supplier": "Создать и учесть заказ поставщику {name} по данному н/з?",
         "stock_table.create_order_income": "Принять на склад поставку от {name} по данному н/з?",
-        "services_table.complexes": "Комплекси"
+        "services_table.complexes": "Комплекси",
+        "tire.vehicleType": "Тип авто",
+        "tire.priceGroup": "Цінова група",
+        "tire.radius": "Радіус",
+        "tire.minRadius": "Радіус від",
+        "tire.maxRadius": "Радіус до",
+        "tire.defaultRadius": "Стандартний радіус",
+        "tire.group": "Група",
+        "tire.name": "Найменування",
+        "order_form_table.external_id": "Свій код"
     }
 }

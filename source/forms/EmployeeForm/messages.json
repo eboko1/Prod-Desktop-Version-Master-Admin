@@ -74,7 +74,7 @@
 		"employee.password": "Пароль",
 		"employee.password.placeholder": "Вкажіть новий пароль",
 		"employee.password.lenght": "Мінімум 6 символів",
-		"employee.manager_access": "Менеджерській доступ",
+		"employee.manager_access": "Менеджерський доступ",
 		"employee.is_mechanic": "Механік",
 		"employee.is_cashier": "Касир",
 		"employee.cashier_api_token": "ЕЦП",

@@ -3,6 +3,7 @@
     background-color: white;
     height: 110px;
     width: 100%;
+    padding: 0px 8px;
 }
 
 .statsCont{
@@ -35,4 +36,15 @@
     color: rgb(100, 100, 100);
     font-size: 0.8em;
     text-align: center;
+}
+
+@media screen and (max-width: 1199px) {
+    .statsMainCont {
+        overflow-x: scroll;
+        overflow-y: hidden;
+    }
+
+    .statsCont{
+        width: max-content;
+    }
 }

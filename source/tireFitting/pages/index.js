@@ -15,6 +15,8 @@ import OrderPage from './OrderPage';
 import ReportOrdersPage from './ReportOrdersPage';
 import ChartPage from './ChartPage';
 import ManagerRolePage from './ManagerRolePage';
+import VehicleTypesPage from './VehicleTypesPage';
+import TirePriceGroupsPage from './TirePriceGroupsPage';
 
 export {
     DashboardPage,
@@ -34,4 +36,6 @@ export {
     ReportOrdersPage,
     ChartPage,
     ManagerRolePage,
+    VehicleTypesPage,
+    TirePriceGroupsPage,
 }

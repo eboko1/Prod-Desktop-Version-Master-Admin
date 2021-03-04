@@ -1,3 +1,81 @@
+.mobileRecordFormFooter {
+    display: flex;
+    justify-content: space-around;
+    margin: 24px 48px;
+}
+
+.mobileRecordSubmitBtn {
+    margin: 0 10px;
+    flex: 0 1 40%;
+}
+
+.datePanelItem :global(.ant-calendar-picker),
+.datePanelItem :global(.ant-time-picker) {
+    width: 100%;
+}
+
+.mobileRecordFormTimePicker {
+    width: 100%;
+}
+
+.client {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.clientSearchField {
+    width: 100%;
+}
+
+.addClientIcon {
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--primary);
+    font-weight: bold;
+    margin: 4px 0 0 4px;
+}
+
+.totalBlock {
+    display: flex;
+    justify-content: space-between;
+    margin: 14px 0;
+}
+
+.sum {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 6px 8px 4px;
+}
+
+.sumWrapper {
+    margin: 4px 0;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sumNumeral {
+    margin-left: 8px;
+}
+
+.totalSumWrap {
+    background: var(--static);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 8px;
+    flex-wrap: wrap;
+}
+
+.totalSum {
+    margin-left: 8px;
+    text-decoration: underline;
+    white-space: nowrap;
+}
+
 .clientBlock {
     display: flex;
     flex-direction: column;
@@ -5,14 +83,14 @@
 }
 
 .clientData, .commentsBlock {
-    display: flex;
+    display: block;
     justify-content: space-between;
 }
 
 .client {
     display: flex;
     align-items: center;
-    width: 45%;
+    width: 100%;
 }
 
 .carNumbers, .clientsInfo {
@@ -32,10 +110,6 @@
     flex: 0 1 50%;
 }
 
-.location {
-    flex: 0 1 50%;
-}
-
 .clientSearchField {
     flex: 1 1 auto;
 }
@@ -45,7 +119,6 @@
     cursor: pointer;
     color: var(--primary);
     font-weight: bold;
-    margin: 20px 0 0 10px;
 }
 
 .iconsCol {
@@ -65,7 +138,6 @@
     font-size: 16px;
     cursor: pointer;
     color: var(--link);
-    vertical-align: text-bottom;
 }
 
 .bodyColumn {
@@ -100,7 +172,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0px 11px;
+    padding: 0 11px;
 }
 
 .vehicleInfo {
@@ -123,30 +195,6 @@
     height: fit-content;
     white-space: nowrap;
     margin: 0 0 0 8px;
-
-    & i {
-        opacity: 0;
-    }
-
-    &:hover i {
-        opacity: 1;
-    }
-}
-
-.vehicleType {
-    min-width: 115px;
-    padding: 4px;
-
-    & :global(.ant-select-selection.ant-select-selection--single) {
-        border-radius: 0;
-        font-size: 16px;
-        font-weight: 700;
-        background: var(--db_reserve);
-        border: none;
-        -webkit-box-shadow: inset 0px 0px 0px 1px #000;
-        -moz-box-shadow: inset 0px 0px 0px 1px #000;
-        box-shadow: inset 0px 0px 0px 1px #000;
-    }
 }
 
 .comboFieldSelect {
@@ -172,8 +220,15 @@
     outline: none;
 }
 
+.contentWrapper :global(#clientVehicle) {
+    background-color: var(--static);
+    & :global(.ant-select-selection-selected-value) {
+        white-space: normal;
+    }
+}
+
 .odometr {
-    flex: 1 1 50%;
+    flex: 1 1 100%;
 }
 
 .odometr :global(.ant-input-number) {

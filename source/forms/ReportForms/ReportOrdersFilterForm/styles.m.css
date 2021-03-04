@@ -42,3 +42,50 @@
     display: block !important;
     width: 100% !important;
 }
+
+@media (max-width: 767px) {
+    .formContent {
+        display: block;
+    }
+
+    .filterBlock {
+        & :global(.ant-col-2) {
+            width: 10%;
+        }
+        & :global(.ant-col-4) {
+            width: 100%;
+            padding: 4px 0;
+            & * {
+                width: 100%;
+                margin: 0;
+            }
+        }
+        & :global(.ant-col-6) {
+            width: 90%;
+            padding: 4px 0;
+            & span:global(.ant-calendar-picker) {
+                width: 100%;
+            }
+        }
+        & :global(.ant-col-14) {
+            width: 100%;
+        }
+    }
+
+    .row {
+        padding: 0;
+        flex-wrap: wrap;
+    }
+
+    .colText {
+        display: block;
+        padding: 0px;
+        width: 100%;
+        font-weight: 18px;
+        font-weight: 500;
+    }
+
+    .col {    
+        padding: 2px 0px;
+    }
+}
