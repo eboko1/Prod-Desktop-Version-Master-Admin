@@ -366,11 +366,11 @@ export class AddClientVehicleForm extends Component {
                         formItemLayout={formItemLayout}
                         hasFeedback
                         label={
-                            <FormattedMessage id="vehicleTypeId" />
+                            <FormattedMessage id="tire.vehicleType" />
                         }
                         getFieldDecorator={getFieldDecorator}
                         placeholder={
-                            <FormattedMessage id="vehicleTypeId" />
+                            <FormattedMessage id="tire.vehicleType" />
                         }
                         getPopupContainer={trigger => trigger.parentNode}
                         onChange={(value, option)=>{
@@ -393,7 +393,7 @@ export class AddClientVehicleForm extends Component {
                         formItemLayout={formItemLayout}
                         hasFeedback
                         label={
-                            <FormattedMessage id='wheelRadius' />
+                            <FormattedMessage id='tire.radius' />
                         }
                         min={ 0 }
                         max={ 100 }

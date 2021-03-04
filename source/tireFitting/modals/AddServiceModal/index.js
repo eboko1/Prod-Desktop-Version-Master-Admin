@@ -25,13 +25,10 @@ class AddServiceModal extends React.Component{
             laborSearchValue: "",
         }
         this.labors = [];
-        this.masterLabors = [];
-        this.storeGroups = [];
-        this.laborsTreeData = [];
-        this.brandOptions = [];
+        this.priceGroups = [];
         this.servicesOptions = [];
         this.employeeOptions = [];
-        this.tirePriceGroupsOptions = [];
+        this.priceGroupsOptions = [];
 
         this.mainTableColumns = [
             {
@@ -52,7 +49,8 @@ class AddServiceModal extends React.Component{
                             filterOption={(input, option) => {
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0 ||
+                                    String(option.props.cross_id).indexOf(input.toLowerCase()) >= 0
                                 )
                             }}
                             onChange={(value, option)=>{
@@ -96,6 +94,7 @@ class AddServiceModal extends React.Component{
                                             product_id={elem.productId}
                                             norm_hours={elem.normHours}
                                             price={elem.price}
+                                            cross_id={elem.crossId}
                                         >
                                             {elem.name ? elem.name : elem.defaultName}
                                         </Option>
@@ -118,7 +117,7 @@ class AddServiceModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="priceGroup" />,
+                title:  <FormattedMessage id="tire.priceGroup" />,
                 key:       'priceGroup',
                 dataIndex: 'priceGroup',
                 render: (data, elem)=>{
@@ -126,10 +125,10 @@ class AddServiceModal extends React.Component{
                         <Select
                             allowClear
                             showSearch
-                            placeholder={this.props.intl.formatMessage({id: 'priceGroup'})}
+                            placeholder={this.props.intl.formatMessage({id: 'tire.priceGroup'})}
                             value={data ? data : undefined}
-                            style={{minWidth: 80}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", maxWidth: '95%'}}
+                            style={{minWidth: 200}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999"}}
                             filterOption={(input, option) => {
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -141,14 +140,14 @@ class AddServiceModal extends React.Component{
                                 this.setState({});
                             }}
                         >
-                            {this.tirePriceGroupsOptions}
+                            {this.priceGroupsOptions}
                         </Select>
                     )
                 }
             },
             {
                 title:  <FormattedMessage id="services_table.employee" />,
-                key:       'employeeId',
+                key:       'employee',
                 dataIndex: 'employeeId',
                 render: (data, elem)=>{
                     return (
@@ -157,7 +156,7 @@ class AddServiceModal extends React.Component{
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.employee'})}
                             value={data ? data : undefined}
-                            style={{minWidth: 80}}
+                            style={{minWidth: 180}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", maxWidth: '95%'}}
                             filterOption={(input, option) => {
                                 return (
@@ -332,7 +331,7 @@ class AddServiceModal extends React.Component{
             radius: Math.round(clientVehicleRadius),
         })
         console.log(price);
-        if(price) {
+        if(price && price.price) {
             this.state.mainTableSource[0].price = price.price;
             this.setState({});
         }
@@ -403,18 +402,22 @@ class AddServiceModal extends React.Component{
         }
     }
 
-    fetchData() {
-        this.masterLabors = this.props.masterLabors;
+    fetchData = () => {
         this.labors = this.props.labors;
-        this.storeGroups = this.props.details;
         this.getOptions();
     }
 
-    getOptions() {
+    getOptions = async () => {
+        this.priceGroups = await fetchAPI('GET', 'tire_station_price_groups');
         this.servicesOptions = [...this.labors];
         this.employeeOptions = this.props.employees.map((elem, i)=>(
             <Option key={i} value={elem.id}>
                 {elem.name} {elem.surname}
+            </Option>
+        ));
+        this.priceGroupsOptions = this.priceGroups.map((elem, i)=>(
+            <Option key={i} value={elem.id}>
+                {elem.name}
             </Option>
         ))
     };
@@ -466,8 +469,21 @@ class AddServiceModal extends React.Component{
 
         return columns.map(({title, key, render, dataIndex})=>{
             return (
-                <div className={`${Styles.mobileTable} ${(key == 'price' || key == 'count' || key == 'sum') && Styles.mobileTableNumber}`} key={key}>
-                    {title}
+                <div 
+                    className={
+                        `${Styles.mobileTable} ${
+                            (key == 'price' || key == 'count') && Styles.mobileTableNumber
+                        } ${
+                            (key == 'employee') && Styles.mobileTableEmployee
+                        } ${
+                            (key == 'comment') && Styles.mobileTableComment
+                        } ${
+                            (key == 'sum') && Styles.mobileTableSum
+                        } `
+                    } 
+                    key={key}
+                >
+                    {key != 'comment' && title}
                     <div>
                         {dataIndex ? 
                             render(dataSource[dataIndex], dataSource) :
@@ -491,6 +507,8 @@ class AddServiceModal extends React.Component{
             
             if(!editing) {
                 this.state.mainTableSource[0].employeeId = this.props.defaultEmployeeId;
+                const priceGroup = this.priceGroups.find(({id})=>id == this.props.clientVehicleTypeId);
+                if(priceGroup) this.state.mainTableSource[0].priceGroup = priceGroup.id;
             }
             
             this.setState({
@@ -501,7 +519,7 @@ class AddServiceModal extends React.Component{
 
     render() {
         const { visible, isMobile } = this.props;
-        const { relatedServicesCheckbox, mainTableSource, relatedServices, editing } = this.state;
+        const { mainTableSource, editing } = this.state;
         return (
             <>
                 <Modal

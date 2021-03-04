@@ -10,7 +10,7 @@ import {
 } from "core/forms/profileForm/duck";
 
 import { DecoratedInput, DecoratedSelect } from "forms/DecoratedFields";
-import { withReduxForm2 } from "utils";
+import { withReduxForm2, getBusinessTypes, isAdmin } from "utils";
 
 //own
 import Styles from "./styles.m.css";
@@ -61,6 +61,8 @@ export class ProfileForm extends Component {
             form: { getFieldDecorator },
             intl: { formatMessage },
         } = this.props;
+
+        const businessTypes = getBusinessTypes();
 
         return (
             <Form className={Styles.profileForm}>
@@ -125,6 +127,25 @@ export class ProfileForm extends Component {
                     <Option value="ua">Українська</Option>
                     <Option value="ru">Русский</Option>
                 </DecoratedSelect>
+                {isAdmin(user) &&
+                    <DecoratedSelect
+                        field="businessTypes"
+                        formItem
+                        formItemLayout={formItemLayout}
+                        getFieldDecorator={getFieldDecorator}
+                        label={<FormattedMessage id="profile-form.business_types" />}
+                        placeholder={formatMessage({
+                            id: "profile-form.business_types",
+                        })}
+                        initialValue={businessTypes}
+                        onChange={(value)=>{
+                            
+                        }}
+                    >   
+                        <Option value="DEFAULT">СТО</Option>
+                        <Option value="TIRE_STATION">Шиномонтаж</Option>
+                    </DecoratedSelect>
+                }
                 <Button
                     type="primary"
                     className={Styles.saveBtn}
