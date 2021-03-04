@@ -153,21 +153,12 @@ export default class CashFlowFilter extends React.Component {
                 <div className={Styles.selectCont}>
                     <Select
                         style={{width: '100%'}}
-                        allowClear
-                        showSearch
+                        filterOption={false}
+                        showSearch={false}
                         mode="multiple" //To enable multiple select
                         placeholder={formatMessage({id: 'report_cash_flow_page.analytics'})}
                         disabled={cashboxesIsFetching}
                         onChange={this.onAnalyticsSelect}
-                        filterOption={(input, option) => {
-                            const inputedText = input ? input.toLowerCase() : "";
-                            const children = option.props.children ? option.props.children : "";
-                            
-                            return (
-                                children.toLowerCase().indexOf(inputedText) >= 0 || 
-                                String(option.props.value).indexOf(inputedText) >= 0
-                            );
-                        }}
                     >
                         {_.map(filteredAnalytics, ans => (
                             <Select.Option key={ans.analyticsUniqueId} value={ans.analyticsUniqueId}>
