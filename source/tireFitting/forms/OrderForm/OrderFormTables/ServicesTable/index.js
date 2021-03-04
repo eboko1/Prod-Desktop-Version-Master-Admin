@@ -297,6 +297,11 @@ class ServicesTable extends Component {
                     employeeId:    labor.employeeId || null,
                     count:         labor.count,
                     servicePrice:  Math.round(labor.price * 10) / 10,
+                    tireStationPriceGroupId: labor.tireStationPriceGroupId,
+                    comment: labor.comment || {
+                        comment: undefined,
+                        positions: [],
+                    },
                 },
             ],
         };
@@ -416,7 +421,7 @@ class ServicesTable extends Component {
     }
 
     render() {
-        const { isMobile, orderFetching } = this.props;
+        const { isMobile, orderFetching, clientVehicleTypeId, clientVehicleRadius } = this.props;
         if (
             !isMobile && (
                 this.state.dataSource.length == 0 ||
@@ -497,6 +502,8 @@ class ServicesTable extends Component {
                     labors={ this.props.labors }
                     details={ this.props.details }
                     detailsTreeData={this.props.detailsTreeData}
+                    clientVehicleTypeId={clientVehicleTypeId}
+                    clientVehicleRadius={clientVehicleRadius}
                 />
             </Catcher>
         );

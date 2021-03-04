@@ -699,7 +699,9 @@ export class CashOrderForm extends Component {
             analytics,
             activeCashOrder,
             onOpenAnalyticsModal,
-            fromOrder
+            fromOrder,
+            fromClient,
+            fromStoreDoc,
         } = this.props;
 
         const cashOrderId = getFieldValue("id");
@@ -831,7 +833,7 @@ export class CashOrderForm extends Component {
                         getPopupContainer={trigger => trigger.parentNode}
                         formItemLayout={formItemLayout}
                         className={Styles.styledFormItem}
-                        disabled={printMode}
+                        disabled={printMode || fromOrder || fromClient || fromStoreDoc}
                         onSelect={type => this._setCounterpartyType(type)}
                     >
                         {Object.values(cashOrderCounterpartyTypes).map(type => (

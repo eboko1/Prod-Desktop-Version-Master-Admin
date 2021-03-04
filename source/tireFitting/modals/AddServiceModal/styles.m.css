@@ -16,12 +16,15 @@
     padding-bottom: 10px;
 }
 
-.groupsTreeSelect {
-
+.mobileTableEmployee {
+    width: 84%;
+    display: inline-block;
 }
 
-.groupTreeOption {
-    
+.mobileTableComment {
+    width: 16%;
+    display: inline-block;
+    text-align: end;
 }
 
 .mobileTable {
@@ -31,6 +34,12 @@
 .mobileTableNumber {
     width: 33%;
     display: inline-block;
+}
+
+.mobileTableSum {
+    width: 33%;
+    display: inline-block;
+    text-align: end;
 }
 
 /* Commentary Button */

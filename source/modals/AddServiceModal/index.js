@@ -135,7 +135,8 @@ class AddServiceModal extends React.Component{
                             filterOption={(input, option) => {
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0 ||
+                                    String(option.props.cross_id).indexOf(input.toLowerCase()) >= 0
                                 )
                             }}
                             onChange={(value, option)=>{
@@ -180,6 +181,7 @@ class AddServiceModal extends React.Component{
                                             product_id={elem.productId}
                                             norm_hours={elem.normHours}
                                             price={elem.price}
+                                            cross_id={elem.crossId}
                                         >
                                             {elem.name ? elem.name : elem.defaultName}
                                         </Option>

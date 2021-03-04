@@ -39,19 +39,69 @@ export default class VehicleTypesPage extends Component {
 
         this.columns = [
             {
-                title:     <FormattedMessage id='id'/>,
-                key:       'id',
-                dataIndex: 'id',
-                width:     'auto',
-            },
-            {
-                title:      <FormattedMessage id='name'/>,
+                title:      <FormattedMessage id='tire.name'/>,
                 key:       'name',
                 dataIndex: 'name',
                 width:     'auto',
             },
             {
-                title:     <FormattedMessage id='visible'/>,
+                title:     <FormattedMessage id='tire.minRadius'/>,
+                key:       'minRadius',
+                dataIndex: 'minRadius',
+                width:     'auto',
+                render:     (data, elem)=>{
+                    return (
+                        <InputNumber
+                            min={0}
+                            max={Number(elem.maxRadius)}
+                            value={Math.round(data)}
+                            onChange={(value)=>{
+                                elem.minRadius = value;
+                                this.updateType(elem);
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='tire.maxRadius'/>,
+                key:       'maxRadius',
+                dataIndex: 'maxRadius',
+                width:     'auto',
+                render:     (data, elem)=>{
+                    return (
+                        <InputNumber
+                            min={Number(elem.minRadius)}
+                            value={Math.round(data)}
+                            onChange={(value)=>{
+                                elem.maxRadius = value;
+                                this.updateType(elem);
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='tire.defaultRadius'/>,
+                key:       'defaultRadius',
+                dataIndex: 'defaultRadius',
+                width:     'auto',
+                render:     (data, elem)=>{
+                    return (
+                        <InputNumber
+                            min={Number(elem.minRadius)}
+                            max={Number(elem.maxRadius)}
+                            value={Math.round(data)}
+                            onChange={(value)=>{
+                                elem.defaultRadius = value;
+                                this.updateType(elem);
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:     <FormattedMessage id='supplier.show'/>,
                 key:       'visible',
                 dataIndex: 'visible',
                 width:     'auto',
@@ -68,68 +118,12 @@ export default class VehicleTypesPage extends Component {
                 }
             },
             {
-                title:     <FormattedMessage id='minRadius'/>,
-                key:       'minRadius',
-                dataIndex: 'minRadius',
+                key:       'undo',
                 width:     'auto',
-                render:     (data, elem)=>{
-                    return (
-                        <InputNumber
-                            min={0}
-                            max={elem.maxRadius}
-                            value={data}
-                            onChange={(value)=>{
-                                elem.minRadius = value;
-                                this.updateType(elem);
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:     <FormattedMessage id='maxRadius'/>,
-                key:       'maxRadius',
-                dataIndex: 'maxRadius',
-                width:     'auto',
-                render:     (data, elem)=>{
-                    return (
-                        <InputNumber
-                            min={elem.minRadius}
-                            value={data}
-                            onChange={(value)=>{
-                                elem.maxRadius = value;
-                                this.updateType(elem);
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:     <FormattedMessage id='defaultRadius'/>,
-                key:       'defaultRadius',
-                dataIndex: 'defaultRadius',
-                width:     'auto',
-                render:     (data, elem)=>{
-                    return (
-                        <InputNumber
-                            min={elem.minRadius}
-                            max={elem.maxRadius}
-                            value={data}
-                            onChange={(value)=>{
-                                elem.defaultRadius = value;
-                                this.updateType(elem);
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                key:       'delete',
-                width:     '5%',
                 render:     (elem)=>{
                     return (
                         <Icon
-                            type='delete'
+                            type='undo'
                             style={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD) ? {
                                 fontSize: 18,
                                 color: 'var(--text2)',
@@ -186,13 +180,13 @@ export default class VehicleTypesPage extends Component {
             headers: {
                 'Authorization': token,
             },
-            body: JSON.stringify({
+            body: JSON.stringify([{
                 id,
                 visible,
                 minRadius,
                 maxRadius,
                 defaultRadius,
-            })
+            }])
         })
         .then(function (response) {
             if (response.status !== 200) {
@@ -251,7 +245,6 @@ export default class VehicleTypesPage extends Component {
     }
 
     render() {
-        console.log(this);
         const { dataSource } = this.state;
         return (
             <Layout

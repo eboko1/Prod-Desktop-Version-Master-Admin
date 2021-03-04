@@ -5,7 +5,6 @@ import { Icon, Switch } from "antd";
 // proj
 import { images } from 'utils';
 import { permissions, isForbidden, isAdmin } from 'utils';
-import { setTireFittingToken, getTireFittingToken, removeTireFittingToken } from "utils";
 
 // own
 import Styles from './styles.m.css';
@@ -48,21 +47,6 @@ export default class ModuleHeader extends Component {
                         src={ images.carbookLogo2 }
                         alt='logo'
                     />
-                    {isAdmin(user) &&
-                        <Switch
-                            style={{
-                                marginLeft: 14,
-                                backgroundColor: !Boolean(getTireFittingToken()) && "var(--cancel)",
-                            }}
-                            checked={Boolean(getTireFittingToken())}
-                            onChange={(checked)=>{
-                                if(checked) setTireFittingToken("666");
-                                else removeTireFittingToken();
-
-                                window.location.reload();
-                            }}
-                        />
-                    }
                 </div>
                 <div
                     className={ Styles.headerMobileTitleBlock }

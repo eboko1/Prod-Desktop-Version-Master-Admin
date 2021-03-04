@@ -288,6 +288,9 @@ export default class OrderFormTabs extends React.PureComponent {
             "stationLoads",
         ]);
 
+        const clientVehicleTypeId = _.get(fetchedOrder, "order.clientVehicleTypeId");
+        const clientVehicleRadius = _.get(fetchedOrder, "order.clientVehicleRadius");
+
         return (
             <Tabs
                 type="card"
@@ -340,6 +343,9 @@ export default class OrderFormTabs extends React.PureComponent {
                             reloadOrderForm={reloadOrderForm}
                             activeKey={this.state.activeKey}
                             detailsTreeData={this.state.detailsTreeData}
+                            clientVehicleTypeId={clientVehicleTypeId}
+                            clientVehicleRadius={clientVehicleRadius}
+                            
                         />
                         <DiscountPanel
                             fields={discountTabFieldsProps}
