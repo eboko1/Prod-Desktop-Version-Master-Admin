@@ -283,9 +283,9 @@ export default {
                 {
                     key:      '/report/cash_flow',
                     disabled: false,
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.ACCESS_REPORT_TIME_EFFICIENCY) &&
-                    //     !isAdmin(user),
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_REPORT_PROFIT_FROM_BUSINESSES) &&
+                        !isAdmin(user),
                     link: book.reportCashFlow,
                     name: 'navigation.report_cash_flow',
                 },
