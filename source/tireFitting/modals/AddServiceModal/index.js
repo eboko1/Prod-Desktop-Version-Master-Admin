@@ -118,12 +118,11 @@ class AddServiceModal extends React.Component{
             },
             {
                 title:  <FormattedMessage id="tire.priceGroup" />,
-                key:       'priceGroup',
-                dataIndex: 'priceGroup',
+                key:       'tireStationPriceGroupId',
+                dataIndex: 'tireStationPriceGroupId',
                 render: (data, elem)=>{
                     return (
                         <Select
-                            allowClear
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'tire.priceGroup'})}
                             value={data ? data : undefined}
@@ -362,6 +361,7 @@ class AddServiceModal extends React.Component{
                     purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                     count: element.count ? element.count : 1,
                     servicePrice:  Math.round(element.price*10)/10 || 1,
+                    tireStationPriceGroupId: element.tireStationPriceGroupId,
                     comment: element.comment || {
                         comment: undefined,
                         positions: [],
@@ -508,7 +508,7 @@ class AddServiceModal extends React.Component{
             if(!editing) {
                 this.state.mainTableSource[0].employeeId = this.props.defaultEmployeeId;
                 const priceGroup = this.priceGroups.find(({id})=>id == this.props.clientVehicleTypeId);
-                if(priceGroup) this.state.mainTableSource[0].priceGroup = priceGroup.id;
+                if(priceGroup) this.state.mainTableSource[0].tireStationPriceGroupId = priceGroup.id;
             }
             
             this.setState({
