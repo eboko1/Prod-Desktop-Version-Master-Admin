@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { hot } from "react-hot-loader";
 
 // proj
-import { getToken, getTireFittingToken } from "utils";
+import { getToken, getBusinessTypes } from "utils";
 
 // own
 import Private from "./Private";
@@ -13,9 +13,10 @@ import { TireFittingRoutes } from "tireFitting";
 @hot(module)
 export default class Routes extends Component {
     render() {
+        const businessTypes = getBusinessTypes();
         return  !getToken() ?
                     <Public /> : 
-                    getTireFittingToken() ? 
+                    businessTypes == "TIRE_STATION" ? 
                         <TireFittingRoutes /> :
                         <Private /> ;
     }

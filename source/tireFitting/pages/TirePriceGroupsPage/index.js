@@ -40,25 +40,19 @@ export default class TirePriceGroupsPage extends Component {
 
         this.columns = [
             {
-                title:     <FormattedMessage id='id'/>,
-                key:       'id',
-                dataIndex: 'id',
-                width:     'auto',
-            },
-            {
-                title:      <FormattedMessage id='name'/>,
+                title:      <FormattedMessage id='tire.name'/>,
                 key:       'name',
                 dataIndex: 'name',
                 width:     'auto',
             },
             {
-                title:      <FormattedMessage id='vehicleTypeId'/>,
-                key:       'vehicleTypeId',
-                dataIndex: 'vehicleTypeId',
+                title:      <FormattedMessage id='tire.vehicleType'/>,
+                key:       'vehicleTypeName',
+                dataIndex: 'vehicleTypeName',
                 width:     'auto',
             },
             {
-                title:     <FormattedMessage id='minRadius'/>,
+                title:     <FormattedMessage id='tire.minRadius'/>,
                 key:       'minRadius',
                 dataIndex: 'minRadius',
                 width:     'auto',
@@ -66,36 +60,36 @@ export default class TirePriceGroupsPage extends Component {
                     return (
                         <InputNumber
                             min={0}
-                            max={elem.maxRadius}
-                            value={data}
+                            max={Number(elem.maxRadius)}
+                            value={Math.round(data)}
                             onChange={(value)=>{
                                 elem.minRadius = value;
-                                this.setState({});
+                                this.updateGroups();
                             }}
                         />
                     )
                 }
             },
             {
-                title:     <FormattedMessage id='maxRadius'/>,
+                title:     <FormattedMessage id='tire.maxRadius'/>,
                 key:       'maxRadius',
                 dataIndex: 'maxRadius',
                 width:     'auto',
                 render:     (data, elem)=>{
                     return (
                         <InputNumber
-                            min={elem.minRadius}
-                            value={data}
+                            min={Number(elem.minRadius)}
+                            value={Math.round(data)}
                             onChange={(value)=>{
                                 elem.maxRadius = value;
-                                this.setState({});
+                                this.updateGroups();
                             }}
                         />
                     )
                 }
             },
             {
-                title:     <FormattedMessage id='visible'/>,
+                title:     <FormattedMessage id='supplier.show'/>,
                 key:       'visible',
                 dataIndex: 'visible',
                 width:     'auto',
@@ -105,29 +99,7 @@ export default class TirePriceGroupsPage extends Component {
                             checked={data}
                             onChange={(checked)=>{
                                 elem.visible = checked;
-                                this.setState({});
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                key:       'delete',
-                width:     '5%',
-                render:     (elem)=>{
-                    return (
-                        <Icon
-                            type='delete'
-                            style={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD) ? {
-                                fontSize: 18,
-                                color: 'var(--text2)',
-                                pointerEvents: 'none',
-                            } : {
-                                fontSize: 18
-                            }}
-                            onClick={()=>{
-                                if(!isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_STOCK_CRUD))
-                                    this.deleteType(elem.id)
+                                this.updateGroups();
                             }}
                         />
                     )
@@ -144,9 +116,12 @@ export default class TirePriceGroupsPage extends Component {
     }
 
     updateGroups = async () => {
-        await fetchAPI('PUT', 'tire_station_price_groups', undefined, {
-
-        });
+        const { dataSource } = this.state;
+        dataSource.map((elem)=>{
+            delete elem.vehicleTypeName;
+        })
+        await fetchAPI('PUT', 'tire_station_price_groups', undefined, dataSource);
+        await this.fetchData();
     }
 
     deleteGroup = async (id) => {
@@ -167,14 +142,14 @@ export default class TirePriceGroupsPage extends Component {
         const { dataSource } = this.state;
         return (
             <Layout
-                title={ <FormattedMessage id='navigation.vehicle_types' /> }
+                title={ <FormattedMessage id='navigation.tire_price_groups' /> }
                 controls={
                     <div>
                         <Button
                             type="primary"
                             onClick={this.importDefault}
                         >
-                            <FormattedMessage id="importDefault"/>
+                            <FormattedMessage id="import_default"/>
                         </Button>
                     </div>
                 }

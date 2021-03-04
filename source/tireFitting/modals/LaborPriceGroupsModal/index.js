@@ -11,6 +11,9 @@ import moment from 'moment';
 // proj
 import { permissions, isForbidden, fetchAPI } from 'utils';
 
+// own
+import Styles from './styles.m.css';
+
 @injectIntl
 export default class LaborPriceGroupsModal extends Component {
     constructor(props) {
@@ -21,64 +24,51 @@ export default class LaborPriceGroupsModal extends Component {
 
         this.columns = [
             {
-                title:      <FormattedMessage id='name'/>,
+                title:      <FormattedMessage id='tire.name'/>,
                 key:       'name',
                 dataIndex: 'name',
                 width:     'auto',
             },
             {
-                title:      <FormattedMessage id='vehicleTypeId'/>,
-                key:       'vehicleTypeId',
-                dataIndex: 'vehicleTypeId',
+                title:      <FormattedMessage id='tire.vehicleType'/>,
+                key:       'vehicleTypeName',
+                dataIndex: 'vehicleTypeName',
                 width:     'auto',
             },
             {
-                title:     <FormattedMessage id='minRadius'/>,
+                title: (
+                    <div className={ Styles.numberColumn }>
+                        <FormattedMessage id='tire.minRadius' />
+                    </div>
+                ),
+                className: Styles.numberColumn,
                 key:       'minRadius',
                 dataIndex: 'minRadius',
                 width:     'auto',
-                render:     (data, elem)=>{
-                    return (
-                        <InputNumber
-                            min={0}
-                            max={elem.maxRadius}
-                            value={data}
-                            onChange={(value)=>{
-                                elem.minRadius = value;
-                                this.setState({});
-                            }}
-                        />
-                    )
-                }
+                render:     data => Math.round(data)+'R',
             },
             {
-                title:     <FormattedMessage id='maxRadius'/>,
+                title: (
+                    <div className={ Styles.numberColumn }>
+                        <FormattedMessage id='tire.maxRadius' />
+                    </div>
+                ),
+                className: Styles.numberColumn,
                 key:       'maxRadius',
                 dataIndex: 'maxRadius',
                 width:     'auto',
-                render:     (data, elem)=>{
-                    return (
-                        <InputNumber
-                            min={elem.minRadius}
-                            value={data}
-                            onChange={(value)=>{
-                                elem.maxRadius = value;
-                                this.setState({});
-                            }}
-                        />
-                    )
-                }
+                render:     data => Math.round(data)+'R',
             },
             {
-                title:     <FormattedMessage id='price'/>,
+                title:   <FormattedMessage id='price' />,
                 key:       'price',
                 dataIndex: 'price',
                 width:     'auto',
                 render:     (data, elem)=>{
                     return (
                         <InputNumber
-                            min={elem.minRadius}
-                            value={data}
+                            min={0}
+                            value={data || 0}
                             onChange={(value)=>{
                                 elem.price = value;
                                 this.setState({});
@@ -98,8 +88,19 @@ export default class LaborPriceGroupsModal extends Component {
         })
     }
 
-    handleOk = () => {
-        this.handleCancel();
+    handleOk = async () => {
+        const { laborId } = this.props;
+        const { dataSource } = this.state;
+        const payload = [];
+        dataSource.map(({price, id})=>{
+            payload.push({
+                laborId,
+                tirePriceGroupId: id,
+                price: price || 0,
+            })
+        })
+        await fetchAPI('PUT', `labors/price_groups`, undefined, payload);
+        await this.handleCancel();
     }
 
     handleCancel = () => {
@@ -127,6 +128,7 @@ export default class LaborPriceGroupsModal extends Component {
                     columns={this.columns}
                     dataSource={dataSource}
                     pagination={false}
+                    rowKey={'id'}
                 />
             </Modal>
         );

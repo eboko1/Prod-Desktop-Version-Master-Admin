@@ -334,7 +334,16 @@ class DetailProductModal extends React.Component{
 
         return columns.map(({title, key, render, dataIndex})=>{
             return (
-                <div className={`${Styles.mobileTable} ${(key == 'price' || key == 'count' || key == 'sum') && Styles.mobileTableNumber}`} key={key}>
+                <div 
+                    className={
+                        `${Styles.mobileTable} ${
+                            (key == 'price' || key == 'count') && Styles.mobileTableNumber
+                        } ${
+                            (key == 'sum') && Styles.mobileTableSum
+                        }`
+                    }
+                    key={key}
+                >
                     {title}
                     <div>
                         {dataIndex ? 
