@@ -170,6 +170,11 @@ export default class OrderFormBody extends Component {
                 this.props.focusOnRef(undefined);
             }
         }
+
+        if(prevProps.fetchedOrder != this.props.fetchedOrder) {
+            const businessLocationsLabel = this._getBusinessLocationsLabel();
+            this.setState({businessLocationsLabel});
+        }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
