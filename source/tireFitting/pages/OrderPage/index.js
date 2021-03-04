@@ -642,8 +642,8 @@ class OrderPage extends Component {
             initialOrderTask,
             fetchedOrder,
             order,
+            vehicleTypes,
         } = this.props;
-        const vehicleTypes = _.get(this.props, "vehicleTypes", []);
         const {num, status, datetime, diagnosis, totalSumWithTax} = this.props.order;
         const { clientId, name, surname } = this.props.selectedClient;
         const {id} = this.props.match.params;
