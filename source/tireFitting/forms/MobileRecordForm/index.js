@@ -308,6 +308,16 @@ export class MobileRecordForm extends Component {
 
         const orderServices = _.get(fetchedOrder, "orderServices", []);
         const orderDetails = _.get(fetchedOrder, "orderDetails", []);
+
+        const formFieldsValues = form.getFieldsValue();
+        const orderFormFields = _.pick(formFieldsValues, [
+            "comment",
+            "clientVehicle",
+            "clientEmail",
+            "clientPhone",
+            "searchClientQuery",
+            "clientVehicleTypeId",
+        ]);
         
         return (
             <Form layout="horizontal" id='orderForm'>
@@ -355,6 +365,7 @@ export class MobileRecordForm extends Component {
                             isMobile={ isMobile }
                             setClientSelection={ setClientSelection }
                             vehicleTypes={ vehicleTypes }
+                            fields={orderFormFields}
                         />
                     </TabPane>
                     <TabPane
