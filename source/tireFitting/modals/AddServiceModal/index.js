@@ -9,8 +9,6 @@ import { permissions, isForbidden, fetchAPI } from "utils";
 import { DetailStorageModal, DetailSupplierModal, LaborsNormHourModal, DetailProductModal } from 'modals'
 // own
 import Styles from './styles.m.css';
-import { values } from 'office-ui-fabric-react';
-import { valueOf } from '__mocks__/fileMock';
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
 const { confirm } = Modal;
