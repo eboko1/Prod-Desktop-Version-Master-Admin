@@ -10,6 +10,7 @@ import { DetailStorageModal, DetailSupplierModal, LaborsNormHourModal, DetailPro
 // own
 import Styles from './styles.m.css';
 import { values } from 'office-ui-fabric-react';
+import { valueOf } from '__mocks__/fileMock';
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
 const { confirm } = Modal;
@@ -70,7 +71,9 @@ class AddServiceModal extends React.Component{
                                     elem.masterLaborId = value;
                                     elem.storeGroupId = value;
                                 }
-                                this.getPrice(value);
+                                if(value) {
+                                    this.getPrice(value);
+                                }
                                 this.setState({});
                             }}
                             onSearch={(input)=>{
@@ -325,15 +328,17 @@ class AddServiceModal extends React.Component{
 
     getPrice = async (laborId) => {
         const { clientVehicleTypeId, clientVehicleRadius } = this.props;
-        const price = await fetchAPI('GET', `labors/price_groups`, {
-            laborId: laborId,
-            vehicleTypeId: clientVehicleTypeId,
-            radius: Math.round(clientVehicleRadius),
-        })
-        console.log(price);
-        if(price && price.price) {
-            this.state.mainTableSource[0].price = price.price;
-            this.setState({});
+        if(clientVehicleTypeId && clientVehicleRadius) {
+            const price = await fetchAPI('GET', `labors/price_groups`, {
+                laborId: laborId,
+                vehicleTypeId: clientVehicleTypeId,
+                radius: Math.round(clientVehicleRadius),
+            })
+            console.log(price);
+            if(price && price.price) {
+                this.state.mainTableSource[0].price = price.price;
+                this.setState({});
+            }
         }
     }
 
