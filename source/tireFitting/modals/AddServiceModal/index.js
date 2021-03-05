@@ -136,6 +136,7 @@ class AddServiceModal extends React.Component{
                             }}
                             onChange={(value, option)=>{
                                 elem.tireStationPriceGroupId = value;
+                                elem.price = option.props.price || elem.price;
                                 this.setState({});
                             }}
                         >
@@ -416,7 +417,7 @@ class AddServiceModal extends React.Component{
             </Option>
         ));
         this.priceGroupsOptions = this.priceGroups.map((elem, i)=>(
-            <Option key={i} value={elem.id}>
+            <Option key={i} value={elem.id} price={elem.price}>
                 {elem.name}
             </Option>
         ))
