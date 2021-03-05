@@ -28,7 +28,7 @@ export function* authenticateSaga() {
             console.log(user)
             yield setLocale(user.language);
             yield setToken(user.token);
-            yield setBusinessTypes(user.businessTypes);
+            //yield setBusinessTypes(user.businessTypes);
             yield putResolve(fetchHeaderData(true));
             yield authenticateSuccess();
         } catch (error) {
