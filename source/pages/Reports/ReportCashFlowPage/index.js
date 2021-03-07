@@ -16,7 +16,7 @@ import _ from "lodash";
 // proj
 import { Layout, StyledButton } from "commons";
 import { StatsPanel } from 'components';
-import { permissions, isForbidden, isAdmin } from 'utils';
+import { permissions, isForbidden } from 'utils';
 import {
     fetchReportCashFlow,
     fetchAnalytics,
