@@ -91,7 +91,7 @@ export function* fetchExcelFileReportSaga() {
 
             const filters = yield select(selectCashFlowFilters);
 
-            const response = yield call(fetchAPI, 'GET', '/report/cash_flow_report_excel', {filters}, null, {
+            const response = yield call(fetchAPI, 'GET', '/report/cash_flow_report_excel_file', {filters}, null, {
                 rawResponse: true,
             });
 
