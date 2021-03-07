@@ -39,7 +39,7 @@ class AddServiceModal extends React.Component{
                     return (
                         <Select
                             allowClear
-                            disabled={this.state.editing || elem.related}
+                            disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.labor'})}
                             value={data}
@@ -124,6 +124,7 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <Select
+                            disabled={!elem.laborId}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'tire.priceGroup'})}
                             value={data ? data : undefined}
@@ -176,7 +177,6 @@ class AddServiceModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="comment" />,
                 key:       'comment',
                 dataIndex: 'comment',
                 width:     'auto',
@@ -326,15 +326,22 @@ class AddServiceModal extends React.Component{
 
     getPrice = async (laborId) => {
         const { clientVehicleTypeId, clientVehicleRadius } = this.props;
+        
         if(clientVehicleTypeId && clientVehicleRadius) {
-            const price = await fetchAPI('GET', `labors/price_groups`, {
+            this.priceGroups = await fetchAPI('GET', `labors/price_groups`, {
                 laborId: laborId,
                 vehicleTypeId: clientVehicleTypeId,
                 radius: Math.round(clientVehicleRadius),
             })
-            console.log(price);
-            if(price && price.price) {
-                this.state.mainTableSource[0].price = price.price;
+            console.log(this.priceGroups);
+            this.priceGroupsOptions = this.priceGroups.map((elem, i)=>(
+                <Option key={i} value={elem.id} price={elem.price}>
+                    {elem.name}
+                </Option>
+            ))
+            if(this.priceGroups && this.priceGroups.length) {
+                this.state.mainTableSource[0].price = this.priceGroups[0].price;
+                this.state.mainTableSource[0].tireStationPriceGroupId = this.priceGroups[0].id;
                 this.setState({});
             }
         }
@@ -412,18 +419,12 @@ class AddServiceModal extends React.Component{
     }
 
     getOptions = async () => {
-        this.priceGroups = await fetchAPI('GET', 'tire_station_price_groups');
         this.servicesOptions = [...this.labors];
         this.employeeOptions = this.props.employees.map((elem, i)=>(
             <Option key={i} value={elem.id}>
                 {elem.name} {elem.surname}
             </Option>
         ));
-        this.priceGroupsOptions = this.priceGroups.map((elem, i)=>(
-            <Option key={i} value={elem.id} price={elem.price}>
-                {elem.name}
-            </Option>
-        ))
     };
 
     deleteService = async () => {
