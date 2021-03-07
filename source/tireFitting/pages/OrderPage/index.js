@@ -852,6 +852,7 @@ class OrderPage extends Component {
                         orderStatus={ status }
                         setAddClientModal={ this.setAddClientModal }
                         vehicleTypes={ vehicleTypes }
+                        modal={ modal }
                     />
                 </MobileView>
                 <ResponsiveView

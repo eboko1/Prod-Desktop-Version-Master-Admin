@@ -31,6 +31,7 @@ import {
     DiscountPanel,
     HistoryTable,
 } from "../OrderForm/OrderFormTables";
+import { AddClientModal, ToSuccessModal } from "modals";
 
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
@@ -306,8 +307,22 @@ export class MobileRecordForm extends Component {
             detailsTotalSum,
         } = order;
 
+        const remainPrice = isTaxPayer ? 
+            Math.round((totalSumWithTax - cashSum)*100)/100 : 
+            Math.round((totalSum - cashSum)*100)/100;
+
         const orderServices = _.get(fetchedOrder, "orderServices", []);
         const orderDetails = _.get(fetchedOrder, "orderDetails", []);
+
+        const formFieldsValues = form.getFieldsValue();
+        const orderFormFields = _.pick(formFieldsValues, [
+            "comment",
+            "clientVehicle",
+            "clientEmail",
+            "clientPhone",
+            "searchClientQuery",
+            "clientVehicleTypeId",
+        ]);
         
         return (
             <Form layout="horizontal" id='orderForm'>
@@ -355,6 +370,7 @@ export class MobileRecordForm extends Component {
                             isMobile={ isMobile }
                             setClientSelection={ setClientSelection }
                             vehicleTypes={ vehicleTypes }
+                            fields={orderFormFields}
                         />
                     </TabPane>
                     <TabPane
@@ -453,6 +469,15 @@ export class MobileRecordForm extends Component {
                         />
                     </TabPane>
                 </Tabs>
+                <ToSuccessModal
+                    wrappedComponentRef={this._saveFormRef}
+                    visible={this.props.modal}
+                    onStatusChange={this.props.onStatusChange}
+                    resetModal={this.props.resetModal}
+                    remainPrice={remainPrice}
+                    clientId={selectedClient.clientId}
+                    orderId={orderId}
+                />
             </Form>
         )
     }

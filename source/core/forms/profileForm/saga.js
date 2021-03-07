@@ -26,7 +26,7 @@ export function* submitProfileFormSaga() {
                 ]
             });
             yield setBusinessTypes(user.businessTypes);
-            delete user.businessTypes;
+            yield delete user.businessTypes;
             
             yield call(fetchAPI, 'PUT', '/managers', null, _.omit(user, "businessTypes"));
 
