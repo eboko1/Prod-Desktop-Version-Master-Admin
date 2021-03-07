@@ -101,7 +101,10 @@ export default class CashFlowFilter extends React.Component {
         fetchReportCashFlow();
     }
 
-    onAnalyticsSelect(analyticsIds) {
+    onAnalyticsSelect(analyticsId) {
+        //Actually we can pass multiple ids but for now multiple mode is broken, so it is disabled
+        const analyticsIds = [analyticsId];
+
         const {
             setFiltersAnalyticsUniqueIds,
             fetchReportCashFlow
@@ -153,12 +156,19 @@ export default class CashFlowFilter extends React.Component {
                 <div className={Styles.selectCont}>
                     <Select
                         style={{width: '100%'}}
-                        filterOption={false}
-                        showSearch={false}
-                        mode="multiple" //To enable multiple select
+                        allowClear
+                        showSearch
+                        // mode="multiple" //To enable multiple select but it is bkoren somehow
                         placeholder={formatMessage({id: 'report_cash_flow_page.analytics'})}
                         disabled={cashboxesIsFetching}
                         onChange={this.onAnalyticsSelect}
+                        filterOption={(input, option) => {
+                            const inputedText = input ? input.toLowerCase() : "";
+                            return (
+                                option.props.children.toLowerCase().indexOf(inputedText) >= 0 || 
+                                String(option.props.value).indexOf(inputedText) >= 0
+                            )
+                        }}
                     >
                         {_.map(filteredAnalytics, ans => (
                             <Select.Option key={ans.analyticsUniqueId} value={ans.analyticsUniqueId}>

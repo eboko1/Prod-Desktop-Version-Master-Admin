@@ -23,7 +23,7 @@ import { saga as vehicleTypesSaga } from 'core/vehicleTypes/saga';
 
 // Reports
 import { saga as reportOrdersSaga } from 'core/reports/reportOrders/saga';
-import { saga as reportsSaga } from 'core/reports/reports/saga';
+import { saga as reportClientDebtsSaga } from 'core/reports/reportClientDebts/saga';
 import { saga as reportLoadKPISaga } from 'core/reports/reportLoadKPI/saga';
 import { saga as reportAnalyticsSaga } from 'core/reports/reportAnalytics/saga';
 import { saga as reportCashFlowSaga } from 'core/reports/reportCashFlow/saga';
@@ -115,7 +115,7 @@ export default function* rootSaga() {
         reportOrdersSaga(),
         reportAnalyticsSaga(),
         reportAnalyticsFormSaga(),
-        reportsSaga(),
+        reportClientDebtsSaga(),
         reportLoadKPISaga(),
         reportCashFlowSaga(),
         

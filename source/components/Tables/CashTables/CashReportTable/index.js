@@ -5,14 +5,14 @@ import { FormattedMessage } from 'react-intl';
 import { Table } from 'antd';
 
 // proj
-import { fetchReport, setReportPage } from 'core/reports/reports/duck';
+import { fetchReport, setReportPage } from 'core/reports/reportClientDebts/duck';
 
 // own
 import { columnsConfig } from './config';
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
-    currentPage: state.reports.filter.page,
+    currentPage: state.reportClientDebts.filter.page,
 });
 
 const mapDispatchToProps = {
