@@ -56,7 +56,7 @@ export default class VehicleTypesPage extends Component {
                             max={Number(elem.maxRadius)}
                             value={Math.round(data)}
                             onChange={(value)=>{
-                                elem.minRadius = value;
+                                elem.minRadius = value || 0;
                                 this.updateType(elem);
                             }}
                         />
@@ -74,7 +74,7 @@ export default class VehicleTypesPage extends Component {
                             min={Number(elem.minRadius)}
                             value={Math.round(data)}
                             onChange={(value)=>{
-                                elem.maxRadius = value;
+                                elem.maxRadius = value || 0;
                                 this.updateType(elem);
                             }}
                         />
@@ -93,7 +93,7 @@ export default class VehicleTypesPage extends Component {
                             max={Number(elem.maxRadius)}
                             value={Math.round(data)}
                             onChange={(value)=>{
-                                elem.defaultRadius = value;
+                                elem.defaultRadius = value || 0;
                                 this.updateType(elem);
                             }}
                         />
