@@ -228,10 +228,10 @@ export class OrderForm extends React.PureComponent {
         // TODO in order to fix late getFieldDecorator invoke for services
         //this.setState({ initialized: true });
         //this.props.selectedClient.vehicles.push(this.props.vehicle);
-        this._reloadOrderForm();
         this._isMounted = true;
         if (this._isMounted && this.props.allDetails.brands.length) {
             this._fetchLaborsAndDetails();
+            this._reloadOrderForm();
         }
     }
 
@@ -277,9 +277,9 @@ export class OrderForm extends React.PureComponent {
             });
         }
 
-        if(!this.state.fetchedOrder) {
+        /*if(!this.state.fetchedOrder) {
             this._reloadOrderForm();
-        }
+        }*/
     }
 
     _saveFormRef = formRef => {
