@@ -581,8 +581,6 @@ export class OrderForm extends React.PureComponent {
             showCahOrderModal,
         } = this.props;
 
-        const { fetchedOrder } = this.state;
-
         const orderFormTabsFields = _.pick(formFieldsValues, [
             "comment",
             "vehicleCondition",
