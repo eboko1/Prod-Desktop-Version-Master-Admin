@@ -111,9 +111,7 @@ export class OrderForm extends React.PureComponent {
             data.map((elem, index) => {
                 elem.key = index;
             });
-            that.setState({
-                details: data,
-            });
+            that.state.details = data;
         })
         .catch(function(error) {
             console.log("error", error);
@@ -224,14 +222,14 @@ export class OrderForm extends React.PureComponent {
         notification.open(params);
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         // TODO in order to fix late getFieldDecorator invoke for services
         //this.setState({ initialized: true });
         //this.props.selectedClient.vehicles.push(this.props.vehicle);
         this._isMounted = true;
-        if (this._isMounted && this.props.allDetails.brands.length) {
-            this._fetchLaborsAndDetails();
-            //this._reloadOrderForm();
+        if (this._isMounted && this.props.fetchedOrder) {
+            await this._fetchLaborsAndDetails();
+            await this._reloadOrderForm();
         }
     }
 
@@ -275,14 +273,6 @@ export class OrderForm extends React.PureComponent {
             this.props.form.setFieldsValue({
                 deliveryDate:  _.get(formValues, "stationLoads[0].beginDate", undefined),
             });
-        }
-
-        if(orderId && !this.state.fetchedOrder && this.props.fetchedOrder) {
-            this._reloadOrderForm();
-        }
-
-        if(orderId && !this.state.details && this.props.fetchedOrder) {
-            this._fetchLaborsAndDetails();
         }
     }
 
