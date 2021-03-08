@@ -106,6 +106,7 @@ export class OrderForm extends React.PureComponent {
 				return response.json();
 			})
 			.then(function(data) {
+				console.log(data);
 				data.map((elem, index) => {
 					elem.key = index;
 				});
@@ -116,7 +117,7 @@ export class OrderForm extends React.PureComponent {
 			});
 	};
 
-	_reloadOrderForm = (callback, type = 'all', reloadRepairMap) => {
+	_reloadOrderForm = (callback, type = 'all', reloadRepairMap = false) => {
 		const onlyLabors = type == 'labors' || type == 'all',
 			onlyDetails = type == 'details' || type == 'all';
 		var that = this;
@@ -225,7 +226,6 @@ export class OrderForm extends React.PureComponent {
 		// TODO in order to fix late getFieldDecorator invoke for services
 		//this.setState({ initialized: true });
 		//this.props.selectedClient.vehicles.push(this.props.vehicle);
-		this._reloadOrderForm();
 		this._isMounted = true;
 		if (this._isMounted && this.props.fetchedOrder) {
 			await this._fetchLaborsAndDetails();
@@ -274,10 +274,6 @@ export class OrderForm extends React.PureComponent {
 				deliveryDate: _.get(formValues, 'stationLoads[0].beginDate', undefined),
 			});
 		}
-
-		if (!this.state.fetchedOrder) {
-			this._reloadOrderForm();
-		}
 	}
 
 	_saveFormRef = (formRef) => {
@@ -312,6 +308,7 @@ export class OrderForm extends React.PureComponent {
 	};
 
 	render() {
+        console.log(this)
 		const {
 			authentificatedManager,
 			form,
@@ -473,7 +470,7 @@ export class OrderForm extends React.PureComponent {
 					focusOnRef={focusOnRef}
 					focusedRef={focusedRef}
 				/>
-				{fetchedOrder && <div id='OrderTabs'>{tabs}</div>}
+				<div id='OrderTabs'>{tabs}</div>
 				<AddClientModal
 					searchQuery={searchClientQuery}
 					wrappedComponentRef={this._saveFormRef}
@@ -496,8 +493,9 @@ export class OrderForm extends React.PureComponent {
 
 	_renderTabs = (formFieldsValues) => {
 		const fetchedOrder = this.state.fetchedOrder || this.props.fetchedOrder;
-		if (!fetchedOrder || !this.state.details || !this.state.details.length)
+		if (!fetchedOrder || !this.state.details || !this.state.details.length) {
 			return;
+		}
 		const { form, orderTasks, schedule, stationLoads, orderId } = this.props;
 		const { formatMessage } = this.props.intl;
 		const { getFieldDecorator } = this.props.form;
@@ -654,7 +652,7 @@ export class OrderForm extends React.PureComponent {
 				orderDiagnostic={orderDiagnostic}
 				labors={allServices}
 				allDetails={allDetails}
-				details={this.details}
+				details={this.state.details}
 				employees={employees}
 				selectedClient={selectedClient}
 				detailsSuggestions={detailsSuggestions}

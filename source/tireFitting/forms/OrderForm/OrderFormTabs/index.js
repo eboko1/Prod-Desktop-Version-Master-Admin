@@ -40,7 +40,7 @@ export default class OrderFormTabs extends React.PureComponent {
 		this.state = {
 			activeKey: 'services',
 			action: undefined,
-			detailsTreeData: [],
+			detailsTreeData: undefined,
 		};
 		this._localizationMap = {};
 		this.commentsRules = [
@@ -57,11 +57,7 @@ export default class OrderFormTabs extends React.PureComponent {
 
 	buildStoreGroupsTree() {
 		var treeData = [];
-		for (
-			let i = 0;
-			i < this.props.details ? this.props.details.length : 0;
-			i++
-		) {
+		for ( let i = 0; i < this.props.details.length; i++ ) {
 			const parentGroup = this.props.details[i];
 			treeData.push({
 				title: `${parentGroup.name} (#${parentGroup.id})`,
@@ -139,7 +135,7 @@ export default class OrderFormTabs extends React.PureComponent {
 				activeKey: 'services',
 			});
 		}
-		if (!this.state.detailsTreeData.length) {
+		if (!this.state.detailsTreeData && this.props.details && this.props.details.length) {
 			this.buildStoreGroupsTree();
 		}
 		if (prevState.action) {
