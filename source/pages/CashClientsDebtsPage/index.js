@@ -1,5 +1,5 @@
 /*
-The purpose of this module is to provide report about all clients' debts.
+The purpose of this module is to provide report about all client debts.
 Also it provides basic search and print button.
 */
 // vendor
@@ -17,7 +17,7 @@ import {
     fetchExcelFileReport,
     setReportQuery,
     setReportOverdueOnly,
-} from "core/reports/reports/duck";
+} from "core/reports/reportClientDebts/duck";
 
 import { Layout, Paper, Spinner, StyledButton, Catcher } from "commons";
 import { CashReportTable } from "components";
@@ -29,7 +29,7 @@ import Styles from "./styles.m.css";
 const mapStateToProps = state => ({
     stats: state.cash.stats,
     user: state.auth,
-    report: state.reports.report,
+    report: state.reportClientDebts.report,
     isFetching: state.ui.reportFetching,
 });
 

@@ -5,11 +5,13 @@ It creates one header dropdown and it's subanalitics as well.
 
 //vendor
 import React from 'react';
+import { connect } from "react-redux";
 import { Collapse, Row, Col, Switch, Button, Icon } from 'antd';
 import { FormattedMessage, injectIntl } from "react-intl";
 import _ from 'lodash';
 
 //proj
+import { permissions, isForbidden } from 'utils';
 import {
     formKeys,
     formModes
@@ -20,6 +22,13 @@ import Style from './styles.m.css';
 
 const { Panel } = Collapse;
 
+const mapStateToProps = state => ({
+    user: state.auth,
+});
+
+@connect(
+    mapStateToProps,
+)
 @injectIntl
 export default class AnalyticsDropdown extends React.Component {
     constructor(props) {
@@ -45,10 +54,11 @@ export default class AnalyticsDropdown extends React.Component {
      * Generates block header using fields from analytics sush as "name".
      * @param {*} analytics Parent analytics
      */
-    genParentHeader (analytics) {
+    genParentHeader (analytics, containsAnalyticsWithDefaultCashOrderType) {
         const {
             onDeleteAnalytics,
             openAnalyticsModal,
+            user,
         } = this.props;
 
         return (
@@ -61,7 +71,11 @@ export default class AnalyticsDropdown extends React.Component {
                             (() => {
                                 if(analytics.analyticsIsCustom) {
                                     return (
-                                        <Button size="large" onClick={() => openAnalyticsModal(formModes.EDIT, formKeys.catalogForm, analytics)}> 
+                                        <Button
+                                            size="large"
+                                            onClick={() => openAnalyticsModal(formModes.EDIT, formKeys.catalogForm, analytics)}
+                                            disabled={ isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS_CRUD) }
+                                        > 
                                             <Icon type="edit" />
                                         </Button>
                                     );
@@ -76,7 +90,9 @@ export default class AnalyticsDropdown extends React.Component {
                             (() => {
                                 if(analytics.analyticsIsCustom) {
                                     return (
-                                        <Button size="large" onClick={() => onDeleteAnalytics(analytics.analyticsId)}> 
+                                        <Button
+                                            disabled={containsAnalyticsWithDefaultCashOrderType || isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS_CRUD)}
+                                            size="large" onClick={() => onDeleteAnalytics(analytics.analyticsId)}> 
                                             <Icon type="delete" />
                                         </Button>
                                     );
@@ -98,14 +114,31 @@ export default class AnalyticsDropdown extends React.Component {
         const {
             onDeleteAnalytics,
             openAnalyticsModal,
-            onUpdateAnalytics
+            onUpdateAnalytics,
+            user
         } = this.props;
 
         return (
             <div className={Style.analyticsCont} key={chil.analyticsId}>
                 <Row className={Style.row}>
-                    <Col className={Style.col} span={8}>{chil.analyticsName}</Col>
+                    <Col className={Style.col} span={6}>{chil.analyticsName}</Col>
 
+                    <Col span={2}>
+                        {chil.analyticsDefaultOrderType=='INCOME' && (<Icon type="check" style={{color: 'green', fontSize: '1em'}}/>)}
+                        {chil.analyticsDefaultOrderType=='EXPENSE' && (<Icon type="check" style={{color: 'red', fontSize: '1em'}} />)}
+                        {(!chil.analyticsDefaultOrderType && !isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS_CRUD)) && (
+                            <div
+                                className={Style.notDefaultAnalyticsIcon}
+                                onClick={() => {
+                                    //Update anlytics by setting it up to be a default for a specific cash order type
+                                    onUpdateAnalytics({
+                                        analyticsId: chil.analyticsId,
+                                        newAnalyticsEntity: {makeDefaultForCurrentCashOrderType: true}
+                                    });
+                                }}
+                            />
+                        )}
+                    </Col>
                     <Col className={Style.col} span={4}>{chil.analyticsBookkeepingAccount}</Col>
                     <Col className={Style.col} span={4}>{this.orderStatusesMapper(chil.analyticsOrderType)}</Col>
 
@@ -113,6 +146,7 @@ export default class AnalyticsDropdown extends React.Component {
                         <Switch
                             size='small'
                             checked={!chil.analyticsDisabled}
+                            disabled={ !_.isEmpty(chil.analyticsDefaultOrderType) || isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS_CRUD)} //Disable if analytics is default somewhere
                             onClick={() => {
                                 //Update anlytics by changing ist's "disabled" value prop
                                 onUpdateAnalytics({
@@ -128,7 +162,11 @@ export default class AnalyticsDropdown extends React.Component {
                             (() => {
                                 if(chil.analyticsIsCustom) {
                                     return (
-                                        <Button size="small" onClick={() => openAnalyticsModal(formModes.VIEW, formKeys.analyticsForm, chil)}> 
+                                        <Button
+                                            disabled={isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS_CRUD)}
+                                            size="small"
+                                            onClick={() => openAnalyticsModal(formModes.VIEW, formKeys.analyticsForm, chil)}
+                                        > 
                                             <Icon type="eye" />
                                         </Button>
                                     );
@@ -143,7 +181,11 @@ export default class AnalyticsDropdown extends React.Component {
                             (() => {
                                 if(chil.analyticsIsCustom) {
                                     return (
-                                        <Button size="small" onClick={() => openAnalyticsModal(formModes.EDIT, formKeys.analyticsForm, chil)}> 
+                                        <Button
+                                            size="small"
+                                            disabled={isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS_CRUD)}
+                                            onClick={() => openAnalyticsModal(formModes.EDIT, formKeys.analyticsForm, chil)}
+                                        > 
                                             <Icon type="edit" />
                                         </Button>
                                     );
@@ -156,9 +198,13 @@ export default class AnalyticsDropdown extends React.Component {
                         {
                             /* DELETE btn | Buttons only for non-custom fields in another case just place an icon */
                             (() => {
-                                if(chil.analyticsIsCustom) {
+                                if(chil.analyticsIsCustom ) {
                                     return (
-                                        <Button size="small" onClick={() => onDeleteAnalytics(chil.analyticsId)}> 
+                                        <Button
+                                            size="small"
+                                            onClick={() => onDeleteAnalytics(chil.analyticsId)}
+                                            disabled={ !_.isEmpty(chil.analyticsDefaultOrderType) || isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS_CRUD)} //Disable if analytics is default somewhere
+                                        > 
                                             <Icon type="delete" />
                                         </Button>
                                     );
@@ -181,8 +227,12 @@ export default class AnalyticsDropdown extends React.Component {
      * @param {*} children children analytics
      */
     genPanel(parent, children) {
+
+        //Check if paret has default analyticst inside it(it means analytics which are default for a specific cash order type)
+        const containsAnalyticsWithDefaultCashOrderType = !_.isEmpty(_.filter(children, chil => chil.analyticsDefaultOrderType));
+
         return (
-            <Panel header={this.genParentHeader(parent)} key={parent.analyticsId}>
+            <Panel header={this.genParentHeader(parent, containsAnalyticsWithDefaultCashOrderType)} key={parent.analyticsId}>
                 {_.map(children, (o) => this.genChildren(o))}
             </Panel>
         )

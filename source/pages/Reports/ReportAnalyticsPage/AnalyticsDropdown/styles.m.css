@@ -42,4 +42,22 @@
     justify-content: right;
 }
 
+.notDefaultAnalyticsIcon {
+    background-color: rgb(174, 194, 192);
+    width: 8px;
+    height: 8px;
+    border-radius: 20%;
+    margin-left: 2px;
+
+    transition: width 600ms, height 600ms, margin-left 600ms, background-color 1s, border-radius 600ms;
+}
+
+.notDefaultAnalyticsIcon:hover {
+    background-color: var(--primary);
+    width: 15px;
+    height: 15px;
+    margin-left: 0px;
+    border-radius: 100%;
+    cursor: pointer;
+}
 

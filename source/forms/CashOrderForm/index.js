@@ -41,7 +41,7 @@ import {
     DecoratedTextArea,
     DecoratedRadio,
 } from "forms/DecoratedFields";
-import { withReduxForm2, numeralFormatter, numeralParser } from "utils";
+import { withReduxForm2, numeralFormatter, numeralParser, permissions, isForbidden } from "utils";
 
 // own
 import { cashOrderTypes, cashOrderCounterpartyTypes, adjustmentSumTypes } from "./config.js";
@@ -114,7 +114,8 @@ const getActiveFieldsMap = activeCashOrder => {
             analytics: selectAnalytics(state),
             nextId: _.get(state, "forms.cashOrderForm.fields.nextId"),
             order: selectOrder(state),
-            modalProps: state.modals.modalProps
+            modalProps: state.modals.modalProps,
+            user: state.auth,
         };
     },
 })
@@ -702,6 +703,7 @@ export class CashOrderForm extends Component {
             fromOrder,
             fromClient,
             fromStoreDoc,
+            user,
         } = this.props;
 
         const cashOrderId = getFieldValue("id");
@@ -952,7 +954,7 @@ export class CashOrderForm extends Component {
                             field="analyticsUniqueId"
                             showSearch
                             loading={analyticsFetchingState}
-                            disabled={printMode || analyticsFetchingState}
+                            disabled={printMode || analyticsFetchingState || isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS_CRUD)}
                             formItem
                             // Initial value depends on a specific analytics field so we leave only those which has that field
                             initialValue={
@@ -986,7 +988,7 @@ export class CashOrderForm extends Component {
                                 <div className={Styles.createAnalyticsButton}>
                                     <StyledButton
                                         type="secondary"
-                                        disabled={printMode}
+                                        disabled={printMode || isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS_CRUD)}
                                         onClick={() => {
                                             onOpenAnalyticsModal({
                                                 editMode,

@@ -59,13 +59,7 @@ export default {
             iconType: 'contacts',
             name:     'navigation.catalog',
             items:    [
-                {
-                    key:      '/report/analytics',
-                    link:     book.analytics,
-                    disabled: user =>
-                        isForbidden(user, permissions.GET_CLIENTS),
-                    name: 'navigation.report_analytics',
-                },
+                
                 {
                     key:      '/clients',
                     link:     book.clients,
@@ -143,6 +137,13 @@ export default {
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_CATALOGUE_LOCATIONS),
                     name: 'navigation.locations_settings',
+                },
+                {
+                    key:      '/report/analytics',
+                    link:     book.analytics,
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS),
+                    name: 'navigation.report_analytics',
                 },
             ],
         },
@@ -238,15 +239,7 @@ export default {
             iconType: 'line-chart',
             name:     'navigation.reports',
             items:    [
-                {
-                    key:      '/report/cash_flow',
-                    disabled: false,
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.ACCESS_REPORT_TIME_EFFICIENCY) &&
-                    //     !isAdmin(user),
-                    link: book.reportCashFlow,
-                    name: 'navigation.report_cash_flow',
-                },
+                
                 {
                     key:      '/chart',
                     disabled: user =>
@@ -286,6 +279,15 @@ export default {
                         !isAdmin(user),
                     link: book.reportLoadKPI,
                     name: 'navigation.report_load_kpi',
+                },
+                {
+                    key:      '/report/cash_flow',
+                    disabled: false,
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_REPORT_PROFIT_FROM_BUSINESSES) &&
+                        !isAdmin(user),
+                    link: book.reportCashFlow,
+                    name: 'navigation.report_cash_flow',
                 },
             ],
         },

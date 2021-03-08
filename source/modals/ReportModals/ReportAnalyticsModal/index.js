@@ -83,6 +83,14 @@ export default class ReportAnalyticsModal extends Component {
         this.analyticsRequest = this.analyticsRequest.bind(this)
     }
 
+    componentDidMount() {
+        const {fetchAnalyticsCatalogs, analyticsCatalogs} = this.props;
+
+        console.log('Here: ', analyticsCatalogs);
+
+        fetchAnalyticsCatalogs();
+    }    
+
     componentDidUpdate(prevProps) {
         //const {initialTab} = this.props.modalProps;
         const initialTab = _.get(this.props, "modalProps.initialTab", this.defaultModalProps.initialTab);
@@ -90,7 +98,12 @@ export default class ReportAnalyticsModal extends Component {
         //If modal was reopened(with new initialTab) we need to swith to new a tab if it is not undefined
         if(prevProps.visible  != MODALS.REPORT_ANALYTICS && this.props.visible == MODALS.REPORT_ANALYTICS) {
             this.props.changeCurrentForm(initialTab);
+            
+            //If this new tab is createAnalytics we have to update some fileds
+            if(initialTab == formKeys.analyticsForm) this.props.fetchAnalyticsCatalogs();
         }
+
+        
     }
 
     /**
@@ -175,7 +188,8 @@ export default class ReportAnalyticsModal extends Component {
     
                         parentId: values.catalogId,
                         bookkeepingAccount: values.bookkeepingAccount,
-                        orderType: values.orderType
+                        orderType: values.orderType,
+                        makeDefaultForCurrentCashOrderType: values.makeDefaultForCurrentCashOrderType,
                     }
     
                     this.analyticsRequest({analyticsId: analyticsEntity.analyticsId, analyticsEntity: newAnalyticsEntity});
@@ -234,7 +248,7 @@ export default class ReportAnalyticsModal extends Component {
 
         return (
             <Modal
-                destroyOnClose
+                destroyOnClose={true}
                 width={ '80%' }
                 visible={ visible === MODALS.REPORT_ANALYTICS }
                 onOk={ this.handleSubmit }
