@@ -223,15 +223,15 @@ export class OrderForm extends React.PureComponent {
     };
 
     async componentDidMount() {
-        // TODO in order to fix late getFieldDecorator invoke for services
-        //this.setState({ initialized: true });
-        //this.props.selectedClient.vehicles.push(this.props.vehicle);
-        this._isMounted = true;
-        if (this._isMounted && this.props.fetchedOrder) {
-            await this._fetchLaborsAndDetails();
-            await this._reloadOrderForm();
-        }
-    }
+		// TODO in order to fix late getFieldDecorator invoke for services
+		//this.setState({ initialized: true });
+		//this.props.selectedClient.vehicles.push(this.props.vehicle);
+		this._isMounted = true;
+		if (this._isMounted && this.props.fetchedOrder) {
+			await this._fetchLaborsAndDetails();
+			await this._reloadOrderForm();
+		}
+	}
 
     componentWillUnmount() {
         this._isMounted = false;
@@ -308,6 +308,7 @@ export class OrderForm extends React.PureComponent {
     };
 
     render() {
+        console.log(this)
         const {
             authentificatedManager,
             form,
@@ -474,11 +475,9 @@ export class OrderForm extends React.PureComponent {
                     focusedRef={focusedRef}
                     vehicleTypes={vehicleTypes}
                 />
-                {fetchedOrder && 
-                    <div id="OrderTabs">
-                        {tabs}
-                    </div>
-                }
+                <div id="OrderTabs">
+                    {tabs}
+                </div>
                 <AddClientModal
                     vehicleTypes={vehicleTypes}
                     searchQuery={searchClientQuery}
@@ -502,7 +501,9 @@ export class OrderForm extends React.PureComponent {
 
     _renderTabs = formFieldsValues => {
         const fetchedOrder = this.state.fetchedOrder || this.props.fetchedOrder;
-        if (!fetchedOrder || !this.state.details || !this.state.details.length) return;
+        if (!fetchedOrder || !this.state.details || !this.state.details.length){
+             return;
+        }
         const {
             form,
             orderTasks,

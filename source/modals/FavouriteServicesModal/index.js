@@ -475,7 +475,7 @@ class FavouriteServicesModal extends React.Component{
 
     buildStoreGroupsTree() {
         var treeData = [];
-        for(let i = 0; i < this.storeGroups.length; i++) {
+        for(let i = 0; i < this.storeGroups && this.storeGroups.length ? this.storeGroups.length : 0; i++) {
             const parentGroup = this.storeGroups[i];
             treeData.push({
                 title: `${parentGroup.name} (#${parentGroup.id})`,
