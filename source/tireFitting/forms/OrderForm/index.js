@@ -277,7 +277,7 @@ export class OrderForm extends React.PureComponent {
             });
         }
 
-        if(orderId && !this.state.fetchedOrder) {
+        if(orderId && !this.state.fetchedOrder && this.props.fetchedOrder) {
             this._reloadOrderForm();
         }
     }
@@ -397,7 +397,7 @@ export class OrderForm extends React.PureComponent {
 
         const tabs = this._renderTabs(formFieldsValues);
 
-        const { fetchedOrder } = this.state;
+        const fetchedOrder = this.state.fetchedOrder || this.props.fetchedOrder;
         const order = _.get(fetchedOrder, "order", {});
 
         const { 
