@@ -480,7 +480,28 @@ export class OrderForm extends React.PureComponent {
                     focusedRef={focusedRef}
                     vehicleTypes={vehicleTypes}
                 />
-                
+                {fetchedOrder && 
+                    <div id="OrderTabs">
+                        {tabs}
+                    </div>
+                }
+                <AddClientModal
+                    vehicleTypes={vehicleTypes}
+                    searchQuery={searchClientQuery}
+                    wrappedComponentRef={this._saveFormRef}
+                    visible={this.props.modal}
+                    resetModal={this.props.resetModal}
+                    addClientFormData={this.props.addClientFormData}
+                />
+                <ToSuccessModal
+                    wrappedComponentRef={this._saveFormRef}
+                    visible={this.props.modal}
+                    onStatusChange={this.props.onStatusChange}
+                    resetModal={this.props.resetModal}
+                    remainPrice={remainPrice}
+                    clientId={selectedClient.clientId}
+                    orderId={orderId}
+                />
             </Form>
         );
     }
