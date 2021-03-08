@@ -507,7 +507,8 @@ export class OrderForm extends React.PureComponent {
     }
 
     _renderTabs = formFieldsValues => {
-        if (!this.details) return;
+        const fetchedOrder = this.state.fetchedOrder || this.props.fetchedOrder;
+        if (!fetchedOrder) return;
         const {
             form,
             orderTasks,
@@ -585,7 +586,7 @@ export class OrderForm extends React.PureComponent {
             showCahOrderModal,
         } = this.props;
 
-        const fetchedOrder = this.state.fetchedOrder || this.props.fetchedOrder;
+        
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
             "comment",
