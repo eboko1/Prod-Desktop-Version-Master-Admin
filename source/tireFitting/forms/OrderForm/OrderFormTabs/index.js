@@ -59,7 +59,7 @@ export default class OrderFormTabs extends React.PureComponent {
 		var treeData = [];
 		for (
 			let i = 0;
-			i < i < this.props.details ? this.props.details.length : 0;
+			i < this.props.details ? this.props.details.length : 0;
 			i++
 		) {
 			const parentGroup = this.props.details[i];
