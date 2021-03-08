@@ -420,7 +420,38 @@ export class OrderForm extends React.PureComponent {
 
         return (
             <Form className={Styles.form} layout="horizontal">
-                
+                <OrderFormHeader
+                    updateOrderField={this._updateOrderField}
+                    allServices={allServices}
+                    authentificatedManager={authentificatedManager}
+                    cashFlowFilters={cashFlowFilters}
+                    cashSum={cashSum}
+                    deliveryDate={deliveryDate}
+                    detailsDiscount={detailsDiscount}
+                    employees={employees}
+                    errors={errors}
+                    fetchedOrder={fetchedOrder}
+                    fields={orderFormHeaderFields}
+                    form={form}
+                    location={location}
+                    managers={managers}
+                    remainPrice={remainPrice}
+                    requisites={requisites}
+                    schedule={schedule}
+                    servicesDiscount={servicesDiscount}
+                    stations={stations}
+                    totalHours={totalHours}
+                    totalPrice={totalSum}
+                    user={user}
+                    zeroStationLoadBeginDate={zeroStationLoadBeginDate}
+                    zeroStationLoadBeginTime={zeroStationLoadBeginTime}
+                    zeroStationLoadDuration={zeroStationLoadDuration}
+                    zeroStationLoadStation={zeroStationLoadStation}
+                    totalSumWithTax={totalSumWithTax}
+                    isTaxPayer={isTaxPayer}
+                    focusOnRef={focusOnRef}
+                    focusedRef={focusedRef}
+                />
                 <OrderFormBody
                     updateOrderField={this._updateOrderField}
                     errors={errors}
@@ -449,26 +480,7 @@ export class OrderForm extends React.PureComponent {
                     focusedRef={focusedRef}
                     vehicleTypes={vehicleTypes}
                 />
-                <div id="OrderTabs">
-                    {tabs}
-                </div>
-                <AddClientModal
-                    vehicleTypes={vehicleTypes}
-                    searchQuery={searchClientQuery}
-                    wrappedComponentRef={this._saveFormRef}
-                    visible={this.props.modal}
-                    resetModal={this.props.resetModal}
-                    addClientFormData={this.props.addClientFormData}
-                />
-                <ToSuccessModal
-                    wrappedComponentRef={this._saveFormRef}
-                    visible={this.props.modal}
-                    onStatusChange={this.props.onStatusChange}
-                    resetModal={this.props.resetModal}
-                    remainPrice={remainPrice}
-                    clientId={selectedClient.clientId}
-                    orderId={orderId}
-                />
+                
             </Form>
         );
     }
