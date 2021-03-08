@@ -144,10 +144,10 @@ export class OrderForm extends React.PureComponent {
             })
             .then(function(data) {
                 console.log(data);
-                if(callback) callback(data);
                 that.setState({
                     fetchedOrder: data,
                 })
+                if(callback) callback(data);
             })
             .catch(function(error) {
                 console.log("error", error);
@@ -277,9 +277,9 @@ export class OrderForm extends React.PureComponent {
             });
         }
 
-        /*if(!this.state.fetchedOrder) {
+        if(orderId && !this.state.fetchedOrder) {
             this._reloadOrderForm();
-        }*/
+        }
     }
 
     _saveFormRef = formRef => {
