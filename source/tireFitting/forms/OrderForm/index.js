@@ -412,8 +412,6 @@ export class OrderForm extends React.PureComponent {
             Math.round((totalSumWithTax - cashSum)*100)/100 : 
             Math.round((totalSum - cashSum)*100)/100;
 
-        console.log(this);
-
         return (
             <Form className={Styles.form} layout="horizontal">
                 <OrderFormHeader
