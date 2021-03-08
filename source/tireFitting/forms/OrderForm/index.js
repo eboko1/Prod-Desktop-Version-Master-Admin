@@ -107,10 +107,10 @@ export class OrderForm extends React.PureComponent {
             return response.json();
         })
         .then(function(data) {
+            console.log(data);
             data.map((elem, index) => {
                 elem.key = index;
             });
-            that.details = data;
             that.setState({
                 details: data,
             });
@@ -514,7 +514,7 @@ export class OrderForm extends React.PureComponent {
 
     _renderTabs = formFieldsValues => {
         const fetchedOrder = this.state.fetchedOrder || this.props.fetchedOrder;
-        if (!fetchedOrder || !this.state.details) return;
+        if (!fetchedOrder || !this.state.details || !this.state.details.length) return;
         const {
             form,
             orderTasks,
