@@ -231,7 +231,7 @@ export class OrderForm extends React.PureComponent {
         this._isMounted = true;
         if (this._isMounted && this.props.allDetails.brands.length) {
             this._fetchLaborsAndDetails();
-            this._reloadOrderForm();
+            //this._reloadOrderForm();
         }
     }
 
