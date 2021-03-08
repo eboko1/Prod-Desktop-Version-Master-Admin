@@ -80,7 +80,7 @@ export class OrderForm extends React.PureComponent {
         this.state = {
             formValues: {},
             labors: [],
-            details: [],
+            details: undefined,
             fetchedOrder: undefined,
         };
     }
@@ -281,7 +281,7 @@ export class OrderForm extends React.PureComponent {
             this._reloadOrderForm();
         }
 
-        if(orderId && !this.state.details.length && this.props.fetchedOrder) {
+        if(orderId && !this.state.details && this.props.fetchedOrder) {
             this._fetchLaborsAndDetails();
         }
     }
@@ -514,7 +514,7 @@ export class OrderForm extends React.PureComponent {
 
     _renderTabs = formFieldsValues => {
         const fetchedOrder = this.state.fetchedOrder || this.props.fetchedOrder;
-        if (!fetchedOrder || !this.state.details.length) return;
+        if (!fetchedOrder || !this.state.details) return;
         const {
             form,
             orderTasks,
