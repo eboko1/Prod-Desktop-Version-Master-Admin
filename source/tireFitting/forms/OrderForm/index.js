@@ -508,7 +508,7 @@ export class OrderForm extends React.PureComponent {
 
     _renderTabs = formFieldsValues => {
         const fetchedOrder = this.state.fetchedOrder || this.props.fetchedOrder;
-        if (!fetchedOrder) return;
+        if (!fetchedOrder || !this.state.details.length) return;
         const {
             form,
             orderTasks,
@@ -664,7 +664,7 @@ export class OrderForm extends React.PureComponent {
                 orderDiagnostic={orderDiagnostic}
                 labors={allServices}
                 allDetails={allDetails}
-                details={this.details}
+                details={this.state.details}
                 employees={employees}
                 selectedClient={selectedClient}
                 detailsSuggestions={detailsSuggestions}
