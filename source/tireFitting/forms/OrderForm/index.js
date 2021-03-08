@@ -280,6 +280,10 @@ export class OrderForm extends React.PureComponent {
         if(orderId && !this.state.fetchedOrder && this.props.fetchedOrder) {
             this._reloadOrderForm();
         }
+
+        if(orderId && !this.state.details.length && this.props.fetchedOrder) {
+            this._fetchLaborsAndDetails();
+        }
     }
 
     _saveFormRef = formRef => {
@@ -417,6 +421,8 @@ export class OrderForm extends React.PureComponent {
         const remainPrice = isTaxPayer ? 
             Math.round((totalSumWithTax - cashSum)*100)/100 : 
             Math.round((totalSum - cashSum)*100)/100;
+
+        console.log(this);
 
         return (
             <Form className={Styles.form} layout="horizontal">
