@@ -618,7 +618,7 @@ export default class OrderFormHeader extends Component {
                     disabled={this.bodyUpdateIsForbidden()}
                     initialValue={"TO_DO"}
                     getFieldDecorator={getFieldDecorator}
-                    />
+                />
             </div>
         );
     };
