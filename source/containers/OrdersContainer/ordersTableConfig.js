@@ -193,14 +193,16 @@ export function columnsConfig(
         sortOrder: sort.field === 'totalSum' ? sortOptions[ sort.order ] : false,
         width:     'auto',
         render:    (_, order) => (
-            <Numeral
-                // TODO
-                currency={ formatMessage({ id: 'currency' }) }
-                nullText='0'
-                mask='0,0.00'
-            >
-                { order.servicesTotalSum + order.detailsTotalSum }
-            </Numeral>
+            <div style={{whiteSpace: 'nowrap'}}>
+                <Numeral
+                    // TODO
+                    currency={ formatMessage({ id: 'currency' }) }
+                    nullText='0'
+                    mask='0,0.00'
+                >
+                    { order.servicesTotalSum + order.detailsTotalSum }
+                </Numeral>
+            </div>
         ),
     };
 

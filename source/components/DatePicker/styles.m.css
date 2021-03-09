@@ -12,3 +12,20 @@
 	display: inline-block;
 	width: fit-content;
 }
+
+.filterDateButtons {
+	display: flex;
+	justify-content: space-between;
+}
+
+@media (max-width: 767px) {
+    .filterDatePicker {
+		margin: 0 15px 0 0;
+    }
+
+	.filterDateButtons {
+		& button:nth-child(1) {
+			display: none;
+		}
+	}
+}

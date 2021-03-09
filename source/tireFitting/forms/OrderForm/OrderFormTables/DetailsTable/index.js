@@ -265,7 +265,7 @@ class DetailsTable extends Component {
     }
 
     
-    updateDataSource() {
+    updateDataSource = async () => {
         if(this.state.fetched) {
             this.setState({
                 fetched: false,
@@ -282,7 +282,10 @@ class DetailsTable extends Component {
                 fetched: true,
             });
         }
-        this.props.reloadOrderForm(callback, 'details');
+        await this.props.reloadOrderForm(callback, 'details');
+        await this.setState({
+            fetched: true,
+        });
     }
 
     async updateDetail(key, detail) {
@@ -374,7 +377,8 @@ class DetailsTable extends Component {
     }
 
     render() {
-        const { 
+        const {
+            orderFetching,
             detailsSuggestionsFetching,
             suggestionsFetching,
             labors,

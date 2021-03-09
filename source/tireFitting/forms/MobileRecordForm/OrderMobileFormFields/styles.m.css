@@ -1,0 +1,244 @@
+.mobileRecordFormFooter {
+    display: flex;
+    justify-content: space-around;
+    margin: 24px 48px;
+}
+
+.mobileRecordSubmitBtn {
+    margin: 0 10px;
+    flex: 0 1 40%;
+}
+
+.datePanelItem :global(.ant-calendar-picker),
+.datePanelItem :global(.ant-time-picker) {
+    width: 100%;
+}
+
+.mobileRecordFormTimePicker {
+    width: 100%;
+}
+
+.client {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.clientSearchField {
+    width: 100%;
+}
+
+.addClientIcon {
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--primary);
+    font-weight: bold;
+    margin: 4px 0 0 4px;
+}
+
+.totalBlock {
+    display: flex;
+    justify-content: space-between;
+    margin: 14px 0;
+}
+
+.sum {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 6px 8px 4px;
+}
+
+.sumWrapper {
+    margin: 4px 0;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sumNumeral {
+    margin-left: 8px;
+}
+
+.totalSumWrap {
+    background: var(--static);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 8px;
+    flex-wrap: wrap;
+}
+
+.totalSum {
+    margin-left: 8px;
+    text-decoration: underline;
+    white-space: nowrap;
+}
+
+.clientBlock {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; */
+}
+
+.clientData, .commentsBlock {
+    display: block;
+    justify-content: space-between;
+}
+
+.client {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.carNumbers, .clientsInfo {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+.clientsInfo {
+    justify-content: space-between;
+
+    & > div:first-child {
+        margin-right: 10px;
+    }
+}
+
+.clientsInfoCol {
+    flex: 0 1 50%;
+}
+
+.clientSearchField {
+    flex: 1 1 auto;
+}
+
+.addClientIcon {
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.iconsCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.editIcon {
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--primary);
+    font-weight: bold;
+    margin: 24px 0 24px 10px;
+}
+
+.copyIcon {
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--link);
+}
+
+.bodyColumn {
+    flex: 0 1 45%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.bodyColumnContent {
+    flex: 1 1 100%;
+    display: flex;
+}
+
+.comment {
+    flex: 0 1 45%;
+}
+
+.commentExtended {
+    flex: 1 1 auto;
+}
+
+.contentWrapper {
+    flex: 1 1 auto;
+}
+
+.comboField {
+    background-color: var(--static);
+    height: 45px;
+    border: 1px solid #d9d9d9;
+    border-left: 1px solid #d9d9d9;
+    border-right: 1px solid #d9d9d9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 11px;
+}
+
+.vehicleInfo {
+    display: flex;
+    width: 100%;
+    & :global(.ant-form-item) {
+        width: 100%;
+    }
+}
+
+.vehicleRadius {
+    background: var(--db_reserve);
+    font-size: 16px;
+    padding: 4px 2px;
+    font-weight: 700;
+    -webkit-box-shadow: inset 0px 0px 0px 1px #000;
+    -moz-box-shadow: inset 0px 0px 0px 1px #000;
+    box-shadow: inset 0px 0px 0px 1px #000;
+    width: fit-content;
+    height: fit-content;
+    white-space: nowrap;
+    margin: 0 0 0 8px;
+}
+
+.comboFieldSelect {
+    border-left: 1px solid #d9d9d9;
+    border-right: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.comboFieldSelect :global(.ant-select-selection) {
+    background-color: var(--static);
+    border-radius: 0;
+    border: none;
+    outline: none;
+}
+
+.comboFieldSelect :global(.ant-select-focused) {
+    border: none;
+    outline: none;
+}
+
+.comboFieldSelect :global(.ant-select-open) {
+    border: none;
+    outline: none;
+}
+
+.contentWrapper :global(#clientVehicle) {
+    background-color: var(--static);
+    & :global(.ant-select-selection-selected-value) {
+        white-space: normal;
+    }
+}
+
+.odometr {
+    flex: 1 1 100%;
+}
+
+.odometr :global(.ant-input-number) {
+    width: 100%;
+}
+
+/* .comboFieldSelect :global(.ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active) {
+    border: none !important;
+    outline: none !important;
+}
+.comboFieldSelect :global(.ant-select-selection .ant-selection-open:focus) {
+    border: none;
+} */

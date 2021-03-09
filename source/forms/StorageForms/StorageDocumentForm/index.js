@@ -983,7 +983,7 @@ class AddProductModal extends React.Component {
 
     buildStoreGroupsTree(data) {
         var treeData = [];
-        for (let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data && data.length ? data.length : 0; i++) {
             const parentGroup = data[ i ];
             treeData.push({
                 title:      `${parentGroup.name} (#${parentGroup.id})`,

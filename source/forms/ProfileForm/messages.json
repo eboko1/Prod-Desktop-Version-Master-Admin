@@ -8,7 +8,8 @@
         "profile-form.please_enter_your_name": "Please, enter your first name",
         "profile-form.please_enter_your_surname": "Please, enter your first surname",
         "profile-form.please_enter_your_email": "Please, enter your first email",
-        "profile-form.please_select_your_language": "Please, select your language"
+        "profile-form.please_select_your_language": "Please, select your language",
+        "profile-form.business_types": "Station type"
     },
     "ru": {
         "profile-form.language": "Язык",
@@ -19,7 +20,8 @@
         "profile-form.please_enter_your_name": "Пожалуйста, введите имя!",
         "profile-form.please_enter_your_surname": "Пожалуйста, введите фамилию!",
         "profile-form.please_enter_your_email": "Пожалуйста, введите email!",
-        "profile-form.please_select_your_language": "Пожалуйста, выберите язык!"
+        "profile-form.please_select_your_language": "Пожалуйста, выберите язык!",
+        "profile-form.business_types": "Тип СТО"
     },
     "uk": {
         "profile-form.language": "Мова",
@@ -30,6 +32,7 @@
         "profile-form.please_enter_your_name": "Будь ласка, вкажіть ім'я",
         "profile-form.please_enter_your_surname": "Будь ласка, призвище",
         "profile-form.please_enter_your_email": "Будь ласка, email",
-        "profile-form.please_select_your_language": "Будь ласка, your мову"
+        "profile-form.please_select_your_language": "Будь ласка, your мову",
+        "profile-form.business_types": "Тип СТО"
     }
 }

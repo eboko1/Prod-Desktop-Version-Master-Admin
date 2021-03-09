@@ -31,7 +31,7 @@ export function* fetchReportSaga() {
             const data = yield call(
                 fetchAPI,
                 'GET',
-                `/report`,
+                '/report/client_debts',
                 {filters}
             );
             yield put(fetchReportSuccess(data));
@@ -50,7 +50,7 @@ export function* fetchExcelFileReportSaga() {
             const { filter, sort } = yield select(selectFilter);
             const filters = { ...filter};
 
-            const response = yield call(fetchAPI, 'GET', '/report/excel_file_report', {filters}, null, {
+            const response = yield call(fetchAPI, 'GET', '/report/client_debts_excel_file', {filters}, null, {
                 rawResponse: true,
             });
 

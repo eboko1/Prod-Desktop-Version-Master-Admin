@@ -101,7 +101,8 @@ export default class CashFlowFilter extends React.Component {
         fetchReportCashFlow();
     }
 
-    onAnalyticsSelect(analyticsIds) {
+    onAnalyticsSelect(analyticsIds = []) {
+
         const {
             setFiltersAnalyticsUniqueIds,
             fetchReportCashFlow
@@ -122,15 +123,26 @@ export default class CashFlowFilter extends React.Component {
             intl: {formatMessage}
         } = this.props;
 
+        const filteredAnalytics = _.filter(analytics, ans => !ans.analyticsDisabled);
+
         return (
             <div className={Styles.mainFilterCont}>
                 <div className={Styles.selectCont}>
                     <Select
                         style={{width: '100%'}}
                         allowClear
+                        showSearch
                         placeholder={formatMessage({id: 'report_cash_flow_page.cashbox'})}
-                        disabled={analyticsIsFetching}
+                        disabled={cashboxesIsFetching}
                         onChange={this.onCashboxSelect}
+                        filterOption={(input, option) => {
+                            const inputedText = input ? input.toLowerCase() : "";
+                            const children = option.props.children? String(option.props.children).toLowerCase() : "";
+                            return (
+                                children.indexOf(inputedText) >= 0 || 
+                                String(option.props.value).indexOf(inputedText) >= 0
+                            )
+                        }}
                     >
                         {_.map(cashboxes, obj => (
                             <Select.Option key={obj.id} value={obj.id}>
@@ -144,12 +156,19 @@ export default class CashFlowFilter extends React.Component {
                     <Select
                         style={{width: '100%'}}
                         allowClear
+                        showSearch
                         mode="multiple" //To enable multiple select
                         placeholder={formatMessage({id: 'report_cash_flow_page.analytics'})}
-                        disabled={cashboxesIsFetching}
+                        disabled={analyticsIsFetching}
                         onChange={this.onAnalyticsSelect}
+                        filterOption={(input, option) => {
+                            const inputedText = input? input.toLowerCase() : "";
+                            const children = option.props.children? String(option.props.children).toLowerCase() : "";
+
+                            return ( children.indexOf(inputedText) >= 0);
+                        }}
                     >
-                        {_.map(analytics, ans => (
+                        {_.map(filteredAnalytics, ans => (
                             <Select.Option key={ans.analyticsUniqueId} value={ans.analyticsUniqueId}>
                                 {ans.analyticsName}
                             </Select.Option>

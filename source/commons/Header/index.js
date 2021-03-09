@@ -10,8 +10,6 @@ import Styles from './styles.m.css';
 import { values } from 'office-ui-fabric-react';
 import { permissions, isForbidden, isAdmin } from 'utils';
 
-import { setTireFittingToken, getTireFittingToken, removeTireFittingToken } from "utils";
-
 const mapStateToProps = state => {
     return {
         user: state.auth,
@@ -66,21 +64,6 @@ class Header extends Component {
                         />
                     </Tooltip>
                     { <HeaderMenu { ...this.props } /> }
-                    {isAdmin(user) &&
-                        <Switch
-                            style={{
-                                marginLeft: 14,
-                                backgroundColor: !Boolean(getTireFittingToken()) && "var(--cancel)",
-                            }}
-                            checked={Boolean(getTireFittingToken())}
-                            onChange={(checked)=>{
-                                if(checked) setTireFittingToken("666");
-                                else removeTireFittingToken();
-
-                                window.location.reload();
-                            }}
-                        />
-                    }
                 </div>
             </header>
         );
