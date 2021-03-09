@@ -744,7 +744,7 @@ export default class LaborsPage extends Component {
 
     buildStoreGroupsTree() {
         var treeData = [];
-        for(let i = 0; i < this.state.storeGroups.length; i++) {
+        for(let i = 0; i < this.state.storeGroups && this.state.storeGroups.length ? this.state.storeGroups.length : 0; i++) {
             const parentGroup = this.state.storeGroups[i];
             treeData.push({
                 title: `${parentGroup.name} (#${parentGroup.id})`,

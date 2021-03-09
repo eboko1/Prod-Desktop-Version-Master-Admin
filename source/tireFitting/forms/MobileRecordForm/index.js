@@ -186,7 +186,7 @@ export class MobileRecordForm extends Component {
 
     buildStoreGroupsTree() {
         var treeData = [];
-        for (let i = 0; i < this.details.length; i++) {
+        for (let i = 0; i < this.details && this.details.length ? this.details.length : 0; i++) {
             const parentGroup = this.details[ i ];
             treeData.push({
                 title:      `${parentGroup.name} (#${parentGroup.id})`,
