@@ -45,6 +45,10 @@ const filterSelectOptions = [
         value:  "not_complete,required,call,reserve",
     },
     {
+        message: "records",
+        value: "approve",
+    },
+    {
         message: "not_complete",
         value: "not_complete",
     },
