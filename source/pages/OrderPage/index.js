@@ -1003,6 +1003,7 @@ class OrderPage extends Component {
                         focusedRef={focusedRef}
                         showCahOrderModal={showCahOrderModal}
                         orderStatus={ status }
+                        fetchedOrder={ fetchedOrder }
                     />
                 </ResponsiveView>
                 <CancelReasonModal

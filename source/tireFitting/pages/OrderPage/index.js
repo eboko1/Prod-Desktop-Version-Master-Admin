@@ -894,6 +894,8 @@ class OrderPage extends Component {
                         orderStatus={ status }
                         orderFetching={ orderFetching }
                         vehicleTypes={ vehicleTypes }
+                        order={ order }
+                        fetchedOrder={ fetchedOrder }
                     />
                 </ResponsiveView>
                 <CancelReasonModal
