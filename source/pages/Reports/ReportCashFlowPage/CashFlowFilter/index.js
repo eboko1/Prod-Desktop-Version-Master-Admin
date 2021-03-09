@@ -101,9 +101,7 @@ export default class CashFlowFilter extends React.Component {
         fetchReportCashFlow();
     }
 
-    onAnalyticsSelect(analyticsId) {
-        //Actually we can pass multiple ids but for now multiple mode is broken, so it is disabled
-        const analyticsIds = [analyticsId];
+    onAnalyticsSelect(analyticsIds = []) {
 
         const {
             setFiltersAnalyticsUniqueIds,
@@ -135,12 +133,13 @@ export default class CashFlowFilter extends React.Component {
                         allowClear
                         showSearch
                         placeholder={formatMessage({id: 'report_cash_flow_page.cashbox'})}
-                        disabled={analyticsIsFetching}
+                        disabled={cashboxesIsFetching}
                         onChange={this.onCashboxSelect}
                         filterOption={(input, option) => {
                             const inputedText = input ? input.toLowerCase() : "";
+                            const children = option.props.children? String(option.props.children).toLowerCase() : "";
                             return (
-                                option.props.children.toLowerCase().indexOf(inputedText) >= 0 || 
+                                children.indexOf(inputedText) >= 0 || 
                                 String(option.props.value).indexOf(inputedText) >= 0
                             )
                         }}
@@ -158,16 +157,15 @@ export default class CashFlowFilter extends React.Component {
                         style={{width: '100%'}}
                         allowClear
                         showSearch
-                        // mode="multiple" //To enable multiple select but it is bkoren somehow
+                        mode="multiple" //To enable multiple select
                         placeholder={formatMessage({id: 'report_cash_flow_page.analytics'})}
-                        disabled={cashboxesIsFetching}
+                        disabled={analyticsIsFetching}
                         onChange={this.onAnalyticsSelect}
                         filterOption={(input, option) => {
-                            const inputedText = input ? input.toLowerCase() : "";
-                            return (
-                                option.props.children.toLowerCase().indexOf(inputedText) >= 0 || 
-                                String(option.props.value).indexOf(inputedText) >= 0
-                            )
+                            const inputedText = input? input.toLowerCase() : "";
+                            const children = option.props.children? String(option.props.children).toLowerCase() : "";
+
+                            return ( children.indexOf(inputedText) >= 0);
                         }}
                     >
                         {_.map(filteredAnalytics, ans => (
