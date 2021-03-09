@@ -479,9 +479,9 @@ export class CashOrderForm extends Component {
     }
 
     /**
-     * Updates analytics field depending on a selected order type,
+     * Updates analytics field depending on a selected cash order type,
      * You can reset this filed if no value were provided
-     * @param {*} value order type
+     * @param {*} value cash order type
      */
     updateAnalyticsField (value) {
         const {
@@ -504,6 +504,7 @@ export class CashOrderForm extends Component {
     }
 
     /**
+     * This occurs when cash order type is changed.
      * This method is used to update analytics value when new order type was selected.
      * "tag" field is out of date, analyticsUniqueId is used instead as it is separate module
      * @param {*} value Selected cash order type
