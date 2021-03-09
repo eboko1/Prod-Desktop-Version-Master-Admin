@@ -219,6 +219,14 @@ export class CashOrderForm extends Component {
             form: { getFieldValue, setFieldsValue },
         } = this.props;
 
+        //If order type or sum type was changed we have to update default analytics field value
+        if(
+            _.get(prevProps, 'fields.type.value') !== _.get(this.props, 'fields.type.value') ||
+            _.get(prevProps, 'fields.sumType.value') !== _.get(this.props, 'fields.sumType.value')
+        ) {
+            this.updateAnalyticsField();
+        }
+
         if (
             _.get(prevProps, "fields.counterpartyType.value") !==
             _.get(fields, "counterpartyType.value")
@@ -449,22 +457,25 @@ export class CashOrderForm extends Component {
     };
 
     /**
-     * Gets analytics depending on a cash order type or parameters like adjustment cash order type type
-     * @param {*} type cash order type
+     * Gets filtered analytics depending on a cash order type currently selected and adjustment parameters like  increase or decrease
      */
-    _getFilteredAnalytics(type) {
-        let { analytics } = this.props;
+    _getFilteredAnalytics() {
+        let { analytics, form: {getFieldValue} } = this.props;
+
+        const cashOrderType = getFieldValue('type'); //Get cash order type
 
         //Remove disabled analytics from list
         analytics = analytics.filter(ans => !ans.analyticsDisabled);
 
         let filteredAnlytics = undefined;
 
-        if(type == cashOrderTypes.INCOME || type == cashOrderTypes.EXPENSE) {
-            filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == type));
-        } else if(type == cashOrderTypes.ADJUSTMENT) {
+        if(cashOrderType == cashOrderTypes.INCOME || cashOrderType == cashOrderTypes.EXPENSE) {
+            filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == cashOrderType));
+        } else if(cashOrderType == cashOrderTypes.ADJUSTMENT) {
             //There are two cases for this type of cash order, and we have to return swapped values
             const sumType = this.state.sumType || adjustmentSumTypes.INCOME; //Get field or its init value
+
+            console.log("Sum type: ", sumType, '; fromField: ', getFieldValue('sumType'));
 
             if(sumType == adjustmentSumTypes.INCOME) {
                 // We have to retrun expense analytics only in this case
@@ -479,33 +490,29 @@ export class CashOrderForm extends Component {
     }
 
     /**
-     * Updates analytics field depending on a selected cash order type,
-     * You can reset this filed if no value were provided
-     * @param {*} value cash order type
+     * Updates analytics field depending on a selected cash order type and other parameters
      */
-    updateAnalyticsField (value) {
+    updateAnalyticsField () {
         const {
-            form: { setFieldsValue },
-            editMode,
-            printMode,
-            analytics
+            form: { setFieldsValue }
         } = this.props;
 
-        //Get default for this order type analytics or reset field
-        let ans = null;
-        if(value)
-            ans =  _.get(analytics.filter(ana => (ana.analyticsOrderType == value && ana.analyticsDefaultOrderType == value)), '[0]');
+        const filteredAnalytics = this._getFilteredAnalytics(); //Get analytic for selected type
+
+        //Get default analytics from filtered
+        let ans = _.get(filteredAnalytics.filter(ana => (ana.analyticsDefaultOrderType != null)), '[0]');
         
         if(!ans) {
+            //Reset if no default analytics found
             setFieldsValue({ analyticsUniqueId: null })
-        } else if (!editMode && !printMode) {
+        } else {
             setFieldsValue({ analyticsUniqueId: ans.analyticsUniqueId });
         }
     }
 
     /**
-     * This occurs when cash order type is changed.
-     * This method is used to update analytics value when new order type was selected.
+     * This is called when cash order type is changed.
+     * This method is used to update some field value when new order type was selected.
      * "tag" field is out of date, analyticsUniqueId is used instead as it is separate module
      * @param {*} value Selected cash order type
      */
@@ -516,7 +523,6 @@ export class CashOrderForm extends Component {
             case cashOrderTypes.INCOME:
                 return this.setState(prevState => {
                     setFieldsValue({ [prevState.sumType]: null });
-                    this.updateAnalyticsField(value);
 
                     return {
                         sumType: "increase",
@@ -527,7 +533,6 @@ export class CashOrderForm extends Component {
             case cashOrderTypes.EXPENSE:
                 return this.setState(prevState => {
                     setFieldsValue({ [prevState.sumType]: null });
-                    this.updateAnalyticsField(value);
 
                     return {
                         sumType: "decrease",
@@ -539,7 +544,6 @@ export class CashOrderForm extends Component {
                 if (!this.props.editMode) {
                     return this.setState(prevState => {
                         setFieldsValue({ [prevState.sumType]: null });
-                        this.updateAnalyticsField(value);
 
                         return {
                             sumType: "increase",
@@ -556,8 +560,6 @@ export class CashOrderForm extends Component {
 
     _setSumType = e => {
         const sumType = e.target.value;
-
-        this.updateAnalyticsField(null); //Reset field
 
         this.setState(prevState => {
             this.props.form.setFieldsValue({
@@ -708,7 +710,6 @@ export class CashOrderForm extends Component {
         } = this.props;
 
         const cashOrderId = getFieldValue("id");
-        const orderType = getFieldValue('type');
 
         //https://github.com/ant-design/ant-design/issues/8880#issuecomment-402590493
         // getFieldDecorator("clientId", { initialValue: void 0 });
@@ -963,7 +964,7 @@ export class CashOrderForm extends Component {
                                     ? activeCashOrder.analyticsUniqueId
                                     : (printMode)
                                         ? void 0
-                                        : (_.get(analytics.filter(ana => ana.analyticsDefaultOrderType == orderType), '[0].analyticsUniqueId'))
+                                        : (_.get(this._getFilteredAnalytics(), '[0].analyticsUniqueId'))
                             }
                             getFieldDecorator={getFieldDecorator}
                             getPopupContainer={trigger =>
@@ -975,7 +976,7 @@ export class CashOrderForm extends Component {
                             rules={[
                                 { required: true, message: 'Analytics must be selected!!!' },
                             ]}
-                            options={this._getFilteredAnalytics(orderType)}
+                            options={this._getFilteredAnalytics()}
                             optionValue="analyticsUniqueId" //Will be sent as var
                             optionLabel="analyticsName"
                             getPopupContainer={trigger => trigger.parentNode}
