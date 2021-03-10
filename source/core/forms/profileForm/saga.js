@@ -20,12 +20,14 @@ export function* submitProfileFormSaga() {
             const { payload: user } = yield take(SUBMIT_PROFILE_FORM);
             yield put(setProfileUpdatingState(true));
 
-            yield call(fetchAPI, 'POST', '/business_types ', null, {
-                types: user.businessTypes == 'DEFAULT' ? [] : [
-                    user.businessTypes,
-                ]
-            });
-            yield setBusinessTypes(user.businessTypes);
+            if(user.businessTypes) {
+                yield call(fetchAPI, 'POST', '/business_types ', null, {
+                    types: user.businessTypes == 'DEFAULT' ? [] : [
+                        user.businessTypes,
+                    ]
+                });
+                yield setBusinessTypes(user.businessTypes);
+            }
             yield delete user.businessTypes;
             
             yield call(fetchAPI, 'PUT', '/managers', null, _.omit(user, "businessTypes"));
