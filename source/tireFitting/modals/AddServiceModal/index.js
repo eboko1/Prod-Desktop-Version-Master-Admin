@@ -49,7 +49,7 @@ class AddServiceModal extends React.Component{
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
                                     String(option.props.value).indexOf(input.toLowerCase()) >= 0 ||
-                                    String(option.props.cross_id).indexOf(input.toLowerCase()) >= 0
+                                    String(option.props.cross_id).toLowerCase().indexOf(input.toLowerCase()) >= 0
                                 )
                             }}
                             onChange={(value, option)=>{

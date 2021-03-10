@@ -21,7 +21,7 @@ class DiscountPanel extends Component {
     async updateTimeMultiplier(multiplier) {
         this.laborTimeMultiplier = multiplier;
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/orders/${this.props.orderId}`;
         url += params;
         try {
@@ -34,6 +34,7 @@ class DiscountPanel extends Component {
                 body: JSON.stringify({ laborTimeMultiplier: multiplier }),
             });
             const result = await response.json();
+            this.props.reloadOrderForm(undefined, 'all');
         } catch (error) {
             console.error('ERROR:', error);
         }
