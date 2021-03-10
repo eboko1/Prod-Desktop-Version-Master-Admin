@@ -23,7 +23,7 @@ export const removeToken = () =>
 export const setBusinessTypes = types =>
     localStorage.setItem('_my.carbook.business_types', JSON.stringify(types));
 
-export const getBusinessTypes = () => localStorage.getItem('_my.carbook.business_types') && JSON.parse(localStorage.getItem('_my.carbook.business_types'));
+export const getBusinessTypes = () => JSON.parse(localStorage.getItem('_my.carbook.business_types'));
 
 export const removeBusinessTypes = () =>
     localStorage.removeItem('_my.carbook.business_types');
