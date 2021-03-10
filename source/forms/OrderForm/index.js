@@ -610,6 +610,7 @@ export class OrderForm extends React.PureComponent {
 			detailsSum,
 			detailsSumDiscount,
 			detailsTotalSum,
+			laborTimeMultiplier,
 		} = order;
 
 		const orderServices = _.get(fetchedOrder, 'orderServices', []);
@@ -627,7 +628,7 @@ export class OrderForm extends React.PureComponent {
 		return (
 			<OrderFormTabs
 				orderStatus={this.props.order.status}
-				laborTimeMultiplier={this.props.order.laborTimeMultiplier}
+				laborTimeMultiplier={laborTimeMultiplier}
 				defaultEmployeeId={this.props.order.employeeId}
 				normHourPrice={normHourPrice}
 				orderId={orderId}
