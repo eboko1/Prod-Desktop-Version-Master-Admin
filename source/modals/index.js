@@ -21,6 +21,7 @@ import DetailSupplierModal from './DetailSupplierModal';
 import FavouriteDetailsModal from './FavouriteDetailsModal';
 import FavouriteServicesModal from './FavouriteServicesModal';
 import AddServiceModal from './AddServiceModal';
+import AddCashboxModal from './AddCashboxModal';
 import TecDocInfoModal from './TecDocInfoModal';
 import LaborsNormHourModal from './LaborsNormHourModal';
 import OilModal from './OilModal';
@@ -63,6 +64,7 @@ export {
     FavouriteDetailsModal,
     FavouriteServicesModal,
     AddServiceModal,
+    AddCashboxModal,
     TecDocInfoModal,
     LaborsNormHourModal,
     OilModal,

@@ -9,6 +9,7 @@ export const RESET_MODAL = `${prefix}/RESET_MODAL`;
 
 export const MODALS = {
     ADD_CLIENT:             'ADD_CLIENT',
+    ADD_CASHBOX:            'ADD_CASHBOX',
     CANCEL_REASON:          'CANCEL_REASON',
     CASH_ORDER:             'CASH_ORDER',
     CHANGE_TASK:            'CHANGE_TASK',
