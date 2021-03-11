@@ -15,13 +15,13 @@ export function columnsConfig(props) {
 	const nameCol = {
 		title: <FormattedMessage id='cash-table.name' />,
 		dataIndex: 'name',
-		width: '25%',
+		width: '15%',
 	};
 
 	const typeCol = {
 		title: <FormattedMessage id='cash-table.type' />,
 		dataIndex: 'type',
-		width: '20%',
+		width: '10%',
 		render: (type) => (
 			<FormattedMessage id={`cash-creation-form.type-${type}`} />
 		),
@@ -30,7 +30,7 @@ export function columnsConfig(props) {
 	const fiscalNumberCol = {
 		title: <FormattedMessage id='cash-table.fiscalNumber' />,
 		dataIndex: 'fiscalNumber',
-		width: '25%',
+		width: '20%',
 	};
 
 	const infoCol = {
@@ -38,6 +38,53 @@ export function columnsConfig(props) {
 		dataIndex: 'description',
 		width: '20%',
 	};
+
+	const addCashOrderCol = {
+		width: 'auto',
+		dataIndex: 'test',
+		render: () => {
+			return (
+				<Icon type="dollar" />
+			);
+		},
+	}
+
+	const openCashboxCol = {
+		width: 'auto',
+		dataIndex: 'test',
+		render: () => {
+			return (
+				<Icon type="play-circle" />
+			);
+		},
+	}
+
+	const putMoneyCol = {
+		width: 'auto',
+		render: () => {
+			return (
+				<Icon type="money-collect" />
+			);
+		},
+	}
+
+	const xReportCol = {
+		width: 'auto',
+		render: () => {
+			return (
+				<Icon type="file-excel" />
+			);
+		},
+	}
+
+	const zReportCol = {
+		width: 'auto',
+		render: () => {
+			return (
+				<Icon type="poweroff" />
+			);
+		},
+	}
 
 	const deleteCol = {
 		width: 'auto',
@@ -77,5 +124,17 @@ export function columnsConfig(props) {
 				</Tooltip>
 			),
 	};
-	return [numberCol, nameCol, typeCol, fiscalNumberCol, infoCol, deleteCol];
+
+	return [
+		numberCol, 
+		nameCol, 
+		typeCol, 
+		fiscalNumberCol, 
+		infoCol, 
+		addCashOrderCol,
+		openCashboxCol,
+		putMoneyCol,
+		xReportCol,
+		zReportCol,
+		deleteCol];
 }

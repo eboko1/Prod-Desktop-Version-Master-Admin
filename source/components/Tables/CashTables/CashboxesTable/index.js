@@ -41,6 +41,13 @@ export class CashboxesTable extends Component {
     render() {
         const { cashboxesFetching, cashboxes } = this.props;
 
+        //Temp
+        this.columns = columnsConfig({
+            deleteCashbox:      this.props.deleteCashbox,
+            formatMessage:      this.props.intl.formatMessage,
+            isCRUDForbidden:    false,
+        });
+
         return (
             <Table
                 size="small"
