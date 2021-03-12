@@ -2,12 +2,14 @@
 import exception400 from 'theme/images/exceptions/400.svg';
 import exception404 from 'theme/images/exceptions/404.svg';
 import exception500 from 'theme/images/exceptions/500.svg';
+
 // Logos
 import carbookLogo from 'theme/images/logoCarbookPrimary.png';
 import carbookLogo2 from 'theme/images/carbookLogo2.png';
 import carbookLogoBlack from 'theme/images/carbookLogo.png';
 import carbookLogoWhite from 'theme/images/logoCarbook.png';
 import portmoneLogos from 'theme/images/logos/portmoneLogos.svg';
+
 // partners logos
 import castrolLogo from 'theme/images/logos/castrolLogo.png';
 import ecatLogo from 'theme/images/logos/ecatLogo.png';
@@ -27,13 +29,16 @@ import moogLogo from 'theme/images/logos/moogLogo.png';
 import remsaLogo from 'theme/images/logos/remsaLogo.png';
 import sachsLogo from 'theme/images/logos/sachsLogo.png';
 import trwLogo from 'theme/images/logos/trwLogo.png';
+
 // Funel
 import funelArrowCurvedLeft from 'theme/images/funel/funel_arrow-curved-left.svg';
 import funelArrowCurvedRight from 'theme/images/funel/funel_arrow-curved-right.svg';
+
 // Vehicle Scheme
 import vehicleSchemeFront from 'theme/images/vehicleScheme/front.png';
 import vehicleSchemeBack from 'theme/images/vehicleScheme/back.png';
 import vehicleSchemeSide from 'theme/images/vehicleScheme/side.png';
+
 // Icons
 import bookIcon from 'theme/images/icons/book.svg';
 import brakeIcon from 'theme/images/icons/brake.svg';
@@ -52,12 +57,16 @@ import oilIcon from 'theme/images/icons/oil.svg';
 import gridIcon from 'theme/images/icons/grid.svg';
 import listIcon from 'theme/images/icons/list.svg';
 import complexesIcon from 'theme/images/icons/complexes.svg';
+import cashboxIcon from 'theme/images/icons/cashbox.svg';
+import openLockIcon from 'theme/images/icons/lock-open.svg';
+import closedLockIcon from 'theme/images/icons/lock-closed.svg';
 
 export default {
     // Exceptions
     exception400,
     exception404,
     exception500,
+
     // Logos
     carbookLogo,
     carbookLogo2,
@@ -82,13 +91,16 @@ export default {
     remsaLogo,
     sachsLogo,
     trwLogo,
+
     // Funel
     funelArrowCurvedLeft,
     funelArrowCurvedRight,
+
     // Vehicle Scheme
     vehicleSchemeFront,
     vehicleSchemeBack,
     vehicleSchemeSide,
+
     // Icons
     bookIcon,
     brakeIcon,
@@ -107,4 +119,7 @@ export default {
     gridIcon,
     listIcon,
     complexesIcon,
+    cashboxIcon,
+    openLockIcon,
+    closedLockIcon,
 };

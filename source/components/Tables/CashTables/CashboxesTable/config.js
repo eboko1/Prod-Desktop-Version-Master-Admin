@@ -1,9 +1,31 @@
 // vendor
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Icon, Popconfirm, Tooltip } from 'antd';
+import { Button, Icon, Popconfirm, Tooltip } from 'antd';
+
+//proj
+import { images } from 'utils';
 
 // own
+
+/**
+ * Takes path to Icon and generates customized Icon component
+ * @param {*} icon file path
+ * @returns 
+ */
+function generateIcon(icon) {
+	return (
+		<div
+			style={ {
+				width:           20,
+				height:          20,
+				backgroundColor: 'rgb(100, 100, 100)',
+				mask:       `url(${icon}) no-repeat center / contain`,
+				WebkitMask: `url(${icon}) no-repeat center / contain`,
+			} }
+		></div>
+	);
+}
 
 /* eslint-disable complexity */
 export function columnsConfig(props) {
@@ -39,32 +61,40 @@ export function columnsConfig(props) {
 		width: '20%',
 	};
 
+	const isCashOrderRSTCol = {
+		title: 'RST == PPO',
+		dataIndex: 'rst',
+		width: 'auto',
+		render: (rst) => {
+			console.log("Here: ", rst);
+			return rst
+				? (<Icon type="check-square" />)
+				: null;
+		}
+	};
+
 	const addCashOrderCol = {
 		width: 'auto',
 		dataIndex: 'test',
 		render: () => {
 			return (
-				<Icon type="dollar" />
+				<Icon style={{fontSize: '16px'}} type="dollar" />
 			);
 		},
 	}
 
 	const openCashboxCol = {
 		width: 'auto',
-		dataIndex: 'test',
+		dataIndex: 'x',
 		render: () => {
-			return (
-				<Icon type="play-circle" />
-			);
+			return generateIcon(images.openLockIcon);
 		},
 	}
 
 	const putMoneyCol = {
 		width: 'auto',
 		render: () => {
-			return (
-				<Icon type="money-collect" />
-			);
+			return generateIcon(images.cashboxIcon);
 		},
 	}
 
@@ -72,7 +102,7 @@ export function columnsConfig(props) {
 		width: 'auto',
 		render: () => {
 			return (
-				<Icon type="file-excel" />
+				<Icon style={{fontSize: '16px'}} type="file-excel" />
 			);
 		},
 	}
@@ -80,9 +110,7 @@ export function columnsConfig(props) {
 	const zReportCol = {
 		width: 'auto',
 		render: () => {
-			return (
-				<Icon type="poweroff" />
-			);
+			return generateIcon(images.closedLockIcon);
 		},
 	}
 
