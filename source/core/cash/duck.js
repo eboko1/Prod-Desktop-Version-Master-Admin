@@ -34,9 +34,21 @@ export const SET_CASH_ACCOUNTING_FILTERS = `${prefix}/SET_CASH_ACCOUNTING_FILTER
 export const SET_SEARCH_QUERY = `${prefix}/SET_SEARCH_QUERY`;
 export const SET_ANALYTICS_FETCHING_STATE = `${prefix}/SET_ANALYTICS_FETCHING_STATE`;
 
-
 export const PRINT_CASH_ORDERS = `${prefix}/PRINT_CASH_ORDERS`;
 export const PRINT_CASH_ORDERS_SUCCESS = `${prefix}/PRINT_CASH_ORDERS_SUCCESS`;
+
+//Робота з касами які підключені до податкової
+export const OPEN_SHIFT = `${prefix}/OPEN_SHIFT`; //Відкрити зміну(касу) для здійснення внесень коштів в неї(валідне тільки для кас з РРО)
+export const OPEN_SHIFT_SUCCESS = `${prefix}/OPEN_SHIFT_SUCCESS`;
+
+export const CLOSE_SHIFT = `${prefix}/CLOSE_SHIFT`; //Закрити зміну(касу), валідне тільки для кас з РРО
+export const CLOSE_SHIFT_SUCCESS = `${prefix}/CLOSE_SHIFT_SUCCESS`;
+
+export const SERVICE_INPUT = `${prefix}/SERVICE_INPUT`; //Внести гроші в касу
+export const SERVICE_INPUT_SUCCESS = `${prefix}/SERVICE_INPUT_SUCCESS`;
+
+export const FETCH_X_REPORT = `${prefix}/FETCH_X_REPORT`; //Отримати xReport
+export const FETCH_X_REPORT_SUCCESS = `${prefix}/FETCH_X_REPORT_SUCCESS`;
 
 /**
  * Reducer
@@ -293,4 +305,43 @@ export const printCashOrderSuccess = doc => ({
 export const setSearchQuery = searchQuery => ({
     type:    SET_SEARCH_QUERY,
     payload: searchQuery,
+});
+
+//RST cashboxes
+
+export const openShift = (cashboxId) => ({
+    type: OPEN_SHIFT,
+    payload: cashboxId
+});
+
+export const openShiftSuccess = () => ({
+    type: OPEN_SHIFT_SUCCESS,
+});
+
+export const closeShift = () => ({
+    type: CLOSE_SHIFT,
+});
+
+export const closeShiftSuccess = () => ({
+    type: CLOSE_SHIFT_SUCCESS,
+});
+
+/**
+ * Внести гроші в касу
+ * @returns 
+ */
+export const serviceInput = () => ({
+    type: SERVICE_INPUT,
+});
+
+export const serviceInputSuccess = () => ({
+    type: SERVICE_INPUT_SUCCESS,
+});
+
+export const fetchXReport = () => ({
+    type: FETCH_X_REPORT,
+});
+
+export const fetchXReportSuccess = () => ({
+    type: FETCH_X_REPORT_SUCCESS,
 });

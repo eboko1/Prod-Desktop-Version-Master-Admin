@@ -34,6 +34,11 @@ import {
     selectCashOrdersFilters,
     selectCashAccountingFilters,
     printCashOrderSuccess,
+
+    
+} from './duck';
+
+import {
     FETCH_CASHBOXES,
     FETCH_CASHBOXES_BALANCE,
     FETCH_CASHBOXES_ACTIVITY,
@@ -43,7 +48,31 @@ import {
     FETCH_CASH_ORDERS,
     PRINT_CASH_ORDERS,
     SET_SEARCH_QUERY,
+    OPEN_SHIFT,
 } from './duck';
+
+export function* openShiftSaga() {
+    while (true) {
+        try {
+            const {payload} = yield take(OPEN_SHIFT);
+
+            yield nprogress.start();
+            // console.log("payload: ", payload);
+
+            const requestPayload = {
+                cashboxId: payload
+            }
+
+            yield call(fetchAPI, 'POST', '/cashdesk/open_shift', null, requestPayload);
+
+            yield put(fetchCashboxes());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
 
 export function* fetchCashboxesSaga() {
     while (true) {
@@ -220,6 +249,7 @@ export function* printCashOrdersSaga() {
 
 export function* saga() {
     yield all([
+        call(openShiftSaga),
         call(fetchCashboxesSaga),
         call(fetchCashboxesBalanceSaga),
         call(fetchCashboxesActivitySaga),

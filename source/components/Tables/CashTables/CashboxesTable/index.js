@@ -6,8 +6,12 @@ import { Table } from "antd";
 import { v4 } from 'uuid'
 
 // proj
-import { fetchCashboxes, deleteCashbox } from "core/cash/duck";
 import { permissions, isForbidden } from 'utils';
+import {
+    fetchCashboxes,
+    deleteCashbox,
+    openShift
+} from "core/cash/duck";
 
 // own
 import { columnsConfig } from "./config";
@@ -20,6 +24,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchCashboxes,
     deleteCashbox,
+    openShift,
 };
 
 @injectIntl
@@ -32,6 +37,7 @@ export class CashboxesTable extends Component {
             deleteCashbox:      props.deleteCashbox,
             formatMessage:      props.intl.formatMessage,
             isCRUDForbidden:    isForbidden(props.user, permissions.ACCESS_CATALOGUE_CASH_CRUD),
+            openShift: props.openShift
         });
     }
 
@@ -47,6 +53,7 @@ export class CashboxesTable extends Component {
             deleteCashbox:      this.props.deleteCashbox,
             formatMessage:      this.props.intl.formatMessage,
             isCRUDForbidden:    false,
+            openShift: this.props.openShift
         });
 
         return (

@@ -11,19 +11,25 @@ import { images } from 'utils';
 /**
  * Takes path to Icon and generates customized Icon component
  * @param {*} icon file path
- * @returns 
+ * @param {*} onClick event handler
+ * @returns Component (Icon)
  */
-function generateIcon(icon) {
+function generateIcon(icon, onClick) {
 	return (
-		<div
-			style={ {
-				width:           20,
-				height:          20,
-				backgroundColor: 'rgb(100, 100, 100)',
-				mask:       `url(${icon}) no-repeat center / contain`,
-				WebkitMask: `url(${icon}) no-repeat center / contain`,
-			} }
-		></div>
+		<Button
+			onClick={onClick}
+			disabled={true}
+		>
+			<div
+				style={ {
+					width:           20,
+					height:          20,
+					backgroundColor: 'rgb(100, 100, 100)',
+					mask:       `url(${icon}) no-repeat center / contain`,
+					WebkitMask: `url(${icon}) no-repeat center / contain`,
+				} }
+			/>
+		</Button>
 	);
 }
 
@@ -81,34 +87,53 @@ export function columnsConfig(props) {
 		},
 	}
 
-	const openCashboxCol = {
+	const openShiftCol = {
 		width: 'auto',
-		dataIndex: 'x',
-		render: () => {
-			return generateIcon(images.openLockIcon);
+		dataIndex: 'rst',
+		key: 'openShiftCol',
+		render: (rst, obj) => {
+			return rst
+				? generateIcon(images.openLockIcon, () => props.openShift(obj.id))
+				: null;
 		},
 	}
 
 	const putMoneyCol = {
 		width: 'auto',
-		render: () => {
-			return generateIcon(images.cashboxIcon);
+		dataIndex: 'rst',
+		key: 'putMoneyCol',
+		render: (rst) => {
+			return rst
+				? generateIcon(images.cashboxIcon)
+				: null;
 		},
 	}
 
 	const xReportCol = {
 		width: 'auto',
-		render: () => {
-			return (
-				<Icon style={{fontSize: '16px'}} type="file-excel" />
-			);
+		dataIndex: 'rst',
+		key: 'xReportCol',
+		render: (rst) => {
+			return rst
+				? 	(
+						<Button
+							disabled={true}
+						>
+							<Icon style={{fontSize: '16px'}} type="file-excel" />
+						</Button>
+					)
+				: null;
 		},
 	}
 
 	const zReportCol = {
 		width: 'auto',
-		render: () => {
-			return generateIcon(images.closedLockIcon);
+		dataIndex: 'rst',
+		key: 'zReportCol',
+		render: (rst) => {
+			return rst
+				? generateIcon(images.closedLockIcon)
+				: null;
 		},
 	}
 
@@ -159,7 +184,7 @@ export function columnsConfig(props) {
 		infoCol, 
 		isCashOrderRSTCol,
 		addCashOrderCol,
-		openCashboxCol,
+		openShiftCol,
 		putMoneyCol,
 		xReportCol,
 		zReportCol,
