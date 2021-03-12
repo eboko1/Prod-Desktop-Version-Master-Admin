@@ -62,7 +62,6 @@ export function columnsConfig(props) {
 	};
 
 	const isCashOrderRSTCol = {
-		title: 'RST == PPO',
 		dataIndex: 'rst',
 		width: 'auto',
 		render: (rst) => {
