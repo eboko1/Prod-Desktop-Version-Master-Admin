@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import { Table } from "antd";
+import { v4 } from 'uuid'
 
 // proj
 import { fetchCashboxes, deleteCashbox } from "core/cash/duck";
@@ -54,6 +55,7 @@ export class CashboxesTable extends Component {
                 columns={this.columns}
                 dataSource={cashboxes}
                 loading={cashboxesFetching}
+                rowKey={() => v4()}
                 pagination={false}
                 locale={{
                     emptyText: <FormattedMessage id="no_data" />,

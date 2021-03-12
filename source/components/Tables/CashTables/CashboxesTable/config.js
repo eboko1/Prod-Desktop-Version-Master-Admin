@@ -66,9 +66,8 @@ export function columnsConfig(props) {
 		dataIndex: 'rst',
 		width: 'auto',
 		render: (rst) => {
-			console.log("Here: ", rst);
 			return rst
-				? (<Icon type="check-square" />)
+				? (<Icon style={{fontSize: '16px'}} type="check-square" />)
 				: null;
 		}
 	};
@@ -159,6 +158,7 @@ export function columnsConfig(props) {
 		typeCol, 
 		fiscalNumberCol, 
 		infoCol, 
+		isCashOrderRSTCol,
 		addCashOrderCol,
 		openCashboxCol,
 		putMoneyCol,
