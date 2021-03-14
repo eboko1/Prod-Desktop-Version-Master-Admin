@@ -43,8 +43,6 @@ class ServicesTable extends Component {
             serviceModalKey:     0,
             dataSource:          [],
         };
-
-        this.laborTimeMultiplier = this.props.laborTimeMultiplier || 1;
         this.updateLabor = this.updateLabor.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
         this.masterLabors = [];
@@ -111,9 +109,7 @@ class ServicesTable extends Component {
                             </Button>
                             { !elem.laborId ? (
                                 <FavouriteServicesModal
-                                    laborTimeMultiplier={
-                                        this.laborTimeMultiplier
-                                    }
+                                    laborTimeMultiplier={this.props.laborTimeMultiplier}
                                     disabled={ this.props.disabled }
                                     normHourPrice={ this.props.normHourPrice }
                                     defaultEmployeeId={
@@ -130,9 +126,7 @@ class ServicesTable extends Component {
                                 />
                             ) : (
                                 <QuickEditModal
-                                    laborTimeMultiplier={
-                                        this.laborTimeMultiplier
-                                    }
+                                    laborTimeMultiplier={this.props.laborTimeMultiplier}
                                     disabled={
                                         !elem.laborId || this.props.disabled
                                     }
@@ -719,7 +713,7 @@ class ServicesTable extends Component {
                     pagination={ false }
                 />
                 <AddServiceModal
-                    laborTimeMultiplier={ this.laborTimeMultiplier }
+                    laborTimeMultiplier={ this.props.laborTimeMultiplier }
                     defaultEmployeeId={ this.props.defaultEmployeeId }
                     normHourPrice={ this.props.normHourPrice }
                     user={ this.props.user }
@@ -937,10 +931,9 @@ class QuickEditModal extends React.Component {
                             tecdocId={ this.props.tecdocId }
                             storeGroupId={ elem.storeGroupId }
                             onSelect={ hours => {
-                                this.state.dataSource[ 0 ].hours = hours;
-                                this.setState({
-                                    update: true,
-                                });
+                                elem.hours = hours;
+                                elem.count = hours * this.props.laborTimeMultiplier;
+                                this.setState({});
                             } }
                             hours={ data }
                         />

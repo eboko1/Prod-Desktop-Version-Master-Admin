@@ -611,7 +611,7 @@ export default class LaborsPage extends Component {
                     labors[labors.length-1].normHours = elem.normHours ? elem.normHours : 1;
                 }
             }
-            else if((elem.new && elem.masterLaborId && elem.productId) || !elem.laborBusinessId && elem.laborId) {
+            else if(elem.new && elem.masterLaborId && elem.productId || !elem.laborBusinessId && elem.changed) {
                 newLabors.push({
                     masterLaborId: elem.masterLaborId,
                     productId: elem.productId,
@@ -798,7 +798,7 @@ export default class LaborsPage extends Component {
 
     buildStoreGroupsTree() {
         var treeData = [];
-        for(let i = 0; i < this.state.storeGroups && this.state.storeGroups.length ? this.state.storeGroups.length : 0; i++) {
+        for(let i = 0; i < this.state.storeGroups.length; i++) {
             const parentGroup = this.state.storeGroups[i];
             treeData.push({
                 title: `${parentGroup.name} (#${parentGroup.id})`,

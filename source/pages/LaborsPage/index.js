@@ -557,13 +557,14 @@ export default class LaborsPage extends Component {
                     labors[labors.length-1].normHours = elem.normHours ? elem.normHours : 1;
                 }
             }
-            else if((elem.new && elem.masterLaborId && elem.productId) || !elem.laborBusinessId && elem.laborId) {
+            else if(elem.new && elem.masterLaborId && elem.productId || !elem.laborBusinessId && elem.changed) {
                 newLabors.push({
                     masterLaborId: elem.masterLaborId,
                     productId: elem.productId,
                     disable: Boolean(elem.disable),
                     crossId: elem.crossId || null,
                 });
+                //if(elem.laborId) newLabors[newLabors.length-1].laborId = elem.laborId;
                 if(elem.name) newLabors[newLabors.length-1].name = elem.name;
                 if(elem.fixed) {
                     newLabors[newLabors.length-1].fixed = true;
@@ -735,6 +736,7 @@ export default class LaborsPage extends Component {
             that.setState({
                 storeGroups: data,
             });
+            console.log(data);
             that.buildStoreGroupsTree();
         })
         .catch(function (error) {
@@ -744,7 +746,7 @@ export default class LaborsPage extends Component {
 
     buildStoreGroupsTree() {
         var treeData = [];
-        for(let i = 0; i < this.state.storeGroups && this.state.storeGroups.length ? this.state.storeGroups.length : 0; i++) {
+        for(let i = 0; i < this.state.storeGroups.length; i++) {
             const parentGroup = this.state.storeGroups[i];
             treeData.push({
                 title: `${parentGroup.name} (#${parentGroup.id})`,
