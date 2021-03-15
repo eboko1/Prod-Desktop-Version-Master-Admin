@@ -221,7 +221,7 @@ export default class LaborsPage extends Component {
                         <TreeSelect
                             disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
                             showSearch
-                            style={{ minWidth: '130px', maxWidth: '10%' }}
+                            style={{ minWidth: '130px' }}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                             treeData={this.treeData}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
@@ -472,9 +472,22 @@ export default class LaborsPage extends Component {
                                 } }
                             >
                                 <Button
-                                    type='danger'
+                                    //type='primary'
+                                    style={{
+                                        padding: '0px 8px'
+                                    }}
                                 >
-                                    <Icon type='delete'/>
+                                    <Icon
+                                        type='undo'
+                                    />
+                                    <span style={{marginLeft: 4}}>|</span>
+                                    <Icon
+                                        style={{
+                                            color: 'red',
+                                            marginLeft: 4
+                                        }}
+                                        type='delete'
+                                    />
                                 </Button>
                             </Popconfirm>
                         </div>
@@ -482,6 +495,8 @@ export default class LaborsPage extends Component {
                 },
                 key: 'delete',
                 render: (row)=>{
+                    const buttonType = row.masterLaborId >= 9000 ? 'danger' : 'primary';
+                    const iconType = row.masterLaborId >= 9000 ? 'delete' : 'undo';
                     return Boolean(row.laborBusinessId) ? (
                         <Popconfirm
                             title={
@@ -493,17 +508,23 @@ export default class LaborsPage extends Component {
                             } }
                         >
                             <Button
-                                type='danger'
+                                type={buttonType}
+                                style={{
+                                    width: '100%'
+                                }}
                             >
-                                <Icon type='delete'/>
+                                <Icon type={iconType}/>
                             </Button>
                         </Popconfirm>
                     ) : (
                         <Button
-                            type='danger'
+                            type={buttonType}
                             disabled
+                            style={{
+                                width: '100%'
+                            }}
                         >
-                            <Icon type='delete'/>
+                            <Icon type={iconType}/>
                         </Button>
                     )
                 }
@@ -559,11 +580,11 @@ export default class LaborsPage extends Component {
                 if(elem.name) labors[labors.length-1].name = elem.name;
                 if(elem.fixed) {
                     labors[labors.length-1].fixed = true;
-                    labors[labors.length-1].price = elem.price;
+                    labors[labors.length-1].price = elem.price || 1;
                 }
                 else {
                     labors[labors.length-1].fixed = false;
-                    labors[labors.length-1].normHours = elem.normHours ? elem.normHours : 1;
+                    labors[labors.length-1].normHours = elem.normHours || 1;
                 }
             }
             else if(elem.new && elem.masterLaborId && elem.productId || !elem.laborBusinessId && elem.changed) {
@@ -577,11 +598,11 @@ export default class LaborsPage extends Component {
                 if(elem.name) newLabors[newLabors.length-1].name = elem.name;
                 if(elem.fixed) {
                     newLabors[newLabors.length-1].fixed = true;
-                    newLabors[newLabors.length-1].price = elem.price;
+                    newLabors[newLabors.length-1].price = elem.price || 1;
                 }
                 else {
                     newLabors[newLabors.length-1].fixed = false;
-                    newLabors[newLabors.length-1].normHours = elem.normHours ? elem.normHours : 1;
+                    newLabors[newLabors.length-1].normHours = elem.normHours || 1;
                 }
             }
         });
