@@ -70,9 +70,9 @@ export function columnsConfig(props) {
 	const isCashOrderRSTCol = {
 		dataIndex: 'rst',
 		width: 'auto',
-		render: (rst) => {
+		render: (rst, obj) => {
 			return rst
-				? (<Icon style={{fontSize: '16px'}} type="check-square" />)
+				? (<Icon style={{fontSize: '16px', color: obj.isShiftOpen? 'green': 'red'}} type="check-square" />)
 				: null;
 		}
 	};
