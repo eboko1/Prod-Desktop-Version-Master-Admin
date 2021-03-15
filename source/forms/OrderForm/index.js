@@ -110,7 +110,9 @@ export class OrderForm extends React.PureComponent {
 				data.map((elem, index) => {
 					elem.key = index;
 				});
-				that.state.details = data;
+				that.setState({
+					details: data,
+				})
 			})
 			.catch(function(error) {
 				console.log('error', error);
