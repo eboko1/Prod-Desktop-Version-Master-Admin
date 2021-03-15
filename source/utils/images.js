@@ -60,6 +60,7 @@ import complexesIcon from 'theme/images/icons/complexes.svg';
 import cashboxIcon from 'theme/images/icons/cashbox.svg';
 import openLockIcon from 'theme/images/icons/lock-open.svg';
 import closedLockIcon from 'theme/images/icons/lock-closed.svg';
+import reportIcon from 'theme/images/icons/report.svg';
 
 export default {
     // Exceptions
@@ -122,4 +123,5 @@ export default {
     cashboxIcon,
     openLockIcon,
     closedLockIcon,
+    reportIcon,
 };

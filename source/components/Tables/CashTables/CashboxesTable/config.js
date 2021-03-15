@@ -115,13 +115,7 @@ export function columnsConfig(props) {
 		key: 'xReportCol',
 		render: (rst) => {
 			return rst
-				? 	(
-						<Button
-							disabled={true}
-						>
-							<Icon style={{fontSize: '16px'}} type="file-excel" />
-						</Button>
-					)
+				? generateIcon(images.reportIcon)
 				: null;
 		},
 	}
