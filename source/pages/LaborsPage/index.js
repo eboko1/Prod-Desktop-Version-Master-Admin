@@ -20,7 +20,7 @@ import {
 
 // proj
 import { Layout, Spinner } from 'commons';
-import { permissions, isForbidden } from 'utils';
+import { permissions, isForbidden, fetchAPI } from 'utils';
 import { Barcode } from 'components';
 
 // own
@@ -42,6 +42,7 @@ export default class LaborsPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading: true,
             labors: [],
             masterLabors: [],
             storeGroups: [],
@@ -584,172 +585,51 @@ export default class LaborsPage extends Component {
                 }
             }
         });
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__;
-        let params = `/labors`;
-        url += params;
 
-        await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Authorization': token,
-            },
-            body: JSON.stringify(newLabors),
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            //console.log(data);
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        await fetch(url + `?laborIds=[${deletedLabors}]`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': token,
-            },
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            //console.log(data);
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Authorization': token,
-            },
-            body: JSON.stringify(labors),
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            //that.fetchLabors();
-            window.location.reload();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
+        await fetchAPI('POST', 'labors', null, newLabors);
+        await fetchAPI('DELETE', `labors?laborIds=[${deletedLabors}]`);
+        await fetchAPI('PUT', 'labors', null, labors);
+        this.fetchLabors();
     }
 
-    fetchLabors() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__;
-        let params = `/labors?all=true`;
-        url += params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
+    fetchLabors = async () => {
+        await this.setState({
+            loading: true,
         })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
+
+        const response = await fetchAPI('GET', 'labors', {all: true});
+        response.labors.sort((a, b) => a.masterLaborId < b.masterLaborId ? -1 : (a.masterLaborId > b.masterLaborId ? 1 : 0));
+        response.labors.map((elem, index)=>{
+            elem.key = index;
+            elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
         })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            console.log(data);
-            data.labors.sort((a, b) => a.masterLaborId < b.masterLaborId ? -1 : (a.masterLaborId > b.masterLaborId ? 1 : 0));
-            data.labors.map((elem, index)=>{
-                elem.key = index;
-                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
-            })
-            that.setState({
-                labors: data.labors,
-                currentPage: that.props.location.state && that.props.location.state.showForm ? Math.ceil(data.labors.length / 10) : 1,
-            });
-            if(that.props.location.state && that.props.location.state.showForm) that.nameInput.focus();
-        })
-        .catch(function (error) {
-            console.log('error', error)
+        this.setState({
+            labors: response.labors,
+            currentPage: this.props.location.state && this.props.location.state.showForm ? Math.ceil(response.labors.length / 10) : 1,
         });
 
-        params = `/labors/master`;
-        url = __API_URL__ + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
+        if(this.props.location.state && this.props.location.state.showForm) {
+            this.nameInput.focus();
+        }
+
+        this.setState({
+            loading: false,
         })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.setState({
-                masterLabors: data.masterLabors,
-            });
-        })
-        .catch(function (error) {
-            console.log('error', error)
+    }
+
+    fetchData = async () => {
+        const masterLabors = await fetchAPI('GET', 'labors/master');
+        this.setState({
+            masterLabors: masterLabors.masterLabors,
         });
 
-        params = `/store_groups`;
-        url = __API_URL__ + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.setState({
-                storeGroups: data,
-            });
-            console.log(data);
-            that.buildStoreGroupsTree();
-        })
-        .catch(function (error) {
-            console.log('error', error)
+        const storeGroups = await fetchAPI('GET', 'store_groups');
+        this.setState({
+            storeGroups,
         });
+        this.buildStoreGroupsTree();
+
+        this.fetchLabors();
     }
 
     buildStoreGroupsTree() {
@@ -793,7 +673,7 @@ export default class LaborsPage extends Component {
     }
 
     componentDidMount() {
-        this.fetchLabors();
+        this.fetchData();
     }
 
     render() {
@@ -805,7 +685,7 @@ export default class LaborsPage extends Component {
             },
         };
 
-        const { labors, filterCode, filterCrossId, filterId, filterDetail, filterDefaultName, filterName, currentPage } = this.state;
+        const { loading, labors, filterCode, filterCrossId, filterId, filterDetail, filterDefaultName, filterName, currentPage } = this.state;
         if(
             !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD) && 
             labors.length && 
@@ -864,6 +744,7 @@ export default class LaborsPage extends Component {
                 }
             >
                 <Table
+                    loading={loading}
                     dataSource={dataSource}
                     rowSelection={rowSelection}
                     columns={columns}
