@@ -34,7 +34,7 @@ export const generateCommonConfiguration = () => {
     return {
         entry: {
             source,
-            client: 'webpack-dev-server/client?http://0.0.0.0:3000',
+            client: 'webpack-dev-server/client?http://localhost:3000',
         },
         output: {
             path:       build,

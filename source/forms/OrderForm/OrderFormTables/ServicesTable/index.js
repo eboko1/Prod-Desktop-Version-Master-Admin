@@ -71,6 +71,7 @@ class ServicesTable extends Component {
                                         detailsTreeData={this.props.detailsTreeData}
                                         orderId={this.props.orderId}
                                         reloadOrderForm={this.props.reloadOrderForm}
+                                        laborTimeMultiplier={this.props.laborTimeMultiplier}
                                     />
                                 }
                             </div>
