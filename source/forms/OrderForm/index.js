@@ -621,7 +621,7 @@ export class OrderForm extends React.PureComponent {
 			totalDetailsProfit -= purchasePrice * count;
 		});
 		orderServices.map(({ purchasePrice, count }) => {
-			totalServicesProfit -= purchasePrice * count;
+			totalServicesProfit -= purchasePrice;
 		});
 
 		return (

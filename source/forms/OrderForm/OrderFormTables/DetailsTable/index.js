@@ -17,7 +17,7 @@ import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
-import { permissions, isForbidden, images } from 'utils';
+import { permissions, isForbidden, images, fetchAPI } from 'utils';
 import { DetailProductModal, FavouriteDetailsModal, StoreProductTrackingModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
 import { StoreProductModal } from 'modals';
@@ -76,7 +76,11 @@ class DetailsTable extends Component {
                                     <Barcode
                                         button
                                         prefix={'STP'}
-                                        onConfirm={(code, pref, fullCode)=>{
+                                        onConfirm={async (code, pref, fullCode) => {
+                                            // const response = await fetchAPI('GET', 'barcodes', {
+                                            //     barcode: fullCode,
+                                            // });
+                                            
                                             const { dataSource } = this.state;
                                             const lastDetail = dataSource[dataSource.length - 1];
                                             lastDetail.barcode = fullCode;
