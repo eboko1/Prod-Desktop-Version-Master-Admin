@@ -28,7 +28,7 @@ export default class ClientPage extends Component {
     }
 
     render() {
-        const { isFetching, clientEntity, match, location } = this.props;
+        const { isFetching, clientEntity, match, location, fetchClient } = this.props;
         const specificTab = (location && location.state) ? location.state.specificTab : undefined;
 
         return isFetching ? (
@@ -38,7 +38,8 @@ export default class ClientPage extends Component {
                 <ClientContainer
                     clientId={ match.params.id }
                     clientEntity={ clientEntity }
-                    specificTab={specificTab}
+                    specificTab={ specificTab }
+                    fetchClient={ fetchClient }
                 />
             </Layout>
         );

@@ -308,7 +308,6 @@ export class OrderForm extends React.PureComponent {
     };
 
     render() {
-        console.log(this)
         const {
             authentificatedManager,
             form,

@@ -65,11 +65,10 @@ export class MobileRecordForm extends Component {
         super(props);
 
         this.state = {
-            detailsTreeData: [],
+            detailsTreeData: undefined,
             fetchedOrder: undefined,
+            details: undefined,
         };
-
-        this.details = [];
     }
 
     _fetchLaborsAndDetails = async () => {
@@ -95,7 +94,6 @@ export class MobileRecordForm extends Component {
             data.map((elem, index) => {
                 elem.key = index;
             });
-            that.details = data;
             that.setState({
                 details: data,
             });
@@ -186,14 +184,13 @@ export class MobileRecordForm extends Component {
 
     buildStoreGroupsTree() {
         var treeData = [];
-        for (let i = 0; i < this.details && this.details.length ? this.details.length : 0; i++) {
-            const parentGroup = this.details[ i ];
+        for (let i = 0; i < this.state.details.length; i++) {
+            const parentGroup = this.state.details[ i ];
             treeData.push({
                 title:      `${parentGroup.name} (#${parentGroup.id})`,
                 name:       parentGroup.name,
                 value:      parentGroup.id,
                 key:        `${i}`,
-                selectable: false,
                 children:   [],
                 multiplier: parentGroup.priceGroupMultiplier,
             });
@@ -204,7 +201,6 @@ export class MobileRecordForm extends Component {
                     name:       childGroup.name,
                     value:      childGroup.id,
                     key:        `${i}-${j}`,
-                    selectable: false,
                     children:   [],
                     multiplier: childGroup.priceGroupMultiplier,
                 });
@@ -239,16 +235,16 @@ export class MobileRecordForm extends Component {
     componentDidMount() {
         document.querySelector('.ant-tabs-bar').scrollIntoView({behavior: "smooth", block: "end"});
         this._reloadOrderForm();
-        if (this.props.allDetails.brands.length) {
-            this._fetchLaborsAndDetails();
-        }
     }
 
     componentDidUpdate(prevProps, prevState) {
         if(!this.state.fetchedOrder) {
             this._reloadOrderForm();
         }
-        if(!this.state.detailsTreeData.length && this.details.length) {
+        if(!this.state.details) {
+            this._fetchLaborsAndDetails();
+        }
+        if(!this.state.detailsTreeData && this.state.details && this.state.details.length) {
             this.buildStoreGroupsTree();
         }
     }

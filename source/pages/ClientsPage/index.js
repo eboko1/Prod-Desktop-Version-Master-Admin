@@ -91,6 +91,9 @@ export default class ClientsPage extends Component {
                         universalFilter={ this.props.universalFilter }
                         setUniversalFilter={ this.props.setUniversalFilters }
                         stats={ stats }
+                        style={{
+                            margin: '-12px 0 -8px'
+                        }}
                     />
                 </section>
                 <section className={ Styles.table }>

@@ -472,11 +472,18 @@ export function* createProductSaga() {
                 'POST',
                 '/store_products',
                 null,
-                payload,
+                _.omit(payload, 'barcode'),
                 {
                     handleErrorInternally: true,
                 },
             );
+            if(response.created && payload.barcode) {
+                yield fetchAPI('POST', 'barcodes', undefined, [{
+                    referenceId: response.id,
+                    table: 'STORE_PRODUCTS',
+                    customCode: payload.barcode,
+                }])
+            }
             yield put(fetchProductsSuccess(response));
         } catch (error) {
             // TODO: fifnish error toast handling
@@ -496,7 +503,7 @@ export function* updateProductSaga() {
                 'PUT',
                 `/store_products/${payload.id}`,
                 null,
-                payload.product,
+                _.omit(payload.product, 'barcode'),
                 {
                     handleErrorInternally: true,
                 },
