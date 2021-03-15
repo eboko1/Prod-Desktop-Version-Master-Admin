@@ -354,7 +354,7 @@ export default class OrderFormBody extends Component {
     };
 
     _renderClientSearch = () => {
-        const { getFieldDecorator } = this.props.form;
+        const { getFieldDecorator, setFieldsValue } = this.props.form;
         const { user, fields, errors } = this.props;
         const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
 
@@ -399,6 +399,10 @@ export default class OrderFormBody extends Component {
                                 color: 'var(--primary)',
                                 fontWeight: 700,
                                 margin: "28px 0 0 10px",
+                            }}
+                            prefix={'CVH'}
+                            onConfirm={(code, prefix)=>{
+                                setFieldsValue({searchClientQuery: `${prefix}-${code}`})
                             }}
                         /> 
                     </>

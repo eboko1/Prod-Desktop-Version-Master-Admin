@@ -278,8 +278,6 @@ export class CashOrderForm extends Component {
 
         const { sumType } = this.state;
 
-        console.log(this);
-
         const orderType = _.get(fields, "type.value") || cashOrderTypes.INCOME;
         //Get all filtered analytics
         let filteredAnalytics = this._getFilteredAnalytics(orderType).filter(ana => ana.analyticsDefaultOrderType == orderType);

@@ -80,11 +80,19 @@ export default class LaborsPage extends Component {
                     return (
                         <div style={{display: 'flex'}}>
                             <Barcode
-                                value={`LBS-${this.props.user.businessId}-${row.laborId}`}
+                                value={row.barcode}
+                                enableScanIcon
                                 iconStyle={{
                                     margin: "0 8px 0 0",
                                     fornSize: 18,
                                     verticalAlign: "sub",
+                                }}
+                                prefix={'LBS'}
+                                table={'LABORS'}
+                                referenceId={row.laborId}
+                                onConfirm={(code, pref, fullCode)=>{
+                                    row.barcode = fullCode;
+                                    this.setState({});
                                 }}
                             />
                             {data}

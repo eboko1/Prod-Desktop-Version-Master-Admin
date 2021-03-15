@@ -78,13 +78,14 @@ export default class UniversalFilters extends Component {
             form,
             filters,
             areFiltersDisabled,
+            style,
         } = this.props;
 
         const formFilters = form.getFieldsValue();
 
         return (
             <Catcher>
-                <section className={Styles.filters}>
+                <section className={Styles.filters} style={style}>
                     <UniversalFiltersTags
                         universalLinkedFields={universalLinkedFields}
                         tagFields={tagFields}
