@@ -513,8 +513,8 @@ export default class LaborsPage extends Component {
                             <Button
                                 title={
                                     row.masterLaborId >= 9000
-                                    ? <FormattedMessage id='delete'/>
-                                    : <FormattedMessage id='update'/>
+                                    ? this.props.intl.formatMessage({id:'delete'})
+                                    : this.props.intl.formatMessage({id:'update'})
                                 }
                                 type={buttonType}
                                 style={{
