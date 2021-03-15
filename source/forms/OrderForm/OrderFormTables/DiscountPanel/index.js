@@ -20,18 +20,26 @@ class DiscountPanel extends Component {
     }
     
     _updateTimeMultiplier = async (multiplier) => {
-        const { orderId, orderServices, laborTimeMultiplier } = this.props;
-        const payload = {
-            updateMode: true,
-            laborTimeMultiplier: multiplier,
-            services: orderServices.map(({id, count})=>({
-                id,
-                count: Math.round((count / laborTimeMultiplier) * multiplier * 10) / 10,
-            })),
-        };
+        if(multiplier) {
+            const { orderId, orderServices, laborTimeMultiplier } = this.props;
+            const payload = {
+                updateMode: true,
+                laborTimeMultiplier: multiplier ,
+                services: [],
+            };
+            
+            orderServices.map(({id, count})=>{
+                if(id) {
+                    payload.services.push({
+                        id,
+                        count: Number(Math.round((count / laborTimeMultiplier) * multiplier * 10) / 10),
+                    })
+                }
+            })
 
-        await fetchAPI('PUT', `/orders/${orderId}`, null, payload)
-        await this.props.reloadOrderForm(undefined, 'all');
+            await fetchAPI('PUT', `/orders/${orderId}`, null, payload)
+            await this.props.reloadOrderForm(undefined, 'all');
+        }
     }
 
     _updateOrderField = (field) => {
@@ -91,14 +99,18 @@ class DiscountPanel extends Component {
                         <InputNumber
                             disabled={isServiceMarkupForbidden}
                             style={ { fontWeight: 700, margin: '0 12px 0 12px' } }
-                            defaultValue={ laborTimeMultiplier || 1 }
-                            step={ 0.1 }
-                            min={ 0 }
-                            formatter={ value => `${Math.round(value * 100)}%` }
+                            value={ laborTimeMultiplier * 100 }
+                            step={ 10 }
+                            min={ 10 }
+                            formatter={ value => `${Math.round(value)}%` }
                             parser={ value =>
-                                Math.round(value.replace('%', '') / 100)
+                                value.replace('%', '')
                             }
-                            onChange={ value => this._updateTimeMultiplier(value) }
+                            onChange={ value => {
+                                if(value) {
+                                    this._updateTimeMultiplier(Math.round(value) / 100)
+                                }
+                            } }
                         />
                         <FormattedMessage id='labors_table.mark_up' />
                     </div>
