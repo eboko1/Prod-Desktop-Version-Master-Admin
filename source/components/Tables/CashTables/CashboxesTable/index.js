@@ -10,7 +10,9 @@ import { permissions, isForbidden } from 'utils';
 import {
     fetchCashboxes,
     deleteCashbox,
-    openShift
+    openShift,
+    closeShift,
+    fetchXReport,
 } from "core/cash/duck";
 
 // own
@@ -25,6 +27,8 @@ const mapDispatchToProps = {
     fetchCashboxes,
     deleteCashbox,
     openShift,
+    closeShift,
+    fetchXReport,
 };
 
 @injectIntl
@@ -37,23 +41,31 @@ export class CashboxesTable extends Component {
             deleteCashbox:      props.deleteCashbox,
             formatMessage:      props.intl.formatMessage,
             isCRUDForbidden:    isForbidden(props.user, permissions.ACCESS_CATALOGUE_CASH_CRUD),
-            openShift: props.openShift
+            onOpenServiceInputModal: props.onOpenServiceInputModal,
+            openShift: props.openShift,
+            closeShift: props.closeShift,
+            fetchXReport: props.fetchXReport,
         });
     }
+
+    
 
     componentDidMount() {
         this.props.fetchCashboxes();
     }
 
     render() {
-        const { cashboxesFetching, cashboxes } = this.props;
+        const { cashboxesFetching, cashboxes, onOpenServiceInputModal } = this.props;
 
         //Temp
         this.columns = columnsConfig({
             deleteCashbox:      this.props.deleteCashbox,
             formatMessage:      this.props.intl.formatMessage,
             isCRUDForbidden:    false,
-            openShift: this.props.openShift
+            onOpenServiceInputModal: onOpenServiceInputModal,
+            openShift: this.props.openShift,
+            closeShift: this.props.closeShift,
+            fetchXReport: this.props.fetchXReport,
         });
 
         return (

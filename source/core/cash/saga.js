@@ -49,6 +49,9 @@ import {
     PRINT_CASH_ORDERS,
     SET_SEARCH_QUERY,
     OPEN_SHIFT,
+    CLOSE_SHIFT,
+    SERVICE_INPUT,
+    FETCH_X_REPORT
 } from './duck';
 
 export function* openShiftSaga() {
@@ -57,7 +60,6 @@ export function* openShiftSaga() {
             const {payload} = yield take(OPEN_SHIFT);
 
             yield nprogress.start();
-            // console.log("payload: ", payload);
 
             const requestPayload = {
                 cashboxId: payload
@@ -73,6 +75,74 @@ export function* openShiftSaga() {
         }
     }
 }
+
+export function* closeShiftSaga() {
+    while (true) {
+        try {
+            const {payload} = yield take(CLOSE_SHIFT);
+
+            yield nprogress.start();
+
+            const requestPayload = {
+                cashboxId: payload
+            }
+
+            yield call(fetchAPI, 'POST', '/cashdesk/close_shift', null, requestPayload);
+
+            yield put(fetchCashboxes());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* serviceInputSaga() {
+    while (true) {
+        try {
+            const {payload: {cashboxId, serviceInputSum}} = yield take(SERVICE_INPUT);
+
+            yield nprogress.start();
+
+            const requestPayload = {
+                cashboxId: cashboxId,
+                sum: serviceInputSum
+            }
+
+            yield call(fetchAPI, 'POST', '/cashdesk/service_input', null, requestPayload);
+
+            yield put(fetchCashboxes());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* xReportSaga() {
+    while (true) {
+        try {
+            const { payload } = yield take(FETCH_X_REPORT);
+
+            yield nprogress.start();
+
+            const requestPayload = {
+                cashboxId: payload,
+            }
+
+            const result = yield call(fetchAPI, 'POST', '/cashdesk/x_report', null, requestPayload);
+
+            yield put(fetchCashboxes());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
 
 export function* fetchCashboxesSaga() {
     while (true) {
@@ -250,6 +320,9 @@ export function* printCashOrdersSaga() {
 export function* saga() {
     yield all([
         call(openShiftSaga),
+        call(closeShiftSaga),
+        call(serviceInputSaga),
+        call(xReportSaga),
         call(fetchCashboxesSaga),
         call(fetchCashboxesBalanceSaga),
         call(fetchCashboxesActivitySaga),

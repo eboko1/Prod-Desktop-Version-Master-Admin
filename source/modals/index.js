@@ -21,7 +21,6 @@ import DetailSupplierModal from './DetailSupplierModal';
 import FavouriteDetailsModal from './FavouriteDetailsModal';
 import FavouriteServicesModal from './FavouriteServicesModal';
 import AddServiceModal from './AddServiceModal';
-import AddCashboxModal from './AddCashboxModal';
 import TecDocInfoModal from './TecDocInfoModal';
 import LaborsNormHourModal from './LaborsNormHourModal';
 import OilModal from './OilModal';
@@ -31,6 +30,10 @@ import LocationHistoryModal from './LocationHistoryModal';
 import StoreProductTrackingModal from './StoreProductTrackingModal';
 import SyncImportExportModal from './SyncImportExportModal';
 import SyncConflictsModal from './SyncConflictsModal';
+
+//cashbox
+import AddCashboxModal from './cashbox/AddCashboxModal';
+import ServiceInputModal from './cashbox/ServiceInputModal';
 
 //Report modals
 import ReportOrdersFilterModal from './ReportModals/ReportOrdersFilterModal';
@@ -65,6 +68,7 @@ export {
     FavouriteServicesModal,
     AddServiceModal,
     AddCashboxModal,
+    ServiceInputModal,
     TecDocInfoModal,
     LaborsNormHourModal,
     OilModal,

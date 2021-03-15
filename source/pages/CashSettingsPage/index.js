@@ -8,7 +8,7 @@ import { Button } from 'antd';
 import { Layout, Paper } from 'commons';
 import { CashboxesTable } from 'components/Tables';
 import { permissions, isForbidden } from 'utils';
-import { AddCashboxModal } from 'modals';
+import { AddCashboxModal, ServiceInputModal } from 'modals';
 import { MODALS, setModal } from 'core/modals/duck';
 
 const mapStateToProps = (state) => ({
@@ -23,11 +23,17 @@ const mapDispatchToProps = {
 export default class CashSettingsPage extends Component {
 	constructor(props) {
 		super(props);
+
+		this.onOpenServiceInputModal = this.onOpenServiceInputModal.bind(this);
 	}
 
-	showModal = () => {
+	onAddCashboxModal = () => {
 		this.props.setModal(MODALS.ADD_CASHBOX);
 	};
+
+	onOpenServiceInputModal(cashboxId) {
+        this.props.setModal(MODALS.SERVICE_INPUT, {cashboxId});
+    }
 
 	render() {
 		return (
@@ -37,18 +43,20 @@ export default class CashSettingsPage extends Component {
 				controls={[
 					<Button
 						type='primary'
-						onClick={() => this.showModal()}
+						onClick={() => this.onAddCashboxModal()}
 						disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_CASH_CRUD)}
 					>
 						<FormattedMessage id='add' />
 					</Button>,
 				]}
-				// description={ <FormattedMessage id='chart-page.description' /> }
 			>
 				<AddCashboxModal/>
+				<ServiceInputModal />
 
 				<Paper>
-					<CashboxesTable />
+					<CashboxesTable
+						onOpenServiceInputModal={this.onOpenServiceInputModal}
+					/>
 				</Paper>
 			</Layout>
 		);

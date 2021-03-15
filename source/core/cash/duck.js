@@ -318,8 +318,9 @@ export const openShiftSuccess = () => ({
     type: OPEN_SHIFT_SUCCESS,
 });
 
-export const closeShift = () => ({
+export const closeShift = (cashboxId) => ({
     type: CLOSE_SHIFT,
+    payload: cashboxId
 });
 
 export const closeShiftSuccess = () => ({
@@ -330,16 +331,18 @@ export const closeShiftSuccess = () => ({
  * Внести гроші в касу
  * @returns 
  */
-export const serviceInput = () => ({
+export const serviceInput = ({cashboxId, serviceInputSum}) => ({
     type: SERVICE_INPUT,
+    payload: {cashboxId, serviceInputSum}
 });
 
 export const serviceInputSuccess = () => ({
     type: SERVICE_INPUT_SUCCESS,
 });
 
-export const fetchXReport = () => ({
+export const fetchXReport = (cashboxId) => ({
     type: FETCH_X_REPORT,
+    payload: cashboxId
 });
 
 export const fetchXReportSuccess = () => ({

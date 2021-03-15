@@ -18,7 +18,6 @@ function generateIcon(icon, onClick) {
 	return (
 		<Button
 			onClick={onClick}
-			disabled={true}
 		>
 			<div
 				style={ {
@@ -98,13 +97,15 @@ export function columnsConfig(props) {
 		},
 	}
 
-	const putMoneyCol = {
+	const serviceInputCol = {
 		width: 'auto',
 		dataIndex: 'rst',
-		key: 'putMoneyCol',
-		render: (rst) => {
+		key: 'serviceInputCol',
+		render: (rst, obj) => {
 			return rst
-				? generateIcon(images.cashboxIcon)
+				? generateIcon(images.cashboxIcon, () => {
+					props.onOpenServiceInputModal(obj.id);
+				})
 				: null;
 		},
 	}
@@ -113,9 +114,9 @@ export function columnsConfig(props) {
 		width: 'auto',
 		dataIndex: 'rst',
 		key: 'xReportCol',
-		render: (rst) => {
+		render: (rst, obj) => {
 			return rst
-				? generateIcon(images.reportIcon)
+				? generateIcon(images.reportIcon, () => props.fetchXReport(obj.id))
 				: null;
 		},
 	}
@@ -124,9 +125,9 @@ export function columnsConfig(props) {
 		width: 'auto',
 		dataIndex: 'rst',
 		key: 'zReportCol',
-		render: (rst) => {
+		render: (rst, obj) => {
 			return rst
-				? generateIcon(images.closedLockIcon)
+				? generateIcon(images.closedLockIcon, () => props.closeShift(obj.id))
 				: null;
 		},
 	}
@@ -179,7 +180,7 @@ export function columnsConfig(props) {
 		isCashOrderRSTCol,
 		addCashOrderCol,
 		openShiftCol,
-		putMoneyCol,
+		serviceInputCol,
 		xReportCol,
 		zReportCol,
 		deleteCol];
