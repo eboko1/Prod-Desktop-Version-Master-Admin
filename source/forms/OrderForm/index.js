@@ -156,9 +156,11 @@ export class OrderForm extends React.PureComponent {
 	};
 
 	_updateOrderField = (field) => {
+		const fetchedOrder = this.state.fetchedOrder || this.props.fetchedOrder;
+		const orderServices = _.get(fetchedOrder, 'orderServices', []);
 		if (field == 'duration') {
 			let hours = 0;
-			this.orderServices.map((elem) => {
+			orderServices.map((elem) => {
 				if (elem.agreement != 'REJECTED') hours += elem.count;
 			});
 
@@ -224,14 +226,14 @@ export class OrderForm extends React.PureComponent {
 		notification.open(params);
 	};
 
-	async componentDidMount() {
+	componentDidMount() {
 		// TODO in order to fix late getFieldDecorator invoke for services
 		//this.setState({ initialized: true });
 		//this.props.selectedClient.vehicles.push(this.props.vehicle);
 		this._isMounted = true;
 		if (this._isMounted && this.props.fetchedOrder) {
-			await this._fetchLaborsAndDetails();
-			await this._reloadOrderForm();
+			this._fetchLaborsAndDetails();
+			this._reloadOrderForm();
 		}
 	}
 
@@ -276,13 +278,6 @@ export class OrderForm extends React.PureComponent {
 				deliveryDate: _.get(formValues, 'stationLoads[0].beginDate', undefined),
 			});
 		}
-
-		if(!this.state.fetchedOrder) {
-            this._reloadOrderForm();
-        }
-        if(!this.state.details) {
-            this._fetchLaborsAndDetails();
-        }
 	}
 
 	_saveFormRef = (formRef) => {

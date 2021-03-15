@@ -172,7 +172,7 @@ export default class Barcode extends Component {
                     </Button> :
                     <Icon
                         type={iconType}
-                        className={disabled && Styles.disabledIcon}
+                        className={(disabled) && Styles.disabledIcon}
                         style={{
                             fontSize: 18,
                             ...iconStyle,
