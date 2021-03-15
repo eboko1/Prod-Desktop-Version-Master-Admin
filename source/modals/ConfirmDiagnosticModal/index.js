@@ -44,8 +44,8 @@ class ConfirmDiagnosticModal extends React.Component{
 
     async endСonfirmation(orderId, data) {
         await confirmDiagnostic(orderId, data);
-        //await lockDiagnostic(orderId);
-        //await window.location.reload();
+        await lockDiagnostic(orderId);
+        await window.location.reload();
     }
 
     showModal = () => {
@@ -74,6 +74,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         element.name,
                     serviceId: element.id,
                     count: element.count * this.props.laborTimeMultiplier,
+                    serviceHours: 0,
                     servicePrice: element.price,
                     employeeId: this.props.defaultEmployeeId,
                     comment: {
