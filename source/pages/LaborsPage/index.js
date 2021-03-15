@@ -54,6 +54,7 @@ export default class LaborsPage extends Component {
             filterName: null,
             currentPage: 1,
             selectedRows: [],
+            selectedRowKeys: [],
         }
         this.treeData = [];
         this.columns = [
@@ -221,7 +222,7 @@ export default class LaborsPage extends Component {
                         <TreeSelect
                             disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
                             showSearch
-                            style={{ minWidth: '130px', maxWidth: '10%' }}
+                            style={{ minWidth: '130px' }}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                             treeData={this.treeData}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
@@ -382,6 +383,7 @@ export default class LaborsPage extends Component {
                                 <InputNumber
                                     min={0.1}
                                     step={0.2}
+                                    defaultValue={1}
                                     onChange={(value)=>{
                                         this.state.selectedRows.map((elem)=>{
                                             elem.changed = true;
@@ -423,6 +425,7 @@ export default class LaborsPage extends Component {
                             <p>
                                 <InputNumber
                                     min={1}
+                                    defaultValue={1}
                                     onChange={(value)=>{
                                         this.state.selectedRows.map((elem)=>{
                                             elem.changed = true;
@@ -472,9 +475,22 @@ export default class LaborsPage extends Component {
                                 } }
                             >
                                 <Button
-                                    type='danger'
+                                    //type='primary'
+                                    style={{
+                                        padding: '0px 8px'
+                                    }}
                                 >
-                                    <Icon type='delete'/>
+                                    <Icon
+                                        type='undo'
+                                    />
+                                    <span style={{marginLeft: 4}}>|</span>
+                                    <Icon
+                                        style={{
+                                            color: 'red',
+                                            marginLeft: 4
+                                        }}
+                                        type='delete'
+                                    />
                                 </Button>
                             </Popconfirm>
                         </div>
@@ -482,6 +498,8 @@ export default class LaborsPage extends Component {
                 },
                 key: 'delete',
                 render: (row)=>{
+                    const buttonType = row.masterLaborId >= 9000 ? 'danger' : 'primary';
+                    const iconType = row.masterLaborId >= 9000 ? 'delete' : 'undo';
                     return Boolean(row.laborBusinessId) ? (
                         <Popconfirm
                             title={
@@ -493,17 +511,23 @@ export default class LaborsPage extends Component {
                             } }
                         >
                             <Button
-                                type='danger'
+                                type={buttonType}
+                                style={{
+                                    width: '100%'
+                                }}
                             >
-                                <Icon type='delete'/>
+                                <Icon type={iconType}/>
                             </Button>
                         </Popconfirm>
                     ) : (
                         <Button
-                            type='danger'
+                            type={buttonType}
                             disabled
+                            style={{
+                                width: '100%'
+                            }}
                         >
-                            <Icon type='delete'/>
+                            <Icon type={iconType}/>
                         </Button>
                     )
                 }
@@ -559,11 +583,11 @@ export default class LaborsPage extends Component {
                 if(elem.name) labors[labors.length-1].name = elem.name;
                 if(elem.fixed) {
                     labors[labors.length-1].fixed = true;
-                    labors[labors.length-1].price = elem.price;
+                    labors[labors.length-1].price = elem.price || 1;
                 }
                 else {
                     labors[labors.length-1].fixed = false;
-                    labors[labors.length-1].normHours = elem.normHours ? elem.normHours : 1;
+                    labors[labors.length-1].normHours = elem.normHours || 1;
                 }
             }
             else if(elem.new && elem.masterLaborId && elem.productId || !elem.laborBusinessId && elem.changed) {
@@ -577,11 +601,11 @@ export default class LaborsPage extends Component {
                 if(elem.name) newLabors[newLabors.length-1].name = elem.name;
                 if(elem.fixed) {
                     newLabors[newLabors.length-1].fixed = true;
-                    newLabors[newLabors.length-1].price = elem.price;
+                    newLabors[newLabors.length-1].price = elem.price || 1;
                 }
                 else {
                     newLabors[newLabors.length-1].fixed = false;
-                    newLabors[newLabors.length-1].normHours = elem.normHours ? elem.normHours : 1;
+                    newLabors[newLabors.length-1].normHours = elem.normHours || 1;
                 }
             }
         });
@@ -595,6 +619,7 @@ export default class LaborsPage extends Component {
     fetchLabors = async () => {
         await this.setState({
             loading: true,
+            selectedRowKeys: [],
         })
 
         const response = await fetchAPI('GET', 'labors', {all: true});
@@ -677,15 +702,17 @@ export default class LaborsPage extends Component {
     }
 
     render() {
+        const { loading, labors, filterCode, filterCrossId, filterId, filterDetail, filterDefaultName, filterName, currentPage, selectedRowKeys } = this.state;
         const rowSelection = {
+            selectedRowKeys,
             onChange: (selectedRowKeys, selectedRows) => {
                 this.setState({
+                    selectedRowKeys,
                     selectedRows,
                 })
             },
         };
 
-        const { loading, labors, filterCode, filterCrossId, filterId, filterDetail, filterDefaultName, filterName, currentPage } = this.state;
         if(
             !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD) && 
             labors.length && 
