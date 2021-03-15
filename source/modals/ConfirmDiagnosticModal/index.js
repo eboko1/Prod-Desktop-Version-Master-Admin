@@ -44,8 +44,8 @@ class ConfirmDiagnosticModal extends React.Component{
 
     async endСonfirmation(orderId, data) {
         await confirmDiagnostic(orderId, data);
-        await lockDiagnostic(orderId);
-        await window.location.reload();
+        //await lockDiagnostic(orderId);
+        //await window.location.reload();
     }
 
     showModal = () => {
@@ -66,17 +66,16 @@ class ConfirmDiagnosticModal extends React.Component{
             data.modificationId = this.props.tecdocId;
         }
         this.state.servicesList.map((element)=>{
-            if(element.checked && element.id != null) {
+            if(element.checked && element.id) {
                 data.services.push({
                     serviceName:
                         element.commentary && element.commentary.positions.length ?
                         element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
                         element.name,
                     serviceId: element.id,
-                    count: element.count,
+                    count: element.count * this.props.laborTimeMultiplier,
                     servicePrice: element.price,
                     employeeId: this.props.defaultEmployeeId,
-                    serviceHours: element.hours,
                     comment: {
                         comment: element.commentary && element.commentary.comment,
                         positions: element.commentary && element.commentary.positions,
@@ -87,7 +86,7 @@ class ConfirmDiagnosticModal extends React.Component{
             }
         });
         this.state.detailsList.map((element)=>{
-            if(element.checked && element.id != null) {
+            if(element.checked && element.id) {
                 data.details.push({
                     name:
                         element.commentary &&  element.commentary.positions.length ?
@@ -125,7 +124,7 @@ class ConfirmDiagnosticModal extends React.Component{
             productId: data.productId,
             name: data.serviceName,
             hours: data.hours,
-            count: data.hours * this.props.laborTimeMultiplier,
+            count: data.hours,
             checked: true,
             price: data.price,
             commentary: {
@@ -250,8 +249,8 @@ class ConfirmDiagnosticModal extends React.Component{
                 id: id,
                 productId: service.productId,
                 name: service.name,
-                hours: Number(service.normHours) || 1,
-                count: (Number(service.normHours) || 1) * this.props.laborTimeMultiplier,
+                hours: service.normHours,
+                count: service.normHours,
                 checked: true,
                 commentary: commentary,
                 status: status,
@@ -263,8 +262,8 @@ class ConfirmDiagnosticModal extends React.Component{
             this.state.servicesList[index].status = status;
             this.state.servicesList[index].name = service.name;
             this.state.servicesList[index].productId= service.productId;
-            this.state.servicesList[index].hours = Number(service.normHours) || 1;
-            this.state.servicesList[index].count = (Number(service.normHours) || 1) * this.props.laborTimeMultiplier;
+            this.state.servicesList[index].hours = service.normHours;
+            this.state.servicesList[index].count = service.normHours;
         }
         this.setState({
             update: true,
@@ -401,8 +400,8 @@ class ConfirmDiagnosticModal extends React.Component{
                         id: labor.laborId,
                         productId: labor.productId,
                         name: labor.name,
-                        hours: Number(labor.normHours) || 1,
-                        count: (Number(labor.normHours) || 1) * that.props.laborTimeMultiplier,
+                        hours: labor.normHours,
+                        count: labor.normHours,
                         checked: true,
                         commentary: elem.comment,
                         status: elem.isCritical ? 3 : 2,
