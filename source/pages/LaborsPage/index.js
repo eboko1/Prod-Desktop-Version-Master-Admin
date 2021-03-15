@@ -54,6 +54,7 @@ export default class LaborsPage extends Component {
             filterName: null,
             currentPage: 1,
             selectedRows: [],
+            selectedRowKeys: [],
         }
         this.treeData = [];
         this.columns = [
@@ -382,6 +383,7 @@ export default class LaborsPage extends Component {
                                 <InputNumber
                                     min={0.1}
                                     step={0.2}
+                                    defaultValue={1}
                                     onChange={(value)=>{
                                         this.state.selectedRows.map((elem)=>{
                                             elem.changed = true;
@@ -423,6 +425,7 @@ export default class LaborsPage extends Component {
                             <p>
                                 <InputNumber
                                     min={1}
+                                    defaultValue={1}
                                     onChange={(value)=>{
                                         this.state.selectedRows.map((elem)=>{
                                             elem.changed = true;
@@ -616,6 +619,7 @@ export default class LaborsPage extends Component {
     fetchLabors = async () => {
         await this.setState({
             loading: true,
+            selectedRowKeys: [],
         })
 
         const response = await fetchAPI('GET', 'labors', {all: true});
@@ -698,15 +702,17 @@ export default class LaborsPage extends Component {
     }
 
     render() {
+        const { loading, labors, filterCode, filterCrossId, filterId, filterDetail, filterDefaultName, filterName, currentPage, selectedRowKeys } = this.state;
         const rowSelection = {
+            selectedRowKeys,
             onChange: (selectedRowKeys, selectedRows) => {
                 this.setState({
+                    selectedRowKeys,
                     selectedRows,
                 })
             },
         };
 
-        const { loading, labors, filterCode, filterCrossId, filterId, filterDetail, filterDefaultName, filterName, currentPage } = this.state;
         if(
             !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD) && 
             labors.length && 
