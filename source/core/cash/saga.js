@@ -88,7 +88,13 @@ export function* closeShiftSaga() {
                 cashboxId: payload
             }
 
-            yield call(fetchAPI, 'POST', '/cashdesk/close_shift', null, requestPayload);
+            const {pdf} = yield call(fetchAPI, 'POST', '/cashdesk/close_shift', null, requestPayload);
+
+            //Unknown error, the only way to convert is to use uint8Array:
+            //https://stackoverflow.com/questions/21797299/convert-base64-string-to-arraybuffer
+            const bin = new Blob([Uint8Array.from(atob(pdf), c => c.charCodeAt(0))], {type: 'application/pdf'});
+
+            yield saveAs(bin, 'z-report.pdf');
 
             yield put(fetchCashboxes());
         } catch (error) {
