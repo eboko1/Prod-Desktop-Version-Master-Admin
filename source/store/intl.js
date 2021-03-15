@@ -67,6 +67,7 @@ import ClientRequisitesContainer from 'containers/ClientRequisitesContainer/mess
 import ClientsContainer from 'containers/ClientsContainer/messages';
 import ReviewsContainer from 'containers/ReviewsContainer/messages';
 import StorageDocumentsContainer from 'containers/StorageDocumentsContainer/messages';
+import BarcodeContainer from 'containers/BarcodeContainer/messages';
 
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
@@ -208,6 +209,7 @@ const messages = merge.all([
     ClientRequisitesContainer,
     ReviewsContainer,
     StorageDocumentsContainer,
+    BarcodeContainer,
 
     // forms
     ProfileForm,

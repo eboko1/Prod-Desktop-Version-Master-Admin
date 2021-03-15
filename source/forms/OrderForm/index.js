@@ -274,6 +274,13 @@ export class OrderForm extends React.PureComponent {
 				deliveryDate: _.get(formValues, 'stationLoads[0].beginDate', undefined),
 			});
 		}
+
+		if(!this.state.fetchedOrder) {
+            this._reloadOrderForm();
+        }
+        if(!this.state.details) {
+            this._fetchLaborsAndDetails();
+        }
 	}
 
 	_saveFormRef = (formRef) => {
@@ -333,6 +340,8 @@ export class OrderForm extends React.PureComponent {
 			focusOnRef,
 			focusedRef,
 		} = this.props;
+
+		console.log(this);
 
 		const formFieldsValues = form.getFieldsValue();
 
@@ -492,7 +501,7 @@ export class OrderForm extends React.PureComponent {
 
 	_renderTabs = (formFieldsValues) => {
 		const fetchedOrder = this.state.fetchedOrder || this.props.fetchedOrder;
-		if (!fetchedOrder || !this.state.details || !this.state.details.length) {
+		if (!fetchedOrder || !this.state.details) {
 			return;
 		}
 		const { form, orderTasks, schedule, stationLoads, orderId } = this.props;
