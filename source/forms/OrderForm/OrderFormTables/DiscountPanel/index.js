@@ -26,7 +26,7 @@ class DiscountPanel extends Component {
             laborTimeMultiplier: multiplier,
             services: orderServices.map(({id, count})=>({
                 id,
-                count: (count / laborTimeMultiplier) * multiplier,
+                count: Math.round((count / laborTimeMultiplier) * multiplier * 10) / 10,
             })),
         };
 
