@@ -511,6 +511,11 @@ export default class LaborsPage extends Component {
                             } }
                         >
                             <Button
+                                title={
+                                    row.masterLaborId >= 9000
+                                    ? <FormattedMessage id='delete'/>
+                                    : <FormattedMessage id='update'/>
+                                }
                                 type={buttonType}
                                 style={{
                                     width: '100%'
