@@ -12,7 +12,7 @@ import nprogress from 'nprogress';
 import { saveAs } from 'file-saver';
 import moment from 'moment';
 import _ from 'lodash';
-import { Base64 } from 'js-base64';
+import { Base64, decode } from 'js-base64';
 
 //proj
 import { setCashOrdersFetchingState, emitError } from 'core/ui/duck';
@@ -124,7 +124,7 @@ export function* serviceInputSaga() {
 
 export function* xReportSaga() {
     while (true) {
-        // try {
+        try {
             const { payload } = yield take(FETCH_X_REPORT);
 
             yield nprogress.start();
@@ -133,30 +133,20 @@ export function* xReportSaga() {
                 cashboxId: payload,
             }
 
-            const {pdf} = yield call(fetchAPI, 'POST', '/cashdesk/x_report', null, requestPayload);
+            const { pdf } = yield call(fetchAPI, 'POST', '/cashdesk/x_report', null, requestPayload);
 
-            // const reportFile = yield data.blob();
-            // const contentDispositionHeader = data.headers.get(
-            //     'content-disposition',
-            // );
-            // const fileName = contentDispositionHeader.match(
-            //     /^attachment; filename="(.*)"/,
-            // )[ 1 ];
-
-            let bin = new Blob([Base64.atob(pdf)], {type: 'application/pdf'});
-
-            console.log('pdf: ', pdf);
-            console.log('bin: ', bin);
-
+            //Unknown error, the only way to convert is to use uint8Array:
+            //https://stackoverflow.com/questions/21797299/convert-base64-string-to-arraybuffer
+            const bin = new Blob([Uint8Array.from(atob(pdf), c => c.charCodeAt(0))], {type: 'application/pdf'});
 
             yield saveAs(bin, 'x-report.pdf');
 
             yield put(fetchCashboxes());
-        // } catch (error) {
-        //     yield put(emitError(error));
-        // } finally {
-        //     yield nprogress.done();
-        // }
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
     }
 }
 
