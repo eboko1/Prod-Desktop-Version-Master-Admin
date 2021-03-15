@@ -20,7 +20,7 @@ import {
 
 // proj
 import { Layout, Spinner } from 'commons';
-import { permissions, isForbidden } from 'utils';
+import { permissions, isForbidden, fetchAPI } from 'utils';
 import { Barcode } from 'components';
 
 // own
@@ -42,6 +42,7 @@ export default class LaborsPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading: true,
             labors: [],
             masterLabors: [],
             storeGroups: [],
@@ -53,6 +54,7 @@ export default class LaborsPage extends Component {
             filterName: null,
             currentPage: 1,
             selectedRows: [],
+            selectedRowKeys: [],
         }
         this.treeData = [];
         this.columns = [
@@ -80,11 +82,19 @@ export default class LaborsPage extends Component {
                     return (
                         <div style={{display: 'flex'}}>
                             <Barcode
-                                value={`LBS-${this.props.user.businessId}-${row.laborId}`}
+                                value={row.barcode}
+                                enableScanIcon
                                 iconStyle={{
                                     margin: "0 8px 0 0",
                                     fornSize: 18,
                                     verticalAlign: "sub",
+                                }}
+                                prefix={'LBS'}
+                                table={'LABORS'}
+                                referenceId={row.laborId}
+                                onConfirm={(code, pref, fullCode)=>{
+                                    row.barcode = fullCode;
+                                    this.setState({});
                                 }}
                             />
                             {data}
@@ -212,7 +222,7 @@ export default class LaborsPage extends Component {
                         <TreeSelect
                             disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
                             showSearch
-                            style={{ minWidth: '130px', maxWidth: '10%' }}
+                            style={{ minWidth: '130px' }}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                             treeData={this.treeData}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
@@ -373,6 +383,7 @@ export default class LaborsPage extends Component {
                                 <InputNumber
                                     min={0.1}
                                     step={0.2}
+                                    defaultValue={1}
                                     onChange={(value)=>{
                                         this.state.selectedRows.map((elem)=>{
                                             elem.changed = true;
@@ -414,6 +425,7 @@ export default class LaborsPage extends Component {
                             <p>
                                 <InputNumber
                                     min={1}
+                                    defaultValue={1}
                                     onChange={(value)=>{
                                         this.state.selectedRows.map((elem)=>{
                                             elem.changed = true;
@@ -463,9 +475,22 @@ export default class LaborsPage extends Component {
                                 } }
                             >
                                 <Button
-                                    type='danger'
+                                    //type='primary'
+                                    style={{
+                                        padding: '0px 8px'
+                                    }}
                                 >
-                                    <Icon type='delete'/>
+                                    <Icon
+                                        type='undo'
+                                    />
+                                    <span style={{marginLeft: 4}}>|</span>
+                                    <Icon
+                                        style={{
+                                            color: 'red',
+                                            marginLeft: 4
+                                        }}
+                                        type='delete'
+                                    />
                                 </Button>
                             </Popconfirm>
                         </div>
@@ -473,6 +498,8 @@ export default class LaborsPage extends Component {
                 },
                 key: 'delete',
                 render: (row)=>{
+                    const buttonType = row.masterLaborId >= 9000 ? 'danger' : 'primary';
+                    const iconType = row.masterLaborId >= 9000 ? 'delete' : 'undo';
                     return Boolean(row.laborBusinessId) ? (
                         <Popconfirm
                             title={
@@ -484,17 +511,28 @@ export default class LaborsPage extends Component {
                             } }
                         >
                             <Button
-                                type='danger'
+                                title={
+                                    row.masterLaborId >= 9000
+                                    ? this.props.intl.formatMessage({id:'delete'})
+                                    : this.props.intl.formatMessage({id:'update'})
+                                }
+                                type={buttonType}
+                                style={{
+                                    width: '100%'
+                                }}
                             >
-                                <Icon type='delete'/>
+                                <Icon type={iconType}/>
                             </Button>
                         </Popconfirm>
                     ) : (
                         <Button
-                            type='danger'
+                            type={buttonType}
                             disabled
+                            style={{
+                                width: '100%'
+                            }}
                         >
-                            <Icon type='delete'/>
+                            <Icon type={iconType}/>
                         </Button>
                     )
                 }
@@ -550,201 +588,83 @@ export default class LaborsPage extends Component {
                 if(elem.name) labors[labors.length-1].name = elem.name;
                 if(elem.fixed) {
                     labors[labors.length-1].fixed = true;
-                    labors[labors.length-1].price = elem.price;
+                    labors[labors.length-1].price = elem.price || 1;
                 }
                 else {
                     labors[labors.length-1].fixed = false;
-                    labors[labors.length-1].normHours = elem.normHours ? elem.normHours : 1;
+                    labors[labors.length-1].normHours = elem.normHours || 1;
                 }
             }
-            else if((elem.new && elem.masterLaborId && elem.productId) || !elem.laborBusinessId && elem.laborId) {
+            else if(elem.new && elem.masterLaborId && elem.productId || !elem.laborBusinessId && elem.changed && elem.laborId) {
                 newLabors.push({
                     masterLaborId: elem.masterLaborId,
                     productId: elem.productId,
                     disable: Boolean(elem.disable),
                     crossId: elem.crossId || null,
                 });
+                //if(elem.laborId) newLabors[newLabors.length-1].laborId = elem.laborId;
                 if(elem.name) newLabors[newLabors.length-1].name = elem.name;
                 if(elem.fixed) {
                     newLabors[newLabors.length-1].fixed = true;
-                    newLabors[newLabors.length-1].price = elem.price;
+                    newLabors[newLabors.length-1].price = elem.price || 1;
                 }
                 else {
                     newLabors[newLabors.length-1].fixed = false;
-                    newLabors[newLabors.length-1].normHours = elem.normHours ? elem.normHours : 1;
+                    newLabors[newLabors.length-1].normHours = elem.normHours || 1;
                 }
             }
         });
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__;
-        let params = `/labors`;
-        url += params;
 
-        await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Authorization': token,
-            },
-            body: JSON.stringify(newLabors),
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            //console.log(data);
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        await fetch(url + `?laborIds=[${deletedLabors}]`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': token,
-            },
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            //console.log(data);
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Authorization': token,
-            },
-            body: JSON.stringify(labors),
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            //that.fetchLabors();
-            window.location.reload();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
+        await fetchAPI('POST', 'labors', null, newLabors);
+        await fetchAPI('DELETE', `labors?laborIds=[${deletedLabors}]`);
+        await fetchAPI('PUT', 'labors', null, labors);
+        this.fetchLabors();
     }
 
-    fetchLabors() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__;
-        let params = `/labors?all=true`;
-        url += params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
+    fetchLabors = async () => {
+        await this.setState({
+            loading: true,
+            selectedRowKeys: [],
         })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
+
+        const response = await fetchAPI('GET', 'labors', {all: true});
+        response.labors.sort((a, b) => a.masterLaborId < b.masterLaborId ? -1 : (a.masterLaborId > b.masterLaborId ? 1 : 0));
+        response.labors.map((elem, index)=>{
+            elem.key = index;
+            elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
         })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            console.log(data);
-            data.labors.sort((a, b) => a.masterLaborId < b.masterLaborId ? -1 : (a.masterLaborId > b.masterLaborId ? 1 : 0));
-            data.labors.map((elem, index)=>{
-                elem.key = index;
-                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
-            })
-            that.setState({
-                labors: data.labors,
-                currentPage: that.props.location.state && that.props.location.state.showForm ? Math.ceil(data.labors.length / 10) : 1,
-            });
-            if(that.props.location.state && that.props.location.state.showForm) that.nameInput.focus();
-        })
-        .catch(function (error) {
-            console.log('error', error)
+        this.setState({
+            labors: response.labors,
+            currentPage: this.props.location.state && this.props.location.state.showForm ? Math.ceil(response.labors.length / 10) : 1,
         });
 
-        params = `/labors/master`;
-        url = __API_URL__ + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
+        if(this.props.location.state && this.props.location.state.showForm) {
+            this.nameInput.focus();
+        }
+
+        this.setState({
+            loading: false,
         })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.setState({
-                masterLabors: data.masterLabors,
-            });
-        })
-        .catch(function (error) {
-            console.log('error', error)
+    }
+
+    fetchData = async () => {
+        const masterLabors = await fetchAPI('GET', 'labors/master');
+        this.setState({
+            masterLabors: masterLabors.masterLabors,
         });
 
-        params = `/store_groups`;
-        url = __API_URL__ + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.setState({
-                storeGroups: data,
-            });
-            that.buildStoreGroupsTree();
-        })
-        .catch(function (error) {
-            console.log('error', error)
+        const storeGroups = await fetchAPI('GET', 'store_groups');
+        this.setState({
+            storeGroups,
         });
+        this.buildStoreGroupsTree();
+
+        this.fetchLabors();
     }
 
     buildStoreGroupsTree() {
         var treeData = [];
-        for(let i = 0; i < this.state.storeGroups && this.state.storeGroups.length ? this.state.storeGroups.length : 0; i++) {
+        for(let i = 0; i < this.state.storeGroups.length; i++) {
             const parentGroup = this.state.storeGroups[i];
             treeData.push({
                 title: `${parentGroup.name} (#${parentGroup.id})`,
@@ -783,19 +703,21 @@ export default class LaborsPage extends Component {
     }
 
     componentDidMount() {
-        this.fetchLabors();
+        this.fetchData();
     }
 
     render() {
+        const { loading, labors, filterCode, filterCrossId, filterId, filterDetail, filterDefaultName, filterName, currentPage, selectedRowKeys } = this.state;
         const rowSelection = {
+            selectedRowKeys,
             onChange: (selectedRowKeys, selectedRows) => {
                 this.setState({
+                    selectedRowKeys,
                     selectedRows,
                 })
             },
         };
 
-        const { labors, filterCode, filterCrossId, filterId, filterDetail, filterDefaultName, filterName, currentPage } = this.state;
         if(
             !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD) && 
             labors.length && 
@@ -854,6 +776,7 @@ export default class LaborsPage extends Component {
                 }
             >
                 <Table
+                    loading={loading}
                     dataSource={dataSource}
                     rowSelection={rowSelection}
                     columns={columns}

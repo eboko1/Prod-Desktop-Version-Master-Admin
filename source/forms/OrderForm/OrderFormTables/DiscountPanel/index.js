@@ -7,6 +7,7 @@ import _ from 'lodash';
 // proj
 import { Catcher } from 'commons';
 import { DecoratedInputNumber } from 'forms/DecoratedFields';
+import { fetchAPI } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -18,26 +19,19 @@ class DiscountPanel extends Component {
         return !_.isEqual(nextProps, this.props);
     }
     
-    async updateTimeMultiplier(multiplier) {
-        this.laborTimeMultiplier = multiplier;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__;
-        let params = `/orders/${this.props.orderId}`;
-        url += params;
-        try {
-            const response = await fetch(url, {
-                method:  'PUT',
-                headers: {
-                    Authorization:  token,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ laborTimeMultiplier: multiplier }),
-            });
-            const result = await response.json();
-            this.props.reloadOrderForm(undefined, 'all');
-        } catch (error) {
-            console.error('ERROR:', error);
-        }
+    _updateTimeMultiplier = async (multiplier) => {
+        const { orderId, orderServices, laborTimeMultiplier } = this.props;
+        const payload = {
+            updateMode: true,
+            laborTimeMultiplier: multiplier,
+            services: orderServices.map(({id, count})=>({
+                id,
+                count: Math.round((count / laborTimeMultiplier) * multiplier * 10) / 10,
+            })),
+        };
+
+        await fetchAPI('PUT', `/orders/${orderId}`, null, payload)
+        await this.props.reloadOrderForm(undefined, 'all');
     }
 
     _updateOrderField = (field) => {
@@ -104,7 +98,7 @@ class DiscountPanel extends Component {
                             parser={ value =>
                                 Math.round(value.replace('%', '') / 100)
                             }
-                            onChange={ value => this.updateTimeMultiplier(value) }
+                            onChange={ value => this._updateTimeMultiplier(value) }
                         />
                         <FormattedMessage id='labors_table.mark_up' />
                     </div>

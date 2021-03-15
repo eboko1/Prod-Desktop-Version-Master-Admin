@@ -1,7 +1,7 @@
 // vendor
 import { message } from 'antd';
 import { trim, toUpper } from 'lodash/string';
-import { replace } from 'connected-react-router';
+import { replace, push } from 'connected-react-router';
 import _ from 'lodash';
 import qs from 'qs';
 
@@ -91,7 +91,7 @@ export default async function fetchAPI(
             return rawResponse ? await response : await response.json();
         case status === 400:
             if (!handleErrorInternally) {
-                dispatch(replace(`${book.exception}/400`));
+                dispatch(push(`${book.exception}/400`));
 
                 return;
             }
@@ -102,7 +102,7 @@ export default async function fetchAPI(
             throw new ResponseError(await response.json(), status);
         case status === 403:
             if (!handleErrorInternally) {
-                dispatch(replace(`${book.exception}/403`));
+                dispatch(push(`${book.exception}/403`));
 
                 return;
             }
@@ -111,7 +111,7 @@ export default async function fetchAPI(
             throw new ResponseError(await response.json(), status);
         case status >= 404 && status < 422:
             if (!handleErrorInternally) {
-                dispatch(replace(`${book.exception}/404`));
+                dispatch(push(`${book.exception}/404`));
 
                 return;
             }
@@ -120,7 +120,7 @@ export default async function fetchAPI(
             throw new ResponseError(await response.json(), status);
         case status >= 500 && status <= 504:
             if (!handleErrorInternally) {
-                dispatch(replace(`${book.exception}/500`));
+                dispatch(push(`${book.exception}/500`));
 
                 return;
             }

@@ -11,7 +11,7 @@ import moment from 'moment';
 // proj
 import { Catcher, Numeral } from 'commons';
 import { Barcode } from "components";
-import { withReduxForm, isForbidden, permissions, goTo } from "utils";
+import { withReduxForm, isForbidden, permissions, goTo, fetchAPI } from "utils";
 import { DetailStorageModal } from "modals";
 import {MODALS} from 'core/modals/duck';
 import book from "routes/book";
@@ -67,6 +67,40 @@ class StorageDocumentForm extends Component {
         this.hideModal = this.hideModal.bind(this);
         this.showModal = this.showModal.bind(this);
         this.editProduct = this.editProduct.bind(this);
+    }
+
+    _findByBarcode = async (barcode) => {
+        const { list } = await fetchAPI('GET', 'store_products', {query: barcode});
+        const detail = list.find( (elem) => elem.barcode == barcode );
+        if(detail) {
+            const {
+                id,
+                brand,
+                code,
+                name,
+                stockPrice,
+                priceGroup,
+                quantity,
+                tradeCode,
+            } = detail;
+            await this.props.addDocProduct({
+                productId: id,
+                detailCode: code,
+                brandName: brand.name,
+                brandId: brand.id,
+                tradeCode: tradeCode,
+                detailName: name,
+                stockPrice: Number(stockPrice),
+                sellingPrice: Number(stockPrice * priceGroup.multiplier),
+                quantity: quantity,
+                sum: quantity*stockPrice,
+            });
+            await this.editProduct(this.props.formData.docProducts.length-1)
+        } else {
+            notification.warning({
+                message: 'Код не найден',
+            });
+        }
     }
 
     editProduct(key, warning=false) {
@@ -603,6 +637,7 @@ class StorageDocumentForm extends Component {
                     type={type}
                     sellingPrice={type == EXPENSE}
                     user={user}
+                    findByBarcode={(code)=>this._findByBarcode(code)}
                 />
                 { !disabled ? 
                     <AddProductModal
@@ -649,6 +684,10 @@ class DocProductsTable extends React.Component {
                                     <Barcode
                                         button
                                         disabled={this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_STOCK)}
+                                        prefix={'STP'}
+                                        onConfirm={(barcode)=>{
+                                            this.props.findByBarcode(barcode);
+                                        }}
                                     />
                                 </div>
                             ),
@@ -983,7 +1022,7 @@ class AddProductModal extends React.Component {
 
     buildStoreGroupsTree(data) {
         var treeData = [];
-        for (let i = 0; i < data && data.length ? data.length : 0; i++) {
+        for (let i = 0; i < data.length; i++) {
             const parentGroup = data[ i ];
             treeData.push({
                 title:      `${parentGroup.name} (#${parentGroup.id})`,
@@ -1564,6 +1603,7 @@ class AddProductModal extends React.Component {
                     storeGroupsTree={storeGroupsTree}
                     warehouses={this.props.warehouses}
                     warehouseId={this.props.warehouseId}
+                    user={this.props.user}
                     {...this.state}
                 >
                     <FormattedMessage id='storage_document.error.product_not_found'/>
@@ -1695,7 +1735,7 @@ export class AddStoreProductModal extends React.Component {
         });
     }
 
-    postStoreProduct() {
+    postStoreProduct = async () => {
         const { intl: {formatMessage} } = this.props;
         const {
             brandId,
@@ -1731,7 +1771,6 @@ export class AddStoreProductModal extends React.Component {
             measureUnit: measureUnit,
             tradeCode: tradeCode,
             certificate: certificate,
-            barcode: undefined,
             priceGroupNumber: priceGroupNumber,
             defaultWarehouseId: defaultWarehouseId,
         }
@@ -1740,40 +1779,22 @@ export class AddStoreProductModal extends React.Component {
             postData.min = min*multiplicity;
             postData.max = max*multiplicity;
         }
-
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/store_products`;
-        fetch(url, {
-            method: "POST",
-            headers: {
-                Authorization: token,
-            },
-            body: JSON.stringify(postData)
-        })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            that.setState({visible: false});
-            //that.ordersAppurtenancies(ordersAppurtenancies, data.id, detailCode, brandId);
-            that.props.confirmAlertModal({
-                brandId: brandId,
-                brandName: brandName,
-                detailName: detailName,
-                detailCode: detailCode,
-                tradeCode: tradeCode,
-                productId: data.id,
-            });
-        })
-        .catch(function(error) {
-            console.log("error", error);
+        const response = await fetchAPI('POST', 'store_products', null, postData);
+        if(response.created && barcode) {
+            await fetchAPI('POST', 'barcodes', undefined, [{
+                referenceId: response.id,
+                table: 'STORE_PRODUCTS',
+                customCode: barcode,
+            }])
+        }
+        await this.setState({visible: false});
+        await this.props.confirmAlertModal({
+            brandId: brandId,
+            brandName: brandName,
+            detailName: detailName,
+            detailCode: detailCode,
+            tradeCode: tradeCode,
+            productId: response.id,
         });
     }
 
@@ -2065,19 +2086,25 @@ export class AddStoreProductModal extends React.Component {
                         <FormattedMessage id='navigation.barcode' />
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                             <Input
-                                value={barcode}
+                                value={
+                                    barcode 
+                                        ? `STP-${this.props.user.businessId}-${barcode}`
+                                        : undefined
+                                }
                                 disabled
-                                onChange={(event)=>{
-                                    this.setState({
-                                        barcode: event.target.value,
-                                    })
+                                style={{
+                                    color: 'var(--text)',
                                 }}
                             />
                             <Barcode
                                 value={barcode}
                                 iconStyle={{
-                                    fontSize: 18,
+                                    fontSize: 22,
                                     marginLeft: 8
+                                }}
+                                prefix={'STP'}
+                                onConfirm={(barcode)=>{
+                                    this.setState({ barcode })
                                 }}
                             />
                         </div>

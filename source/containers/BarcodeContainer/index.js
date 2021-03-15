@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { Button, Input } from "antd";
-import { permissions, isForbidden } from "utils";
+import { permissions, isForbidden, fetchAPI } from "utils";
 
 // proj
 import { Catcher } from "commons";
@@ -22,12 +22,20 @@ const mapDispatchToProps = {
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class BarcodeContainer extends Component {
+	constructor(props) {
+        super(props);
+        this.state = {
+            inputCode: undefined,
+        };
+	}
+	
     render() {
         const { user, intl: { formatMessage } } = this.props;
+		const { inputCode } = this.state;
 
         const pageData = [
         	{
-        		title: 'Сгенерировать',
+        		title: 'Присвоить',
         		childs: [
         			{
         				title: 'Код товара',
@@ -52,23 +60,23 @@ export default class BarcodeContainer extends Component {
         		childs: [
         			{
         				title: 'Открыть',
-        				disabled: true,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Оплата',
-        				disabled: true,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Возврат',
-        				disabled: true,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Диагностика',
-        				disabled: true,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Цех',
-        				disabled: true,
+        				disabled: !inputCode,
         			}
         		]
         	},
@@ -77,11 +85,11 @@ export default class BarcodeContainer extends Component {
         		childs: [
         			{
         				title: 'Открыть карточку',
-        				disabled: true,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Создать н/3',
-        				disabled: true,
+        				disabled: !inputCode,
         			},
         		]
         	},
@@ -90,23 +98,23 @@ export default class BarcodeContainer extends Component {
         		childs: [
         			{
         				title: 'Открыть карточку',
-        				disabled: false,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Добавить в н/з',
-        				disabled: false,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Принять на склад',
-        				disabled: false,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Выдать в цех',
-        				disabled: false,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Вернуть из цеха',
-        				disabled: false,
+        				disabled: !inputCode,
         			}
         		]
         	},
@@ -115,23 +123,23 @@ export default class BarcodeContainer extends Component {
         		childs: [
         			{
         				title: 'Открыть карточку',
-        				disabled: true,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Добавить в н/з',
-        				disabled: true,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Начать в текущем н/з',
-        				disabled: true,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Окончить в текущем н/з',
-        				disabled: true,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Прервать в текущем н/з',
-        				disabled: true,
+        				disabled: !inputCode,
         			}
         		]
         	},
@@ -140,19 +148,19 @@ export default class BarcodeContainer extends Component {
         		childs: [
         			{
         				title: 'Начать смену',
-        				disabled: true,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Окончить смену',
-        				disabled: true,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Начать перерыв',
-        				disabled: true,
+        				disabled: !inputCode,
         			},
         			{
         				title: 'Окончить перерив',
-        				disabled: true,
+        				disabled: !inputCode,
         			}
         		]
         	}
@@ -164,12 +172,24 @@ export default class BarcodeContainer extends Component {
 	                <div className={Styles.barcodeInput}>
 	                	<Input
 	                		placeholder={formatMessage({id: 'Введите или отсканируйте штрих-код'})}
+							value={inputCode}
+							onChange={({target})=>{
+								this.setState({
+									inputCode: target.value,
+								})
+							}}
 	                	/>
                         <Barcode
                             iconStyle={{
                                 marginLeft: 14,
 								fontSize: 24,
                             }}
+							value={inputCode}
+							onConfirm={(value)=>
+								this.setState({
+									inputCode: value,
+								})
+							}
                         />
 	                </div>
 	                <div className={Styles.buttonBlockWrapp}>

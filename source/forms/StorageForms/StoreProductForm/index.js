@@ -195,6 +195,10 @@ const ProductForm = props => {
                 ] }
                 initialValue={ _.get(props, 'product.code') }
                 disabled={props.editing}
+                style={{ 
+                    minWidth: 240,
+                    color: 'var(--text)'
+                }}
             />
             <>
                 <DecoratedAutoComplete
@@ -355,18 +359,26 @@ const ProductForm = props => {
                     placeholder={formatMessage({
                         id: "navigation.barcode",
                     })}
-                    formItem
                     formItemLayout={formItemLayout}
                     initialValue={_.get(props, "product.barcode")}
                     getFieldDecorator={form.getFieldDecorator}
-                    style={{minWidth: 240}}
+                    style={{ 
+                        minWidth: 240,
+                        color: 'var(--text)'
+                    }}
                     disabled
                 />
                 <Barcode
                     value={barcode || _.get(props, "product.barcode")}
+                    referenceId={_.get(props, 'product.id')}
+                    table={'STORE_PRODUCTS'}
+                    prefix={'STP'}
                     iconStyle={{
-                        fontSize: 18,
+                        fontSize: 22,
                         marginLeft: 8
+                    }}
+                    onConfirm={(code, prefix)=>{
+                        form.setFieldsValue({barcode: `${prefix}-${code}`})
                     }}
                 />
             </FormItem>
@@ -420,20 +432,6 @@ const ProductForm = props => {
                         />
                     </div>
                 </div>
-            }
-            {props.editing &&  _.get(props, 'product.barcode') && 
-                <Barcode
-                    value={`STP-${_.get(props, 'product.id')}`}
-                    displayBarcode
-                    options={{
-                        displayValue: true,
-                        width: 3,
-                        height: 90
-                    }}
-                    style={{
-                        margin: '12px 0 36px 0',
-                    }}
-                />
             }
             <ButtonGroup>
                 { props.editing ? (

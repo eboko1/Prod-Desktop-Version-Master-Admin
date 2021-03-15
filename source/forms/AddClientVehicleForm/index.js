@@ -154,8 +154,6 @@ export class AddClientVehicleForm extends Component {
             }
         }
 
-        console.log(this);
-
         return (
             <Form className={Styles.form}>
                 {editableVehicle && (

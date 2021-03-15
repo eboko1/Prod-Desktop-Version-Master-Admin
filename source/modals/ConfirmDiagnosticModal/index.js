@@ -73,10 +73,10 @@ class ConfirmDiagnosticModal extends React.Component{
                         element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
                         element.name,
                     serviceId: element.id,
-                    count: element.hours,
+                    count: element.count,
                     servicePrice: element.price,
                     employeeId: this.props.defaultEmployeeId,
-                    serviceHours: 0,
+                    serviceHours: element.hours,
                     comment: {
                         comment: element.commentary && element.commentary.comment,
                         positions: element.commentary && element.commentary.positions,
@@ -125,6 +125,7 @@ class ConfirmDiagnosticModal extends React.Component{
             productId: data.productId,
             name: data.serviceName,
             hours: data.hours,
+            count: data.hours * this.props.laborTimeMultiplier,
             checked: true,
             price: data.price,
             commentary: {
@@ -250,6 +251,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 productId: service.productId,
                 name: service.name,
                 hours: Number(service.normHours) || 1,
+                count: (Number(service.normHours) || 1) * this.props.laborTimeMultiplier,
                 checked: true,
                 commentary: commentary,
                 status: status,
@@ -262,6 +264,7 @@ class ConfirmDiagnosticModal extends React.Component{
             this.state.servicesList[index].name = service.name;
             this.state.servicesList[index].productId= service.productId;
             this.state.servicesList[index].hours = Number(service.normHours) || 1;
+            this.state.servicesList[index].count = (Number(service.normHours) || 1) * this.props.laborTimeMultiplier;
         }
         this.setState({
             update: true,
@@ -399,6 +402,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         productId: labor.productId,
                         name: labor.name,
                         hours: Number(labor.normHours) || 1,
+                        count: (Number(labor.normHours) || 1) * that.props.laborTimeMultiplier,
                         checked: true,
                         commentary: elem.comment,
                         status: elem.isCritical ? 3 : 2,
@@ -559,6 +563,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 id:null,
                 name: null,
                 hours: 1,
+                count: 1,
                 commentary: {commentary: "", positions: []},
                 checked: true,
             });
@@ -569,6 +574,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 id: null,
                 name: null,
                 hours: 1,
+                count: 1,
                 commentary: {commentary: "", positions: [], problems: []},
                 checked: true
             });
@@ -645,9 +651,9 @@ class ConfirmDiagnosticModal extends React.Component{
                         style={{ width: '60%' }}
                         step={0.1}
                         min={0.1}
-                        value={data.hours?data.hours:1}
+                        value={data.count || 1}
                         onChange={(value)=>{
-                            data.hours = value;
+                            data.count = value;
                             this.setState({update: true});
                         }}
                     />

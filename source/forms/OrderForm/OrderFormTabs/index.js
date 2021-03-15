@@ -233,6 +233,7 @@ export default class OrderFormTabs extends React.PureComponent {
 			fetchRepairMapData,
 			focusOnRef,
 			showCahOrderModal,
+			laborTimeMultiplier,
 		} = this.props;
 
 		var orderServicesSize = 0,
@@ -383,6 +384,7 @@ export default class OrderFormTabs extends React.PureComponent {
 							details={details}
 							reloadOrderPageComponents={this.props.reloadOrderPageComponents}
 							action={this.state.action}
+							laborTimeMultiplier={laborTimeMultiplier}
 						/>
 					</TabPane>
 				)}
@@ -400,7 +402,7 @@ export default class OrderFormTabs extends React.PureComponent {
 								closedEditing ||
 								isForbidden(user, permissions.ACCESS_ORDER_LABORS_CRUD)
 							}
-							laborTimeMultiplier={this.props.laborTimeMultiplier}
+							laborTimeMultiplier={laborTimeMultiplier}
 							defaultEmployeeId={this.props.defaultEmployeeId}
 							normHourPrice={normHourPrice}
 							tecdocId={tecdocId}
@@ -445,7 +447,9 @@ export default class OrderFormTabs extends React.PureComponent {
 							totalServicesProfit={totalServicesProfit}
 							servicesMode
 							reloadOrderForm={this.props.reloadOrderForm}
-							laborTimeMultiplier={this.props.laborTimeMultiplier}
+							laborTimeMultiplier={laborTimeMultiplier}
+							orderDetails={orderDetails}
+							orderServices={orderServices}
 							orderId={orderId}
 						/>
 					</TabPane>

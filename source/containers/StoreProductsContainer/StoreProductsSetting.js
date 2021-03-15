@@ -62,7 +62,7 @@ export const StoreProductsSetting = connect(mapStateToProps)(
                         color:    'var(--primary)',
                     } }
                 />*/ }
-                { !isForbidden(user, permissions.ACCESS_STORE_GROUPS) && !isForbidden(user, permissions.ACCESS_CATALOGUE_STORE_GROUPS_CRUD)
+                { isAdmin(user)
                     ? renderEditing()
                     : !storeGroup.systemWide
                         ? renderEditing()
