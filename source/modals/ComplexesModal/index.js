@@ -138,7 +138,7 @@ export default class ComplexesModal extends React.Component{
                     serviceId: element.id,
                     count: Number(element.count * this.props.laborTimeMultiplier) || 1,
                     serviceHours: 0,
-                    servicePrice: Number(element.price) || 0,
+                    servicePrice: element.price,
                     comment: element.commentary,
                 })
             }
