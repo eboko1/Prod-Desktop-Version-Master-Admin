@@ -35,7 +35,7 @@ export default class BarcodeContainer extends Component {
 
         const pageData = [
         	{
-        		title: 'Сгенерировать',
+        		title: 'Присвоить',
         		childs: [
         			{
         				title: 'Код товара',
