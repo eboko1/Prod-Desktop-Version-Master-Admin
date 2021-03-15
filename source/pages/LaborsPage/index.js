@@ -595,7 +595,7 @@ export default class LaborsPage extends Component {
                     labors[labors.length-1].normHours = elem.normHours || 1;
                 }
             }
-            else if(elem.new && elem.masterLaborId && elem.productId || !elem.laborBusinessId && elem.changed) {
+            else if(elem.new && elem.masterLaborId && elem.productId || !elem.laborBusinessId && elem.changed && elem.laborId) {
                 newLabors.push({
                     masterLaborId: elem.masterLaborId,
                     productId: elem.productId,
