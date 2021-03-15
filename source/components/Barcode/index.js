@@ -160,7 +160,7 @@ export default class Barcode extends Component {
                 {button ? 
                     <Button
                         //type={'primary'}
-                        disabled={disabled}
+                        disabled={disabled || true}
                         onClick={this.showModal}
                     >
                         <Icon
@@ -172,10 +172,12 @@ export default class Barcode extends Component {
                     </Button> :
                     <Icon
                         type={iconType}
-                        className={(disabled) && Styles.disabledIcon}
+                        className={(disabled || true) && Styles.disabledIcon}
                         style={{
                             fontSize: 18,
                             ...iconStyle,
+                            pointerEvents: 'none',
+                            color: 'var(--text2)'
                         }}
                         onClick={this.showModal}
                     />
