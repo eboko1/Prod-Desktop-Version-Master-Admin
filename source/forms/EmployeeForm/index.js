@@ -79,7 +79,6 @@ export class EmployeeForm extends Component {
 		const { formatMessage } = this.props.intl;
 		const managerEnabled = Boolean(getFieldValue('managerEnabled'));
 		const passwordField = this._renderPasswordField();
-		const barcode = getFieldValue('barcode');
 
 		return (
 			<Form layout='vertical'>
@@ -128,19 +127,27 @@ export class EmployeeForm extends Component {
 							id: 'navigation.barcode',
 						})}
 						disabled
-						formItem
 						formItemLayout={formItemLayout}
 						initialValue={_.get(initialEmployee, 'barcode')}
-						className={Styles.selectMargin}
 						getPopupContainer={(trigger) => trigger.parentNode}
 						getFieldDecorator={getFieldDecorator}
-						style={{ minWidth: 240 }}
+						style={{ 
+							minWidth: 240,
+							color: 'var(--text)'
+						}}
 					/>
 					<Barcode
-						value={barcode}
+						value={_.get(initialEmployee, 'barcode')}
+						referenceId={_.get(initialEmployee, 'id')}
+						table={'EMPLOYEES'}
+						prefix={'EML'}
 						iconStyle={{
-							fontSize: 18,
+							fontSize: 22,
 							marginLeft: 8,
+							padding: '4px 0',
+						}}
+						onConfirm={()=>{
+							saveEmployee()
 						}}
 					/>
 				</FormItem>

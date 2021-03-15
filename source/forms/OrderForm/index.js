@@ -308,7 +308,6 @@ export class OrderForm extends React.PureComponent {
 	};
 
 	render() {
-        console.log(this)
 		const {
 			authentificatedManager,
 			form,
@@ -618,11 +617,11 @@ export class OrderForm extends React.PureComponent {
 		let totalDetailsProfit = detailsTotalSum;
 		let totalServicesProfit = servicesTotalSum;
 
-		orderDetails.map(({ purchasePrice }) => {
-			totalDetailsProfit -= purchasePrice;
+		orderDetails.map(({ purchasePrice, count }) => {
+			totalDetailsProfit -= purchasePrice * count;
 		});
-		orderServices.map(({ purchasePrice }) => {
-			totalServicesProfit -= purchasePrice;
+		orderServices.map(({ purchasePrice, count }) => {
+			totalServicesProfit -= purchasePrice * count;
 		});
 
 		return (

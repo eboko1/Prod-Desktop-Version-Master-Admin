@@ -485,7 +485,6 @@ class ServicesTable extends Component {
                 }
                 <AddServiceModal
                     isMobile={isMobile}
-                    laborTimeMultiplier={ this.laborTimeMultiplier }
                     defaultEmployeeId={ this.props.defaultEmployeeId }
                     normHourPrice={ this.props.normHourPrice }
                     user={ this.props.user }

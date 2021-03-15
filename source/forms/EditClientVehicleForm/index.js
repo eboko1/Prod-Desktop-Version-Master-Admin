@@ -98,6 +98,7 @@ export class EditClientVehicleForm extends Component {
             editableItem,
             editVehicle,
             clientId,
+            fetchClient,
             selectedVehicle,
             errors,
             user,
@@ -269,7 +270,7 @@ export class EditClientVehicleForm extends Component {
                                                         .getFieldDecorator
                                                 }
                                                 placeholder={
-                                                    <FormattedMessage id="vehicleTypeId" />
+                                                    <FormattedMessage id="tire.vehicleType" />
                                                 }
                                                 className={
                                                     Styles.editClientVehicleFormItem
@@ -313,7 +314,6 @@ export class EditClientVehicleForm extends Component {
                                     {editableItem === index ? (
                                         <div style={{display: "flex", alignItems: "center"}}>
                                         <DecoratedInput
-                                            formItem
                                             disabled
                                             className={
                                                 Styles.editClientVehicleFormItem
@@ -328,9 +328,15 @@ export class EditClientVehicleForm extends Component {
                                         />
                                         <Barcode
                                             value={item.barcode}
+                                            referenceId={item.id}
+                                            table={'CLIENTS_VEHICLES'}
+                                            prefix={'CVH'}
                                             iconStyle={{
                                                 fontSize: 24,
                                                 marginLeft: 4,
+                                            }}
+                                            onConfirm={()=>{
+                                                fetchClient(clientId)
                                             }}
                                         />
                                         </div>

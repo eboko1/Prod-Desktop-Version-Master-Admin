@@ -18,7 +18,6 @@ import _ from 'lodash';
 // proj
 import { Catcher } from 'commons';
 import { permissions, isForbidden, images } from 'utils';
-import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { DetailProductModal, FavouriteDetailsModal, StoreProductTrackingModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
 import { StoreProductModal } from 'modals';
@@ -76,6 +75,13 @@ class DetailsTable extends Component {
                                 <div className={Styles.headerActions}>
                                     <Barcode
                                         button
+                                        prefix={'STP'}
+                                        onConfirm={(code, pref, fullCode)=>{
+                                            const { dataSource } = this.state;
+                                            const lastDetail = dataSource[dataSource.length - 1];
+                                            lastDetail.barcode = fullCode;
+                                            this.showDetailProductModal(lastDetail.key)
+                                        }}
                                     />
                                     <div style={{opacity: 0, pointerEvents: 'none'}}>
                                         <Barcode
@@ -430,7 +436,7 @@ class DetailsTable extends Component {
                                 let token = localStorage.getItem(
                                     '_my.carbook.pro_token',
                                 );
-                                let url = API_URL;
+                                let url = __API_URL__;
                                 let params = '/orders/frequent/details';
                                 if (elem.frequentDetailId) { params += `?ids=[${elem.frequentDetailId}]`; } else { params += `?storeGroupIds=[${elem.storeGroupId}]`; }
                                 url += params;
@@ -488,7 +494,7 @@ class DetailsTable extends Component {
                                 let token = localStorage.getItem(
                                     '_my.carbook.pro_token',
                                 );
-                                let url = API_URL;
+                                let url = __API_URL__;
                                 let params = `/orders/${this.props.orderId}/details?ids=[${elem.id}]`;
                                 url += params;
                                 try {
@@ -532,6 +538,9 @@ class DetailsTable extends Component {
         });
     }
     hideDetailProductModal() {
+        const { dataSource } = this.state;
+        const lastDetail = dataSource[dataSource.length - 1];
+        lastDetail.barcode = undefined;
         this.setState({
             productModalVisible: false,
         });
@@ -674,7 +683,7 @@ class DetailsTable extends Component {
         }
 
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/orders/${this.props.orderId}`;
         url += params;
         try {

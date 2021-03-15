@@ -1,11 +1,11 @@
 // vendor
 import React, { Component } from 'react';
-import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox, Spin, Slider } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox, Spin, Slider, notification } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { DetailStorageModal, DetailSupplierModal, OilModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
-import { permissions, isForbidden, images } from 'utils';
+import { permissions, isForbidden, images, fetchAPI } from 'utils';
 // own
 import Styles from './styles.m.css';
 const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
@@ -949,25 +949,67 @@ class DetailProductModal extends React.Component{
         this.servicesOptions = [...servicesOptions];
     }
 
+    _findByBarcode = async (barcode) => {
+        const { list } = await fetchAPI('GET', 'store_products', {query: barcode});
+        const detail = list.find( (elem) => elem.barcode == barcode );
+        if(detail) {
+            const {
+                id,
+                groupId,
+                brand,
+                code,
+                name,
+                stockPrice,
+                priceGroup,
+            } = detail;
+            await this.setState({
+                editing: false,
+                mainTableSource: [{
+                    key: 0,
+                    productId: id,
+                    storeGroupId: groupId,
+                    detailCode: code,
+                    brandId: brand.id,
+                    brandName: brand.name,
+                    detailName: name,
+                    purchasePrice: Math.round(stockPrice*10)/10,
+                    price: Math.round(stockPrice * priceGroup.multiplier * 10)/10,
+                }]
+            })
+        } else {
+            notification.warning({
+                message: 'Код не найден',
+            });
+            this.props.hideModal();
+        }
+    }
+
     componentWillMount() {
         this.fetchData();
     }
 
     componentDidUpdate(prevProps) {
-        if(prevProps.visible == false && this.props.visible) {
-            const editing = Boolean(this.props.detail.storeGroupId);
+        const { user, visible, detail, allDetails, showOilModal } = this.props;
+        const editing = Boolean(detail.storeGroupId);
+        if(prevProps.visible == false && visible) {
             this.setState({
                 editing: editing,
-                mainTableSource: [{...this.props.detail, key: 0}],
+                mainTableSource: [{...detail, key: 0}],
             })
-            this.getDefaultValues(this.props.detail.storeGroupId);
+            if(!editing) {
+                if(detail.barcode) {
+                    this._findByBarcode(detail.barcode);
+                }
+            } else {
+                this.getDefaultValues(detail.storeGroupId);
+            }
         }
-        if(!prevProps.showOilModal && this.props.showOilModal) {
+        if(!prevProps.showOilModal && showOilModal) {
             this.setState({
                 radioValue: 4,
             })
         }
-        if(isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_FIND_FROM_VEHICLE) && this.state.radioValue == 1) {
+        if(isForbidden(user, permissions.ACCESS_ORDER_DETAILS_FIND_FROM_VEHICLE) && this.state.radioValue == 1) {
             this.setState({radioValue: 2});
         }
     }
@@ -983,6 +1025,7 @@ class DetailProductModal extends React.Component{
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                     maskClosable={false}
+                    forceRender
                 >
                     <div>
                         <Radio.Group 

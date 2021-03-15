@@ -193,7 +193,6 @@ export class MobileRecordForm extends Component {
                 name:       parentGroup.name,
                 value:      parentGroup.id,
                 key:        `${i}`,
-                selectable: false,
                 children:   [],
                 multiplier: parentGroup.priceGroupMultiplier,
             });
@@ -204,7 +203,6 @@ export class MobileRecordForm extends Component {
                     name:       childGroup.name,
                     value:      childGroup.id,
                     key:        `${i}-${j}`,
-                    selectable: false,
                     children:   [],
                     multiplier: childGroup.priceGroupMultiplier,
                 });
