@@ -926,14 +926,20 @@ class StorageDocumentPage extends Component {
                                             } }
                                         />
                                     }
-                                    <Barcode
-                                        value={formData.documentNumber}
-                                        iconStyle={{
-                                            ...headerIconStyle,
-                                        }}
-                                    />
                                 </>
                             }
+                            <Barcode
+                                value={formData.barcode}
+                                iconStyle={{
+                                    ...headerIconStyle,
+                                }}
+                                prefix={'STD'}
+                                referenceId={id}
+                                table={'STORE_DOCS'}
+                                onConfirm={()=>{
+                                    this.getStorageDocument();
+                                }}
+                            />
                             <ReportsDropdown
                                 id={id}
                             />

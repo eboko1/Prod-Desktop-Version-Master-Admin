@@ -54,6 +54,13 @@ class ServicesTable extends Component {
                             <div className={Styles.headerActions}>
                                 <Barcode
                                     button
+                                    prefix={'LBS'}
+                                    onConfirm={(code, pref, fullCode)=>{
+                                        const { dataSource } = this.state;
+                                        const lastService = dataSource[dataSource.length - 1];
+                                        lastService.barcode = fullCode;
+                                        this.showServiceProductModal(lastService.key)
+                                    }}
                                 />
                                 {!isForbidden(this.props.user, permissions.ACCESS_ORDER_LABORS_COMPLEXES) &&
                                     <ComplexesModal
@@ -513,6 +520,9 @@ class ServicesTable extends Component {
         });
     }
     hideServicelProductModal() {
+        const { dataSource } = this.state;
+        const lastService = dataSource[dataSource.length - 1];
+        lastService.barcode = undefined;
         this.setState({
             serviceModalVisible: false,
         });

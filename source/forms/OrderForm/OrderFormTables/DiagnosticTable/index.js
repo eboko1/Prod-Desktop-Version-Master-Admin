@@ -1331,6 +1331,7 @@ class DiagnosticTable extends Component {
                     labors={ this.props.labors }
                     details={ this.props.details }
                     action={ this.props.action }
+                    laborTimeMultiplier={ this.props.laborTimeMultiplier }
                 />
                 <Table
                     loading={false}
@@ -1482,6 +1483,7 @@ class DiagnosticTableHeader extends React.Component {
                         labors={ this.props.labors }
                         details={ this.props.details }
                         action={ this.props.action }
+                        laborTimeMultiplier={ this.props.laborTimeMultiplier }
                     />
                 </div>
                 <div style={ { width: '10%' } }>

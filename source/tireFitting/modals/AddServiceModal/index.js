@@ -21,7 +21,6 @@ class AddServiceModal extends React.Component{
         this.state = {
             editing: false,
             mainTableSource: [],
-            laborSearchValue: "",
         }
         this.labors = [];
         this.priceGroups = [];
@@ -35,7 +34,6 @@ class AddServiceModal extends React.Component{
                 key:       'laborId',
                 dataIndex: 'laborId',
                 render: (data, elem)=>{
-                    const currentServiceOption = this.servicesOptions.find((labor)=>labor.laborId==data);
                     return (
                         <Select
                             allowClear
@@ -74,44 +72,21 @@ class AddServiceModal extends React.Component{
                                 }
                                 this.setState({});
                             }}
-                            onSearch={(input)=>{
-                                this.setState({
-                                    laborSearchValue: input,
-                                })
-                            }}
-                            onBlur={()=>{
-                                this.setState({
-                                    laborSearchValue: "",
-                                })
-                            }}
                         >
                             {
-                                this.state.laborSearchValue.length > 2 || (!elem.related && (elem.storeGroupId || elem.masterLaborId)) ? 
-                                    this.servicesOptions.map((elem, index)=>(
-                                        <Option
-                                            key={index}
-                                            value={elem.laborId}
-                                            master_id={elem.masterLaborId}
-                                            product_id={elem.productId}
-                                            norm_hours={elem.normHours}
-                                            price={elem.price}
-                                            cross_id={elem.crossId}
-                                        >
-                                            {elem.name ? elem.name : elem.defaultName}
-                                        </Option>
-                                    )) :
-                                    elem.laborId && currentServiceOption ? 
+                                this.servicesOptions.map((elem, index)=>(
                                     <Option
-                                        key={0}
-                                        value={currentServiceOption.laborId}
-                                        master_id={currentServiceOption.masterLaborId}
-                                        product_id={currentServiceOption.productId}
-                                        norm_hours={currentServiceOption.normHours}
-                                        price={currentServiceOption.price}
+                                        key={index}
+                                        value={elem.laborId}
+                                        master_id={elem.masterLaborId}
+                                        product_id={elem.productId}
+                                        norm_hours={elem.normHours}
+                                        price={elem.price}
+                                        cross_id={elem.crossId}
                                     >
-                                        {currentServiceOption.name ? currentServiceOption.name : currentServiceOption.defaultName}
-                                    </Option> : 
-                                    []
+                                        {elem.name ? elem.name : elem.defaultName}
+                                    </Option>
+                                ))
                             }
                         </Select>
                     )

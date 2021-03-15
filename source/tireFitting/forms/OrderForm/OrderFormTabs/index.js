@@ -65,7 +65,6 @@ export default class OrderFormTabs extends React.PureComponent {
 				value: parentGroup.id,
 				className: Styles.groupTreeOption,
 				key: `${i}`,
-				selectable: false,
 				children: [],
 				multiplier: parentGroup.priceGroupMultiplier,
 			});
@@ -77,7 +76,6 @@ export default class OrderFormTabs extends React.PureComponent {
 					value: childGroup.id,
 					className: Styles.groupTreeOption,
 					key: `${i}-${j}`,
-					selectable: false,
 					children: [],
 					multiplier: childGroup.priceGroupMultiplier,
 				});
