@@ -12,7 +12,7 @@ import nprogress from 'nprogress';
 import { saveAs } from 'file-saver';
 import moment from 'moment';
 import _ from 'lodash';
-import { Base64, decode } from 'js-base64';
+import { notification } from 'antd';
 
 //proj
 import { setCashOrdersFetchingState, emitError } from 'core/ui/duck';
