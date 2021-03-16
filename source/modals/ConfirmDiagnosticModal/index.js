@@ -75,7 +75,7 @@ class ConfirmDiagnosticModal extends React.Component{
                     serviceId: element.id,
                     count: element.count * this.props.laborTimeMultiplier,
                     serviceHours: 0,
-                    servicePrice: element.price,
+                    servicePrice: element.price ? element.price : 0,
                     employeeId: this.props.defaultEmployeeId,
                     comment: {
                         comment: element.commentary && element.commentary.comment,
