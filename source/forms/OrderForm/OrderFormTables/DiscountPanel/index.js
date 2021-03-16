@@ -150,7 +150,7 @@ class DiscountPanel extends Component {
                         <InputNumber
                             disabled
                             style={ { color: 'black' } }
-                            value={ price }
+                            value={ Math.round(price) }
                             min={ 0 }
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -170,7 +170,7 @@ class DiscountPanel extends Component {
                         <InputNumber
                             disabled
                             style={ { color: 'black' } }
-                            value={ total }
+                            value={ Math.round(total) }
                             min={ 0 }
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -198,8 +198,8 @@ class DiscountPanel extends Component {
                                 disabled
                                 value={
                                     servicesMode
-                                        ? totalServicesProfit
-                                        : totalDetailsProfit
+                                        ? Math.round(totalServicesProfit)
+                                        : Math.round(totalDetailsProfit)
                                 }
                                 style={ { color: profit < 0 ? 'red' : 'black' } }
                                 formatter={ value =>

@@ -151,7 +151,6 @@ class AddServiceModal extends React.Component{
                                     elem.serviceName = option.props.children;
                                     elem.masterLaborId = option.props.master_id;
                                     elem.storeGroupId = option.props.product_id;
-                                    elem.hours = Number(option.props.norm_hours);
                                     elem.count = count;
                                     elem.price = price;
                                     elem.sum = price * count;
@@ -186,7 +185,6 @@ class AddServiceModal extends React.Component{
                                             value={elem.laborId}
                                             master_id={elem.masterLaborId}
                                             product_id={elem.productId}
-                                            norm_hours={elem.normHours}
                                             price={elem.price}
                                             cross_id={elem.crossId}
                                             barcode={elem.barcode}
@@ -200,7 +198,6 @@ class AddServiceModal extends React.Component{
                                         value={currentServiceOption.laborId}
                                         master_id={currentServiceOption.masterLaborId}
                                         product_id={currentServiceOption.productId}
-                                        norm_hours={currentServiceOption.normHours}
                                         price={currentServiceOption.price}
                                         cross_id={currentServiceOption.crossId}
                                         barcode={currentServiceOption.barcode}
