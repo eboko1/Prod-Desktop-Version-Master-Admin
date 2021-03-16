@@ -136,9 +136,9 @@ export default class ComplexesModal extends React.Component{
                         element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
                         element.name,
                     serviceId: element.id,
-                    count: Number(element.count * this.props.laborTimeMultiplier) || 1,
+                    count: Number(element.count * this.props.laborTimeMultiplier) || this.props.laborTimeMultiplier,
                     serviceHours: 0,
-                    servicePrice: element.price ? element.price : 0,
+                    servicePrice: element.price ? element.price : Number(this.props.normHourPrice),
                     comment: element.commentary,
                 })
             }
