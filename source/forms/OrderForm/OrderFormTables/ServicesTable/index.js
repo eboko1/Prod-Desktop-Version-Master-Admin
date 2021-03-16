@@ -64,6 +64,7 @@ class ServicesTable extends Component {
                                 />
                                 {!isForbidden(this.props.user, permissions.ACCESS_ORDER_LABORS_COMPLEXES) &&
                                     <ComplexesModal
+                                        normHourPrice={ this.props.normHourPrice }
                                         disabled={this.props.disabled}
                                         tecdocId={this.props.tecdocId}
                                         labors={this.props.labors}

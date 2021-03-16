@@ -144,15 +144,15 @@ class AddServiceModal extends React.Component{
                                 )
                             }}
                             onChange={(value, option)=>{
+                                console.log(option)
                                 if(option) {
                                     let price = option.props.price ? option.props.price : Number(this.props.normHourPrice);
-                                    let count = (option.props.norm_hours || 1) * this.props.laborTimeMultiplier;
+                                    let count = (option.props.norm_hours || 1);
                                     elem.laborId = value;
                                     elem.serviceName = option.props.children;
                                     elem.masterLaborId = option.props.master_id;
                                     elem.storeGroupId = option.props.product_id;
-                                    elem.hours = Number(option.props.norm_hours);
-                                    elem.count = count;
+                                    elem.count = option.props.hours;
                                     elem.price = price;
                                     elem.sum = price * count;
                                     if(!elem.related) this.getRelatedLabors(value);
@@ -186,10 +186,10 @@ class AddServiceModal extends React.Component{
                                             value={elem.laborId}
                                             master_id={elem.masterLaborId}
                                             product_id={elem.productId}
-                                            norm_hours={elem.normHours}
                                             price={elem.price}
                                             cross_id={elem.crossId}
                                             barcode={elem.barcode}
+                                            hours={elem.normHours}
                                         >
                                             {elem.name || elem.defaultName}
                                         </Option>
@@ -200,10 +200,10 @@ class AddServiceModal extends React.Component{
                                         value={currentServiceOption.laborId}
                                         master_id={currentServiceOption.masterLaborId}
                                         product_id={currentServiceOption.productId}
-                                        norm_hours={currentServiceOption.normHours}
                                         price={currentServiceOption.price}
                                         cross_id={currentServiceOption.crossId}
                                         barcode={currentServiceOption.barcode}
+                                        hours={currentServiceOption.normHours}
                                     >
                                         {currentServiceOption.name || currentServiceOption.defaultName}
                                     </Option> : 
