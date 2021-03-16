@@ -73,9 +73,9 @@ class ConfirmDiagnosticModal extends React.Component{
                         element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
                         element.name,
                     serviceId: element.id,
-                    count: element.count * this.props.laborTimeMultiplier,
+                    count: Number(element.count * this.props.laborTimeMultiplier) || this.props.laborTimeMultiplier,
                     serviceHours: 0,
-                    servicePrice: element.price ? element.price : 0,
+                    servicePrice: element.price ? element.price : Number(this.props.normHourPrice),
                     employeeId: this.props.defaultEmployeeId,
                     comment: {
                         comment: element.commentary && element.commentary.comment,
@@ -116,35 +116,6 @@ class ConfirmDiagnosticModal extends React.Component{
             autoConfirmed: false,
         });
     };
-
-    getCurrentOrderDetailsAndServices() {
-        const { orderServices, orderDetails } = this.props;
-        this.state.servicesList = orderServices.map((data, index)=>({
-            key: index+1,
-            id: data.laborId,
-            productId: data.productId,
-            name: data.serviceName,
-            hours: data.hours,
-            count: data.hours,
-            checked: true,
-            price: data.price,
-            commentary: {
-                comment: data.commentary.comment,
-                positions: data.commentary.positions
-            },
-        }));
-        this.state.detailsList = orderDetails.map((data, index)=>({
-            key: index+1,
-            id: data.storeGroupId,
-            name: data.detailName,
-            count: data.count,
-            checked: true,
-            commentary: {
-                comment: data.commentary.comment,
-                positions: data.commentary.positions
-            }
-        }));
-    }
 
     updateState() {
         this.state.dataSource = this.props.dataSource;
@@ -250,8 +221,8 @@ class ConfirmDiagnosticModal extends React.Component{
                 id: id,
                 productId: service.productId,
                 name: service.name,
-                hours: service.normHours,
                 count: service.normHours,
+                price: service.price,
                 checked: true,
                 commentary: commentary,
                 status: status,
@@ -263,8 +234,8 @@ class ConfirmDiagnosticModal extends React.Component{
             this.state.servicesList[index].status = status;
             this.state.servicesList[index].name = service.name;
             this.state.servicesList[index].productId= service.productId;
-            this.state.servicesList[index].hours = service.normHours;
             this.state.servicesList[index].count = service.normHours;
+            this.state.servicesList[index].price= service.price;
         }
         this.setState({
             update: true,
@@ -401,8 +372,8 @@ class ConfirmDiagnosticModal extends React.Component{
                         id: labor.laborId,
                         productId: labor.productId,
                         name: labor.name,
-                        hours: labor.normHours,
                         count: labor.normHours,
+                        price: labor.price,
                         checked: true,
                         commentary: elem.comment,
                         status: elem.isCritical ? 3 : 2,
@@ -562,7 +533,6 @@ class ConfirmDiagnosticModal extends React.Component{
                 key:1,
                 id:null,
                 name: null,
-                hours: 1,
                 count: 1,
                 commentary: {commentary: "", positions: []},
                 checked: true,
@@ -573,7 +543,6 @@ class ConfirmDiagnosticModal extends React.Component{
                 key:this.state.servicesList[this.state.servicesList.length-1].key+1,
                 id: null,
                 name: null,
-                hours: 1,
                 count: 1,
                 commentary: {commentary: "", positions: [], problems: []},
                 checked: true
