@@ -42,6 +42,7 @@ export class CashboxesTable extends Component {
             formatMessage:      props.intl.formatMessage,
             isCRUDForbidden:    isForbidden(props.user, permissions.ACCESS_CATALOGUE_CASH_CRUD),
             onOpenServiceInputModal: props.onOpenServiceInputModal,
+            onOpenCashOrderModal: props.onOpenCashOrderModal,
             openShift: props.openShift,
             closeShift: props.closeShift,
             fetchXReport: props.fetchXReport,
@@ -55,7 +56,7 @@ export class CashboxesTable extends Component {
     }
 
     render() {
-        const { cashboxesFetching, cashboxes, onOpenServiceInputModal } = this.props;
+        const { cashboxesFetching, cashboxes, onOpenServiceInputModal, onOpenCashOrderModal } = this.props;
 
         //Temp
         this.columns = columnsConfig({
@@ -63,6 +64,7 @@ export class CashboxesTable extends Component {
             formatMessage:      this.props.intl.formatMessage,
             isCRUDForbidden:    false,
             onOpenServiceInputModal: onOpenServiceInputModal,
+            onOpenCashOrderModal: onOpenCashOrderModal,
             openShift: this.props.openShift,
             closeShift: this.props.closeShift,
             fetchXReport: this.props.fetchXReport,

@@ -777,7 +777,7 @@ export class CashOrderForm extends Component {
                                 }),
                             },
                         ]}
-                        initialValue={_.get(cashboxes, "[0].id")}
+                        initialValue={_.get(activeCashOrder, 'cashBoxId') || _.get(cashboxes, "[0].id")}
                         getPopupContainer={trigger => trigger.parentNode}
                         formItemLayout={formItemLayout}
                         className={Styles.styledFormItem}

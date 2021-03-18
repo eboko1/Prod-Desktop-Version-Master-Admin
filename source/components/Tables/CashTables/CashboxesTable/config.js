@@ -67,8 +67,9 @@ export function columnsConfig(props) {
 	};
 
 	const isCashOrderRSTCol = {
-		dataIndex: 'rst',
 		width: 'auto',
+		dataIndex: 'rst',
+		key: 'isCashOrderRSTCol',
 		render: (rst, obj) => {
 			return rst
 				? (<Icon style={{fontSize: '16px', color: obj.isShiftOpen? 'green': 'red'}} type="check-square" />)
@@ -78,10 +79,11 @@ export function columnsConfig(props) {
 
 	const addCashOrderCol = {
 		width: 'auto',
-		dataIndex: 'test',
-		render: () => {
+		dataIndex: 'id',
+		key: 'addCashOrderCol',
+		render: (cashboxId) => {
 			return (
-				<Icon style={{fontSize: '16px'}} type="dollar" />
+				<Icon onClick={() => props.onOpenCashOrderModal({cashboxId})} style={{fontSize: '16px'}} type="dollar" />
 			);
 		},
 	}
@@ -135,6 +137,7 @@ export function columnsConfig(props) {
 	const deleteCol = {
 		width: 'auto',
 		dataIndex: 'delete',
+		key: 'deleteCol',
 		render: (key, { id, removable }) =>
 			removable ? (
 				<Popconfirm
