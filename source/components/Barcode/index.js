@@ -126,7 +126,7 @@ export default class Barcode extends Component {
         
         if(referenceId && table && scanedCode) {
             await fetchAPI('POST', 'barcodes', undefined, [{
-                referenceId,
+                referenceId: String(referenceId),
                 table,
                 customCode: scanedCode,
             }])
@@ -160,7 +160,7 @@ export default class Barcode extends Component {
                 {button ? 
                     <Button
                         //type={'primary'}
-                        disabled={disabled || true}
+                        disabled={disabled}
                         onClick={this.showModal}
                     >
                         <Icon
@@ -172,12 +172,10 @@ export default class Barcode extends Component {
                     </Button> :
                     <Icon
                         type={iconType}
-                        className={(disabled || true) && Styles.disabledIcon}
+                        className={disabled && Styles.disabledIcon}
                         style={{
                             fontSize: 18,
                             ...iconStyle,
-                            pointerEvents: 'none',
-                            color: 'var(--text2)'
                         }}
                         onClick={this.showModal}
                     />

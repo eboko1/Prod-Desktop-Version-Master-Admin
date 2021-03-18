@@ -638,7 +638,7 @@ class AddServiceModal extends React.Component{
             
             if(!editing) {
                 if(labor.barcode) {
-                    const barcodeLabor = this.servicesOptions.find((elem)=>elem.barcode == labor.barcode );
+                    const barcodeLabor = this.servicesOptions.find((elem)=>elem.laborId == labor.referenceId );
                     if(barcodeLabor) {
                         const { 
                             laborId,

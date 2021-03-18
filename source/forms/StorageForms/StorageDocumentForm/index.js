@@ -70,37 +70,47 @@ class StorageDocumentForm extends Component {
     }
 
     _findByBarcode = async (barcode) => {
-        const { list } = await fetchAPI('GET', 'store_products', {query: barcode});
-        const detail = list.find( (elem) => elem.barcode == barcode );
-        if(detail) {
-            const {
-                id,
-                brand,
-                code,
-                name,
-                stockPrice,
-                priceGroup,
-                quantity,
-                tradeCode,
-            } = detail;
-            await this.props.addDocProduct({
-                productId: id,
-                detailCode: code,
-                brandName: brand.name,
-                brandId: brand.id,
-                tradeCode: tradeCode,
-                detailName: name,
-                stockPrice: Number(stockPrice),
-                sellingPrice: Number(stockPrice * priceGroup.multiplier),
-                quantity: quantity,
-                sum: quantity*stockPrice,
-            });
-            await this.editProduct(this.props.formData.docProducts.length-1)
+        const response = await fetchAPI('GET', 'barcodes', {
+            barcode: barcode,
+        });
+        if(response && response.length && response[0].table == 'STORE_PRODUCTS') {
+            const { list } = await fetchAPI('GET', 'store_products');
+            const detail = list.find( (elem) => elem.id == response[0].referenceId );
+            if(detail) {
+                const {
+                    id,
+                    brand,
+                    code,
+                    name,
+                    stockPrice,
+                    priceGroup,
+                    quantity,
+                    tradeCode,
+                } = detail;
+                await this.props.addDocProduct({
+                    productId: id,
+                    detailCode: code,
+                    brandName: brand.name,
+                    brandId: brand.id,
+                    tradeCode: tradeCode,
+                    detailName: name,
+                    stockPrice: Number(stockPrice),
+                    sellingPrice: Number(stockPrice * priceGroup.multiplier),
+                    quantity: quantity,
+                    sum: quantity*stockPrice,
+                });
+                await this.editProduct(this.props.formData.docProducts.length-1)
+            } else {
+                notification.warning({
+                    message: 'Код не найден',
+                });
+            }
         } else {
             notification.warning({
                 message: 'Код не найден',
             });
         }
+        
     }
 
     editProduct(key, warning=false) {
@@ -685,8 +695,8 @@ class DocProductsTable extends React.Component {
                                         button
                                         disabled={this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_STOCK)}
                                         prefix={'STP'}
-                                        onConfirm={(barcode)=>{
-                                            this.props.findByBarcode(barcode);
+                                        onConfirm={(barcode, pefix, fullCode)=>{
+                                            this.props.findByBarcode(fullCode);
                                         }}
                                     />
                                 </div>
