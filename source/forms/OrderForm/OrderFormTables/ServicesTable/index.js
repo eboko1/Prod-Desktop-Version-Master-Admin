@@ -10,13 +10,13 @@ import {
     Input,
     Button,
     Modal,
-    message,
+    notification,
 } from 'antd';
 import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
-import { permissions, isForbidden, images } from 'utils';
+import { permissions, isForbidden, images, fetchAPI } from 'utils';
 import {
     FavouriteServicesModal,
     AddServiceModal,
@@ -55,15 +55,29 @@ class ServicesTable extends Component {
                                 <Barcode
                                     button
                                     prefix={'LBS'}
-                                    onConfirm={(code, pref, fullCode)=>{
-                                        const { dataSource } = this.state;
-                                        const lastService = dataSource[dataSource.length - 1];
-                                        lastService.barcode = fullCode;
-                                        this.showServiceProductModal(lastService.key)
+                                    onConfirm={async (code, pref, fullCode)=>{
+                                        const response = await fetchAPI('GET', 'barcodes', {
+                                            barcode: fullCode,
+                                        });
+
+                                        console.log(response);
+
+                                        if(response && response.length && response[0].table == 'LABORS') {
+                                            const { dataSource } = this.state;
+                                            const lastService = dataSource[dataSource.length - 1];
+                                            lastService.barcode = fullCode;
+                                            lastService.referenceId = response[0].referenceId;
+                                            this.showServiceProductModal(lastService.key)                                            
+                                        } else {
+                                            notification.warning({
+                                                message: 'Код не найден',
+                                            });
+                                        }
                                     }}
                                 />
                                 {!isForbidden(this.props.user, permissions.ACCESS_ORDER_LABORS_COMPLEXES) &&
                                     <ComplexesModal
+                                        normHourPrice={ this.props.normHourPrice }
                                         disabled={this.props.disabled}
                                         tecdocId={this.props.tecdocId}
                                         labors={this.props.labors}
@@ -71,6 +85,7 @@ class ServicesTable extends Component {
                                         detailsTreeData={this.props.detailsTreeData}
                                         orderId={this.props.orderId}
                                         reloadOrderForm={this.props.reloadOrderForm}
+                                        laborTimeMultiplier={this.props.laborTimeMultiplier}
                                     />
                                 }
                             </div>

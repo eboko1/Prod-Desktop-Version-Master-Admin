@@ -136,9 +136,9 @@ export default class ComplexesModal extends React.Component{
                         element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
                         element.name,
                     serviceId: element.id,
-                    count: element.count || 1,
-                    servicePrice: element.price ? Number(element.price) : 0,
-                    serviceHours: element.normHours || 0,
+                    count: Number(element.count * this.props.laborTimeMultiplier) || this.props.laborTimeMultiplier,
+                    serviceHours: 0,
+                    servicePrice: element.price ? element.price : Number(this.props.normHourPrice),
                     comment: element.commentary,
                 })
             }
@@ -257,7 +257,7 @@ export default class ComplexesModal extends React.Component{
                                 laborsDataSource.push({
                                     id: value,
                                     name: props.name,
-                                    count: Number(props.hours),
+                                    count: props.hours || 1,
                                     normHours: props.hours,
                                     price: props.price,
                                     checked: true,
@@ -496,7 +496,7 @@ export default class ComplexesModal extends React.Component{
                                         const labors = triggerNode.props.labors.map((elem)=>{
                                             elem.checked = true;
                                             elem.id = elem.laborId,
-                                            elem.count = Number(elem.normHours);
+                                            elem.count = elem.normHours || 1;
                                             elem.commentary = {
                                                 comment: undefined,
                                                 positions: [],

@@ -77,14 +77,23 @@ class DetailsTable extends Component {
                                         button
                                         prefix={'STP'}
                                         onConfirm={async (code, pref, fullCode) => {
-                                            // const response = await fetchAPI('GET', 'barcodes', {
-                                            //     barcode: fullCode,
-                                            // });
+                                            const response = await fetchAPI('GET', 'barcodes', {
+                                                barcode: fullCode,
+                                            });
+
+                                            console.log(response);
                                             
-                                            const { dataSource } = this.state;
-                                            const lastDetail = dataSource[dataSource.length - 1];
-                                            lastDetail.barcode = fullCode;
-                                            this.showDetailProductModal(lastDetail.key)
+                                            if(response && response.length && response[0].table == 'STORE_PRODUCTS') {
+                                                const { dataSource } = this.state;
+                                                const lastDetail = dataSource[dataSource.length - 1];
+                                                lastDetail.barcode = fullCode;
+                                                lastDetail.referenceId = response[0].referenceId;
+                                                this.showDetailProductModal(lastDetail.key)                                            
+                                            } else {
+                                                notification.warning({
+                                                    message: 'Код не найден',
+                                                });
+                                            }
                                         }}
                                     />
                                     <div style={{opacity: 0, pointerEvents: 'none'}}>

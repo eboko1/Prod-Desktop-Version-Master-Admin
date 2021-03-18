@@ -66,17 +66,17 @@ class ConfirmDiagnosticModal extends React.Component{
             data.modificationId = this.props.tecdocId;
         }
         this.state.servicesList.map((element)=>{
-            if(element.checked && element.id != null) {
+            if(element.checked && element.id) {
                 data.services.push({
                     serviceName:
                         element.commentary && element.commentary.positions.length ?
                         element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
                         element.name,
                     serviceId: element.id,
-                    count: element.count,
-                    servicePrice: element.price,
+                    count: Number(element.count * this.props.laborTimeMultiplier) || this.props.laborTimeMultiplier,
+                    serviceHours: 0,
+                    servicePrice: element.price ? element.price : Number(this.props.normHourPrice),
                     employeeId: this.props.defaultEmployeeId,
-                    serviceHours: element.hours,
                     comment: {
                         comment: element.commentary && element.commentary.comment,
                         positions: element.commentary && element.commentary.positions,
@@ -87,7 +87,7 @@ class ConfirmDiagnosticModal extends React.Component{
             }
         });
         this.state.detailsList.map((element)=>{
-            if(element.checked && element.id != null) {
+            if(element.checked && element.id) {
                 data.details.push({
                     name:
                         element.commentary &&  element.commentary.positions.length ?
@@ -116,35 +116,6 @@ class ConfirmDiagnosticModal extends React.Component{
             autoConfirmed: false,
         });
     };
-
-    getCurrentOrderDetailsAndServices() {
-        const { orderServices, orderDetails } = this.props;
-        this.state.servicesList = orderServices.map((data, index)=>({
-            key: index+1,
-            id: data.laborId,
-            productId: data.productId,
-            name: data.serviceName,
-            hours: data.hours,
-            count: data.hours * this.props.laborTimeMultiplier,
-            checked: true,
-            price: data.price,
-            commentary: {
-                comment: data.commentary.comment,
-                positions: data.commentary.positions
-            },
-        }));
-        this.state.detailsList = orderDetails.map((data, index)=>({
-            key: index+1,
-            id: data.storeGroupId,
-            name: data.detailName,
-            count: data.count,
-            checked: true,
-            commentary: {
-                comment: data.commentary.comment,
-                positions: data.commentary.positions
-            }
-        }));
-    }
 
     updateState() {
         this.state.dataSource = this.props.dataSource;
@@ -250,8 +221,8 @@ class ConfirmDiagnosticModal extends React.Component{
                 id: id,
                 productId: service.productId,
                 name: service.name,
-                hours: Number(service.normHours) || 1,
-                count: (Number(service.normHours) || 1) * this.props.laborTimeMultiplier,
+                count: service.normHours,
+                price: service.price,
                 checked: true,
                 commentary: commentary,
                 status: status,
@@ -263,8 +234,8 @@ class ConfirmDiagnosticModal extends React.Component{
             this.state.servicesList[index].status = status;
             this.state.servicesList[index].name = service.name;
             this.state.servicesList[index].productId= service.productId;
-            this.state.servicesList[index].hours = Number(service.normHours) || 1;
-            this.state.servicesList[index].count = (Number(service.normHours) || 1) * this.props.laborTimeMultiplier;
+            this.state.servicesList[index].count = service.normHours;
+            this.state.servicesList[index].price= service.price;
         }
         this.setState({
             update: true,
@@ -401,8 +372,8 @@ class ConfirmDiagnosticModal extends React.Component{
                         id: labor.laborId,
                         productId: labor.productId,
                         name: labor.name,
-                        hours: Number(labor.normHours) || 1,
-                        count: (Number(labor.normHours) || 1) * that.props.laborTimeMultiplier,
+                        count: labor.normHours,
+                        price: labor.price,
                         checked: true,
                         commentary: elem.comment,
                         status: elem.isCritical ? 3 : 2,
@@ -562,7 +533,6 @@ class ConfirmDiagnosticModal extends React.Component{
                 key:1,
                 id:null,
                 name: null,
-                hours: 1,
                 count: 1,
                 commentary: {commentary: "", positions: []},
                 checked: true,
@@ -573,7 +543,6 @@ class ConfirmDiagnosticModal extends React.Component{
                 key:this.state.servicesList[this.state.servicesList.length-1].key+1,
                 id: null,
                 name: null,
-                hours: 1,
                 count: 1,
                 commentary: {commentary: "", positions: [], problems: []},
                 checked: true

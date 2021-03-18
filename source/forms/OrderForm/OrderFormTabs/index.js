@@ -385,6 +385,7 @@ export default class OrderFormTabs extends React.PureComponent {
 							reloadOrderPageComponents={this.props.reloadOrderPageComponents}
 							action={this.state.action}
 							laborTimeMultiplier={laborTimeMultiplier}
+							normHourPrice={normHourPrice}
 						/>
 					</TabPane>
 				)}
