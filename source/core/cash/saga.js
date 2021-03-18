@@ -52,7 +52,8 @@ import {
     OPEN_SHIFT,
     CLOSE_SHIFT,
     SERVICE_INPUT,
-    FETCH_X_REPORT
+    FETCH_X_REPORT,
+    REGISTER_CASH_ORDER_IN_CASHDESK
 } from './duck';
 
 export function* openShiftSaga() {
@@ -351,6 +352,34 @@ export function* printCashOrdersSaga() {
     }
 }
 
+/**
+ * This saga cash order in cash desk by provided cashOrderId
+ */
+ export function* registerCashOrderInCashdeskSaga() {
+    while(true) {
+        const {payload: cashOrderId} = yield take(REGISTER_CASH_ORDER_IN_CASHDESK);
+
+        try{
+            yield call(
+                fetchAPI,
+                'POST',
+                `/cashdesk/sale_or_return`,
+                null,
+                {
+                    localNumber: cashOrderId
+                },
+                { handleErrorInternally: true }
+            );
+        } catch(err) {
+            notification.error({
+                message: err.response.message
+            });
+        }
+
+        yield put(fetchCashOrders());
+    }
+}
+
 export function* saga() {
     yield all([
         call(openShiftSaga),
@@ -365,6 +394,7 @@ export function* saga() {
         call(printCashOrdersSaga),
         call(fetchCashOrdersSaga),
         call(fetchAnalyticsSaga),
+        call(registerCashOrderInCashdeskSaga),
         takeLatest(SET_SEARCH_QUERY, handleCashOrdersSearchSaga),
     ]);
 }

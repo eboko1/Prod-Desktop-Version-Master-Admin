@@ -182,6 +182,17 @@ export function columnsConfig(props) {
                         className={ Styles.editIcon }
                     />
                 ) : null }
+                {
+                    (cashOrder.rst && !cashOrder.isRegisteredWithRst)
+                        ? (
+                            <Icon
+                                type='exclamation-circle'
+                                onClick={ () => props.onRegisterInCashdesk(cashOrder.id) }
+                                className={Styles.unregistredIcon}
+                            />
+                        )
+                        : null
+                }
             </>
         ),
     };

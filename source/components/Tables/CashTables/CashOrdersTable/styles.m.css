@@ -6,9 +6,15 @@
     font-size: 24px;
     color: var(--primary);
 }
+
 .editIcon {
     font-size: 24px;
     color: var(--secondary);
+}
+
+.unregistredIcon {
+    font-size: 24px;
+    color: red;
 }
 
 .breakWord {

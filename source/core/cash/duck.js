@@ -50,6 +50,8 @@ export const SERVICE_INPUT_SUCCESS = `${prefix}/SERVICE_INPUT_SUCCESS`;
 export const FETCH_X_REPORT = `${prefix}/FETCH_X_REPORT`; //Отримати xReport
 export const FETCH_X_REPORT_SUCCESS = `${prefix}/FETCH_X_REPORT_SUCCESS`;
 
+export const REGISTER_CASH_ORDER_IN_CASHDESK = `${prefix}/REGISTER_CASH_ORDER_IN_CASHDESK`;
+
 /**
  * Reducer
  * */
@@ -347,4 +349,9 @@ export const fetchXReport = (cashboxId) => ({
 
 export const fetchXReportSuccess = () => ({
     type: FETCH_X_REPORT_SUCCESS,
+});
+
+export const registerCashOrderInCashdesk = (cashOrderId) => ({
+    type: REGISTER_CASH_ORDER_IN_CASHDESK,
+    payload: cashOrderId
 });

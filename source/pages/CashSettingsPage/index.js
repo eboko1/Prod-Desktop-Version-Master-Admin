@@ -72,6 +72,7 @@ export default class CashSettingsPage extends Component {
 			modalProps,
 			modal
 		} = this.props;
+		
 		return (
 			<Layout
 				title={<FormattedMessage id='navigation.cash_settings' />}

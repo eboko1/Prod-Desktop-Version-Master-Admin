@@ -18,13 +18,13 @@ export class CashOrdersTable extends Component {
     _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
 
     render() {
-        const { cashOrders, cashOrdersFetching, totalCount, openPrint, openEdit, isMobile } = this.props;
+        const { cashOrders, cashOrdersFetching, totalCount, openPrint, openEdit, isMobile, onRegisterInCashdesk } = this.props;
 
         this.columns = columnsConfig({
             openPrint: openPrint,
             openEdit:  openEdit,
+            onRegisterInCashdesk,
             isMobile:  isMobile,
-            // cashOrderEntity: this.state.cashOrderEntity,
         });
 
         const pagination = {

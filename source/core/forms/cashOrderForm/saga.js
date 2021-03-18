@@ -11,7 +11,6 @@ import {
 import nprogress from 'nprogress';
 import { saveAs } from 'file-saver';
 import _ from 'lodash';
-import { notification } from 'antd';
 
 //proj
 import {
@@ -19,6 +18,7 @@ import {
     setCashOrderFetchingState,
     setClientOrdersFetchingState,
     setClientFetchingState,
+    registerCashOrderInCashdesk
 } from 'core/ui/duck';
 import { fetchCashOrders } from 'core/cash/duck';
 import { fetchAPI } from 'utils';
@@ -39,8 +39,8 @@ import {
     onChangeStoreDocSearchQuery,
     onChangeStoreDocSearchQueryRequest,
     onChangeStoreDocSearchQuerySuccess,
-    //
     onClientSelectSuccess,
+    //
     selectClient,
     selectClientOrdersFilters,
     selectSearchOrdersResultFilters,
@@ -52,8 +52,8 @@ import {
     fetchSelectedClientOrdersSuccess,
     fetchSearchOrderSuccess,
     fetchAnalyticsSuccess,
-    //
     printCashOrderSuccess,
+    //
     FETCH_CASH_ORDER_NEXT_ID,
     FETCH_CASH_ORDER_FORM,
     FETCH_ANALYTICS,
@@ -307,25 +307,8 @@ export function* createCashOrderSaga() {
 
             //If cashbox contains rst it must be registred in cashdesk if possible 
             if(isCashBoxRst && !payload.editMode ) {
-                try{
-                    yield call(
-                        fetchAPI,
-                        'POST',
-                        `/cashdesk/sale_or_return`,
-                        null,
-                        {
-                            localNumber: payload.id
-                        },
-                        { handleErrorInternally: true }
-                    );
-                } catch(err) {
-                    notification.error({
-                        message: err.response.message
-                    });
-                }
+                yield put(registerCashOrderInCashdesk(payload.id))
             }
-
-
 
             yield put(createCashOrderSuccess());
         } catch (error) {
@@ -368,6 +351,8 @@ export function* printCashOrderSaga() {
         }
     }
 }
+
+
 
 export function* saga() {
     yield all([
