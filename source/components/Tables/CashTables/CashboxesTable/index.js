@@ -58,18 +58,6 @@ export class CashboxesTable extends Component {
     render() {
         const { cashboxesFetching, cashboxes, onOpenServiceInputModal, onOpenCashOrderModal } = this.props;
 
-        //Temp
-        this.columns = columnsConfig({
-            deleteCashbox:      this.props.deleteCashbox,
-            formatMessage:      this.props.intl.formatMessage,
-            isCRUDForbidden:    false,
-            onOpenServiceInputModal: onOpenServiceInputModal,
-            onOpenCashOrderModal: onOpenCashOrderModal,
-            openShift: this.props.openShift,
-            closeShift: this.props.closeShift,
-            fetchXReport: this.props.fetchXReport,
-        });
-
         return (
             <Table
                 size="small"
