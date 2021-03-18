@@ -479,7 +479,7 @@ export function* createProductSaga() {
             );
             if(response.created && payload.barcode) {
                 yield fetchAPI('POST', 'barcodes', undefined, [{
-                    referenceId: response.id,
+                    referenceId: String(response.id),
                     table: 'STORE_PRODUCTS',
                     customCode: payload.barcode,
                 }])
