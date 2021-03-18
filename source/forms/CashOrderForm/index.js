@@ -419,15 +419,26 @@ export class CashOrderForm extends Component {
 
         return counterparty;
     };
-
+    
     _submit = event => {
         event.preventDefault();
-        const { form, createCashOrder, onCloseModal, editMode, fromOrder, fromStoreDoc, fetchOrder, fetchStoreDoc, fromClient } = this.props;
+        const {cashboxes, activeCashOrder, form, createCashOrder, onCloseModal, editMode, fromOrder, fromStoreDoc, fetchOrder, fetchStoreDoc, fromClient } = this.props;
 
         form.validateFields(async (err, values) => {
             if (_.has(err, "clientId") || _.has(err, "orderId") || _.has(err, "storeDocId")) {
                 this._handleErrorValidationPanel();
             }
+
+            console.log('cashBoxId: ',  values.cashBoxId, _.get(activeCashOrder, 'cashBoxId'));
+            console.log('cashboxes: ', cashboxes);
+
+            //Get currently used cashBox
+            const currentCashBox = values.cashBoxId
+                ? _.get(
+                    _.filter(cashboxes, (o) => o.id == values.cashBoxId)
+                    , '[0]'
+                )
+                : undefined;
 
             if (!err) {
                 const cashOrder = {
@@ -440,6 +451,8 @@ export class CashOrderForm extends Component {
                     storeDocId: values.hasOwnProperty("storeDocId")
                         ? values.storeDocId
                         : null,
+
+                    cashBox: currentCashBox, 
                     editMode,
                     ...values,
                 };
