@@ -59,7 +59,13 @@ export default {
             iconType: 'contacts',
             name:     'navigation.catalog',
             items:    [
-                
+                {
+                    key:      '/cash/settings',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_CASH),
+                    link: book.cashSettingsPage,
+                    name: 'navigation.cash_settings',
+                },
                 {
                     key:      '/clients',
                     link:     book.clients,
@@ -330,13 +336,6 @@ export default {
                         isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settings,
                     name: 'navigation.main_settings',
-                },
-                {
-                    key:      '/cash/settings',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_CATALOGUE_CASH),
-                    link: book.cashSettingsPage,
-                    name: 'navigation.cash_settings',
                 },
                 {
                     key:      '/storage',
