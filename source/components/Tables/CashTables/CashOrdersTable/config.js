@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import { Icon } from 'antd';
+import { Icon, Popconfirm } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
@@ -185,11 +185,15 @@ export function columnsConfig(props) {
                 {
                     (cashOrder.rst && !cashOrder.isRegisteredWithRst)
                         ? (
-                            <Icon
-                                type='exclamation-circle'
-                                onClick={ () => props.onRegisterInCashdesk(cashOrder.id) }
-                                className={Styles.unregistredIcon}
-                            />
+                            <Popconfirm
+                                title={ <FormattedMessage id='cash-table.confirm' />}
+                                onConfirm={() => props.onRegisterInCashdesk(cashOrder.id)}
+                            >
+                                <Icon
+                                    type='exclamation-circle'
+                                    className={Styles.unregistredIcon}
+                                />
+                            </Popconfirm>
                         )
                         : null
                 }
