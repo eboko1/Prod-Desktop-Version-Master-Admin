@@ -219,8 +219,6 @@ export class CashOrderForm extends Component {
             form: { getFieldValue, setFieldsValue },
         } = this.props;
 
-        console.log("Out: ", prevProps, this.props);
-
         //If order type or sum type was changed we have to update default analytics field value
         if(
             _.get(prevProps, 'fields.type.value') !== _.get(this.props, 'fields.type.value') ||
@@ -632,34 +630,16 @@ export class CashOrderForm extends Component {
         const cashOrderType = getFieldValue('type');
         const sumType = getFieldValue('sumType');
 
-        console.log("Here 1: ", cashOrderType, '\n\nsumType: ', sumType, '\n\ncashbox: ', cashbox);
-
         if(cashbox && cashbox.rst) {
+            this.setState({sumTupe: adjustmentSumTypes.DECREASE});
             (cashOrderType === cashOrderTypes.EXPENSE) && setFieldsValue({['type']: cashOrderTypes.INCOME});
-            // (sumType === adjustmentSumTypes.INCREASE) && setFieldsValue({[sumType]: adjustmentSumTypes.DECREASE});
             (sumType === adjustmentSumTypes.INCREASE) && this._setSumType(adjustmentSumTypes.DECREASE);
         }
-
-        console.log("Here 2: ", cashOrderType, '\n\nsumType: ', sumType, '\n\ncashbox: ', cashbox);
 
         this.forceUpdate();
     }
 
     _setSumType = (sumType) => {
-
-        //--------------
-        const {
-            form: {getFieldValue}
-        } = this.props;
-
-        const cashbox = this._getCurrentlySelectedCashbox();
-
-        const cashOrderType = getFieldValue('type');
-        const sumTypeOld = getFieldValue('sumType');
-
-        console.log("Here 2: ", cashOrderType, '\n\nsumTypeOld: ', sumTypeOld, '\n\ncashbox: ', cashbox, '\n\nNew sum Type:', sumType);
-
-        //-------------------
 
         this.setState(prevState => {
             this.props.form.setFieldsValue({
@@ -682,7 +662,6 @@ export class CashOrderForm extends Component {
     };
 
     _handleOrderSelection = order => {
-        console.log(order)
         this.props.form.setFieldsValue({
             orderId: order.id,
             clientId: order.clientId,
@@ -969,7 +948,7 @@ export class CashOrderForm extends Component {
                     <DecoratedRadio
                         field="sumType"
                         formItem
-                        fieldValue={_.get(this.props.fields,'sumType.value')}
+                        fieldValue={this.state.sumType}
                         getFieldDecorator={getFieldDecorator}
                         className={this._hiddenFormItemStyles(
                             this.state.isVisibleSumTypeRadio,

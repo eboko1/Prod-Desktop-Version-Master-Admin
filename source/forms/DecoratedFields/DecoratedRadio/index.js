@@ -25,6 +25,7 @@ export class DecoratedRadio extends React.PureComponent {
             onChange,
             buttonStyle,
             cnStyles,
+            fieldValue,
         } = this.props;
 
         const radio = getFieldDecorator(field, {
@@ -32,15 +33,31 @@ export class DecoratedRadio extends React.PureComponent {
             initialValue:  Boolean(initialValue),
             rules,
         })(
-            <Radio.Group
-                cnStyles={ cnStyles }
-                onChange={ onChange }
-                disabled={ disabled }
-                buttonStyle={ buttonStyle }
-                defaultValue={ initialValue }
-            >
-                { children }
-            </Radio.Group>,
+            //Bug fixing, filedValue must be ommited if it is undefine
+            fieldValue
+                ? (
+                    <Radio.Group
+                        cnStyles={ cnStyles }
+                        onChange={ onChange }
+                        disabled={ disabled }
+                        buttonStyle={ buttonStyle }
+                        defaultValue={ initialValue }
+                        value={ fieldValue }
+                    >
+                        { children }
+                    </Radio.Group>
+                )
+                : (
+                    <Radio.Group
+                        cnStyles={ cnStyles }
+                        onChange={ onChange }
+                        disabled={ disabled }
+                        buttonStyle={ buttonStyle }
+                        defaultValue={ initialValue }
+                    >
+                        { children }
+                    </Radio.Group>
+                )
         );
 
         return formItem ? (
