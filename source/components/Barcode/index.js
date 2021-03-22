@@ -265,7 +265,7 @@ export default class Barcode extends Component {
                             onPressEnter={()=>{
                                 if(scanedInputValue) {
                                     this.setState({
-                                        scanedCode: String(scanedInputValue).toUpperCase(),
+                                        scanedCode: String(scanedInputValue).replace(`${prefix}-${user.businessId}-`, '').toUpperCase(),
                                         scanedInputValue: undefined,
                                     })
                                 }
