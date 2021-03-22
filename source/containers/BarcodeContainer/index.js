@@ -119,17 +119,30 @@ export default class BarcodeContainer extends Component {
 
 	_setBarcode = async () => {
 		const { selectedRowId, table, inputCode } = this.state;
-		await fetchAPI('POST', 'barcodes', undefined, [{
-			referenceId: String(selectedRowId),
-			table,
-			customCode: inputCode,
-		}]);
-		this.setState({
-			inputCode : "",
-		})
-		notification.success({
-			message: `Штрих-код задан`,
-		});
+		try {
+			await fetchAPI(
+				'POST', 
+				'barcodes', 
+				undefined, 
+				[{
+					referenceId: String(selectedRowId),
+					table,
+					customCode: inputCode,
+				}],
+				{handleErrorInternally: true}
+			);
+			this.setState({
+				inputCode : "",
+			})
+			notification.success({
+				message: `Штрих-код задан`,
+			});
+		} catch(e) {
+			notification.error({
+				message: `Штрих-код уже задан`,
+			});
+		}
+		
 		this._hideModal();
 	}
 
