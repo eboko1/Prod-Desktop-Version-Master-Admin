@@ -67,8 +67,9 @@ export default class BarcodeContainer extends Component {
 			modalData = tableData.list.map((elem)=>{
 				return ({
 					id: elem.id,
+					displayId: elem.code,
 					name: elem.name,
-					additional: elem.code,
+					additional: elem.brand.name,
 				})
 			});
 		} else if(table == 'EMPLOYEES') {
@@ -76,8 +77,9 @@ export default class BarcodeContainer extends Component {
 			modalData = tableData.map((elem)=>{
 				return ({
 					id: elem.id,
-					name: `${elem.name} ${elem.surname}`,
-					additional: elem.phone,
+					displayId: `${elem.name} ${elem.surname}`,
+					name: elem.phone,
+					additional: elem.email,
 				})
 			});
 		} else if(table == 'CLIENTS_VEHICLES' && modalInput && modalInput.length > 2) {
@@ -87,8 +89,9 @@ export default class BarcodeContainer extends Component {
 					elem.vehicles.map((vehicle)=>{
 						modalData.push({
 							id: vehicle.id,
-							name: `${elem.name} ${elem.surname || ""}\n${elem.phones && elem.phones[0]}`,
-							additional: `${vehicle.make} ${vehicle.model} ${vehicle.modification}\n${vehicle.number}`,
+							displayId: `${elem.name} ${elem.surname || ""}\n${elem.phones && elem.phones[0]}`,
+							name: `${vehicle.make} ${vehicle.model} ${vehicle.modification}\n${vehicle.vin || ""}`,
+							additional: vehicle.number,
 						})
 					})
 				}
@@ -98,7 +101,7 @@ export default class BarcodeContainer extends Component {
 			modalData = tableData.orders.map((elem)=>{
 				return ({
 					id: elem.id,
-					displayId: elem.num,
+					displayId: `${elem.num}\n${moment(elem.createdDatetime).format('DD.MM.YYYY HH:mm')}`,
 					name: `${elem.clientName || ""} ${elem.clientSurname || ""}\n${elem.clientPhone || ""}`,
 					additional: `${elem.vehicleMakeName || ""} ${elem.vehicleModelName || ""}\n${elem.vehicleNumber || ""}`,
 				})
@@ -604,9 +607,9 @@ export default class BarcodeContainer extends Component {
 				<Modal
 					visible={modalVisible}
 					style={{
-						width: 'fit-content',
 						minWidth: 580,
 					}}
+					width={'fit-content'}
                     title={<FormattedMessage id="Список" />}
                     onCancel={this._hideModal}
 					onOk={confirmAction}
@@ -642,7 +645,19 @@ export default class BarcodeContainer extends Component {
 					<div>
 						<Table 
 							columns={this.columns}
-							dataSource={modalData}
+							dataSource={
+								modalInput 
+									? modalData.filter(({id, displayId, name, additional})=>{
+										const input = modalInput.toLowerCase();
+										return (
+											String(id).toLowerCase().replace(/\W/g, '').includes(input) ||
+											String(displayId).toLowerCase().replace(/\W/g, '').includes(input) ||
+											String(name).toLowerCase().replace(/\W/g, '').includes(input) ||
+											String(additional).toLowerCase().replace(/\W/g, '').includes(input)
+										)
+									})
+									: modalData
+							}
 							rowKey={'id'}
 							rowClassName={(record, index)=>{
 								if(record.id == selectedRowId) {
