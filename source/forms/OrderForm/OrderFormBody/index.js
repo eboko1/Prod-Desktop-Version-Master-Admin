@@ -401,7 +401,13 @@ export default class OrderFormBody extends Component {
                                 margin: "28px 0 0 10px",
                             }}
                             prefix={'CVH'}
-                            onConfirm={(code, prefix)=>{
+                            onConfirm={async (code, prefix, fullCode)=>{
+                                const barcodeData = await fetchAPI('GET', 'barcodes',{
+                                    barcode: fullCode,
+                                });
+                                if(barcodeData.length) {
+                                    const data = barcodeData[0];
+                                }
                                 setFieldsValue({searchClientQuery: `${prefix}-${code}`})
                             }}
                         /> 
