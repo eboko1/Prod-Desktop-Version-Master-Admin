@@ -122,8 +122,8 @@ const getActiveFieldsMap = activeCashOrder => {
 @injectIntl
 export class CashOrderForm extends Component {
     state = {
-        sumType: "increase", //This is used to define which input field is visible
-        sumTypeRadio: null, //Defines which type of input is now used(INCOME or EXPENSE)
+        sumType: "decrease", //This is used to define which input field is selected(default value)
+        isVisibleSumTypeRadio: null, //Defines if radio is vissible for selecting input type
         clientSearchType: "client",
         editing: false,
         errorValidationPanel: false,
@@ -199,7 +199,7 @@ export class CashOrderForm extends Component {
                 setFieldsValue({ [prevState.sumType]: null });
                 return {
                     sumType: modalProps.sumTypeStateVal,
-                    sumTypeRadio: modalProps.sumTypeRadioStateVal,
+                    isVisibleSumTypeRadio: modalProps.sumTypeRadioStateVal,
                 };
             });
         }
@@ -218,6 +218,8 @@ export class CashOrderForm extends Component {
             analytics,
             form: { getFieldValue, setFieldsValue },
         } = this.props;
+
+        console.log("Out: ", prevProps, this.props);
 
         //If order type or sum type was changed we have to update default analytics field value
         if(
@@ -263,7 +265,7 @@ export class CashOrderForm extends Component {
 
                 return {
                     sumType: getFieldValue("sumType"),
-                    sumTypeRadio: true,
+                    isVisibleSumTypeRadio: true,
                 };
             });
         }
@@ -366,21 +368,26 @@ export class CashOrderForm extends Component {
     };
 
     _setFormFields = (activeCashOrder) => {
+
+        const cashbox = this._getCurrentlySelectedCashbox();
+
         const { form } = this.props;
         const fieldsMap = getActiveFieldsMap(activeCashOrder);
         const counterparty = this._getActiveCounterpartyType();
         const normalizedDatetime = moment(fieldsMap.datetime);
-        const sumType = !_.isNil(fieldsMap.increase) ? "increase" : "decrease";
-        const sumTypeRadio = fieldsMap.type === cashOrderTypes.ADJUSTMENT;
+        const sumType = (!_.isNil(fieldsMap.increase) || (cashbox && cashbox.rst))
+            ? adjustmentSumTypes.DECREASE
+            : adjustmentSumTypes.INCREASE;
+        const isVisibleSumTypeRadio = fieldsMap.type === cashOrderTypes.ADJUSTMENT;
         const normalizedFieldsMap = {
             ...fieldsMap,
             sumType,
-            sumTypeRadio,
+            isVisibleSumTypeRadio,
             ...counterparty,
             datetime: normalizedDatetime,
         };
 
-        this.setState({ sumTypeRadio });
+        this.setState({ isVisibleSumTypeRadio });
         form.setFieldsValue(normalizedFieldsMap);
     };
 
@@ -428,9 +435,6 @@ export class CashOrderForm extends Component {
             if (_.has(err, "clientId") || _.has(err, "orderId") || _.has(err, "storeDocId")) {
                 this._handleErrorValidationPanel();
             }
-
-            console.log('cashBoxId: ',  values.cashBoxId, _.get(activeCashOrder, 'cashBoxId'));
-            console.log('cashboxes: ', cashboxes);
 
             //Get currently used cashBox
             const currentCashBox = values.cashBoxId
@@ -484,14 +488,12 @@ export class CashOrderForm extends Component {
             filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == cashOrderType));
         } else if(cashOrderType == cashOrderTypes.ADJUSTMENT) {
             //There are two cases for this type of cash order, and we have to return swapped values
-            const sumType = this.state.sumType || adjustmentSumTypes.INCOME; //Get field or its init value
+            const sumType = this.state.sumType || adjustmentSumTypes.INCREASE; //Get field or its init value
 
-            console.log("Sum type: ", sumType, '; fromField: ', getFieldValue('sumType'));
-
-            if(sumType == adjustmentSumTypes.INCOME) {
+            if(sumType == adjustmentSumTypes.INCREASE) {
                 // We have to retrun expense analytics only in this case
                 filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == cashOrderTypes.EXPENSE));
-            } else if(sumType == adjustmentSumTypes.EXPENSE) {
+            } else if(sumType == adjustmentSumTypes.DECREASE) {
                 //Return "income" analytics
                 filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == cashOrderTypes.INCOME));
             }
@@ -522,13 +524,58 @@ export class CashOrderForm extends Component {
     }
 
     /**
+     * Takes currently selected cashbox and retruns it
+     * @returns cashbox or undefined
+     */
+    _getCurrentlySelectedCashbox() {
+        const {
+            cashboxes, 
+            form: { getFieldValue }
+        } = this.props;
+
+        const cashBoxId = getFieldValue('cashBoxId');
+
+        //Get currently selected cashbox to know if we have to block some fields(for specific cashboxes)
+        const currentlySelectedCashbox = cashBoxId
+        ? _.get(
+            _.filter(cashboxes, (o) => o.id == cashBoxId)
+            , '[0]'
+        )
+        : undefined;
+
+        return currentlySelectedCashbox;
+    }
+
+    /** This method is used to set default sumtype based on currently selected cashbox. If cashbox contains rst, then we can't use INCREASE type*/
+    _setDefaultSumType() {
+        const {
+            form: { setFieldsValue }
+        } = this.props;
+
+        const cashbox = this._getCurrentlySelectedCashbox();
+
+        return this.setState(prevState => {
+            setFieldsValue({ [prevState.sumType]: null });
+
+            return {
+                sumType: (cashbox && cashbox.rst)
+                    ? adjustmentSumTypes.DECREASE
+                    : adjustmentSumTypes.INCREASE,
+                isVisibleSumTypeRadio: true,
+            };
+        });
+    }
+
+    /**
      * This is called when cash order type is changed.
      * This method is used to update some field value when new order type was selected.
      * "tag" field is out of date, analyticsUniqueId is used instead as it is separate module
      * @param {*} value Selected cash order type
      */
     _selectOrderType = value => {
-        const {form: { setFieldsValue }} = this.props;
+        const {
+            form: { setFieldsValue }
+        } = this.props;
 
         switch (value) {
             case cashOrderTypes.INCOME:
@@ -536,8 +583,8 @@ export class CashOrderForm extends Component {
                     setFieldsValue({ [prevState.sumType]: null });
 
                     return {
-                        sumType: "increase",
-                        sumTypeRadio: false,
+                        sumType: adjustmentSumTypes.INCREASE,
+                        isVisibleSumTypeRadio: false,
                     };
                 });
 
@@ -546,21 +593,22 @@ export class CashOrderForm extends Component {
                     setFieldsValue({ [prevState.sumType]: null });
 
                     return {
-                        sumType: "decrease",
-                        sumTypeRadio: false,
+                        sumType: adjustmentSumTypes.DECREASE,
+                        isVisibleSumTypeRadio: false,
                     };
                 });
 
             case cashOrderTypes.ADJUSTMENT:
                 if (!this.props.editMode) {
-                    return this.setState(prevState => {
-                        setFieldsValue({ [prevState.sumType]: null });
+                    // return this.setState(prevState => {
+                    //     setFieldsValue({ [prevState.sumType]: null });
 
-                        return {
-                            sumType: "increase",
-                            sumTypeRadio: true,
-                        };
-                    });
+                    //     return {
+                    //         sumType: "increase",
+                    //         isVisibleSumTypeRadio: true,
+                    //     };
+                    // });
+                    this._setDefaultSumType();
                 }
                 break;
 
@@ -569,8 +617,49 @@ export class CashOrderForm extends Component {
         }
     };
 
-    _setSumType = e => {
-        const sumType = e.target.value;
+    /**
+     * This method is triggered when cash box is selected.
+     * If some fields have to be changed if this field is trigerred we can do it from here,
+     * for example we must set other fields(valid) if new cash box contains rst
+     */
+    _onSelectCashbox = () => {
+        const {
+            form: {setFieldsValue, getFieldValue}
+        } = this.props;
+
+        const cashbox = this._getCurrentlySelectedCashbox();
+
+        const cashOrderType = getFieldValue('type');
+        const sumType = getFieldValue('sumType');
+
+        console.log("Here 1: ", cashOrderType, '\n\nsumType: ', sumType, '\n\ncashbox: ', cashbox);
+
+        if(cashbox && cashbox.rst) {
+            (cashOrderType === cashOrderTypes.EXPENSE) && setFieldsValue({['type']: cashOrderTypes.INCOME});
+            // (sumType === adjustmentSumTypes.INCREASE) && setFieldsValue({[sumType]: adjustmentSumTypes.DECREASE});
+            (sumType === adjustmentSumTypes.INCREASE) && this._setSumType(adjustmentSumTypes.DECREASE);
+        }
+
+        console.log("Here 2: ", cashOrderType, '\n\nsumType: ', sumType, '\n\ncashbox: ', cashbox);
+
+        this.forceUpdate();
+    }
+
+    _setSumType = (sumType) => {
+
+        //--------------
+        const {
+            form: {getFieldValue}
+        } = this.props;
+
+        const cashbox = this._getCurrentlySelectedCashbox();
+
+        const cashOrderType = getFieldValue('type');
+        const sumTypeOld = getFieldValue('sumType');
+
+        console.log("Here 2: ", cashOrderType, '\n\nsumTypeOld: ', sumTypeOld, '\n\ncashbox: ', cashbox, '\n\nNew sum Type:', sumType);
+
+        //-------------------
 
         this.setState(prevState => {
             this.props.form.setFieldsValue({
@@ -701,6 +790,17 @@ export class CashOrderForm extends Component {
             clientOrderField: true,
         });
 
+    /**This method retruns cashOrder types which can be selected for current type of cashbox*/
+    _getAvailableCashOrderTypes() {
+        const cashbox = this._getCurrentlySelectedCashbox(); //Current cashbox
+
+        const availableTypes = (cashbox && cashbox.rst)
+            ? _.omit(cashOrderTypes, [cashOrderTypes.EXPENSE])
+            : cashOrderTypes;
+
+        return availableTypes;
+    }
+
     render() {
         const {
             cashboxes,
@@ -711,7 +811,6 @@ export class CashOrderForm extends Component {
             form: { getFieldDecorator, getFieldValue },
 
             analyticsFetchingState,
-            analytics,
             activeCashOrder,
             onOpenAnalyticsModal,
             fromOrder,
@@ -721,6 +820,7 @@ export class CashOrderForm extends Component {
         } = this.props;
 
         const cashOrderId = getFieldValue("id");
+        const cashbox = this._getCurrentlySelectedCashbox();
 
         //https://github.com/ant-design/ant-design/issues/8880#issuecomment-402590493
         // getFieldDecorator("clientId", { initialValue: void 0 });
@@ -766,7 +866,7 @@ export class CashOrderForm extends Component {
                         onSelect={this._selectOrderType}
                         disabled={printMode}
                     >
-                        {Object.values(cashOrderTypes).map(type => (
+                        {Object.values(this._getAvailableCashOrderTypes()).map(type => (
                             <Option value={type} key={type}>
                                 {formatMessage({
                                     id: `cash-order-form.type.${type}`,
@@ -794,6 +894,7 @@ export class CashOrderForm extends Component {
                         getPopupContainer={trigger => trigger.parentNode}
                         formItemLayout={formItemLayout}
                         className={Styles.styledFormItem}
+                        onSelect={this._onSelectCashbox}
                         disabled={printMode}
                     >
                         {cashboxes.map(({ id, name }) => (
@@ -868,15 +969,16 @@ export class CashOrderForm extends Component {
                     <DecoratedRadio
                         field="sumType"
                         formItem
+                        fieldValue={_.get(this.props.fields,'sumType.value')}
                         getFieldDecorator={getFieldDecorator}
                         className={this._hiddenFormItemStyles(
-                            this.state.sumTypeRadio,
+                            this.state.isVisibleSumTypeRadio,
                         )}
-                        onChange={e => this._setSumType(e)}
+                        onChange={e => this._setSumType(e.target.value)}
                         initialValue={this.state.sumType}
                         disabled={printMode}
                     >
-                        <Radio value="increase">
+                        <Radio value="increase" disabled={(cashbox && cashbox.rst)}>
                             {formatMessage({
                                 id: "cash-order-form.increase",
                             })}
@@ -1009,7 +1111,7 @@ export class CashOrderForm extends Component {
                                                 fromOrder,
                                                 cashOrderEntity: activeCashOrder,
                                                 sumTypeStateVal: this.state.sumType,
-                                                sumTypeRadioStateVal: this.state.sumTypeRadio
+                                                sumTypeRadioStateVal: this.state.isVisibleSumTypeRadio
                                             });
                                         }}
                                     >
