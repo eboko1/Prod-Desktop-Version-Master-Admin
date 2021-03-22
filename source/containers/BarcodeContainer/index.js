@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { Button, Input, Modal, Icon, Table, notification } from "antd";
 import { permissions, isForbidden, fetchAPI } from "utils";
+import moment from "moment";
 import { withRouter } from 'react-router';
 
 // proj
@@ -43,6 +44,9 @@ export default class BarcodeContainer extends Component {
 			{
                 key: 'id',
                 dataIndex: 'id',
+				render: (id, row) => {
+					return row.displayId || id
+				}
             },
 			{
                 key: 'name',
@@ -94,8 +98,19 @@ export default class BarcodeContainer extends Component {
 			modalData = tableData.orders.map((elem)=>{
 				return ({
 					id: elem.id,
-					name: `${elem.num}\n${elem.clientName || ""} ${elem.clientSurname || ""}\n${elem.clientPhone || ""}`,
+					displayId: elem.num,
+					name: `${elem.clientName || ""} ${elem.clientSurname || ""}\n${elem.clientPhone || ""}`,
 					additional: `${elem.vehicleMakeName || ""} ${elem.vehicleModelName || ""}\n${elem.vehicleNumber || ""}`,
+				})
+			});
+		} else if(table == 'STORE_DOCS') {
+			const tableData = await fetchAPI('GET', `store_docs?types=["INCOME"]&documentTypes=["SUPPLIER"]&contexts=["STOCK"]&status=NEW`);
+			modalData = tableData.list.map((elem)=>{
+				return ({
+					id: elem.id,
+					displayId: elem.documentNumber,
+					name: moment(elem.createdDatetime).format('DD.MM.YYYY HH:mm'),
+					additional: `${elem.counterpartBusinessSupplierName || ""}`,
 				})
 			});
 		}
@@ -151,7 +166,38 @@ export default class BarcodeContainer extends Component {
 		const barcodeData = await fetchAPI('GET', 'barcodes',{
 			barcode: inputCode,
 		});
-		return barcodeData;
+		return barcodeData.length ? barcodeData[0] : undefined;
+	}
+
+	_createOrder = async () => {
+		const { history, user } = this.props;
+		const { selectedRowId } = this.state;
+		const payload = {};
+		const barcodeData = await this._getByBarcode();
+		if(barcodeData) {
+			const vehicle = await fetchAPI('GET', `clients/vehicles/${barcodeData.referenceId}`);
+			const client = await fetchAPI('GET', `clients/${vehicle.clientId}`);
+
+			const response = await fetchAPI('POST', `orders`, null, {
+				clientId: vehicle.clientId,
+				clientVehicleId: vehicle.id,
+				duration: 0.5,
+				clientPhone: client.phones[0],
+				stationLoads: [{
+					beginDatetime: moment().startOf('hour').toISOString(),
+					duration: 0.5,
+					status: "TO_DO",
+				}],
+				status: 'not_complete',
+				managerId: user.id,
+				beginDatetime: moment().startOf('hour').toISOString(),
+			});
+			if(response.created) {
+				history.push({
+					pathname: `${book.order}/${response.created[0].id}`,
+				});
+			}
+		}
 	}
 
 	_addToOrder = async () => {
@@ -164,17 +210,26 @@ export default class BarcodeContainer extends Component {
 		};
 		let activeTab;
 		const barcodeData = await this._getByBarcode();
-		if(barcodeData.length) {
-			const data = barcodeData[0];
-			if(data.table == 'STORE_PRODUCTS') {
+		if(barcodeData) {
+			if(barcodeData.table == 'STORE_PRODUCTS') {
+
+				const product = await fetchAPI('GET', `store_products/${barcodeData.referenceId}`);
+				console.log(product);
 				activeTab = 'details';
 				payload.details.push({
-					productId: data.referenceId,
+					productId: product.id,
+					storeGroupId: product.groupId,
+					name: product.name,
+					productCode: product.code,
+					supplierBrandId: product.brandId,
+					supplierId: product.brand.supplierId,
+					count: 1,
+					price: 0,
 				})
-			} else if(data.table == 'LABORS') {
+			} else if(barcodeData.table == 'LABORS') {
 				activeTab = 'services';
 				payload.services.push({
-					serviceId: data.referenceId,
+					serviceId: barcodeData.referenceId,
 				})
 			}
 
@@ -190,25 +245,9 @@ export default class BarcodeContainer extends Component {
 		const warehouses = await fetchAPI('GET', `warehouses`);
 		const barcodeData = await this._getByBarcode();
 		console.log(warehouses);
-		if(barcodeData.length) {
-			const product = barcodeData[0];
+		if(barcodeData) {
 			let payload = {}
-			if(action == 'RECIVE') {
-				payload = {
-					status: "DONE",
-					type: "INCOME",
-					documentType: "SUPPLIER",
-					payUntilDatetime: null,
-					docProducts:[
-						{
-							productId: product.referenceId,
-							quantity: 1,
-							stockPrice: 0,
-						}
-					],
-					warehouseId: warehouses.find((elem)=>elem.attribute == "MAIN").id,
-				};
-			} else if(action == 'TO_TOOL') {
+			if(action == 'TO_TOOL') {
 				payload = {
 					status: "DONE",
 					type: "EXPENSE",
@@ -216,7 +255,7 @@ export default class BarcodeContainer extends Component {
 					payUntilDatetime: null,
 					docProducts:[
 						{
-							productId: product.referenceId,
+							productId: barcodeData.referenceId,
 							quantity: 1,
 							stockPrice: 0,
 						}
@@ -232,7 +271,7 @@ export default class BarcodeContainer extends Component {
 					payUntilDatetime: null,
 					docProducts:[
 						{
-							productId: product.referenceId,
+							productId: barcodeData.referenceId,
 							quantity: 1,
 							stockPrice: 0,
 						}
@@ -257,6 +296,18 @@ export default class BarcodeContainer extends Component {
 		}
 	}
 
+	_addToStoreDoc = async () => {
+		const { history } = this.props;
+		const { selectedRowId } = this.state;
+		const barcodeData = await this._getByBarcode();
+		if(barcodeData) {
+			history.push({
+				pathname: `${book.storageDocument}/${selectedRowId}`,
+				productId: barcodeData.referenceId,
+			});
+		}
+	}
+
 	componentDidUpdate(prevProps, prevState) {
 		const { modalInput, table } = this.state;
 		if(table == 'CLIENTS_VEHICLES' && modalInput && modalInput.length > 2 && prevState.modalInput != modalInput) {
@@ -269,7 +320,7 @@ export default class BarcodeContainer extends Component {
     render() {
         const { user, intl: { formatMessage }, history } = this.props;
 		const { inputCode, modalInput, modalVisible, confirmAction, modalData, selectedRowId } = this.state;
-		const isValidCode = Boolean(inputCode) && (/\w+-\d+\-\d+/).test(inputCode);
+		const isValidCode = Boolean(inputCode) && (/\w+-\d+\-\w+/).test(inputCode);
 		const prefix = inputCode.slice(0, 3);
 		const isOrder = isValidCode && prefix == 'MRD' && inputCode.length == 15,
 			  isStoreProduct = isValidCode && prefix == 'STP',
@@ -364,37 +415,24 @@ export default class BarcodeContainer extends Component {
 						table: 'CLIENTS_VEHICLES',
 						onClick: async () => {
 							const barcodeData = await this._getByBarcode();
-							if(barcodeData.length) {
+							if(barcodeData) {
 								const client = await fetchAPI(
-									'GET', `clients/vehicles/${barcodeData[0].referenceId}`,
+									'GET', `clients/vehicles/${barcodeData.referenceId}`,
 									null,
 									null,
 									{ handleErrorInternally: true },
 								);
-								console.log(barcodeData, client);
 								if(client) {
-									history.push(`${book.client}/${client.id}`);
+									history.push(`${book.client}/${client.clientId}`);
 								}
 							}
 							
 						},
         			},
         			{
-        				title: '!!! Создать н/з',
+        				title: 'Создать н/з',
         				disabled: !isVehicle,
-						onClick: async () => {
-							const barcodeData = await this._getByBarcode();
-							if(barcodeData.length) {
-								const client = await fetchAPI(
-									'GET', `clients/vehicles/${barcodeData[0].referenceId}`,
-									null,
-									null,
-									{ handleErrorInternally: true },
-								);
-								console.log(barcodeData, client);
-							}
-							
-						},
+						onClick: this._createOrder,
         			},
         		]
         	},
@@ -406,28 +444,29 @@ export default class BarcodeContainer extends Component {
         				disabled: !isStoreProduct,
 						onClick: async () => {
 							const barcodeData = await this._getByBarcode();
-							if(barcodeData.length) {
+							if(barcodeData) {
 								history.push({
 									pathname: book.products,
 									state: {
-										productId: barcodeData[0].referenceId,
+										productId: barcodeData.referenceId,
 									}
 								});
 							}
-							
 						},
         			},
         			{
-        				title: '!!! Добавить в н/з',
+        				title: 'Добавить в н/з',
         				disabled: !isStoreProduct,
 						table: 'ORDERS',
 						onClick: this._showModal,
 						confirmAction: this._addToOrder,
         			},
-        			{
-        				title: '!!! Принять на склад',
+					{
+        				title: 'Принять на склад',
         				disabled: !isStoreProduct,
-						onClick: ()=>this._productStorageOperation('RECIVE'),
+						table: 'STORE_DOCS',
+						onClick: this._showModal,
+						confirmAction: this._addToStoreDoc,
         			},
         			{
         				title: 'Выдать в цех',
@@ -452,11 +491,11 @@ export default class BarcodeContainer extends Component {
 						table: 'LABORS',
 						onClick: async () => {
 							const barcodeData = await this._getByBarcode();
-							if(barcodeData.length) {
+							if(barcodeData) {
 								history.push({
 									pathname: book.laborsPage,
 									state: {
-										laborId: barcodeData[0].referenceId,
+										laborId: barcodeData.referenceId,
 									}
 								});
 							}

@@ -704,13 +704,12 @@ export default class LaborsPage extends Component {
 
     componentDidMount() {
         const { location } = this.props;
-        console.log(this);
-        this.fetchData();
         if(location.state && location.state.laborId) {
             this.setState({
                 filterCode: location.state.laborId,
             })
         }
+        this.fetchData();
     }
 
     render() {
