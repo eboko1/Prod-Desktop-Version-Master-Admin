@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Tabs, Icon, Button } from 'antd';
 import _ from 'lodash';
+import { withRouter } from 'react-router';
 
 // proj
 import { MODALS } from 'core/modals/duck';
@@ -38,6 +39,7 @@ function hideTasks(orderTasks, managerId) {
 	return newOrderTasks;
 }
 
+@withRouter
 @injectIntl
 export default class OrderFormTabs extends React.PureComponent {
 	/* eslint-disable complexity */
@@ -157,6 +159,18 @@ export default class OrderFormTabs extends React.PureComponent {
 		if (prevState.action) {
 			this.setState({ action: undefined });
 		}
+	}
+
+	componentDidMount() {
+		const { location, showCahOrderModal } = this.props;
+		if(location.state && location.state.activeTab) {
+            this.setState({
+                activeKey: location.state.activeTab,
+            })
+        }
+		if(location.state && location.state.openCashOrderModal) {
+            showCahOrderModal();
+        }
 	}
 
 	render() {
