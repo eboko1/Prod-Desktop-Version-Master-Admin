@@ -28,6 +28,7 @@ const mapDispatchToProps = {
 export default class BarcodeContainer extends Component {
 	constructor(props) {
         super(props);
+		
         this.state = {
             inputCode: "",
 			modalInput: "",
