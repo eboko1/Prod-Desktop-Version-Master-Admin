@@ -816,7 +816,7 @@ class StorageDocumentPage extends Component {
         const { id, location } = this.props;
         
         if(this._isMounted) {
-            if(this._isMounted && location.state && location.state.showForm) {
+            if(location.state && location.state.showForm) {
                 const { formData } = location.state || {};
                 this.updateFormData(location.state.formData);
             }

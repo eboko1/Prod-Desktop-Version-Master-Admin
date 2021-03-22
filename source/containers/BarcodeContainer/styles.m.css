@@ -42,3 +42,14 @@
     white-space: normal;
     height: 100%;
 }
+
+.modalInput {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 0 18px;
+}
+
+.selectedRow {
+    background-color: var(--db_reserve);
+}
