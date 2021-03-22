@@ -47,14 +47,19 @@ const INCOME = 'INCOME',
       TOOL = 'TOOL',
       REPAIR_AREA= 'REPAIR_AREA';
 
+
+@withRouter
 @withReduxForm({
     name: "storageDocumentForm",
 })
 @injectIntl
 class StorageDocumentForm extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
+            modalProductId: undefined,
             modalVisible: false,
             editKey: undefined,
             clientSearchValue: "",
@@ -74,37 +79,10 @@ class StorageDocumentForm extends Component {
             barcode: barcode,
         });
         if(response && response.length && response[0].table == 'STORE_PRODUCTS') {
-            const { list } = await fetchAPI('GET', 'store_products');
-            const detail = list.find( (elem) => elem.id == response[0].referenceId );
-            if(detail) {
-                const {
-                    id,
-                    brand,
-                    code,
-                    name,
-                    stockPrice,
-                    priceGroup,
-                    quantity,
-                    tradeCode,
-                } = detail;
-                await this.props.addDocProduct({
-                    productId: id,
-                    detailCode: code,
-                    brandName: brand.name,
-                    brandId: brand.id,
-                    tradeCode: tradeCode,
-                    detailName: name,
-                    stockPrice: Number(stockPrice),
-                    sellingPrice: Number(stockPrice * priceGroup.multiplier),
-                    quantity: quantity,
-                    sum: quantity*stockPrice,
-                });
-                await this.editProduct(this.props.formData.docProducts.length-1)
-            } else {
-                notification.warning({
-                    message: 'Код не найден',
-                });
-            }
+            this.setState({
+                modalProductId: response[0].referenceId,
+                modalVisible: true,
+            })
         } else {
             notification.warning({
                 message: 'Код не найден',
@@ -132,6 +110,7 @@ class StorageDocumentForm extends Component {
             modalVisible: false,
             warning: false,
             editKey: undefined,
+            modalProductId: undefined,
         })
     }
 
@@ -164,11 +143,20 @@ class StorageDocumentForm extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
+        const { location } = this.props;
+        
         this.getClientOption();
+        if(this._isMounted && location.productId) {
+            this.setState({
+                modalProductId: location.productId,
+                modalVisible: true,
+            })
+        }
     }
  
     render() {
-        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo, warning } = this.state;
+        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo, warning, modalProductId } = this.state;
         const {
             id,
             addDocProduct,
@@ -668,6 +656,7 @@ class StorageDocumentForm extends Component {
                         user={user}
                         sellingPrice={type == EXPENSE}
                         maxOrdered={type == ORDER && documentType == ADJUSTMENT}
+                        modalProductId={ modalProductId }
                     /> 
                 : null}
             </div>
@@ -1001,7 +990,7 @@ class AddProductModal extends React.Component {
         });
     }
 
-    getStorageProducts() {
+    getStorageProducts = async () => {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/store_products?all=true`;
@@ -1117,7 +1106,7 @@ class AddProductModal extends React.Component {
     }
 
     getProductId(detailCode, brandId, productId) {
-        const { storageProducts, storageBalance, detailName, quantity, tradeCode } = this.state;
+        const { storageProducts, storageBalance, detailName, quantity, detailCode: stateDetailCode } = this.state;
         var storageProduct;
         if(productId) {
             storageProduct = storageProducts.find((elem)=>elem.id==productId);
@@ -1134,6 +1123,7 @@ class AddProductModal extends React.Component {
             storageBalance[6].count = storageProduct.max;
             storageBalance[7].count = storageProduct.quantity;
             this.setState({
+                detailCode: stateDetailCode || storageProduct.code,
                 groupId: storageProduct.groupId,
                 productId: storageProduct.id,
                 detailName: storageProduct.name,
@@ -1165,11 +1155,6 @@ class AddProductModal extends React.Component {
             })
             return false;
         }
-    }
-
-    componentDidMount() {
-        this.getStoreGroups();
-        this.getStorageProducts();
     }
 
     confirmAlertModal(productData) {
@@ -1317,10 +1302,10 @@ class AddProductModal extends React.Component {
         this.props.hideModal();
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
+        const { product, modalProductId } = this.props;
         if(!prevProps.visible && this.props.visible) {
             this.getStorageProducts();
-            const { product } = this.props;
             if(product) {
                 this.setState({
                     editMode: true,
@@ -1336,8 +1321,19 @@ class AddProductModal extends React.Component {
                     ordersAppurtenancies: product.ordersAppurtenancies,
                     sellingPrice: product.sellingPrice,
                 })
+            } else if(modalProductId) {
+                this.getProductId(undefined, undefined, modalProductId);
             }
         }
+        if(modalProductId && !prevState.storageProducts.length && this.state.storageProducts.length) {
+            this.getProductId(undefined, undefined, modalProductId);
+        }
+    }
+
+    componentDidMount() {
+        this.getStoreGroups();
+        this.getStorageProducts();
+        
     }
 
     selectProduct = (productId) => {
