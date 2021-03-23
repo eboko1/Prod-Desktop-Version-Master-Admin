@@ -8,6 +8,7 @@ export { SuppliersTable } from './SuppliersTable';
 //Reports
 export { ReportOrdersTable } from './ReportTables/ReportOrdersTable'
 export { ReportLoadKPITable} from './ReportTables/ReportLoadKPITable';
+export { ReportCashOrdersLogsTable } from './ReportTables/ReportCashOrdersLogsTable';
 
 export { CashboxesTable } from './CashTables/CashboxesTable';
 export { CashOrdersTable } from './CashTables/CashOrdersTable';

@@ -288,12 +288,19 @@ export default {
                 },
                 {
                     key:      '/report/cash_flow',
-                    disabled: false,
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_REPORT_PROFIT_FROM_BUSINESSES) &&
                         !isAdmin(user),
                     link: book.reportCashFlow,
                     name: 'navigation.report_cash_flow',
+                },
+                {
+                    key:      '/report/cash_orders_logs',
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.ACCESS_REPORT_PROFIT_FROM_BUSINESSES) &&
+                    //     !isAdmin(user),
+                    link: book.reportCashOrdersLogs,
+                    name: 'navigation.report_cash_orders_logs',
                 },
             ],
         },
