@@ -503,8 +503,8 @@ class StorageDocumentPage extends Component {
             return response.json()
         })
         .then(function (warehouses) {
-            const type = that.props.location.state && that.props.location.state.formData.type;
-            const documentType = that.props.location.state && that.props.location.state.formData.documentType;
+            const type = that.props.location.state && that.props.location.state.formData && that.props.location.state.formData.type;
+            const documentType = that.props.location.state && that.props.location.state.formData && that.props.location.state.formData.documentType;
             var mainWarehouseId, reserveWarehouseId, toolWarehouseId, repairAreaWarehouseId;
             warehouses.map((warehouse)=>{
                 switch(warehouse.attribute) {

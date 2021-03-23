@@ -16,7 +16,7 @@ import {
     DecoratedTextArea,
 } from "forms/DecoratedFields";
 import book from "routes/book";
-import { permissions, isForbidden } from "utils";
+import { permissions, isForbidden, fetchAPI } from "utils";
 import { VehicleLocationModal } from "modals";
 import { Barcode } from "components";
 
@@ -401,8 +401,16 @@ export default class OrderFormBody extends Component {
                                 margin: "28px 0 0 10px",
                             }}
                             prefix={'CVH'}
-                            onConfirm={(code, prefix)=>{
-                                setFieldsValue({searchClientQuery: `${prefix}-${code}`})
+                            onConfirm={async (code, prefix, fullCode)=>{
+                                const barcodeData = await fetchAPI('GET', 'barcodes',{
+                                    barcode: fullCode,
+                                });
+                                if(barcodeData.length) {
+                                    const data = await fetchAPI('GET', `clients/vehicles/${barcodeData[0].referenceId}`);
+                                    setFieldsValue({searchClientQuery: data.vehicleVin || data.vehicleNumber});
+                                } else {
+                                    setFieldsValue({searchClientQuery: fullCode});
+                                }
                             }}
                         /> 
                     </>

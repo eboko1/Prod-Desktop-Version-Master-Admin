@@ -51,5 +51,7 @@
 }
 
 .selectedRow {
-    background-color: var(--db_reserve);
+    background-color: var(--db_reserve);    
+    color: var(--text);
+    font-weight: 400;
 }
