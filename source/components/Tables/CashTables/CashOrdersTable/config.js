@@ -186,7 +186,7 @@ export function columnsConfig(props) {
                                 >
                                     <Icon
                                         type='exclamation-circle'
-                                        className={Styles.unregistredIcon}
+                                        className={Styles.unregisteredIcon}
                                     />
                                 </Popconfirm>
                                 <Icon

@@ -12,9 +12,13 @@
     color: var(--secondary);
 }
 
-.unregistredIcon, .sendSMS, .sendMail {
+.unregisteredIcon, .sendSMS, .sendMail {
     font-size: 24px;
     color: black;
+}
+
+.unregisteredCashOrder {
+    background-color: rgba(255, 102, 102, 0.4);
 }
 
 .breakWord {

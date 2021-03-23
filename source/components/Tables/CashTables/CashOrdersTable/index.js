@@ -50,6 +50,12 @@ export class CashOrdersTable extends Component {
                 locale={ {
                     emptyText: <FormattedMessage id='no_data' />,
                 } }
+                rowClassName={(record) => {
+                    //Change style if cash order was registred with rst(fiscal number) and its registration failed
+                    return (record.rst && !record.isRegisteredWithRst)
+                        ? Styles.unregisteredCashOrder
+                        : void 0;
+                }}
                 scroll={ !isMobile && { x: 1000 } }
                 rowKey={ record => record.id }
             />
