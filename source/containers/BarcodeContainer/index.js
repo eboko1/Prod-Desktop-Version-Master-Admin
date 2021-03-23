@@ -70,6 +70,7 @@ export default class BarcodeContainer extends Component {
 					displayId: elem.code,
 					name: elem.name,
 					additional: elem.brand.name,
+					barcode: elem.barcode,
 				})
 			});
 		} else if(table == 'EMPLOYEES') {
@@ -80,6 +81,7 @@ export default class BarcodeContainer extends Component {
 					displayId: `${elem.name} ${elem.surname}`,
 					name: elem.phone,
 					additional: elem.email,
+					barcode: elem.barcode,
 				})
 			});
 		} else if(table == 'CLIENTS_VEHICLES' && modalInput && modalInput.length > 2) {
@@ -92,6 +94,7 @@ export default class BarcodeContainer extends Component {
 							displayId: `${elem.name} ${elem.surname || ""}\n${elem.phones && elem.phones[0]}`,
 							name: `${vehicle.make} ${vehicle.model} ${vehicle.modification}\n${vehicle.vin || ""}`,
 							additional: vehicle.number,
+							barcode: vehicle.barcode,
 						})
 					})
 				}
@@ -104,6 +107,7 @@ export default class BarcodeContainer extends Component {
 					displayId: `${elem.num}\n${moment(elem.createdDatetime).format('DD.MM.YYYY HH:mm')}`,
 					name: `${elem.clientName || ""} ${elem.clientSurname || ""}\n${elem.clientPhone || ""}`,
 					additional: `${elem.vehicleMakeName || ""} ${elem.vehicleModelName || ""}\n${elem.vehicleNumber || ""}`,
+					barcode: elem.barcode,
 				})
 			});
 		} else if(table == 'STORE_DOCS') {
@@ -114,6 +118,7 @@ export default class BarcodeContainer extends Component {
 					displayId: elem.documentNumber,
 					name: moment(elem.createdDatetime).format('DD.MM.YYYY HH:mm'),
 					additional: `${elem.counterpartBusinessSupplierName || ""}`,
+					barcode: elem.barcode,
 				})
 			});
 		}
@@ -647,13 +652,14 @@ export default class BarcodeContainer extends Component {
 							columns={this.columns}
 							dataSource={
 								modalInput 
-									? modalData.filter(({id, displayId, name, additional})=>{
+									? modalData.filter(({id, displayId, name, additional, barcode})=>{
 										const input = modalInput.toLowerCase();
 										return (
 											String(id).toLowerCase().replace(/\W/g, '').includes(input) ||
 											String(displayId).toLowerCase().replace(/\W/g, '').includes(input) ||
 											String(name).toLowerCase().replace(/\W/g, '').includes(input) ||
-											String(additional).toLowerCase().replace(/\W/g, '').includes(input)
+											String(additional).toLowerCase().replace(/\W/g, '').includes(input) ||
+											String(barcode).toLowerCase().includes(input)
 										)
 									})
 									: modalData
