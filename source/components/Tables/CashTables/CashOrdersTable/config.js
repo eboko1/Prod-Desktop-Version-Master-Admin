@@ -183,6 +183,8 @@ export function columnsConfig(props) {
                                 <Popconfirm
                                     title={ <FormattedMessage id='cash-table.confirm' />}
                                     onConfirm={() => props.onRegisterInCashdesk(cashOrder.id)}
+                                    okText={ <FormattedMessage id='yes' /> }
+                                    cancelText={ <FormattedMessage id='no' />}
                                 >
                                     <Icon
                                         type='exclamation-circle'
