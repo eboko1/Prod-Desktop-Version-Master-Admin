@@ -165,11 +165,42 @@ export function columnsConfig(props) {
         width:  'auto',
     };
 
+    const rstCodeCol = {
+        title:     'PPO',
+        dataIndex: 'fiscalNumber',
+        width:  'auto',
+    };
+
     const actionsCol = {
         key:    'actions',
         width:  'auto',
         render: (key, cashOrder) => (
             <>
+                {
+                    (cashOrder.rst && !cashOrder.isRegisteredWithRst)
+                        ? (
+                            <div>
+                                <Popconfirm
+                                    title={ <FormattedMessage id='cash-table.confirm' />}
+                                    onConfirm={() => props.onRegisterInCashdesk(cashOrder.id)}
+                                >
+                                    <Icon
+                                        type='exclamation-circle'
+                                        className={Styles.unregistredIcon}
+                                    />
+                                </Popconfirm>
+                                <Icon
+                                    type="message"
+                                    className={ Styles.sendSMS }
+                                />
+                                <Icon
+                                    type="mail"
+                                    className={ Styles.sendMail }
+                                />
+                            </div>
+                        )
+                        : null
+                }
                 <Icon
                     type='printer'
                     onClick={ () => props.openPrint(cashOrder) }
@@ -182,21 +213,6 @@ export function columnsConfig(props) {
                         className={ Styles.editIcon }
                     />
                 ) : null }
-                {
-                    (cashOrder.rst && !cashOrder.isRegisteredWithRst)
-                        ? (
-                            <Popconfirm
-                                title={ <FormattedMessage id='cash-table.confirm' />}
-                                onConfirm={() => props.onRegisterInCashdesk(cashOrder.id)}
-                            >
-                                <Icon
-                                    type='exclamation-circle'
-                                    className={Styles.unregistredIcon}
-                                />
-                            </Popconfirm>
-                        )
-                        : null
-                }
             </>
         ),
     };
@@ -241,6 +257,7 @@ export function columnsConfig(props) {
         sumCol,
         analyticsCol,
         descriptionCol,
+        rstCodeCol,
         actionsCol,
     ] : [
         dateCol,
