@@ -38,6 +38,7 @@ export default class BarcodeContainer extends Component {
 			table: undefined,
 			modalData: [],
 			selectedRowId : undefined,
+			tables: [],
         };
 
 		this.columns = [
@@ -169,19 +170,19 @@ export default class BarcodeContainer extends Component {
 		this._hideModal();
 	}
 
-	_getByBarcode = async () => {
+	_getByBarcode = async (tbl) => {
 		const { inputCode } = this.state;
 		const barcodeData = await fetchAPI('GET', 'barcodes',{
 			barcode: inputCode,
 		});
-		return barcodeData.length ? barcodeData[0] : undefined;
+		return barcodeData.find(({table})=>table == tbl);
 	}
 
 	_createOrder = async () => {
 		const { history, user } = this.props;
 		const { selectedRowId } = this.state;
 		const payload = {};
-		const barcodeData = await this._getByBarcode();
+		const barcodeData = await this._getByBarcode('CLIENTS_VEHICLES');
 		if(barcodeData) {
 			const vehicle = await fetchAPI('GET', `clients/vehicles/${barcodeData.referenceId}`);
 			const client = await fetchAPI('GET', `clients/${vehicle.clientId}`);
@@ -208,7 +209,7 @@ export default class BarcodeContainer extends Component {
 		}
 	}
 
-	_addToOrder = async () => {
+	_addToOrder = async (table) => {
 		const { history } = this.props;
 		const { selectedRowId } = this.state;
 		const payload = {
@@ -217,7 +218,7 @@ export default class BarcodeContainer extends Component {
 			services: [],
 		};
 		let activeTab;
-		const barcodeData = await this._getByBarcode();
+		const barcodeData = await this._getByBarcode(table);
 		if(barcodeData) {
 			if(barcodeData.table == 'STORE_PRODUCTS') {
 
@@ -251,7 +252,7 @@ export default class BarcodeContainer extends Component {
 
 	_productStorageOperation = async (action) => {
 		const warehouses = await fetchAPI('GET', `warehouses`);
-		const barcodeData = await this._getByBarcode();
+		const barcodeData = await this._getByBarcode('STORE_PRODUCTS');
 		console.log(warehouses);
 		if(barcodeData) {
 			let payload = {}
@@ -307,7 +308,7 @@ export default class BarcodeContainer extends Component {
 	_addToStoreDoc = async () => {
 		const { history } = this.props;
 		const { selectedRowId } = this.state;
-		const barcodeData = await this._getByBarcode();
+		const barcodeData = await this._getByBarcode('STORE_PRODUCTS');
 		if(barcodeData) {
 			history.push({
 				pathname: `${book.storageDocument}/${selectedRowId}`,
@@ -327,14 +328,14 @@ export default class BarcodeContainer extends Component {
 	
     render() {
         const { user, intl: { formatMessage }, history } = this.props;
-		const { inputCode, modalInput, modalVisible, confirmAction, modalData, selectedRowId } = this.state;
+		const { inputCode, modalInput, modalVisible, confirmAction, modalData, selectedRowId, tables } = this.state;
 		const isValidCode = Boolean(inputCode) && (/\w+-\d+\-\w+/).test(inputCode);
 		const prefix = inputCode.slice(0, 3);
 		const isOrder = isValidCode && prefix == 'MRD' && inputCode.length == 15,
-			  isStoreProduct = isValidCode && prefix == 'STP',
-			  isVehicle = isValidCode && prefix == 'CVH',
-			  isEmployee = isValidCode && prefix == 'EML',
-			  isLabor = isValidCode && prefix == 'LBS';
+			  isStoreProduct = isValidCode && prefix == 'STP' || tables.includes("STORE_PRODUCTS"),
+			  isVehicle = isValidCode && prefix == 'CVH' || tables.includes("CLIENTS_VEHICLES"),
+			  isEmployee = isValidCode && prefix == 'EML' || tables.includes("EMPLOYEES"),
+			  isLabor = isValidCode && prefix == 'LBS' || tables.includes("LABORS");
 
         const pageData = [
         	{
@@ -422,7 +423,7 @@ export default class BarcodeContainer extends Component {
         				disabled: !isVehicle,
 						table: 'CLIENTS_VEHICLES',
 						onClick: async () => {
-							const barcodeData = await this._getByBarcode();
+							const barcodeData = await this._getByBarcode('CLIENTS_VEHICLES');
 							if(barcodeData) {
 								const client = await fetchAPI(
 									'GET', `clients/vehicles/${barcodeData.referenceId}`,
@@ -451,7 +452,7 @@ export default class BarcodeContainer extends Component {
         				title: 'Открыть карточку',
         				disabled: !isStoreProduct,
 						onClick: async () => {
-							const barcodeData = await this._getByBarcode();
+							const barcodeData = await this._getByBarcode('STORE_PRODUCTS');
 							if(barcodeData) {
 								history.push({
 									pathname: book.products,
@@ -467,7 +468,7 @@ export default class BarcodeContainer extends Component {
         				disabled: !isStoreProduct,
 						table: 'ORDERS',
 						onClick: this._showModal,
-						confirmAction: this._addToOrder,
+						confirmAction: ()=>this._addToOrder('STORE_PRODUCTS'),
         			},
 					{
         				title: 'Принять на склад',
@@ -498,7 +499,7 @@ export default class BarcodeContainer extends Component {
         				disabled: !isLabor,
 						table: 'LABORS',
 						onClick: async () => {
-							const barcodeData = await this._getByBarcode();
+							const barcodeData = await this._getByBarcode('LABORS');
 							if(barcodeData) {
 								history.push({
 									pathname: book.laborsPage,
@@ -515,7 +516,7 @@ export default class BarcodeContainer extends Component {
         				disabled: !isLabor,
 						table: 'ORDERS',
 						onClick: this._showModal,
-						confirmAction: this._addToOrder,
+						confirmAction: ()=>this._addToOrder('LABORS'),
         			},
         			{
         				title: 'X Начать в текущем н/з',
@@ -559,13 +560,31 @@ export default class BarcodeContainer extends Component {
 	            <div className={Styles.container}>
 	                <div className={Styles.barcodeInput}>
 	                	<Input
+							allowClear
 	                		placeholder={formatMessage({id: 'Введите или отсканируйте штрих-код'})}
 							value={inputCode}
-							onChange={({target})=>{
+							onChange={async ({target})=>{
 								this.setState({
 									inputCode: target.value,
-								})
+								});
+								if(target.value) {
+									const barcodes = await fetchAPI('GET', 'barcodes',{
+										barcode: target.value,
+									});
+									const tables = barcodes.map(({table})=>table);
+									this.setState({
+										tables: tables,
+									});
+								}
 							}}
+							onPressEnter={()=>{
+                                if(scanedInputValue) {
+                                    this.setState({
+                                        scanedCode: String(scanedInputValue).replace(`${prefix}-${user.businessId}-`, '').toUpperCase(),
+                                        scanedInputValue: undefined,
+                                    })
+                                }
+                            }}
 	                	/>
                         <Barcode
                             iconStyle={{
@@ -626,6 +645,7 @@ export default class BarcodeContainer extends Component {
 				>
 					<div className={Styles.modalInput}>
 						<Input
+							autoFocus
 							placeholder={formatMessage({id: 'Поиск по полям'})}
 							value={modalInput}
 							onChange={({target})=>{
