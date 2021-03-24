@@ -2,10 +2,13 @@
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import styled from 'styled-components';
-import { Button, notification, Modal, Icon } from 'antd';
+import { Button, notification, Modal, Icon, DatePicker } from 'antd';
+import { saveAs } from 'file-saver';
+import moment from 'moment';
 
 // proj
 import { Layout } from 'commons';
+import { fetchAPI } from 'utils';
 import { StoreBalanceTable, StorageBalanceTotals, WarehouseSelect } from 'components';
 
 export const StorageBalancePage = injectIntl(({intl}) => {
@@ -79,6 +82,8 @@ class PrintModal extends React.Component{
             dataSource: [],
             fetched: false,
             warehouseId: undefined,
+            startDate: undefined,
+            endDate: undefined,
         }
     }
 
@@ -90,8 +95,34 @@ class PrintModal extends React.Component{
         })
     }
 
+    handleOk = async () => {
+        const { warehouseId, startDate, endDate } = this.state;
+        const response = await fetchAPI(
+            'GET',
+            'store_doc_products/movement_report',
+            {
+                warehouseId,
+                startDate: moment(startDate).format('YYYY-MM-DD'),
+                endDate: moment(endDate).format('YYYY-MM-DD'),
+                date: moment(startDate).format('YYYY-MM-DD'),
+            },
+            null,
+            { rawResponse: true },
+        );
+
+        const reportFile = await response.blob();
+
+        const contentDispositionHeader = response.headers.get(
+            'content-disposition',
+        );
+        const fileName = contentDispositionHeader.match(
+            /^attachment; filename="(.*)"/,
+        )[ 1 ];
+        await saveAs(reportFile, fileName);
+    }
+
     render() { 
-        const { visible, dataSource, filterValue } = this.state;
+        const { visible } = this.state;
 
         return (
             <>
@@ -106,13 +137,22 @@ class PrintModal extends React.Component{
                 <Modal
                     width="460px"
                     visible={visible}
-                    title={<FormattedMessage id="report" />}
+                    title={<FormattedMessage id="Печать" />}
                     onCancel={this.handleCancel}
+                    onOk={this.handleOk}
                     destroyOnClose
+                    zIndex={230}
                 >
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                    }}>
+                        <DatePicker onChange={(startDate) => this.setState({warehouseId: startDate})} />
+                        <DatePicker onChange={(endDate) => this.setState({warehouseId: endDate})} />
+                    </div>
                     <WarehouseSelect 
-                        //style={{margin: '0 0 0 8px'}}
-                        onChange={ (warehouseId) => this.setState({warehouseId: warehouseId})}
+                        style={{width: '100%'}}
+                        onChange={ (warehouseId) => this.setState({warehouseId: warehouseId}) }
                     />
                 </Modal>
             </>
