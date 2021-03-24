@@ -122,7 +122,7 @@ const getActiveFieldsMap = activeCashOrder => {
 @injectIntl
 export class CashOrderForm extends Component {
     state = {
-        sumType: "decrease", //This is used to define which input field is selected(default value)
+        sumType: adjustmentSumTypes.INCREASE, //This is used to define which input field is selected(default value)
         isVisibleSumTypeRadio: null, //Defines if radio is vissible for selecting input type
         clientSearchType: "client",
         editing: false,
@@ -630,10 +630,14 @@ export class CashOrderForm extends Component {
         const cashOrderType = getFieldValue('type');
         const sumType = getFieldValue('sumType');
 
+        //If cashbox contains rst we have to change to some default fileds
         if(cashbox && cashbox.rst) {
             this.setState({sumTupe: adjustmentSumTypes.DECREASE});
-            (cashOrderType === cashOrderTypes.EXPENSE) && setFieldsValue({['type']: cashOrderTypes.INCOME});
-            (sumType === adjustmentSumTypes.INCREASE) && this._setSumType(adjustmentSumTypes.DECREASE);
+            if(cashOrderType === cashOrderTypes.EXPENSE) {
+                 setFieldsValue({['type']: cashOrderTypes.INCOME});
+                 this._setSumType(adjustmentSumTypes.INCREASE)
+            }
+            (cashOrderType === cashOrderTypes.ADJUSTMENT && sumType === adjustmentSumTypes.INCREASE) && this._setSumType(adjustmentSumTypes.DECREASE);
         }
 
         this.forceUpdate();
