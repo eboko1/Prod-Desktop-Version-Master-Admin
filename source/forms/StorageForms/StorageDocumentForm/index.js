@@ -74,15 +74,36 @@ class StorageDocumentForm extends Component {
         this.editProduct = this.editProduct.bind(this);
     }
 
-    _findByBarcode = async (barcode) => {
-        const response = await fetchAPI('GET', 'barcodes', {
-            barcode: barcode,
-        });
-        if(response && response.length && response[0].table == 'STORE_PRODUCTS') {
-            this.setState({
-                modalProductId: response[0].referenceId,
-                modalVisible: true,
-            })
+    _addByBarcode = async (barcode) => {
+        const barcodeData = await fetchAPI('GET', 'barcodes',{
+			barcode: barcode,
+		});
+		const productBarcode = barcodeData.find(({table})=>table == 'STORE_PRODUCTS');
+
+        if(productBarcode) {
+            const detail = await fetchAPI('GET', `store_products/${productBarcode.referenceId}`);
+            const {
+                id,
+                brand,
+                code,
+                name,
+                stockPrice,
+                priceGroup,
+                quantity,
+                tradeCode,
+            } = detail;
+            await this.props.addDocProduct({
+                productId: id,
+                detailCode: code,
+                brandName: brand.name,
+                brandId: brand.id,
+                tradeCode: tradeCode,
+                detailName: name,
+                stockPrice: Number(stockPrice || 0),
+                sellingPrice: Number((stockPrice || 0) * (priceGroup.multiplier || 1)),
+                quantity: quantity,
+                sum: quantity*stockPrice,
+            });
         } else {
             notification.warning({
                 message: 'Код не найден',
@@ -635,7 +656,7 @@ class StorageDocumentForm extends Component {
                     type={type}
                     sellingPrice={type == EXPENSE}
                     user={user}
-                    findByBarcode={(code)=>this._findByBarcode(code)}
+                    addByBarcode={(code)=>this._addByBarcode(code)}
                 />
                 { !disabled ? 
                     <AddProductModal
@@ -685,8 +706,9 @@ class DocProductsTable extends React.Component {
                                         disabled={this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_STOCK)}
                                         prefix={'STP'}
                                         onConfirm={(barcode, pefix, fullCode)=>{
-                                            this.props.findByBarcode(fullCode);
+                                            this.props.addByBarcode(fullCode);
                                         }}
+                                        multipleMode
                                     />
                                 </div>
                             ),
