@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Button } from 'antd';
+import { v4 } from 'uuid';
 
 // proj
 import { Layout, Paper } from 'commons';
@@ -81,15 +82,14 @@ export default class CashSettingsPage extends Component {
 					<Button
 						type='primary'
 						onClick={() => this.onAddCashboxModal()}
+						key={v4()}
 						disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_CASH_CRUD)}
 					>
 						<FormattedMessage id='add' />
 					</Button>,
 				]}
 			>
-				<AddCashboxModal/>
-				<ServiceInputModal />
-
+				
 				<Paper>
 					<CashboxesTable
 						onOpenServiceInputModal={this.onOpenServiceInputModal}
@@ -97,6 +97,8 @@ export default class CashSettingsPage extends Component {
 					/>
 				</Paper>
 
+				<AddCashboxModal/>
+				<ServiceInputModal />
 				{this.state.cashOrderModalMounted ? (
                     <CashOrderModal
                         resetModal={this.onCloseCashOrderModal}

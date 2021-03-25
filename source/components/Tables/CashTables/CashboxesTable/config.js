@@ -37,17 +37,20 @@ export function columnsConfig(props) {
 	const numberCol = {
 		title: '№',
 		dataIndex: 'id',
+		key: 'numberCol',
 		width: '5%',
 	};
 	const nameCol = {
 		title: <FormattedMessage id='cash-table.name' />,
 		dataIndex: 'name',
+		key: 'nameCol',
 		width: '15%',
 	};
 
 	const typeCol = {
 		title: <FormattedMessage id='cash-table.type' />,
 		dataIndex: 'type',
+		key: 'typeCol',
 		width: '10%',
 		render: (type) => (
 			<FormattedMessage id={`cash-creation-form.type-${type}`} />
@@ -57,12 +60,14 @@ export function columnsConfig(props) {
 	const fiscalNumberCol = {
 		title: <FormattedMessage id='cash-table.fiscalNumber' />,
 		dataIndex: 'fiscalNumber',
+		key: 'fiscalNumberCol',
 		width: '20%',
 	};
 
 	const infoCol = {
 		title: <FormattedMessage id='cash-table.description' />,
 		dataIndex: 'description',
+		key: 'infoCol',
 		width: '20%',
 	};
 

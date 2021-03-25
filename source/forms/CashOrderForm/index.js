@@ -598,14 +598,6 @@ export class CashOrderForm extends Component {
 
             case cashOrderTypes.ADJUSTMENT:
                 if (!this.props.editMode) {
-                    // return this.setState(prevState => {
-                    //     setFieldsValue({ [prevState.sumType]: null });
-
-                    //     return {
-                    //         sumType: "increase",
-                    //         isVisibleSumTypeRadio: true,
-                    //     };
-                    // });
                     this._setDefaultSumType();
                 }
                 break;

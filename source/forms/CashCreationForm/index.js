@@ -100,6 +100,7 @@ export class CashCreationForm extends Component {
 						<DecoratedInput
 							field='fiscalNumber'
 							formItem
+							disabled={true}//Disable to prevent prod from coccupting(temp)
 							rules={[
 								{
 									len: 10,

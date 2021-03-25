@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import { Table } from "antd";
-import { v4 } from 'uuid'
+import { v4 } from 'uuid';
 
 // proj
 import { permissions, isForbidden } from 'utils';
