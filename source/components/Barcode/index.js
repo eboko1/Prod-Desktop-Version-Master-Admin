@@ -204,7 +204,7 @@ export default class Barcode extends Component {
     }
 
     render() {
-        const { displayBarcode, iconStyle, button, disabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon } = this.props;
+        const { displayBarcode, iconStyle, button, disabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon, multipleMode } = this.props;
         const { visible, scanedCode, scanedInputValue } = this.state;
         const id = this.id;
         const iconType = enableScanIcon && !value
@@ -317,12 +317,15 @@ export default class Barcode extends Component {
                                     scanedInputValue: replaceLocation(target.value, true),
                                 })
                             }}
-                            onPressEnter={()=>{
+                            onPressEnter={async ()=>{
                                 if(scanedInputValue) {
-                                    this.setState({
+                                    await this.setState({
                                         scanedCode: String(scanedInputValue).replace(`${prefix}-${user.businessId}-`, '').toUpperCase(),
                                         scanedInputValue: undefined,
                                     })
+                                }
+                                if(multipleMode) {
+                                    this.handleOk();
                                 }
                             }}
                             ref={node => (this.input = node)}
