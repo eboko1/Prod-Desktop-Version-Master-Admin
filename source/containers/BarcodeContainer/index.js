@@ -592,11 +592,18 @@ export default class BarcodeContainer extends Component {
 								fontSize: 24,
                             }}
 							value={inputCode}
-							onConfirm={(value)=>
+							onConfirm={async (value)=>{
 								this.setState({
 									inputCode: value,
 								})
-							}
+								const barcodes = await fetchAPI('GET', 'barcodes',{
+									barcode: value,
+								});
+								const tables = barcodes.map(({table})=>table);
+								this.setState({
+									tables: tables,
+								});
+							}}
                         />
 	                </div>
 	                <div className={Styles.buttonBlockWrapp}>
