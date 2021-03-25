@@ -149,7 +149,7 @@ export default class Barcode extends Component {
     }
 
     handleOk = async () => {
-        const { referenceId, table, onConfirm, prefix, user } = this.props;
+        const { referenceId, table, onConfirm, prefix, user, multipleMode } = this.props;
         const { scanedCode } = this.state;
         const fullPrefix = `${prefix}-${user.businessId}`;
         const codeWithPrefix = `${fullPrefix}-${scanedCode}`
@@ -184,7 +184,14 @@ export default class Barcode extends Component {
         } else if(onConfirm) {
             onConfirm(scanedCode, fullPrefix, codeWithPrefix);
         }
-        this.handleCancel();
+        if(multipleMode) {
+            this.setState({
+                scanedInputValue: undefined,
+                scanedCode: undefined,
+            })
+        } else {
+            this.handleCancel();
+        }
     }
 
     componentDidMount() {

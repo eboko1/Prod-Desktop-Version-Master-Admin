@@ -75,20 +75,33 @@ class DetailsTable extends Component {
                                 <div className={Styles.headerActions}>
                                     <Barcode
                                         button
+                                        multipleMode
                                         prefix={'STP'}
                                         onConfirm={async (code, pref, fullCode) => {
-                                            const response = await fetchAPI('GET', 'barcodes', {
+                                            const barcodeData = await fetchAPI('GET', 'barcodes',{
                                                 barcode: fullCode,
                                             });
-
-                                            console.log(response);
-                                            
-                                            if(response && response.length && response[0].table == 'STORE_PRODUCTS') {
-                                                const { dataSource } = this.state;
-                                                const lastDetail = dataSource[dataSource.length - 1];
-                                                lastDetail.barcode = fullCode;
-                                                lastDetail.referenceId = response[0].referenceId;
-                                                this.showDetailProductModal(lastDetail.key)                                            
+                                            const productBarcode = barcodeData.find(({table})=>table == 'STORE_PRODUCTS');
+                                    
+                                            if(productBarcode) {
+                                                const payload = {
+                                                    insertMode: true,
+                                                    details: [],
+                                                    services: [],
+                                                };
+                                                const product = await fetchAPI('GET', `store_products/${productBarcode.referenceId}`);
+                                                payload.details.push({
+                                                    productId: product.id,
+                                                    storeGroupId: product.groupId,
+                                                    name: product.name,
+                                                    productCode: product.code,
+                                                    supplierBrandId: product.brandId,
+                                                    supplierId: product.brand.supplierId,
+                                                    count: 1,
+                                                    price: 0,
+                                                })
+                                                await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
+                                                await this.updateDataSource();
                                             } else {
                                                 notification.warning({
                                                     message: 'Код не найден',
