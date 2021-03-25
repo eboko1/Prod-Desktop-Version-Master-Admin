@@ -99,6 +99,7 @@ class DetailsTable extends Component {
                                                     supplierId: product.brand.supplierId,
                                                     count: 1,
                                                     price: 0,
+                                                    purchasePrice: 0,
                                                 })
                                                 await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
                                                 await this.updateDataSource();
