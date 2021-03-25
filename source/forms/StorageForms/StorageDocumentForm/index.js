@@ -47,14 +47,19 @@ const INCOME = 'INCOME',
       TOOL = 'TOOL',
       REPAIR_AREA= 'REPAIR_AREA';
 
+
+@withRouter
 @withReduxForm({
     name: "storageDocumentForm",
 })
 @injectIntl
 class StorageDocumentForm extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
+            modalProductId: undefined,
             modalVisible: false,
             editKey: undefined,
             clientSearchValue: "",
@@ -69,10 +74,14 @@ class StorageDocumentForm extends Component {
         this.editProduct = this.editProduct.bind(this);
     }
 
-    _findByBarcode = async (barcode) => {
-        const { list } = await fetchAPI('GET', 'store_products', {query: barcode});
-        const detail = list.find( (elem) => elem.barcode == barcode );
-        if(detail) {
+    _addByBarcode = async (barcode) => {
+        const barcodeData = await fetchAPI('GET', 'barcodes',{
+			barcode: barcode,
+		});
+		const productBarcode = barcodeData.find(({table})=>table == 'STORE_PRODUCTS');
+
+        if(productBarcode) {
+            const detail = await fetchAPI('GET', `store_products/${productBarcode.referenceId}`);
             const {
                 id,
                 brand,
@@ -90,17 +99,17 @@ class StorageDocumentForm extends Component {
                 brandId: brand.id,
                 tradeCode: tradeCode,
                 detailName: name,
-                stockPrice: Number(stockPrice),
-                sellingPrice: Number(stockPrice * priceGroup.multiplier),
+                stockPrice: Number(stockPrice || 0),
+                sellingPrice: Number((stockPrice || 0) * (priceGroup.multiplier || 1)),
                 quantity: quantity,
                 sum: quantity*stockPrice,
             });
-            await this.editProduct(this.props.formData.docProducts.length-1)
         } else {
             notification.warning({
                 message: 'Код не найден',
             });
         }
+        
     }
 
     editProduct(key, warning=false) {
@@ -122,6 +131,7 @@ class StorageDocumentForm extends Component {
             modalVisible: false,
             warning: false,
             editKey: undefined,
+            modalProductId: undefined,
         })
     }
 
@@ -154,11 +164,20 @@ class StorageDocumentForm extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
+        const { location } = this.props;
+        
         this.getClientOption();
+        if(this._isMounted && location.productId) {
+            this.setState({
+                modalProductId: location.productId,
+                modalVisible: true,
+            })
+        }
     }
  
     render() {
-        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo, warning } = this.state;
+        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo, warning, modalProductId } = this.state;
         const {
             id,
             addDocProduct,
@@ -637,7 +656,7 @@ class StorageDocumentForm extends Component {
                     type={type}
                     sellingPrice={type == EXPENSE}
                     user={user}
-                    findByBarcode={(code)=>this._findByBarcode(code)}
+                    addByBarcode={(code)=>this._addByBarcode(code)}
                 />
                 { !disabled ? 
                     <AddProductModal
@@ -658,6 +677,7 @@ class StorageDocumentForm extends Component {
                         user={user}
                         sellingPrice={type == EXPENSE}
                         maxOrdered={type == ORDER && documentType == ADJUSTMENT}
+                        modalProductId={ modalProductId }
                     /> 
                 : null}
             </div>
@@ -685,9 +705,10 @@ class DocProductsTable extends React.Component {
                                         button
                                         disabled={this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_STOCK)}
                                         prefix={'STP'}
-                                        onConfirm={(barcode)=>{
-                                            this.props.findByBarcode(barcode);
+                                        onConfirm={(barcode, pefix, fullCode)=>{
+                                            this.props.addByBarcode(fullCode);
                                         }}
+                                        multipleMode
                                     />
                                 </div>
                             ),
@@ -991,7 +1012,7 @@ class AddProductModal extends React.Component {
         });
     }
 
-    getStorageProducts() {
+    getStorageProducts = async () => {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__ + `/store_products?all=true`;
@@ -1107,7 +1128,7 @@ class AddProductModal extends React.Component {
     }
 
     getProductId(detailCode, brandId, productId) {
-        const { storageProducts, storageBalance, detailName, quantity, tradeCode } = this.state;
+        const { storageProducts, storageBalance, detailName, quantity, detailCode: stateDetailCode } = this.state;
         var storageProduct;
         if(productId) {
             storageProduct = storageProducts.find((elem)=>elem.id==productId);
@@ -1124,6 +1145,7 @@ class AddProductModal extends React.Component {
             storageBalance[6].count = storageProduct.max;
             storageBalance[7].count = storageProduct.quantity;
             this.setState({
+                detailCode: stateDetailCode || storageProduct.code,
                 groupId: storageProduct.groupId,
                 productId: storageProduct.id,
                 detailName: storageProduct.name,
@@ -1155,11 +1177,6 @@ class AddProductModal extends React.Component {
             })
             return false;
         }
-    }
-
-    componentDidMount() {
-        this.getStoreGroups();
-        this.getStorageProducts();
     }
 
     confirmAlertModal(productData) {
@@ -1307,10 +1324,10 @@ class AddProductModal extends React.Component {
         this.props.hideModal();
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
+        const { product, modalProductId } = this.props;
         if(!prevProps.visible && this.props.visible) {
             this.getStorageProducts();
-            const { product } = this.props;
             if(product) {
                 this.setState({
                     editMode: true,
@@ -1326,8 +1343,19 @@ class AddProductModal extends React.Component {
                     ordersAppurtenancies: product.ordersAppurtenancies,
                     sellingPrice: product.sellingPrice,
                 })
+            } else if(modalProductId) {
+                this.getProductId(undefined, undefined, modalProductId);
             }
         }
+        if(modalProductId && !prevState.storageProducts.length && this.state.storageProducts.length) {
+            this.getProductId(undefined, undefined, modalProductId);
+        }
+    }
+
+    componentDidMount() {
+        this.getStoreGroups();
+        this.getStorageProducts();
+        
     }
 
     selectProduct = (productId) => {

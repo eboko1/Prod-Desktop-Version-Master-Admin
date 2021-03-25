@@ -949,9 +949,10 @@ class DetailProductModal extends React.Component{
         this.servicesOptions = [...servicesOptions];
     }
 
-    _findByBarcode = async (barcode) => {
-        const { list } = await fetchAPI('GET', 'store_products', {query: barcode});
-        const detail = list.find( (elem) => elem.barcode == barcode );
+    _findByBarcode = async (barcode, referenceId) => {
+        const { list } = await fetchAPI('GET', 'store_products');
+        console.lo
+        const detail = list.find( (elem) => elem.id == referenceId );
         if(detail) {
             const {
                 id,
@@ -998,7 +999,7 @@ class DetailProductModal extends React.Component{
             })
             if(!editing) {
                 if(detail.barcode) {
-                    this._findByBarcode(detail.barcode);
+                    this._findByBarcode(detail.barcode, detail.referenceId);
                 }
             } else {
                 this.getDefaultValues(detail.storeGroupId);

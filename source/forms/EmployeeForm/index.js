@@ -75,6 +75,7 @@ export class EmployeeForm extends Component {
 
 	render() {
 		const { adding, initialEmployee, saveEmployee, fireEmployee } = this.props;
+		console.log(this);
 		const { getFieldDecorator, getFieldValue } = this.props.form;
 		const { formatMessage } = this.props.intl;
 		const managerEnabled = Boolean(getFieldValue('managerEnabled'));
@@ -116,41 +117,43 @@ export class EmployeeForm extends Component {
 						/>
 					</Col>
 				</Row>
-				<FormItem
-					label={<FormattedMessage id='navigation.barcode' />}
-					{...formItemLayout}
-					className={Styles.selectMargin}
-				>
-					<DecoratedInput
-						field='barcode'
-						placeholder={formatMessage({
-							id: 'navigation.barcode',
-						})}
-						disabled
-						formItemLayout={formItemLayout}
-						initialValue={_.get(initialEmployee, 'barcode')}
-						getPopupContainer={(trigger) => trigger.parentNode}
-						getFieldDecorator={getFieldDecorator}
-						style={{ 
-							minWidth: 240,
-							color: 'var(--text)'
-						}}
-					/>
-					<Barcode
-						value={_.get(initialEmployee, 'barcode')}
-						referenceId={_.get(initialEmployee, 'id')}
-						table={'EMPLOYEES'}
-						prefix={'EML'}
-						iconStyle={{
-							fontSize: 22,
-							marginLeft: 8,
-							padding: '4px 0',
-						}}
-						onConfirm={()=>{
-							saveEmployee()
-						}}
-					/>
-				</FormItem>
+				{!adding && 
+					<FormItem
+						label={<FormattedMessage id='navigation.barcode' />}
+						{...formItemLayout}
+						className={Styles.selectMargin}
+					>
+						<DecoratedInput
+							field='barcode'
+							placeholder={formatMessage({
+								id: 'navigation.barcode',
+							})}
+							disabled
+							formItemLayout={formItemLayout}
+							initialValue={_.get(initialEmployee, 'barcode')}
+							getPopupContainer={(trigger) => trigger.parentNode}
+							getFieldDecorator={getFieldDecorator}
+							style={{ 
+								minWidth: 240,
+								color: 'var(--text)'
+							}}
+						/>
+						<Barcode
+							value={_.get(initialEmployee, 'barcode')}
+							referenceId={_.get(initialEmployee, 'id')}
+							table={'EMPLOYEES'}
+							prefix={'EML'}
+							iconStyle={{
+								fontSize: 22,
+								marginLeft: 8,
+								padding: '4px 0',
+							}}
+							onConfirm={()=>{
+								saveEmployee()
+							}}
+						/>
+					</FormItem>
+				}
 				<DecoratedInput
 					field='cashierApiToken'
 					label={<FormattedMessage id='employee.cashier_api_token' />}

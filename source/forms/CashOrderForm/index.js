@@ -122,8 +122,8 @@ const getActiveFieldsMap = activeCashOrder => {
 @injectIntl
 export class CashOrderForm extends Component {
     state = {
-        sumType: "increase", //This is used to define which input field is visible
-        sumTypeRadio: null, //Defines which type of input is now used(INCOME or EXPENSE)
+        sumType: adjustmentSumTypes.INCREASE, //This is used to define which input field is selected(default value)
+        isVisibleSumTypeRadio: null, //Defines if radio is vissible for selecting input type
         clientSearchType: "client",
         editing: false,
         errorValidationPanel: false,
@@ -199,7 +199,7 @@ export class CashOrderForm extends Component {
                 setFieldsValue({ [prevState.sumType]: null });
                 return {
                     sumType: modalProps.sumTypeStateVal,
-                    sumTypeRadio: modalProps.sumTypeRadioStateVal,
+                    isVisibleSumTypeRadio: modalProps.sumTypeRadioStateVal,
                 };
             });
         }
@@ -263,7 +263,7 @@ export class CashOrderForm extends Component {
 
                 return {
                     sumType: getFieldValue("sumType"),
-                    sumTypeRadio: true,
+                    isVisibleSumTypeRadio: true,
                 };
             });
         }
@@ -366,21 +366,26 @@ export class CashOrderForm extends Component {
     };
 
     _setFormFields = (activeCashOrder) => {
+
+        const cashbox = this._getCurrentlySelectedCashbox();
+
         const { form } = this.props;
         const fieldsMap = getActiveFieldsMap(activeCashOrder);
         const counterparty = this._getActiveCounterpartyType();
         const normalizedDatetime = moment(fieldsMap.datetime);
-        const sumType = !_.isNil(fieldsMap.increase) ? "increase" : "decrease";
-        const sumTypeRadio = fieldsMap.type === cashOrderTypes.ADJUSTMENT;
+        const sumType = (!_.isNil(fieldsMap.increase) || (cashbox && cashbox.rst))
+            ? adjustmentSumTypes.DECREASE
+            : adjustmentSumTypes.INCREASE;
+        const isVisibleSumTypeRadio = fieldsMap.type === cashOrderTypes.ADJUSTMENT;
         const normalizedFieldsMap = {
             ...fieldsMap,
             sumType,
-            sumTypeRadio,
+            isVisibleSumTypeRadio,
             ...counterparty,
             datetime: normalizedDatetime,
         };
 
-        this.setState({ sumTypeRadio });
+        this.setState({ isVisibleSumTypeRadio });
         form.setFieldsValue(normalizedFieldsMap);
     };
 
@@ -419,15 +424,23 @@ export class CashOrderForm extends Component {
 
         return counterparty;
     };
-
+    
     _submit = event => {
         event.preventDefault();
-        const { form, createCashOrder, onCloseModal, editMode, fromOrder, fromStoreDoc, fetchOrder, fetchStoreDoc, fromClient } = this.props;
+        const {cashboxes, activeCashOrder, form, createCashOrder, onCloseModal, editMode, fromOrder, fromStoreDoc, fetchOrder, fetchStoreDoc, fromClient } = this.props;
 
         form.validateFields(async (err, values) => {
             if (_.has(err, "clientId") || _.has(err, "orderId") || _.has(err, "storeDocId")) {
                 this._handleErrorValidationPanel();
             }
+
+            //Get currently used cashBox
+            const currentCashBox = values.cashBoxId
+                ? _.get(
+                    _.filter(cashboxes, (o) => o.id == values.cashBoxId)
+                    , '[0]'
+                )
+                : undefined;
 
             if (!err) {
                 const cashOrder = {
@@ -440,6 +453,8 @@ export class CashOrderForm extends Component {
                     storeDocId: values.hasOwnProperty("storeDocId")
                         ? values.storeDocId
                         : null,
+
+                    cashBox: currentCashBox, 
                     editMode,
                     ...values,
                 };
@@ -471,14 +486,12 @@ export class CashOrderForm extends Component {
             filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == cashOrderType));
         } else if(cashOrderType == cashOrderTypes.ADJUSTMENT) {
             //There are two cases for this type of cash order, and we have to return swapped values
-            const sumType = this.state.sumType || adjustmentSumTypes.INCOME; //Get field or its init value
+            const sumType = this.state.sumType || adjustmentSumTypes.INCREASE; //Get field or its init value
 
-            console.log("Sum type: ", sumType, '; fromField: ', getFieldValue('sumType'));
-
-            if(sumType == adjustmentSumTypes.INCOME) {
+            if(sumType == adjustmentSumTypes.INCREASE) {
                 // We have to retrun expense analytics only in this case
                 filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == cashOrderTypes.EXPENSE));
-            } else if(sumType == adjustmentSumTypes.EXPENSE) {
+            } else if(sumType == adjustmentSumTypes.DECREASE) {
                 //Return "income" analytics
                 filteredAnlytics = analytics.filter(ana => (ana.analyticsOrderType == cashOrderTypes.INCOME));
             }
@@ -509,13 +522,58 @@ export class CashOrderForm extends Component {
     }
 
     /**
+     * Takes currently selected cashbox and retruns it
+     * @returns cashbox or undefined
+     */
+    _getCurrentlySelectedCashbox() {
+        const {
+            cashboxes, 
+            form: { getFieldValue }
+        } = this.props;
+
+        const cashBoxId = getFieldValue('cashBoxId');
+
+        //Get currently selected cashbox to know if we have to block some fields(for specific cashboxes)
+        const currentlySelectedCashbox = cashBoxId
+        ? _.get(
+            _.filter(cashboxes, (o) => o.id == cashBoxId)
+            , '[0]'
+        )
+        : undefined;
+
+        return currentlySelectedCashbox;
+    }
+
+    /** This method is used to set default sumtype based on currently selected cashbox. If cashbox contains rst, then we can't use INCREASE type*/
+    _setDefaultSumType() {
+        const {
+            form: { setFieldsValue }
+        } = this.props;
+
+        const cashbox = this._getCurrentlySelectedCashbox();
+
+        return this.setState(prevState => {
+            setFieldsValue({ [prevState.sumType]: null });
+
+            return {
+                sumType: (cashbox && cashbox.rst)
+                    ? adjustmentSumTypes.DECREASE
+                    : adjustmentSumTypes.INCREASE,
+                isVisibleSumTypeRadio: true,
+            };
+        });
+    }
+
+    /**
      * This is called when cash order type is changed.
      * This method is used to update some field value when new order type was selected.
      * "tag" field is out of date, analyticsUniqueId is used instead as it is separate module
      * @param {*} value Selected cash order type
      */
     _selectOrderType = value => {
-        const {form: { setFieldsValue }} = this.props;
+        const {
+            form: { setFieldsValue }
+        } = this.props;
 
         switch (value) {
             case cashOrderTypes.INCOME:
@@ -523,8 +581,8 @@ export class CashOrderForm extends Component {
                     setFieldsValue({ [prevState.sumType]: null });
 
                     return {
-                        sumType: "increase",
-                        sumTypeRadio: false,
+                        sumType: adjustmentSumTypes.INCREASE,
+                        isVisibleSumTypeRadio: false,
                     };
                 });
 
@@ -533,21 +591,14 @@ export class CashOrderForm extends Component {
                     setFieldsValue({ [prevState.sumType]: null });
 
                     return {
-                        sumType: "decrease",
-                        sumTypeRadio: false,
+                        sumType: adjustmentSumTypes.DECREASE,
+                        isVisibleSumTypeRadio: false,
                     };
                 });
 
             case cashOrderTypes.ADJUSTMENT:
                 if (!this.props.editMode) {
-                    return this.setState(prevState => {
-                        setFieldsValue({ [prevState.sumType]: null });
-
-                        return {
-                            sumType: "increase",
-                            sumTypeRadio: true,
-                        };
-                    });
+                    this._setDefaultSumType();
                 }
                 break;
 
@@ -556,8 +607,35 @@ export class CashOrderForm extends Component {
         }
     };
 
-    _setSumType = e => {
-        const sumType = e.target.value;
+    /**
+     * This method is triggered when cash box is selected.
+     * If some fields have to be changed if this field is trigerred we can do it from here,
+     * for example we must set other fields(valid) if new cash box contains rst
+     */
+    _onSelectCashbox = () => {
+        const {
+            form: {setFieldsValue, getFieldValue}
+        } = this.props;
+
+        const cashbox = this._getCurrentlySelectedCashbox();
+
+        const cashOrderType = getFieldValue('type');
+        const sumType = getFieldValue('sumType');
+
+        //If cashbox contains rst we have to change to some default fileds
+        if(cashbox && cashbox.rst) {
+            this.setState({sumTupe: adjustmentSumTypes.DECREASE});
+            if(cashOrderType === cashOrderTypes.EXPENSE) {
+                 setFieldsValue({['type']: cashOrderTypes.INCOME});
+                 this._setSumType(adjustmentSumTypes.INCREASE)
+            }
+            (cashOrderType === cashOrderTypes.ADJUSTMENT && sumType === adjustmentSumTypes.INCREASE) && this._setSumType(adjustmentSumTypes.DECREASE);
+        }
+
+        this.forceUpdate();
+    }
+
+    _setSumType = (sumType) => {
 
         this.setState(prevState => {
             this.props.form.setFieldsValue({
@@ -580,7 +658,6 @@ export class CashOrderForm extends Component {
     };
 
     _handleOrderSelection = order => {
-        console.log(order)
         this.props.form.setFieldsValue({
             orderId: order.id,
             clientId: order.clientId,
@@ -688,6 +765,17 @@ export class CashOrderForm extends Component {
             clientOrderField: true,
         });
 
+    /**This method retruns cashOrder types which can be selected for current type of cashbox*/
+    _getAvailableCashOrderTypes() {
+        const cashbox = this._getCurrentlySelectedCashbox(); //Current cashbox
+
+        const availableTypes = (cashbox && cashbox.rst)
+            ? _.omit(cashOrderTypes, [cashOrderTypes.EXPENSE])
+            : cashOrderTypes;
+
+        return availableTypes;
+    }
+
     render() {
         const {
             cashboxes,
@@ -698,7 +786,6 @@ export class CashOrderForm extends Component {
             form: { getFieldDecorator, getFieldValue },
 
             analyticsFetchingState,
-            analytics,
             activeCashOrder,
             onOpenAnalyticsModal,
             fromOrder,
@@ -708,6 +795,7 @@ export class CashOrderForm extends Component {
         } = this.props;
 
         const cashOrderId = getFieldValue("id");
+        const cashbox = this._getCurrentlySelectedCashbox();
 
         //https://github.com/ant-design/ant-design/issues/8880#issuecomment-402590493
         // getFieldDecorator("clientId", { initialValue: void 0 });
@@ -753,7 +841,7 @@ export class CashOrderForm extends Component {
                         onSelect={this._selectOrderType}
                         disabled={printMode}
                     >
-                        {Object.values(cashOrderTypes).map(type => (
+                        {Object.values(this._getAvailableCashOrderTypes()).map(type => (
                             <Option value={type} key={type}>
                                 {formatMessage({
                                     id: `cash-order-form.type.${type}`,
@@ -777,10 +865,11 @@ export class CashOrderForm extends Component {
                                 }),
                             },
                         ]}
-                        initialValue={_.get(cashboxes, "[0].id")}
+                        initialValue={_.get(activeCashOrder, 'cashBoxId') || _.get(cashboxes, "[0].id")}
                         getPopupContainer={trigger => trigger.parentNode}
                         formItemLayout={formItemLayout}
                         className={Styles.styledFormItem}
+                        onSelect={this._onSelectCashbox}
                         disabled={printMode}
                     >
                         {cashboxes.map(({ id, name }) => (
@@ -855,15 +944,16 @@ export class CashOrderForm extends Component {
                     <DecoratedRadio
                         field="sumType"
                         formItem
+                        fieldValue={this.state.sumType}
                         getFieldDecorator={getFieldDecorator}
                         className={this._hiddenFormItemStyles(
-                            this.state.sumTypeRadio,
+                            this.state.isVisibleSumTypeRadio,
                         )}
-                        onChange={e => this._setSumType(e)}
+                        onChange={e => this._setSumType(e.target.value)}
                         initialValue={this.state.sumType}
                         disabled={printMode}
                     >
-                        <Radio value="increase">
+                        <Radio value="increase" disabled={(cashbox && cashbox.rst)}>
                             {formatMessage({
                                 id: "cash-order-form.increase",
                             })}
@@ -996,7 +1086,7 @@ export class CashOrderForm extends Component {
                                                 fromOrder,
                                                 cashOrderEntity: activeCashOrder,
                                                 sumTypeStateVal: this.state.sumType,
-                                                sumTypeRadioStateVal: this.state.sumTypeRadio
+                                                sumTypeRadioStateVal: this.state.isVisibleSumTypeRadio
                                             });
                                         }}
                                     >

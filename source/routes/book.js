@@ -35,6 +35,7 @@ const book = Object.freeze({
     reportOrders:             '/report/orders',
     reportLoadKPI:            '/report/load_kpi',
     reportCashFlow:           '/report/cash_flow',
+    reportCashOrdersLogs:     '/report/cash_orders_logs',
 
     // Barcode
     barcodePage:              '/barcode',
