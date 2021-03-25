@@ -234,6 +234,7 @@ export default class BarcodeContainer extends Component {
 					supplierId: product.brand.supplierId,
 					count: 1,
 					price: 0,
+					purchasePrice: 0,
 				})
 			} else if(barcodeData.table == 'LABORS') {
 				activeTab = 'services';
