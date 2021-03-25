@@ -12,6 +12,7 @@ import nprogress from 'nprogress';
 import { saveAs } from 'file-saver';
 import moment from 'moment';
 import _ from 'lodash';
+import { notification } from 'antd';
 
 //proj
 import { setCashOrdersFetchingState, emitError } from 'core/ui/duck';
@@ -34,6 +35,11 @@ import {
     selectCashOrdersFilters,
     selectCashAccountingFilters,
     printCashOrderSuccess,
+
+    
+} from './duck';
+
+import {
     FETCH_CASHBOXES,
     FETCH_CASHBOXES_BALANCE,
     FETCH_CASHBOXES_ACTIVITY,
@@ -43,7 +49,135 @@ import {
     FETCH_CASH_ORDERS,
     PRINT_CASH_ORDERS,
     SET_SEARCH_QUERY,
+    OPEN_SHIFT,
+    CLOSE_SHIFT,
+    SERVICE_INPUT,
+    FETCH_X_REPORT,
+    REGISTER_CASH_ORDER_IN_CASHDESK
 } from './duck';
+
+export function* openShiftSaga() {
+    while (true) {
+        try {
+            const {payload} = yield take(OPEN_SHIFT);
+
+            yield nprogress.start();
+
+            const requestPayload = {
+                cashboxId: payload
+            }
+
+            try {
+                yield call(fetchAPI, 'POST', '/cashdesk/open_shift', null, requestPayload, { handleErrorInternally: true});
+            } catch(err) {
+                notification.error({message: err.response.message});
+            }
+            
+
+            yield put(fetchCashboxes());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* closeShiftSaga() {
+    while (true) {
+        try {
+            const {payload} = yield take(CLOSE_SHIFT);
+
+            yield nprogress.start();
+
+            const requestPayload = {
+                cashboxId: payload
+            }
+
+            try {
+                const {pdf} = yield call(fetchAPI, 'POST', '/cashdesk/close_shift', null, requestPayload, { handleErrorInternally: true});
+
+                //Unknown error, the only way to convert is to use uint8Array:
+                //https://stackoverflow.com/questions/21797299/convert-base64-string-to-arraybuffer
+                const bin = new Blob([Uint8Array.from(atob(pdf), c => c.charCodeAt(0))], {type: 'application/pdf'});
+
+                yield saveAs(bin, 'z-report.pdf');
+            } catch(err) {
+                notification.error({message: err.response.message});
+            }
+
+            
+
+            yield put(fetchCashboxes());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* serviceInputSaga() {
+    while (true) {
+        try {
+            const {payload: {cashboxId, serviceInputSum}} = yield take(SERVICE_INPUT);
+
+            yield nprogress.start();
+
+            const requestPayload = {
+                cashboxId: cashboxId,
+                sum: serviceInputSum
+            }
+
+            try {
+                yield call(fetchAPI, 'POST', '/cashdesk/service_input', null, requestPayload, { handleErrorInternally: true});
+            } catch(err) {
+                notification.error({message: err.response.message});
+            }
+
+            yield put(fetchCashboxes());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* xReportSaga() {
+    while (true) {
+        try {
+            const { payload } = yield take(FETCH_X_REPORT);
+
+            yield nprogress.start();
+
+            const requestPayload = {
+                cashboxId: payload,
+            }
+
+            try {
+                const { pdf } = yield call(fetchAPI, 'POST', '/cashdesk/x_report', null, requestPayload, { handleErrorInternally: true});
+
+                //Unknown error, the only way to convert is to use uint8Array:
+                //https://stackoverflow.com/questions/21797299/convert-base64-string-to-arraybuffer
+                const bin = new Blob([Uint8Array.from(atob(pdf), c => c.charCodeAt(0))], {type: 'application/pdf'});
+
+                yield saveAs(bin, 'x-report.pdf');
+            } catch(err) {
+                notification.error({message: err.response.message});
+            }
+
+            
+
+            yield put(fetchCashboxes());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
 
 export function* fetchCashboxesSaga() {
     while (true) {
@@ -218,8 +352,40 @@ export function* printCashOrdersSaga() {
     }
 }
 
+/**
+ * This saga cash order in cash desk by provided cashOrderId
+ */
+ export function* registerCashOrderInCashdeskSaga() {
+    while(true) {
+        const {payload: cashOrderId} = yield take(REGISTER_CASH_ORDER_IN_CASHDESK);
+
+        try{
+            yield call(
+                fetchAPI,
+                'POST',
+                `/cashdesk/sale_or_return`,
+                null,
+                {
+                    localNumber: cashOrderId
+                },
+                { handleErrorInternally: true }
+            );
+        } catch(err) {
+            notification.error({
+                message: err.response.message
+            });
+        }
+
+        yield put(fetchCashOrders());
+    }
+}
+
 export function* saga() {
     yield all([
+        call(openShiftSaga),
+        call(closeShiftSaga),
+        call(serviceInputSaga),
+        call(xReportSaga),
         call(fetchCashboxesSaga),
         call(fetchCashboxesBalanceSaga),
         call(fetchCashboxesActivitySaga),
@@ -228,6 +394,7 @@ export function* saga() {
         call(printCashOrdersSaga),
         call(fetchCashOrdersSaga),
         call(fetchAnalyticsSaga),
+        call(registerCashOrderInCashdeskSaga),
         takeLatest(SET_SEARCH_QUERY, handleCashOrdersSearchSaga),
     ]);
 }

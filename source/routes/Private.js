@@ -60,6 +60,7 @@ import {
     ReportOrdersPage,
     ReportLoadKPIPage,
     ReportCashFlowPage,
+    ReportCashOrdersLogsPage,
     LocationsPage,
     LocationSettingsPage,
     LocationsDocumentPage,
@@ -326,6 +327,11 @@ export default class Private extends Component {
                     exact
                     component={ ReportCashFlowPage }
                     path={ book.reportCashFlow }
+                />
+                <Route
+                    exact
+                    component={ ReportCashOrdersLogsPage }
+                    path={ book.reportCashOrdersLogs }
                 />
 
                 { /* Payment */ }

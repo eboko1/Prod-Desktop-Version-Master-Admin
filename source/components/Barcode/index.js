@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
 import JsBarcode  from "jsbarcode"; //https://github.com/lindell/JsBarcode/wiki/Options
-import { Button, Icon, Modal, message, Input } from "antd";
+import { Button, Icon, Modal, message, Input, notification } from "antd";
 import { permissions, isForbidden, fetchAPI } from "utils";
 import _ from "lodash";
 
@@ -11,6 +11,36 @@ import _ from "lodash";
 
 // own
 import Styles from './styles.m.css';
+
+function replaceLocation(str, reverse) {
+    const replacer = {
+        "q": "й", "w": "ц", "e": "у", "r": "к", "t": "е", "y": "н", "u": "г",
+        "i": "ш", "o": "щ", "p": "з", "[": "х", "]": "ъ", "a": "ф", "s": "ы",
+        "d": "в", "f": "а", "g": "п", "h": "р", "j": "о", "k": "л", "l": "д",
+        ";": "ж", "'": "э", "z": "я", "x": "ч", "c": "с", "v": "м", "b": "и",
+        "n": "т", "m": "ь", ",": "б", ".": "ю", "/": ".",
+    };
+
+    reverse && Object.keys(replacer).forEach(key => {
+        let v = replacer[key]
+        delete (replacer[key])
+        replacer[v] = key
+    })
+
+    for (let i = 0; i < str.length; i++) {
+        if (replacer[str[i].toLowerCase()] != undefined) {
+            let replace;
+            if (str[i] == str[i].toLowerCase()) {
+                replace = replacer[str[i].toLowerCase()];
+            } else if (str[i] == str[i].toUpperCase()) {
+                replace = replacer[str[i].toLowerCase()].toUpperCase();
+            }
+            str = str.replace(str[i], replace);
+        }
+    }
+
+    return str;
+}
 
 const mapStateToProps = state => ({
     user: state.auth,
@@ -119,24 +149,49 @@ export default class Barcode extends Component {
     }
 
     handleOk = async () => {
-        const { referenceId, table, onConfirm, prefix, user } = this.props;
+        const { referenceId, table, onConfirm, prefix, user, multipleMode } = this.props;
         const { scanedCode } = this.state;
         const fullPrefix = `${prefix}-${user.businessId}`;
         const codeWithPrefix = `${fullPrefix}-${scanedCode}`
         
         if(referenceId && table && scanedCode) {
-            await fetchAPI('POST', 'barcodes', undefined, [{
-                referenceId,
-                table,
-                customCode: scanedCode,
-            }])
-        }
-        
-        if(onConfirm) {
+            try {
+                await fetchAPI(
+                    'POST', 
+                    'barcodes', 
+                    undefined, 
+                    [{
+                        referenceId: String(referenceId),
+                        table,
+                        customCode: scanedCode,
+                    }],
+                    {handleErrorInternally: true}
+                );
+                this.setState({
+                    inputCode : "",
+                })
+                notification.success({
+                    message: `Штрих-код задан`,
+                });
+                if(onConfirm) {
+                    onConfirm(scanedCode, fullPrefix, codeWithPrefix);
+                }
+            } catch(e) {
+                notification.error({
+                    message: `Штрих-код уже задан`,
+                });
+            }
+        } else if(onConfirm) {
             onConfirm(scanedCode, fullPrefix, codeWithPrefix);
         }
-
-        this.handleCancel();
+        if(multipleMode) {
+            this.setState({
+                scanedInputValue: undefined,
+                scanedCode: undefined,
+            })
+        } else {
+            this.handleCancel();
+        }
     }
 
     componentDidMount() {
@@ -149,7 +204,7 @@ export default class Barcode extends Component {
     }
 
     render() {
-        const { displayBarcode, iconStyle, button, disabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon } = this.props;
+        const { displayBarcode, iconStyle, button, disabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon, multipleMode } = this.props;
         const { visible, scanedCode, scanedInputValue } = this.state;
         const id = this.id;
         const iconType = enableScanIcon && !value
@@ -160,7 +215,7 @@ export default class Barcode extends Component {
                 {button ? 
                     <Button
                         //type={'primary'}
-                        disabled={disabled || true}
+                        disabled={disabled}
                         onClick={this.showModal}
                     >
                         <Icon
@@ -172,12 +227,10 @@ export default class Barcode extends Component {
                     </Button> :
                     <Icon
                         type={iconType}
-                        className={(disabled || true) && Styles.disabledIcon}
+                        className={disabled && Styles.disabledIcon}
                         style={{
                             fontSize: 18,
                             ...iconStyle,
-                            pointerEvents: 'none',
-                            color: 'var(--text2)'
                         }}
                         onClick={this.showModal}
                     />
@@ -261,15 +314,18 @@ export default class Barcode extends Component {
                             value={scanedInputValue}
                             onChange={({target})=>{
                                 this.setState({
-                                    scanedInputValue: target.value,
+                                    scanedInputValue: replaceLocation(target.value, true),
                                 })
                             }}
-                            onPressEnter={()=>{
+                            onPressEnter={async ()=>{
                                 if(scanedInputValue) {
-                                    this.setState({
-                                        scanedCode: String(scanedInputValue).toUpperCase(),
+                                    await this.setState({
+                                        scanedCode: String(scanedInputValue).replace(`${prefix}-${user.businessId}-`, '').toUpperCase(),
                                         scanedInputValue: undefined,
                                     })
+                                }
+                                if(multipleMode) {
+                                    this.handleOk();
                                 }
                             }}
                             ref={node => (this.input = node)}
