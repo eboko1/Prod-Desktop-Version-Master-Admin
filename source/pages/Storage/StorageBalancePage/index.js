@@ -147,8 +147,8 @@ class PrintModal extends React.Component{
                         display: 'flex',
                         justifyContent: 'space-between',
                     }}>
-                        <DatePicker onChange={(startDate) => this.setState({warehouseId: startDate})} />
-                        <DatePicker onChange={(endDate) => this.setState({warehouseId: endDate})} />
+                        <DatePicker onChange={(startDate) => this.setState({startDate: startDate})} />
+                        <DatePicker onChange={(endDate) => this.setState({endDate: endDate})} />
                     </div>
                     <WarehouseSelect 
                         style={{width: '100%'}}
