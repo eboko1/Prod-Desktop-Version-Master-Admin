@@ -18,9 +18,8 @@ import {
     setCashOrderFetchingState,
     setClientOrdersFetchingState,
     setClientFetchingState,
-    registerCashOrderInCashdesk
 } from 'core/ui/duck';
-import { fetchCashOrders } from 'core/cash/duck';
+import { fetchCashOrders, registerCashOrderInCashdesk } from 'core/cash/duck';
 import { fetchAPI } from 'utils';
 import {analyticsLevels} from 'core/forms/reportAnalyticsForm/duck'
 
