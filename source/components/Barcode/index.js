@@ -182,15 +182,16 @@ export default class Barcode extends Component {
                 });
             }
         } else if(onConfirm) {
-            onConfirm(scanedCode, fullPrefix, codeWithPrefix);
-        }
-        if(multipleMode) {
-            this.setState({
-                scanedInputValue: undefined,
-                scanedCode: undefined,
-            })
-        } else {
-            this.handleCancel();
+            if(multipleMode) {
+                onConfirm(scanedCode, fullPrefix, codeWithPrefix);
+                this.setState({
+                    scanedInputValue: undefined,
+                    scanedCode: undefined,
+                })
+            } else {
+                onConfirm(scanedCode, fullPrefix, codeWithPrefix);
+                this.handleCancel();
+            }
         }
     }
 

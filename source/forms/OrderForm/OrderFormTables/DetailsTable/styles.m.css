@@ -57,3 +57,9 @@
     pointer-events: none;
     color: rgba(0, 0, 0, 0.25);
 }
+
+.selectedRow {
+    background-color: var(--db_reserve);    
+    color: var(--text);
+    font-weight: 400;
+}
