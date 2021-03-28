@@ -30,6 +30,7 @@ import LocationHistoryModal from './LocationHistoryModal';
 import StoreProductTrackingModal from './StoreProductTrackingModal';
 import SyncImportExportModal from './SyncImportExportModal';
 import SyncConflictsModal from './SyncConflictsModal';
+import SetBarcodeModal from './SetBarcodeModal';
 
 //cashbox
 import AddCashboxModal from './cashbox/AddCashboxModal';
@@ -82,4 +83,5 @@ export {
     StoreProductTrackingModal,
     SyncImportExportModal,
     SyncConflictsModal,
+    SetBarcodeModal,
 };

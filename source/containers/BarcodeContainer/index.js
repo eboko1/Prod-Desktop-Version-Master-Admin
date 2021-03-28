@@ -234,6 +234,7 @@ export default class BarcodeContainer extends Component {
 					supplierId: product.brand.supplierId,
 					count: 1,
 					price: 0,
+					purchasePrice: 0,
 				})
 			} else if(barcodeData.table == 'LABORS') {
 				activeTab = 'services';
@@ -592,11 +593,18 @@ export default class BarcodeContainer extends Component {
 								fontSize: 24,
                             }}
 							value={inputCode}
-							onConfirm={(value)=>
+							onConfirm={async (value)=>{
 								this.setState({
 									inputCode: value,
 								})
-							}
+								const barcodes = await fetchAPI('GET', 'barcodes',{
+									barcode: value,
+								});
+								const tables = barcodes.map(({table})=>table);
+								this.setState({
+									tables: tables,
+								});
+							}}
                         />
 	                </div>
 	                <div className={Styles.buttonBlockWrapp}>

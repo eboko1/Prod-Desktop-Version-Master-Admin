@@ -104,7 +104,7 @@ class PrintModal extends React.Component{
                 warehouseId,
                 startDate: moment(startDate).format('YYYY-MM-DD'),
                 endDate: moment(endDate).format('YYYY-MM-DD'),
-                date: moment(startDate).format('YYYY-MM-DD'),
+                date: moment(startDate).add( -1, 'day').format('YYYY-MM-DD'),
             },
             null,
             { rawResponse: true },

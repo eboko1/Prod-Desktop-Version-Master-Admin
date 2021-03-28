@@ -12,7 +12,7 @@ import moment from 'moment';
 import { Catcher, Numeral } from 'commons';
 import { Barcode } from "components";
 import { withReduxForm, isForbidden, permissions, goTo, fetchAPI } from "utils";
-import { DetailStorageModal } from "modals";
+import { DetailStorageModal, SetBarcodeModal } from "modals";
 import {MODALS} from 'core/modals/duck';
 import book from "routes/book";
 
@@ -68,6 +68,7 @@ class StorageDocumentForm extends Component {
                 children: "",
             },
             warning: false,
+            productBarcode: undefined,
         };
         this.hideModal = this.hideModal.bind(this);
         this.showModal = this.showModal.bind(this);
@@ -105,6 +106,9 @@ class StorageDocumentForm extends Component {
                 sum: quantity*stockPrice,
             });
         } else {
+            this.setState({
+                productBarcode: barcode
+            })
             notification.warning({
                 message: 'Код не найден',
             });
@@ -177,7 +181,7 @@ class StorageDocumentForm extends Component {
     }
  
     render() {
-        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo, warning, modalProductId } = this.state;
+        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo, warning, modalProductId, productBarcode } = this.state;
         const {
             id,
             addDocProduct,
@@ -681,6 +685,40 @@ class StorageDocumentForm extends Component {
                     /> 
                 : null}
             </div>
+            <SetBarcodeModal
+                visible={Boolean(productBarcode)}
+                barcode={productBarcode}
+                confirmAction={async (productId)=>{
+                    const detail = await fetchAPI('GET', `store_products/${productId}`);
+                    const {
+                        id,
+                        brand,
+                        code,
+                        name,
+                        stockPrice,
+                        priceGroup,
+                        quantity,
+                        tradeCode,
+                    } = detail;
+                    await this.props.addDocProduct({
+                        productId: id,
+                        detailCode: code,
+                        brandName: brand.name,
+                        brandId: brand.id,
+                        tradeCode: tradeCode,
+                        detailName: name,
+                        stockPrice: Number(stockPrice || 0),
+                        sellingPrice: Number((stockPrice || 0) * (priceGroup.multiplier || 1)),
+                        quantity: quantity,
+                        sum: quantity*stockPrice,
+                    });
+                }}
+                hideModal={()=>{
+                    this.setState({
+                        productBarcode: undefined,
+                    })
+                }}
+            />
             </div>
         );
     }
@@ -706,7 +744,7 @@ class DocProductsTable extends React.Component {
                                         disabled={this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_STOCK)}
                                         prefix={'STP'}
                                         onConfirm={(barcode, pefix, fullCode)=>{
-                                            this.props.addByBarcode(fullCode);
+                                            this.props.addByBarcode(barcode);
                                         }}
                                         multipleMode
                                     />
