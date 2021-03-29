@@ -99,6 +99,8 @@ export class ToSuccessForm extends Component {
                     onSubmit();
                 }
 
+                console.log(values)
+
                 if (values.withPayment && Boolean(values.paymentSum)) {
                     createCashOrder({
                         cashBoxId: values.cashBoxId,
