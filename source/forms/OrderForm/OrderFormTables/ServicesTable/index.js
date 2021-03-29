@@ -54,20 +54,32 @@ class ServicesTable extends Component {
                             <div className={Styles.headerActions}>
                                 <Barcode
                                     button
+                                    multipleMode
                                     prefix={'LBS'}
                                     onConfirm={async (code, pref, fullCode)=>{
-                                        const response = await fetchAPI('GET', 'barcodes', {
-                                            barcode: fullCode,
+                                        const barcodeData = await fetchAPI('GET', 'barcodes',{
+                                            barcode: code,
                                         });
-
-                                        console.log(response);
-
-                                        if(response && response.length && response[0].table == 'LABORS') {
-                                            const { dataSource } = this.state;
-                                            const lastService = dataSource[dataSource.length - 1];
-                                            lastService.barcode = fullCode;
-                                            lastService.referenceId = response[0].referenceId;
-                                            this.showServiceProductModal(lastService.key)                                            
+                                        const laborBarcode = barcodeData.find(({table})=>table == 'LABORS');
+                                
+                                        if(laborBarcode) {
+                                            const payload = {
+                                                insertMode: true,
+                                                details: [],
+                                                services: [],
+                                            };
+                                            const { labor } = await fetchAPI('GET', `labors/${laborBarcode.referenceId}`);
+                                            payload.services.push({
+                                                serviceId: labor[0].laborId,
+                                                serviceName: labor[0].name || labor[0].defaultName,
+                                                employeeId: this.props.defaultEmployeeId,
+                                                serviceHours: 0,
+                                                purchasePrice: 0,
+                                                count: Number(labor[0].normHours) || 0,
+                                                servicePrice: Number(labor[0].price) || this.props.normHourPrice,
+                                            })
+                                            await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
+                                            await this.updateDataSource();
                                         } else {
                                             notification.warning({
                                                 message: 'Код не найден',

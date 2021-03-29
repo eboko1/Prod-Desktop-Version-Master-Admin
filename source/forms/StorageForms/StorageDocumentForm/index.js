@@ -167,16 +167,35 @@ class StorageDocumentForm extends Component {
        this.getClientOption();
     }
 
-    componentDidMount() {
+    componentDidMount = async () => {
         this._isMounted = true;
         const { location } = this.props;
         
         this.getClientOption();
         if(this._isMounted && location.productId) {
-            this.setState({
-                modalProductId: location.productId,
-                modalVisible: true,
-            })
+            const detail = await fetchAPI('GET', `store_products/${location.productId}`);
+            const {
+                id,
+                brand,
+                code,
+                name,
+                stockPrice,
+                priceGroup,
+                quantity,
+                tradeCode,
+            } = detail;
+            await this.props.addDocProduct({
+                productId: id,
+                detailCode: code,
+                brandName: brand.name,
+                brandId: brand.id,
+                tradeCode: tradeCode,
+                detailName: name,
+                stockPrice: Number(stockPrice || 0),
+                sellingPrice: Number((stockPrice || 0) * (priceGroup.multiplier || 1)),
+                quantity: quantity,
+                sum: quantity*stockPrice,
+            });
         }
     }
  
