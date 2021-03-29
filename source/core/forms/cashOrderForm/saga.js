@@ -287,7 +287,7 @@ export function* createCashOrderSaga() {
         try {
             const { payload } = yield take(CREATE_CASH_ORDER);
 
-            const isCashBoxRst = payload.cashBox.rst;
+            const isCashBoxRst =  Boolean(_.get(payload, 'cashBox.rst'));
             const cashOrder = _.omit(payload, [
                 'counterpartyType',
                 'sumType',
