@@ -151,6 +151,9 @@ const ProductForm = props => {
                     : props.createProduct(values);
 
                 props.form.resetFields();
+                if(_.get(props, "modalProps.onSubmit")) {
+                    props.modalProps.onSubmit();
+                }
                 props.resetModal();
             }
         });
@@ -360,7 +363,7 @@ const ProductForm = props => {
                         id: "navigation.barcode",
                     })}
                     formItemLayout={formItemLayout}
-                    initialValue={_.get(props, "product.barcode")}
+                    initialValue={_.get(props, "product.barcode") || _.get(props, "modalProps.barcode")}
                     getFieldDecorator={form.getFieldDecorator}
                     style={{ 
                         minWidth: 240,
@@ -369,7 +372,7 @@ const ProductForm = props => {
                     disabled
                 />
                 <Barcode
-                    value={barcode || _.get(props, "product.barcode")}
+                    value={barcode || _.get(props, "product.barcode") || _.get(props, "modalProps.barcode")}
                     referenceId={_.get(props, 'product.id')}
                     table={'STORE_PRODUCTS'}
                     prefix={'STP'}

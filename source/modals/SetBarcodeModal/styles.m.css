@@ -1,3 +1,9 @@
+.modalInput {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .selectedRow {
     background-color: var(--db_reserve);    
     color: var(--text);

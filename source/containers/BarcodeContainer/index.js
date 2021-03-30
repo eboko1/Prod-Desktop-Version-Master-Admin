@@ -231,7 +231,7 @@ export default class BarcodeContainer extends Component {
 					name: product.name,
 					productCode: product.code,
 					supplierBrandId: product.brandId,
-					supplierId: product.brand.supplierId,
+					//supplierId: product.brand.supplierId,
 					count: 1,
 					price: 0,
 					purchasePrice: 0,
@@ -566,9 +566,6 @@ export default class BarcodeContainer extends Component {
 	                		placeholder={formatMessage({id: 'Введите или отсканируйте штрих-код'})}
 							value={inputCode}
 							onChange={async ({target})=>{
-								this.setState({
-									inputCode: target.value,
-								});
 								if(target.value) {
 									const barcodes = await fetchAPI('GET', 'barcodes',{
 										barcode: target.value,
@@ -576,6 +573,12 @@ export default class BarcodeContainer extends Component {
 									const tables = barcodes.map(({table})=>table);
 									this.setState({
 										tables: tables,
+										inputCode: target.value,
+									});
+								} else {
+									this.setState({
+										tables: [],
+										inputCode: target.value,
 									});
 								}
 							}}
