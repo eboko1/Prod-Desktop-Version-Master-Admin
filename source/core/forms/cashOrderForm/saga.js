@@ -18,9 +18,8 @@ import {
     setCashOrderFetchingState,
     setClientOrdersFetchingState,
     setClientFetchingState,
-    registerCashOrderInCashdesk
 } from 'core/ui/duck';
-import { fetchCashOrders } from 'core/cash/duck';
+import { fetchCashOrders, registerCashOrderInCashdesk } from 'core/cash/duck';
 import { fetchAPI } from 'utils';
 import {analyticsLevels} from 'core/forms/reportAnalyticsForm/duck'
 
@@ -288,7 +287,7 @@ export function* createCashOrderSaga() {
         try {
             const { payload } = yield take(CREATE_CASH_ORDER);
 
-            const isCashBoxRst = payload.cashBox.rst;
+            const isCashBoxRst =  Boolean(_.get(payload, 'cashBox.rst'));
             const cashOrder = _.omit(payload, [
                 'counterpartyType',
                 'sumType',

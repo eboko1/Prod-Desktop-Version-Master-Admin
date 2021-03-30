@@ -18,9 +18,8 @@ import _ from 'lodash';
 // proj
 import { Catcher } from 'commons';
 import { permissions, isForbidden, images, fetchAPI } from 'utils';
-import { DetailProductModal, FavouriteDetailsModal, StoreProductTrackingModal } from 'modals';
+import { DetailProductModal, FavouriteDetailsModal, StoreProductTrackingModal, SetBarcodeModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
-import { StoreProductModal } from 'modals';
 import { MODALS, setModal } from 'core/modals/duck';
 import { Barcode } from "components";
 
@@ -54,6 +53,7 @@ class DetailsTable extends Component {
             fetched:              false,
             reserveModalVisible: false,
             reserveModalData: undefined,
+            productBarcode: undefined,
         };
 
         this.storeGroups = [];
@@ -104,6 +104,9 @@ class DetailsTable extends Component {
                                                 await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
                                                 await this.updateDataSource();
                                             } else {
+                                                this.setState({
+                                                    productBarcode: code,
+                                                })
                                                 notification.warning({
                                                     message: 'Код не найден',
                                                 });
@@ -789,7 +792,7 @@ class DetailsTable extends Component {
             oilModalData,
             clearOilData,
         } = this.props;
-        const { fetched, dataSource, productModalVisible, productModalKey, reserveModalVisible, reserveModalData } = this.state;
+        const { fetched, dataSource, productModalVisible, productModalKey, reserveModalVisible, reserveModalData, productBarcode } = this.state;
 
         const columns = this.columns;
         if (
@@ -858,6 +861,36 @@ class DetailsTable extends Component {
                         this.setState({
                             reserveModalVisible: false,
                             reserveModalData: undefined,
+                        })
+                    }}
+                />
+                <SetBarcodeModal
+                    visible={Boolean(productBarcode)}
+                    barcode={productBarcode}
+                    confirmAction={async (id)=>{
+                        const payload = {
+                            insertMode: true,
+                            details: [],
+                            services: [],
+                        };
+                        const product = await fetchAPI('GET', `store_products/${id}`);
+                        payload.details.push({
+                            productId: product.id,
+                            storeGroupId: product.groupId,
+                            name: product.name,
+                            productCode: product.code,
+                            supplierBrandId: product.brandId,
+                            supplierId: product.brand.supplierId,
+                            count: 1,
+                            price: 0,
+                            purchasePrice: 0,
+                        })
+                        await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
+                        await this.updateDataSource();
+                    }}
+                    hideModal={()=>{
+                        this.setState({
+                            productBarcode: undefined,
                         })
                     }}
                 />
