@@ -11,7 +11,7 @@ import _ from "lodash";
 // proj
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { fetchCashOrdersLogs } from 'core/reports/reportCashOrdersLogs/duck';
-// import { ReportCashOrdersLogsTable } from 'components';
+import { ReportCashOrdersLogsTable } from 'components';
 
 import { Layout, StyledButton } from "commons";
 import { isForbidden, permissions } from "utils";
@@ -60,9 +60,9 @@ export default class ReportOrdersPage extends Component {
                 }
                 paper={false}
             >
-                {/* <ReportCashOrdersLogsTable
+                <ReportCashOrdersLogsTable
                 
-                /> */}
+                />
             </Layout>
         );
     }

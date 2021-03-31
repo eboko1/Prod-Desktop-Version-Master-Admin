@@ -47,7 +47,7 @@ import reportClientDebtsReducer, { moduleName as reportClientDebtsModule } from 
 import reportLoadKPIReducer, { moduleName as reportLoadKPIModule } from 'core/reports/reportLoadKPI/duck';
 import reportAnalyticsReducer, {moduleName as reportAnalyticsModule} from 'core/reports/reportAnalytics/duck';
 import reportCashFlowReducer, {moduleName as reportCashFlowModule} from 'core/reports/reportCashFlow/duck';
-// import reportCashOrdersLogsReducer, {moduleName as reportCashOrdersLogsModule} from 'core/reports/reportCashOrdersLogs/duck';
+import reportCashOrdersLogsReducer, {moduleName as reportCashOrdersLogsModule} from 'core/reports/reportCashOrdersLogs/duck';
 
 import clientRequisiteReducer, { moduleName as clientRequisiteModule } from 'core/clientRequisite/duck';
 import chartReducer, { moduleName as chartModule } from 'core/chart/duck';
@@ -113,7 +113,7 @@ const appState = {
     [ reportClientDebtsModule ]:    reportClientDebtsReducer,
     [ reportAnalyticsModule ]:      reportAnalyticsReducer,
     [ reportCashFlowModule ]:       reportCashFlowReducer,
-    // [ reportCashOrdersLogsModule ]: reportCashOrdersLogsReducer,
+    [ reportCashOrdersLogsModule ]: reportCashOrdersLogsReducer,
     [ clientRequisiteModule ]:      clientRequisiteReducer,
     [ clientsModule ]:              clientsReducer,
     [ dashboardModule ]:            dashboardReducer,

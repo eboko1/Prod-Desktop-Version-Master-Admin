@@ -16,7 +16,7 @@ import Styles from './styles.m.css';
 const { TabPane } = Tabs;
 
 const mapStateToProps = state => ({
-    cashdeskLogs: state.reports.reportCashOrdersLogs.cashdeskLogs,
+    cashdeskLogs: state.reportCashOrdersLogs.cashdeskLogs,
 });
 
 // const mapDispatchToProps = {};
@@ -60,9 +60,9 @@ export class ReportCashOrdersLogsTable extends Component {
         } = this.props;
 
         //We need to upade props (needed for child components)
-        // this.mainTableColumns = mainTableColumnsConfig();
-        // this.paymentTableConfig = paymentsTableColumnsConfig();
-        // this.productsTableConfig = productsTableColumnsConfig();
+        this.mainTableColumns = mainTableColumnsConfig();
+        this.paymentTableConfig = paymentsTableColumnsConfig();
+        this.productsTableConfig = productsTableColumnsConfig();
 
         console.log("\n\n\nMy data: ", cashdeskLogs);
         

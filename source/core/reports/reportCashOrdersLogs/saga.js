@@ -23,7 +23,7 @@ export function* fetchCashOrdersLogsSaga() {
                 fetchAPI,
                 'GET',
                 `/cashdesk/logs`,
-                {page: 1}
+                {filters: {page: 1}}
             );
             yield put(fetchCashOrdersLogsSuccess(data));
         } catch(err) {
