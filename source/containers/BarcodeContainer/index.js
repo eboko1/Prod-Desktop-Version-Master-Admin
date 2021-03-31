@@ -231,7 +231,7 @@ export default class BarcodeContainer extends Component {
 					name: product.name,
 					productCode: product.code,
 					supplierBrandId: product.brandId,
-					supplierId: product.brand.supplierId,
+					//supplierId: product.brand.supplierId,
 					count: 1,
 					price: 0,
 					purchasePrice: 0,
@@ -364,7 +364,7 @@ export default class BarcodeContainer extends Component {
 						confirmAction: this._setBarcode,
         			},
         			{
-        				title: 'X Код ячейки',
+        				title: 'Код ячейки',
         				disabled: true,
         			}
         		]
@@ -391,7 +391,7 @@ export default class BarcodeContainer extends Component {
 						},
         			},
         			{
-        				title: 'X Возврат',
+        				title: 'Возврат',
         				disabled: !isOrder || true,
         			},
         			{
@@ -451,7 +451,7 @@ export default class BarcodeContainer extends Component {
         		childs: [
         			{
         				title: 'Открыть карточку',
-        				disabled: !isStoreProduct,
+        				disabled: !isStoreProduct || true,
 						onClick: async () => {
 							const barcodeData = await this._getByBarcode('STORE_PRODUCTS');
 							if(barcodeData) {
@@ -481,13 +481,13 @@ export default class BarcodeContainer extends Component {
         			{
         				title: 'Выдать в цех',
 						onClick: this._productStorageOperation,
-        				disabled: !isStoreProduct,
+        				disabled: !isStoreProduct || true,
 						onClick: ()=>this._productStorageOperation('TO_REPAIR'),
         			},
         			{
         				title: 'Вернуть из цеха',
 						onClick: this._productStorageOperation,
-        				disabled: !isStoreProduct,
+        				disabled: !isStoreProduct || true,
 						onClick: ()=>this._productStorageOperation('TO_TOOL'),
         			}
         		]
@@ -520,15 +520,15 @@ export default class BarcodeContainer extends Component {
 						confirmAction: ()=>this._addToOrder('LABORS'),
         			},
         			{
-        				title: 'X Начать в текущем н/з',
+        				title: 'Начать в текущем н/з',
         				disabled: !isLabor || true,
         			},
         			{
-        				title: 'X Окончить в текущем н/з',
+        				title: 'Окончить в текущем н/з',
         				disabled: !isLabor || true,
         			},
         			{
-        				title: 'X Прервать в текущем н/з',
+        				title: 'Прервать в текущем н/з',
         				disabled: !isLabor || true,
         			}
         		]
@@ -537,19 +537,19 @@ export default class BarcodeContainer extends Component {
         		title: 'Сотрудник',
         		childs: [
         			{
-        				title: 'X Начать смену',
+        				title: 'Начать смену',
         				disabled: !isEmployee || true,
         			},
         			{
-        				title: 'X Окончить смену',
+        				title: 'Окончить смену',
         				disabled: !isEmployee || true,
         			},
         			{
-        				title: 'X Начать перерыв',
+        				title: 'Начать перерыв',
         				disabled: !isEmployee || true,
         			},
         			{
-        				title: 'X Окончить перерыв',
+        				title: 'Окончить перерыв',
         				disabled: !isEmployee || true,
         			}
         		]
@@ -561,13 +561,11 @@ export default class BarcodeContainer extends Component {
 	            <div className={Styles.container}>
 	                <div className={Styles.barcodeInput}>
 	                	<Input
+							autoFocus
 							allowClear
 	                		placeholder={formatMessage({id: 'Введите или отсканируйте штрих-код'})}
 							value={inputCode}
 							onChange={async ({target})=>{
-								this.setState({
-									inputCode: target.value,
-								});
 								if(target.value) {
 									const barcodes = await fetchAPI('GET', 'barcodes',{
 										barcode: target.value,
@@ -575,6 +573,12 @@ export default class BarcodeContainer extends Component {
 									const tables = barcodes.map(({table})=>table);
 									this.setState({
 										tables: tables,
+										inputCode: target.value,
+									});
+								} else {
+									this.setState({
+										tables: [],
+										inputCode: target.value,
 									});
 								}
 							}}

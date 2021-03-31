@@ -263,7 +263,7 @@ export default class Barcode extends Component {
                             : null
                     }
                     width={'fit-content'}
-                    zIndex={500}
+                    zIndex={300}
                     bodyStyle={{ padding: 0}}
                 >
                     <div className={Styles.barcodeWrapp}>
