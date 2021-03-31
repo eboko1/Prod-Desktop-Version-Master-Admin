@@ -41,52 +41,68 @@ export default function columnsConfig(props) {
     let count = 0;
 
 
-    const noCol = {
-        title:     <FormattedMessage id='report-orders-table.no' />,
-        align: 'left',
-        key: 'no',
-        width: defWidth.no,
-        render: () => count++
-        // render: (empty1, empty2, index) => ( <h4>{index+1+((filter.page-1)*25)}</h4>)
-    };
+    // const noCol = {
+    //     title:     <FormattedMessage id='report-orders-table.no' />,
+    //     align: 'left',
+    //     key: 'no',
+    //     width: defWidth.no,
+    //     render: () => count++
+    //     // render: (empty1, empty2, index) => ( <h4>{index+1+((filter.page-1)*25)}</h4>)
+    // };
 
     const col1 = {
-        title:     'ID',
-        dataIndex: 'id',
-    };
-
-    const col2 = {
-        title:     'Cash order number',
-        dataIndex: 'cashOrderNumber',
-    };
-
-    const col22 = {
-        title: 'Order number',
-        dataIndex: 'orderNumber'
-    }
-
-    const col3 = {
-        title:     'Data',
-        dataIndex: 'data',
-    };
-
-    const col4 = {
-        title:     'Sum',
-        dataIndex: 'sum',
-    };
-
-    const col5 = {
-        title:     'Fiscal',
-        dataIndex: 'fiscal',
+        title:     'logId',
+        dataIndex: 'logId',
     };
    
+    const col2 = {
+        title:     'operationType',
+        dataIndex: 'operationType',
+    };
+
+    const col3 = {
+        title:     'cashdeskDecumentId',
+        dataIndex: 'cashdeskDecumentId',
+    };
+    const col4 = {
+        title:     'totalSum',
+        dataIndex: 'totalSum',
+    };
+    const col5 = {
+        title:     'cashInBox',
+        dataIndex: 'cashInBox',
+    };
+    const col6 = {
+        title:     'serviceInput',
+        dataIndex: 'serviceInput',
+    };
+    const col7 = {
+        title:     'serviceOutput',
+        dataIndex: 'serviceOutput',
+    };
+    const col8 = {
+        title:     'cashOrderId',
+        dataIndex: 'cashOrderId',
+    };
+    const col9 = {
+        title:     'fiscalNumber',
+        dataIndex: 'fiscalNumber',
+    };
+    const col10 = {
+        title:     'isDeposit',
+        dataIndex: 'isDeposit',
+    };
+
     return [
-        noCol,
         col1,
         col2,
-        col22,
         col3,
         col4,
-        col5
+        col5,
+        col6,
+        col7,
+        col8,
+        col9,
+        col10,
     ];
 }

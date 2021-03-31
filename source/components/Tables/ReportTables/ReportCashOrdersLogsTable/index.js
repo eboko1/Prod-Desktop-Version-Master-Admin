@@ -40,6 +40,8 @@ export class ReportCashOrdersLogsTable extends Component {
             <Table
                 dataSource={ paymets }
                 columns={ this.paymentTableConfig }
+                pagination={false}
+                bordered
             />
         );
     }
@@ -50,6 +52,8 @@ export class ReportCashOrdersLogsTable extends Component {
             <Table
                 dataSource={ prducts }
                 columns={ this.productsTableConfig }
+                pagination={false}
+                bordered
             />
         );
     }
@@ -102,24 +106,24 @@ export class ReportCashOrdersLogsTable extends Component {
                     className={Styles.table}
                     columns={ this.mainTableColumns }
                     pagination={ pagination }
-                    dataSource={ testData }
+                    dataSource={ cashdeskLogs }
                     locale={ {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
-                    expandedRowRender={() => {
-                        return (<div>
+                    expandedRowRender={(record) => {
+                        return (<div style={{backgroundColor: 'rgb(240, 240,240)',padding: '8px'}}>
                             <Tabs tabPosition={"top"}>
                                 <TabPane tab="Products" key="products">
-                                    {this.productsTable(testData)}
+                                    {this.productsTable(record.products)}
                                 </TabPane>
 
                                 <TabPane tab="Payments" key="payments">
-                                    {this.productsTable(testData)}
+                                    {this.paymentsTable(record.payments)}
                                 </TabPane>
                             </Tabs>
                         </div>)
                     }}
-                    scroll={ { x: 1800, y: '50vh' } }
+                    scroll={ { x: 1800, y: '70vh' } }
                     rowKey={ record => record.orderId }
                     bordered
                 />

@@ -37,20 +37,69 @@ const defWidth = {
 
 /* eslint-disable complexity */
 export default function columnsConfig(props) {
-
-    let count = 0;
-
-
-    const noCol = {
-        title:     <FormattedMessage id='report-orders-table.no' />,
-        align: 'left',
-        key: 'no',
-        width: defWidth.no,
-        render: () => count++
-        // render: (empty1, empty2, index) => ( <h4>{index+1+((filter.page-1)*25)}</h4>)
+    const col1 = {
+        title:     'productId',
+        dataIndex: 'productId',
     };
    
+    const col2 = {
+        title:     'name',
+        dataIndex: 'name',
+    };
+
+    const col3 = {
+        title:     'amount',
+        dataIndex: 'amount',
+    };
+    const col4 = {
+        title:     'price',
+        dataIndex: 'price',
+    };
+    const col5 = {
+        title:     'cost',
+        dataIndex: 'cost',
+    };
+    const col6 = {
+        title:     'sumDiscount',
+        dataIndex: 'sumDiscount',
+    };
+    const col7 = {
+        title:     'letters',
+        dataIndex: 'letters',
+    };
+    const col8 = {
+        title:     'taxPervent',
+        dataIndex: 'taxPervent',
+    };
+    const col9 = {
+        title:     'excisePervent',
+        dataIndex: 'excisePervent',
+    };
+    const col10 = {
+        title:     'code',
+        dataIndex: 'code',
+    };
+    const col11 = {
+        title:     'unitCode',
+        dataIndex: 'unitCode',
+    };
+    const col12 = {
+        title:     'unitName',
+        dataIndex: 'unitName',
+    };
+
     return [
-        noCol
+        col1,
+        col2,
+        col3,
+        col4,
+        col5,
+        col6,
+        col7,
+        col8,
+        col9,
+        col10,
+        col11,
+        col12,
     ];
 }

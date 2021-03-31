@@ -41,16 +41,44 @@ export default function columnsConfig(props) {
     let count = 0;
 
 
-    const noCol = {
-        title:     <FormattedMessage id='report-orders-table.no' />,
-        align: 'left',
-        key: 'no',
-        width: defWidth.no,
-        render: () => count++
-        // render: (empty1, empty2, index) => ( <h4>{index+1+((filter.page-1)*25)}</h4>)
-    };
+    // const noCol = {
+    //     title:     <FormattedMessage id='report-orders-table.no' />,
+    //     align: 'left',
+    //     key: 'no',
+    //     width: defWidth.no,
+    //     render: () => count++
+    //     // render: (empty1, empty2, index) => ( <h4>{index+1+((filter.page-1)*25)}</h4>)
+    // };
+
+    const col1 = {
+        title: 'paymentId',
+        dataIndex: 'paymentId'
+    }
    
+    const col2 = {
+        title: 'code',
+        dataIndex: 'code'
+    }
+
+    const col3 = {
+        title: 'name',
+        dataIndex: 'name'
+    }
+
+    const col4 = {
+        title: 'sum',
+        dataIndex: 'sum'
+    }
+
+    const col5 = {
+        title: 'providedSum',
+        dataIndex: 'providedSum'
+    }
     return [
-        noCol
+        col1,
+        col2,
+        col3,
+        col4,
+        col5
     ];
 }
