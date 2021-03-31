@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import { Input } from 'antd';
+import { Input, Button } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 
@@ -38,17 +38,7 @@ const defWidth = {
 /* eslint-disable complexity */
 export default function columnsConfig(props) {
 
-    let count = 0;
-
-
-    // const noCol = {
-    //     title:     <FormattedMessage id='report-orders-table.no' />,
-    //     align: 'left',
-    //     key: 'no',
-    //     width: defWidth.no,
-    //     render: () => count++
-    //     // render: (empty1, empty2, index) => ( <h4>{index+1+((filter.page-1)*25)}</h4>)
-    // };
+    const {fetchCashOrdersLogsReceipt} = props;
 
     const col1 = {
         title:     'logId',
@@ -63,6 +53,9 @@ export default function columnsConfig(props) {
     const col3 = {
         title:     'cashdeskDecumentId',
         dataIndex: 'cashdeskDecumentId',
+        render: (val) => (<a onClick={()=> {fetchCashOrdersLogsReceipt({receiptId: val})}}>
+            {val}
+        </a>)
     };
     const col4 = {
         title:     'totalSum',

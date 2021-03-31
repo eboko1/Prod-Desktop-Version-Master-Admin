@@ -6,6 +6,7 @@ import { Tabs, Table } from 'antd';
 import _ from 'lodash';
 
 // proj
+import {fetchCashOrdersLogsReceipt} from 'core/reports/reportCashOrdersLogs/duck';
 
 // own
 import mainTableColumnsConfig from './tableConfigs/mainTableConfig';
@@ -19,17 +20,20 @@ const mapStateToProps = state => ({
     cashdeskLogs: state.reportCashOrdersLogs.cashdeskLogs,
 });
 
-// const mapDispatchToProps = {};
+const mapDispatchToProps = {
+    fetchCashOrdersLogsReceipt
+};
 
 @connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 )
 @injectIntl
 export class ReportCashOrdersLogsTable extends Component {
     constructor(props) {
         super(props);
-        this.mainTableColumns = mainTableColumnsConfig();
+        const {fetchCashOrdersLogsReceipt} = props;
+        this.mainTableColumns = mainTableColumnsConfig({fetchCashOrdersLogsReceipt});
         this.paymentTableConfig = paymentsTableColumnsConfig();
         this.productsTableConfig = productsTableColumnsConfig();
     }
@@ -60,16 +64,15 @@ export class ReportCashOrdersLogsTable extends Component {
 
     render() {
         const {
-            cashdeskLogs
+            cashdeskLogs,
+            fetchCashOrdersLogsReceipt
         } = this.props;
 
         //We need to upade props (needed for child components)
-        this.mainTableColumns = mainTableColumnsConfig();
+        this.mainTableColumns = mainTableColumnsConfig({fetchCashOrdersLogsReceipt});
         this.paymentTableConfig = paymentsTableColumnsConfig();
         this.productsTableConfig = productsTableColumnsConfig();
 
-        console.log("\n\n\nMy data: ", cashdeskLogs);
-        
 
         const pagination = {
             pageSize:         25,
