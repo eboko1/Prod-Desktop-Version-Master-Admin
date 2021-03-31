@@ -27,6 +27,7 @@ import { saga as reportClientDebtsSaga } from 'core/reports/reportClientDebts/sa
 import { saga as reportLoadKPISaga } from 'core/reports/reportLoadKPI/saga';
 import { saga as reportAnalyticsSaga } from 'core/reports/reportAnalytics/saga';
 import { saga as reportCashFlowSaga } from 'core/reports/reportCashFlow/saga';
+// import { saga as reportCashOrdersLogsSaga } from 'core/reports/reportCashOrdersLogs/saga';
 
 // containers
 import { saga as dashboardSaga } from 'core/dashboard/saga';
@@ -118,6 +119,7 @@ export default function* rootSaga() {
         reportClientDebtsSaga(),
         reportLoadKPISaga(),
         reportCashFlowSaga(),
+        // reportCashOrdersLogsSaga(),
         
         clientRequisitesSaga(),
         orderTaskFormSaga(),
