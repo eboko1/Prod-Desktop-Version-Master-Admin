@@ -191,24 +191,34 @@ export default class BarcodeContainer extends Component {
 			const vehicle = await fetchAPI('GET', `clients/vehicles/${barcodeData.referenceId}`);
 			const client = await fetchAPI('GET', `clients/${vehicle.clientId}`);
 
-			const response = await fetchAPI('POST', `orders`, null, {
-				clientId: vehicle.clientId,
-				clientVehicleId: vehicle.id,
-				duration: 0.5,
-				clientPhone: client.phones[0],
-				stationLoads: [{
-					beginDatetime: moment().startOf('hour').toISOString(),
+			const response = await fetchAPI(
+				'POST',
+				`orders`,
+				null,
+				{
+					clientId: vehicle.clientId,
+					clientVehicleId: vehicle.id,
 					duration: 0.5,
-					status: "TO_DO",
-				}],
-				status: 'not_complete',
-				managerId: user.id,
-				beginDatetime: moment().startOf('hour').toISOString(),
-			});
-			if(response.created) {
+					clientPhone: client.phones[0],
+					stationLoads: [{
+						beginDatetime: moment().startOf('hour').toISOString(),
+						duration: 0.5,
+						status: "TO_DO",
+					}],
+					status: 'not_complete',
+					managerId: user.id,
+					beginDatetime: moment().startOf('hour').toISOString(),
+				}, 
+				{handleErrorInternally: true}
+			);
+			if(response && response.created) {
 				history.push({
 					pathname: `${book.order}/${response.created[0].id}`,
 				});
+			} else {
+				notification.error({
+					message: response.message
+				})
 			}
 		}
 	}
@@ -301,7 +311,7 @@ export default class BarcodeContainer extends Component {
 				};
 			}
 			const response = await fetchAPI('POST', `store_docs`, null, payload);
-			if(response.created) {
+			if(response && response.created) {
 				notification.success({
 					message: `Успешно`,
 				});
