@@ -10,6 +10,7 @@ import _ from "lodash";
 
 // proj
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import { fetchCashOrdersLogs } from 'core/reports/reportCashOrdersLogs/duck';
 import { ReportCashOrdersLogsTable } from 'components';
 
 import { Layout, StyledButton } from "commons";
@@ -26,6 +27,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     setModal,
     resetModal,
+    fetchCashOrdersLogs
 };
 
 @connect(
@@ -39,8 +41,7 @@ export default class ReportOrdersPage extends Component {
     }
 
     componentDidMount() {
-        // this.props.fetchReportOrders();
-        // this.props.fetchReportOrdersFilterOptions();
+        this.props.fetchCashOrdersLogs();
     }
 
 

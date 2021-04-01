@@ -9,8 +9,8 @@ import { withRouter } from 'react-router';
 
 // proj
 import { Catcher } from "commons";
-import { Barcode } from "components";
-import book from 'routes/book';
+import { StoreProductModal } from "modals";
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 // own
 import Styles from "./styles.m.css";
@@ -20,6 +20,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+    setModal,
+    resetModal,
 };
 
 
@@ -39,6 +41,8 @@ export default class SetBarcodeModal extends Component {
 			selectedRowId : undefined,
 			tables: [],
         };
+
+		this._addNewProduct = this._addNewProduct.bind(this);
 
 		this.columns = [
 			{
@@ -122,6 +126,11 @@ export default class SetBarcodeModal extends Component {
         await this._hideModal();
     }
 
+	_addNewProduct = async (id) => {
+		await this.props.confirmAction(id);
+		this._hideModal();
+	}
+
 	componentDidUpdate(prevProps, prevState) {
 		if(this.props.visible && !prevProps.visible) {
             this._showModal();
@@ -129,7 +138,7 @@ export default class SetBarcodeModal extends Component {
 	}
 	
     render() {
-        const { user, intl: { formatMessage }, history, visible } = this.props;
+        const { user, intl: { formatMessage }, barcode, visible, setModal } = this.props;
 		const {  modalInput, modalVisible, confirmAction, modalData, selectedRowId } = this.state;
 		
         return (
@@ -140,11 +149,11 @@ export default class SetBarcodeModal extends Component {
 						minWidth: 580,
 					}}
 					width={'fit-content'}
-                    title={<FormattedMessage id="Список" />}
+                    title={<FormattedMessage id="barcode.search" />}
                     onCancel={this._hideModal}
 					onOk={this._handleOk}
                     destroyOnClose
-					zIndex={500}
+					zIndex={300}
 					okButtonProps={{
 						disabled: !selectedRowId,
 					}}
@@ -152,11 +161,25 @@ export default class SetBarcodeModal extends Component {
 					<div className={Styles.modalInput}>
 						<Input
 							autoFocus
-							placeholder={formatMessage({id: 'Поиск по полям'})}
+							placeholder={formatMessage({id: 'barcode.search_by_fields'})}
 							value={modalInput}
 							onChange={({target})=>{
 								this.setState({
 									modalInput: target.value,
+								})
+							}}
+						/>
+						<Icon
+							type='plus'
+							style={{
+								fontSize: 18,
+								marginLeft: 8,
+							}}
+							onClick={()=>{
+								this._hideModal();
+								setModal(MODALS.STORE_PRODUCT, {
+									barcode: barcode,
+									onSubmit: this._addNewProduct,
 								})
 							}}
 						/>
@@ -199,6 +222,7 @@ export default class SetBarcodeModal extends Component {
 						/>
 					</div>
 				</Modal>
+				<StoreProductModal/>
             </Catcher>
         );
     }

@@ -111,10 +111,10 @@ export default class Barcode extends Component {
         const options = _.get(this.props, 'options', {});
 
         let code = scanedCode || "SCAN YOUR CODE";
-        if(scanedCode && prefix) {
+        if(Boolean(scanedCode) && !(/\w+-\d+\-\w+/).test(scanedCode) && prefix) {
             code = `${prefix}-${user.businessId}-${code}`
         }
-
+        
         try {
             JsBarcode(`#${id}`, code, {
                 ...defaultOptions,
@@ -205,12 +205,15 @@ export default class Barcode extends Component {
     }
 
     render() {
-        const { displayBarcode, iconStyle, button, disabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon, multipleMode } = this.props;
+        const { displayBarcode, iconStyle, button, disabled: propsDisabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon, multipleMode } = this.props;
         const { visible, scanedCode, scanedInputValue } = this.state;
         const id = this.id;
         const iconType = enableScanIcon && !value
                             ? 'scan'
                             : 'barcode'; 
+
+        const disabled = propsDisabled || isForbidden(user, permissions.ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY);
+
         return !displayBarcode ? (
             <div >
                 {button ? 
@@ -263,7 +266,7 @@ export default class Barcode extends Component {
                             : null
                     }
                     width={'fit-content'}
-                    zIndex={500}
+                    zIndex={300}
                     bodyStyle={{ padding: 0}}
                 >
                     <div className={Styles.barcodeWrapp}>

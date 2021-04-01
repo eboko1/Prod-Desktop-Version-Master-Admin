@@ -8,7 +8,7 @@ import moment from 'moment';
 import { Numeral } from 'commons';
 
 // own
-import Styles from './styles.m.css';
+import Styles from './../styles.m.css';
 
 //Choose width for each col
 //It must be 100% of width in total!
@@ -36,55 +36,47 @@ const defWidth = {
 }
 
 /* eslint-disable complexity */
-export function columnsConfig(props) {
+export default function columnsConfig(props) {
 
     let count = 0;
 
 
-    const noCol = {
-        title:     <FormattedMessage id='report-orders-table.no' />,
-        align: 'left',
-        key: 'no',
-        width: defWidth.no,
-        render: () => count++
-        // render: (empty1, empty2, index) => ( <h4>{index+1+((filter.page-1)*25)}</h4>)
-    };
+    // const noCol = {
+    //     title:     <FormattedMessage id='report-orders-table.no' />,
+    //     align: 'left',
+    //     key: 'no',
+    //     width: defWidth.no,
+    //     render: () => count++
+    //     // render: (empty1, empty2, index) => ( <h4>{index+1+((filter.page-1)*25)}</h4>)
+    // };
 
     const col1 = {
-        title:     'ID',
-        dataIndex: 'id',
-    };
-
+        title: 'paymentId',
+        dataIndex: 'paymentId'
+    }
+   
     const col2 = {
-        title:     'Cash order number',
-        dataIndex: 'cashOrderNumber',
-    };
-
-    const col22 = {
-        title: 'Order number',
-        dataIndex: 'orderNumber'
+        title: 'code',
+        dataIndex: 'code'
     }
 
     const col3 = {
-        title:     'Data',
-        dataIndex: 'data',
-    };
+        title: 'name',
+        dataIndex: 'name'
+    }
 
     const col4 = {
-        title:     'Sum',
-        dataIndex: 'sum',
-    };
+        title: 'sum',
+        dataIndex: 'sum'
+    }
 
     const col5 = {
-        title:     'Fiscal',
-        dataIndex: 'fiscal',
-    };
-   
+        title: 'providedSum',
+        dataIndex: 'providedSum'
+    }
     return [
-        noCol,
         col1,
         col2,
-        col22,
         col3,
         col4,
         col5

@@ -45,8 +45,9 @@ import clientMRDsReducer, { moduleName as clientMRDsModule } from 'core/clientMR
 import reportOrdersReducer, { moduleName as reportOrdersModule } from 'core/reports/reportOrders/duck';
 import reportClientDebtsReducer, { moduleName as reportClientDebtsModule } from 'core/reports/reportClientDebts/duck';
 import reportLoadKPIReducer, { moduleName as reportLoadKPIModule } from 'core/reports/reportLoadKPI/duck';
-import reportAnalyticsReducer, {moduleName as reportAnalyticsModule} from 'core/reports/reportAnalytics/duck'
-import reportCashFlowReducer, {moduleName as reportCashFlowModule} from 'core/reports/reportCashFlow/duck'
+import reportAnalyticsReducer, {moduleName as reportAnalyticsModule} from 'core/reports/reportAnalytics/duck';
+import reportCashFlowReducer, {moduleName as reportCashFlowModule} from 'core/reports/reportCashFlow/duck';
+import reportCashOrdersLogsReducer, {moduleName as reportCashOrdersLogsModule} from 'core/reports/reportCashOrdersLogs/duck';
 
 import clientRequisiteReducer, { moduleName as clientRequisiteModule } from 'core/clientRequisite/duck';
 import chartReducer, { moduleName as chartModule } from 'core/chart/duck';
@@ -78,6 +79,9 @@ import paymentsReducer, {
 import warehousesReducer, {
     moduleName as warehousesModule,
 } from 'core/warehouses/duck';
+import brandsReducer, {
+    moduleName as brandsModule,
+} from 'core/brands/duck';
 import vehicleTypesReducer, {
     moduleName as vehicleTypesModule,
 } from 'core/vehicleTypes/duck';
@@ -112,6 +116,7 @@ const appState = {
     [ reportClientDebtsModule ]:    reportClientDebtsReducer,
     [ reportAnalyticsModule ]:      reportAnalyticsReducer,
     [ reportCashFlowModule ]:       reportCashFlowReducer,
+    [ reportCashOrdersLogsModule ]: reportCashOrdersLogsReducer,
     [ clientRequisiteModule ]:      clientRequisiteReducer,
     [ clientsModule ]:              clientsReducer,
     [ dashboardModule ]:            dashboardReducer,
@@ -135,6 +140,7 @@ const appState = {
     [ uiModule ]:                   uiReducer,
     [ vehicleNumberHistoryModule ]: vehicleNumberHistoryReducer,
     [ warehousesModule ]:           warehousesReducer,
+    [ brandsModule ]:               brandsReducer,
     [ vehicleTypesModule ]:         vehicleTypesReducer,
 };
 

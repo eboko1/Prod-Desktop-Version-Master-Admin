@@ -1,30 +1,78 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Table } from 'antd';
-
-// proj
-
-// own
-import { columnsConfig } from './config';
-import Styles from './styles.m.css';
+import { connect } from "react-redux";
+import { Tabs, Table } from 'antd';
 import _ from 'lodash';
 
+// proj
+import {fetchCashOrdersLogsReceipt} from 'core/reports/reportCashOrdersLogs/duck';
+
+// own
+import mainTableColumnsConfig from './tableConfigs/mainTableConfig';
+import paymentsTableColumnsConfig from './tableConfigs/paymetsTableConfig';
+import productsTableColumnsConfig from './tableConfigs/productsTableConfig';
+import Styles from './styles.m.css';
+
+const { TabPane } = Tabs;
+
+const mapStateToProps = state => ({
+    cashdeskLogs: state.reportCashOrdersLogs.cashdeskLogs,
+});
+
+const mapDispatchToProps = {
+    fetchCashOrdersLogsReceipt
+};
+
+@connect(
+    mapStateToProps,
+    mapDispatchToProps
+)
 @injectIntl
 export class ReportCashOrdersLogsTable extends Component {
     constructor(props) {
         super(props);
+        const {fetchCashOrdersLogsReceipt} = props;
+        this.mainTableColumns = mainTableColumnsConfig({fetchCashOrdersLogsReceipt});
+        this.paymentTableConfig = paymentsTableColumnsConfig();
+        this.productsTableConfig = productsTableColumnsConfig();
+    }
+
+    paymentsTable(paymets) {
+
+        return (
+            <Table
+                dataSource={ paymets }
+                columns={ this.paymentTableConfig }
+                pagination={false}
+                bordered
+            />
+        );
+    }
+
+    productsTable(prducts) {
+
+        return (
+            <Table
+                dataSource={ prducts }
+                columns={ this.productsTableConfig }
+                pagination={false}
+                bordered
+            />
+        );
     }
 
     render() {
-        // const {
-        //     // tableData,
-        //     // stats,
-        //     // loading,
-        // } = this.props;
+        const {
+            cashdeskLogs,
+            fetchCashOrdersLogsReceipt
+        } = this.props;
 
         //We need to upade props (needed for child components)
-        this.columns = columnsConfig();
+        this.mainTableColumns = mainTableColumnsConfig({fetchCashOrdersLogsReceipt});
+        this.paymentTableConfig = paymentsTableColumnsConfig();
+        this.productsTableConfig = productsTableColumnsConfig();
+
 
         const pagination = {
             pageSize:         25,
@@ -59,13 +107,26 @@ export class ReportCashOrdersLogsTable extends Component {
                 <Table
                     size='middle'
                     className={Styles.table}
-                    columns={ this.columns }
+                    columns={ this.mainTableColumns }
                     pagination={ pagination }
-                    dataSource={ testData }
+                    dataSource={ cashdeskLogs }
                     locale={ {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
-                    scroll={ { x: 1800, y: '50vh' } }
+                    expandedRowRender={(record) => {
+                        return (<div style={{backgroundColor: 'rgb(240, 240,240)',padding: '8px'}}>
+                            <Tabs tabPosition={"top"}>
+                                <TabPane tab="Products" key="products">
+                                    {this.productsTable(record.products)}
+                                </TabPane>
+
+                                <TabPane tab="Payments" key="payments">
+                                    {this.paymentsTable(record.payments)}
+                                </TabPane>
+                            </Tabs>
+                        </div>)
+                    }}
+                    scroll={ { x: 1800, y: '70vh' } }
                     rowKey={ record => record.orderId }
                     bordered
                 />

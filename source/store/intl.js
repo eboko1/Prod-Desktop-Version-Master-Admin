@@ -51,6 +51,7 @@ import ReportCashFlowPage from 'pages/Reports/ReportCashFlowPage/messages';
 import RepairMapSettingPage from 'pages/RepairMapSettingPage/messages';
 import Locations from 'pages/Locations/messages';
 import SyncImportExport from 'pages/SyncImportExport/messages';
+import ProductPage from 'pages/ProductPage/messages';
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
@@ -193,6 +194,7 @@ const messages = merge.all([
     RepairMapSettingPage,
     Locations,
     SyncImportExport,
+    ProductPage,
 
     // containers
     OrdersContainer,
