@@ -471,15 +471,13 @@ export default class BarcodeContainer extends Component {
         		childs: [
         			{
         				title: 'barcode.open_card',
-        				disabled: !isStoreProduct || true,
+        				disabled: !isStoreProduct,
 						onClick: async () => {
 							const barcodeData = await this._getByBarcode('STORE_PRODUCTS');
 							if(barcodeData) {
 								history.push({
-									pathname: book.products,
-									state: {
-										productId: barcodeData.referenceId,
-									}
+									pathname: `${book.product}/${barcodeData.referenceId}`,
+									
 								});
 							}
 						},
