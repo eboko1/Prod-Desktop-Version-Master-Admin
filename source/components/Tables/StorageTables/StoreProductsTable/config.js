@@ -1,12 +1,14 @@
 // vendor
 import React from 'react';
 import _ from 'lodash';
+import { Link } from 'react-router-dom';
 
 // proj
 import { MODALS } from 'core/modals/duck';
 import { ActionIcons } from 'commons/_uikit';
 import { permissions, isForbidden } from 'utils';
 import { Barcode } from 'components';
+import book from 'routes/book';
 
 export default props => {
     const editable = !isForbidden(
@@ -21,19 +23,24 @@ export default props => {
         dataIndex: 'code',
         width:     'auto',
         render:    (key, { id, name, code }) => (
-            <div
-                onClick={ () =>
-                    props.setModal(MODALS.STORE_PRODUCT, {
-                        id,
-                        name,
-                        code,
-                        editing: true,
-                    })
-                }
-            >
-                { code }
-            </div>
+            <Link to={ `${book.product}/${id}` }>
+               { code }
+            </Link>
         ),
+        // render:    (key, { id, name, code }) => (
+        //     <div
+        //         onClick={ () =>
+        //             props.setModal(MODALS.STORE_PRODUCT, {
+        //                 id,
+        //                 name,
+        //                 code,
+        //                 editing: true,
+        //             })
+        //         }
+        //     >
+        //         { code }
+        //     </div>
+        // ),
     };
 
     const name = {

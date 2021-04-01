@@ -35,7 +35,7 @@ export default {
                     key:      '/barcode',
                     link:     book.barcodePage,
                     disabled: user =>
-                        isForbidden(user, permissions.NEW_DOCUMENT),
+                        isForbidden(user, permissions.ACCESS_STORE_PRODUCT_BARCODE),
                     name: 'navigation.barcode',
                 },
                 {
