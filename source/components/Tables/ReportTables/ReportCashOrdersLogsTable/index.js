@@ -6,7 +6,10 @@ import { Tabs, Table } from 'antd';
 import _ from 'lodash';
 
 // proj
-import {fetchCashOrdersLogsReceipt} from 'core/reports/reportCashOrdersLogs/duck';
+import {
+    fetchCashOrdersLogsReceipt,
+    setCashOrdersLogsPage
+} from 'core/reports/reportCashOrdersLogs/duck';
 
 // own
 import mainTableColumnsConfig from './tableConfigs/mainTableConfig';
@@ -18,10 +21,13 @@ const { TabPane } = Tabs;
 
 const mapStateToProps = state => ({
     cashdeskLogs: state.reportCashOrdersLogs.cashdeskLogs,
+    stats: state.reportCashOrdersLogs.stats,
+    page: state.reportCashOrdersLogs.filter.page,
 });
 
 const mapDispatchToProps = {
-    fetchCashOrdersLogsReceipt
+    fetchCashOrdersLogsReceipt,
+    setCashOrdersLogsPage
 };
 
 @connect(
@@ -67,43 +73,23 @@ export class ReportCashOrdersLogsTable extends Component {
     render() {
         const {
             cashdeskLogs,
-            fetchCashOrdersLogsReceipt,
+            setCashOrdersLogsPage,
+            stats,
+            page
         } = this.props;
-
-        //We need to upade props (needed for child components)
-        this.mainTableColumns = mainTableColumnsConfig({fetchCashOrdersLogsReceipt});
-        this.paymentTableConfig = paymentsTableColumnsConfig();
-        this.productsTableConfig = productsTableColumnsConfig();
-
 
         const pagination = {
             pageSize:         25,
             size:             'large',
-            // total:            Math.ceil(stats.totalRowsCount / 25) * 25,
+            total:            Math.ceil(stats.totalRowsCount / 25) * 25,
             total:            100,
             hideOnSinglePage: true,
-            // current:          filter.page,
-            current:          1,
-            // onChange:         page => {
-            //     filterControls.setReportOrdersPage(page);
-            //     filterControls.fetchReportOrders();
-            // },
+            current:          page,
+            onChange:         page => {
+                setCashOrdersLogsPage({page});
+            },
         };
-
-        const testData = [];
-
-        for(let i = 0; i < 10; i++) {
-            testData.push({
-                id: 15342,
-                cashOrderNumber: '123',
-                orderNumber: 'MRD-1234-1234',
-
-                data: '12.10.2020',
-                sum: 100,
-                fiscal: 1234567890
-            });
-        }
-
+        
         return (
             <div className={Styles.paper}>
                 <Table
