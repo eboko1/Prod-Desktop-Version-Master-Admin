@@ -1,5 +1,6 @@
 .disabledIcon {
     color: var(--text2);
+    pointer-events: none !important;
     cursor: not-allowed !important;
 }
 

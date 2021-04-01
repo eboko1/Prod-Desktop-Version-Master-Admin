@@ -96,10 +96,10 @@ class DetailsTable extends Component {
                                                     name: product.name,
                                                     productCode: product.code,
                                                     supplierBrandId: product.brandId,
-                                                    //supplierId: product.brand.supplierId,
+                                                    supplierId: 0,
                                                     count: 1,
-                                                    price: 0,
-                                                    purchasePrice: 0,
+                                                    price: product.sellingPrice || 0,
+                                                    purchasePrice: product.purchasePrice || 0,
                                                 })
                                                 await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
                                                 await this.updateDataSource();
@@ -880,10 +880,10 @@ class DetailsTable extends Component {
                             name: product.name,
                             productCode: product.code,
                             supplierBrandId: product.brandId,
-                            //supplierId: product.brand.supplierId,
+                            supplierId: 0,
                             count: 1,
-                            price: 0,
-                            purchasePrice: 0,
+                            price: product.sellingPrice || 0,
+                            purchasePrice: product.purchasePrice || 0,
                         })
                         await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
                         await this.updateDataSource();

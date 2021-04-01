@@ -47,6 +47,7 @@ import { saga as cashSaga } from 'core/cash/saga';
 import { saga as suppliersSaga } from 'core/suppliers/saga';
 import { saga as paymentsSaga } from 'core/payments/saga';
 import { saga as warehousesSaga } from 'core/warehouses/saga';
+import { saga as brandsSaga } from 'core/brands/saga';
 
 // forms
 import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
@@ -64,7 +65,7 @@ import { saga as editClientFormSaga } from 'core/forms/editClientForm/saga';
 import { saga as settingSalaryFormSaga } from 'core/forms/settingSalaryForm/saga';
 import { saga as tecDocFormSaga } from 'core/forms/tecDocForm/saga';
 import { saga as servicesFormSaga } from 'core/forms/servicesForm/saga';
-import { saga as brandsSaga } from 'core/forms/brandsForm/saga';
+import { saga as brandsFormSaga } from 'core/forms/brandsForm/saga';
 import { saga as setDetailProductSaga } from 'core/forms/setDetailProduct/saga';
 import { saga as spreadBusinessSaga } from 'core/forms/spreadBusinessBrands/saga';
 import { saga as cashOrderFormSaga } from 'core/forms/cashOrderForm/saga';
@@ -130,6 +131,7 @@ export default function* rootSaga() {
         settingSalaryFormSaga(),
         suppliersSaga(),
         warehousesSaga(),
+        brandsSaga(),
         // storage
         storageStoreGroupsSaga(),
         storagePriceGroupsSaga(),
@@ -158,7 +160,7 @@ export default function* rootSaga() {
         // administration
         servicesFormSaga(),
         servicesSuggestions(),
-        brandsSaga(),
+        brandsFormSaga(),
         vehicleNumberHistorySaga(),
         setDetailProductSaga(),
         spreadBusinessSaga(),

@@ -929,7 +929,7 @@ class StorageDocumentPage extends Component {
                                 </>
                             }
                             <Barcode
-                                value={formData.barcode}
+                                value={formData.barcode || formData.documentNumber}
                                 iconStyle={{
                                     ...headerIconStyle,
                                 }}

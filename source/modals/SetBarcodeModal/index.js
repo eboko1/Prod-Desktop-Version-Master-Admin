@@ -126,19 +126,9 @@ export default class SetBarcodeModal extends Component {
         await this._hideModal();
     }
 
-	_addNewProduct = async ()=>{
-		const getProduct = async () => {
-			const barcodeData = await fetchAPI('GET', 'barcodes',{
-				barcode: this.props.barcode,
-			});
-			const productBarcode = barcodeData.find(({table})=>table == 'STORE_PRODUCTS');
-			if(productBarcode) {
-				await this.props.confirmAction(productBarcode.referenceId);
-				this._hideModal();
-			}
-		};
-
-		setTimeout(getProduct, 1000);
+	_addNewProduct = async (id) => {
+		await this.props.confirmAction(id);
+		this._hideModal();
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -159,7 +149,7 @@ export default class SetBarcodeModal extends Component {
 						minWidth: 580,
 					}}
 					width={'fit-content'}
-                    title={<FormattedMessage id="Список" />}
+                    title={<FormattedMessage id="barcode.search" />}
                     onCancel={this._hideModal}
 					onOk={this._handleOk}
                     destroyOnClose
@@ -171,7 +161,7 @@ export default class SetBarcodeModal extends Component {
 					<div className={Styles.modalInput}>
 						<Input
 							autoFocus
-							placeholder={formatMessage({id: 'Поиск по полям'})}
+							placeholder={formatMessage({id: 'barcode.search_by_fields'})}
 							value={modalInput}
 							onChange={({target})=>{
 								this.setState({
@@ -186,10 +176,10 @@ export default class SetBarcodeModal extends Component {
 								marginLeft: 8,
 							}}
 							onClick={()=>{
+								this._hideModal();
 								setModal(MODALS.STORE_PRODUCT, {
 									barcode: barcode,
 									onSubmit: this._addNewProduct,
-									
 								})
 							}}
 						/>
