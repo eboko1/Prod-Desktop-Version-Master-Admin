@@ -673,6 +673,7 @@ export default class BarcodeContainer extends Component {
 						/>
 						{table != 'STORE_PRODUCTS' 
 							? <Barcode
+								zIndex={500}
 								iconStyle={{
 									marginLeft: 14,
 									fontSize: 24,
