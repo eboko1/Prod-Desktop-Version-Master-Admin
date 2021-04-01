@@ -29,6 +29,10 @@ const CREATE_INVITE_ORDER = 'CREATE_INVITE_ORDER';
 const ORDERS_INVITE_MASS_MAILING = 'ORDERS_INVITE_MASS_MAILING';
 const ACCESS_FEEDBACK = 'ACCESS_FEEDBACK';
 
+// Barcode
+const ACCESS_STORE_PRODUCT_BARCODE = 'ACCESS_STORE_PRODUCT_BARCODE';
+const ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY = 'ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY';
+
 // Orders
 const ACCESS_ORDER_BODY = 'ACCESS_ORDER_BODY';
 const UPDATE_SUCCESS_ORDER = 'UPDATE_SUCCESS_ORDER';
@@ -249,6 +253,9 @@ export const permissions = Object.freeze({
     ORDERS_INVITE_MASS_MAILING,
     ACCESS_FEEDBACK,
 
+    ACCESS_STORE_PRODUCT_BARCODE,
+    ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY,
+
     ACCESS_ORDER_BODY,
     UPDATE_SUCCESS_ORDER,
     ACCESS_ORDER_LOCATIONS,
@@ -430,6 +437,7 @@ export const NEW_DOCUMENT_PERMISSIONS = 'NEW_DOCUMENT_PERMISSIONS';
 export const DASHBOARD_PERMISSIONS = 'DASHBOARD_PERMISSIONS';
 export const LOCATIONS_PERMISSIONS = 'LOCATIONS_PERMISSIONS';
 export const ORDERS_LIST_PERMISSIONS = 'ORDERS_LIST_PERMISSIONS';
+export const BARCODE_PERMISSIONS = 'BARCODE_PERMISSIONS';
 export const ORDERS_PERMISSIONS = 'ORDERS_PERMISSIONS';
 export const ORDER_ICONS_PERMISSIONS = 'ORDER_ICONS_PERMISSIONS';
 export const DIAGNOSTIC_PERMISSIONS = 'DIAGNOSTIC_PERMISSIONS';
@@ -478,6 +486,10 @@ export const groupedPermissions = {
         CREATE_INVITE_ORDER,
         ORDERS_INVITE_MASS_MAILING,
         ACCESS_FEEDBACK,
+    ],
+    [ BARCODE_PERMISSIONS ]: [
+        ACCESS_STORE_PRODUCT_BARCODE,
+        ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY,
     ],
     [ ORDERS_PERMISSIONS ]: [
         ACCESS_ORDER_BODY,
@@ -685,6 +697,7 @@ export const getGroupsLabels = intl => ({
     [ LOCATIONS_PERMISSIONS ]:                      intl.formatMessage({ id: 'roles.LOCATIONS_PERMISSIONS' }),
     [ ORDERS_LIST_PERMISSIONS ]:                    intl.formatMessage({ id: 'roles.ORDERS_LIST_PERMISSIONS' }),
     [ ORDERS_PERMISSIONS ]:                         intl.formatMessage({ id: 'roles.ORDERS_PERMISSIONS' }),
+    [ BARCODE_PERMISSIONS ]:                        intl.formatMessage({ id: 'roles.BARCODE_PERMISSIONS' }),
     [ ORDER_ICONS_PERMISSIONS ]:                    intl.formatMessage({ id: 'roles.ORDER_ICONS_PERMISSIONS' }),
     [ DIAGNOSTIC_PERMISSIONS ]:                     intl.formatMessage({ id: 'roles.DIAGNOSTIC_PERMISSIONS' }),
     [ LABORS_PERMISSIONS ]:                         intl.formatMessage({ id: 'roles.LABORS_PERMISSIONS' }),
@@ -728,6 +741,10 @@ export const getPermissionsLabels = intl => ({
     [ CREATE_INVITE_ORDER ]:        intl.formatMessage({ id: 'roles.CREATE_INVITE_ORDER' }),
     [ ORDERS_INVITE_MASS_MAILING ]: intl.formatMessage({ id: 'roles.ORDERS_INVITE_MASS_MAILING' }),
     [ ACCESS_FEEDBACK ]:            intl.formatMessage({ id: 'roles.ACCESS_FEEDBACK' }),
+
+
+    [ ACCESS_STORE_PRODUCT_BARCODE ]:                   intl.formatMessage({ id: 'roles.ACCESS_STORE_PRODUCT_BARCODE' }),
+    [ ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY ]:     intl.formatMessage({ id: 'roles.ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY' }),
 
     [ ACCESS_ORDER_BODY ]:          intl.formatMessage({ id: 'roles.ACCESS_ORDER_BODY' }),
     [ UPDATE_SUCCESS_ORDER ]:       intl.formatMessage({ id: 'roles.UPDATE_SUCCESS_ORDER' }),

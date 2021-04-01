@@ -78,6 +78,9 @@ import paymentsReducer, {
 import warehousesReducer, {
     moduleName as warehousesModule,
 } from 'core/warehouses/duck';
+import brandsReducer, {
+    moduleName as brandsModule,
+} from 'core/brands/duck';
 import vehicleTypesReducer, {
     moduleName as vehicleTypesModule,
 } from 'core/vehicleTypes/duck';
@@ -135,6 +138,7 @@ const appState = {
     [ uiModule ]:                   uiReducer,
     [ vehicleNumberHistoryModule ]: vehicleNumberHistoryReducer,
     [ warehousesModule ]:           warehousesReducer,
+    [ brandsModule ]:               brandsReducer,
     [ vehicleTypesModule ]:         vehicleTypesReducer,
 };
 

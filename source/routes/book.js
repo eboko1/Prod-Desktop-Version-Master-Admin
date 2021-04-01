@@ -74,6 +74,8 @@ const book = Object.freeze({
     productsGroups:           '/products-groups',
     priceGroups:              '/price-groups',
     products:                 '/products',
+    product:                  '/product',
+    productPage:              '/product/:id',
     storageOrders:            '/storage-orders',
     storageIncomes:           '/storage-incomes',
     storageExpenses:          '/storage-expenses',

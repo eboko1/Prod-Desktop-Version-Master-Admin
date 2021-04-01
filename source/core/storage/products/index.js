@@ -238,18 +238,18 @@ export const fetchProductSuccess = product => ({
     payload: product,
 });
 
-export const createProduct = product => ({
+export const createProduct = (product, func) => ({
     type:    CREATE_PRODUCT,
-    payload: product,
+    payload: { product, func },
 });
 
 export const createProductSuccess = () => ({
     type: CREATE_PRODUCT_SUCCESS,
 });
 
-export const updateProduct = product => ({
+export const updateProduct = (product, func) => ({
     type:    UPDATE_PRODUCT,
-    payload: product,
+    payload: { product, func },
 });
 
 export const updateProductSuccess = () => ({
@@ -466,23 +466,27 @@ export function* createProductSaga() {
     while (true) {
         try {
             const { payload } = yield take(CREATE_PRODUCT);
+            const { product, func } = payload;
             yield put(setProductsLoading(true));
             const response = yield call(
                 fetchAPI,
                 'POST',
                 '/store_products',
                 null,
-                _.omit(payload, 'barcode'),
+                _.omit(product, 'barcode'),
                 {
                     handleErrorInternally: true,
                 },
             );
-            if(response.created && payload.barcode) {
+            if(response.created && product.barcode) {
                 yield fetchAPI('POST', 'barcodes', undefined, [{
                     referenceId: String(response.id),
                     table: 'STORE_PRODUCTS',
-                    customCode: payload.barcode,
+                    customCode: product.barcode,
                 }])
+            }
+            if(func) {
+                yield func(response.id);
             }
             yield put(fetchProductsSuccess(response));
         } catch (error) {
@@ -498,16 +502,20 @@ export function* updateProductSaga() {
     while (true) {
         try {
             const { payload } = yield take(UPDATE_PRODUCT);
+            const { product, func } = payload;
             yield call(
                 fetchAPI,
                 'PUT',
-                `/store_products/${payload.id}`,
+                `/store_products/${product.id}`,
                 null,
-                _.omit(payload.product, 'barcode'),
+                _.omit(product.product, 'barcode'),
                 {
                     handleErrorInternally: true,
                 },
             );
+            if(func) {
+                yield func();
+            }
             yield put(updateProductSuccess());
         } catch (error) {
             yield put(setErrorMessage(error));

@@ -6,10 +6,12 @@ import { Button, Input, Modal, Icon, Table, notification } from "antd";
 import { permissions, isForbidden, fetchAPI } from "utils";
 import moment from "moment";
 import { withRouter } from 'react-router';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 // proj
 import { Catcher } from "commons";
 import { Barcode } from "components";
+import { StoreProductModal } from "modals";
 import book from 'routes/book';
 
 // own
@@ -20,6 +22,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+	setModal,
+    resetModal,
 };
 
 
@@ -231,15 +235,22 @@ export default class BarcodeContainer extends Component {
 					name: product.name,
 					productCode: product.code,
 					supplierBrandId: product.brandId,
-					//supplierId: product.brand.supplierId,
+					supplierId: 0,
 					count: 1,
 					price: 0,
 					purchasePrice: 0,
 				})
 			} else if(barcodeData.table == 'LABORS') {
+				const { labor } = await fetchAPI('GET', `labors/${barcodeData.referenceId}`);
 				activeTab = 'services';
 				payload.services.push({
-					serviceId: barcodeData.referenceId,
+					serviceId: labor[0].laborId,
+					serviceName: labor[0].name || labor[0].defaultName,
+					employeeId: this.props.defaultEmployeeId,
+					serviceHours: 0,
+					purchasePrice: 0,
+					count: Number(labor[0].normHours) || 0,
+					servicePrice: Number(labor[0].price) || this.props.normHourPrice,
 				})
 			}
 
@@ -254,7 +265,6 @@ export default class BarcodeContainer extends Component {
 	_productStorageOperation = async (action) => {
 		const warehouses = await fetchAPI('GET', `warehouses`);
 		const barcodeData = await this._getByBarcode('STORE_PRODUCTS');
-		console.log(warehouses);
 		if(barcodeData) {
 			let payload = {}
 			if(action == 'TO_TOOL') {
@@ -328,8 +338,8 @@ export default class BarcodeContainer extends Component {
 	}
 	
     render() {
-        const { user, intl: { formatMessage }, history } = this.props;
-		const { inputCode, modalInput, modalVisible, confirmAction, modalData, selectedRowId, tables } = this.state;
+        const { user, intl: { formatMessage }, history, setModal } = this.props;
+		const { inputCode, modalInput, modalVisible, confirmAction, modalData, selectedRowId, tables, table } = this.state;
 		const isValidCode = Boolean(inputCode) && (/\w+-\d+\-\w+/).test(inputCode);
 		const prefix = inputCode.slice(0, 3);
 		const isOrder = isValidCode && prefix == 'MRD' && inputCode.length == 15,
@@ -340,40 +350,40 @@ export default class BarcodeContainer extends Component {
 
         const pageData = [
         	{
-        		title: 'Присвоить',
+        		title: 'barcode.set_barcode',
         		childs: [
         			{
-        				title: 'Код товара',
+        				title: 'barcode.product_code',
         				disabled: !inputCode || isValidCode,
 						table: 'STORE_PRODUCTS',
 						onClick: this._showModal,
 						confirmAction: this._setBarcode,
         			},
         			{
-        				title: 'Код сотрудника',
+        				title: 'barcode.employee_code',
         				disabled: !inputCode || isValidCode,
 						table: 'EMPLOYEES',
 						onClick: this._showModal,
 						confirmAction: this._setBarcode,
         			},
         			{
-        				title: 'Код а/м',
+        				title: 'barcode.vehicle_code',
         				disabled: !inputCode || isValidCode,
 						table: 'CLIENTS_VEHICLES',
 						onClick: this._showModal,
 						confirmAction: this._setBarcode,
         			},
         			{
-        				title: 'Код ячейки',
+        				title: 'barcode.cell_code',
         				disabled: true,
         			}
         		]
         	},
         	{
-        		title: 'Документ',
+        		title: 'document',
         		childs: [
         			{
-        				title: 'Открыть',
+        				title: 'barcode.open_card',
         				disabled: !isOrder,
 						table: 'ORDERS',
 						onClick: () => {
@@ -381,7 +391,7 @@ export default class BarcodeContainer extends Component {
 						},
         			},
         			{
-        				title: 'Оплата',
+        				title: 'barcode.document.payment',
         				disabled: !isOrder,
 						onClick: () => {
 							history.push({
@@ -391,11 +401,11 @@ export default class BarcodeContainer extends Component {
 						},
         			},
         			{
-        				title: 'Возврат',
+        				title: 'barcode.document.return',
         				disabled: !isOrder || true,
         			},
         			{
-        				title: 'Диагностика',
+        				title: 'barcode.document.diagnostics',
         				disabled: !isOrder,
 						onClick: () => {
 							history.push({
@@ -405,7 +415,7 @@ export default class BarcodeContainer extends Component {
 						},
         			},
         			{
-        				title: 'Цех',
+        				title: 'barcode.document.workshop',
         				disabled: !isOrder,
 						onClick: () => {
 							history.push({
@@ -417,10 +427,10 @@ export default class BarcodeContainer extends Component {
         		]
         	},
         	{
-        		title: 'Автомобиль',
+        		title: 'vehicle',
         		childs: [
         			{
-        				title: 'Открыть карточку',
+        				title: 'barcode.open_card',
         				disabled: !isVehicle,
 						table: 'CLIENTS_VEHICLES',
 						onClick: async () => {
@@ -440,17 +450,17 @@ export default class BarcodeContainer extends Component {
 						},
         			},
         			{
-        				title: 'Создать н/з',
+        				title: 'barcode.vehicle.create_order',
         				disabled: !isVehicle,
 						onClick: this._createOrder,
         			},
         		]
         	},
         	{
-        		title: 'Товар',
+        		title: 'product',
         		childs: [
         			{
-        				title: 'Открыть карточку',
+        				title: 'barcode.open_card',
         				disabled: !isStoreProduct || true,
 						onClick: async () => {
 							const barcodeData = await this._getByBarcode('STORE_PRODUCTS');
@@ -465,27 +475,27 @@ export default class BarcodeContainer extends Component {
 						},
         			},
         			{
-        				title: 'Добавить в н/з',
+        				title: 'barcode.add_to_order',
         				disabled: !isStoreProduct,
 						table: 'ORDERS',
 						onClick: this._showModal,
 						confirmAction: ()=>this._addToOrder('STORE_PRODUCTS'),
         			},
 					{
-        				title: 'Принять на склад',
+        				title: 'barcode.product.reception',
         				disabled: !isStoreProduct,
 						table: 'STORE_DOCS',
 						onClick: this._showModal,
 						confirmAction: this._addToStoreDoc,
         			},
         			{
-        				title: 'Выдать в цех',
+        				title: 'barcode.product.to_repair',
 						onClick: this._productStorageOperation,
         				disabled: !isStoreProduct || true,
 						onClick: ()=>this._productStorageOperation('TO_REPAIR'),
         			},
         			{
-        				title: 'Вернуть из цеха',
+        				title: 'barcode.product.to_tool',
 						onClick: this._productStorageOperation,
         				disabled: !isStoreProduct || true,
 						onClick: ()=>this._productStorageOperation('TO_TOOL'),
@@ -493,10 +503,10 @@ export default class BarcodeContainer extends Component {
         		]
         	},
         	{
-        		title: 'Работа',
+        		title: 'labor',
         		childs: [
         			{
-        				title: 'Открыть карточку',
+        				title: 'barcode.open_card',
         				disabled: !isLabor,
 						table: 'LABORS',
 						onClick: async () => {
@@ -513,45 +523,29 @@ export default class BarcodeContainer extends Component {
 						},
         			},
         			{
-        				title: 'Добавить в н/з',
+        				title: 'barcode.add_to_order',
         				disabled: !isLabor,
 						table: 'ORDERS',
 						onClick: this._showModal,
 						confirmAction: ()=>this._addToOrder('LABORS'),
         			},
-        			{
-        				title: 'Начать в текущем н/з',
-        				disabled: !isLabor || true,
-        			},
-        			{
-        				title: 'Окончить в текущем н/з',
-        				disabled: !isLabor || true,
-        			},
-        			{
-        				title: 'Прервать в текущем н/з',
-        				disabled: !isLabor || true,
-        			}
         		]
         	},
         	{
-        		title: 'Сотрудник',
+        		title: 'employee',
         		childs: [
         			{
-        				title: 'Начать смену',
-        				disabled: !isEmployee || true,
+        				title: 'barcode.open_card',
+        				disabled: !isEmployee,
+						onClick: async () => {
+							const barcodeData = await this._getByBarcode('EMPLOYEES');
+							if(barcodeData) {
+								history.push({
+									pathname: `${book.employeesPage}/${barcodeData.referenceId}`,
+								});
+							}
+						},
         			},
-        			{
-        				title: 'Окончить смену',
-        				disabled: !isEmployee || true,
-        			},
-        			{
-        				title: 'Начать перерыв',
-        				disabled: !isEmployee || true,
-        			},
-        			{
-        				title: 'Окончить перерыв',
-        				disabled: !isEmployee || true,
-        			}
         		]
         	}
         ]
@@ -563,9 +557,12 @@ export default class BarcodeContainer extends Component {
 	                	<Input
 							autoFocus
 							allowClear
-	                		placeholder={formatMessage({id: 'Введите или отсканируйте штрих-код'})}
+	                		placeholder={formatMessage({id: 'barcode.scan_barcode'})}
 							value={inputCode}
 							onChange={async ({target})=>{
+								this.setState({
+									inputCode: target.value,
+								});
 								if(target.value) {
 									const barcodes = await fetchAPI('GET', 'barcodes',{
 										barcode: target.value,
@@ -573,12 +570,10 @@ export default class BarcodeContainer extends Component {
 									const tables = barcodes.map(({table})=>table);
 									this.setState({
 										tables: tables,
-										inputCode: target.value,
 									});
 								} else {
 									this.setState({
 										tables: [],
-										inputCode: target.value,
 									});
 								}
 							}}
@@ -646,7 +641,7 @@ export default class BarcodeContainer extends Component {
 						minWidth: 580,
 					}}
 					width={'fit-content'}
-                    title={<FormattedMessage id="Список" />}
+                    title={<FormattedMessage id="barcode.search" />}
                     onCancel={this._hideModal}
 					onOk={confirmAction}
                     destroyOnClose
@@ -658,7 +653,7 @@ export default class BarcodeContainer extends Component {
 					<div className={Styles.modalInput}>
 						<Input
 							autoFocus
-							placeholder={formatMessage({id: 'Поиск по полям'})}
+							placeholder={formatMessage({id: 'barcode.search_by_fields'})}
 							value={modalInput}
 							onChange={({target})=>{
 								this.setState({
@@ -666,18 +661,44 @@ export default class BarcodeContainer extends Component {
 								})
 							}}
 						/>
-						<Barcode
-							iconStyle={{
-								marginLeft: 14,
-								fontSize: 24,
-							}}
-							value={modalInput}
-							onConfirm={(value)=>
-								this.setState({
-									modalInput: value,
-								})
-							}
-						/>
+						{table != 'STORE_PRODUCTS' 
+							? <Barcode
+								iconStyle={{
+									marginLeft: 14,
+									fontSize: 24,
+								}}
+								value={modalInput}
+								onConfirm={(value)=>
+									this.setState({
+										modalInput: value,
+									})
+								}
+							/>
+							: <Icon
+								type='plus'
+								style={{
+									marginLeft: 14,
+									fontSize: 24,
+								}}
+								onClick={()=>{
+									setModal(MODALS.STORE_PRODUCT, {
+										barcode: inputCode,
+										onSubmit: async () => {
+											const barcodes = await fetchAPI('GET', 'barcodes',{
+												barcode: inputCode,
+											});
+											const tables = barcodes.map(({table})=>table);
+											this.setState({
+												tables: tables,
+											});
+										}
+									});
+									this.setState({
+										modalVisible: false,
+									})
+								}}
+							/>
+						}
 					</div>
 					<div>
 						<Table 
@@ -717,6 +738,7 @@ export default class BarcodeContainer extends Component {
 						/>
 					</div>
 				</Modal>
+				<StoreProductModal/>
             </Catcher>
         );
     }
