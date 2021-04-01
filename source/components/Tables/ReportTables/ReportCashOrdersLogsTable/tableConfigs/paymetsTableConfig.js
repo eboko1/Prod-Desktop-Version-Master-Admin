@@ -1,16 +1,7 @@
 // vendor
 import React from 'react';
-import { Input } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import moment from 'moment';
 
-// proj
-import { Numeral } from 'commons';
-
-// own
-import Styles from './../styles.m.css';
-
-/* eslint-disable complexity */
 export default function columnsConfig(props) {
 
     const paymentIdCol = {

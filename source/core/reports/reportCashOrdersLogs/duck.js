@@ -79,11 +79,6 @@ export const fetchCashOrdersLogsReceipt = ({receiptId}) => ({
     payload: {receiptId}
 });
 
-// export const setCashOrdersLogsPage = ({page}) => ({
-//     type: SET_CASH_ORDERS_LOGS_PAGE,
-//     payload: {page}
-// });
-
 export const setCashOrdersLogsPage = ({page}) => {
     return function(dispatch) {
         dispatch({

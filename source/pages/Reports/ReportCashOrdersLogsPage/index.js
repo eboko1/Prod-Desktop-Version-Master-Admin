@@ -9,15 +9,11 @@ import _ from "lodash";
 
 
 // proj
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { fetchCashOrdersLogs } from 'core/reports/reportCashOrdersLogs/duck';
 import { ReportCashOrdersLogsTable } from 'components';
 
-import { Layout, StyledButton } from "commons";
+import { Layout } from "commons";
 import { isForbidden, permissions } from "utils";
-
-// own
-import Styles from "./styles.m.css";
 
 const mapStateToProps = state => ({
     tableData: state.reportOrders.tableData,
@@ -25,8 +21,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    setModal,
-    resetModal,
     fetchCashOrdersLogs
 };
 

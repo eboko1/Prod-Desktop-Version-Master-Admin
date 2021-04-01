@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from "react-redux";
 import { Tabs, Table } from 'antd';
+import { v4 } from 'uuid';
 import _ from 'lodash';
 
 // proj
@@ -53,6 +54,7 @@ export class ReportCashOrdersLogsTable extends Component {
                 dataSource={ paymets }
                 columns={ this.paymentTableConfig }
                 pagination={false}
+                rowKey={ () => v4() }
                 bordered
             />
         );
@@ -65,6 +67,7 @@ export class ReportCashOrdersLogsTable extends Component {
                 dataSource={ prducts }
                 columns={ this.productsTableConfig }
                 pagination={false}
+                rowKey={ () => v4() }
                 bordered
             />
         );
@@ -89,7 +92,7 @@ export class ReportCashOrdersLogsTable extends Component {
                 setCashOrdersLogsPage({page});
             },
         };
-        
+
         return (
             <div className={Styles.paper}>
                 <Table
@@ -115,7 +118,7 @@ export class ReportCashOrdersLogsTable extends Component {
                         </div>)
                     }}
                     scroll={ { x: 1800, y: '70vh' } }
-                    rowKey={ record => record.orderId }
+                    rowKey={ () => v4() }
                     bordered
                 />
             </div>
