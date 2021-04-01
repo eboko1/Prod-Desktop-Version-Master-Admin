@@ -2,6 +2,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Button, Icon, Popconfirm, Tooltip } from 'antd';
+import { permissions, isForbidden } from 'utils';
 
 //proj
 import { images } from 'utils';
@@ -14,10 +15,11 @@ import { images } from 'utils';
  * @param {*} onClick event handler
  * @returns Component (Icon)
  */
-function generateIcon(icon, onClick) {
+function generateIcon(icon, onClick, user) {
 	return (
 		<Button
 			onClick={onClick}
+			disabled= {isForbidden(user, permissions.ACCESS_OTHER_OPERATION_RST)}
 		>
 			<div
 				style={ {
@@ -34,6 +36,10 @@ function generateIcon(icon, onClick) {
 
 /* eslint-disable complexity */
 export function columnsConfig(props) {
+	const {
+		user
+	} = props;
+
 	const numberCol = {
 		title: '№',
 		dataIndex: 'id',
@@ -99,7 +105,7 @@ export function columnsConfig(props) {
 		key: 'openShiftCol',
 		render: (rst, obj) => {
 			return rst
-				? generateIcon(images.openLockIcon, () => props.openShift(obj.id))
+				? generateIcon(images.openLockIcon, () => props.openShift(obj.id), user)
 				: null;
 		},
 	}
@@ -112,7 +118,7 @@ export function columnsConfig(props) {
 			return rst
 				? generateIcon(images.cashboxIcon, () => {
 					props.onOpenServiceInputModal(obj.id);
-				})
+				}, user)
 				: null;
 		},
 	}
@@ -123,7 +129,7 @@ export function columnsConfig(props) {
 		key: 'xReportCol',
 		render: (rst, obj) => {
 			return rst
-				? generateIcon(images.reportIcon, () => props.fetchXReport(obj.id))
+				? generateIcon(images.reportIcon, () => props.fetchXReport(obj.id), user)
 				: null;
 		},
 	}
@@ -134,7 +140,7 @@ export function columnsConfig(props) {
 		key: 'zReportCol',
 		render: (rst, obj) => {
 			return rst
-				? generateIcon(images.closedLockIcon, () => props.closeShift(obj.id))
+				? generateIcon(images.closedLockIcon, () => props.closeShift(obj.id), user)
 				: null;
 		},
 	}

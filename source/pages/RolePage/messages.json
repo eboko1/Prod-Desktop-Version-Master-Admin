@@ -215,7 +215,12 @@
         "roles.ACCESS_API_AVAILABILITY": "API - Availability - Access",
         "roles.ACCESS_API_EXPENSE_ORDER": "API - Order - send",
         "roles.ACCESS_API_INCOME_ORDER": "API - Arrival - Get",
-        "roles.GRANT": "Grant"
+        "roles.GRANT": "Grant",
+        "roles.ACCESS_OTHER_OPERATION_RST": "RST - Other operations (opening / closing shift, returns, service deposits, x-reports)",
+        "roles.ACCESS_CASHBOX_CRUD": "RST - Cashbox RST - CRUD",
+        "roles.ACCESS_CASHIER_CRUD": "RST - Employees - CRUD",
+        "roles.ACCESS_SALE_RST": "RST - Sales",
+        "roles.ACCESS_CASHBOX_RST_LOGS": "RST - access to RST logs"
     },
     "ru": {
         "roles": "Роли",
@@ -433,7 +438,12 @@
         "roles.ACCESS_API_AVAILABILITY": "API - Наличие - доступ",
         "roles.ACCESS_API_EXPENSE_ORDER": "API - Заказ - отправить",
         "roles.ACCESS_API_INCOME_ORDER": "API - Приход - получить",
-        "roles.GRANT": "Грант"
+        "roles.GRANT": "Грант",
+        "roles.ACCESS_OTHER_OPERATION_RST": "РРО - Операции другие(открытие / закрытие смены, возвраты, служебные внесения, х-отчеты)",
+        "roles.ACCESS_CASHBOX_CRUD": "РРО - Касса РРО - CRUD",
+        "roles.ACCESS_CASHIER_CRUD": "РРО - Сотрудники - CRUD",
+        "roles.ACCESS_SALE_RST": "РРО - Продажи",
+        "roles.ACCESS_CASHBOX_RST_LOGS": "РРО - доступ к логам РРО"
     },
     "uk": {
         "roles": "Ролі",
@@ -651,6 +661,11 @@
         "roles.ACCESS_API_AVAILABILITY": "API - Наличие - доступ",
         "roles.ACCESS_API_EXPENSE_ORDER": "API - Заказ - отправить",
         "roles.ACCESS_API_INCOME_ORDER": "API - Приход - получить",
-        "roles.GRANT": "Грант"
+        "roles.GRANT": "Грант",
+        "roles.ACCESS_OTHER_OPERATION_RST": "РРО - Операції інші (відкриття / закриття зміни, повернення, службові внесення, х-звіти)",
+        "roles.ACCESS_CASHBOX_CRUD": "РРО - Каса РРО - CRUD",
+        "roles.ACCESS_CASHIER_CRUD": "РРО - Працівники - CRUD",
+        "roles.ACCESS_SALE_RST": "РРО - Продажі",
+        "roles.ACCESS_CASHBOX_RST_LOGS": "РРО - доступ до логів РРО"
     }
 }

@@ -144,6 +144,7 @@ export class ToSuccessForm extends Component {
             remainPrice,
             cashboxes,
             storeDocId,
+            user,
         } = this.props;
 
         const {
@@ -231,11 +232,12 @@ export class ToSuccessForm extends Component {
                                 getFieldValue("withPayment"),
                             )}
                         >
-                            {cashboxes.map(({ id, name }) => (
-                                <Option value={id} key={id}>
+                            {cashboxes.map((obj) => {
+                                const { id, name, rst } = obj;
+                                return (<Option value={id} key={id} disabled={rst && isForbidden(user, permissions.ACCESS_SALE_RST)}>
                                     {name}
-                                </Option>
-                            ))}
+                                </Option>);
+                            })}
                         </DecoratedSelect>
                         <DecoratedCheckbox
                             field="partialPayment"

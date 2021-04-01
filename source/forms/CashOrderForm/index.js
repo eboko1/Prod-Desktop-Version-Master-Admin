@@ -872,11 +872,12 @@ export class CashOrderForm extends Component {
                         onSelect={this._onSelectCashbox}
                         disabled={printMode}
                     >
-                        {cashboxes.map(({ id, name }) => (
-                            <Option value={id} key={id}>
+                        {cashboxes.map((obj) => {
+                            const { id, name, rst } = obj;
+                            return (<Option value={id} key={id} disabled={rst && isForbidden(user, permissions.ACCESS_SALE_RST)}>
                                 {name}
-                            </Option>
-                        ))}
+                            </Option>);
+                        })}
                     </DecoratedSelect>
                     <DecoratedDatePicker
                         field="datetime"

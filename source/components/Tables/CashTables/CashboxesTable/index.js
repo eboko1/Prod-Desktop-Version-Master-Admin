@@ -46,6 +46,7 @@ export class CashboxesTable extends Component {
             openShift: props.openShift,
             closeShift: props.closeShift,
             fetchXReport: props.fetchXReport,
+            user: props.user,
         });
     }
 
