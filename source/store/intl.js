@@ -48,6 +48,7 @@ import ReportOrdersPage from 'pages/Reports/ReportOrdersPage/messages';
 import ReportAnalyticsPage from 'pages/Reports/ReportAnalyticsPage/messages';
 import ReportLoadKPIPage from 'pages/Reports/ReportLoadKPIPage/messages';
 import ReportCashFlowPage from 'pages/Reports/ReportCashFlowPage/messages';
+import ReportCashOrdersLogsPage from 'pages/Reports/ReportCashOrdersLogsPage/messages';
 import RepairMapSettingPage from 'pages/RepairMapSettingPage/messages';
 import Locations from 'pages/Locations/messages';
 import SyncImportExport from 'pages/SyncImportExport/messages';
@@ -190,6 +191,7 @@ const messages = merge.all([
     ReportAnalyticsPage,
     ReportLoadKPIPage,
     ReportCashFlowPage,
+    ReportCashOrdersLogsPage,
     RepairMapSettingPage,
     Locations,
     SyncImportExport,

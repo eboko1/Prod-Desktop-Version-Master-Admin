@@ -38,64 +38,66 @@ const defWidth = {
 /* eslint-disable complexity */
 export default function columnsConfig(props) {
 
-    const {fetchCashOrdersLogsReceipt} = props;
+    const {
+        fetchCashOrdersLogsReceipt,
+    } = props;
 
-    const col1 = {
-        title:     'logId',
+    const logIdCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.log_id"/>,
         dataIndex: 'logId',
     };
    
-    const col2 = {
-        title:     'operationType',
+    const operationTypeCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.operation_type"/>,
         dataIndex: 'operationType',
     };
 
-    const col3 = {
-        title:     'cashdeskDecumentId',
+    const CashdeskDocumentIdCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.cashdesk_document_id"/>,
         dataIndex: 'cashdeskDecumentId',
         render: (val) => (<a onClick={()=> {fetchCashOrdersLogsReceipt({receiptId: val})}}>
             {val}
         </a>)
     };
-    const col4 = {
-        title:     'totalSum',
+    const totalSumCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.total_sum"/>,
         dataIndex: 'totalSum',
     };
-    const col5 = {
-        title:     'cashInBox',
+    const cashInBoxCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.cash_in_box"/>,
         dataIndex: 'cashInBox',
     };
-    const col6 = {
-        title:     'serviceInput',
+    const serviceInputCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.service_input"/>,
         dataIndex: 'serviceInput',
     };
-    const col7 = {
-        title:     'serviceOutput',
+    const serviceOutputCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.service_output"/>,
         dataIndex: 'serviceOutput',
     };
-    const col8 = {
-        title:     'cashOrderId',
+    const cashOrderIdCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.cash_order_id"/>,
         dataIndex: 'cashOrderId',
     };
-    const col9 = {
-        title:     'fiscalNumber',
+    const fiscalNumberCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.fiscal_number"/>,
         dataIndex: 'fiscalNumber',
     };
-    const col10 = {
-        title:     'isDeposit',
+    const isDepositCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.is_deposit"/>,
         dataIndex: 'isDeposit',
     };
 
     return [
-        col1,
-        col2,
-        col3,
-        col4,
-        col5,
-        col6,
-        col7,
-        col8,
-        col9,
-        col10,
+        logIdCol,
+        operationTypeCol,
+        CashdeskDocumentIdCol,
+        totalSumCol,
+        cashInBoxCol,
+        serviceInputCol,
+        serviceOutputCol,
+        cashOrderIdCol,
+        fiscalNumberCol,
+        isDepositCol,
     ];
 }

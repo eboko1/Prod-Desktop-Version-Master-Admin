@@ -10,96 +10,71 @@ import { Numeral } from 'commons';
 // own
 import Styles from './../styles.m.css';
 
-//Choose width for each col
-//It must be 100% of width in total!
-const defWidth = {
-    no: '4%',
-    client_name: 'auto',
-    order_num: '10%',
-    status: '10%',
-
-    date_created: '6%',
-    date_appointment: '6%',
-    date_done: '6%',
-
-    sum_labors: '5%',
-    sum_parts: '5%',
-    sum_total: '5%',
-
-    profit_labors: '5%',
-    profit_parts: '5%',
-    profit_total: '5%',
-
-    margin_labors: '5%',
-    margin_parts: '5%',
-    margin_total: '5%'
-}
-
 /* eslint-disable complexity */
 export default function columnsConfig(props) {
-    const col1 = {
-        title:     'productId',
+    const productIdCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.product_id"/>,
         dataIndex: 'productId',
     };
    
-    const col2 = {
-        title:     'name',
+    const productNameCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.product_name"/>,
         dataIndex: 'name',
     };
 
-    const col3 = {
-        title:     'amount',
+    const productAmountCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.product_amount"/>,
         dataIndex: 'amount',
     };
-    const col4 = {
-        title:     'price',
+    const productPriceCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.product_price"/>,
         dataIndex: 'price',
     };
-    const col5 = {
-        title:     'cost',
+    const productCostCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.product_cost"/>,
         dataIndex: 'cost',
     };
-    const col6 = {
-        title:     'sumDiscount',
+    const productSumDiscountCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.product_sum_discount"/>,
         dataIndex: 'sumDiscount',
     };
-    const col7 = {
-        title:     'letters',
+    const productLettersCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.product_letters"/>,
         dataIndex: 'letters',
     };
-    const col8 = {
-        title:     'taxPervent',
+    const productTaxPercentageCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.product_tax_percentage"/>,
         dataIndex: 'taxPervent',
     };
-    const col9 = {
-        title:     'excisePervent',
+    const productExcisePercentageCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.product_excise_percentage"/>,
         dataIndex: 'excisePervent',
     };
-    const col10 = {
-        title:     'code',
+    const productCodeCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.product_code"/>,
         dataIndex: 'code',
     };
-    const col11 = {
-        title:     'unitCode',
+    const productUnitCodeCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.product_unit_code"/>,
         dataIndex: 'unitCode',
     };
-    const col12 = {
-        title:     'unitName',
+    const productUnitNameCol = {
+        title:     <FormattedMessage id="report_cash_orders_logs_page.product_unit_name"/>,
         dataIndex: 'unitName',
     };
 
     return [
-        col1,
-        col2,
-        col3,
-        col4,
-        col5,
-        col6,
-        col7,
-        col8,
-        col9,
-        col10,
-        col11,
-        col12,
+        productIdCol,
+        productNameCol,
+        productAmountCol,
+        productPriceCol,
+        productCostCol,
+        productSumDiscountCol,
+        productLettersCol,
+        productTaxPercentageCol,
+        productExcisePercentageCol,
+        productCodeCol,
+        productUnitCodeCol,
+        productUnitNameCol,
     ];
 }

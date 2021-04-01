@@ -32,8 +32,10 @@ const mapDispatchToProps = {
 export class ReportCashOrdersLogsTable extends Component {
     constructor(props) {
         super(props);
-        const {fetchCashOrdersLogsReceipt} = props;
-        this.mainTableColumns = mainTableColumnsConfig({fetchCashOrdersLogsReceipt});
+        const {
+            fetchCashOrdersLogsReceipt,
+        } = props;
+        this.mainTableColumns = mainTableColumnsConfig({ fetchCashOrdersLogsReceipt});
         this.paymentTableConfig = paymentsTableColumnsConfig();
         this.productsTableConfig = productsTableColumnsConfig();
     }
@@ -65,7 +67,7 @@ export class ReportCashOrdersLogsTable extends Component {
     render() {
         const {
             cashdeskLogs,
-            fetchCashOrdersLogsReceipt
+            fetchCashOrdersLogsReceipt,
         } = this.props;
 
         //We need to upade props (needed for child components)
@@ -116,11 +118,11 @@ export class ReportCashOrdersLogsTable extends Component {
                     expandedRowRender={(record) => {
                         return (<div style={{backgroundColor: 'rgb(240, 240,240)',padding: '8px'}}>
                             <Tabs tabPosition={"top"}>
-                                <TabPane tab="Products" key="products">
+                                <TabPane tab={<FormattedMessage id="report_cash_orders_logs_page.products"/>} key="products">
                                     {this.productsTable(record.products)}
                                 </TabPane>
 
-                                <TabPane tab="Payments" key="payments">
+                                <TabPane tab={<FormattedMessage id="report_cash_orders_logs_page.payments"/>} key="payments">
                                     {this.paymentsTable(record.payments)}
                                 </TabPane>
                             </Tabs>
