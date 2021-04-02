@@ -359,17 +359,20 @@ export function* printCashOrdersSaga() {
     while(true) {
         const {payload: cashOrderId} = yield take(REGISTER_CASH_ORDER_IN_CASHDESK);
 
+        const requestPayload = {
+            localNumber: cashOrderId
+        };
+
         try{
-            yield call(
-                fetchAPI,
-                'POST',
-                `/cashdesk/sale_or_return`,
-                null,
-                {
-                    localNumber: cashOrderId
-                },
-                { handleErrorInternally: true }
-            );
+            
+            const { pdf } =yield call(fetchAPI, 'POST', `/cashdesk/sale_or_return`, null, requestPayload, { handleErrorInternally: true });
+
+            //Unknown error, the only way to convert is to use uint8Array:
+            //https://stackoverflow.com/questions/21797299/convert-base64-string-to-arraybuffer
+            const bin = new Blob([Uint8Array.from(atob(pdf), c => c.charCodeAt(0))], {type: 'application/pdf'});
+
+            yield saveAs(bin, 'sale.pdf');
+
         } catch(err) {
             notification.error({
                 message: err.response.message

@@ -12,7 +12,7 @@ import moment from 'moment';
 import { Catcher, Numeral } from 'commons';
 import { Barcode } from "components";
 import { withReduxForm, isForbidden, permissions, goTo, fetchAPI } from "utils";
-import { DetailStorageModal } from "modals";
+import { DetailStorageModal, SetBarcodeModal } from "modals";
 import {MODALS} from 'core/modals/duck';
 import book from "routes/book";
 
@@ -68,6 +68,7 @@ class StorageDocumentForm extends Component {
                 children: "",
             },
             warning: false,
+            productBarcode: undefined,
         };
         this.hideModal = this.hideModal.bind(this);
         this.showModal = this.showModal.bind(this);
@@ -88,9 +89,10 @@ class StorageDocumentForm extends Component {
                 code,
                 name,
                 stockPrice,
-                priceGroup,
+                sellingPrice,
                 quantity,
                 tradeCode,
+                purchasePrice,
             } = detail;
             await this.props.addDocProduct({
                 productId: id,
@@ -99,12 +101,14 @@ class StorageDocumentForm extends Component {
                 brandId: brand.id,
                 tradeCode: tradeCode,
                 detailName: name,
-                stockPrice: Number(stockPrice || 0),
-                sellingPrice: Number((stockPrice || 0) * (priceGroup.multiplier || 1)),
-                quantity: quantity,
-                sum: quantity*stockPrice,
+                stockPrice: Number(purchasePrice || 0),
+                sellingPrice: Number(sellingPrice || 0),
+                quantity: quantity || 1,
             });
         } else {
+            this.setState({
+                productBarcode: barcode
+            })
             notification.warning({
                 message: 'Код не найден',
             });
@@ -163,21 +167,40 @@ class StorageDocumentForm extends Component {
        this.getClientOption();
     }
 
-    componentDidMount() {
+    componentDidMount = async () => {
         this._isMounted = true;
         const { location } = this.props;
         
         this.getClientOption();
         if(this._isMounted && location.productId) {
-            this.setState({
-                modalProductId: location.productId,
-                modalVisible: true,
-            })
+            const detail = await fetchAPI('GET', `store_products/${location.productId}`);
+            const {
+                id,
+                brand,
+                code,
+                name,
+                stockPrice,
+                priceGroup,
+                quantity,
+                tradeCode,
+            } = detail;
+            await this.props.addDocProduct({
+                productId: id,
+                detailCode: code,
+                brandName: brand.name,
+                brandId: brand.id,
+                tradeCode: tradeCode,
+                detailName: name,
+                stockPrice: Number(stockPrice || 0),
+                sellingPrice: Number((stockPrice || 0) * (priceGroup.multiplier || 1)),
+                quantity: quantity,
+                sum: quantity*stockPrice,
+            });
         }
     }
  
     render() {
-        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo, warning, modalProductId } = this.state;
+        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo, warning, modalProductId, productBarcode } = this.state;
         const {
             id,
             addDocProduct,
@@ -678,9 +701,43 @@ class StorageDocumentForm extends Component {
                         sellingPrice={type == EXPENSE}
                         maxOrdered={type == ORDER && documentType == ADJUSTMENT}
                         modalProductId={ modalProductId }
+                        setModal={ setModal }
                     /> 
                 : null}
             </div>
+            <SetBarcodeModal
+                visible={Boolean(productBarcode)}
+                barcode={productBarcode}
+                confirmAction={async (productId)=>{
+                    const detail = await fetchAPI('GET', `store_products/${productId}`);
+                    const {
+                        id,
+                        brand,
+                        code,
+                        name,
+                        purchasePrice,
+                        sellingPrice,
+                        quantity,
+                        tradeCode,
+                    } = detail;
+                    await this.props.addDocProduct({
+                        productId: id,
+                        detailCode: code,
+                        brandName: brand.name,
+                        brandId: brand.id,
+                        tradeCode: tradeCode,
+                        detailName: name,
+                        stockPrice: Number(purchasePrice || 0),
+                        sellingPrice: Number(sellingPrice || 0),
+                        quantity: quantity,
+                    });
+                }}
+                hideModal={()=>{
+                    this.setState({
+                        productBarcode: undefined,
+                    })
+                }}
+            />
             </div>
         );
     }
@@ -706,7 +763,7 @@ class DocProductsTable extends React.Component {
                                         disabled={this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_STOCK)}
                                         prefix={'STP'}
                                         onConfirm={(barcode, pefix, fullCode)=>{
-                                            this.props.addByBarcode(fullCode);
+                                            this.props.addByBarcode(barcode);
                                         }}
                                         multipleMode
                                     />
@@ -1128,7 +1185,7 @@ class AddProductModal extends React.Component {
     }
 
     getProductId(detailCode, brandId, productId) {
-        const { storageProducts, storageBalance, detailName, quantity, detailCode: stateDetailCode } = this.state;
+        const { storageProducts, storageBalance, detailName, quantity } = this.state;
         var storageProduct;
         if(productId) {
             storageProduct = storageProducts.find((elem)=>elem.id==productId);
@@ -1145,7 +1202,7 @@ class AddProductModal extends React.Component {
             storageBalance[6].count = storageProduct.max;
             storageBalance[7].count = storageProduct.quantity;
             this.setState({
-                detailCode: stateDetailCode || storageProduct.code,
+                detailCode: storageProduct.code,
                 groupId: storageProduct.groupId,
                 productId: storageProduct.id,
                 detailName: storageProduct.name,
@@ -1179,57 +1236,41 @@ class AddProductModal extends React.Component {
         }
     }
 
-    confirmAlertModal(productData) {
-        const { 
-            stockPrice,
-            quantity, 
-        } = this.state;
-
-        const {
-            brandId,
-            brandName,
-            detailCode,
-            detailName,
-            productId,
-            tradeCode,
-            sellingPrice,
-        } = productData;
-
-        if(!this.props.warning) {
-            this.props.addDocProduct({
-                productId: productId,
-                detailCode: detailCode,
-                brandName: brandName,
-                brandId: brandId,
-                tradeCode: tradeCode,
-                detailName: detailName,
-                stockPrice: stockPrice,
-                sellingPrice: sellingPrice,
-                quantity: quantity,
-                sum: quantity*stockPrice,
-            });
-            this.setState({
-                alertModalVisible: false,
-            });
-        } else {
-            this.props.editDocProduct(
-                this.props.product.key,
-                {
-                    productId: productId,
-                    detailCode: detailCode,
-                    brandName: brandName,
-                    brandId: brandId,
+    confirmAlertModal() {
+        const { setModal } = this.props;
+        const { detailCode, brandId, brandName } = this.state;
+        setModal(MODALS.STORE_PRODUCT, {
+            brandId: brandId,
+            brandName: brandName,
+            code: detailCode,
+            onSubmit: async (id) => {
+                const detail = await fetchAPI('GET', `store_products/${id}`);
+                const {
+                    brand,
+                    code,
+                    name,
+                    sellingPrice,
+                    quantity,
+                    tradeCode,
+                    purchasePrice,
+                } = detail;
+                await this.props.addDocProduct({
+                    productId: id,
+                    detailCode: code,
+                    brandName: brand.name,
+                    brandId: brand.id,
                     tradeCode: tradeCode,
-                    detailName: detailName,
-                    stockPrice: stockPrice,
-                    sellingPrice: sellingPrice,
-                    quantity: quantity,
-                    sum: quantity*stockPrice,
-                }
-            );
-        }
-        this.handleCancel();
-        this.getStorageProducts();
+                    detailName: name,
+                    stockPrice: Number(purchasePrice || 0),
+                    sellingPrice: Number(sellingPrice || 0),
+                    quantity: quantity || 1,
+                });
+                this.handleCancel();
+            }
+        });
+        this.setState({
+            alertModalVisible: false,
+        });
     }
 
     cancelAlertModal() {
@@ -1625,13 +1666,8 @@ class AddProductModal extends React.Component {
                 </div>
                 <AddStoreProductModal
                     alertVisible={alertModalVisible}
-                    brands={this.props.brands}
                     confirmAlertModal={this.confirmAlertModal}
                     cancelAlertModal={this.cancelAlertModal}
-                    storeGroupsTree={storeGroupsTree}
-                    warehouses={this.props.warehouses}
-                    warehouseId={this.props.warehouseId}
-                    user={this.props.user}
                     {...this.state}
                 >
                     <FormattedMessage id='storage_document.error.product_not_found'/>
@@ -1671,528 +1707,18 @@ const measureUnitsOptions = Object.freeze({
 
 @injectIntl
 export class AddStoreProductModal extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state={
-            visible: false,
-            detailCodeSearch: "",
-            brandSearchValue: "",
-            measureUnit: measureUnitsOptions.PIECE,
-            tradeCode: undefined,
-            certificate: undefined,
-            barcode: undefined,
-            priceGroupNumber: undefined,
-            priceGroups: [],
-            defaultWarehouseId: undefined,
-            storeInWarehouse: false,
-            multiplicity: 1,
-            min: 1,
-            max: 1,
-        }
-    }
-
-    getPriceGroups() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/price_groups`;
-        fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: token,
-            },
-        })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            that.setState({
-                priceGroups: data,
-            })
-        })
-        .catch(function(error) {
-            console.log("error", error);
-        });
-    }
-
-    ordersAppurtenancies(orderIds = [], productId, code, brandId) {
-        const postData = [];
-        if(orderIds.length) {
-            postData.push({
-                ordersAppurtenancies: [...orderIds],
-                productId: productId
-            });
-        } else {
-            postData.push({
-                checkEverywhere: true,
-                productId: productId,
-                code: code,
-                brandId: brandId,
-            });
-        }
-
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/orders/update_orders_appurtenancies_from_stock`;
-        fetch(url, {
-            method: "PUT",
-            headers: {
-                Authorization: token,
-            },
-            body: JSON.stringify(postData)
-        })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-        })
-        .catch(function(error) {
-            console.log("error", error);
-        });
-    }
-
-    postStoreProduct = async () => {
-        const { intl: {formatMessage} } = this.props;
-        const {
-            brandId,
-            detailCode,
-            groupId,
-            detailName,
-            measureUnit,
-            priceGroupNumber,
-            tradeCode,
-            brandName,
-            certificate,
-            barcode,
-            defaultWarehouseId,
-            multiplicity,
-            min,
-            max,
-            storeInWarehouse,
-            ordersAppurtenancies,
-        } = this.state;
-
-        if(!brandId || !detailCode || !groupId || !detailName) {
-            notification.error({
-                message: formatMessage({id: 'storage_document.error.required_fields'}), 
-            });
-            return;
-        }
-
-        const postData = {
-            name: detailName,
-            groupId: groupId,
-            code: detailCode,
-            brandId: brandId,
-            measureUnit: measureUnit,
-            tradeCode: tradeCode,
-            certificate: certificate,
-            priceGroupNumber: priceGroupNumber,
-            defaultWarehouseId: defaultWarehouseId,
-        }
-
-        if(storeInWarehouse) {
-            postData.min = min*multiplicity;
-            postData.max = max*multiplicity;
-        }
-        const response = await fetchAPI('POST', 'store_products', null, postData);
-        if(response.created && barcode) {
-            await fetchAPI('POST', 'barcodes', undefined, [{
-                referenceId: response.id,
-                table: 'STORE_PRODUCTS',
-                customCode: barcode,
-            }])
-        }
-        await this.setState({visible: false});
-        await this.props.confirmAlertModal({
-            brandId: brandId,
-            brandName: brandName,
-            detailName: detailName,
-            detailCode: detailCode,
-            tradeCode: tradeCode,
-            productId: response.id,
-        });
-    }
-
-    componentDidUpdate(prevProps) {
-        if(!prevProps.alertVisible && this.props.alertVisible) {
-            this.setState({
-                ...this.props,
-                defaultWarehouseId: this.props.warehouseId
-            })
-        }
-    }
-
-    componentDidMount() {
-        this.getPriceGroups();
-    }
-
     render() {
-        const { storeGroupsTree, alertVisible, cancelAlertModal, intl: { formatMessage } } = this.props;
-        const {
-            visible,
-            detailOptions,
-            priceGroups,
-            brandId,
-            brandName,
-            detailCode,
-            groupId,
-            detailName,
-            detailCodeSearch,
-            brandSearchValue,
-            measureUnit,
-            priceGroupNumber,
-            defaultWarehouseId,
-            tradeCode,
-            certificate,
-            barcode,
-            storeInWarehouse,
-            multiplicity,
-            min,
-            max,
-        } = this.state;
+        const { alertVisible, cancelAlertModal, confirmAlertModal } = this.props;
         return (
             <>
                 <Modal
                     visible={alertVisible}
-                    onOk={()=>{
-                        this.setState({
-                            visible: true,
-                        })
-                        cancelAlertModal();
-                    }}
+                    onOk={confirmAlertModal}
                     onCancel={cancelAlertModal}
                     maskClosable={false}
                     zIndex={300}
                 >
                     {this.props.children}
-                </Modal>
-                <Modal
-                    width={'50%'}
-                    visible={visible}
-                    onOk={()=>{
-                        this.postStoreProduct();
-                    }}
-                    onCancel={()=>{
-                        this.setState({visible: false});
-                    }}
-                    maskClosable={false}
-                    zIndex={350}
-                >
-                    <div className={Styles.addProductModalOtemWrap}>
-                        <FormattedMessage id='order_form_table.detail_code' />{requiredField()}
-                        <AutoComplete
-                            value={detailCode}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                            onChange={(value)=>{
-                                this.setState({
-                                    detailCode: value,
-                                    detailCodeSearch: value,
-                                });
-                                this.getProductId(value, brandId);
-                            }}
-                            onSelect={(value, option)=>{
-                                this.setState({
-                                    detailCode: value,
-                                    detailName: option.props.detail_name,
-                                    tradeCode: option.props.trade_code,
-                                    stockPrice: option.props.price,
-                                    detailCodeSearch: "",
-                                });
-                                this.getProductId(value);
-                            }}
-                            onBlur={()=>{
-                                this.setState({
-                                    detailCodeSearch: "",
-                                })
-                            }}
-                            filterOption={(input, option) => {
-                                return (
-                                    String(option.props.value).toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                )
-                            }}
-                        >
-                            {
-                                detailCodeSearch.length > 3 ? 
-                                detailOptions.map((elem, key)=>{
-                                    return (
-                                        <Option
-                                            key={key}
-                                            value={elem.partNumber}
-                                            detail_name={elem.itemName}
-                                            price={elem.purchasePrice}
-                                            trade_code={elem.supplierPartNumber}
-                                        >
-                                            {elem.partNumber}
-                                        </Option>
-                                    )
-                                }) :
-                                []
-                            }
-                        </AutoComplete>
-                    </div>
-                    <div className={Styles.addProductModalOtemWrap}>
-                        <FormattedMessage id='order_form_table.brand' />{requiredField()}
-                        <Select
-                            showSearch
-                            value={brandId}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                            filterOption={(input, option) => {
-                                return (
-                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
-                                )
-                            }}
-                            onSelect={(value, option)=>{
-                                this.setState({
-                                    brandId: value,
-                                    brandName: option.props.name,
-                                })
-                            }}
-                            onSearch={(input)=>{
-                                this.setState({
-                                    brandSearchValue: input,
-                                })
-                            }}
-                            onBlur={()=>{
-                                this.setState({
-                                    brandSearchValue: "",
-                                })
-                            }}
-                        >
-                            {
-                                brandSearchValue.length > 1 ? 
-                                    this.props.brands.map((elem, index)=>(
-                                        <Option key={index} value={elem.brandId} supplier_id={elem.supplierId} name={elem.brandName}>
-                                            {elem.brandName}
-                                        </Option>
-                                    )) :
-                                    brandId ? 
-                                    <Option key={0} value={brandId}>
-                                        {brandName}
-                                    </Option> : 
-                                    []
-                            }
-                        </Select>
-                    </div>
-                    <div className={Styles.addProductModalOtemWrap}>
-                        <FormattedMessage id='order_form_table.store_group'/>{requiredField()}
-                        <TreeSelect
-                            showSearch
-                            value={groupId}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={storeGroupsTree}
-                            filterTreeNode={(input, node) => {
-                                return (
-                                    node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                    String(node.props.value).indexOf(input.toLowerCase()) >= 0
-                                )
-                            }}
-                            onSelect={(value, option)=>{
-                                this.setState({
-                                    groupId: value,
-                                    detailName: detailName ? detailName : option.props.name,
-                                    priceGroupNumber: option.props.priceGroup || undefined,
-                                })
-                            }}
-                        />
-                    </div>
-                    <div className={Styles.addProductModalOtemWrap}>
-                        <FormattedMessage id='order_form_table.detail_name' />{requiredField()}
-                        <Input
-                            value={detailName}
-                            onChange={(event)=>{
-                                this.setState({
-                                    detailName: event.target.value,
-                                })
-                            }}
-                        />
-                    </div>
-                    <div className={Styles.addProductModalOtemWrap}>
-                        <FormattedMessage id='storage.measure_units' />
-                        <Select
-                            value={measureUnit}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                            onChange={(value)=>{
-                                this.setState({
-                                    measureUnit: value,
-                                })
-                            }}
-                        >
-                            <Option value={ measureUnitsOptions.PIECE } key={ 'piece' }>
-                                { formatMessage({ id: 'storage.measure.piece' }) }
-                            </Option>
-                            <Option value={ measureUnitsOptions.LITER } key={ 'liter' }>
-                                { formatMessage({ id: 'storage.measure.liter' }) }
-                            </Option>
-                        </Select>
-                    </div>
-                    <div className={Styles.addProductModalOtemWrap}>
-                        <FormattedMessage id='storage.price_group' />
-                        <Select
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                            value={priceGroupNumber}
-                            onChange={(value, option)=>{
-                                this.setState({
-                                    priceGroupNumber: value,
-                                })
-                            }}
-                        >
-                            { priceGroups && 
-                            priceGroups.map(({ number, multiplier }) => (
-                                <Option value={ number } key={ number } multiplier={ multiplier }>
-                                    <span>
-                                        { formatMessage({ id: 'storage.price_group' }) } -{ ' ' }
-                                        { number }{ ' ' }
-                                    </span>
-                                    <span>
-                                        ({ formatMessage({ id: 'storage.markup' }) } -{ ' ' }
-                                        { multiplier })
-                                    </span>
-                                </Option>
-                            )) }
-                        </Select>
-                    </div>
-                    <div className={Styles.addProductModalOtemWrap}>
-                        <FormattedMessage id='storage.default_warehouse' />
-                        <Select
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                            value={defaultWarehouseId}
-                            onSelect={(value)=>{
-                                this.setState({
-                                    defaultWarehouseId: value,
-                                })
-                            }}
-                        >
-                            {this.props.warehouses.map((elem, i)=>{
-                                return (
-                                    <Option
-                                        key={i}
-                                        value={elem.id}
-                                    >
-                                        {elem.name}
-                                    </Option>
-                                )
-                            })}
-                        </Select>
-                    </div>
-                    <div className={Styles.addProductModalOtemWrap}>
-                        <FormattedMessage id='storage.trade_code' />
-                        <Input
-                            value={tradeCode}
-                            onChange={(event)=>{
-                                this.setState({
-                                    tradeCode: event.target.value,
-                                })
-                            }}
-                        />
-                    </div>
-                    <div className={Styles.addProductModalOtemWrap}>
-                        <FormattedMessage id='storage.certificate' />
-                        <Input
-                            value={certificate}
-                            onChange={(event)=>{
-                                this.setState({
-                                    certificate: event.target.value,
-                                })
-                            }}
-                        />
-                    </div>
-                    <div className={Styles.addProductModalOtemWrap}>
-                        <FormattedMessage id='navigation.barcode' />
-                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                            <Input
-                                value={
-                                    barcode 
-                                        ? `STP-${this.props.user.businessId}-${barcode}`
-                                        : undefined
-                                }
-                                disabled
-                                style={{
-                                    color: 'var(--text)',
-                                }}
-                            />
-                            <Barcode
-                                value={barcode}
-                                iconStyle={{
-                                    fontSize: 22,
-                                    marginLeft: 8
-                                }}
-                                prefix={'STP'}
-                                onConfirm={(barcode)=>{
-                                    this.setState({ barcode })
-                                }}
-                            />
-                        </div>
-                    </div>
-                    <div className={Styles.addProductModalOtemWrap}>
-                        <FormattedMessage id='storage_document.store_in_warehouse' />
-                        <Checkbox
-                            style={{marginLeft: 8}}
-                            onChange={()=>{
-                                this.setState({
-                                    storeInWarehouse: !storeInWarehouse,
-                                })
-                            }}
-                        />
-                    </div>
-                    {storeInWarehouse &&
-                        <div className={Styles.addProductModalOtemWrap} style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <div>
-                                <span style={{marginRight: 8}}><FormattedMessage id='storage_document.multiplicity'/></span>
-                                <InputNumber
-                                    value={multiplicity}
-                                    step={1}
-                                    min={1}
-                                    onChange={(value)=>{
-                                        this.setState({
-                                            multiplicity: value,
-                                        })
-                                    }}
-                                />
-                            </div>
-                            <div>
-                                <span style={{marginRight: 8}}><FormattedMessage id='storage.min'/></span>
-                                <InputNumber
-                                    value={min*multiplicity}
-                                    step={multiplicity}
-                                    min={0}
-                                    onChange={(value)=>{
-                                        const clearValue = Math.floor(value/multiplicity);
-                                        this.setState({
-                                            min: Math.floor(value/multiplicity),
-                                            //max: max < clearValue ? clearValue : max,
-                                        })
-                                    }}
-                                />
-                            </div>
-                            <div>
-                                <span style={{marginRight: 8}}><FormattedMessage id='storage.max'/></span>
-                                <InputNumber
-                                    value={max*multiplicity}
-                                    step={multiplicity}
-                                    min={min*multiplicity}
-                                    onChange={(value)=>{
-                                        this.setState({
-                                            max: Math.floor(value/multiplicity),
-                                        })
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    }
                 </Modal>
             </>
         );

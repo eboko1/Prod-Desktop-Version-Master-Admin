@@ -86,8 +86,6 @@ export default class ReportAnalyticsModal extends Component {
     componentDidMount() {
         const {fetchAnalyticsCatalogs, analyticsCatalogs} = this.props;
 
-        console.log('Here: ', analyticsCatalogs);
-
         fetchAnalyticsCatalogs();
     }    
 

@@ -69,7 +69,7 @@ import {
     SyncImportPage,
     SyncExportPage,
     BarcodePage,
-
+    ProductPage
 } from 'pages';
 import book from './book';
 
@@ -164,9 +164,9 @@ export default class Private extends Component {
                 <Route 
                     exact
                     path={ book.supplierPage }
-                     render={ props => (
-                         <SupplierPage id={ props.match.params.id } { ...props } />
-                         ) }
+                    render={ props => (
+                        <SupplierPage id={ props.match.params.id } { ...props } />
+                    ) }
                 />
                 { /* Cash */ }
                 <Route
@@ -205,7 +205,13 @@ export default class Private extends Component {
                     component={ ProductsPage }
                     path={ book.products }
                 />
-
+                <Route 
+                    exact
+                    path={ book.productPage }
+                    render={ props => (
+                        <ProductPage id={ props.match.params.id } { ...props } />
+                    ) }
+                />
                 <Route
                     exact
                     component={ StorageOrdersPage }

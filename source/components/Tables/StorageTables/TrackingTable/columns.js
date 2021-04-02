@@ -31,6 +31,7 @@ export default props => {
         title: props.intl.formatMessage({
             id: 'storage.product_code',
         }),
+        key: 'code',
         dataIndex: 'code',
         render:    (code, { product }) => (
             <div
@@ -98,6 +99,56 @@ export default props => {
         },
     };
 
+    const docNumAndType = {
+        title: props.intl.formatMessage({
+            id: 'storage.document',
+        }),
+        key:    'docNumAndType',
+        render: (key, data) => {
+            const docId = _.get(data, 'doc.id'),
+                  documentNumber = _.get(data, 'doc.documentNumber');
+            const type = _.get(data, 'doc.type');
+
+            return data.orderId ? (
+                <div>   
+                    <a
+                        href={ `${book.order}/${data.orderId}` }
+                        style={ { color: 'var(--link)', fontWeight: 'bold' } }
+                    >
+                        { data.orderId }
+                    </a>
+                    <Tag
+                        color={
+                            type === 'INCOME' ? 'var(--green)' : 'var(--warning)'
+                        }
+                    >
+                        { props.intl.formatMessage({
+                            id: `storage.${type ? type : 'EXPENSE'}`,
+                        }) }
+                    </Tag>
+                </div>
+            ) : (
+                <div>
+                    <a
+                        href={ `${book.storageDocument}/${docId}` }
+                        style={ { color: 'var(--link)', fontWeight: 'bold' } }
+                    >
+                        { documentNumber }
+                    </a>
+                    <Tag
+                        color={
+                            type === 'INCOME' ? 'var(--green)' : 'var(--warning)'
+                        }
+                    >
+                        { props.intl.formatMessage({
+                            id: `storage.${type ? type : 'EXPENSE'}`,
+                        }) }
+                    </Tag>
+                </div>
+            );
+        },
+    }
+
     const createdDatetime = {
         title: props.intl.formatMessage({
             id: 'storage.date',
@@ -128,7 +179,7 @@ export default props => {
                 <Link
                     to={
                         income
-                            ? `${book.suppliersPage}`
+                            ? `${book.supplier}/${_.get(data, 'doc.businessSupplier.id')}`
                             : `${book.client}/${_.get(data, 'order.client.id')}`
                     }
                 >
@@ -259,11 +310,11 @@ export default props => {
         },
     };
 
-    return [
-        // id,
+    const columns = [
         code,
         type,
         docNum,
+        docNumAndType,
         createdDatetime,
         counterparty,
         responsible,
@@ -273,4 +324,15 @@ export default props => {
         sellingPrice,
         sellingSum,
     ];
+
+    if(props.rawData) {
+        _.remove(columns, ({key}) => key == 'type' || key == 'docNum')
+    } else {
+        _.remove(columns, ({key}) => key == 'docNumAndType')
+    }
+    if(props.hideCode) {
+        _.remove(columns, ({key}) => key == 'code')
+    }
+
+    return columns;
 };

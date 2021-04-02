@@ -1,7 +1,9 @@
 // vendor
 import React, { Component } from 'react';
 import { Form, Select, Row, Col } from 'antd';
+import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { permissions, isForbidden } from 'utils';
 
 // proj
 import { DecoratedInput, DecoratedSelect } from 'forms/DecoratedFields';
@@ -11,8 +13,18 @@ import { cashboxTypes } from './config';
 import Styles from './styles.m.css';
 const Option = Select.Option;
 
+const mapStateToProps = state => {
+    return {
+        user: state.auth,
+    };
+};
+
 @injectIntl
 @Form.create()
+@connect(
+    mapStateToProps,
+    void 0,
+)
 export class CashCreationForm extends Component {
 	constructor(props) {
 		super(props);
@@ -41,8 +53,11 @@ export class CashCreationForm extends Component {
 	}
 
 	render() {
-		const { getFieldDecorator } = this.props.form;
-		const { formatMessage } = this.props.intl;
+		const {
+			user,
+			form: {getFieldDecorator},
+			intl: {formatMessage}
+		} = this.props;
 
 		return (
 			<Form
@@ -100,7 +115,7 @@ export class CashCreationForm extends Component {
 						<DecoratedInput
 							field='fiscalNumber'
 							formItem
-							disabled={true}//Disable to prevent prod from coccupting(temp)
+							disabled={isForbidden(user, permissions.ACCESS_CASHBOX_CRUD)}//Disable to prevent prod from coccupting(temp)
 							rules={[
 								{
 									len: 10,

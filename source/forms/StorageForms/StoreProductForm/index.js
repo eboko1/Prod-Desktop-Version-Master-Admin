@@ -5,6 +5,7 @@ import { Form, Select, Button, Checkbox, InputNumber, Col } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import styled from 'styled-components';
+import { withRouter } from 'react-router';
 
 // proj
 import {
@@ -16,6 +17,7 @@ import {
     selectProductLoading,
     selectStoreProduct,
 } from 'core/storage/products';
+import { fetchBrands, selectBrands } from 'core/brands/duck';
 import { fetchStoreGroups, selectStoreGroups } from 'core/storage/storeGroups';
 import { fetchPriceGroups, selectPriceGroups } from 'core/storage/priceGroups';
 import { setBrandsSearchQuery, selectBrandsByQuery } from 'core/search/duck';
@@ -29,6 +31,7 @@ import {
 } from 'forms/DecoratedFields';
 import { MeasureUnitSelect, PriceGroupSelect } from 'forms/_formkit';
 import { Barcode } from "components";
+import book from 'routes/book';
 
 // own
 const Option = Select.Option;
@@ -62,27 +65,27 @@ const ProductForm = props => {
         intl: { formatMessage },
     } = props;
 
-    const [storeInWarehouse, setStoreInWarehouse] = useState(false);
-    const [multiplicity, setMultiplicity] = useState(1);
-    const [min, setMin] = useState(1);
-    const [max, setMax] = useState(1);
-
     useEffect(() => {
         props.fetchProduct(_.get(props, 'modalProps.id'));
     }, [ _.get(props, 'modalProps.id') ]);
 
     useEffect(() => {
+        props.fetchBrands();
         props.fetchStoreGroups();
         props.fetchPriceGroups();
     }, []);
 
     useEffect(() => {
-        setStoreInWarehouse(Boolean(_.get(props, 'product.min')));
-        setMin(_.get(props, 'product.min') || 1);
-        setMax(_.get(props, 'product.max') || 1);
-    }, [_.get(props, 'product')]);
-
-    
+        if(_.get(props, 'modalProps.code')) {
+            props.form.setFieldsValue({code: _.get(props, 'modalProps.code')})
+        }
+        if(_.get(props, 'modalProps.brandId')) {
+            props.form.setFieldsValue({brandId: _.get(props, 'modalProps.brandId')})
+        }
+        if(_.get(props, 'modalProps.barcode')) {
+            props.form.setFieldsValue({barcode: _.get(props, 'modalProps.barcode')})
+        }
+    }, []);
 
     const findGroupNameById = (data, groupId) => {
         let groupName = null;
@@ -134,24 +137,27 @@ const ProductForm = props => {
 
     const _submit = event => {
         event.preventDefault();
-        props.form.validateFields((err, values) => {
+        props.form.validateFields(async (err, values) => {
             if (!err) {
                 if (values.brandName && values.brandId) {
                     _.set(values, 'brandId', void 0);
                 }
-                if(storeInWarehouse) {
-                    values.min = min*multiplicity;
-                    values.max = max*multiplicity;
+                if(props.editing) {
+                    await props.updateProduct(
+                        {
+                            id:      _.get(props, 'modalProps.id'),
+                            product: values,
+                        }, 
+                        _.get(props, 'modalProps.onSubmit', ()=>{})
+                    )
+                } else {
+                    await props.createProduct(values, _.get(props, 'modalProps.onSubmit', ()=>{}));
                 }
-                props.editing
-                    ? props.updateProduct({
-                        id:      _.get(props, 'modalProps.id'),
-                        product: values,
-                    })
-                    : props.createProduct(values);
 
                 props.form.resetFields();
-                props.resetModal();
+                if(props.resetModal) {
+                    props.resetModal();
+                }
             }
         });
     };
@@ -159,7 +165,13 @@ const ProductForm = props => {
     const _delete = id => {
         props.deleteProduct(id);
         props.form.resetFields();
-        props.resetModal();
+        if(props.resetModal) {
+            props.resetModal();
+        } else {
+            props.history.replace({
+                pathname: `${book.products}`,
+            });
+        }
     };
 
     const _generateBrandInitialOption = () => {
@@ -175,9 +187,7 @@ const ProductForm = props => {
             </Option>
         );
     };
-
-    const barcode = form.getFieldValue("barcode");
-
+    
     return (
         <StyledForm onSubmit={ _submit }>
             <DecoratedInput
@@ -200,68 +210,52 @@ const ProductForm = props => {
                     color: 'var(--text)'
                 }}
             />
-            <>
-                <DecoratedAutoComplete
-                    formItem
-                    formItemLayout={ formItemLayout }
-                    label={ formatMessage({ id: 'storage.brand' }) }
-                    fields={ {} }
-                    defaultGetValueProps
-                    getFieldDecorator={ form.getFieldDecorator }
-                    getPopupContainer={ trigger => trigger.parentNode }
-                    field='brandId'
-                    rules={ [
-                        {
-                            required: true,
-                            message:  formatMessage({ id: 'required_field' }),
-                        },
-                    ] }
-                    initialValue={
-                        _.isEmpty(props.product.brand)
-                            ? _.get(props, 'product.brandName')
-                            : String(_.get(props, 'product.brand.id'))
-                    }
-                    onSearch={ value => {
-                        form.setFieldsValue({
-                            brandId:   void 0,
-                            brandName: value,
-                        });
-                        props.setBrandsSearchQuery(value);
-                    } }
-                    onSelect={ value => {
-                        form.setFieldsValue({
-                            brandId:   value,
-                            brandName: void 0,
-                        });
-                    } }
-                    optionLabelProp={ 'children' }
-                    optionFilterProp={ 'children' }
-                    showSearch
-                    dropdownMatchSelectWidth={ false }
-                    disabled={props.editing}
-                >
-                    { !_.isEmpty(props.product) && _generateBrandInitialOption() }
-                    { props.brands.map(({ brandName, brandId }) => (
-                        <Option
-                            value={ String(brandId) }
-                            key={ `${brandId}-${brandName}` }
-                        >
-                            { brandName }
-                        </Option>
-                    )) }
-                </DecoratedAutoComplete>
-                <DecoratedInput
-                    hiddeninput='hiddeninput'
-                    initialValue={
-                        _.isEmpty(props.product.brand)
-                            ? _.get(props, 'product.brandName')
-                            : void 0
-                    }
-                    fields={ {} }
-                    getFieldDecorator={ form.getFieldDecorator }
-                    field='brandName'
-                />
-            </>
+            <DecoratedSelect
+                formItem
+                formItemLayout={ formItemLayout }
+                label={ formatMessage({ id: 'storage.brand' }) }
+                fields={ {} }
+                defaultGetValueProps
+                getFieldDecorator={ form.getFieldDecorator }
+                getPopupContainer={ trigger => trigger.parentNode }
+                field='brandId'
+                rules={ [
+                    {
+                        required: true,
+                        message:  formatMessage({ id: 'required_field' }),
+                    },
+                ] }
+                initialValue={
+                    _.isEmpty(props.product.brand)
+                        ? _.get(props, 'product.brandId')
+                        : String(_.get(props, 'product.brand.id'))
+                }
+                optionLabelProp={ 'children' }
+                optionFilterProp={ 'children' }
+                showSearch
+                dropdownMatchSelectWidth={ false }
+                disabled={props.editing}
+            >
+                {props.brands.length
+                    ? props.brands.map(({brandId, brandName})=>{
+                        return brandName && (
+                            <Option
+                                value={ String(brandId) }
+                                key={ `${brandId}-${brandName}` }
+                            >
+                                { brandName }
+                            </Option>
+                        )
+                    })
+                    : _.get(props, 'modalProps.brandId')
+                        ? (
+                            <Option value={_.get(props, 'modalProps.brandId')}>
+                                {_.get(props, 'modalProps.brandName')}
+                            </Option>
+                        )
+                        : []
+                }
+            </DecoratedSelect>
             <DecoratedTreeSelect
                 formItem
                 formItemLayout={ formItemLayout }
@@ -316,22 +310,6 @@ const ProductForm = props => {
                 formatMessage={ formatMessage }
                 initialValue={ _.get(props, 'product.priceGroupNumber') }
             />
-            <DecoratedSelect
-                field={ 'defaultWarehouseId' }
-                label={ formatMessage({ id: 'storage.default_warehouse' }) }
-                formItem
-                formItemLayout={ formItemLayout }
-                getFieldDecorator={ form.getFieldDecorator }
-                getPopupContainer={ trigger => trigger.parentNode }
-                formatMessage={ formatMessage }
-                initialValue={ _.get(props, 'product.defaultWarehouseId') }
-            >
-                {props.warehouses.map((elem, i)=>
-                    <Option key={i} value={elem.id}>
-                        {elem.name}
-                    </Option>
-                )}
-            </DecoratedSelect>
             <DecoratedInput
                 formItem
                 formItemLayout={ formItemLayout }
@@ -369,7 +347,7 @@ const ProductForm = props => {
                     disabled
                 />
                 <Barcode
-                    value={barcode || _.get(props, "product.barcode")}
+                    value={form.getFieldValue("barcode")}
                     referenceId={_.get(props, 'product.id')}
                     table={'STORE_PRODUCTS'}
                     prefix={'STP'}
@@ -382,57 +360,6 @@ const ProductForm = props => {
                     }}
                 />
             </FormItem>
-            <div style={{display: 'flex', justifyContent: 'space-evenly', margin: '-14px 0 24px 0'}}>
-                <Col span={7} style={{textAlign: 'right'}}>
-                    <FormattedMessage id='storage_document.store_in_warehouse' />
-                </Col>
-                <Col span={15}>
-                    <Checkbox
-                        style={{marginLeft: 5}}
-                        checked={storeInWarehouse}
-                        onChange={()=>{
-                            setStoreInWarehouse(!storeInWarehouse);
-                        }}
-                    />            
-                </Col>
-            </div>
-            {storeInWarehouse &&
-                <div style={{display: 'flex', justifyContent: 'space-evenly', margin: '0 0 24px 0'}}>
-                    <div>
-                        <span style={{marginRight: 8}}><FormattedMessage id='storage_document.multiplicity'/></span>
-                        <InputNumber
-                            value={multiplicity}
-                            step={1}
-                            min={1}
-                            onChange={(value)=>{
-                                setMultiplicity(value);
-                            }}
-                        />
-                    </div>
-                    <div>
-                        <span style={{marginRight: 8}}><FormattedMessage id='storage.min'/></span>
-                        <InputNumber
-                            value={min*multiplicity}
-                            step={multiplicity}
-                            min={0}
-                            onChange={(value)=>{
-                                setMin(Math.floor(value/multiplicity));
-                            }}
-                        />
-                    </div>
-                    <div>
-                        <span style={{marginRight: 8}}><FormattedMessage id='storage.max'/></span>
-                        <InputNumber
-                            value={max*multiplicity}
-                            step={multiplicity}
-                            min={min*multiplicity}
-                            onChange={(value)=>{
-                                setMax(Math.floor(value/multiplicity));
-                            }}
-                        />
-                    </div>
-                </div>
-            }
             <ButtonGroup>
                 { props.editing ? (
                     <DeleteButton
@@ -453,7 +380,7 @@ const ProductForm = props => {
 const mapStateToProps = state => ({
     storeGroups: selectStoreGroups(state),
     priceGroups: selectPriceGroups(state),
-    brands:      selectBrandsByQuery(state),
+    brands:      selectBrands(state),
     loading:     selectProductLoading(state),
     product:     selectStoreProduct(state),
 });
@@ -467,8 +394,11 @@ const mapDispatchToProps = {
     createProduct,
     updateProduct,
     deleteProduct,
+    fetchBrands,
 };
 
-export const StoreProductForm = injectIntl(
-    connect(mapStateToProps, mapDispatchToProps)(Form.create()(ProductForm)),
+export const StoreProductForm = withRouter(
+    injectIntl(
+        connect(mapStateToProps, mapDispatchToProps)(Form.create()(ProductForm))
+    )
 );

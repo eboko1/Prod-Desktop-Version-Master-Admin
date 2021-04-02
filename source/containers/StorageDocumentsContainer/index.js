@@ -41,16 +41,16 @@ const fetchStorage = (type, action) => {
     let url = __API_URL__ + `/store_docs`;
     switch(type) {
         case INCOME:
-            url += `?types=["${INCOME}"]&documentTypes=["${SUPPLIER}","${CLIENT}","${INVENTORY}"]&contexts=["${STOCK}"]`
+            url += `?types=["${INCOME}"]&documentTypes=["${SUPPLIER}","${CLIENT}","${INVENTORY}"]&contexts=["${STOCK}"]&pageSize=999`
             break;
         case EXPENSE:
-            url += `?types=["${EXPENSE}"]&documentTypes=["${SUPPLIER}","${CLIENT}","${INVENTORY}","${OWN_CONSUMPTION}"]&contexts=["${STOCK}"]`
+            url += `?types=["${EXPENSE}"]&documentTypes=["${SUPPLIER}","${CLIENT}","${INVENTORY}","${OWN_CONSUMPTION}"]&contexts=["${STOCK}"]&pageSize=999`
             break;
         case TRANSFER:
-            url += `?types=["${EXPENSE}"]&documentTypes=["${TRANSFER}"]&contexts=["${STOCK}"]`
+            url += `?types=["${EXPENSE}"]&documentTypes=["${TRANSFER}"]&contexts=["${STOCK}"]&pageSize=999`
             break;
         case ORDER:
-            url += `?contexts=["${ORDER}"]`
+            url += `?contexts=["${ORDER}"]&pageSize=999`
             break;
     }
     
