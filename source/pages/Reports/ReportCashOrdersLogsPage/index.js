@@ -9,29 +9,17 @@ import _ from "lodash";
 
 
 // proj
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { fetchCashOrdersLogs } from 'core/reports/reportCashOrdersLogs/duck';
 import { ReportCashOrdersLogsTable } from 'components';
 
-import { Layout, StyledButton } from "commons";
-import { isForbidden, permissions } from "utils";
-
-// own
-import Styles from "./styles.m.css";
-
-const mapStateToProps = state => ({
-    tableData: state.reportOrders.tableData,
-    user: state.auth,
-});
+import { Layout } from "commons";
 
 const mapDispatchToProps = {
-    setModal,
-    resetModal,
     fetchCashOrdersLogs
 };
 
 @connect(
-    mapStateToProps,
+    void 0,
     mapDispatchToProps,
 )
 @injectIntl
@@ -46,10 +34,6 @@ export default class ReportOrdersPage extends Component {
 
 
     render() {
-        const {
-            user,
-        } = this.props;
-
         
         return (
             <Layout
@@ -60,9 +44,7 @@ export default class ReportOrdersPage extends Component {
                 }
                 paper={false}
             >
-                <ReportCashOrdersLogsTable
-                
-                />
+                <ReportCashOrdersLogsTable/>
             </Layout>
         );
     }

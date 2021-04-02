@@ -523,20 +523,21 @@ export class CashOrderForm extends Component {
 
     /**
      * Takes currently selected cashbox and retruns it
+     * @param {*} cashboxId Id of a cashboxthat is currenly selected
      * @returns cashbox or undefined
      */
-    _getCurrentlySelectedCashbox() {
+    _getCurrentlySelectedCashbox(cashboxId) {
         const {
             cashboxes, 
-            form: { getFieldValue }
+            // form: { getFieldValue }
         } = this.props;
 
-        const cashBoxId = getFieldValue('cashBoxId');
+        // const cashboxId = getFieldValue('cashBoxId');
 
         //Get currently selected cashbox to know if we have to block some fields(for specific cashboxes)
-        const currentlySelectedCashbox = cashBoxId
+        const currentlySelectedCashbox = cashboxId
         ? _.get(
-            _.filter(cashboxes, (o) => o.id == cashBoxId)
+            _.filter(cashboxes, (o) => o.id == cashboxId)
             , '[0]'
         )
         : undefined;
@@ -545,12 +546,12 @@ export class CashOrderForm extends Component {
     }
 
     /** This method is used to set default sumtype based on currently selected cashbox. If cashbox contains rst, then we can't use INCREASE type*/
-    _setDefaultSumType() {
+    _setDefaultSumType(cashboxId) {
         const {
             form: { setFieldsValue }
         } = this.props;
 
-        const cashbox = this._getCurrentlySelectedCashbox();
+        const cashbox = this._getCurrentlySelectedCashbox(cashboxId);
 
         return this.setState(prevState => {
             setFieldsValue({ [prevState.sumType]: null });
@@ -570,10 +571,12 @@ export class CashOrderForm extends Component {
      * "tag" field is out of date, analyticsUniqueId is used instead as it is separate module
      * @param {*} value Selected cash order type
      */
-    _selectOrderType = value => {
+    _selectOrderType = (value, options) => {
         const {
             form: { setFieldsValue }
         } = this.props;
+
+        const cashboxId = _.get(options, 'props.cashboxId');
 
         switch (value) {
             case cashOrderTypes.INCOME:
@@ -598,7 +601,7 @@ export class CashOrderForm extends Component {
 
             case cashOrderTypes.ADJUSTMENT:
                 if (!this.props.editMode) {
-                    this._setDefaultSumType();
+                    this._setDefaultSumType(cashboxId);
                 }
                 break;
 
@@ -612,12 +615,19 @@ export class CashOrderForm extends Component {
      * If some fields have to be changed if this field is trigerred we can do it from here,
      * for example we must set other fields(valid) if new cash box contains rst
      */
-    _onSelectCashbox = () => {
+    _onSelectCashbox = (cashboxId, options) => {
         const {
             form: {setFieldsValue, getFieldValue}
         } = this.props;
 
-        const cashbox = this._getCurrentlySelectedCashbox();
+        // const {
+        //     rst
+        // } = options.props;
+
+        console.log("Here: ", cashboxId);
+        console.log("Options: ", options);
+
+        const cashbox = this._getCurrentlySelectedCashbox(cashboxId);
 
         const cashOrderType = getFieldValue('type');
         const sumType = getFieldValue('sumType');
@@ -766,8 +776,8 @@ export class CashOrderForm extends Component {
         });
 
     /**This method retruns cashOrder types which can be selected for current type of cashbox*/
-    _getAvailableCashOrderTypes() {
-        const cashbox = this._getCurrentlySelectedCashbox(); //Current cashbox
+    _getAvailableCashOrderTypes(cashboxId) {
+        const cashbox = this._getCurrentlySelectedCashbox(cashboxId); //Current cashbox
 
         const availableTypes = (cashbox && cashbox.rst)
             ? _.omit(cashOrderTypes, [cashOrderTypes.EXPENSE])
@@ -794,8 +804,13 @@ export class CashOrderForm extends Component {
             user,
         } = this.props;
 
+        console.log("This: ", this);
+        console.log("activeCashOrder", activeCashOrder);
+
         const cashOrderId = getFieldValue("id");
-        const cashbox = this._getCurrentlySelectedCashbox();
+        const cashbox = _.get(cashboxes.filter(obj => obj.id == getFieldValue('cashBoxId')), `[0]`);
+        console.log("CashboxId: ", getFieldValue('cashBoxId'));
+        console.log("Current cashbox: ", cashbox);
 
         //https://github.com/ant-design/ant-design/issues/8880#issuecomment-402590493
         // getFieldDecorator("clientId", { initialValue: void 0 });
@@ -841,8 +856,8 @@ export class CashOrderForm extends Component {
                         onSelect={this._selectOrderType}
                         disabled={printMode}
                     >
-                        {Object.values(this._getAvailableCashOrderTypes()).map(type => (
-                            <Option value={type} key={type}>
+                        {Object.values(this._getAvailableCashOrderTypes(cashbox && cashbox.id)).map(type => (
+                            <Option value={type} key={type} cashboxId={cashbox && cashbox.id}>
                                 {formatMessage({
                                     id: `cash-order-form.type.${type}`,
                                 })}
@@ -869,14 +884,15 @@ export class CashOrderForm extends Component {
                         getPopupContainer={trigger => trigger.parentNode}
                         formItemLayout={formItemLayout}
                         className={Styles.styledFormItem}
-                        onSelect={this._onSelectCashbox}
+                        onSelect={(cashboxId, options) => this._onSelectCashbox(cashboxId, options)}
                         disabled={printMode}
                     >
-                        {cashboxes.map(({ id, name }) => (
-                            <Option value={id} key={id}>
+                        {cashboxes.map((obj) => {
+                            const { id, name, rst } = obj;
+                            return (<Option value={id} key={id} disabled={rst && isForbidden(user, permissions.ACCESS_SALE_RST)} rst={Boolean(rst)}>
                                 {name}
-                            </Option>
-                        ))}
+                            </Option>);
+                        })}
                     </DecoratedSelect>
                     <DecoratedDatePicker
                         field="datetime"

@@ -205,7 +205,7 @@ export default class Barcode extends Component {
     }
 
     render() {
-        const { displayBarcode, iconStyle, button, disabled: propsDisabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon, multipleMode } = this.props;
+        const { zIndex, displayBarcode, iconStyle, button, disabled: propsDisabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon, multipleMode } = this.props;
         const { visible, scanedCode, scanedInputValue } = this.state;
         const id = this.id;
         const iconType = enableScanIcon && !value
@@ -266,7 +266,7 @@ export default class Barcode extends Component {
                             : null
                     }
                     width={'fit-content'}
-                    zIndex={300}
+                    zIndex={zIndex || 300}
                     bodyStyle={{ padding: 0}}
                 >
                     <div className={Styles.barcodeWrapp}>

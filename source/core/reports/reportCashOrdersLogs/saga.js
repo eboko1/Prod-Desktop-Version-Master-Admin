@@ -9,6 +9,7 @@ import { emitError } from 'core/ui/duck';
 // own
 import {
     fetchCashOrdersLogsSuccess,
+    selectFilter
 } from './duck';
 
 import {
@@ -21,11 +22,13 @@ export function* fetchCashOrdersLogsSaga() {
         try {
             yield take(FETCH_CASH_ORDER_LOGS);
 
+            const filter = yield select(selectFilter);
+
             const data = yield call(
                 fetchAPI,
                 'GET',
                 `/cashdesk/logs`,
-                {filters: {page: 1}}
+                {filters: filter}
             );
             yield put(fetchCashOrdersLogsSuccess(data));
         } catch(err) {
@@ -52,9 +55,6 @@ export function* fetchCashOrdersLogsReceiptSaga() {
                 {rawResponse: true}
             );
 
-            // const response = yield call(fetchAPI, 'GET', report.link, null, null, {
-            //     rawResponse: true,
-            // });
             const reportFile = yield response.blob();
     
             const contentDispositionHeader = response.headers.get(
@@ -65,7 +65,6 @@ export function* fetchCashOrdersLogsReceiptSaga() {
             )[ 1 ];
             yield saveAs(reportFile, fileName);
 
-            // yield saveAs(new Blob(file), 'Receipt.txt');
         } catch(err) {
             emitError(err);
         }
