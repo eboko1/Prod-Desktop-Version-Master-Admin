@@ -218,7 +218,8 @@
         "roles.ACCESS_CASHBOX_RST_LOGS": "RST - access to RST logs",
         "roles.BARCODE_PERMISSIONS": "Barcode",
         "roles.ACCESS_STORE_PRODUCT_BARCODE": "Barcode page",
-        "roles.ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY": "Barcode - icon"
+        "roles.ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY": "Barcode - icon",
+        "roles.RST_PERMISIONS": "RST"
     },
     "ru": {
         "roles": "Роли",
@@ -439,7 +440,8 @@
         "roles.ACCESS_CASHBOX_RST_LOGS": "РРО - доступ к логам РРО",
         "roles.BARCODE_PERMISSIONS": "Штрих-код",
         "roles.ACCESS_STORE_PRODUCT_BARCODE": "Страница управления штрих-кодами",
-        "roles.ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY": "Штрих-код - иконка"
+        "roles.ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY": "Штрих-код - иконка",
+        "roles.RST_PERMISIONS": "РРО"
     },
     "uk": {
         "roles": "Ролі",
@@ -660,6 +662,7 @@
         "roles.ACCESS_CASHBOX_RST_LOGS": "РРО - доступ до логів РРО",
         "roles.BARCODE_PERMISSIONS": "Штрих-код",
         "roles.ACCESS_STORE_PRODUCT_BARCODE": "Сторінка штрих-кодів",
-        "roles.ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY": "Штрих-код - іконка"
+        "roles.ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY": "Штрих-код - іконка",
+        "roles.RST_PERMISIONS": "РРО"
     }
 }

@@ -469,8 +469,12 @@ export const REPORTS_PERMISSIONS = 'REPORTS_PERMISSIONS';
 export const SETTINGS_AND_ADMINISTRATION_PERMISSIONS = 'SETTINGS_AND_ADMINISTRATION_PERMISSIONS';
 export const SYNCHRONIZATION_PERMISSIONS = 'SYNCHRONIZATION_PERMISSIONS';
 export const API_PERMISSIONS = 'API_PERMISSIONS';
+export const RST_PERMISIONS = 'RST_PERMISIONS';
 
-// For roles page
+/**
+ * Ech role group appears in a list of rles on roles page,
+ * if roles were not proveded here will will not apper there
+ */
 export const groupedPermissions = {
     [ NEW_DOCUMENT_PERMISSIONS ]: [
         NEW_DOCUMENT,
@@ -697,6 +701,13 @@ export const groupedPermissions = {
         ACCESS_API_AVAILABILITY,
         ACCESS_API_EXPENSE_ORDER,
         ACCESS_API_INCOME_ORDER,
+    ],
+    [ RST_PERMISIONS ]: [
+        ACCESS_OTHER_OPERATION_RST,
+        ACCESS_CASHBOX_CRUD,
+        ACCESS_CASHIER_CRUD,
+        ACCESS_SALE_RST,
+        ACCESS_CASHBOX_RST_LOGS
     ]
 };
 
@@ -711,6 +722,11 @@ export const isForbidden = ({ isAdmin, scope }, grant) =>
 
 export const isAdmin = ({ isAdmin }) => isAdmin;
 
+/**
+ * Mapper, returns object with translations for each role group
+ * @param {*} intl 
+ * @returns 
+ */
 export const getGroupsLabels = intl => ({
     [ NEW_DOCUMENT_PERMISSIONS ]:                   intl.formatMessage({ id: 'roles.NEW_DOCUMENT_PERMISSIONS' }),
     [ DASHBOARD_PERMISSIONS ]:                      intl.formatMessage({ id: 'roles.DASHBOARD_PERMISSIONS' }),
@@ -734,6 +750,7 @@ export const getGroupsLabels = intl => ({
     [ SETTINGS_AND_ADMINISTRATION_PERMISSIONS ]:    intl.formatMessage({ id: 'roles.SETTINGS_AND_ADMINISTRATION_PERMISSIONS' }),
     [ SYNCHRONIZATION_PERMISSIONS ]:                intl.formatMessage({ id: 'roles.SYNCHRONIZATION_PERMISSIONS' }),
     [ API_PERMISSIONS ]:                            intl.formatMessage({ id: 'roles.API_PERMISSIONS' }),
+    [ RST_PERMISIONS ]:                             intl.formatMessage({ id: 'roles.RST_PERMISIONS' })
 });
 
 export const getPermissionsLabels = intl => ({
