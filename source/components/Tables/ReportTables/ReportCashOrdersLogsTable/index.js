@@ -85,7 +85,6 @@ export class ReportCashOrdersLogsTable extends Component {
             pageSize:         25,
             size:             'large',
             total:            Math.ceil(stats.totalRowsCount / 25) * 25,
-            total:            100,
             hideOnSinglePage: true,
             current:          page,
             onChange:         page => {

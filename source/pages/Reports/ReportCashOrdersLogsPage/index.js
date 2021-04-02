@@ -13,19 +13,13 @@ import { fetchCashOrdersLogs } from 'core/reports/reportCashOrdersLogs/duck';
 import { ReportCashOrdersLogsTable } from 'components';
 
 import { Layout } from "commons";
-import { isForbidden, permissions } from "utils";
-
-const mapStateToProps = state => ({
-    tableData: state.reportOrders.tableData,
-    user: state.auth,
-});
 
 const mapDispatchToProps = {
     fetchCashOrdersLogs
 };
 
 @connect(
-    mapStateToProps,
+    void 0,
     mapDispatchToProps,
 )
 @injectIntl
@@ -40,10 +34,6 @@ export default class ReportOrdersPage extends Component {
 
 
     render() {
-        const {
-            user,
-        } = this.props;
-
         
         return (
             <Layout
@@ -54,9 +44,7 @@ export default class ReportOrdersPage extends Component {
                 }
                 paper={false}
             >
-                <ReportCashOrdersLogsTable
-                
-                />
+                <ReportCashOrdersLogsTable/>
             </Layout>
         );
     }
