@@ -2,7 +2,7 @@
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import styled from 'styled-components';
-import { Button, notification, Modal, Icon, DatePicker } from 'antd';
+import { Button, notification, Modal, Icon, DatePicker, Select } from 'antd';
 import { saveAs } from 'file-saver';
 import moment from 'moment';
 
@@ -10,6 +10,9 @@ import moment from 'moment';
 import { Layout } from 'commons';
 import { fetchAPI } from 'utils';
 import { StoreBalanceTable, StorageBalanceTotals, WarehouseSelect } from 'components';
+
+// own
+const { Option } = Select;
 
 export const StorageBalancePage = injectIntl(({intl}) => {
     return (
@@ -80,6 +83,7 @@ class PrintModal extends React.Component{
         this.state = {
             visible: false,
             dataSource: [],
+            products: [],
             fetched: false,
             warehouseId: undefined,
             startDate: undefined,
@@ -96,7 +100,7 @@ class PrintModal extends React.Component{
     }
 
     handleOk = async () => {
-        const { warehouseId, startDate, endDate } = this.state;
+        const { warehouseId, startDate, endDate, productId } = this.state;
         const response = await fetchAPI(
             'GET',
             'store_doc_products/movement_report',
@@ -105,6 +109,7 @@ class PrintModal extends React.Component{
                 startDate: moment(startDate).format('YYYY-MM-DD'),
                 endDate: moment(endDate).format('YYYY-MM-DD'),
                 date: moment(startDate).add( -1, 'day').format('YYYY-MM-DD'),
+                productId,
             },
             null,
             { rawResponse: true },
@@ -121,8 +126,15 @@ class PrintModal extends React.Component{
         await saveAs(reportFile, fileName);
     }
 
+    componentDidMount = async () => {
+        const products = await fetchAPI('GET', 'store_products');
+        this.setState({
+            products: products.list,
+        })
+    }
+
     render() { 
-        const { visible } = this.state;
+        const { visible, products } = this.state;
 
         return (
             <>
@@ -147,13 +159,24 @@ class PrintModal extends React.Component{
                         display: 'flex',
                         justifyContent: 'space-between',
                     }}>
-                        <DatePicker onChange={(startDate) => this.setState({startDate: startDate})} />
-                        <DatePicker onChange={(endDate) => this.setState({endDate: endDate})} />
+                        <DatePicker onChange={(startDate) => this.setState({startDate})} />
+                        <DatePicker onChange={(endDate) => this.setState({endDate})} />
                     </div>
                     <WarehouseSelect 
                         style={{width: '100%'}}
-                        onChange={ (warehouseId) => this.setState({warehouseId: warehouseId}) }
+                        onChange={ (warehouseId) => this.setState({warehouseId}) }
                     />
+                    <Select
+                        showSearch
+                        placeholder={this.props.intl.formatMessage({id: "product"})}
+                        onChange={ (productId) => this.setState({productId}) }
+                    >
+                        {products.map(({id, name, code, brand})=>
+                            <Option value={id} key={id}>
+                                {code} / {brand.name} / {name}
+                            </Option>
+                        )}
+                    </Select>
                 </Modal>
             </>
     )}
