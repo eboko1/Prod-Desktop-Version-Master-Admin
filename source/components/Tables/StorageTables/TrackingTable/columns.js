@@ -149,6 +149,21 @@ export default props => {
         },
     }
 
+    const warehouse = {
+        title: props.intl.formatMessage({
+            id: 'navigation.storage',
+        }),
+        key: 'warehouse',
+        render: (row) => {
+            console.log(row)
+            return (
+                <div>
+                    {row.doc ? row.doc.warehouseName : ""}
+                </div>
+            )
+        },
+    };
+
     const createdDatetime = {
         title: props.intl.formatMessage({
             id: 'storage.date',
@@ -312,6 +327,7 @@ export default props => {
 
     const columns = [
         code,
+        warehouse,
         type,
         docNum,
         docNumAndType,
