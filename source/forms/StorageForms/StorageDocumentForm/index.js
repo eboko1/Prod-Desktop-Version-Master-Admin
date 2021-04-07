@@ -12,7 +12,7 @@ import moment from 'moment';
 import { Catcher, Numeral } from 'commons';
 import { Barcode } from "components";
 import { withReduxForm, isForbidden, permissions, goTo, fetchAPI } from "utils";
-import { DetailStorageModal, SetBarcodeModal } from "modals";
+import { DetailStorageModal, SetBarcodeModal, WMSCellsModal } from "modals";
 import {MODALS} from 'core/modals/duck';
 import book from "routes/book";
 
@@ -75,6 +75,7 @@ class StorageDocumentForm extends Component {
     }
 
     _addByBarcode = async (barcode) => {
+        const { cells } = this.props;
         const barcodeData = await fetchAPI('GET', 'barcodes',{
 			barcode: barcode,
 		});
@@ -94,6 +95,7 @@ class StorageDocumentForm extends Component {
                 purchasePrice,
                 cellAddresses,
             } = detail;
+            const addToAddress = cellAddresses ? cells.find((cell)=>cell.address == cellAddresses[0]) : undefined;
             await this.props.addDocProduct({
                 productId: id,
                 detailCode: code,
@@ -104,7 +106,7 @@ class StorageDocumentForm extends Component {
                 stockPrice: Number(purchasePrice || 0),
                 sellingPrice: Number(sellingPrice || 0),
                 quantity: quantity || 1,
-                addToAddress: cellAddresses ? cellAddresses[0] : undefined
+                addToAddress: addToAddress ? addToAddress.address : undefined
             });
         } else {
             this.setState({
@@ -723,6 +725,7 @@ class StorageDocumentForm extends Component {
                         tradeCode,
                         cellAddresses,
                     } = detail;
+                    const addToAddress = cellAddresses ? cells.find((cell)=>cell.address == cellAddresses[0]) : undefined;
                     await this.props.addDocProduct({
                         productId: id,
                         detailCode: code,
@@ -733,7 +736,7 @@ class StorageDocumentForm extends Component {
                         stockPrice: Number(purchasePrice || 0),
                         sellingPrice: Number(sellingPrice || 0),
                         quantity: quantity,
-                        addToAddress: cellAddresses ? cellAddresses[0] : undefined
+                        addToAddress: addToAddress ? addToAddress.address : undefined
                     });
                 }}
                 hideModal={()=>{
@@ -999,6 +1002,7 @@ class AddProductModal extends React.Component {
             storageProducts: [],
             brandSearchValue: "",
             visible: false,
+            showCellModal: false,
             brandId: undefined,
             brandName: undefined,
             detailCode: undefined,
@@ -1203,6 +1207,7 @@ class AddProductModal extends React.Component {
     }
 
     getProductId(detailCode, brandId, productId) {
+        const { cells } = this.props;
         const { storageProducts, storageBalance, detailName, quantity } = this.state;
         var storageProduct;
         if(productId) {
@@ -1211,6 +1216,7 @@ class AddProductModal extends React.Component {
             storageProduct = storageProducts.find((elem)=>elem.code==detailCode && (!brandId || elem.brandId == brandId));
         }
         if(storageProduct) {
+            const addToAddress = storageProduct.cellAddresses ? cells.find((cell)=>cell.address == storageProduct.cellAddresses[0]) : undefined;
             storageBalance[0].count = storageProduct.countInWarehouses;
             storageBalance[1].count = storageProduct.reservedCount;
             storageBalance[2].count = storageProduct.countInOrders;
@@ -1231,7 +1237,7 @@ class AddProductModal extends React.Component {
                 stockPrice: (this.props.sellingPrice ? 
                     storageProduct.stockPrice * (storageProduct.group && storageProduct.group.multiplier || 1.4) : 
                     storageProduct.stockPrice) || 0,
-                addToAddress: storageProduct.cellAddresses ? storageProduct.cellAddresses[0] : undefined
+                addToAddress: addToAddress ? addToAddress.address : undefined
             })
             this.getCurrentPrice(detailCode, this.props.businessSupplierId);
             return true;
@@ -1381,6 +1387,7 @@ class AddProductModal extends React.Component {
             tradeCode: undefined,
             detailName: undefined,
             addToAddress: undefined,
+            showCellModal: false,
             sellingPrice: 0,
             stockPrice: 0,
             quantity: 1,
@@ -1389,10 +1396,11 @@ class AddProductModal extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const { product } = this.props;
+        const { product, cells } = this.props;
         if(!prevProps.visible && this.props.visible) {
             this.getStorageProducts();
             if(product) {
+                const addToAddress = product.cellAddresses ? cells.find((cell)=>cell.address == product.cellAddresses[0]) : undefined;
                 this.setState({
                     editMode: true,
                     brandId: product.brandId,
@@ -1406,7 +1414,7 @@ class AddProductModal extends React.Component {
                     productId: product.productId,
                     ordersAppurtenancies: product.ordersAppurtenancies,
                     sellingPrice: product.sellingPrice,
-                    addToAddress: product.cellAddresses ? product.cellAddresses[0] : undefined
+                    addToAddress: addToAddress ? addToAddress.address : undefined
                 })
             }
         }
@@ -1419,9 +1427,11 @@ class AddProductModal extends React.Component {
     }
 
     selectProduct = (productId) => {
+        const { cells } = this.props;
         const { storageBalance } = this.state;
         const product = this.state.storageProducts.find((product)=>product.id == productId);
         if(product) {
+            const addToAddress = product.cellAddresses ? cells.find((cell)=>cell.address == product.cellAddresses[0]) : undefined;
             storageBalance[0].count = product.countInWarehouses;
             storageBalance[1].count = product.reservedCount;
             storageBalance[2].count = product.countInOrders;
@@ -1440,7 +1450,7 @@ class AddProductModal extends React.Component {
                 stockPrice: Math.round(product.stockPrice*10)/10 || 0,
                 sellingPrice: product.salePrice || Math.round(product.stockPrice * 10 *((product.priceGroup && product.priceGroup.multiplier) || 1.4))/10 || 0,
                 quantity: product.quantity || 1,
-                addToAddress: product.cellAddresses ? product.cellAddresses[0] : undefined
+                addToAddress: addToAddress ? addToAddress.address : undefined,
             })
         }
     }
@@ -1462,6 +1472,7 @@ class AddProductModal extends React.Component {
             storageBalance,
             sellingPrice,
             addToAddress,
+            showCellModal,
         } = this.state;
 
         return (
@@ -1634,26 +1645,26 @@ class AddProductModal extends React.Component {
                         />
                     </div>
                     {this.props.type == INCOME || this.props.documentType == ORDERINCOME ?
-                        <div className={Styles.addProductItemWrap} style={{minWidth: 140}}>
+                        <div className={Styles.addProductItemWrap} style={{minWidth: 120}}>
                             <FormattedMessage id='Ячейка' />
-                            <Select
-                                showSearch
+                            <Input
                                 value={addToAddress}
-                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                                onSelect={(value, option)=>{
+                                onClick={()=>{
+                                    this.setState({showCellModal: true})
+                                }}
+                            />
+                            <WMSCellsModal
+                                warehouseId={this.props.warehouseId}
+                                visible={Boolean(showCellModal)}
+                                confirmAction={(addToAddress)=>{
                                     this.setState({
-                                        addToAddress: value,
+                                        addToAddress
                                     })
                                 }}
-                            >
-                                {
-                                    this.props.cells.map((elem, index)=>(
-                                        <Option key={index} value={elem.address}>
-                                            {elem.address}
-                                        </Option>
-                                    ))
-                                }
-                            </Select>
+                                hideModal={()=>{
+                                    this.setState({showCellModal: false})
+                                }}
+                            />
                         </div> : null    
                     }
                     {!this.props.priceDisabled &&

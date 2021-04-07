@@ -9,9 +9,7 @@ import { withRouter } from 'react-router';
 
 // proj
 import { Catcher } from "commons";
-import { Barcode } from "components";
-import { StoreProductModal } from "modals";
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import { fetchWarehouses } from 'core/warehouses/duck';
 
 // own
 import Styles from "./styles.m.css";
@@ -21,7 +19,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-
+    fetchWarehouses
 };
 
 
@@ -34,6 +32,7 @@ export default class WMSCellsModal extends Component {
 		
         this.state = {
 			dataSource: [],
+            warehouseId: undefined,
         };
 
 		this.columns = [
@@ -96,6 +95,7 @@ export default class WMSCellsModal extends Component {
         const dataSource = await fetchAPI('GET', 'wms/cells', {warehouseId});
 		this.setState({
 			dataSource: dataSource.list,
+            warehouseId,
 		});
 	}
 
@@ -111,6 +111,10 @@ export default class WMSCellsModal extends Component {
         await this._hideModal();
     }
 
+    componentDidMount() {
+        this.props.fetchWarehouses();
+    }
+
 	componentDidUpdate(prevProps, prevState) {
 		if(this.props.visible && !prevProps.visible) {
             this._showModal();
@@ -119,7 +123,7 @@ export default class WMSCellsModal extends Component {
 	
     render() {
         const { user, intl: { formatMessage }, visible } = this.props;
-		const { dataSource } = this.state;
+		const { dataSource, warehouseId } = this.state;
 		
         return (
             <Catcher>

@@ -45,7 +45,7 @@ export default class WMSPage extends Component {
         this.state = {
            cells: [],
            generateSettings: [],
-           activeKey: 'generate',
+           activeKey: 'plan',
            warehouseId: undefined,
         };
     }
@@ -70,8 +70,13 @@ export default class WMSPage extends Component {
         this.props.fetchWarehouses();
     }
 
-    componentDidUpdate(prevProps) {
-
+    componentDidUpdate = async (prevProps) => {
+        if(this.props.warehouses.length && !prevProps.warehouses.length) {
+            await this.setState({
+                warehouseId: this.props.warehouses[0].id
+            });
+            this._fetchCells();
+        }
     }
 
     render() {
@@ -126,11 +131,13 @@ export default class WMSPage extends Component {
                             key="plan"
                             disabled={!cells.length}
                         >
-                            <WMSStoragePlan
-                                cells={cells}
-                                fetchCells={this._fetchCells}
-                                warehouseId={warehouseId}
-                            />
+                            {warehouseId &&
+                                <WMSStoragePlan
+                                    cells={cells}
+                                    fetchCells={this._fetchCells}
+                                    warehouseId={warehouseId}
+                                />
+                            }
                         </TabPane>
                         <TabPane
                             tab={<FormattedMessage id="Настройки ячеек"/>}
