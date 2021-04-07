@@ -43,6 +43,8 @@ const ProductsTable = memo(props => {
         },
     };
 
+    console.log(props)
+
     return (
         <Table
             size='small'
@@ -53,7 +55,7 @@ const ProductsTable = memo(props => {
                 emptyText: props.intl.formatMessage({ id: 'no_data' }),
             } }
             loading={ props.loading }
-            rowKey={ record => record.code }
+            rowKey={ record => record.id }
         />
     );
 });

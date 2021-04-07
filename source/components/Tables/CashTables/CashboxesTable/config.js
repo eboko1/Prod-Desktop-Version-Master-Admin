@@ -1,7 +1,7 @@
 // vendor
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Button, Icon, Popconfirm, Tooltip } from 'antd';
+import { Popover, Button, Icon, Popconfirm, Tooltip } from 'antd';
 import { permissions, isForbidden } from 'utils';
 
 //proj
@@ -13,10 +13,11 @@ import { images } from 'utils';
  * Takes path to Icon and generates customized Icon component
  * @param {*} icon file path
  * @param {*} onClick event handler
+ * @param {*} user icurrent user object, is used for access
  * @returns Component (Icon)
  */
-function generateIcon(icon, onClick, user) {
-	return (
+function generateIcon(icon, onClick, user, hint) {
+	const btn = (
 		<Button
 			onClick={onClick}
 			disabled= {isForbidden(user, permissions.ACCESS_OTHER_OPERATION_RST)}
@@ -32,6 +33,11 @@ function generateIcon(icon, onClick, user) {
 			/>
 		</Button>
 	);
+
+	//If hint provided we have to wrap popover around it
+	return hint
+		?	(<Popover content={hint}>{btn}</Popover>)
+		:   (btn)
 }
 
 /* eslint-disable complexity */
@@ -105,7 +111,12 @@ export function columnsConfig(props) {
 		key: 'openShiftCol',
 		render: (rst, obj) => {
 			return rst
-				? generateIcon(images.openLockIcon, () => props.openShift(obj.id), user)
+				? generateIcon(
+					images.openLockIcon,
+					() => props.openShift(obj.id),
+					user,
+					(<FormattedMessage id="cash-table.hint_open_shift"/>)
+				)
 				: null;
 		},
 	}
@@ -116,9 +127,12 @@ export function columnsConfig(props) {
 		key: 'serviceInputCol',
 		render: (rst, obj) => {
 			return rst
-				? generateIcon(images.cashboxIcon, () => {
-					props.onOpenServiceInputModal(obj.id);
-				}, user)
+				? generateIcon(
+					images.cashboxIcon,
+					() => props.onOpenServiceInputModal(obj.id),
+					user,
+					(<FormattedMessage id="cash-table.hint_service_input"/>)
+				)
 				: null;
 		},
 	}
@@ -129,7 +143,7 @@ export function columnsConfig(props) {
 		key: 'xReportCol',
 		render: (rst, obj) => {
 			return rst
-				? generateIcon(images.reportIcon, () => props.fetchXReport(obj.id), user)
+				? generateIcon(images.reportIcon, () => props.fetchXReport(obj.id), user, (<FormattedMessage id="cash-table.hint_x_report"/>))
 				: null;
 		},
 	}
@@ -140,7 +154,7 @@ export function columnsConfig(props) {
 		key: 'zReportCol',
 		render: (rst, obj) => {
 			return rst
-				? generateIcon(images.closedLockIcon, () => props.closeShift(obj.id), user)
+				? generateIcon(images.closedLockIcon, () => props.closeShift(obj.id), user, (<FormattedMessage id="cash-table.hint_close_shift"/>))
 				: null;
 		},
 	}
