@@ -28,7 +28,6 @@ export default props => {
                         id:   data.id,
                         name: data.name,
                         code: data.code,
-                        date: props.filters.date,
                     })
                 }
             />
@@ -51,7 +50,6 @@ export default props => {
                             id:   data.id,
                             name: data.name,
                             code: data.code,
-                            date: props.filters.date,
                         })
                     }}
                 >
@@ -79,7 +77,6 @@ export default props => {
                                 name: data.name,
                                 code: data.code,
                                 type: "reserves",
-                                date: props.filters.date,
                             })
                         }
                     }}
@@ -106,7 +103,6 @@ export default props => {
                             id:   data.id,
                             name: data.name,
                             code: data.code,
-                            date: props.filters.date,
                         })
                     }}
                 >
@@ -135,7 +131,6 @@ export default props => {
                                 name: data.name,
                                 code: data.code,
                                 type: "orders",
-                                date: props.filters.date,
                             })
                         }
                     }}
