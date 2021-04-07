@@ -62,6 +62,10 @@ export default class SetBarcodeModal extends Component {
                 key: 'additional',
                 dataIndex: 'additional',
             },
+			{
+                key: 'barcode',
+                dataIndex: 'barcode',
+            },
 		]
 	}
 

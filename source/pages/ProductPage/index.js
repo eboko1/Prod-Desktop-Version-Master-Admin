@@ -729,6 +729,7 @@ export default class ProductPage extends Component {
                                 />
                             }
                             key="cell"
+                            disabled
                         >
                             <div className={Styles.cellsTab}>
                                 <Table

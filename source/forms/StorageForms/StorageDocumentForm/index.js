@@ -1391,6 +1391,7 @@ class AddProductModal extends React.Component {
             sellingPrice: 0,
             stockPrice: 0,
             quantity: 1,
+            editMode: false,
         });
         this.props.hideModal();
     }
@@ -1644,7 +1645,7 @@ class AddProductModal extends React.Component {
                             }}
                         />
                     </div>
-                    {this.props.type == INCOME || this.props.documentType == ORDERINCOME ?
+                    {/* {this.props.type == INCOME || this.props.documentType == ORDERINCOME ?
                         <div className={Styles.addProductItemWrap} style={{minWidth: 120}}>
                             <FormattedMessage id='Ячейка' />
                             <Input
@@ -1666,7 +1667,7 @@ class AddProductModal extends React.Component {
                                 }}
                             />
                         </div> : null    
-                    }
+                    } */}
                     {!this.props.priceDisabled &&
                     <div className={Styles.addProductItemWrap}>
                         <div><FormattedMessage id='order_form_table.price' /></div>

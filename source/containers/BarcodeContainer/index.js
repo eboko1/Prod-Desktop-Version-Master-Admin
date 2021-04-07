@@ -723,8 +723,8 @@ export default class BarcodeContainer extends Component {
 										return (
 											String(id).toLowerCase().replace(/\W/g, '').includes(input) ||
 											String(displayId).toLowerCase().replace(/\W/g, '').includes(input) ||
-											String(name).toLowerCase().replace(/\W/g, '').includes(input) ||
-											String(additional).toLowerCase().replace(/\W/g, '').includes(input) ||
+											String(name).toLowerCase().replace(' ', '').includes(input) ||
+											String(additional).toLowerCase().replace(' ', '').includes(input) ||
 											String(barcode).toLowerCase().includes(input)
 										)
 									})
