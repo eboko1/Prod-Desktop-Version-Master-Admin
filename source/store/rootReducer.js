@@ -43,7 +43,7 @@ import clientMRDsReducer, { moduleName as clientMRDsModule } from 'core/clientMR
 
 // Report
 import reportOrdersReducer, { moduleName as reportOrdersModule } from 'core/reports/reportOrders/duck';
-import reportsReducer, { moduleName as reportsModule } from 'core/reports/reports/duck';
+import reportClientDebtsReducer, { moduleName as reportClientDebtsModule } from 'core/reports/reportClientDebts/duck';
 import reportLoadKPIReducer, { moduleName as reportLoadKPIModule } from 'core/reports/reportLoadKPI/duck';
 import reportAnalyticsReducer, {moduleName as reportAnalyticsModule} from 'core/reports/reportAnalytics/duck'
 import reportCashFlowReducer, {moduleName as reportCashFlowModule} from 'core/reports/reportCashFlow/duck'
@@ -78,6 +78,9 @@ import paymentsReducer, {
 import warehousesReducer, {
     moduleName as warehousesModule,
 } from 'core/warehouses/duck';
+import brandsReducer, {
+    moduleName as brandsModule,
+} from 'core/brands/duck';
 import vehicleTypesReducer, {
     moduleName as vehicleTypesModule,
 } from 'core/vehicleTypes/duck';
@@ -109,7 +112,7 @@ const appState = {
     [ clientModule ]:               clientReducer,
     [ clientOrdersModule ]:         clientOrdersReducer,
     [ clientMRDsModule ]:           clientMRDsReducer,
-    [ reportsModule ]:              reportsReducer,
+    [ reportClientDebtsModule ]:    reportClientDebtsReducer,
     [ reportAnalyticsModule ]:      reportAnalyticsReducer,
     [ reportCashFlowModule ]:       reportCashFlowReducer,
     [ clientRequisiteModule ]:      clientRequisiteReducer,
@@ -135,6 +138,7 @@ const appState = {
     [ uiModule ]:                   uiReducer,
     [ vehicleNumberHistoryModule ]: vehicleNumberHistoryReducer,
     [ warehousesModule ]:           warehousesReducer,
+    [ brandsModule ]:               brandsReducer,
     [ vehicleTypesModule ]:         vehicleTypesReducer,
 };
 

@@ -33,6 +33,8 @@ class AddServiceModal extends React.Component{
         this.employeeOptions = [];
         this.relatedDetailsOptions = [];
 
+        //this.laborRef = React.createRef();
+
         this.mainTableColumns = [
             {
                 key:       'checked',
@@ -132,22 +134,25 @@ class AddServiceModal extends React.Component{
                             value={!elem.related ? data : elem.name}
                             style={{minWidth: 100, color: 'var(--text)'}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 380 }}
+                            //dropdownMatchSelectWidth={false}
                             filterOption={(input, option) => {
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
                                     String(option.props.value).indexOf(input.toLowerCase()) >= 0 ||
-                                    String(option.props.cross_id).indexOf(input.toLowerCase()) >= 0
+                                    String(option.props.cross_id).toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+                                    String(option.props.barcode).toLowerCase().indexOf(input.toLowerCase()) >= 0
                                 )
                             }}
                             onChange={(value, option)=>{
+                                console.log(option)
                                 if(option) {
                                     let price = option.props.price ? option.props.price : Number(this.props.normHourPrice);
-                                    let count = option.props.norm_hours ? option.props.norm_hours : 1;
+                                    let count = (option.props.norm_hours || 1);
                                     elem.laborId = value;
                                     elem.serviceName = option.props.children;
                                     elem.masterLaborId = option.props.master_id;
                                     elem.storeGroupId = option.props.product_id;
-                                    elem.count = count;
+                                    elem.count = option.props.hours;
                                     elem.price = price;
                                     elem.sum = price * count;
                                     if(!elem.related) this.getRelatedLabors(value);
@@ -170,6 +175,8 @@ class AddServiceModal extends React.Component{
                                     laborSearchValue: "",
                                 })
                             }}
+                            ref={node => (this.laborRef = node)}
+                            showAction={['focus', 'click']}
                         >
                             {
                                 this.state.laborSearchValue.length > 2 || (!elem.related && (elem.storeGroupId || elem.masterLaborId)) ? 
@@ -179,11 +186,12 @@ class AddServiceModal extends React.Component{
                                             value={elem.laborId}
                                             master_id={elem.masterLaborId}
                                             product_id={elem.productId}
-                                            norm_hours={elem.normHours}
                                             price={elem.price}
                                             cross_id={elem.crossId}
+                                            barcode={elem.barcode}
+                                            hours={elem.normHours}
                                         >
-                                            {elem.name ? elem.name : elem.defaultName}
+                                            {elem.name || elem.defaultName}
                                         </Option>
                                     )) :
                                     elem.laborId && currentServiceOption ? 
@@ -192,10 +200,12 @@ class AddServiceModal extends React.Component{
                                         value={currentServiceOption.laborId}
                                         master_id={currentServiceOption.masterLaborId}
                                         product_id={currentServiceOption.productId}
-                                        norm_hours={currentServiceOption.normHours}
                                         price={currentServiceOption.price}
+                                        cross_id={currentServiceOption.crossId}
+                                        barcode={currentServiceOption.barcode}
+                                        hours={currentServiceOption.normHours}
                                     >
-                                        {currentServiceOption.name ? currentServiceOption.name : currentServiceOption.defaultName}
+                                        {currentServiceOption.name || currentServiceOption.defaultName}
                                     </Option> : 
                                     []
                             }
@@ -460,7 +470,7 @@ class AddServiceModal extends React.Component{
         if(mainTableSource[0].laborId == undefined) {
             notification.warning({
                 message: 'Заполните все необходимые поля!',
-              });
+            });
             return;
         }
         if(editing) {
@@ -599,13 +609,16 @@ class AddServiceModal extends React.Component{
         ))
     };
 
-    filterOptions(masterLaborId, storeGroupId) {
+    filterOptions(masterLaborId, storeGroupId, laborId) {
         var servicesOptions = [...this.labors];
         if(masterLaborId) {
             servicesOptions = servicesOptions.filter((elem, index)=>elem.masterLaborId == masterLaborId);
         }
         if(storeGroupId) {
             servicesOptions = servicesOptions.filter((elem, index)=>elem.productId == storeGroupId);
+        }
+        if(laborId) {
+            servicesOptions = servicesOptions.filter((elem, index)=>elem.laborId == laborId);
         }
 
         this.servicesOptions = [...servicesOptions];
@@ -615,16 +628,48 @@ class AddServiceModal extends React.Component{
         this.fetchData();
     }
 
-    componentDidUpdate(prevState) {
-        if(prevState.visible == false && this.props.visible) {
-            const editing = Boolean(this.props.labor.laborId);
+    componentDidUpdate(prevProps, prevState) {
+        const { visible, labor, defaultEmployeeId, normHourPrice, laborTimeMultiplier } = this.props;
+        const editing = Boolean(labor && labor.laborId);
+        if(prevProps.visible == false && visible) {
+            
             this.getOptions();
-            this.state.mainTableSource = [{...this.props.labor}];
+            this.state.mainTableSource = [{...labor}];
             
             if(!editing) {
-                this.state.mainTableSource[0].employeeId = this.props.defaultEmployeeId;
+                if(labor.barcode) {
+                    const barcodeLabor = this.servicesOptions.find((elem)=>elem.laborId == labor.referenceId );
+                    if(barcodeLabor) {
+                        const { 
+                            laborId,
+                            name,
+                            defaultName,
+                            masterLaborId,
+                            productId,
+                            normHours,
+                        } = barcodeLabor;
+                        const price = barcodeLabor.price || normHourPrice;
+                        const count = (barcodeLabor.normHours || 1) * laborTimeMultiplier;
+                        const sum = price * count;
+                        this.state.mainTableSource = [{
+                            laborId,
+                            serviceName: name || defaultName,
+                            masterLaborId,
+                            storeGroupId: productId,
+                            hours: Number(normHours),
+                            price,
+                            count,
+                            sum,
+                        }]
+                    } else {
+                        notification.warning({
+                            message: 'Код не найден',
+                        });
+                        this.props.hideModal();
+                    }
+                }
+                this.state.mainTableSource[0].employeeId = defaultEmployeeId;
             }
-            
             this.setState({
                 editing: editing,
             })
@@ -643,6 +688,7 @@ class AddServiceModal extends React.Component{
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                     maskClosable={false}
+                    forceRender
                 >
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>

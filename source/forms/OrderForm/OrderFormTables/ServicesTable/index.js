@@ -10,13 +10,13 @@ import {
     Input,
     Button,
     Modal,
-    message,
+    notification,
 } from 'antd';
 import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
-import { permissions, isForbidden, images } from 'utils';
+import { permissions, isForbidden, images, fetchAPI } from 'utils';
 import {
     FavouriteServicesModal,
     AddServiceModal,
@@ -43,8 +43,6 @@ class ServicesTable extends Component {
             serviceModalKey:     0,
             dataSource:          [],
         };
-
-        this.laborTimeMultiplier = this.props.laborTimeMultiplier || 1;
         this.updateLabor = this.updateLabor.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
         this.masterLabors = [];
@@ -56,9 +54,42 @@ class ServicesTable extends Component {
                             <div className={Styles.headerActions}>
                                 <Barcode
                                     button
+                                    multipleMode
+                                    prefix={'LBS'}
+                                    onConfirm={async (code, pref, fullCode)=>{
+                                        const barcodeData = await fetchAPI('GET', 'barcodes',{
+                                            barcode: code,
+                                        });
+                                        const laborBarcode = barcodeData.find(({table})=>table == 'LABORS');
+                                
+                                        if(laborBarcode) {
+                                            const payload = {
+                                                insertMode: true,
+                                                details: [],
+                                                services: [],
+                                            };
+                                            const { labor } = await fetchAPI('GET', `labors/${laborBarcode.referenceId}`);
+                                            payload.services.push({
+                                                serviceId: labor[0].laborId,
+                                                serviceName: labor[0].name || labor[0].defaultName,
+                                                employeeId: this.props.defaultEmployeeId,
+                                                serviceHours: 0,
+                                                purchasePrice: 0,
+                                                count: Number(labor[0].normHours) || 0,
+                                                servicePrice: Number(labor[0].price) || this.props.normHourPrice,
+                                            })
+                                            await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
+                                            await this.updateDataSource();
+                                        } else {
+                                            notification.warning({
+                                                message: 'Код не найден',
+                                            });
+                                        }
+                                    }}
                                 />
                                 {!isForbidden(this.props.user, permissions.ACCESS_ORDER_LABORS_COMPLEXES) &&
                                     <ComplexesModal
+                                        normHourPrice={ this.props.normHourPrice }
                                         disabled={this.props.disabled}
                                         tecdocId={this.props.tecdocId}
                                         labors={this.props.labors}
@@ -66,6 +97,7 @@ class ServicesTable extends Component {
                                         detailsTreeData={this.props.detailsTreeData}
                                         orderId={this.props.orderId}
                                         reloadOrderForm={this.props.reloadOrderForm}
+                                        laborTimeMultiplier={this.props.laborTimeMultiplier}
                                     />
                                 }
                             </div>
@@ -111,9 +143,7 @@ class ServicesTable extends Component {
                             </Button>
                             { !elem.laborId ? (
                                 <FavouriteServicesModal
-                                    laborTimeMultiplier={
-                                        this.laborTimeMultiplier
-                                    }
+                                    laborTimeMultiplier={this.props.laborTimeMultiplier}
                                     disabled={ this.props.disabled }
                                     normHourPrice={ this.props.normHourPrice }
                                     defaultEmployeeId={
@@ -130,9 +160,7 @@ class ServicesTable extends Component {
                                 />
                             ) : (
                                 <QuickEditModal
-                                    laborTimeMultiplier={
-                                        this.laborTimeMultiplier
-                                    }
+                                    laborTimeMultiplier={this.props.laborTimeMultiplier}
                                     disabled={
                                         !elem.laborId || this.props.disabled
                                     }
@@ -519,6 +547,9 @@ class ServicesTable extends Component {
         });
     }
     hideServicelProductModal() {
+        const { dataSource } = this.state;
+        const lastService = dataSource[dataSource.length - 1];
+        lastService.barcode = undefined;
         this.setState({
             serviceModalVisible: false,
         });
@@ -719,7 +750,7 @@ class ServicesTable extends Component {
                     pagination={ false }
                 />
                 <AddServiceModal
-                    laborTimeMultiplier={ this.laborTimeMultiplier }
+                    laborTimeMultiplier={ this.props.laborTimeMultiplier }
                     defaultEmployeeId={ this.props.defaultEmployeeId }
                     normHourPrice={ this.props.normHourPrice }
                     user={ this.props.user }
@@ -937,10 +968,9 @@ class QuickEditModal extends React.Component {
                             tecdocId={ this.props.tecdocId }
                             storeGroupId={ elem.storeGroupId }
                             onSelect={ hours => {
-                                this.state.dataSource[ 0 ].hours = hours;
-                                this.setState({
-                                    update: true,
-                                });
+                                elem.hours = hours;
+                                elem.count = hours * this.props.laborTimeMultiplier;
+                                this.setState({});
                             } }
                             hours={ data }
                         />

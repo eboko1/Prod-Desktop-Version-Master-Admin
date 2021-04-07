@@ -9,7 +9,6 @@ import { permissions, isForbidden, fetchAPI } from "utils";
 import { DetailStorageModal, DetailSupplierModal, LaborsNormHourModal, DetailProductModal } from 'modals'
 // own
 import Styles from './styles.m.css';
-import { values } from 'office-ui-fabric-react';
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
 const { confirm } = Modal;
@@ -22,7 +21,6 @@ class AddServiceModal extends React.Component{
         this.state = {
             editing: false,
             mainTableSource: [],
-            laborSearchValue: "",
         }
         this.labors = [];
         this.priceGroups = [];
@@ -36,11 +34,10 @@ class AddServiceModal extends React.Component{
                 key:       'laborId',
                 dataIndex: 'laborId',
                 render: (data, elem)=>{
-                    const currentServiceOption = this.servicesOptions.find((labor)=>labor.laborId==data);
                     return (
                         <Select
                             allowClear
-                            disabled={this.state.editing || elem.related}
+                            disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.labor'})}
                             value={data}
@@ -50,7 +47,7 @@ class AddServiceModal extends React.Component{
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
                                     String(option.props.value).indexOf(input.toLowerCase()) >= 0 ||
-                                    String(option.props.cross_id).indexOf(input.toLowerCase()) >= 0
+                                    String(option.props.cross_id).toLowerCase().indexOf(input.toLowerCase()) >= 0
                                 )
                             }}
                             onChange={(value, option)=>{
@@ -70,47 +67,26 @@ class AddServiceModal extends React.Component{
                                     elem.masterLaborId = value;
                                     elem.storeGroupId = value;
                                 }
-                                this.getPrice(value);
+                                if(value) {
+                                    this.getPrice(value);
+                                }
                                 this.setState({});
-                            }}
-                            onSearch={(input)=>{
-                                this.setState({
-                                    laborSearchValue: input,
-                                })
-                            }}
-                            onBlur={()=>{
-                                this.setState({
-                                    laborSearchValue: "",
-                                })
                             }}
                         >
                             {
-                                this.state.laborSearchValue.length > 2 || (!elem.related && (elem.storeGroupId || elem.masterLaborId)) ? 
-                                    this.servicesOptions.map((elem, index)=>(
-                                        <Option
-                                            key={index}
-                                            value={elem.laborId}
-                                            master_id={elem.masterLaborId}
-                                            product_id={elem.productId}
-                                            norm_hours={elem.normHours}
-                                            price={elem.price}
-                                            cross_id={elem.crossId}
-                                        >
-                                            {elem.name ? elem.name : elem.defaultName}
-                                        </Option>
-                                    )) :
-                                    elem.laborId && currentServiceOption ? 
+                                this.servicesOptions.map((elem, index)=>(
                                     <Option
-                                        key={0}
-                                        value={currentServiceOption.laborId}
-                                        master_id={currentServiceOption.masterLaborId}
-                                        product_id={currentServiceOption.productId}
-                                        norm_hours={currentServiceOption.normHours}
-                                        price={currentServiceOption.price}
+                                        key={index}
+                                        value={elem.laborId}
+                                        master_id={elem.masterLaborId}
+                                        product_id={elem.productId}
+                                        norm_hours={elem.normHours}
+                                        price={elem.price}
+                                        cross_id={elem.crossId}
                                     >
-                                        {currentServiceOption.name ? currentServiceOption.name : currentServiceOption.defaultName}
-                                    </Option> : 
-                                    []
+                                        {elem.name ? elem.name : elem.defaultName}
+                                    </Option>
+                                ))
                             }
                         </Select>
                     )
@@ -123,6 +99,7 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <Select
+                            disabled={!elem.laborId}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'tire.priceGroup'})}
                             value={data ? data : undefined}
@@ -136,6 +113,7 @@ class AddServiceModal extends React.Component{
                             }}
                             onChange={(value, option)=>{
                                 elem.tireStationPriceGroupId = value;
+                                elem.price = option.props.price || elem.price;
                                 this.setState({});
                             }}
                         >
@@ -174,7 +152,6 @@ class AddServiceModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="comment" />,
                 key:       'comment',
                 dataIndex: 'comment',
                 width:     'auto',
@@ -324,15 +301,24 @@ class AddServiceModal extends React.Component{
 
     getPrice = async (laborId) => {
         const { clientVehicleTypeId, clientVehicleRadius } = this.props;
-        const price = await fetchAPI('GET', `labors/price_groups`, {
-            laborId: laborId,
-            vehicleTypeId: clientVehicleTypeId,
-            radius: Math.round(clientVehicleRadius),
-        })
-        console.log(price);
-        if(price && price.price) {
-            this.state.mainTableSource[0].price = price.price;
-            this.setState({});
+        
+        if(clientVehicleTypeId && clientVehicleRadius) {
+            this.priceGroups = await fetchAPI('GET', `labors/price_groups`, {
+                laborId: laborId,
+                vehicleTypeId: clientVehicleTypeId,
+                radius: Math.round(clientVehicleRadius),
+            })
+            console.log(this.priceGroups);
+            this.priceGroupsOptions = this.priceGroups.map((elem, i)=>(
+                <Option key={i} value={elem.id} price={elem.price}>
+                    {elem.name}
+                </Option>
+            ))
+            if(this.priceGroups && this.priceGroups.length) {
+                this.state.mainTableSource[0].price = this.priceGroups[0].price;
+                this.state.mainTableSource[0].tireStationPriceGroupId = this.priceGroups[0].id;
+                this.setState({});
+            }
         }
     }
 
@@ -408,18 +394,12 @@ class AddServiceModal extends React.Component{
     }
 
     getOptions = async () => {
-        this.priceGroups = await fetchAPI('GET', 'tire_station_price_groups');
         this.servicesOptions = [...this.labors];
         this.employeeOptions = this.props.employees.map((elem, i)=>(
             <Option key={i} value={elem.id}>
                 {elem.name} {elem.surname}
             </Option>
         ));
-        this.priceGroupsOptions = this.priceGroups.map((elem, i)=>(
-            <Option key={i} value={elem.id}>
-                {elem.name}
-            </Option>
-        ))
     };
 
     deleteService = async () => {

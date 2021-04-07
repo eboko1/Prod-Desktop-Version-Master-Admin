@@ -15,7 +15,8 @@ import _ from "lodash";
 
 // proj
 import { Layout, StyledButton } from "commons";
-import { StatsPanel } from 'components'
+import { StatsPanel } from 'components';
+import { permissions, isForbidden } from 'utils';
 import {
     fetchReportCashFlow,
     fetchAnalytics,
@@ -31,7 +32,8 @@ import CashFlowFilter from './CashFlowFilter';
 
 const mapStateToProps = state => ({
     tableData: state.reportCashFlow.tableData,
-    stats: state.reportCashFlow.stats
+    stats: state.reportCashFlow.stats,
+    user: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -99,6 +101,7 @@ export default class ReportCashFlowPage extends Component {
         const {
             tableData,
             stats,
+            user,
             intl: {formatMessage}
         } = this.props;
 
@@ -117,6 +120,7 @@ export default class ReportCashFlowPage extends Component {
                         <StyledButton
                             type="primary"
                             onClick={this.onGetExelFileReport}
+                            disabled={ isForbidden(user, permissions.ACCESS_REPORT_PROFIT_FROM_BUSINESSES_PRINT) }
                         >
                             <FormattedMessage id='report_cash_flow_page.download_full_report'/>
                         </StyledButton>

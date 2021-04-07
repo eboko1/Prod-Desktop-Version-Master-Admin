@@ -31,6 +31,7 @@ import {
     DiscountPanel,
     HistoryTable,
 } from "../OrderForm/OrderFormTables";
+import { AddClientModal, ToSuccessModal } from "modals";
 
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
@@ -64,11 +65,10 @@ export class MobileRecordForm extends Component {
         super(props);
 
         this.state = {
-            detailsTreeData: [],
+            detailsTreeData: undefined,
             fetchedOrder: undefined,
+            details: undefined,
         };
-
-        this.details = [];
     }
 
     _fetchLaborsAndDetails = async () => {
@@ -94,7 +94,6 @@ export class MobileRecordForm extends Component {
             data.map((elem, index) => {
                 elem.key = index;
             });
-            that.details = data;
             that.setState({
                 details: data,
             });
@@ -185,14 +184,13 @@ export class MobileRecordForm extends Component {
 
     buildStoreGroupsTree() {
         var treeData = [];
-        for (let i = 0; i < this.details.length; i++) {
-            const parentGroup = this.details[ i ];
+        for (let i = 0; i < this.state.details.length; i++) {
+            const parentGroup = this.state.details[ i ];
             treeData.push({
                 title:      `${parentGroup.name} (#${parentGroup.id})`,
                 name:       parentGroup.name,
                 value:      parentGroup.id,
                 key:        `${i}`,
-                selectable: false,
                 children:   [],
                 multiplier: parentGroup.priceGroupMultiplier,
             });
@@ -203,7 +201,6 @@ export class MobileRecordForm extends Component {
                     name:       childGroup.name,
                     value:      childGroup.id,
                     key:        `${i}-${j}`,
-                    selectable: false,
                     children:   [],
                     multiplier: childGroup.priceGroupMultiplier,
                 });
@@ -238,16 +235,16 @@ export class MobileRecordForm extends Component {
     componentDidMount() {
         document.querySelector('.ant-tabs-bar').scrollIntoView({behavior: "smooth", block: "end"});
         this._reloadOrderForm();
-        if (this.props.allDetails.brands.length) {
-            this._fetchLaborsAndDetails();
-        }
     }
 
     componentDidUpdate(prevProps, prevState) {
         if(!this.state.fetchedOrder) {
             this._reloadOrderForm();
         }
-        if(!this.state.detailsTreeData.length && this.details.length) {
+        if(!this.state.details) {
+            this._fetchLaborsAndDetails();
+        }
+        if(!this.state.detailsTreeData && this.state.details && this.state.details.length) {
             this.buildStoreGroupsTree();
         }
     }
@@ -306,8 +303,22 @@ export class MobileRecordForm extends Component {
             detailsTotalSum,
         } = order;
 
+        const remainPrice = isTaxPayer ? 
+            Math.round((totalSumWithTax - cashSum)*100)/100 : 
+            Math.round((totalSum - cashSum)*100)/100;
+
         const orderServices = _.get(fetchedOrder, "orderServices", []);
         const orderDetails = _.get(fetchedOrder, "orderDetails", []);
+
+        const formFieldsValues = form.getFieldsValue();
+        const orderFormFields = _.pick(formFieldsValues, [
+            "comment",
+            "clientVehicle",
+            "clientEmail",
+            "clientPhone",
+            "searchClientQuery",
+            "clientVehicleTypeId",
+        ]);
         
         return (
             <Form layout="horizontal" id='orderForm'>
@@ -355,6 +366,7 @@ export class MobileRecordForm extends Component {
                             isMobile={ isMobile }
                             setClientSelection={ setClientSelection }
                             vehicleTypes={ vehicleTypes }
+                            fields={orderFormFields}
                         />
                     </TabPane>
                     <TabPane
@@ -453,6 +465,15 @@ export class MobileRecordForm extends Component {
                         />
                     </TabPane>
                 </Tabs>
+                <ToSuccessModal
+                    wrappedComponentRef={this._saveFormRef}
+                    visible={this.props.modal}
+                    onStatusChange={this.props.onStatusChange}
+                    resetModal={this.props.resetModal}
+                    remainPrice={remainPrice}
+                    clientId={selectedClient.clientId}
+                    orderId={orderId}
+                />
             </Form>
         )
     }

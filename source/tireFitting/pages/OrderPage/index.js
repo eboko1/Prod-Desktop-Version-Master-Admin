@@ -852,6 +852,7 @@ class OrderPage extends Component {
                         orderStatus={ status }
                         setAddClientModal={ this.setAddClientModal }
                         vehicleTypes={ vehicleTypes }
+                        modal={ modal }
                     />
                 </MobileView>
                 <ResponsiveView
@@ -893,6 +894,8 @@ class OrderPage extends Component {
                         orderStatus={ status }
                         orderFetching={ orderFetching }
                         vehicleTypes={ vehicleTypes }
+                        order={ order }
+                        fetchedOrder={ fetchedOrder }
                     />
                 </ResponsiveView>
                 <CancelReasonModal

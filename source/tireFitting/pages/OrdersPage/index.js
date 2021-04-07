@@ -45,8 +45,20 @@ const filterSelectOptions = [
         value:  "not_complete,required,call,reserve",
     },
     {
+        message: "records",
+        value: "approve",
+    },
+    {
         message: "not_complete",
         value: "not_complete",
+    },
+    {
+        message: "repairs",
+        value: "progress",
+    },
+    {
+        message: "done",
+        value: "success",
     },
     {
         message: "required",
@@ -63,7 +75,7 @@ const filterSelectOptions = [
     {
         message: "cancels",
         value: "cancel",
-    }
+    },
 ]
 
 const mapState = state => ({

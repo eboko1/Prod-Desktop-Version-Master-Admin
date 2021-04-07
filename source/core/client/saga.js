@@ -1,5 +1,6 @@
 // vendor
 import { call, put, all, take } from 'redux-saga/effects';
+import _ from 'lodash';
 
 //proj
 import { setClientFetchingState } from 'core/ui/duck';
@@ -43,7 +44,7 @@ export function* updateClientVehicleSaga() {
             'PUT',
             `clients/vehicles/${clientVehicleId}`,
             null,
-            clientVehicle,
+            _.omit(clientVehicle, 'barcode'),
         );
 
         yield put(fetchClient(clientId));

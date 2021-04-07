@@ -74,6 +74,8 @@ const book = Object.freeze({
     productsGroups:           '/products-groups',
     priceGroups:              '/price-groups',
     products:                 '/products',
+    product:                  '/product',
+    productPage:              '/product/:id',
     storageOrders:            '/storage-orders',
     storageIncomes:           '/storage-incomes',
     storageExpenses:          '/storage-expenses',
@@ -87,6 +89,7 @@ const book = Object.freeze({
     storageIncomeDoc:         '/income-document',
     storageIncomeDocId:       '/income-document/:id',
     repairMapSetting:         '/repair-map',
+    wms:                      '/wms',
     //
     // Tire Storage
     //

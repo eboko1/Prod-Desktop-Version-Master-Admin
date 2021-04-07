@@ -17,11 +17,9 @@ import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
-import { permissions, isForbidden, images } from 'utils';
-import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
-import { DetailProductModal, FavouriteDetailsModal, StoreProductTrackingModal } from 'modals';
+import { permissions, isForbidden, images, fetchAPI } from 'utils';
+import { DetailProductModal, FavouriteDetailsModal, StoreProductTrackingModal, SetBarcodeModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
-import { StoreProductModal } from 'modals';
 import { MODALS, setModal } from 'core/modals/duck';
 import { Barcode } from "components";
 
@@ -55,6 +53,7 @@ class DetailsTable extends Component {
             fetched:              false,
             reserveModalVisible: false,
             reserveModalData: undefined,
+            productBarcode: undefined,
         };
 
         this.storeGroups = [];
@@ -76,6 +75,43 @@ class DetailsTable extends Component {
                                 <div className={Styles.headerActions}>
                                     <Barcode
                                         button
+                                        multipleMode
+                                        prefix={'STP'}
+                                        onConfirm={async (code, pref, fullCode) => {
+                                            const barcodeData = await fetchAPI('GET', 'barcodes',{
+                                                barcode: fullCode,
+                                            });
+                                            const productBarcode = barcodeData.find(({table})=>table == 'STORE_PRODUCTS');
+                                    
+                                            if(productBarcode) {
+                                                const payload = {
+                                                    insertMode: true,
+                                                    details: [],
+                                                    services: [],
+                                                };
+                                                const product = await fetchAPI('GET', `store_products/${productBarcode.referenceId}`);
+                                                payload.details.push({
+                                                    productId: product.id,
+                                                    storeGroupId: product.groupId,
+                                                    name: product.name,
+                                                    productCode: product.code,
+                                                    supplierBrandId: product.brandId,
+                                                    supplierId: 0,
+                                                    count: 1,
+                                                    price: product.sellingPrice || 0,
+                                                    purchasePrice: product.purchasePrice || 0,
+                                                })
+                                                await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
+                                                await this.updateDataSource();
+                                            } else {
+                                                this.setState({
+                                                    productBarcode: code,
+                                                })
+                                                notification.warning({
+                                                    message: 'Код не найден',
+                                                });
+                                            }
+                                        }}
                                     />
                                     <div style={{opacity: 0, pointerEvents: 'none'}}>
                                         <Barcode
@@ -430,7 +466,7 @@ class DetailsTable extends Component {
                                 let token = localStorage.getItem(
                                     '_my.carbook.pro_token',
                                 );
-                                let url = API_URL;
+                                let url = __API_URL__;
                                 let params = '/orders/frequent/details';
                                 if (elem.frequentDetailId) { params += `?ids=[${elem.frequentDetailId}]`; } else { params += `?storeGroupIds=[${elem.storeGroupId}]`; }
                                 url += params;
@@ -488,7 +524,7 @@ class DetailsTable extends Component {
                                 let token = localStorage.getItem(
                                     '_my.carbook.pro_token',
                                 );
-                                let url = API_URL;
+                                let url = __API_URL__;
                                 let params = `/orders/${this.props.orderId}/details?ids=[${elem.id}]`;
                                 url += params;
                                 try {
@@ -532,6 +568,9 @@ class DetailsTable extends Component {
         });
     }
     hideDetailProductModal() {
+        const { dataSource } = this.state;
+        const lastDetail = dataSource[dataSource.length - 1];
+        lastDetail.barcode = undefined;
         this.setState({
             productModalVisible: false,
         });
@@ -674,7 +713,7 @@ class DetailsTable extends Component {
         }
 
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
+        let url = __API_URL__;
         let params = `/orders/${this.props.orderId}`;
         url += params;
         try {
@@ -753,7 +792,7 @@ class DetailsTable extends Component {
             oilModalData,
             clearOilData,
         } = this.props;
-        const { fetched, dataSource, productModalVisible, productModalKey, reserveModalVisible, reserveModalData } = this.state;
+        const { fetched, dataSource, productModalVisible, productModalKey, reserveModalVisible, reserveModalData, productBarcode } = this.state;
 
         const columns = this.columns;
         if (
@@ -822,6 +861,36 @@ class DetailsTable extends Component {
                         this.setState({
                             reserveModalVisible: false,
                             reserveModalData: undefined,
+                        })
+                    }}
+                />
+                <SetBarcodeModal
+                    visible={Boolean(productBarcode)}
+                    barcode={productBarcode}
+                    confirmAction={async (id)=>{
+                        const payload = {
+                            insertMode: true,
+                            details: [],
+                            services: [],
+                        };
+                        const product = await fetchAPI('GET', `store_products/${id}`);
+                        payload.details.push({
+                            productId: product.id,
+                            storeGroupId: product.groupId,
+                            name: product.name,
+                            productCode: product.code,
+                            supplierBrandId: product.brandId,
+                            supplierId: 0,
+                            count: 1,
+                            price: product.sellingPrice || 0,
+                            purchasePrice: product.purchasePrice || 0,
+                        })
+                        await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
+                        await this.updateDataSource();
+                    }}
+                    hideModal={()=>{
+                        this.setState({
+                            productBarcode: undefined,
                         })
                     }}
                 />

@@ -1,11 +1,18 @@
+.disabledIcon {
+    color: var(--text2);
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+}
+
 .barcodeWrapp {
 	text-align: center;
+    padding: 24px 24px 0px;
+    min-width: 420px;
 }
 
 .barcodeActions {
 	text-align: end;
-    margin: -18px 0 4px 0;
-    padding: 0 14px 0 0;
+    margin: -14px 0 4px 0;
     font-size: 18px;
 
     & > i {
@@ -16,4 +23,32 @@
 .barcode {
 	display: flex;
     justify-content: center;
+
+    & > canvas {
+        height: fit-content;
+    }
+}
+
+.barcodeInput {
+    margin: 18px 0px;
+}
+
+@media print {
+    :global(.ant-layout-sider) {
+        box-shadow: none !important;
+    }
+
+    .barcode {
+        background-color: white;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        margin: -1px;
+        padding: 15px;
+        font-size: 14px;
+        line-height: 18px;
+        z-index: 1000;
+    }
 }

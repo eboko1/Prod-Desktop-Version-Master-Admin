@@ -7,6 +7,7 @@ import _ from 'lodash';
 // proj
 import { Catcher } from 'commons';
 import { DecoratedInputNumber } from 'forms/DecoratedFields';
+import { fetchAPI } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -18,24 +19,26 @@ class DiscountPanel extends Component {
         return !_.isEqual(nextProps, this.props);
     }
     
-    async updateTimeMultiplier(multiplier) {
-        this.laborTimeMultiplier = multiplier;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/orders/${this.props.orderId}`;
-        url += params;
-        try {
-            const response = await fetch(url, {
-                method:  'PUT',
-                headers: {
-                    Authorization:  token,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ laborTimeMultiplier: multiplier }),
-            });
-            const result = await response.json();
-        } catch (error) {
-            console.error('ERROR:', error);
+    _updateTimeMultiplier = async (multiplier) => {
+        if(multiplier) {
+            const { orderId, orderServices, laborTimeMultiplier } = this.props;
+            const payload = {
+                updateMode: true,
+                laborTimeMultiplier: multiplier ,
+                services: [],
+            };
+            
+            orderServices.map(({id, count})=>{
+                if(id) {
+                    payload.services.push({
+                        id,
+                        count: Number(Math.round((count / laborTimeMultiplier) * multiplier * 10) / 10),
+                    })
+                }
+            })
+
+            await fetchAPI('PUT', `/orders/${orderId}`, null, payload)
+            await this.props.reloadOrderForm(undefined, 'all');
         }
     }
 
@@ -96,14 +99,18 @@ class DiscountPanel extends Component {
                         <InputNumber
                             disabled={isServiceMarkupForbidden}
                             style={ { fontWeight: 700, margin: '0 12px 0 12px' } }
-                            defaultValue={ laborTimeMultiplier || 1 }
-                            step={ 0.1 }
-                            min={ 0 }
-                            formatter={ value => `${Math.round(value * 100)}%` }
+                            value={ laborTimeMultiplier * 100 }
+                            step={ 10 }
+                            min={ 10 }
+                            formatter={ value => `${Math.round(value)}%` }
                             parser={ value =>
-                                Math.round(value.replace('%', '') / 100)
+                                value.replace('%', '')
                             }
-                            onChange={ value => this.updateTimeMultiplier(value) }
+                            onChange={ value => {
+                                if(value) {
+                                    this._updateTimeMultiplier(Math.round(value) / 100)
+                                }
+                            } }
                         />
                         <FormattedMessage id='labors_table.mark_up' />
                     </div>
@@ -143,7 +150,7 @@ class DiscountPanel extends Component {
                         <InputNumber
                             disabled
                             style={ { color: 'black' } }
-                            value={ price }
+                            value={ Math.round(price) }
                             min={ 0 }
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -163,7 +170,7 @@ class DiscountPanel extends Component {
                         <InputNumber
                             disabled
                             style={ { color: 'black' } }
-                            value={ total }
+                            value={ Math.round(total) }
                             min={ 0 }
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -191,8 +198,8 @@ class DiscountPanel extends Component {
                                 disabled
                                 value={
                                     servicesMode
-                                        ? totalServicesProfit
-                                        : totalDetailsProfit
+                                        ? Math.round(totalServicesProfit)
+                                        : Math.round(totalDetailsProfit)
                                 }
                                 style={ { color: profit < 0 ? 'red' : 'black' } }
                                 formatter={ value =>

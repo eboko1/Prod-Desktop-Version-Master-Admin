@@ -168,9 +168,9 @@ class OrderPage extends Component {
 
     
 
-    componentDidMount() {
-        const {fetchOrderForm, fetchOrderTask, match: {params: {id}}, user} = this.props;
-        fetchOrderForm(id);
+    componentDidMount = async () => {
+        const {fetchOrderForm, fetchOrderTask, match: {params: {id}}, user, location} = this.props;
+        await fetchOrderForm(id);
 
         const viewTasks = !isForbidden(user, permissions.GET_TASKS);
         if (viewTasks) {
@@ -1003,6 +1003,7 @@ class OrderPage extends Component {
                         focusedRef={focusedRef}
                         showCahOrderModal={showCahOrderModal}
                         orderStatus={ status }
+                        fetchedOrder={ fetchedOrder }
                     />
                 </ResponsiveView>
                 <CancelReasonModal

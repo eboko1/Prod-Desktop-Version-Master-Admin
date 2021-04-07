@@ -39,7 +39,7 @@ const mapDispatchToProps = {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class ClientContainer extends Component {
     render() {
-        const { clientEntity, clientId, user, specificTab, isMobile } = this.props;
+        const { clientEntity, clientId, user, specificTab, isMobile, fetchClient } = this.props;
         const {
             CREATE_EDIT_DELETE_CLIENTS,
             GET_CLIENTS_ADDITIONAL_INFORMATION,
@@ -71,6 +71,7 @@ export default class ClientContainer extends Component {
                             deleteClientVehicle={this.props.deleteClientVehicle}
                             clientEntity={clientEntity}
                             clientId={clientId}
+                            fetchClient={fetchClient}
                         />
                         {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
                             <AddClientVehicleForm

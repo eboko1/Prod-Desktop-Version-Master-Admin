@@ -34,14 +34,26 @@ const TrackingTableComponent = memo(props => {
         size:             'large',
         total:            Math.ceil(_.get(tracking, 'stats.count', 0) / 25) * 25,
         hideOnSinglePage: true,
-        current:          props.filters.page,
+        current:          props.filters && props.filters.page,
         onChange:         page => {
             props.setTrackingPage(page);
             props.fetchTracking();
         },
     };
 
-    return (
+    return props.rawData ? (
+        <StyledTable
+            size='small'
+            columns={ columns(props) }
+            dataSource={ props.dataSource }
+            locale={ {
+                emptyText: props.intl.formatMessage({ id: 'no_data' }),
+            } }
+            loading={ !props.dataSource }
+            rowKey={ record => record.id }
+        />
+    ) :
+    (
         <StyledTable
             size='small'
             columns={ columns(props) }

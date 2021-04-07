@@ -1,7 +1,7 @@
 // vendor
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Icon, Row, Select } from 'antd';
+import { Icon, Row, Select, notification } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -36,7 +36,7 @@ export function columnsConfig(
     };
 
     const period = {
-        title:     <FormattedMessage id='setting-salary.period' />,
+        title:     <p><FormattedMessage id='setting-salary.period' /><span style={{color: 'red'}}> *</span></p>,
         dataIndex: 'period',
         width:     '15%',
         render:    (text, record) => (
@@ -203,6 +203,13 @@ export function columnsConfig(
                                     record.key,
                                 );
                                 const salaryId = _.get(initialSettingSalaries, [ record.key, 'id' ]);
+
+                                if(!entity.period) {
+                                    notification.error({
+                                        message: "Укажите период"
+                                    });
+                                    return;
+                                }
 
                                 if (!salaryId) {
                                     createSalary(entity);

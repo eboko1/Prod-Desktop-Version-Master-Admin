@@ -7,6 +7,7 @@
         "report_analytics_form.analytics_name": "Analytics name",
         "report_analytics_form.bookkeeping_account": "Bookkeeping account",
         "report_analytics_form.order_type": "Order type",
+        "report_analytics_form.make_default": "Use by default",
 
         "report_analytics_form.catalog_name_is_required_message": "Catalog name is required.",
         "report_analytics_form.catalog_must_be_selected_message": "The catalog must be selected",
@@ -22,6 +23,7 @@
         "report_analytics_form.analytics_name": "Название аналитики",
         "report_analytics_form.bookkeeping_account": "Бухгалтерский счет",
         "report_analytics_form.order_type": "Тип кассового ордера",
+        "report_analytics_form.make_default": "Использовать по умолчанию",
 
         "report_analytics_form.catalog_name_is_required_message": "Требуется название каталога.",
         "report_analytics_form.catalog_must_be_selected_message": "Каталог должен быть выбран.",
@@ -36,6 +38,7 @@
         "report_analytics_form.analytics_name": "Назва аналітики",
         "report_analytics_form.bookkeeping_account": "Бухгалтерський рахунок",
         "report_analytics_form.order_type": "Тип кассового ордера",
+        "report_analytics_form.make_default": "Використовувати за замовчуванням",
 
         "report_analytics_form.catalog_name_is_required_message": "Потрібно вказати назву каталогу.",
         "report_analytics_form.catalog_must_be_selected_message": "Каталог повинен бути обраний.",

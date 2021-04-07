@@ -37,7 +37,7 @@ export function* fetchClientMRDsSaga() {
             const data = yield call(
                 fetchAPI,
                 'GET',
-                `/mrds`,
+                `/report/mrds`,
                 {filters, sort},
             );
             yield put(fetchClientMRDsSuccess(data));

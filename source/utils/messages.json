@@ -17,6 +17,7 @@
     "end": "End",
     "back": "Back",
     "upload" : "Upload",
+    "update" : "Update",
     "select_date": "Select Date",
     "select_week": "Select Week",
     "day": "Day",
@@ -109,13 +110,18 @@
     "+": "+",
     "-": "-",
     "price": "Price",
+    "prices": "Prices",
     "count": "Count",
     "hours": "Hours",
     "description": "Name",
     "long_dash" : "—",
     "message_sent": "Message sent to recipient",
     "update_price": "Update price",
-    "login_hint": "If you can't log in, press F5 and try again"
+    "login_hint": "If you can't log in, press F5 and try again",
+    "labor": "Labor",
+    "document": "Document",
+    "employee": "Employee",
+    "open": "Open"
   },
   "ru": {
     "currency": "грн.",
@@ -135,6 +141,7 @@
     "end": "Закончить",
     "back": "Назад",
     "upload" : "Загрузить",
+    "update" : "Обновить",
     "select_date": "Укажите Дату",
     "select_week": "Укажите Неделю",
     "day": "День",
@@ -227,13 +234,18 @@
     "+": "+",
     "-": "-",
     "price": "Цена",
+    "prices": "Цены",
     "count": "Кол-во",
     "hours": "Часы",
     "description": "Наименование",
     "long_dash" : "—",
     "message_sent": "Сообщение отправлено",
     "update_price": "Обновить цену",
-    "login_hint": "Если не получается войти, нажмите F5 и попробуйте снова"
+    "login_hint": "Если не получается войти, нажмите F5 и попробуйте снова",
+    "labor": "Рaбота",
+    "document": "Документ",
+    "employee": "Работник",
+    "open": "Открыть"
   },
   "uk": {
     "currency": "грн.",
@@ -253,6 +265,7 @@
     "end": "Завершити",
     "back": "Назад",
     "upload" : "Завантажити",
+    "update" : "Оновити",
     "select_date": "Вкажіть Дату",
     "select_week": "Вкажіть Тиждень",
     "day": "День",
@@ -345,12 +358,17 @@
     "+": "+",
     "-": "-",
     "price": "Ціна",
+    "prices": "Ціни",
     "count": "К-сть",
     "hours": "Години",
     "description": "Найменування",
     "long_dash" : "—",
     "message_sent": "Повідомлення відправлено",
     "update_price": "Оновити вартість",
-    "login_hint": "Якщо не виходить увійти, натисніть F5 і спробуйте знову"
+    "login_hint": "Якщо не виходить увійти, натисніть F5 і спробуйте знову",
+    "labor": "Робота",
+    "document": "Документ",
+    "employee": "Працівник",
+    "open": "Відкрити"
   }
 }

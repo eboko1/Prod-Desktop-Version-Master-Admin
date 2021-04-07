@@ -39,7 +39,7 @@ export class AbstractClientForm extends Component {
 
     render() {
         const { client, errors, searchQuery, intl: {formatMessage} } = this.props;
-        const { getFieldDecorator, getFieldValue } = this.props.form;
+        const { getFieldDecorator, getFieldValue, setFieldsValue } = this.props.form;
 
         const searchQueryNumber = searchQuery
             ? searchQuery
@@ -232,12 +232,19 @@ export class AbstractClientForm extends Component {
                                         <div style={{display: "flex"}}>
                                             <FormattedMessage id="navigation.barcode" />
                                             <Barcode
+                                                disabled
                                                 value={getFieldValue("barcode") || _.get(client, "barcode")}
                                                 iconStyle={{
                                                     fontSize: 18,
                                                     marginLeft: 8,
                                                     verticalAlign: "middle",
                                                 }}
+                                                onConfirm={(value)=>{
+                                                    setFieldsValue({
+                                                        barcode: value
+                                                    });
+                                                }}
+
                                             />
                                         </div>
                                     }
@@ -251,6 +258,7 @@ export class AbstractClientForm extends Component {
                                     getFieldDecorator={getFieldDecorator}
                                     style={{
                                         width: "100%",
+                                        color: "var(--text)"
                                     }}
                                 />
                                 

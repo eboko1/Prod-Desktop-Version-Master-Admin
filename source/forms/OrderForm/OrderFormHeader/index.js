@@ -12,6 +12,7 @@ import {
     DecoratedTimePicker,
     DecoratedSelect,
     DecoratedSlider,
+    DecoratedInput,
 } from "forms/DecoratedFields";
 import { Numeral } from "commons";
 import book from "routes/book";
@@ -749,6 +750,19 @@ export default class OrderFormHeader extends Component {
                 >
                     {this.state.employeesOptions}
                 </DecoratedSelect>
+                <DecoratedInput
+                    errors={errors}
+                    fieldValue={_.get(fields, "stationLoads[0].status")}
+                    defaultGetValueProps
+                    field="stationLoads[0].status"
+                    hiddeninput="hiddeninput"
+                    formItem
+                    formItemLayout={formHeaderItemLayout}
+                    colon={false}
+                    disabled={this.bodyUpdateIsForbidden()}
+                    initialValue={"TO_DO"}
+                    getFieldDecorator={getFieldDecorator}
+                />
             </div>
         );
     };

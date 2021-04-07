@@ -29,6 +29,10 @@ const CREATE_INVITE_ORDER = 'CREATE_INVITE_ORDER';
 const ORDERS_INVITE_MASS_MAILING = 'ORDERS_INVITE_MASS_MAILING';
 const ACCESS_FEEDBACK = 'ACCESS_FEEDBACK';
 
+// Barcode
+const ACCESS_STORE_PRODUCT_BARCODE = 'ACCESS_STORE_PRODUCT_BARCODE';
+const ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY = 'ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY';
+
 // Orders
 const ACCESS_ORDER_BODY = 'ACCESS_ORDER_BODY';
 const UPDATE_SUCCESS_ORDER = 'UPDATE_SUCCESS_ORDER';
@@ -198,6 +202,7 @@ const ACCESS_REPORT_STOCK = 'ACCESS_REPORT_STOCK';
 const ACCESS_REPORT_PRODUCTS = 'ACCESS_REPORT_PRODUCTS';
 const ACCESS_REPORT_EMPLOYEE_SALARIES = 'ACCESS_REPORT_EMPLOYEE_SALARIES';
 const ACCESS_REPORT_PROFIT_FROM_BUSINESSES = 'ACCESS_REPORT_PROFIT_FROM_BUSINESSES';
+const ACCESS_REPORT_PROFIT_FROM_BUSINESSES_PRINT = 'ACCESS_REPORT_PROFIT_FROM_BUSINESSES_PRINT';
 
 // Settings and Administration
 const ACCESS_TELEGRAM = 'ACCESS_TELEGRAM';
@@ -247,6 +252,9 @@ export const permissions = Object.freeze({
     CREATE_INVITE_ORDER,
     ORDERS_INVITE_MASS_MAILING,
     ACCESS_FEEDBACK,
+
+    ACCESS_STORE_PRODUCT_BARCODE,
+    ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY,
 
     ACCESS_ORDER_BODY,
     UPDATE_SUCCESS_ORDER,
@@ -403,6 +411,7 @@ export const permissions = Object.freeze({
     ACCESS_REPORT_PRODUCTS,
     ACCESS_REPORT_EMPLOYEE_SALARIES,
     ACCESS_REPORT_PROFIT_FROM_BUSINESSES,
+    ACCESS_REPORT_PROFIT_FROM_BUSINESSES_PRINT,
 
     ACCESS_TELEGRAM,
     ACCESS_SETTINGS,
@@ -428,6 +437,7 @@ export const NEW_DOCUMENT_PERMISSIONS = 'NEW_DOCUMENT_PERMISSIONS';
 export const DASHBOARD_PERMISSIONS = 'DASHBOARD_PERMISSIONS';
 export const LOCATIONS_PERMISSIONS = 'LOCATIONS_PERMISSIONS';
 export const ORDERS_LIST_PERMISSIONS = 'ORDERS_LIST_PERMISSIONS';
+export const BARCODE_PERMISSIONS = 'BARCODE_PERMISSIONS';
 export const ORDERS_PERMISSIONS = 'ORDERS_PERMISSIONS';
 export const ORDER_ICONS_PERMISSIONS = 'ORDER_ICONS_PERMISSIONS';
 export const DIAGNOSTIC_PERMISSIONS = 'DIAGNOSTIC_PERMISSIONS';
@@ -476,6 +486,10 @@ export const groupedPermissions = {
         CREATE_INVITE_ORDER,
         ORDERS_INVITE_MASS_MAILING,
         ACCESS_FEEDBACK,
+    ],
+    [ BARCODE_PERMISSIONS ]: [
+        ACCESS_STORE_PRODUCT_BARCODE,
+        ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY,
     ],
     [ ORDERS_PERMISSIONS ]: [
         ACCESS_ORDER_BODY,
@@ -646,6 +660,7 @@ export const groupedPermissions = {
         ACCESS_REPORT_PRODUCTS,
         ACCESS_REPORT_EMPLOYEE_SALARIES,
         ACCESS_REPORT_PROFIT_FROM_BUSINESSES,
+        ACCESS_REPORT_PROFIT_FROM_BUSINESSES_PRINT,
     ],
     [ SETTINGS_AND_ADMINISTRATION_PERMISSIONS ]: [
         ACCESS_TELEGRAM,
@@ -682,6 +697,7 @@ export const getGroupsLabels = intl => ({
     [ LOCATIONS_PERMISSIONS ]:                      intl.formatMessage({ id: 'roles.LOCATIONS_PERMISSIONS' }),
     [ ORDERS_LIST_PERMISSIONS ]:                    intl.formatMessage({ id: 'roles.ORDERS_LIST_PERMISSIONS' }),
     [ ORDERS_PERMISSIONS ]:                         intl.formatMessage({ id: 'roles.ORDERS_PERMISSIONS' }),
+    [ BARCODE_PERMISSIONS ]:                        intl.formatMessage({ id: 'roles.BARCODE_PERMISSIONS' }),
     [ ORDER_ICONS_PERMISSIONS ]:                    intl.formatMessage({ id: 'roles.ORDER_ICONS_PERMISSIONS' }),
     [ DIAGNOSTIC_PERMISSIONS ]:                     intl.formatMessage({ id: 'roles.DIAGNOSTIC_PERMISSIONS' }),
     [ LABORS_PERMISSIONS ]:                         intl.formatMessage({ id: 'roles.LABORS_PERMISSIONS' }),
@@ -725,6 +741,10 @@ export const getPermissionsLabels = intl => ({
     [ CREATE_INVITE_ORDER ]:        intl.formatMessage({ id: 'roles.CREATE_INVITE_ORDER' }),
     [ ORDERS_INVITE_MASS_MAILING ]: intl.formatMessage({ id: 'roles.ORDERS_INVITE_MASS_MAILING' }),
     [ ACCESS_FEEDBACK ]:            intl.formatMessage({ id: 'roles.ACCESS_FEEDBACK' }),
+
+
+    [ ACCESS_STORE_PRODUCT_BARCODE ]:                   intl.formatMessage({ id: 'roles.ACCESS_STORE_PRODUCT_BARCODE' }),
+    [ ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY ]:     intl.formatMessage({ id: 'roles.ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY' }),
 
     [ ACCESS_ORDER_BODY ]:          intl.formatMessage({ id: 'roles.ACCESS_ORDER_BODY' }),
     [ UPDATE_SUCCESS_ORDER ]:       intl.formatMessage({ id: 'roles.UPDATE_SUCCESS_ORDER' }),
@@ -881,6 +901,7 @@ export const getPermissionsLabels = intl => ({
     [ ACCESS_REPORT_PRODUCTS ]:                     intl.formatMessage({ id: 'roles.ACCESS_REPORT_PRODUCTS' }),
     [ ACCESS_REPORT_EMPLOYEE_SALARIES ]:            intl.formatMessage({ id: 'roles.ACCESS_REPORT_EMPLOYEE_SALARIES' }),
     [ ACCESS_REPORT_PROFIT_FROM_BUSINESSES ]:       intl.formatMessage({ id: 'roles.ACCESS_REPORT_PROFIT_FROM_BUSINESSES' }),
+    [ ACCESS_REPORT_PROFIT_FROM_BUSINESSES_PRINT ]: intl.formatMessage({ id: 'roles.ACCESS_REPORT_PROFIT_FROM_BUSINESSES_PRINT' }),
 
     [ ACCESS_TELEGRAM ]:            intl.formatMessage({ id: 'roles.ACCESS_TELEGRAM' }),
     [ ACCESS_SETTINGS ]:            intl.formatMessage({ id: 'roles.ACCESS_SETTINGS' }),

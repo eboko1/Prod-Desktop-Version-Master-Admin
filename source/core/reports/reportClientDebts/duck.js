@@ -1,11 +1,11 @@
 /*
-This module contains actions for reports
+This module contains actions for reportClientDebts module
 */
 
 /**
  * Constants
  * */
-export const moduleName = 'reports';
+export const moduleName = 'reportClientDebts';
 const prefix = `cpb/${moduleName}`;
 
 export const FETCH_REPORT = `${prefix}/FETCH_REPORT`;
@@ -83,7 +83,7 @@ export default function reducer(state = ReducerState, action) {
 
 export const stateSelector = state => state[ moduleName ];
 export const selectFilter = ({
-    reports: { filter, sort },
+    reportClientDebts: { filter, sort },
 }) => ({
     filter,
     sort
