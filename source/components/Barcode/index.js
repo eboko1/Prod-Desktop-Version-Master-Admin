@@ -315,6 +315,7 @@ export default class Barcode extends Component {
                             autoFocus
                             disabled={disabled || !onConfirm}
                             className={Styles.barcodeInput}
+                            placeholder={this.props.intl.formatMessage({id: 'barcode.scan_barcode'})}
                             value={scanedInputValue}
                             onChange={({target})=>{
                                 this.setState({

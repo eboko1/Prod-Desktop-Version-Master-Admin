@@ -113,3 +113,8 @@
 .storeField {
     width: 50%;
 }
+
+.movementFilters {
+    display: flex;
+    margin: 0 0 8px;
+}

@@ -69,7 +69,8 @@ import {
     SyncImportPage,
     SyncExportPage,
     BarcodePage,
-    ProductPage
+    ProductPage,
+    WMSPage
 } from 'pages';
 import book from './book';
 
@@ -265,6 +266,11 @@ export default class Private extends Component {
                     exact
                     path={ book.repairMapSetting }
                     render={ props => <RepairMapSettingPage { ...props } /> }
+                />
+                <Route
+                    exact
+                    path={ book.wms }
+                    render={ props => <WMSPage { ...props } /> }
                 />
                 { /* Locations */ }
                 <Route

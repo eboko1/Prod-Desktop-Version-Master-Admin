@@ -46,23 +46,7 @@ const StoreProducts = withErrorMessage()(props => {
                         
                         { !props.importing ? (
                             <>
-                                <StyledButton
-                                    className={Styles.download }
-                                    type='secondary'
-                                    onClick={ () =>
-                                        props.downloadExcelTemplate()
-                                    }
-                                >
-                                    <Icon type="download" style={{fontSize: 18, marginRight: 4}}/>
-                                    <FormattedMessage id='storage.download_excel_template' />
-                                </StyledButton>
-                                <ExcelReader
-                                    importExcel={ props.productsExcelImport }
-                                    validateExcel={
-                                        props.productsExcelImportValidate
-                                    }
-                                    key={ props.productsExcel }
-                                />
+                                
                                 <AddButton
                                     type='link'
                                     onClick={ () =>

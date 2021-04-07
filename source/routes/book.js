@@ -90,6 +90,7 @@ const book = Object.freeze({
     storageIncomeDoc:         '/income-document',
     storageIncomeDocId:       '/income-document/:id',
     repairMapSetting:         '/repair-map',
+    wms:                      '/wms',
     //
     // Tire Storage
     //
