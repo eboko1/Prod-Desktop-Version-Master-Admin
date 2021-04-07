@@ -9,6 +9,7 @@ import { withRouter } from 'react-router';
 
 // proj
 import { Catcher } from "commons";
+import { Barcode } from "components";
 import { StoreProductModal } from "modals";
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
@@ -60,6 +61,10 @@ export default class SetBarcodeModal extends Component {
 			{
                 key: 'additional',
                 dataIndex: 'additional',
+            },
+			{
+                key: 'barcode',
+                dataIndex: 'barcode',
             },
 		]
 	}
@@ -169,10 +174,23 @@ export default class SetBarcodeModal extends Component {
 								})
 							}}
 						/>
+						<Barcode
+							zIndex={500}
+							iconStyle={{
+								marginLeft: 8,
+								fontSize: 24,
+							}}
+							value={modalInput}
+							onConfirm={(value)=>
+								this.setState({
+									modalInput: value,
+								})
+							}
+						/>
 						<Icon
 							type='plus'
 							style={{
-								fontSize: 18,
+								fontSize: 24,
 								marginLeft: 8,
 							}}
 							onClick={()=>{

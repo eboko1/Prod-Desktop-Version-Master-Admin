@@ -1,0 +1,21 @@
+.tabTitle {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 14px 0 20px;
+    /*border-bottom: 1px solid lightgray;*/
+}
+
+.menuIcon {
+    float: right;
+    padding: 4px 0 0;
+    cursor: pointer;
+    &:hover {
+        color: var(--primary);
+    }
+}
+
+.tabFooter {
+    text-align: end;
+    margin: 8px 0;
+}

@@ -61,6 +61,10 @@ export default class BarcodeContainer extends Component {
                 key: 'additional',
                 dataIndex: 'additional',
             },
+			{
+                key: 'barcode',
+                dataIndex: 'barcode',
+            },
 		]
 	}
 
@@ -105,14 +109,14 @@ export default class BarcodeContainer extends Component {
 				}
 			});
 		} else if(table == 'ORDERS' && modalInput && modalInput.length > 2) {
-			const tableData = await fetchAPI('GET', 'orders', {query: modalInput});
+			const tableData = await fetchAPI('GET', 'orders', {query: modalInput, status: `not_complete,reserve,required,progress`});
 			modalData = tableData.orders.map((elem)=>{
 				return ({
 					id: elem.id,
 					displayId: `${elem.num}\n${moment(elem.createdDatetime).format('DD.MM.YYYY HH:mm')}`,
 					name: `${elem.clientName || ""} ${elem.clientSurname || ""}\n${elem.clientPhone || ""}`,
 					additional: `${elem.vehicleMakeName || ""} ${elem.vehicleModelName || ""}\n${elem.vehicleNumber || ""}`,
-					barcode: elem.barcode,
+					barcode: this.props.intl.formatMessage({id: `order-status.${elem.status}`}),
 				})
 			});
 		} else if(table == 'STORE_DOCS') {
@@ -669,21 +673,21 @@ export default class BarcodeContainer extends Component {
 								})
 							}}
 						/>
-						{table != 'STORE_PRODUCTS' 
-							? <Barcode
-								zIndex={500}
-								iconStyle={{
-									marginLeft: 14,
-									fontSize: 24,
-								}}
-								value={modalInput}
-								onConfirm={(value)=>
-									this.setState({
-										modalInput: value,
-									})
-								}
-							/>
-							: <Icon
+						<Barcode
+							zIndex={500}
+							iconStyle={{
+								marginLeft: 14,
+								fontSize: 24,
+							}}
+							value={modalInput}
+							onConfirm={(value)=>
+								this.setState({
+									modalInput: value,
+								})
+							}
+						/>
+						{table == 'STORE_PRODUCTS' && 
+							<Icon
 								type='plus'
 								style={{
 									marginLeft: 14,
@@ -719,8 +723,8 @@ export default class BarcodeContainer extends Component {
 										return (
 											String(id).toLowerCase().replace(/\W/g, '').includes(input) ||
 											String(displayId).toLowerCase().replace(/\W/g, '').includes(input) ||
-											String(name).toLowerCase().replace(/\W/g, '').includes(input) ||
-											String(additional).toLowerCase().replace(/\W/g, '').includes(input) ||
+											String(name).toLowerCase().replace(' ', '').includes(input) ||
+											String(additional).toLowerCase().replace(' ', '').includes(input) ||
 											String(barcode).toLowerCase().includes(input)
 										)
 									})
