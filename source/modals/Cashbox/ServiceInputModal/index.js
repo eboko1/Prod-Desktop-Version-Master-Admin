@@ -64,7 +64,8 @@ export default class ServiceInputModal extends Component {
     render() {
         const {
             modal,
-            form: { getFieldDecorator}
+            form: { getFieldDecorator},
+            intl,
         } = this.props;
 
         return (
@@ -72,14 +73,14 @@ export default class ServiceInputModal extends Component {
                 destroyOnClose
                 visible={modal === MODALS.SERVICE_INPUT}
                 maskClosable={false}
-                title={'Service input'}
+                title={<FormattedMessage id="service_input_modal.service input"/>}
                 width={'50vh'}
                 onCancel={() => this.handleCancel()}
                 onOk={this.onOk}
             >
 
                 <Form layout="horizontal">
-                    <Form.Item label="Enter service input sum:" {...formItemLayout}>
+                    <Form.Item label={intl.formatMessage({id: "service_input_modal.enter_service_input_sum"})} {...formItemLayout}>
                         {getFieldDecorator('serviceInputSum', {
                             rules: [
                                 {
@@ -88,7 +89,7 @@ export default class ServiceInputModal extends Component {
                                         const isNumber = !isNaN(str) && !isNaN(parseFloat(str)) // check if a string is a number and ensure strings of whitespace fail
                                         const isPositive = !isNaN(parseFloat(str))? (parseFloat(str) > 0): false;
 
-                                        if(!(isNumber && isPositive)) callback('Enter any positive number');
+                                        if(!(isNumber && isPositive)) callback(intl.formatMessage({id: "service_input_modal.enter_any_positive_number"}));
                                         callback(); //Must be called!
                                     }
                                 }
