@@ -59,7 +59,6 @@ class StorageDocumentForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalProductId: undefined,
             modalVisible: false,
             editKey: undefined,
             clientSearchValue: "",
@@ -93,6 +92,7 @@ class StorageDocumentForm extends Component {
                 quantity,
                 tradeCode,
                 purchasePrice,
+                cellAddresses,
             } = detail;
             await this.props.addDocProduct({
                 productId: id,
@@ -104,6 +104,7 @@ class StorageDocumentForm extends Component {
                 stockPrice: Number(purchasePrice || 0),
                 sellingPrice: Number(sellingPrice || 0),
                 quantity: quantity || 1,
+                addToAddress: cellAddresses ? cellAddresses[0] : undefined
             });
         } else {
             this.setState({
@@ -135,7 +136,6 @@ class StorageDocumentForm extends Component {
             modalVisible: false,
             warning: false,
             editKey: undefined,
-            modalProductId: undefined,
         })
     }
 
@@ -200,7 +200,7 @@ class StorageDocumentForm extends Component {
     }
  
     render() {
-        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo, warning, modalProductId, productBarcode } = this.state;
+        const { editKey, modalVisible, clientSearchValue, counterpartOptionInfo, warning, productBarcode } = this.state;
         const {
             id,
             addDocProduct,
@@ -220,6 +220,7 @@ class StorageDocumentForm extends Component {
             toolWarehouseId,
             repairAreaWarehouseId,
             setModal,
+            cells,
         } = this.props;
 
         const {
@@ -677,6 +678,7 @@ class StorageDocumentForm extends Component {
                     editProduct={this.editProduct}
                     showModal={this.showModal}
                     type={type}
+                    documentType={documentType}
                     sellingPrice={type == EXPENSE}
                     user={user}
                     addByBarcode={(code)=>this._addByBarcode(code)}
@@ -687,12 +689,12 @@ class StorageDocumentForm extends Component {
                         hideModal={this.hideModal}
                         businessSupplierId={(type == ORDER || type == INCOME) && counterpartId}
                         type={type}
+                        documentType={documentType}
                         brands={brands}
                         addDocProduct={addDocProduct}
                         product={editKey !== undefined ? docProducts[editKey] : undefined}
                         editKey={editKey}
                         editDocProduct={editDocProduct}
-                        isIncome={type == INCOME}
                         priceDisabled={type == TRANSFER || documentType == OWN_CONSUMPTION}
                         warehouses={warehouses}
                         warehouseId={incomeWarehouseId || expenseWarehouseId}
@@ -700,8 +702,8 @@ class StorageDocumentForm extends Component {
                         user={user}
                         sellingPrice={type == EXPENSE}
                         maxOrdered={type == ORDER && documentType == ADJUSTMENT}
-                        modalProductId={ modalProductId }
                         setModal={ setModal }
+                        cells={ cells }
                     /> 
                 : null}
             </div>
@@ -719,6 +721,7 @@ class StorageDocumentForm extends Component {
                         sellingPrice,
                         quantity,
                         tradeCode,
+                        cellAddresses,
                     } = detail;
                     await this.props.addDocProduct({
                         productId: id,
@@ -730,6 +733,7 @@ class StorageDocumentForm extends Component {
                         stockPrice: Number(purchasePrice || 0),
                         sellingPrice: Number(sellingPrice || 0),
                         quantity: quantity,
+                        addToAddress: cellAddresses ? cellAddresses[0] : undefined
                     });
                 }}
                 hideModal={()=>{
@@ -943,13 +947,26 @@ class DocProductsTable extends React.Component {
                 )
             }
         };
+
+        this.cellColumn = {
+            title:      <FormattedMessage id='Ячейка'/>,
+            key:       'addToAddress',
+            dataIndex: 'addToAddress',
+            render:     (data, elem)=>{
+                return (
+                    data || <FormattedMessage id='long_dash' />
+                )
+            }
+        };
     }
 
     render() {
-        const { disabled, docProducts, loading, type } = this.props;
+        const { disabled, docProducts, loading, type, documentType } = this.props;
         const tblColumns = [...this.columns];
         if(type == EXPENSE) {
             tblColumns.splice( 7, 0, this.purchaseColumn);
+        } else if(type == INCOME || documentType == ORDERINCOME) {
+            tblColumns.splice( 5, 0, this.cellColumn);
         }
         var tableData = docProducts;
         tableData = tableData.filter((elem)=>elem.detailCode);
@@ -988,6 +1005,7 @@ class AddProductModal extends React.Component {
             groupId: undefined,
             tradeCode: undefined,
             detailName: undefined,
+            addToAddress: undefined,
             sellingPrice: 0,
             stockPrice: 0,
             quantity: 1,
@@ -1213,6 +1231,7 @@ class AddProductModal extends React.Component {
                 stockPrice: (this.props.sellingPrice ? 
                     storageProduct.stockPrice * (storageProduct.group && storageProduct.group.multiplier || 1.4) : 
                     storageProduct.stockPrice) || 0,
+                addToAddress: storageProduct.cellAddresses ? storageProduct.cellAddresses[0] : undefined
             })
             this.getCurrentPrice(detailCode, this.props.businessSupplierId);
             return true;
@@ -1293,6 +1312,7 @@ class AddProductModal extends React.Component {
             quantity, 
             productId,
             sellingPrice,
+            addToAddress,
         } = this.state;
 
         if(!brandId || !detailCode) {
@@ -1324,6 +1344,7 @@ class AddProductModal extends React.Component {
                         groupId: groupId,
                         sum: quantity*stockPrice,
                         sellingSum: quantity*sellingPrice,
+                        addToAddress: addToAddress,
                     }
                 );
                 this.handleCancel();
@@ -1342,6 +1363,7 @@ class AddProductModal extends React.Component {
                     sellingPrice: sellingPrice,
                     sum: quantity*stockPrice,
                     sellingSum: quantity*sellingPrice,
+                    addToAddress: addToAddress,
                 });
                 this.handleCancel();
             }
@@ -1358,6 +1380,7 @@ class AddProductModal extends React.Component {
             groupId: undefined,
             tradeCode: undefined,
             detailName: undefined,
+            addToAddress: undefined,
             sellingPrice: 0,
             stockPrice: 0,
             quantity: 1,
@@ -1366,7 +1389,7 @@ class AddProductModal extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const { product, modalProductId } = this.props;
+        const { product } = this.props;
         if(!prevProps.visible && this.props.visible) {
             this.getStorageProducts();
             if(product) {
@@ -1383,13 +1406,9 @@ class AddProductModal extends React.Component {
                     productId: product.productId,
                     ordersAppurtenancies: product.ordersAppurtenancies,
                     sellingPrice: product.sellingPrice,
+                    addToAddress: product.cellAddresses ? product.cellAddresses[0] : undefined
                 })
-            } else if(modalProductId) {
-                this.getProductId(undefined, undefined, modalProductId);
             }
-        }
-        if(modalProductId && !prevState.storageProducts.length && this.state.storageProducts.length) {
-            this.getProductId(undefined, undefined, modalProductId);
         }
     }
 
@@ -1421,6 +1440,7 @@ class AddProductModal extends React.Component {
                 stockPrice: Math.round(product.stockPrice*10)/10 || 0,
                 sellingPrice: product.salePrice || Math.round(product.stockPrice * 10 *((product.priceGroup && product.priceGroup.multiplier) || 1.4))/10 || 0,
                 quantity: product.quantity || 1,
+                addToAddress: product.cellAddresses ? product.cellAddresses[0] : undefined
             })
         }
     }
@@ -1441,6 +1461,7 @@ class AddProductModal extends React.Component {
             detailCodeSearch,
             storageBalance,
             sellingPrice,
+            addToAddress,
         } = this.state;
 
         return (
@@ -1586,7 +1607,7 @@ class AddProductModal extends React.Component {
                             }
                         </Select>
                     </div>
-                   {(this.props.isIncome && !this.props.priceDisabled) &&
+                   {(this.props.type == INCOME && !this.props.priceDisabled) &&
                     <div className={Styles.addProductItemWrap}>
                         <FormattedMessage id='order_form_table.detail_code' /> (<FormattedMessage id='storage.supplier'/>)
                         <Input
@@ -1612,6 +1633,29 @@ class AddProductModal extends React.Component {
                             }}
                         />
                     </div>
+                    {this.props.type == INCOME || this.props.documentType == ORDERINCOME ?
+                        <div className={Styles.addProductItemWrap} style={{minWidth: 140}}>
+                            <FormattedMessage id='Ячейка' />
+                            <Select
+                                showSearch
+                                value={addToAddress}
+                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                                onSelect={(value, option)=>{
+                                    this.setState({
+                                        addToAddress: value,
+                                    })
+                                }}
+                            >
+                                {
+                                    this.props.cells.map((elem, index)=>(
+                                        <Option key={index} value={elem.address}>
+                                            {elem.address}
+                                        </Option>
+                                    ))
+                                }
+                            </Select>
+                        </div> : null    
+                    }
                     {!this.props.priceDisabled &&
                     <div className={Styles.addProductItemWrap}>
                         <div><FormattedMessage id='order_form_table.price' /></div>

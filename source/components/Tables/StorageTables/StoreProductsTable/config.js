@@ -1,6 +1,7 @@
 // vendor
 import React from 'react';
 import _ from 'lodash';
+import { Icon } from 'antd';
 import { Link } from 'react-router-dom';
 
 // proj
@@ -82,16 +83,16 @@ export default props => {
         dataIndex: 'edit',
         render:    (key, { id, name, code }) => {
             return (
-                <ActionIcons
-                    edit={ () =>
-                        props.setModal(MODALS.STORE_PRODUCT, {
-                            id,
-                            name,
-                            code,
-                            editing: true,
-                        })
-                    }
-                />
+                <Link to={ `${book.product}/${id}` }>
+                    <Icon
+                        type='edit'
+                        style={{
+                            color: 'var(--green)',
+                            fontSize: 24,
+                            verticalAlign: 'baseline',
+                        }}
+                    />
+                </Link>
             );
         },
     };

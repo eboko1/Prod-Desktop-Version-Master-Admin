@@ -78,7 +78,8 @@
     "navigation.report_analytics": "Analytics",
     "navigation.barcode": "Barcode",
     "navigation.vehicle_types": "Vehicle Types",
-    "navigation.tire_price_groups": "Price Groups"
+    "navigation.tire_price_groups": "Price Groups",
+    "navigation.wms": "WMS"
   },
   "ru": {
     "navigation.operations": "Операции",
@@ -159,7 +160,8 @@
     "navigation.report_analytics": "Аналитика",
     "navigation.barcode": "Штрих-код",
     "navigation.vehicle_types": "Типы авто",
-    "navigation.tire_price_groups": "Ценовые группы"
+    "navigation.tire_price_groups": "Ценовые группы",
+    "navigation.wms": "WMS"
   },
   "uk": {
     "navigation.operations": "Операції",
@@ -240,6 +242,7 @@
     "navigation.report_analytics": "Аналітика",
     "navigation.barcode": "Штрих-код",
     "navigation.vehicle_types": "Типи авто",
-    "navigation.tire_price_groups": "Цінові групи"
+    "navigation.tire_price_groups": "Цінові групи",
+    "navigation.wms": "WMS"
   }
 }

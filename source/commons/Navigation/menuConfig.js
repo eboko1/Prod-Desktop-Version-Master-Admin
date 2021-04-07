@@ -183,6 +183,11 @@ export default {
             name:     'navigation.storage',
             items:    [
                 {
+                    key:  '/wms',
+                    link: book.wms,
+                    name: 'navigation.wms',
+                },
+                {
                     key:      '/storage-balance',
                     disabled: user =>
                         isForbidden(user, permissions.VIEW_STORE),
@@ -223,14 +228,7 @@ export default {
                         isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageMovement,
                     name: 'navigation.storage_movement',
-                },
-                {
-                    key:      '/storage-inventory',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_STOCK_INVENTORIZATION) || true,
-                    link: book.storageInventory,
-                    name: 'navigation.inventory',
-                },
+                }
             ],
         },
         /* Statistics and reports submenu*/

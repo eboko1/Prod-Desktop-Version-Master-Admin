@@ -16,7 +16,7 @@ import { StorageDocumentForm } from 'forms';
 import book from 'routes/book';
 import { type } from 'ramda';
 import { DetailStorageModal, ToSuccessModal, CashOrderModal } from 'modals';
-import { permissions, isForbidden } from 'utils';
+import { permissions, isForbidden, fetchAPI } from 'utils';
 import { Barcode } from 'components';
 
 // own
@@ -109,6 +109,7 @@ class StorageDocumentPage extends Component {
             reserveWarehouseId: undefined,
             toolWarehouseId: undefined,
             repairAreaWarehouseId: undefined,
+            cells: [],
         }
 
         this.updateFormData = this.updateFormData.bind(this);
@@ -383,6 +384,7 @@ class StorageDocumentPage extends Component {
                     quantity: elem.quantity || 1,
                     stockPrice: formData.type == EXPENSE ? elem.sellingPrice : elem.stockPrice,
                     sellingPrice: elem.sellingPrice,
+                    addToAddress: elem.addToAddress || null,
                 })
                 if(elem.tradeCode) {
                     createData.docProducts[createData.docProducts.length-1].supplierPartNumber = elem.tradeCode;
@@ -502,7 +504,7 @@ class StorageDocumentPage extends Component {
         .then(function (response) {
             return response.json()
         })
-        .then(function (warehouses) {
+        .then(async function (warehouses) {
             const type = that.props.location.state && that.props.location.state.formData && that.props.location.state.formData.type;
             const documentType = that.props.location.state && that.props.location.state.formData && that.props.location.state.formData.documentType;
             var mainWarehouseId, reserveWarehouseId, toolWarehouseId, repairAreaWarehouseId;
@@ -565,7 +567,10 @@ class StorageDocumentPage extends Component {
                 repairAreaWarehouseId: repairAreaWarehouseId,
                 fetched: !Boolean(that.props.id),
             })
-            if(that.props.id) that.getStorageDocument();
+            if(that.props.id) {
+                await that.getStorageDocument();
+                that.getCells();
+            };
         })
         .catch(function (error) {
             console.log('error', error)
@@ -632,6 +637,16 @@ class StorageDocumentPage extends Component {
         .catch(function (error) {
             console.log('error', error)
         });
+    }
+
+    getCells = async () => {
+        const { formData } = this.state;
+        if(formData.incomeWarehouseId && formData.type == INCOME) {
+            const cells = await fetchAPI('GET', 'wms/cells', {warehouseId: formData.incomeWarehouseId});
+            this.setState({
+                cells: cells.list
+            })
+        }
     }
 
     getBrands() {
@@ -855,6 +870,7 @@ class StorageDocumentPage extends Component {
             reserveWarehouseId,
             toolWarehouseId,
             repairAreaWarehouseId,
+            cells,
         } = this.state;
 
         const { id, intl: {formatMessage}, user, modal, setModal, resetModal, modalProps } = this.props;
@@ -1064,6 +1080,7 @@ class StorageDocumentPage extends Component {
                     toolWarehouseId={toolWarehouseId}
                     repairAreaWarehouseId={repairAreaWarehouseId}
                     setModal={setModal}
+                    cells={cells}
                 />
                 <ToSuccessModal
                     visible={modal}
