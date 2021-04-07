@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
-import { Switch, Input, Button, notification, Select, Table, InputNumber, Dropdown, Icon, Menu } from "antd";
+import { Switch, Input, Button, notification, Select, Table, InputNumber, Dropdown, Icon, Menu, Modal } from "antd";
 import _ from 'lodash';
 import moment from 'moment';
 import { type } from "ramda";
@@ -18,7 +18,8 @@ export default class WMSAddressSettings extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            addressSettings: []
+            addressSettings: [],
+            setAllModalVisible: false,
         };
 
         this.columns = [
@@ -167,7 +168,8 @@ export default class WMSAddressSettings extends Component {
     }
 
     render() {
-        const { addressSettings } = this.state;
+        const { warehouseId, fetchCells } = this.props;
+        const { addressSettings, setAllModalVisible } = this.state;
         const menu = (
             <Menu>
                 <Menu.Item>
@@ -176,18 +178,36 @@ export default class WMSAddressSettings extends Component {
                     </div>
                 </Menu.Item>
                 <Menu.Item>
-                    <div>
+                    <div onClick={()=>this.setState({setAllModalVisible: true})}>
                         <FormattedMessage id='Задать все' />
                     </div>
                 </Menu.Item>
                 <Menu.Item>
-                    <div>
-                        <FormattedMessage id='Удалить все' />
+                    <div onClick={()=>{
+                        addressSettings.map(({height, width, depth}, key)=>{
+                            addressSettings[key].changed = true;
+                            addressSettings[key].volume = height * width * depth;
+                            this._saveCellsSettings();
+                        })
+                    }}
+                >
+                        <FormattedMessage id='Расчитать объем' />
                     </div>
                 </Menu.Item>
                 <Menu.Item>
-                    <div>
-                        <FormattedMessage id='Расчитать объем' />
+                    <div onClick={()=>{
+                        addressSettings.map((elem, key)=>{
+                            addressSettings[key].changed = true;
+                            addressSettings[key].height = null;
+                            addressSettings[key].width = null;
+                            addressSettings[key].depth = null;
+                            addressSettings[key].weight = null;
+                            addressSettings[key].volume = null;
+                            this._saveCellsSettings();
+                        })
+                    }}
+                >
+                        <FormattedMessage id='Удалить все' />
                     </div>
                 </Menu.Item>
             </Menu>
@@ -218,7 +238,87 @@ export default class WMSAddressSettings extends Component {
                         <FormattedMessage id='save' />
                     </Button>
                 </div>
+                <SetAllModal
+                    visible={setAllModalVisible}
+                    hideModal={()=>{
+                        this.setState({setAllModalVisible: false})
+                    }}
+                    confirmAction={async (width, height, depth, volume, weight)=>{
+                        await fetchAPI('PUT', 'wms/cell_options/all', {warehouseId}, {width, height, depth, volume, weight});
+                        fetchCells();
+                    }}
+                />
             </div>
         );
+    }
+}
+
+@injectIntl
+class SetAllModal extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        };
+    }
+    render () {
+        const { visible, hideModal, confirmAction } = this.props;
+        const { width, height, depth, volume, weight } = this.state;
+        return (
+            <Modal
+                visible={visible}
+                title={<FormattedMessage id='Задать все' />}
+                onCancel={hideModal}
+                onOk={()=>confirmAction(width, height, depth, volume, weight)}
+                destroyOnClose
+                width={'fit-content'}
+            >
+                <div className={Styles.setAllModalRow}>
+                    <FormattedMessage id='Ширина (см)'/>
+                    <InputNumber
+                        min={0}
+                        onChange={(width)=>{
+                            this.setState({width})
+                        }}
+                    />
+                </div>
+                <div className={Styles.setAllModalRow}>
+                    <FormattedMessage id='Высота (см)'/>
+                    <InputNumber
+                        min={0}
+                        onChange={(height)=>{
+                            this.setState({height})
+                        }}
+                    />
+                </div>
+                <div className={Styles.setAllModalRow}>
+                    <FormattedMessage id='Глубина (см)'/>
+                    <InputNumber
+                        min={0}
+                        onChange={(depth)=>{
+                            this.setState({depth})
+                        }}
+                    />
+                </div>
+                <div className={Styles.setAllModalRow}>
+                    <FormattedMessage id='Объем (см3)'/>
+                    <InputNumber
+                        min={0}
+                        onChange={(volume)=>{
+                            this.setState({volume})
+                        }}
+                    />
+                </div>
+                <div className={Styles.setAllModalRow}>
+                    <FormattedMessage id='Вес (кг)'/>
+                    <InputNumber
+                        min={0}
+                        onChange={(weight)=>{
+                            this.setState({weight})
+                        }}
+                    />
+                </div>
+            </Modal>
+        )
     }
 }

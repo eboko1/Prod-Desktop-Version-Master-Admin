@@ -2,13 +2,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import { Tabs, Input, InputNumber, Button, notification, Checkbox, Select, Radio } from "antd";
+import { Tabs, Input, InputNumber, Button, notification, Checkbox, Select, Radio, Table } from "antd";
 import _ from 'lodash';
 import moment from 'moment';
 
 // proj
 import { Layout, Catcher, Spinner } from 'commons';
 import { TrackingTable, WarehouseSelect, DateRangePicker } from 'components';
+import { WMSCellsModal } from 'modals';
 import { permissions, isForbidden, fetchAPI } from "utils";
 import { StoreProductForm } from 'forms';
 import { fetchSuppliers } from "core/suppliers/duck";
@@ -49,7 +50,49 @@ export default class ProductPage extends Component {
             startDate: moment().startOf('year'),
             endDate: moment(),
             cells: [],
+            cellTableData: [],
+            selectedCell: undefined,
         };
+        this.cellTabColumns = [
+            {
+                title: <FormattedMessage id="navigation.storage" />,
+                key: 'warehouse',
+                dataIndex: 'warehouse',
+            },
+            {
+                title: <FormattedMessage id="Ячейка" />,
+                key: 'address',
+                dataIndex: 'address',
+            },
+            {
+                title: <FormattedMessage id="count" />,
+                key: 'sum',
+                dataIndex: 'sum',
+            },
+            {
+                title: <FormattedMessage id="Заполненность" />,
+                key: 'fullness',
+                dataIndex: 'fullness',
+            },
+            {
+                key: 'action',
+                dataIndex: 'address',
+                render: (data, row)=>{
+                    return (
+                        <Button
+                            type='primary'
+                            onClick={()=>{
+                                this.setState({
+                                    selectedCell: data,
+                                })
+                            }}
+                        >
+                            <FormattedMessage id='Переместить'/>
+                        </Button>
+                    )
+                }
+            }
+        ]
     }
 
     _fetchProductMovement = async () => {
@@ -147,7 +190,7 @@ export default class ProductPage extends Component {
 
     render() {
         const { intl: { formatMessage }, user, id, warehouses, suppliers, priceGroups } = this.props;
-        const { product, activeKey, movementData, startDate, endDate, cells } = this.state;
+        const { product, activeKey, movementData, startDate, endDate, cells, cellTableData, selectedCell } = this.state;
         return !product ? (
             <Spinner spin={ true }/>
         ) : (
@@ -678,6 +721,32 @@ export default class ProductPage extends Component {
                                 hideCode
                                 dataSource={movementData}
                             />
+                        </TabPane>
+                        <TabPane
+                            tab={
+                                <FormattedMessage
+                                    id={"Ячейки"}
+                                />
+                            }
+                            key="cell"
+                        >
+                            <div className={Styles.cellsTab}>
+                                <Table
+                                    size={'small'}
+                                    columns={this.cellTabColumns}
+                                    dataSource={cellTableData}
+                                />
+                                <WMSCellsModal
+                                    warehouseId={product.defaultWarehouseId}
+                                    visible={Boolean(selectedCell)}
+                                    confirmAction={(address)=>{
+
+                                    }}
+                                    hideModal={()=>{
+                                        this.setState({selectedCell: undefined})
+                                    }}
+                                />
+                            </div>
                         </TabPane>
                     </Tabs>
                 </Catcher>

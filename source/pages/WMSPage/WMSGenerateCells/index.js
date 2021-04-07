@@ -69,18 +69,21 @@ export default class WMSGenerateCells extends Component {
                     return row.active && (
                         <Select
                             value={data}
-                            onChange={(value)=>{
+                            onChange={(value, {props})=>{
+                                console.log(props);
                                 row.aliasType = value;
+                                row.minValue = props.min;
+                                row.maxValue = props.max;
                                 this.setState({})
                             }}
                         >
-                            <Option value={CAPITAL_LETTERS}>
+                            <Option value={CAPITAL_LETTERS} min={'A'} max={'C'}>
                                 A, B, C
                             </Option>
-                            <Option value={NUMBERS}>
+                            <Option value={NUMBERS} min={'1'} max={'3'}>
                                 1, 2, 3
                             </Option>
-                            <Option value={LOWER_CASE_LETTERS}>
+                            <Option value={LOWER_CASE_LETTERS} min={'a'} max={'c'}>
                                 a, b, c
                             </Option>
                         </Select>
@@ -166,7 +169,7 @@ export default class WMSGenerateCells extends Component {
                 aliasType: CAPITAL_LETTERS,
                 addZeros: false,
                 minValue: 'A',
-                maxValue: 'ABC',
+                maxValue: 'C',
             }
         ));
         propsSettings.map((propSetting)=>{

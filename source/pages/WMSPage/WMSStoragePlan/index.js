@@ -25,7 +25,7 @@ export default class WMSStoragePlan extends Component {
         };
 
         const cell = {
-            title: <FormattedMessage id="Ячеейка" />,
+            title: <FormattedMessage id="Ячейка" />,
             key: 'address',
             dataIndex: 'address',
         }
@@ -49,7 +49,7 @@ export default class WMSStoragePlan extends Component {
         }
 
         const count = {
-            title: <FormattedMessage id="Кол-во" />,
+            title: <FormattedMessage id="count" />,
             key: 'sum',
             dataIndex: 'sum',
         }
