@@ -19,3 +19,10 @@
     text-align: end;
     margin: 8px 0;
 }
+
+.setAllModalRow {
+    display: flex;
+    justify-content: space-between;
+    width: 220px;
+    margin-bottom: 8px;
+}
