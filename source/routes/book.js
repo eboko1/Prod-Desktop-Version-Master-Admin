@@ -11,22 +11,24 @@ const book = Object.freeze({
     newPassword:              '/new-password',
     exception:                '/exception',
     exceptionStatusCode:      '/exception/:statusCode',
+
     // Private
     userAgreement:            '/user-agreement',
     profile:                  '/profile',
     dashboard:                '/dashboard',
     myTasksPage:              '/mytasks',
     newDocumentPage:          '/new-document',
-    //
+
     // Orders
-    //
     orders:                   '/orders',
     ordersByStatuses:         '/orders/:ordersStatuses',
     ordersAppointments:       '/orders/appointments',
     agreement:                '/agreement',
+
     // Order
     order:                    '/order',
     orderId:                  '/order/:id',
+
     // AddOrder
     addOrder:                 '/add',
 
@@ -39,39 +41,38 @@ const book = Object.freeze({
 
     // Barcode
     barcodePage:              '/barcode',
-    //
+
     // Reference book
-    //
     // Clients
     clients:                  '/clients',
     client:                   '/client',
     clientId:                 '/client/:id',
+    clientHotOperations:      '/client-hot-operations',
+
     // Employees
     employeesPage:            '/employees',
     addEmployee:              '/employees/add',
     // TODO: employeeId
     editEmployee:             '/employees/:id',
+
     // Suppliers
     suppliersPage:            '/suppliers',
     supplierPage:             '/supplier/:id',
     supplier:                 '/supplier',
-    //
+
     // Catalogue
-    //
     laborsPage:               '/labors',
     diagnosticPatterns:       '/diagnostic-patterns',
     warehouses:               '/warehouses',
     analytics:                '/report/analytics',
-    //
+
     //  Cash
-    //
     cashFlowPage:             '/cash/flow',
     cashClientsDebtsPage:     '/cash/clients-debts',
     cashSettingsPage:         '/cash/settings',
     cashBankPage:             '/cash/bank',
-    //
+    
     // Storage
-    //
     productsGroups:           '/products-groups',
     priceGroups:              '/price-groups',
     products:                 '/products',
@@ -91,44 +92,38 @@ const book = Object.freeze({
     storageIncomeDocId:       '/income-document/:id',
     repairMapSetting:         '/repair-map',
     wms:                      '/wms',
-    //
+
     // Tire Storage
-    //
     vehicleTypes:            '/vehicle-types',
     tirePriceGroups:         '/tire-prices',
-    //
+
     // Locations
-    //
     locationsPage:            '/locations',
     locationSettings:         '/location-settings',
     locationsDocument:        '/location-document',
     locationsVehicles:        '/location-vehicles',
     locationsMovement:        '/location-movement',
-    //
+
     // Statistics
-    //
     chart:                    '/chart',
     feedback:                 '/feedback',
     feedbackId:               '/feedback/:id',
     calls:                    '/calls',
-    //
+
     // Payment
-    //
     paymentPage:              '/payment',
     subscriptionPackagesPage: '/subscription/packages',
     subscriptionHistoryPage:  '/subscription/history',
-    //
+
     // Settings
-    //
     storage:                  '/storage',
     packagePage:              '/packages',
     businessPackagePage:      '/businesses/packages',
     managerRolePage:          '/managers/roles',
     rolePage:                 '/roles',
     requisites:               '/requisites',
-    //
+
     // Administration
-    //
     servicesPage:             '/administration/services',
     brandsPage:               '/administration/brands',
     availabilitiesPage:       '/administration/availabilities',
