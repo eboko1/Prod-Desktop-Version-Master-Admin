@@ -32,7 +32,7 @@
 	"ru": {
 		"cash-table.name": "Наименование Кассы",
 		"cash-table.type": "Тип",
-		"cash-table.fiscalNumber": "Номер ККМ",
+		"cash-table.fiscalNumber": "Номер РРО",
 		"cash-table.description": "Описание",
 		"cash-table.increase": "Приход",
 		"cash-table.decrease": "Расход",
