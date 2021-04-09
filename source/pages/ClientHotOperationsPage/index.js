@@ -10,11 +10,14 @@ User on this page can select some operations for client:
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
+import { Row, Col } from "antd";
 import _ from "lodash";
 
 // proj
 import { Layout, StyledButton } from "commons";
+
 // own
+import ClientsContainer from './ClientsContainer';
 import Styles from "./styles.m.css";
 
 const mapStateToProps = state => ({
@@ -43,7 +46,21 @@ export default class ClientHotOperationsPage extends Component {
                 title={ <div><FormattedMessage id="navigation.client_hot_operations" /></div> }
                 paper={true}
             >
-                Hello world
+                <div style={{width: '80%', height: '30vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
+                    <ClientsContainer />
+                </div>
+
+                <div style={{width: '60%', height: '10vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
+                    <Row>
+                        <Col span={12} className={Styles.col}><StyledButton className={Styles.styledButton} type="primary"/></Col>
+                        <Col span={12} className={Styles.col}><StyledButton className={Styles.styledButton} type="primary"/></Col>
+                    </Row>
+
+                    <Row>
+                        <Col span={12} className={Styles.col}><StyledButton className={Styles.styledButton} type="primary"/></Col>
+                        <Col span={12} className={Styles.col}><StyledButton className={Styles.styledButton} type="primary"/></Col>
+                    </Row>
+                </div>
             </Layout>
         );
     }
