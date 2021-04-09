@@ -15,18 +15,24 @@ import _ from "lodash";
 
 // proj
 import { Layout, StyledButton } from "commons";
+import { fetchClients } from 'core/clientHotOperations/duck';
 
 // own
 import ClientsContainer from './ClientsContainer';
 import Styles from "./styles.m.css";
 
 const mapStateToProps = state => ({
-    user: state.auth
+    user: state.auth,
+    clients: state.clientHotOperations.clients
 });
+
+const mapDispatchToProps = {
+    fetchClients
+}
 
 @connect(
     mapStateToProps,
-    void 0,
+    mapDispatchToProps,
 )
 @injectIntl
 export default class ClientHotOperationsPage extends Component {
@@ -34,11 +40,18 @@ export default class ClientHotOperationsPage extends Component {
         super(props);
     }
 
+    componentDidMount() {
+        this.props.fetchClients();
+    }
+
     render() {
 
         const {
-            intl: {formatMessage}
+            intl: {formatMessage},
+            clients
         } = this.props;
+
+        console.log("Here: ", clients);
         
         
         return (
@@ -46,6 +59,7 @@ export default class ClientHotOperationsPage extends Component {
                 title={ <div><FormattedMessage id="navigation.client_hot_operations" /></div> }
                 paper={true}
             >
+                <button onClick={() => console.log("Test: ", clients)}>Test</button>
                 <div style={{width: '80%', height: '30vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
                     <ClientsContainer />
                 </div>
