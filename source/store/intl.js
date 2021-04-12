@@ -30,6 +30,7 @@ import RolePage from 'pages/RolePage/messages';
 import PackagePage from 'pages/PackagePage/messages';
 import ClientsPage from 'pages/ClientsPage/messages';
 import CashClientsDebtsPage from 'pages/CashClientsDebtsPage/messages';
+import ClientHotOperationsPage from 'pages/ClientHotOperationsPage/messages';
 import EmployeesPage from 'pages/EmployeesPage/messages';
 import AddEmployeePage from 'pages/AddEmployeePage/messages';
 import ChartPage from 'pages/ChartPage/messages';
@@ -175,6 +176,7 @@ const messages = merge.all([
     PackagePage,
     ClientsPage,
     CashClientsDebtsPage,
+    ClientHotOperationsPage,
     EmployeesPage,
     AddEmployeePage,
     ChartPage,

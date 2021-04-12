@@ -44,14 +44,21 @@ export default class ClientHotOperationsPage extends Component {
         this.props.fetchClients();
     }
 
+    generateCol = (intlId, onClick) => {
+        return (<Col span={12} className={Styles.col}>
+            <StyledButton onClick={onClick} className={Styles.styledButton} type="primary">
+                <FormattedMessage id={intlId} />
+            </StyledButton>
+        </Col>);
+    }
+
     render() {
 
         const {
             intl: {formatMessage},
             clients
         } = this.props;
-        
-        
+                
         return (
             <Layout
                 title={ <div><FormattedMessage id="navigation.client_hot_operations" /></div> }
@@ -63,13 +70,27 @@ export default class ClientHotOperationsPage extends Component {
 
                 <div style={{width: '50%', height: '10vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
                     <Row>
-                        <Col span={12} className={Styles.col}><StyledButton className={Styles.styledButton} type="primary"/></Col>
-                        <Col span={12} className={Styles.col}><StyledButton className={Styles.styledButton} type="primary"/></Col>
+                        {this.generateCol(
+                            "client_hot_operations_page.open_client_tab",
+                            () => console.log("Click!")
+                        )}
+
+                        {this.generateCol(
+                            "client_hot_operations_page.create_new_order",
+                            () => console.log("Click!")
+                        )}
                     </Row>
 
                     <Row>
-                        <Col span={12} className={Styles.col}><StyledButton className={Styles.styledButton} type="primary"/></Col>
-                        <Col span={12} className={Styles.col}><StyledButton className={Styles.styledButton} type="primary"/></Col>
+                        {this.generateCol(
+                            "client_hot_operations_page.create_new_cient",
+                            () => console.log("Click!")
+                        )}
+                        
+                        {this.generateCol(
+                            "client_hot_operations_page.open_current_orders",
+                            () => console.log("Click!")
+                        )}
                     </Row>
                 </div>
             </Layout>

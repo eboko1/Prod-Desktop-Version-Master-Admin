@@ -1,11 +1,23 @@
 {
     "en": {
-        
+        "client_hot_operations_page.search": "Search",
+        "client_hot_operations_page.open_client_tab": "Open client tab",
+        "client_hot_operations_page.create_new_order": "Create new order",
+        "client_hot_operations_page.create_new_cient": "Create new client",
+        "client_hot_operations_page.open_current_orders": "Open current orders"
     },
     "ru": {
-        
+        "client_hot_operations_page.search": "Поиск",
+        "client_hot_operations_page.open_client_tab": "Открыть карточку клиента",
+        "client_hot_operations_page.create_new_order": "Создать новый н/з",
+        "client_hot_operations_page.create_new_cient": "Создать нового клиента",
+        "client_hot_operations_page.open_current_orders": "Открыть недавние ремонты"
     },
     "uk": {
-        
+        "client_hot_operations_page.search": "Пошук",
+        "client_hot_operations_page.open_client_tab": "Відкрити карточку клієнта",
+        "client_hot_operations_page.create_new_order": "Створити новий н/з",
+        "client_hot_operations_page.create_new_cient": "Створити нового клієнта",
+        "client_hot_operations_page.open_current_orders": "Відкрити недавні ремонти"
     }
 }

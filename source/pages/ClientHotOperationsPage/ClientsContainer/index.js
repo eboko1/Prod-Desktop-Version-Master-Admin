@@ -4,6 +4,7 @@ Container used to show clients and perform basic search of them.
 //Vendor
 import React from 'react';
 import { connect } from "react-redux";
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Table, Input } from 'antd';
 import { v4 } from 'uuid';
 
@@ -30,6 +31,7 @@ const mapDispatchToProps = {
     mapStateToProps,
     mapDispatchToProps,
 )
+@injectIntl
 export default class ClientsContainer extends React.Component {
     constructor(props) {
         super(props);
@@ -60,14 +62,14 @@ export default class ClientsContainer extends React.Component {
             hideOnSinglePage: true,
             current: sort.page,
             onChange: page => {
-                this.props.setSortPage(page);
+                setSortPage(page);
             },
         };
 
         return (
             <div>
                 <div style={{display: 'flex', justifyContent: 'center', padding: '10px'}}>
-                    <div style={{display: 'flex', justifyContent: 'flex-end', padding: '5px', alignItems: 'center'}}>Search: </div>
+                    <div style={{display: 'flex', justifyContent: 'flex-end', padding: '5px', alignItems: 'center'}}><FormattedMessage id={"client_hot_operations_page.search"} />: </div>
                     <div style={{width: '40%'}}><Input onChange={this.onSearch}/></div>
                     
                 </div>
@@ -80,6 +82,7 @@ export default class ClientsContainer extends React.Component {
                         loading={clientsFetching}
                         pagination={pagination}
                         rowKey={() => v4()}
+                        expandedRowRender={() => <p style={{ margin: 0 }}>Test</p>}
                         bordered
                     />
                 </div>
