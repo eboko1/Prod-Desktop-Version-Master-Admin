@@ -14,7 +14,7 @@ import { WMSCellsModal } from 'modals';
 import Styles from "./styles.m.css";
 const Option = Select.Option;
 
-
+@injectIntl
 export default class WMSStoragePlan extends Component {
     constructor(props) {
         super(props);
@@ -28,48 +28,53 @@ export default class WMSStoragePlan extends Component {
             title: <FormattedMessage id="Ячейка" />,
             key: 'address',
             dataIndex: 'address',
+            sorter: (a, b) => String(a.address).localeCompare(String(b.address)),
         }
 
         const code = {
             title: <FormattedMessage id="Код товара" />,
             key: 'code',
             dataIndex: 'code',
+            sorter: (a, b) => String(a.code).localeCompare(String(b.code)),
         }
 
         const brand = {
             title: <FormattedMessage id="Бренд" />,
             key: 'brandName',
             dataIndex: 'brandName',
+            sorter: (a, b) => String(a.brandName).localeCompare(String(b.brandName)),
         }
 
         const name = {
             title: <FormattedMessage id="Наименование" />,
             key: 'name',
             dataIndex: 'name',
+            sorter: (a, b) => String(a.name).localeCompare(String(b.name)),
         }
 
         const count = {
             title: <FormattedMessage id="count" />,
             key: 'sum',
             dataIndex: 'sum',
+            sorter: (a, b) => a.sum - b.sum,
         }
 
         const fullness = {
             title: <FormattedMessage id="Заполненность" />,
             key: 'fullness',
             dataIndex: 'fullness',
+            sorter: (a, b) => a.fullness - b.fullness,
         }
 
         const action = {
             key: 'action',
-            dataIndex: 'address',
-            render: (data, row)=>{
+            render: (row)=>{
                 return (
                     <Button
                         type='primary'
                         onClick={()=>{
                             this.setState({
-                                selectedCell: data,
+                                selectedCell: row,
                             })
                         }}
                     >
@@ -134,7 +139,16 @@ export default class WMSStoragePlan extends Component {
 
     render() {
         const { warehouseId } = this.props;
-        const { dataSource, type, selectedCell } = this.state;
+        const { dataSource, type, selectedCell, tableFilter } = this.state;
+        let tableData = dataSource ? [...dataSource] : [];
+        if(tableFilter) {
+            tableData = tableData.filter((elem)=>
+                String(elem.address).includes(String(tableFilter)) ||
+                String(elem.brandName).toLocaleLowerCase().includes(String(tableFilter).toLocaleLowerCase()) ||
+                String(elem.code).includes(String(tableFilter)) ||
+                String(elem.name).toLocaleLowerCase().includes(String(tableFilter).toLocaleLowerCase()) 
+            );
+        }
         const menu = (
             <Menu>
                 {type != 'CELLS' &&
@@ -168,6 +182,19 @@ export default class WMSStoragePlan extends Component {
                         <Icon type='menu' className={Styles.menuIcon}/>
                     </Dropdown>
                 </div>
+                <Input
+                    allowClear
+                    value={tableFilter}
+                    placeholder={this.props.intl.formatMessage({id: 'barcode.search'})}
+                    style={{
+                        marginBottom: 8
+                    }}
+                    onChange={({target})=>{
+                        this.setState({
+                            tableFilter: target.value
+                        })
+                    }}
+                />
                 <Table
                     size={'small'}
                     columns={
@@ -176,16 +203,35 @@ export default class WMSStoragePlan extends Component {
                             : this.productsColumns
                     }
                     loading={!dataSource}
-                    dataSource={dataSource || []}
+                    dataSource={tableData}
                 />
                 <WMSCellsModal
                     warehouseId={warehouseId}
                     visible={Boolean(selectedCell)}
-                    confirmAction={(address)=>{
-
+                    selectedCell={selectedCell}
+                    confirmAction={async (address, modalWarehouseId, count)=>{
+                        await fetchAPI('POST', 'wms/cells/products', null, [
+                            {
+                                warehouseId: modalWarehouseId,
+                                storeProductId: selectedCell.id,
+                                address,
+                                count,
+                            }
+                        ])
+                        await fetchAPI('DELETE', 'wms/cells/products', null, [
+                            {
+                                warehouseId: warehouseId,
+                                storeProductId: selectedCell.id,
+                                address: selectedCell.address,
+                                count,
+                            }
+                        ])
+                        await this._fetchData(type);
                     }}
                     hideModal={()=>{
-                        this.setState({selectedCell: undefined})
+                        this.setState({
+                            selectedCell: undefined,
+                        })
                     }}
                 />
             </div>

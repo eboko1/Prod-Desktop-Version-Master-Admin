@@ -84,7 +84,7 @@ export default class ProductPage extends Component {
                             onClick={()=>{
                                 this.setState({
                                     selectedCell: data,
-                                })
+                                });
                             }}
                         >
                             <FormattedMessage id='Переместить'/>
@@ -729,7 +729,6 @@ export default class ProductPage extends Component {
                                 />
                             }
                             key="cell"
-                            disabled
                         >
                             <div className={Styles.cellsTab}>
                                 <Table
