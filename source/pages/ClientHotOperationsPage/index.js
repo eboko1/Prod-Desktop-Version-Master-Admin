@@ -59,12 +59,11 @@ export default class ClientHotOperationsPage extends Component {
                 title={ <div><FormattedMessage id="navigation.client_hot_operations" /></div> }
                 paper={true}
             >
-                <button onClick={() => console.log("Test: ", clients)}>Test</button>
-                <div style={{width: '80%', height: '30vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
+                <div style={{width: '90%', height: '50vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
                     <ClientsContainer />
                 </div>
 
-                <div style={{width: '60%', height: '10vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
+                <div style={{width: '50%', height: '10vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
                     <Row>
                         <Col span={12} className={Styles.col}><StyledButton className={Styles.styledButton} type="primary"/></Col>
                         <Col span={12} className={Styles.col}><StyledButton className={Styles.styledButton} type="primary"/></Col>

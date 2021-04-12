@@ -1,15 +1,32 @@
+/*
+Container used to show clients and perform basic search of them.
+*/
 //Vendor
 import React from 'react';
+import { connect } from "react-redux";
 import { Table, Input } from 'antd';
 
-//Proj
+//Own
+import { columnsConfig } from './config';
 
+const mapStateToProps = state => ({
+    user: state.auth,
+    clients: state.clientHotOperations.clients
+});
+
+@connect(
+    mapStateToProps,
+    void 0,
+)
 export default class ClientsContainer extends React.Component {
     constructor(props) {
         super(props);
     }
 
     render() {
+        const {
+            clients
+        } = this.props;
 
         return (
             <div>
@@ -20,7 +37,11 @@ export default class ClientsContainer extends React.Component {
                 </div>
                 
                 <div>
-                    <Table />
+                    <Table
+                        dataSource={clients}
+                        columns={columnsConfig()}
+                        scroll={ { x: 1000, y: '30vh' } }
+                    />
                 </div>
             </div>
         );
