@@ -195,11 +195,11 @@ export default {
             iconType: 'inbox',
             name:     'navigation.storage',
             items:    [
-                // {
-                //     key:  '/wms',
-                //     link: book.wms,
-                //     name: 'navigation.wms',
-                // },
+                {
+                    key:  '/wms',
+                    link: book.wms,
+                    name: 'navigation.wms',
+                },
                 {
                     key:      '/storage-balance',
                     disabled: user =>
