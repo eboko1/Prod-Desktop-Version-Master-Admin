@@ -8,41 +8,35 @@ import {setReportOrdersFetching, emitError} from 'core/ui/duck';
 
 // own
 import {
-    fetchClientsSuccess
+    fetchClientsSuccess,
+    selectFilters,
+    selectSort,
+    setClientsFetching
 } from './duck';
 
 import {
     FETCH_CLIENTS
 } from './duck';
 
-// const selectFilter = ({ reportOrders: { filter, options, exportOptions } }) => ({
-//     filter,
-//     options,
-//     exportOptions
-// });
-
 export function* fetchClientsSaga() {
     while (true) {
         try {
             yield take(FETCH_CLIENTS);
-            // yield put(setReportOrdersFetching(true));
+            yield put(setClientsFetching(true));
 
-            // const {
-            //     filter,
-            // } = yield select(selectFilter);
+            const filters = yield select(selectFilters);
+            const sort = yield select(selectSort);
 
-            const {clients} = yield call(
+            const {clients, stats} = yield call(
                 fetchAPI,
                 'GET',
                 `/clients`,
-                {sort: {page: 1}},
+                {filters, sort},
             );
 
-            console.log(clients);
-
-            yield put(fetchClientsSuccess({clients}));
+            yield put(fetchClientsSuccess({clients, stats}));
         } finally {
-            // yield put(setReportOrdersFetching(false));
+            yield put(setClientsFetching(false));
         }
     }
 }

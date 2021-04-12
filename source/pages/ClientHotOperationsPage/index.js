@@ -50,8 +50,6 @@ export default class ClientHotOperationsPage extends Component {
             intl: {formatMessage},
             clients
         } = this.props;
-
-        console.log("Here: ", clients);
         
         
         return (
