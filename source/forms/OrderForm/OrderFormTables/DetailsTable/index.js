@@ -11,6 +11,8 @@ import {
     Modal,
     notification,
     Checkbox,
+    Dropdown,
+    Menu,
 } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from "react-redux";
@@ -428,6 +430,108 @@ class DetailsTable extends Component {
                         </span>
                     );
                 },
+            },
+            {
+                key:        'status',
+                dataIndex:  'agreement',
+                render:     (data, row) => {
+                    const key = row.key;
+                    const confirmed = data.toLowerCase();
+                    let color, icon;
+                    switch (confirmed) {
+                        case 'rejected':
+                            color = 'rgb(255, 126, 126)';
+                            icon = 'close-circle';
+                            break;
+                        case 'agreed':
+                            color = 'var(--green)';
+                            icon = 'check-circle';
+                            break;
+                        default:
+                            color = null;
+                            icon = 'question-circle';
+                    }
+                    const updateAgreement = (value) => {
+                        row.agreement = value.toUpperCase();
+                        this.updateDetail(key, row);
+                    }
+                    const menu = (
+                        <Menu onClick={this.handleMenuClick}>
+                            <Menu.Item
+                                key="undefined"
+                                onClick={()=>{
+                                    updateAgreement('undefined')
+                                }}
+                            >
+                                <Icon
+                                    type={'question-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        verticalAlign: 'sub',
+                                        marginRight: 8
+                                    }}
+                                />
+                                <FormattedMessage id='status.undefined' />
+                            </Menu.Item>
+                            <Menu.Item
+                                key="agreed"
+                                style={{color: 'var(--green)'}}
+                                onClick={()=>{
+                                    updateAgreement('agreed')
+                                }}
+                            >
+                                <Icon
+                                    type={'check-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        verticalAlign: 'sub',
+                                        marginRight: 8,
+                                    }}
+                                />
+                                <FormattedMessage id='status.agreed' />
+                            </Menu.Item>
+                            <Menu.Item
+                                key="rejected"
+                                style={{color: 'rgb(255, 126, 126)'}}
+                                onClick={()=>{
+                                    updateAgreement('rejected')
+                                }}
+                            >
+                                <Icon
+                                    type={'close-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        marginRight: 8,
+                                    }}
+                                />
+                                <FormattedMessage id='status.rejected' />
+                            </Menu.Item>
+                        </Menu>
+                    );
+                    return isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS) ? (
+                        <Icon
+                            type={icon}
+                            style={{
+                                fontSize: 24,
+                                color,
+                            }}
+                        />
+                    ) : (
+                        <div>
+                            <Dropdown
+                                overlay={menu}
+                            >
+                                <Icon
+                                    type={icon}
+                                    style={{
+                                        fontSize: 24,
+                                        color,
+                                    }}
+                                />
+                            </Dropdown>
+                        </div>
+                    )
+                }
             },
             {
                 title:     <FormattedMessage id='order_form_table.status' />,
@@ -865,6 +969,7 @@ class DetailsTable extends Component {
                     columns={ columns }
                     dataSource={ dataSource }
                     pagination={ false }
+                    rowClassName={Styles.detailsTableRow}
                 />
                 <DetailProductModal
                     labors={ labors }
