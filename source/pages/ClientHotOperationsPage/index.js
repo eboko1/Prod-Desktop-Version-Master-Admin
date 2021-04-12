@@ -87,10 +87,10 @@ export default class ClientHotOperationsPage extends Component {
                             () => console.log("Click!")
                         )}
                         
-                        {this.generateCol(
+                        {/* {this.generateCol(
                             "client_hot_operations_page.open_current_orders",
                             () => console.log("Click!")
-                        )}
+                        )} */}
                     </Row>
                 </div>
             </Layout>

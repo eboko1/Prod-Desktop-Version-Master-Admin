@@ -11,11 +11,14 @@ import {
     fetchClientsSuccess,
     selectFilters,
     selectSort,
-    setClientsFetching
+    setClientsFetching,
+    setClientOrdersFetching,
+    fetchClientOrdersSuccess
 } from './duck';
 
 import {
-    FETCH_CLIENTS
+    FETCH_CLIENTS,
+    FETCH_CLIENT_ORDERS
 } from './duck';
 
 export function* fetchClientsSaga() {
@@ -41,7 +44,30 @@ export function* fetchClientsSaga() {
     }
 }
 
+export function* fetchClientOrdersSaga() {
+    while (true) {
+        try {
+            const {payload: {clientId}} = yield take(FETCH_CLIENT_ORDERS);
+            yield put(setClientOrdersFetching(true));
+
+            console.log("ClientId: ", clientId);
+
+            const {orders, stats} = yield call(
+                fetchAPI,
+                'GET',
+                `/orders/client/${clientId}`
+            );
+            
+            console.log("Req res: ", orders, stats);
+
+            yield put(fetchClientOrdersSuccess({orders, stats}));
+        } finally {
+            yield put(setClientOrdersFetching(false));
+        }
+    }
+}
+
 
 export function* saga() {
-    yield all([ call(fetchClientsSaga) ]);
+    yield all([ call(fetchClientsSaga), call(fetchClientOrdersSaga) ]);
 }

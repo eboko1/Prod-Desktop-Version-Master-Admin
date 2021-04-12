@@ -7,10 +7,15 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_CLIENTS = `${prefix}/FETCH_CLIENTS`;
 export const FETCH_CLIENTS_SUCCESS = `${prefix}/FETCH_CLIENTS_SUCCESS`;
 
+export const FETCH_CLIENT_ORDERS = `${prefix}/FETCH_CLIENT_ORDERS`;
+export const FETCH_CLIENT_ORDERS_SUCCESS = `${prefix}/FETCH_CLIENT_ORDERS_SUCCESS`;
+
 export const SET_FILTERS_SEARCH_QUERY = `${prefix}/SET_FILTERS_SEARCH_QUERY`;
+export const SET_CLIENT_ORDERS_FETCHING = `${prefix}/SET_CLIENT_ORDERS_FETCHING`;
 
 export const SET_CLIENTS_FETCHING = `${prefix}/SET_CLIENTS_FETCHING`;
 export const SET_SORT_PAGE = `${prefix}/SET_SORT_PAGE`;
+
 
 /**
  * Reducer
@@ -18,7 +23,12 @@ export const SET_SORT_PAGE = `${prefix}/SET_SORT_PAGE`;
 
 const ReducerState = {
     clients: [],
-    clientsFetching: false, 
+    clientsFetching: false,
+    clientOrdersFetching: false,
+    clientOrdersData: {
+        orders: [],
+        stats: {},
+    }, 
     stats: {
         countCliens: undefined,
     },
@@ -58,12 +68,29 @@ export default function reducer(state = ReducerState, action) {
                 clientsFetching: payload
             };
 
+        case SET_CLIENT_ORDERS_FETCHING:
+            return {
+                ...state,
+                clientOrderFetching: payload
+            };
+
         case SET_SORT_PAGE:
             return {
                 ...state,
                 sort: {
                     ...state.sort,
                     page: payload
+                }
+            };
+
+        case FETCH_CLIENT_ORDERS_SUCCESS:
+            const {orders, stats: ordersStats} = payload;
+            return {
+                ...state,
+                clientOrdersData: {
+                    ...state.clientOrdersData,
+                    orders: orders,
+                    stats: ordersStats
                 }
             };
 
@@ -84,6 +111,16 @@ export const fetchClients = () => ({
 export const fetchClientsSuccess = ({clients, stats}) => ({
     type: FETCH_CLIENTS_SUCCESS,
     payload: {clients, stats}
+});
+
+export const fetchClientOrders = ({clientId}) => ({
+    type: FETCH_CLIENT_ORDERS,
+    payload: {clientId}
+});
+
+export const fetchClientOrdersSuccess = ({orders, stats}) => ({
+    type: FETCH_CLIENT_ORDERS_SUCCESS,
+    payload: {orders, stats}
 });
 
 export const setFiltersSearchQuery = (query) => {
@@ -111,4 +148,9 @@ export const setSortPage = (page) => {
 export const setClientsFetching = (clientsFetching) => ({
     type: SET_CLIENTS_FETCHING,
     payload: clientsFetching
+});
+
+export const setClientOrdersFetching = (clientOrdersFetching) => ({
+    type: SET_CLIENT_ORDERS_FETCHING,
+    payload: clientOrdersFetching
 });

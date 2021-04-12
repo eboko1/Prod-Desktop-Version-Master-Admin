@@ -9,10 +9,11 @@ import { Table, Input } from 'antd';
 import { v4 } from 'uuid';
 
 //Proj
-import { setFiltersSearchQuery, setSortPage } from 'core/clientHotOperations/duck';
+import { setFiltersSearchQuery, setSortPage, fetchClientOrders } from 'core/clientHotOperations/duck';
 
 //Own
 import { columnsConfig } from './config';
+import ClientOrdersContainer from './ClientOrdersContainer';
 
 const mapStateToProps = state => ({
     user: state.auth,
@@ -24,7 +25,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     setFiltersSearchQuery,
-    setSortPage
+    setSortPage,
+    fetchClientOrders
 }
 
 @connect(
@@ -52,7 +54,8 @@ export default class ClientsContainer extends React.Component {
             stats,
             clientsFetching,
             sort,
-            setSortPage
+            setSortPage,
+            fetchClientOrders
         } = this.props;
 
         const pagination = {
@@ -82,7 +85,8 @@ export default class ClientsContainer extends React.Component {
                         loading={clientsFetching}
                         pagination={pagination}
                         rowKey={() => v4()}
-                        expandedRowRender={() => <p style={{ margin: 0 }}>Test</p>}
+                        expandedRowRender={() => (<ClientOrdersContainer />)}
+                        onExpand={(expanded, client) => expanded && fetchClientOrders({clientId: client.clientId})}
                         bordered
                     />
                 </div>
