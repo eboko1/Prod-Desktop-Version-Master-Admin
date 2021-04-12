@@ -63,3 +63,14 @@
     color: var(--text);
     font-weight: 400;
 }
+
+.positionArrows {
+    font-size: 18px;
+    color: var(--primary);
+    cursor: pointer;
+    vertical-align: middle;
+
+    &:hover {
+        color: var(--enabled)
+    }
+}

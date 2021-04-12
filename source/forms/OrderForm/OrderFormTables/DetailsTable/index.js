@@ -10,6 +10,7 @@ import {
     Input,
     Modal,
     notification,
+    Checkbox,
 } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from "react-redux";
@@ -70,6 +71,17 @@ class DetailsTable extends Component {
         );
 
         this.columns = [
+            {
+                key:       'position',
+                render:    (row) => {
+                    return (
+                        <div>
+                            <Icon type="up-square" className={Styles.positionArrows}/>
+                            <Icon type="down-square"  className={Styles.positionArrows}/>
+                        </div>
+                    )
+                },
+            },
             {
                 title:      ()=>(
                                 <div className={Styles.headerActions}>
@@ -196,15 +208,24 @@ class DetailsTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.detail_name' />,
-                key:       'detail',
-                dataIndex: 'detailName',
-                render:    data => {
-                    return data ? data : <FormattedMessage id='long_dash' />;
+                title:     <FormattedMessage id='order_form_table.detail_code' />,
+                key:       'code',
+                dataIndex: 'detailCode',
+                render:    (data, row) => {
+                    return (
+                        <div>
+                            <div>
+                                {row.detailCode || <FormattedMessage id='long_dash' />}
+                            </div>
+                            <div>
+                                {row.detailName}
+                            </div>
+                        </div>
+                    )
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.brand' />,
+                title:      <FormattedMessage id='order_form_table.brand' />,
                 key:       'brand',
                 dataIndex: 'brandName',
                 render:    data => {
@@ -212,35 +233,26 @@ class DetailsTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.detail_code' />,
-                key:       'code',
-                dataIndex: 'detailCode',
-                render:    data => {
-                    return data ? data : <FormattedMessage id='long_dash' />;
-                },
-            },
-            {
-                title:     <FormattedMessage id='order_form_table.supplier' />,
+                title:  <div style={{whiteSpace: 'pre', textAlign: 'left'}}>
+                            <FormattedMessage id='storage' /> / <FormattedMessage id='order_form_table.supplier' />
+                        </div>,
                 key:       'supplierName',
-                dataIndex: 'supplierName',
-                render:    data => {
-                    return data ? data : <FormattedMessage id='long_dash' />;
-                },
-            },
-            {
-                title: (
-                    <div
-                        title={ this.props.intl.formatMessage({
-                            id: 'order_form_table.AI_title',
-                        }) }
-                    >
-                        <FormattedMessage id='order_form_table.AI' />
-                    </div>
-                ),
-                key:       'AI',
-                dataIndex: 'store',
-                render:    store => {
-                    return <AvailabilityIndicator indexArray={ store } />;
+                render:    row => {
+                    return (
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-around'
+                            }}
+                        >
+                            <div style={{width: '50%'}}>
+                                {row.supplierName || <FormattedMessage id='long_dash' />}
+                            </div>
+                            <div style={{width: '50%'}}>
+                                <AvailabilityIndicator indexArray={ row.store } />
+                            </div>
+                        </div>
+                    )
                 },
             },
             {
@@ -252,11 +264,11 @@ class DetailsTable extends Component {
                 className: Styles.numberColumn,
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
-                render:    data => {
+                render:    (data, row) => {
                     let strVal = Number(data).toFixed(2);
 
                     return (
-                        <span>
+                        <div>
                             { data ? 
                                 `${strVal}`.replace(
                                     /\B(?=(\d{3})+(?!\d))/g,
@@ -264,7 +276,7 @@ class DetailsTable extends Component {
                                 ) : (
                                     <FormattedMessage id='long_dash' />
                                 ) }
-                        </span>
+                        </div>
                     );
                 },
             },
@@ -318,8 +330,7 @@ class DetailsTable extends Component {
                                     /\B(?=(\d{3})+(?!\d))/g,
                                     ' ',
                                 )
-                                : 0 }{ ' ' }
-                            <FormattedMessage id='pc' />
+                                : 0 }
                         </span>
                     );
                 },
@@ -360,6 +371,28 @@ class DetailsTable extends Component {
                                 })
                             }}
                         />
+                    );
+                },
+            },
+            {
+                title: (
+                    <div className={ Styles.numberColumn }>
+                        <FormattedMessage id='order_form_table.discount' />
+                    </div>
+                ),
+                className: Styles.numberColumn,
+                key:       'discount',
+                dataIndex: 'discount',
+                render:    data => {
+                    return (
+                        <span>
+                            { data
+                                ? `${data}`.replace(
+                                    /\B(?=(\d{3})+(?!\d))/g,
+                                    ' ',
+                                )
+                                : 0 }%
+                        </span>
                     );
                 },
             },
@@ -1453,7 +1486,7 @@ export class ReserveButton extends React.Component {
                             this.reserveProduct();
                         }}
                     > 
-                        <p>{detail.reservedCount || 0} <FormattedMessage id='pc'/></p>
+                        <p>{detail.reservedCount || 0}</p>
                     </Button> :
                     <Button
                         disabled={disabled}
