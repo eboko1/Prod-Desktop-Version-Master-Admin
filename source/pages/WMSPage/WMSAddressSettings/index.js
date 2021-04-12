@@ -13,13 +13,14 @@ import { permissions, isForbidden, fetchAPI } from "utils";
 import Styles from "./styles.m.css";
 const Option = Select.Option;
 
-
+@injectIntl
 export default class WMSAddressSettings extends Component {
     constructor(props) {
         super(props);
         this.state = {
             addressSettings: [],
             setAllModalVisible: false,
+            selectedRows: [],
         };
 
         this.columns = [
@@ -29,7 +30,23 @@ export default class WMSAddressSettings extends Component {
                 dataIndex: 'address',
             },
             {
-                title: <FormattedMessage id="Активно" />,
+                title: () => 
+                    <div>
+                        <FormattedMessage id="Активно" />
+                        {this.state.selectedRows.length ?
+                            <div>
+                                <Switch
+                                    onChange={(value)=>{
+                                        this.state.selectedRows.map((elem)=>{
+                                            elem.enabled = value;
+                                            elem.changed = true;
+                                        })
+                                        this.setState({})
+                                    }}
+                                />
+                            </div>
+                        : null}
+                    </div>,
                 key: 'enabled',
                 dataIndex: 'enabled',
                 render: (data, row) => {
@@ -46,7 +63,24 @@ export default class WMSAddressSettings extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Ширина (см)" />,
+                title: () => 
+                    <div>
+                        <FormattedMessage id="Ширина (см)" />
+                        {this.state.selectedRows.length ? 
+                            <div>
+                                <InputNumber
+                                    min={0}
+                                    onChange={(value)=>{
+                                        this.state.selectedRows.map((elem)=>{
+                                            elem.width = value;
+                                            elem.changed = true;
+                                        })
+                                        this.setState({})
+                                    }}
+                                />
+                            </div>
+                        : null}
+                    </div>,
                 key: 'width',
                 dataIndex: 'width',
                 render: (data, row) => {
@@ -64,7 +98,24 @@ export default class WMSAddressSettings extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Высота (см)" />,
+                title: () => 
+                    <div>
+                        <FormattedMessage id="Высота (см)" />
+                        {this.state.selectedRows.length ? 
+                            <div>
+                                <InputNumber
+                                    min={0}
+                                    onChange={(value)=>{
+                                        this.state.selectedRows.map((elem)=>{
+                                            elem.height = value;
+                                            elem.changed = true;
+                                        })
+                                        this.setState({})
+                                    }}
+                                />
+                            </div>
+                        : null}
+                    </div>,
                 key: 'height',
                 dataIndex: 'height',
                 render: (data, row) => {
@@ -82,7 +133,24 @@ export default class WMSAddressSettings extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Глубина (см)" />,
+                title: () => 
+                    <div>
+                        <FormattedMessage id="Глубина (см)" />
+                        {this.state.selectedRows.length ? 
+                            <div>
+                                <InputNumber
+                                    min={0}
+                                    onChange={(value)=>{
+                                        this.state.selectedRows.map((elem)=>{
+                                            elem.depth = value;
+                                            elem.changed = true;
+                                        })
+                                        this.setState({})
+                                    }}
+                                />
+                            </div>
+                        : null}
+                    </div>,
                 key: 'depth',
                 dataIndex: 'depth',
                 render: (data, row) => {
@@ -100,7 +168,24 @@ export default class WMSAddressSettings extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Объем (см3)" />,
+                title: () => 
+                    <div>
+                        <FormattedMessage id="Объем (см3)" />
+                        {this.state.selectedRows.length ? 
+                            <div>
+                                <InputNumber
+                                    min={0}
+                                    onChange={(value)=>{
+                                        this.state.selectedRows.map((elem)=>{
+                                            elem.volume = value;
+                                            elem.changed = true;
+                                        })
+                                        this.setState({})
+                                    }}
+                                />
+                            </div>
+                        : null}
+                    </div>,
                 key: 'volume',
                 dataIndex: 'volume',
                 render: (data, row) => {
@@ -118,7 +203,24 @@ export default class WMSAddressSettings extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Нагрузка (кг)" />,
+                title: () => 
+                    <div>
+                        <FormattedMessage id="Нагрузка (кг)" />
+                        {this.state.selectedRows.length ? 
+                            <div>
+                                <InputNumber
+                                    min={0}
+                                    onChange={(value)=>{
+                                        this.state.selectedRows.map((elem)=>{
+                                            elem.weight = value;
+                                            elem.changed = true;
+                                        })
+                                        this.setState({})
+                                    }}
+                                />
+                            </div>
+                        : null}
+                    </div>,
                 key: 'weight',
                 dataIndex: 'weight',
                 render: (data, row) => {
@@ -169,7 +271,25 @@ export default class WMSAddressSettings extends Component {
 
     render() {
         const { warehouseId, fetchCells } = this.props;
-        const { addressSettings, setAllModalVisible } = this.state;
+        const { addressSettings, setAllModalVisible, tableFilter } = this.state;
+
+        let tableData = addressSettings ? [...addressSettings] : [];
+        if(tableFilter) {
+            tableData = tableData.filter((elem)=>
+                String(elem.address).includes(String(tableFilter))
+            );
+        }
+
+        const rowSelection = {
+            onChange: (selectedRowKeys, selectedRows) => {
+                this.setState({
+                    selectedRows,
+                })
+            },
+            getCheckboxProps: record => ({
+                name: record.name,
+            }),
+        };
         const menu = (
             <Menu>
                 <Menu.Item>
@@ -221,14 +341,28 @@ export default class WMSAddressSettings extends Component {
                         <Icon type='menu' className={Styles.menuIcon}/>
                     </Dropdown>
                 </div>
+                <Input
+                    allowClear
+                    value={tableFilter}
+                    placeholder={this.props.intl.formatMessage({id: 'barcode.search'})}
+                    style={{
+                        marginBottom: 8
+                    }}
+                    onChange={({target})=>{
+                        this.setState({
+                            tableFilter: target.value
+                        })
+                    }}
+                />
                 <Table
                     size={'small'}
                     columns={this.columns}
-                    dataSource={addressSettings}
+                    dataSource={tableData}
                     rowKey={'address'}
                     pagination={{
                         hideOnSinglePage: true,
                     }}
+                    rowSelection={rowSelection}
                 />
                 <div className={Styles.tabFooter}>
                     <Button
