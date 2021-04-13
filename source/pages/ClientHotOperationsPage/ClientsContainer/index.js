@@ -81,7 +81,8 @@ export default class ClientsContainer extends React.Component {
                     <Table
                         dataSource={clients}
                         columns={columnsConfig()}
-                        scroll={ { x: 1000, y: '30vh' } }
+                        scroll={ { x: 1000, y: '50vh' } }
+                        expandRowByClick
                         loading={clientsFetching}
                         pagination={pagination}
                         rowKey={() => v4()}

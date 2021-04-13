@@ -64,7 +64,7 @@ export default class ClientHotOperationsPage extends Component {
                 title={ <div><FormattedMessage id="navigation.client_hot_operations" /></div> }
                 paper={true}
             >
-                <div style={{width: '90%', height: '50vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
+                <div style={{width: '90%', height: '70vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
                     <ClientsContainer />
                 </div>
 

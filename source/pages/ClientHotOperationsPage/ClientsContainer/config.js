@@ -5,6 +5,9 @@ import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import { v4 } from "uuid";
 
+//Own
+import Styles from './styles.m.css';
+
 
 //Choose width for each col
 //It must be 100% of width in total!
@@ -48,6 +51,20 @@ export function columnsConfig() {
         title:     <FormattedMessage id='add_order_form.phone' />,
         dataIndex: 'phones',
         key:       'phones',
+        render: (phones) => {
+            return (
+                phones.map(phone => (
+                    <a
+                        className={ Styles.clientPhone }
+                        href={ `tel:${phone}` }
+                        key={v4()}
+                    >
+                        { phone }
+                    </a>
+                ))
+                
+            );
+        }
     };
 
     const vehicleCol = {

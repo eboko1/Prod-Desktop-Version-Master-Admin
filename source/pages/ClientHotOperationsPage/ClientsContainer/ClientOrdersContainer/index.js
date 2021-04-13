@@ -37,6 +37,7 @@ export default class ClientOrdersContainer extends React.Component {
             orders,
             stats,
             clientOrdersFetching,
+            intl: {formatMessage}
         } = this.props;
 
         const pagination = {
@@ -53,7 +54,7 @@ export default class ClientOrdersContainer extends React.Component {
                 <div>
                     <Table
                         dataSource={orders}
-                        columns={columnsConfig()}
+                        columns={columnsConfig({formatMessage})}
                         scroll={ { x: 1000, y: '30vh' } }
                         loading={clientOrdersFetching}
                         pagination={pagination}
