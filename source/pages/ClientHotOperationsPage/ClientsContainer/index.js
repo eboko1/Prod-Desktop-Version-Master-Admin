@@ -9,24 +9,31 @@ import { Table, Input } from 'antd';
 import { v4 } from 'uuid';
 
 //Proj
-import { setFiltersSearchQuery, setSortPage, fetchClientOrders } from 'core/clientHotOperations/duck';
+import { 
+    setFiltersSearchQuery,
+    setSortPage,
+    fetchClientOrders,
+    setClientRowKey
+} from 'core/clientHotOperations/duck';
 
 //Own
 import { columnsConfig } from './config';
 import ClientOrdersContainer from './ClientOrdersContainer';
 
 const mapStateToProps = state => ({
-    user: state.auth,
-    clients: state.clientHotOperations.clients,
-    stats: state.clientHotOperations.stats,
-    clientsFetching: state.clientHotOperations.clientsFetching,
-    sort: state.clientHotOperations.sort
+    user:                state.auth,
+    clients:             state.clientHotOperations.clients,
+    stats:               state.clientHotOperations.stats,
+    clientsFetching:     state.clientHotOperations.clientsFetching,
+    sort:                state.clientHotOperations.sort,
+    expandedClientRow:   state.clientHotOperations.expandedClientRow
 });
 
 const mapDispatchToProps = {
     setFiltersSearchQuery,
     setSortPage,
-    fetchClientOrders
+    fetchClientOrders,
+    setClientRowKey
 }
 
 @connect(
@@ -55,7 +62,9 @@ export default class ClientsContainer extends React.Component {
             clientsFetching,
             sort,
             setSortPage,
-            fetchClientOrders
+            fetchClientOrders,
+            setClientRowKey,
+            expandedClientRow
         } = this.props;
 
         const pagination = {
@@ -85,9 +94,14 @@ export default class ClientsContainer extends React.Component {
                         expandRowByClick
                         loading={clientsFetching}
                         pagination={pagination}
-                        rowKey={() => v4()}
+                        rowKey={(client) => `${client.clientId}`}
+                        expandedRowKeys={[expandedClientRow]} //Only one row can be expanded at the time
                         expandedRowRender={() => (<ClientOrdersContainer />)}
-                        onExpand={(expanded, client) => expanded && fetchClientOrders({clientId: client.clientId})}
+                        onExpand={(expanded, client) => {
+                            expanded && fetchClientOrders({clientId: client.clientId})
+                            expanded && setClientRowKey(`${client.clientId}`)
+                            !expanded && setClientRowKey("")
+                        }}
                         bordered
                     />
                 </div>

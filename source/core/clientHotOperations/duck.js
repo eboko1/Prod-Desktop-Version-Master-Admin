@@ -16,6 +16,8 @@ export const SET_CLIENT_ORDERS_FETCHING = `${prefix}/SET_CLIENT_ORDERS_FETCHING`
 export const SET_CLIENTS_FETCHING = `${prefix}/SET_CLIENTS_FETCHING`;
 export const SET_SORT_PAGE = `${prefix}/SET_SORT_PAGE`;
 
+export const SET_EXPANDED_CLIENT_ROW_KEY = `${prefix}/SET_EXPANDED_CLIENT_ROW_KEY`;
+
 
 /**
  * Reducer
@@ -25,6 +27,7 @@ const ReducerState = {
     clients: [],
     clientsFetching: false,
     clientOrdersFetching: false,
+    expandedClientRow: '', //Row in clients table which is expanded, clientId is used to generate key
     clientOrdersData: {
         orders: [],
         stats: {},
@@ -71,7 +74,7 @@ export default function reducer(state = ReducerState, action) {
         case SET_CLIENT_ORDERS_FETCHING:
             return {
                 ...state,
-                clientOrderFetching: payload
+                clientOrdersFetching: payload
             };
 
         case SET_SORT_PAGE:
@@ -81,6 +84,12 @@ export default function reducer(state = ReducerState, action) {
                     ...state.sort,
                     page: payload
                 }
+            };
+
+        case SET_EXPANDED_CLIENT_ROW_KEY:
+            return {
+                ...state,
+                expandedClientRow: payload
             };
 
         case FETCH_CLIENT_ORDERS_SUCCESS:
@@ -153,4 +162,9 @@ export const setClientsFetching = (clientsFetching) => ({
 export const setClientOrdersFetching = (clientOrdersFetching) => ({
     type: SET_CLIENT_ORDERS_FETCHING,
     payload: clientOrdersFetching
+});
+
+export const setClientRowKey = (rowKey) => ({
+    type: SET_EXPANDED_CLIENT_ROW_KEY,
+    payload: rowKey
 });

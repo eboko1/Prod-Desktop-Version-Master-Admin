@@ -47,8 +47,6 @@ export default class ClientOrdersContainer extends React.Component {
             hideOnSinglePage: true,
         };
 
-        console.log("Orders: ", orders);
-
         return (
             <div>
                 <div>
