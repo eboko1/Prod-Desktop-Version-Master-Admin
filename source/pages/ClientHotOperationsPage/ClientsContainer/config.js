@@ -15,24 +15,10 @@ import Styles from './styles.m.css';
 //Choose width for each col
 //It must be 100% of width in total!
 const defWidth = {
-    no: '4%',
-    client_vehicle: '10%',
-    client_name: 'auto',
-
-    order_planner: '6%',
-    order_labors_plan: '6%',
-    order_labors_actual: '6%',
-    order_breaks: '6%',
-    
-    location_internal_parking: '6%',
-    location_external_parking: '6%',
-    location_department: '6%',
-    location_test_drive: '6%',
-    location_total: '6%',
-
-    efficiency_plan: '6%',
-    efficiency_department: '6%',
-    efficiency_station: '6%'
+    client_full_name: '15%',
+    client_phones: '20%',
+    client_vehicles: 'auto',
+    vehicle_vin: '20%'
 }
 
 /* eslint-disable complexity */
@@ -40,6 +26,7 @@ export function columnsConfig() {
 
     const clientFullNameCol = {
         title:     <FormattedMessage id='name' />,
+        width:     defWidth.client_full_name,
         key:       v4(),
         render: (val, obj) => {
             return (
@@ -54,9 +41,10 @@ export function columnsConfig() {
     };
     
     const phonesCol = {
-        title:     <FormattedMessage id='add_order_form.phone' />,
-        dataIndex: 'phones',
-        key:       'phones',
+        title:      <FormattedMessage id='add_order_form.phone' />,
+        width:      defWidth.client_phones,
+        dataIndex:  'phones',
+        key:        'phones',
         render: (phones) => {
             return (
                 phones.map(phone => (
@@ -74,8 +62,9 @@ export function columnsConfig() {
     };
 
     const vehicleCol = {
-        title:  <FormattedMessage id='vehicle' />,
-        key:    'vehicle',
+        title:      <FormattedMessage id='vehicle' />,
+        width:      defWidth.client_vehicles,
+        key:        'vehicle',
         render: client => {
             const vehicle = _.get(client, 'vehicles[0]');
             if (!vehicle) {
@@ -89,8 +78,9 @@ export function columnsConfig() {
     };
 
     const vinCol = {
-        title:  <FormattedMessage id='add_order_form.vin' />,
-        key:    'vin',
+        title:      <FormattedMessage id='add_order_form.vin' />,
+        width:      defWidth.vehicle_vin,
+        key:        'vin',
         render: client => {
             const vehicle = _.get(client, 'vehicles[0]');
             if (!vehicle) {

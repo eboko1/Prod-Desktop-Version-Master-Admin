@@ -19,6 +19,7 @@ import {
 //Own
 import { columnsConfig } from './config';
 import ClientOrdersContainer from './ClientOrdersContainer';
+import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
     user:                state.auth,
@@ -88,6 +89,7 @@ export default class ClientsContainer extends React.Component {
                 
                 <div>
                     <Table
+                        className={Styles.table}
                         dataSource={clients}
                         columns={columnsConfig()}
                         scroll={ { x: 1000, y: '50vh' } }
