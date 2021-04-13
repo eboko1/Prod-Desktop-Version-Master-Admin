@@ -1,3 +1,13 @@
 .clientPhone {
     color: var(--link);
+    padding: 4px;
+}
+
+.clientLink {
+    display: flex;
+    align-items: center;
+    min-height: 1.5em;
+    margin-left: 15px;
+    color: rgb(68, 68, 68);
+    font-size: 1.2em;
 }

@@ -5,6 +5,9 @@ import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import { v4 } from "uuid";
 
+//Proj
+import book from 'routes/book';
+
 //Own
 import Styles from './styles.m.css';
 
@@ -35,16 +38,19 @@ const defWidth = {
 /* eslint-disable complexity */
 export function columnsConfig() {
 
-    const clientNameCol = {
+    const clientFullNameCol = {
         title:     <FormattedMessage id='name' />,
-        dataIndex: 'name',
-        key:       'name',
-    };
-
-    const clientSurnameCol = {
-        title:     <FormattedMessage id='surname' />,
-        dataIndex: 'surname',
-        key:       'surname',
+        key:       v4(),
+        render: (val, obj) => {
+            return (
+                <Link
+                    className={ Styles.clientLink }
+                    to={ `${book.client}/${obj.clientId}` }
+                >
+                    { `${obj.name || ""} ${obj.surname || ""}` }
+                </Link>
+            );
+        }
     };
     
     const phonesCol = {
@@ -100,8 +106,7 @@ export function columnsConfig() {
     };
 
     return [
-        clientNameCol,
-        clientSurnameCol,
+        clientFullNameCol,
         phonesCol,
         vehicleCol,
         vinCol

@@ -45,7 +45,7 @@ export default class ClientHotOperationsPage extends Component {
     }
 
     generateCol = (intlId, onClick) => {
-        return (<Col span={12} className={Styles.col}>
+        return (<Col span={24} className={Styles.col}>
             <StyledButton onClick={onClick} className={Styles.styledButton} type="primary">
                 <FormattedMessage id={intlId} />
             </StyledButton>
@@ -68,12 +68,12 @@ export default class ClientHotOperationsPage extends Component {
                     <ClientsContainer />
                 </div>
 
-                <div style={{width: '50%', height: '10vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
+                <div style={{width: '40%', height: '10vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
                     <Row>
-                        {this.generateCol(
+                        {/* {this.generateCol(
                             "client_hot_operations_page.open_client_tab",
                             () => console.log("Click!")
-                        )}
+                        )} */}
 
                         {this.generateCol(
                             "client_hot_operations_page.create_new_order",
