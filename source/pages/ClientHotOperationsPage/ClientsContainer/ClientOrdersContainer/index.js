@@ -8,11 +8,9 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Table, Input } from 'antd';
 import { v4 } from 'uuid';
 
-//Proj
-import { setFiltersSearchQuery, setSortPage } from 'core/clientHotOperations/duck';
-
 //Own
 import { columnsConfig } from './config';
+import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
     user: state.auth,
@@ -51,6 +49,7 @@ export default class ClientOrdersContainer extends React.Component {
             <div>
                 <div>
                     <Table
+                        className={Styles.table}
                         dataSource={orders}
                         columns={columnsConfig({formatMessage})}
                         scroll={ { x: 1000, y: '30vh' } }

@@ -1,3 +1,26 @@
+.table {
+    background-color: black;
+    min-width: 0 !important;
+}
+
+.table :global(.ant-table-header) {
+    text-transform: uppercase;
+    min-width: 0 !important; /*IMPORTANT it solves antd table issue when scrolling is added*/
+    font-size: 0.8em;
+    font-style: bold;
+    padding: 0;
+}
+
+.table :global(.ant-pagination) {
+    float: none;
+    justify-content: center;
+    display: flex;
+}
+
+.table :global(th) {
+    padding: 6px 4px 6px 4px !important; /*Remove bug: when text overflows, header shifts left*/
+}
+
 .orderLink {
     margin-right: 5px;
 }
@@ -17,7 +40,7 @@
 .cancelReason {
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 188px;
+    /* width: 188px; */
 }
 
 .serviceNames {

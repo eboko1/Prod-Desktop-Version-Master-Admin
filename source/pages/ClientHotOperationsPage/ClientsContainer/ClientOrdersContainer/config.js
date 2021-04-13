@@ -2,15 +2,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import classNames from 'classnames/bind';
-import { Button } from 'antd';
 import _ from 'lodash';
 import { v4 } from "uuid";
 import moment from 'moment';
 
 //Proj
 import book from 'routes/book';
-import {Numeral} from 'commons';
 import { OrderStatusIcon, RepairMapIndicator } from 'components';
 
 //Own
@@ -19,24 +16,13 @@ import Styles from './styles.m.css';
 //Choose width for each col
 //It must be 100% of width in total!
 const defWidth = {
-    no: '4%',
-    client_vehicle: '10%',
-    client_name: 'auto',
-
-    order_planner: '6%',
-    order_labors_plan: '6%',
-    order_labors_actual: '6%',
-    order_breaks: '6%',
-    
-    location_internal_parking: '6%',
-    location_external_parking: '6%',
-    location_department: '6%',
-    location_test_drive: '6%',
-    location_total: '6%',
-
-    efficiency_plan: '6%',
-    efficiency_department: '6%',
-    efficiency_station: '6%'
+    order:               'auto',
+    datetime:            '10%',
+    begin_datetime:      '10%',
+    delivery_datetime:   '10%',
+    success_datetime:    '10%',
+    client_vehicle:      '25%',
+    responsible:         '15%'
 }
 
 const DATETIME_FORMAT = 'DD.MM.YYYY HH:mm';
@@ -45,7 +31,7 @@ export function columnsConfig() {
 
     const orderCol = {
         title:     <FormattedMessage id='orders.order' />,
-        width:     'auto',
+        width:     defWidth.order,
         dataIndex: 'num',
         key:       'num',
         render:    (val, order) => (
@@ -87,9 +73,9 @@ export function columnsConfig() {
 
     const datetimeCol = {
         title:     <FormattedMessage id='orders.creation_date' />,
+        width:     defWidth.datetime,
         dataIndex: 'datetime',
         key:       v4(),
-        width:     'auto',
         render:    (val, order) => (
             <div className={ Styles.datetime }>
                 { order.datetime
@@ -101,9 +87,9 @@ export function columnsConfig() {
 
     const beginDatetimeCol = {
         title:     <FormattedMessage id='orders.begin_date' />,
+        width:     defWidth.begin_datetime,
         dataIndex: 'beginDatetime',
         key:       'beginDatetime',
-        width:     'auto',
         render: (val, order) => (
             <div className={ Styles.datetime }>
                 { order.beginDatetime
@@ -115,9 +101,9 @@ export function columnsConfig() {
 
     const deliveryDatetimeCol = {
         title:     <FormattedMessage id='orders.delivery_date' />,
+        width:     defWidth.delivery_datetime,
         dataIndex: 'deliveryDatetime',
         key:       'deliveryDatetime',
-        width:     'auto',
         render: (val, order) => (
             <div className={ Styles.datetime }>
                 { order.deliveryDatetime
@@ -129,9 +115,9 @@ export function columnsConfig() {
 
     const successDatetimeCol = {
         title:     <FormattedMessage id='orders.success_date' />,
+        width:     defWidth.success_datetime,
         dataIndex: 'successDatetime',
         key:       'successDatetime',
-        width:     'auto',
         render:    (val, order) => (
             <div className={ Styles.datetime }>
                 { order.successDatetime
@@ -142,10 +128,10 @@ export function columnsConfig() {
     };
 
     const clientVehicleCol = {
-        title:     <FormattedMessage id='orders.client' />,
+        title:     <FormattedMessage id='orders.vehicle' />,
+        width:     defWidth.client_vehicle,
         dataIndex: 'clientVehicle',
         key:       'clientVehicle',
-        width:     'auto',
         render:    (val, order) => (
             <span className={ Styles.clientVehicle }>
                 { `${order.vehicleMakeName ||
@@ -157,9 +143,9 @@ export function columnsConfig() {
 
     const responsibleCol = {
         title:     <FormattedMessage id='orders.responsible' />,
+        width:     defWidth.responsible,
         dataIndex: 'managerName',
         key:       'managerName',
-        width:     'auto',
         render:    (val, order) => {
             if (order.managerName) {
                 return (
