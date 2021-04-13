@@ -41,7 +41,6 @@ const defWidth = {
 
 const DATETIME_FORMAT = 'DD.MM.YYYY HH:mm';
 
-/* eslint-disable complexity */
 export function columnsConfig() {
 
     const orderCol = {
@@ -52,7 +51,7 @@ export function columnsConfig() {
         render:    (val, order) => (
             <>
                 <Link
-                    className={ Styles.ordernLink }
+                    className={ Styles.orderLink }
                     to={ `${book.order}/${order.id}` }
                 >
                     { order.num }
@@ -142,22 +141,17 @@ export function columnsConfig() {
         ),
     };
 
-    const clientCol = {
+    const clientVehicleCol = {
         title:     <FormattedMessage id='orders.client' />,
-        dataIndex: 'clientFullName',
-        key:       'clientFullName',
+        dataIndex: 'clientVehicle',
+        key:       'clientVehicle',
         width:     'auto',
         render:    (val, order) => (
-            <div className={ Styles.client }>
-                <span className={ Styles.clientFullname }>
-                    { `${order.clientName || '-'} ${order.clientSurname || ''}` }
-                </span>
-                <span className={ Styles.clientVehicle }>
-                    { `${order.vehicleMakeName ||
-                        '-'} ${order.vehicleModelName ||
-                        '-'} ${order.vehicleYear || '-'}` }
-                </span>
-            </div>
+            <span className={ Styles.clientVehicle }>
+                { `${order.vehicleMakeName ||
+                    '-'} ${order.vehicleModelName ||
+                    '-'} ${order.vehicleYear || '-'}` }
+            </span>
         ),
     };
 
@@ -187,7 +181,7 @@ export function columnsConfig() {
         beginDatetimeCol,
         deliveryDatetimeCol,
         successDatetimeCol,
-        clientCol,
+        clientVehicleCol,
         responsibleCol
     ];
 }
