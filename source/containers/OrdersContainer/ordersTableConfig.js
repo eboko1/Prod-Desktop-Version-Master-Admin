@@ -16,6 +16,32 @@ import book from 'routes/book';
 // own
 import Styles from './styles.m.css';
 
+//Choose width for each col
+//It must be 100% of width in total!
+const defWidth = {
+    index_col: '4%',
+    order_col: '15%',
+
+    datetime_col: '10%',
+    begin_datetime_col: '10%',
+    delivery_datetime_col: '10%',
+    success_datetime_col: '10%',
+    create_datetime_col: '10%',
+
+    client_col: '30%',
+    sum_col: '8%',
+    remaining_sum_col: '8%',
+
+    responsible_col: '10%',
+    source_col: '8%',
+    tasks_col: '8%',
+    review_col: '10%',
+    invitation_col: '10%',
+
+    action_col: '8%',
+    edit_col: '10%'
+}
+
 /* eslint-disable complexity */
 export function columnsConfig(
     invited,
@@ -35,18 +61,16 @@ export function columnsConfig(
 
     const indexCol = {
         title:     '№',
-        width:     80,
+        width:     defWidth.index_col,
         dataIndex: 'index',
         key:       'index',
-        // fixed:     'left',
     };
 
     const orderCol = {
         title:     <FormattedMessage id='orders.order' />,
-        width:     'auto',
+        width:     defWidth.order_col,
         dataIndex: 'num',
         key:       'num',
-        // fixed:     'left',
         render:    (_, order) => (
             <>
                 <Link
@@ -82,11 +106,11 @@ export function columnsConfig(
 
     const datetimeCol = {
         title:     <FormattedMessage id='orders.creation_date' />,
+        width:     defWidth.datetime_col,
         dataIndex: 'datetime',
         key:       'datetime',
         sorter:    true,
         sortOrder: sort.field === 'datetime' ? sortOptions[ sort.order ] : false,
-        width:     'auto',
         render:    (_, order) => (
             <div className={ Styles.datetime }>
                 { order.datetime
@@ -98,12 +122,12 @@ export function columnsConfig(
 
     const beginDatetimeCol = {
         title:     <FormattedMessage id='orders.begin_date' />,
+        width:     defWidth.begin_datetime_col,
         dataIndex: 'beginDatetime',
         key:       'beginDatetime',
         sortOrder:
             sort.field === 'beginDatetime' ? sortOptions[ sort.order ] : false,
         sorter: true,
-        width:     'auto',
         render: (_, order) => (
             <div className={ Styles.datetime }>
                 { order.beginDatetime
@@ -115,12 +139,12 @@ export function columnsConfig(
 
     const deliveryDatetimeCol = {
         title:     <FormattedMessage id='orders.delivery_date' />,
+        width:     defWidth.delivery_datetime_col,
         dataIndex: 'deliveryDatetime',
         key:       'deliveryDatetime',
         sortOrder:
             sort.field === 'deliveryDatetime' ? sortOptions[ sort.order ] : false,
         sorter: true,
-        width:     'auto',
         render: (_, order) => (
             <div className={ Styles.datetime }>
                 { order.deliveryDatetime
@@ -132,9 +156,9 @@ export function columnsConfig(
 
     const successDatetimeCol = {
         title:     <FormattedMessage id='orders.success_date' />,
+        width:     defWidth.success_datetime_col,
         dataIndex: 'successDatetime',
         key:       'successDatetime',
-        width:     'auto',
         render:    (_, order) => (
             <div className={ Styles.datetime }>
                 { order.successDatetime
@@ -146,11 +170,11 @@ export function columnsConfig(
 
     const createDatetimeCol = {
         title:     <FormattedMessage id='orders.creation_date' />,
+        width:     defWidth.create_datetime_col,
         dataIndex: 'datetime',
         key:       'datetime',
         sorter:    true,
         sortOrder: sort.field === 'datetime' ? sortOptions[ sort.order ] : false,
-        width:     'auto',
         render:    (_, order) => (
             <div className={ Styles.datetime }>
                 { order.datetime
@@ -162,9 +186,9 @@ export function columnsConfig(
 
     const clientCol = {
         title:     <FormattedMessage id='orders.client' />,
+        width:     defWidth.client_col,
         dataIndex: 'clientFullName',
         key:       'clientFullName',
-        width:     'auto',
         render:    (_, order) => (
             <div className={ Styles.client }>
                 <span className={ Styles.clientFullname }>
@@ -187,11 +211,11 @@ export function columnsConfig(
 
     const sumCol = {
         title:     <FormattedMessage id='orders.sum_without_VAT' /> ,
+        width:     defWidth.sum_col,
         dataIndex: 'totalSum',
         key:       'totalSum',
         sorter:    true,
         sortOrder: sort.field === 'totalSum' ? sortOptions[ sort.order ] : false,
-        width:     'auto',
         render:    (_, order) => (
             <div style={{whiteSpace: 'nowrap'}}>
                 <Numeral
@@ -208,9 +232,9 @@ export function columnsConfig(
 
     const remainingSumCol = {
         title:     <FormattedMessage id='orders.remaining_sum' />,
+        width:     defWidth.remaining_sum_col,
         dataIndex: 'remainingSum',
         key:       'remainingSum',
-        width:     'auto',
         render:    remainingSum => (
             <Numeral currency={ formatMessage({ id: 'currency' }) } nullText='0'>
                 { remainingSum }
@@ -220,9 +244,9 @@ export function columnsConfig(
 
     const responsibleCol = {
         title:     <FormattedMessage id='orders.responsible' />,
+        width:     defWidth.responsible_col,
         dataIndex: 'managerName',
         key:       'managerName',
-        width:     'auto',
         render:    (_, order) => {
             if (order.managerName) {
                 return (
@@ -240,9 +264,9 @@ export function columnsConfig(
 
     const sourceCol = {
         title:     <FormattedMessage id='orders.source' />,
+        width:     defWidth.source_col,
         dataIndex: 'changeReason',
         key:       'changeReason',
-        width:     'auto',
         render:    (_, order) =>
             order.changeReason ? (
                 <FormattedMessage id={ `orders.${order.changeReason}` } />
@@ -253,9 +277,9 @@ export function columnsConfig(
 
     const tasksCol = {
         title:     <FormattedMessage id='orders.tasks' />,
+        width:     defWidth.tasks_col,
         dataIndex: 'activeTasks',
         key:       'activeTasks',
-        width:     'auto',
         render:    (_, order) => {
             if (order.activeTasks) {
                 return (
@@ -271,9 +295,9 @@ export function columnsConfig(
 
     const reviewCol = {
         title:     <FormattedMessage id='orders.review' />,
+        width:     defWidth.review_col,
         dataIndex: 'review',
         key:       'review',
-        width:     'auto',
         render:    (data, order) => {
             if (_.isNumber(order.nps)) {
                 return (
@@ -306,14 +330,14 @@ export function columnsConfig(
             isForbidden(user, permissions.CREATE_ORDER) ||
             isForbidden(user, permissions.CREATE_INVITE_ORDER);
 
-        return !!(missingRequiredField || alreadyInvited || forbidden);
+        return (missingRequiredField || alreadyInvited || forbidden);
     };
 
     const invitationCol = {
         title:     <FormattedMessage id='orders.invitation' />,
+        width:     defWidth.invitation_col,
         dataIndex: 'invite',
         key:       'invite',
-        width:     'auto',
         render:    (_void, order) => {
             if (!order.vehicleInviteExists) {
                 return (
@@ -338,33 +362,11 @@ export function columnsConfig(
         },
     };
 
-    // const reasonCol = {
-    //     title:     <FormattedMessage id='orders.reason' />,
-    //     dataIndex: 'reason',
-    //     key:       'reason',
-    //     width:     190,
-    //     render:    (_, order) => {
-    //         if (
-    //             order.cancelReason ||
-    //             order.cancelStatusReason ||
-    //             order.cancelStatusOwnReason
-    //         ) {
-    //             return (
-    //                 <Button>
-    //                     <FormattedMessage id='orders.show_reason' />
-    //                 </Button>
-    //             );
-    //         }
-    //
-    //         return <FormattedMessage id='orders.no_data' />;
-    //     },
-    // };
-
     const actionCol = {
         title:     <FormattedMessage id='orders.actions' />,
+        width:     defWidth.action_col,
         dataIndex: 'actions',
         key:       'actions',
-        width:     'auto',
         render:    () => (
             <div className={ Styles.inviteActions }>
                 <Tooltip
@@ -426,9 +428,8 @@ export function columnsConfig(
                 >
                     <FormattedMessage id='orders.update_stage' />
                 </Button>,
+        width:  defWidth.edit_col,
         key:    'editAction',
-        // fixed:  'right',
-        width:  'auto',
         render: (_, order) => (
             <Link to={ `${book.order}/${order.id}` }>
                 <Icon className={ Styles.editOrderIcon } type='edit' />
@@ -565,20 +566,20 @@ export function rowsConfig(
 export function scrollConfig(activeRoute) {
     switch (activeRoute) {
         case '/orders/appointments':
-            return { x: 1500, y: '50vh' }; //1600 - 80 -
+            return { x: 1500, y: '70vh' }; //1600 - 80 -
         case '/orders/approve':
-            return { x: 1340, y: '50vh' };
+            return { x: 1340, y: '70vh' };
         case '/orders/progress':
-            return { x: 1340, y: '50vh' }; //1440 - 80 - 20
+            return { x: 1340, y: '70vh' }; //1440 - 80 - 20
         case '/orders/success':
-            return { x: 1860, y: '50vh' }; //1820
+            return { x: 1860, y: '70vh' }; //1820
         case '/orders/reviews':
-            return { x: 1520, y: '50vh' }; //1620
+            return { x: 1520, y: '70vh' }; //1620
         case '/orders/invitations':
-            return { x: 1260, y: '50vh' }; //1400
+            return { x: 1260, y: '70vh' }; //1400
         case 'orders/cancel':
-            return { x: 1400, y: '50vh' }; //1640 // -160 second date
+            return { x: 1400, y: '70vh' }; //1640 // -160 second date
         default:
-            return { x: 1540, y: '50vh' }; //1640
+            return { x: 1540, y: '70vh' }; //1640
     }
 }
