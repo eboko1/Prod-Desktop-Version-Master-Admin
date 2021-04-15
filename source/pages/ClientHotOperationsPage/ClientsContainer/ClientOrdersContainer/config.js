@@ -9,6 +9,7 @@ import moment from 'moment';
 //Proj
 import book from 'routes/book';
 import { OrderStatusIcon, RepairMapIndicator } from 'components';
+import { Numeral } from 'commons';
 
 //Own
 import Styles from './styles.m.css';
@@ -17,10 +18,9 @@ import Styles from './styles.m.css';
 //It must be 100% of width in total!
 const defWidth = {
     order:               'auto',
-    datetime:            '10%',
     begin_datetime:      '10%',
-    delivery_datetime:   '10%',
-    success_datetime:    '10%',
+    sum:                 '10%',
+    remaining_sum:       '10%',
     client_vehicle:      '25%',
     responsible:         '15%'
 }
@@ -61,27 +61,12 @@ export function columnsConfig() {
                     order.cancelStatusReason ||
                     order.cancelStatusOwnReason) && (
                     <div className={ Styles.cancelReason }>
-                        { /* <div>{ order.cancelReason }</div> */ }
                         <div>{ order.cancelStatusReason }</div>
                         <div>{ order.cancelStatusOwnReason }</div>
                     </div>
                 ) }
                 <RepairMapIndicator data={order.repairMapIndicator}/>
             </>
-        ),
-    };
-
-    const datetimeCol = {
-        title:     <FormattedMessage id='orders.creation_date' />,
-        width:     defWidth.datetime,
-        dataIndex: 'datetime',
-        key:       v4(),
-        render:    (val, order) => (
-            <div className={ Styles.datetime }>
-                { order.datetime
-                    ? moment(order.datetime).format(DATETIME_FORMAT)
-                    : '-' }
-            </div>
         ),
     };
 
@@ -99,31 +84,35 @@ export function columnsConfig() {
         ),
     };
 
-    const deliveryDatetimeCol = {
-        title:     <FormattedMessage id='orders.delivery_date' />,
-        width:     defWidth.delivery_datetime,
-        dataIndex: 'deliveryDatetime',
-        key:       'deliveryDatetime',
-        render: (val, order) => (
-            <div className={ Styles.datetime }>
-                { order.deliveryDatetime
-                    ? moment(order.deliveryDatetime).format(DATETIME_FORMAT)
-                    : '-' }
+    const sumCol = {
+        title:     <FormattedMessage id='orders.sum_without_VAT' /> ,
+        width:     defWidth.sum,
+        dataIndex: 'totalSum',
+        key:       'totalSum',
+        render:    (_, order) => (
+            <div style={{whiteSpace: 'nowrap'}}>
+                <Numeral
+                    nullText='0'
+                    mask='0,0.00'
+                >
+                    { order.servicesTotalSum + order.detailsTotalSum }
+                </Numeral>
             </div>
         ),
     };
 
-    const successDatetimeCol = {
-        title:     <FormattedMessage id='orders.success_date' />,
-        width:     defWidth.success_datetime,
-        dataIndex: 'successDatetime',
-        key:       'successDatetime',
-        render:    (val, order) => (
-            <div className={ Styles.datetime }>
-                { order.successDatetime
-                    ? moment(order.successDatetime).format(DATETIME_FORMAT)
-                    : '-' }
-            </div>
+    const remainingSumCol = {
+        title:     <FormattedMessage id='orders.remaining_sum' />,
+        width:     defWidth.remaining_sum,
+        dataIndex: 'remainingSum',
+        key:       'remainingSum',
+        render:    remainingSum => (
+            <Numeral
+                nullText='0'
+                mask='0,0.00'
+            >
+                { remainingSum }
+            </Numeral>
         ),
     };
 
@@ -161,12 +150,11 @@ export function columnsConfig() {
         },
     };
 
-    return [
+    return [,
         orderCol,
-        datetimeCol,
         beginDatetimeCol,
-        deliveryDatetimeCol,
-        successDatetimeCol,
+        sumCol,
+        remainingSumCol,
         clientVehicleCol,
         responsibleCol
     ];
