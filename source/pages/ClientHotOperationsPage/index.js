@@ -10,12 +10,13 @@ User on this page can select some operations for client:
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import { Row, Col } from "antd";
 import _ from "lodash";
 
 // proj
+import { setModal, resetModal, MODALS } from "core/modals/duck";
 import { Layout, StyledButton } from "commons";
 import { fetchClients } from 'core/clientHotOperations/duck';
+import { AddClientModal } from 'modals';
 
 // own
 import ClientsContainer from './ClientsContainer';
@@ -23,11 +24,14 @@ import Styles from "./styles.m.css";
 
 const mapStateToProps = state => ({
     user: state.auth,
-    clients: state.clientHotOperations.clients
+    clients: state.clientHotOperations.clients,
+    modal: state.modals.modal,
 });
 
 const mapDispatchToProps = {
-    fetchClients
+    fetchClients,
+    setModal,
+    resetModal
 }
 
 @connect(
@@ -44,6 +48,10 @@ export default class ClientHotOperationsPage extends Component {
         this.props.fetchClients();
     }
 
+    onAddClientModal = (e) => {
+        this.props.setModal(MODALS.ADD_CLIENT);
+    } 
+
     render() {
 
         const {
@@ -55,14 +63,20 @@ export default class ClientHotOperationsPage extends Component {
                 title={ <div><FormattedMessage id="navigation.client_hot_operations" /></div> }
                 paper={true}
                 controls={(<div>
-                    <StyledButton className={Styles.styledButton} type="secondary">
+                    <StyledButton onClick={this.onAddClientModal} className={Styles.styledButton} type="secondary">
                         <FormattedMessage id={"client_hot_operations_page.create_new_cient"} />
                     </StyledButton>
                 </div>)}
             >
-                <div style={{width: '100%', height: '70vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
+                <div style={{width: '100%', height: '90vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
                     <ClientsContainer />
                 </div>
+                <AddClientModal
+                    // searchQuery={searchClientQuery}
+                    visible={this.props.modal}
+                    resetModal={this.props.resetModal}
+                    // addClientFormData={this.props.addClientFormData}
+                />
             </Layout>
         );
     }
