@@ -13,7 +13,8 @@ import {
     setFiltersSearchQuery,
     setSortPage,
     fetchClientOrders,
-    setClientRowKey
+    setClientRowKey,
+    createOrderForClient
 } from 'core/clientHotOperations/duck';
 
 //Own
@@ -34,7 +35,8 @@ const mapDispatchToProps = {
     setFiltersSearchQuery,
     setSortPage,
     fetchClientOrders,
-    setClientRowKey
+    setClientRowKey,
+    createOrderForClient
 }
 
 @connect(
@@ -54,6 +56,15 @@ export default class ClientsContainer extends React.Component {
     onSearch = e => {
         const value = e.target.value.replace(/[+()]/g,'');
         this.handleSearch(value);
+    }
+
+    /**
+     * This event handler is used to create an order which will contain specific client
+     * @param {*} param0 Contains clientId which is used to define client in order
+     */
+    onCreateOrderForClient = ({clientId}) => {
+        const {user} = this.props;
+        this.props.createOrderForClient({clientId, managerId: user.id});
     }
 
     render() {
@@ -91,7 +102,7 @@ export default class ClientsContainer extends React.Component {
                     <Table
                         className={Styles.table}
                         dataSource={clients}
-                        columns={columnsConfig()}
+                        columns={columnsConfig({ onCreateOrderForClient: this.onCreateOrderForClient })}
                         scroll={ { x: 1000, y: '70vh' } }
                         loading={clientsFetching}
                         pagination={pagination}

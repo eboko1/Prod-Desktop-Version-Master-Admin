@@ -24,7 +24,11 @@ const defWidth = {
 }
 
 /* eslint-disable complexity */
-export function columnsConfig() {
+export function columnsConfig(props) {
+
+    const {
+        onCreateOrderForClient
+    } = props;
 
     const clientFullNameCol = {
         title:     <FormattedMessage id='name' />,
@@ -44,8 +48,8 @@ export function columnsConfig() {
 
     const actionsCol = {
         width: defWidth.actions,
-        render: () => {
-            return (<Button>
+        render: (val, client) => {
+            return (<Button onClick={() => onCreateOrderForClient({clientId: client.clientId})}>
                 <FormattedMessage id={"client_hot_operations_page.create_new_order"} />
             </Button>)
         }

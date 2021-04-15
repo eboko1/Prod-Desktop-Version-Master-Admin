@@ -10,6 +10,9 @@ export const FETCH_CLIENTS_SUCCESS = `${prefix}/FETCH_CLIENTS_SUCCESS`;
 export const FETCH_CLIENT_ORDERS = `${prefix}/FETCH_CLIENT_ORDERS`;
 export const FETCH_CLIENT_ORDERS_SUCCESS = `${prefix}/FETCH_CLIENT_ORDERS_SUCCESS`;
 
+export const CREATE_ORDER_FOR_CLIENT = `${prefix}/CREATE_ORDER_FOR_CLIENT`;
+export const CREATE_ORDER_FOR_CLIENT_SUCCESS = `${prefix}/CREATE_ORDER_FOR_CLIENT_SUCCESS`
+
 export const SET_FILTERS_SEARCH_QUERY = `${prefix}/SET_FILTERS_SEARCH_QUERY`;
 export const SET_CLIENT_ORDERS_FETCHING = `${prefix}/SET_CLIENT_ORDERS_FETCHING`;
 
@@ -130,6 +133,19 @@ export const fetchClientOrders = ({clientId}) => ({
 export const fetchClientOrdersSuccess = ({orders, stats}) => ({
     type: FETCH_CLIENT_ORDERS_SUCCESS,
     payload: {orders, stats}
+});
+
+/**
+ * Create new order(н/з)  which will contain specific client.
+ * New client will be fetched by id , is is used to pass differences in data from different routes
+ * @param {*} param0 {
+ *      clientId - id of a client,
+ *      managerId - id of a manager who created an order(current user)
+ *      }
+ */
+export const createOrderForClient = ({clientId, managerId}) => ({
+    type: CREATE_ORDER_FOR_CLIENT,
+    payload: {clientId, managerId}
 });
 
 export const setFiltersSearchQuery = (query) => {
