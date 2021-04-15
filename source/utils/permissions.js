@@ -226,6 +226,13 @@ const ACCESS_API_AVAILABILITY = 'ACCESS_API_AVAILABILITY';
 const ACCESS_API_EXPENSE_ORDER = 'ACCESS_API_EXPENSE_ORDER';
 const ACCESS_API_INCOME_ORDER = 'ACCESS_API_INCOME_ORDER';
 
+//Cash RST
+const ACCESS_OTHER_OPERATION_RST = 'ACCESS_OTHER_OPERATION_RST';
+const ACCESS_CASHBOX_CRUD = 'ACCESS_CASHBOX_CRUD';
+const ACCESS_CASHIER_CRUD = 'ACCESS_CASHIER_CRUD';
+const ACCESS_SALE_RST = 'ACCESS_SALE_RST';
+const ACCESS_CASHBOX_RST_LOGS = 'ACCESS_CASHBOX_RST_LOGS';
+
 export const permissions = Object.freeze({
 
     NEW_DOCUMENT,
@@ -431,6 +438,13 @@ export const permissions = Object.freeze({
     ACCESS_API_AVAILABILITY,
     ACCESS_API_EXPENSE_ORDER,
     ACCESS_API_INCOME_ORDER,
+
+    //Cash RST
+    ACCESS_OTHER_OPERATION_RST,
+    ACCESS_CASHBOX_CRUD,
+    ACCESS_CASHIER_CRUD,
+    ACCESS_SALE_RST,
+    ACCESS_CASHBOX_RST_LOGS,
 });
 
 export const NEW_DOCUMENT_PERMISSIONS = 'NEW_DOCUMENT_PERMISSIONS';
@@ -455,8 +469,12 @@ export const REPORTS_PERMISSIONS = 'REPORTS_PERMISSIONS';
 export const SETTINGS_AND_ADMINISTRATION_PERMISSIONS = 'SETTINGS_AND_ADMINISTRATION_PERMISSIONS';
 export const SYNCHRONIZATION_PERMISSIONS = 'SYNCHRONIZATION_PERMISSIONS';
 export const API_PERMISSIONS = 'API_PERMISSIONS';
+export const RST_PERMISIONS = 'RST_PERMISIONS';
 
-// For roles page
+/**
+ * Ech role group appears in a list of rles on roles page,
+ * if roles were not proveded here will will not apper there
+ */
 export const groupedPermissions = {
     [ NEW_DOCUMENT_PERMISSIONS ]: [
         NEW_DOCUMENT,
@@ -684,13 +702,31 @@ export const groupedPermissions = {
         ACCESS_API_EXPENSE_ORDER,
         ACCESS_API_INCOME_ORDER,
     ],
+    [ RST_PERMISIONS ]: [
+        ACCESS_OTHER_OPERATION_RST,
+        ACCESS_CASHBOX_CRUD,
+        ACCESS_CASHIER_CRUD,
+        ACCESS_SALE_RST,
+        ACCESS_CASHBOX_RST_LOGS
+    ]
 };
 
+/**
+ * Checks if a user is an admin or has appropriate grant, Admins have access anywhere(even if they don't have grants)
+ * @param {*} param0 User object can be taken from state.auth
+ * @param {*} grant  Constant that represents access
+ * @returns Boolean
+ */
 export const isForbidden = ({ isAdmin, scope }, grant) =>
     !isAdmin && !(_.isArray(scope) && scope.includes(grant));
 
 export const isAdmin = ({ isAdmin }) => isAdmin;
 
+/**
+ * Mapper, returns object with translations for each role group
+ * @param {*} intl 
+ * @returns 
+ */
 export const getGroupsLabels = intl => ({
     [ NEW_DOCUMENT_PERMISSIONS ]:                   intl.formatMessage({ id: 'roles.NEW_DOCUMENT_PERMISSIONS' }),
     [ DASHBOARD_PERMISSIONS ]:                      intl.formatMessage({ id: 'roles.DASHBOARD_PERMISSIONS' }),
@@ -714,6 +750,7 @@ export const getGroupsLabels = intl => ({
     [ SETTINGS_AND_ADMINISTRATION_PERMISSIONS ]:    intl.formatMessage({ id: 'roles.SETTINGS_AND_ADMINISTRATION_PERMISSIONS' }),
     [ SYNCHRONIZATION_PERMISSIONS ]:                intl.formatMessage({ id: 'roles.SYNCHRONIZATION_PERMISSIONS' }),
     [ API_PERMISSIONS ]:                            intl.formatMessage({ id: 'roles.API_PERMISSIONS' }),
+    [ RST_PERMISIONS ]:                             intl.formatMessage({ id: 'roles.RST_PERMISIONS' })
 });
 
 export const getPermissionsLabels = intl => ({
@@ -921,4 +958,10 @@ export const getPermissionsLabels = intl => ({
     [ ACCESS_API_AVAILABILITY ]:    intl.formatMessage({ id: 'roles.ACCESS_API_AVAILABILITY' }),
     [ ACCESS_API_EXPENSE_ORDER ]:   intl.formatMessage({ id: 'roles.ACCESS_API_EXPENSE_ORDER' }),
     [ ACCESS_API_INCOME_ORDER ]:    intl.formatMessage({ id: 'roles.ACCESS_API_INCOME_ORDER' }),
+
+    [ ACCESS_OTHER_OPERATION_RST ]: intl.formatMessage({ id: 'roles.ACCESS_OTHER_OPERATION_RST' }),
+    [ ACCESS_CASHBOX_CRUD ]:        intl.formatMessage({ id: 'roles.ACCESS_CASHBOX_CRUD' }),
+    [ ACCESS_CASHIER_CRUD ]:        intl.formatMessage({ id: 'roles.ACCESS_CASHIER_CRUD' }),
+    [ ACCESS_SALE_RST ]:            intl.formatMessage({ id: 'roles.ACCESS_SALE_RST'}),
+    [ ACCESS_CASHBOX_RST_LOGS ]:    intl.formatMessage({ id: 'roles.ACCESS_CASHBOX_RST_LOGS' }),
 });

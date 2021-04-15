@@ -59,7 +59,13 @@ export default {
             iconType: 'contacts',
             name:     'navigation.catalog',
             items:    [
-                
+                {
+                    key:      '/cash/settings',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_CASH),
+                    link: book.cashSettingsPage,
+                    name: 'navigation.cash_settings',
+                },
                 {
                     key:      '/clients',
                     link:     book.clients,
@@ -174,6 +180,13 @@ export default {
                     link: book.cashBankPage,
                     name: 'navigation.cash_bank',
                 },
+                {
+                    key:      '/report/cash_orders_logs',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_CASHBOX_RST_LOGS),
+                    link: book.reportCashOrdersLogs,
+                    name: 'navigation.report_cash_orders_logs',
+                },
             ],
         },
         /* Storage */
@@ -285,13 +298,12 @@ export default {
                 },
                 {
                     key:      '/report/cash_flow',
-                    disabled: false,
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_REPORT_PROFIT_FROM_BUSINESSES) &&
                         !isAdmin(user),
                     link: book.reportCashFlow,
                     name: 'navigation.report_cash_flow',
-                },
+                }
             ],
         },
         /* Payment submenu */
@@ -333,13 +345,6 @@ export default {
                         isForbidden(user, permissions.ACCESS_SETTINGS_WEB),
                     link: book.oldApp.settings,
                     name: 'navigation.main_settings',
-                },
-                {
-                    key:      '/cash/settings',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_CATALOGUE_CASH),
-                    link: book.cashSettingsPage,
-                    name: 'navigation.cash_settings',
                 },
                 {
                     key:      '/storage',

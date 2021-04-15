@@ -19,7 +19,7 @@ import {
     setClientOrdersFetchingState,
     setClientFetchingState,
 } from 'core/ui/duck';
-import { fetchCashOrders } from 'core/cash/duck';
+import { fetchCashOrders, registerCashOrderInCashdesk } from 'core/cash/duck';
 import { fetchAPI } from 'utils';
 import {analyticsLevels} from 'core/forms/reportAnalyticsForm/duck'
 
@@ -38,8 +38,8 @@ import {
     onChangeStoreDocSearchQuery,
     onChangeStoreDocSearchQueryRequest,
     onChangeStoreDocSearchQuerySuccess,
-    //
     onClientSelectSuccess,
+    //
     selectClient,
     selectClientOrdersFilters,
     selectSearchOrdersResultFilters,
@@ -51,8 +51,8 @@ import {
     fetchSelectedClientOrdersSuccess,
     fetchSearchOrderSuccess,
     fetchAnalyticsSuccess,
-    //
     printCashOrderSuccess,
+    //
     FETCH_CASH_ORDER_NEXT_ID,
     FETCH_CASH_ORDER_FORM,
     FETCH_ANALYTICS,
@@ -286,13 +286,16 @@ export function* createCashOrderSaga() {
     while (true) {
         try {
             const { payload } = yield take(CREATE_CASH_ORDER);
+
+            const isCashBoxRst =  Boolean(_.get(payload, 'cashBox.rst'));
             const cashOrder = _.omit(payload, [
                 'counterpartyType',
                 'sumType',
                 'editMode',
+                'cashBox',
                 payload.editMode && 'id',
             ]);
-            console.log(cashOrder);
+
             yield call(
                 fetchAPI,
                 payload.editMode ? 'PUT' : 'POST',
@@ -300,6 +303,12 @@ export function* createCashOrderSaga() {
                 null,
                 cashOrder,
             );
+
+            //If cashbox contains rst it must be registred in cashdesk if possible 
+            if(isCashBoxRst && !payload.editMode ) {
+                yield put(registerCashOrderInCashdesk(payload.id))
+            }
+
             yield put(createCashOrderSuccess());
         } catch (error) {
             yield put(emitError(error));
@@ -341,6 +350,8 @@ export function* printCashOrderSaga() {
         }
     }
 }
+
+
 
 export function* saga() {
     yield all([

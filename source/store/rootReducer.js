@@ -21,6 +21,7 @@ import { formsReducer as forms } from 'core/forms';
 import { storageReducer as storage } from 'core/storage';
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import clientsReducer, { moduleName as clientsModule } from 'core/clients/duck';
+import clientHotOperationsReducer, { moduleName as clientHotOperationsModule } from 'core/clientHotOperations/duck';
 import myTasksReducer, { moduleName as myTasksModule } from 'core/myTasks/duck';
 import employeesReducer, {
     moduleName as employeesModule,
@@ -45,8 +46,9 @@ import clientMRDsReducer, { moduleName as clientMRDsModule } from 'core/clientMR
 import reportOrdersReducer, { moduleName as reportOrdersModule } from 'core/reports/reportOrders/duck';
 import reportClientDebtsReducer, { moduleName as reportClientDebtsModule } from 'core/reports/reportClientDebts/duck';
 import reportLoadKPIReducer, { moduleName as reportLoadKPIModule } from 'core/reports/reportLoadKPI/duck';
-import reportAnalyticsReducer, {moduleName as reportAnalyticsModule} from 'core/reports/reportAnalytics/duck'
-import reportCashFlowReducer, {moduleName as reportCashFlowModule} from 'core/reports/reportCashFlow/duck'
+import reportAnalyticsReducer, {moduleName as reportAnalyticsModule} from 'core/reports/reportAnalytics/duck';
+import reportCashFlowReducer, {moduleName as reportCashFlowModule} from 'core/reports/reportCashFlow/duck';
+import reportCashOrdersLogsReducer, {moduleName as reportCashOrdersLogsModule} from 'core/reports/reportCashOrdersLogs/duck';
 
 import clientRequisiteReducer, { moduleName as clientRequisiteModule } from 'core/clientRequisite/duck';
 import chartReducer, { moduleName as chartModule } from 'core/chart/duck';
@@ -115,8 +117,10 @@ const appState = {
     [ reportClientDebtsModule ]:    reportClientDebtsReducer,
     [ reportAnalyticsModule ]:      reportAnalyticsReducer,
     [ reportCashFlowModule ]:       reportCashFlowReducer,
+    [ reportCashOrdersLogsModule ]: reportCashOrdersLogsReducer,
     [ clientRequisiteModule ]:      clientRequisiteReducer,
     [ clientsModule ]:              clientsReducer,
+    [ clientHotOperationsModule ]:  clientHotOperationsReducer,
     [ dashboardModule ]:            dashboardReducer,
     [ employeeScheduleModule ]:     employeeScheduleReducer,
     [ employeesModule ]:            employeesReducer,

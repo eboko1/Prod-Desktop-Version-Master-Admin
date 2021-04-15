@@ -110,6 +110,7 @@ export class EmployeeForm extends Component {
 						<DecoratedCheckbox
 							field='isCashier'
 							formItem
+							disabled={isForbidden(this.props.user, permissions.ACCESS_CASHIER_CRUD)}
 							label={<FormattedMessage id='employee.is_cashier' />}
 							formItemLayout={formCheckboxLayout}
 							getFieldDecorator={getFieldDecorator}
@@ -158,6 +159,7 @@ export class EmployeeForm extends Component {
 					field='cashierApiToken'
 					label={<FormattedMessage id='employee.cashier_api_token' />}
 					formItem
+					disabled={isForbidden(this.props.user, permissions.ACCESS_CASHIER_CRUD)}
 					formItemLayout={formItemLayout}
 					initialValue={_.get(initialEmployee, 'cashierApiToken')}
 					getPopupContainer={(trigger) => trigger.parentNode}

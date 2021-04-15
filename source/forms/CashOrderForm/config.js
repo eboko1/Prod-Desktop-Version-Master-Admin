@@ -13,6 +13,6 @@ export const cashOrderCounterpartyTypes = Object.freeze({
 
 //Mapper, this is used when order type is adjustment(we can adjust two types of orders)
 export const adjustmentSumTypes = Object.freeze({
-    INCOME: 'increase', //Incomes
-    EXPENSE: 'decrease' //Expenses
+    INCREASE: 'increase', //Incomes
+    DECREASE: 'decrease' //Expenses
 });

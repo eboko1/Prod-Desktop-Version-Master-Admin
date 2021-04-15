@@ -3,10 +3,6 @@
     font-size: 25px;
 }
 
-/* .ordersTableWrapper {
-    position: relative;
-} */
-
 .paper {
     overflow: initial;
     min-height: 360px;
@@ -35,9 +31,6 @@
 .datetime {
     display: flex;
     flex-direction: column;
-    /* align-items: center; */
-    /* text-align: center; */
-    /* margin: 0 auto; */
     width: 75px;
 }
 
@@ -67,7 +60,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 188px;
-    /* width 188 + 16*2(padding) = 220px for 220px width orders num col */
 }
 
 .serviceNames {
@@ -115,12 +107,27 @@
 .ordersTable :global(.ant-table-thead > tr > th) {
     text-transform: uppercase;
     word-break: none;
-    white-space: nowrap;
+    /* white-space: nowrap; */
 }
 
 .ordersTable :global(.ant-table-tbody > tr > th) {
     word-break: none;
 }
+
+/* ---------------------------------------------- */
+/* This styles were added to improve user UI */
+.ordersTable :global(.ant-table-header) {
+    min-width: 0 !important; /*IMPORTANT it solves antd table issue when scrolling is added*/
+    font-size: 0.8em;
+    font-style: bold;
+    padding: 0;
+}
+
+.ordersTable :global(th) {
+    padding: 6px 4px 6px 4px !important; /*Remove bug: when text overflows, header shifts left*/
+}
+
+/* ------------------------------------------ */
 
 .verticalCenterModal {
     display: flex;
