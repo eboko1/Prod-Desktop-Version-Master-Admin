@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import { Tabs, Input, InputNumber, Button, notification, Checkbox, Select, Radio } from "antd";
+import { Tabs, Input, InputNumber, Button, notification, Table, Select, Radio } from "antd";
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -48,6 +48,55 @@ export default class WMSPage extends Component {
            activeKey: 'plan',
            warehouseId: undefined,
         };
+
+        this.columns = [
+            {
+                title: <FormattedMessage id="Дата" />,
+                key: 'datetime',
+                dataIndex: 'datetime',
+                sorter: (a, b) => moment(a.datetime).format('DD/MM/YYYY').localeCompare(moment(b.datetime).format('DD/MM/YYYY')),
+                render: (data, row) => {
+                    return (
+                        moment(data).format('DD/MM/YYYY')
+                    )
+                }
+            },
+            {
+                title: <FormattedMessage id="Ячейка" />,
+                key: 'address',
+                dataIndex: 'address',
+                sorter: (a, b) => String(a.address).localeCompare(String(b.address)),
+            },
+            {
+                title: <FormattedMessage id="Код товара" />,
+                key: 'code',
+                dataIndex: 'code',
+                sorter: (a, b) => String(a.code).localeCompare(String(b.code)),
+            },
+            {
+                title: <FormattedMessage id="Бренд" />,
+                key: 'brandName',
+                dataIndex: 'brandName',
+                sorter: (a, b) => String(a.brandName).localeCompare(String(b.brandName)),
+            },
+            {
+                title: <FormattedMessage id="Наименование" />,
+                key: 'name',
+                dataIndex: 'name',
+                sorter: (a, b) => String(a.name).localeCompare(String(b.name)),
+            },
+            {
+                title: <FormattedMessage id="count" />,
+                key: 'count',
+                dataIndex: 'count',
+                sorter: (a, b) => a.count - b.count,
+            },
+            {
+                title: <FormattedMessage id="Номер документа" />,
+                key: 'storeDocId',
+                dataIndex: 'storeDocId',
+            }
+        ]
     }
 
     _fetchCells = async () => {
@@ -66,6 +115,19 @@ export default class WMSPage extends Component {
         })
     }
 
+    _fetchMovement = async (address, storeProductId) => {
+        const { warehouseId } = this.state;
+        const movement = await fetchAPI('GET', 'wms/cells/movements', {
+            warehouseId,
+            address,
+            storeProductId,
+        });
+        this.setState({
+            activeKey: 'movement',
+            movement: movement.list,
+        })
+    }
+
     componentDidMount() {
         this.props.fetchWarehouses();
     }
@@ -81,7 +143,7 @@ export default class WMSPage extends Component {
 
     render() {
         const { user, warehouses, intl: {formatMessage} } = this.props;
-        const { cells, activeKey, warehouseId, generateSettings } = this.state;
+        const { cells, activeKey, warehouseId, generateSettings, movement } = this.state;
         return !cells ? (
             <Spinner spin={ true }/>
         ) : (
@@ -123,7 +185,10 @@ export default class WMSPage extends Component {
                         type='card'
                         activeKey={activeKey}
                         onChange={(activeKey)=>{
-                            this.setState({activeKey })
+                            this.setState({
+                                activeKey,
+                                movement: undefined
+                            })
                         }}
                     >
                         <TabPane
@@ -135,6 +200,7 @@ export default class WMSPage extends Component {
                                 <WMSStoragePlan
                                     cells={cells}
                                     fetchCells={this._fetchCells}
+                                    fetchMovement={this._fetchMovement}
                                     warehouseId={warehouseId}
                                 />
                             }
@@ -160,6 +226,18 @@ export default class WMSPage extends Component {
                                 fetchCells={this._fetchCells}
                             />
                         </TabPane>
+                        {movement && 
+                            <TabPane
+                                tab={<FormattedMessage id="Движение"/>}
+                                key="movement"
+                            >
+                                <Table
+                                    size={'small'}
+                                    columns={this.columns}
+                                    dataSource={movement}
+                                />
+                            </TabPane>
+                        }
                     </Tabs>
                 </Catcher>
             </Layout>
