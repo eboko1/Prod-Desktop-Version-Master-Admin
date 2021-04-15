@@ -29,6 +29,21 @@ export default class WMSStoragePlan extends Component {
             key: 'address',
             dataIndex: 'address',
             sorter: (a, b) => String(a.address).localeCompare(String(b.address)),
+            render: (data, row) => {
+                return (
+                    <div
+                        style={{
+                            textDecoration: 'underline',
+                            cursor: 'pointer'
+                        }}
+                        onClick={()=>{
+                            this.props.fetchMovement(data)
+                        }}
+                    >
+                        {data}
+                    </div>
+                )
+            }
         }
 
         const code = {
@@ -36,6 +51,21 @@ export default class WMSStoragePlan extends Component {
             key: 'code',
             dataIndex: 'code',
             sorter: (a, b) => String(a.code).localeCompare(String(b.code)),
+            render: (data, row) => {
+                return (
+                    <div
+                        style={{
+                            textDecoration: 'underline',
+                            cursor: 'pointer'
+                        }}
+                        onClick={()=>{
+                            this.props.fetchMovement(undefined, row.id)
+                        }}
+                    >
+                        {data}
+                    </div>
+                )
+            }
         }
 
         const brand = {
