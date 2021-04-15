@@ -63,36 +63,41 @@ export default class ClientHotOperationsPage extends Component {
             <Layout
                 title={ <div><FormattedMessage id="navigation.client_hot_operations" /></div> }
                 paper={true}
+                controls={(<div>
+                    <StyledButton className={Styles.styledButton} type="secondary">
+                        <FormattedMessage id={"client_hot_operations_page.create_new_cient"} />
+                    </StyledButton>
+                </div>)}
             >
                 <div style={{width: '100%', height: '70vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
                     <ClientsContainer />
                 </div>
 
-                <div style={{width: '40%', height: '10vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
-                    <Row>
+                {/* <div style={{width: '40%', height: '10vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}> */}
+                    {/* <Row> */}
                         {/* {this.generateCol(
                             "client_hot_operations_page.open_client_tab",
                             () => console.log("Click!")
                         )} */}
 
-                        {this.generateCol(
+                        {/* {this.generateCol(
                             "client_hot_operations_page.create_new_order",
                             () => console.log("Click!")
-                        )}
-                    </Row>
+                        )} */}
+                    {/* </Row> */}
 
-                    <Row>
-                        {this.generateCol(
+                    {/* <Row> */}
+                        {/* {this.generateCol(
                             "client_hot_operations_page.create_new_cient",
                             () => console.log("Click!")
-                        )}
+                        )} */}
                         
                         {/* {this.generateCol(
                             "client_hot_operations_page.open_current_orders",
                             () => console.log("Click!")
                         )} */}
-                    </Row>
-                </div>
+                    {/* </Row> */}
+                {/* </div> */}
             </Layout>
         );
     }

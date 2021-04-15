@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import { Button } from 'antd';
 import _ from 'lodash';
 import { v4 } from "uuid";
 
@@ -16,6 +17,7 @@ import Styles from './styles.m.css';
 //It must be 100% of width in total!
 const defWidth = {
     client_full_name: '15%',
+    actions: '10%',
     client_phones: '20%',
     client_vehicles: 'auto',
     vehicle_vin: '20%'
@@ -37,6 +39,15 @@ export function columnsConfig() {
                     { `${obj.name || ""} ${obj.surname || ""}` }
                 </Link>
             );
+        }
+    };
+
+    const actionsCol = {
+        width: defWidth.actions,
+        render: () => {
+            return (<Button>
+                <FormattedMessage id={"client_hot_operations_page.create_new_order"} />
+            </Button>)
         }
     };
     
@@ -97,6 +108,7 @@ export function columnsConfig() {
 
     return [
         clientFullNameCol,
+        actionsCol,
         phonesCol,
         vehicleCol,
         vinCol
