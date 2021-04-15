@@ -228,6 +228,11 @@ export default {
                         isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageMovement,
                     name: 'navigation.storage_movement',
+                },
+                {
+                    key:  '/products-without-cell',
+                    link: book.productsWithoutCell,
+                    name: 'navigation.products_without_cell',
                 }
             ],
         },

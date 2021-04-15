@@ -184,13 +184,24 @@ export default class WMSCellsModal extends Component {
 	}
 
 	_showModal = async () => {
-		const { warehouseId, selectedCell } = this.props;
-        const dataSource = await fetchAPI('GET', 'wms/cells', {warehouseId});
-		this.setState({
-			dataSource: dataSource.list,
-            warehouseId,
-            count: selectedCell && selectedCell.sum,
-		});
+		const { warehouseId, selectedCell, warehouses } = this.props;
+        if(warehouseId) {
+            const dataSource = await fetchAPI('GET', 'wms/cells', {warehouseId});
+            this.setState({
+                dataSource: dataSource.list,
+                warehouseId,
+                count: (selectedCell && selectedCell.sum) || 1,
+            });
+        } else {
+            this.setState({
+                warehouseId: warehouses[0].id
+            });
+            const dataSource = await fetchAPI('GET', 'wms/cells', {warehouseId: warehouses[0].id});
+            this.setState({
+                dataSource: dataSource.list,
+                count: (selectedCell && selectedCell.sum) || 1,
+            });
+        }
 	}
 
 	_hideModal = async () => {

@@ -69,7 +69,8 @@ import {
     SyncExportPage,
     BarcodePage,
     ProductPage,
-    WMSPage
+    WMSPage,
+    ProductsWithoutCellPage,
 } from 'pages';
 import book from './book';
 
@@ -270,6 +271,11 @@ export default class Private extends Component {
                     exact
                     path={ book.wms }
                     render={ props => <WMSPage { ...props } /> }
+                />
+                <Route
+                    exact
+                    component={ ProductsWithoutCellPage }
+                    path={ book.productsWithoutCell }
                 />
                 { /* Locations */ }
                 <Route
