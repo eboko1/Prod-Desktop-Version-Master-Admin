@@ -92,9 +92,9 @@ export default class ClientsContainer extends React.Component {
 
         return (
             <div>
-                <div style={{display: 'flex', justifyContent: 'center', padding: '10px'}}>
-                    <div style={{display: 'flex', justifyContent: 'flex-end', padding: '5px', alignItems: 'center'}}><FormattedMessage id={"client_hot_operations_page.search"} />: </div>
-                    <div style={{width: '40%'}}><Input onChange={this.onSearch}/></div>
+                <div className={Styles.filtersCont}>
+                    <div className={Styles.textCont}><FormattedMessage id={"client_hot_operations_page.search"} />: </div>
+                    <div className={Styles.inputCont}><Input onChange={this.onSearch} allowClear/></div>
                     
                 </div>
                 

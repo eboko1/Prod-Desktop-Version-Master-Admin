@@ -46,19 +46,18 @@ export default class ClientOrdersContainer extends React.Component {
         };
 
         return (
-            <div>
-                <div>
-                    <Table
-                        className={Styles.table}
-                        dataSource={orders}
-                        columns={columnsConfig({formatMessage})}
-                        scroll={ { x: 1000, y: '30vh' } }
-                        loading={clientOrdersFetching}
-                        pagination={pagination}
-                        rowKey={() => v4()}
-                        bordered
-                    />
-                </div>
+            <div className={Styles.tableCont}>
+                <Table
+                    rowClassName={() => Styles.tableRow}
+                    className={Styles.table}
+                    dataSource={orders}
+                    columns={columnsConfig({formatMessage})}
+                    scroll={ { x: 1000, y: '30vh' } }
+                    loading={clientOrdersFetching}
+                    pagination={pagination}
+                    rowKey={() => v4()}
+                    bordered
+                />
             </div>
         );
     }

@@ -68,9 +68,7 @@ export default class ClientHotOperationsPage extends Component {
                     </StyledButton>
                 </div>)}
             >
-                <div style={{width: '100%', height: '90vh', margin: '0 auto 0 auto', padding: '5px', backgroundColor: 'grey'}}>
-                    <ClientsContainer />
-                </div>
+                <ClientsContainer />
                 <AddClientModal
                     // searchQuery={searchClientQuery}
                     visible={this.props.modal}

@@ -1,6 +1,6 @@
 .table {
-    background-color: black;
     min-width: 0 !important;
+    padding: 5px;
 }
 
 .table :global(.ant-table-header) {
@@ -19,6 +19,14 @@
 
 .table :global(th) {
     padding: 6px 4px 6px 4px !important; /*Remove bug: when text overflows, header shifts left*/
+}
+
+.tableCont {
+    border-radius: 0.8em;
+    padding: 5px;
+    background-color: rgb(216, 216, 216);
+    box-shadow: 5px 5px 0.8em rgb(107, 107, 107);
+    margin: 10px;
 }
 
 .orderLink {
@@ -40,7 +48,6 @@
 .cancelReason {
     overflow: hidden;
     text-overflow: ellipsis;
-    /* width: 188px; */
 }
 
 .serviceNames {
@@ -53,4 +60,8 @@
 
 .cancelReason {
     color: var(--not_complete);
+}
+
+.tableRow {
+    background-color: rgb(240, 240, 240);
 }
