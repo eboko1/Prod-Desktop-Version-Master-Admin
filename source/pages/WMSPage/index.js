@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from "react-intl";
 import { Tabs, Input, InputNumber, Button, notification, Table, Select, Radio } from "antd";
 import _ from 'lodash';
@@ -8,9 +9,9 @@ import moment from 'moment';
 
 // proj
 import { Layout, Catcher, Spinner } from 'commons';
-import { TrackingTable, WarehouseSelect, DateRangePicker } from 'components';
+import { DateRangePicker } from 'components';
 import { permissions, isForbidden, fetchAPI } from "utils";
-import { StoreProductForm } from 'forms';
+import book from 'routes/book';
 import { fetchSuppliers } from "core/suppliers/duck";
 import { fetchWarehouses } from 'core/warehouses/duck';
 import { fetchPriceGroups, selectPriceGroups } from 'core/storage/priceGroups';
@@ -47,6 +48,9 @@ export default class WMSPage extends Component {
            generateSettings: [],
            activeKey: 'plan',
            warehouseId: undefined,
+           startDate: moment().startOf('year'), 
+           endDate: moment(),
+           movementFilter: undefined,
         };
 
         this.columns = [
@@ -95,6 +99,15 @@ export default class WMSPage extends Component {
                 title: <FormattedMessage id="Номер документа" />,
                 key: 'storeDocId',
                 dataIndex: 'storeDocId',
+                render: (data, row) => {
+                    return (
+                        <Link
+                            to={`${book.storageDocument}/${data}`}
+                        >
+                            {data}
+                        </Link>
+                    )
+                }
             }
         ]
     }
@@ -115,12 +128,18 @@ export default class WMSPage extends Component {
         })
     }
 
-    _fetchMovement = async (address, storeProductId) => {
-        const { warehouseId } = this.state;
+    _fetchMovement = async (propAddress, propStoreProductId) => {
+        await this.setState({
+            address: propAddress,
+            storeProductId: propStoreProductId,
+        })
+        const { warehouseId, startDate, endDate, address, storeProductId } = this.state;
         const movement = await fetchAPI('GET', 'wms/cells/movements', {
             warehouseId,
             address,
             storeProductId,
+            fromDatetime: startDate.format('YYYY-MM-DD'),
+            toDatetime: endDate.format('YYYY-MM-DD'),
         });
         this.setState({
             activeKey: 'movement',
@@ -143,7 +162,7 @@ export default class WMSPage extends Component {
 
     render() {
         const { user, warehouses, intl: {formatMessage} } = this.props;
-        const { cells, activeKey, warehouseId, generateSettings, movement } = this.state;
+        const { cells, activeKey, warehouseId, generateSettings, movement, startDate, endDate, address, storeProductId, movementFilter } = this.state;
         return !cells ? (
             <Spinner spin={ true }/>
         ) : (
@@ -187,7 +206,9 @@ export default class WMSPage extends Component {
                         onChange={(activeKey)=>{
                             this.setState({
                                 activeKey,
-                                movement: undefined
+                                movement: undefined,
+                                address: undefined,
+                                storeProductId: undefined,
                             })
                         }}
                     >
@@ -231,10 +252,48 @@ export default class WMSPage extends Component {
                                 tab={<FormattedMessage id="Движение"/>}
                                 key="movement"
                             >
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        marginBottom: 8
+                                    }}
+                                >
+                                    <Input
+                                        allowClear
+                                        value={movementFilter}
+                                        placeholder={this.props.intl.formatMessage({id: 'barcode.search'})}
+                                        onChange={({target})=>{
+                                            this.setState({
+                                                movementFilter: target.value
+                                            })
+                                        }}
+                                    />
+                                    <DateRangePicker
+                                        minimize
+                                        dateRange={[startDate, endDate]}
+                                        style={{margin: '0 0 0 8px'}}//prevent default space
+                                        onDateChange={async ([startDate, endDate])=>{
+                                            await this.setState({
+                                                startDate,
+                                                endDate,
+                                            });
+                                            this._fetchMovement(address, storeProductId);
+                                        }}
+                                    />
+                                </div>
                                 <Table
                                     size={'small'}
                                     columns={this.columns}
-                                    dataSource={movement}
+                                    dataSource={
+                                        !movementFilter
+                                            ? movement
+                                            : movement.filter((elem)=>
+                                                String(elem.address).toLocaleLowerCase().includes(String(movementFilter).toLocaleLowerCase()) ||
+                                                String(elem.code).toLocaleLowerCase().includes(String(movementFilter).toLocaleLowerCase()) ||
+                                                String(elem.brandName).toLocaleLowerCase().includes(String(movementFilter).toLocaleLowerCase()) ||
+                                                String(elem.name).toLocaleLowerCase().includes(String(movementFilter).toLocaleLowerCase())
+                                            )
+                                    }
                                 />
                             </TabPane>
                         }

@@ -4,6 +4,7 @@ import ExpensesPage from './ExpensesPage';
 import StorageTransferPage from './StorageTransferPage';
 import StorageDocumentPage from './StorageDocumentPage';
 import WarehousesPage from './WarehousesPage';
+import ProductsWithoutCellPage from './ProductsWithoutCellPage';
 
 export {
     StorageOrdersPage,
@@ -12,6 +13,7 @@ export {
     StorageTransferPage,
     StorageDocumentPage,
     WarehousesPage,
+    ProductsWithoutCellPage,
 };
 
 export { ProductsGroupsPage } from './ProductsGroupsPage';
