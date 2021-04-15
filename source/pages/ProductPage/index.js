@@ -50,7 +50,7 @@ export default class ProductPage extends Component {
             startDate: moment().startOf('year'),
             endDate: moment(),
             cells: [],
-            cellTableData: [],
+            productCells: [],
             selectedCell: undefined,
         };
         this.cellTabColumns = [
@@ -58,11 +58,21 @@ export default class ProductPage extends Component {
                 title: <FormattedMessage id="navigation.storage" />,
                 key: 'warehouse',
                 dataIndex: 'warehouse',
+                render: (data, row)=>{
+                    return (
+                        data.name
+                    )
+                }
             },
             {
                 title: <FormattedMessage id="Ячейка" />,
                 key: 'address',
-                dataIndex: 'address',
+                dataIndex: 'wmsCellOptions',
+                render: (data, row)=>{
+                    return (
+                        data.address
+                    )
+                }
             },
             {
                 title: <FormattedMessage id="count" />,
@@ -83,7 +93,7 @@ export default class ProductPage extends Component {
                             type='primary'
                             onClick={()=>{
                                 this.setState({
-                                    selectedCell: data,
+                                    selectedCell: row,
                                 });
                             }}
                         >
@@ -100,7 +110,7 @@ export default class ProductPage extends Component {
         const { warehouseId, startDate, endDate } = this.state;
         const productMovement = await fetchAPI(
             'GET',
-            `/store_doc_products/`,
+            `store_doc_products`,
             {
                 productId: id, 
                 warehouseId,
@@ -113,12 +123,26 @@ export default class ProductPage extends Component {
         })
     }
 
+    _fetchProductCells = async () => {
+        const { id } = this.props;
+        const productCells = await fetchAPI(
+            'GET',
+            `wms/cells/statuses`,
+            {
+                storeProductId: id,
+            }
+        );
+        this.setState({
+            productCells: productCells.list
+        })
+    }
+
     _fetchProduct = async () => {
         this.setState({
             product: undefined,
         })
         const { id } = this.props;
-        const product = await fetchAPI('GET', `/store_products/${id}`);
+        const product = await fetchAPI('GET', `store_products/${id}`);
         product.saveOnStock = Boolean(product.saveOnStock);
         product.multiplicity = product.multiplicity || 1;
         product.min = product.min || 1;
@@ -133,7 +157,7 @@ export default class ProductPage extends Component {
         
         await fetchAPI(
             'PUT',
-            `/store_products/${product.id}`,
+            `store_products/${product.id}`,
             null,
             _.pick(
                 product,
@@ -167,7 +191,7 @@ export default class ProductPage extends Component {
     _fetchWMSCells = async () => {
         const { product } = this.state;
         if(product.defaultWarehouseId) {
-            const cells = await fetchAPI('GET', `/wms/cells`, {warehouseId: product.defaultWarehouseId});
+            const cells = await fetchAPI('GET', `wms/cells`, {warehouseId: product.defaultWarehouseId});
             
             this.setState({
                 cells: cells.list,
@@ -181,6 +205,7 @@ export default class ProductPage extends Component {
         this.props.fetchPriceGroups();
         await this._fetchProduct();
         this._fetchProductMovement();
+        this._fetchProductCells();
         this._fetchWMSCells();
     }
 
@@ -190,7 +215,7 @@ export default class ProductPage extends Component {
 
     render() {
         const { intl: { formatMessage }, user, id, warehouses, suppliers, priceGroups } = this.props;
-        const { product, activeKey, movementData, startDate, endDate, cells, cellTableData, selectedCell } = this.state;
+        const { product, activeKey, movementData, startDate, endDate, cells, productCells, selectedCell } = this.state;
         return !product ? (
             <Spinner spin={ true }/>
         ) : (
@@ -734,7 +759,7 @@ export default class ProductPage extends Component {
                                 <Table
                                     size={'small'}
                                     columns={this.cellTabColumns}
-                                    dataSource={cellTableData}
+                                    dataSource={productCells}
                                 />
                                 <WMSCellsModal
                                     warehouseId={product.defaultWarehouseId}

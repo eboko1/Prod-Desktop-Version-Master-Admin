@@ -125,7 +125,7 @@ export default class WMSGenerateCells extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Минимальное" />,
+                title: <FormattedMessage id="Максимальное" />,
                 key: 'maxValue',
                 dataIndex: 'maxValue',
                 width: '19%',
