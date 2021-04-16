@@ -73,7 +73,7 @@ export const fetchClientSuccess = clientEntity => ({
  *      managerId - id of a manager who created an order(current user)
  *      }
  */
- export const createOrderForClient = ({clientId, managerId}) => ({
+ export const createOrderForClient = ({clientId, managerId, vehicleId}) => ({
     type: CREATE_ORDER_FOR_CLIENT,
-    payload: {clientId, managerId}
+    payload: {clientId, managerId, vehicleId}
 });

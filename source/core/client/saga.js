@@ -118,7 +118,7 @@ export function* deleteClientVehicleSaga() {
 
 export function* createOrderForClientSaga() {
     while(true) {
-        const { payload: {clientId, managerId} } = yield take(CREATE_ORDER_FOR_CLIENT);
+        const { payload: {clientId, managerId, vehicleId} } = yield take(CREATE_ORDER_FOR_CLIENT);
         if(!clientId) continue;
         
         //Get client
@@ -132,6 +132,7 @@ export function* createOrderForClientSaga() {
                 null,
                 {
                     clientId: client.clientId,
+                    clientVehicleId: vehicleId ? vehicleId : void 0,
                     duration: 0.5,
                     clientPhone: client.phones[0],
                     stationLoads: [{

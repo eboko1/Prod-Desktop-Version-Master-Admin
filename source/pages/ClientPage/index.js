@@ -32,8 +32,10 @@ export default class ClientPage extends Component {
         this.props.fetchClient(this.props.match.params.id);
     }
 
-    //When we want to create a new order for this client
-    onCreateOrderForClient = (e) => {
+    /**
+     * When we want to create a new order for this client
+     */
+    onCreateOrderForClient = () => {
         const {
             createOrderForClient,
             clientEntity,
@@ -49,8 +51,6 @@ export default class ClientPage extends Component {
     render() {
         const { isFetching, clientEntity, match, location, fetchClient } = this.props;
         const specificTab = (location && location.state) ? location.state.specificTab : undefined;
-
-        console.log("clientEntity: ", clientEntity);
 
         return isFetching ? (
             <Spinner spin={ isFetching } />

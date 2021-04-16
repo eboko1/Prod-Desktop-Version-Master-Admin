@@ -7,7 +7,10 @@ import _ from "lodash";
 // proj
 import { withReduxForm2 } from "utils";
 import { AddClientVehicleForm } from "forms";
+import { StyledButton } from "commons";
 import { DecoratedInput, DecoratedCheckbox, DecoratedSelect, DecoratedInputNumber } from "forms/DecoratedFields";
+import { permissions, isForbidden } from "utils";
+import { Barcode } from "components";
 import {
     onChangeClientVehicleForm,
     setEditableItem,
@@ -15,8 +18,9 @@ import {
     setSelectedVehicle,
     handleError,
 } from "core/forms/editClientVehicleForm/duck";
-import { permissions, isForbidden } from "utils";
-import { Barcode } from "components";
+import {
+    createOrderForClient
+} from 'core/client/duck';
 
 // own
 import Styles from "./styles.m.css";
@@ -39,6 +43,7 @@ const openNotificationWithIcon = (type, message, description) => {
         setEditVehicle,
         setSelectedVehicle,
         handleError,
+        createOrderForClient
     },
     mapStateToProps: state => ({
         user: state.auth,
@@ -91,6 +96,24 @@ export class EditClientVehicleForm extends Component {
             />
         ) : null;
     };
+
+    /**
+     * When we want to create a new order for this client and use specific vehicle
+     * @param {*} param0 {vehicle} //Contains vehicle entity which has to be included in a new order
+     */
+    onCreateOrderForClient = ({vehicle}) => {
+        const {
+            createOrderForClient,
+            clientEntity,
+            user
+        } = this.props;
+
+        createOrderForClient({
+            clientId: clientEntity.clientId,
+            managerId: user.id,
+            vehicleId: vehicle.id
+        });
+    }
 
     render() {
         const {
@@ -397,12 +420,29 @@ export class EditClientVehicleForm extends Component {
                                 </Col>
                             </Row>
                         </Form>
+                        
+                        <StyledButton
+                            type="primary"
+                            onClick={() => this.onCreateOrderForClient({vehicle: item}) //Call with current vehicle
+                        }>
+                            <FormattedMessage id='client_page.create_order' />
+                        </StyledButton>
+
                     </List.Item>
                 )}
             />
         );
     }
 }
+
+
+
+
+
+
+
+
+
 
 @injectIntl
 class ClientVehicleTransfer extends Component {
