@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { Radio, Table } from "antd";
 import _ from "lodash";
+import { v4 } from 'uuid';
 
 // proj
 import { Catcher, Loader } from "commons";
@@ -51,7 +52,7 @@ export default class CallsTable extends Component {
 
         const pagination = {
             pageSize: 25,
-            size: "large",
+            size: "small",
             total: Math.ceil(_.get(stats, "total") / 25) * 25,
             hideOnSinglePage: true,
             current: filter.page,
@@ -80,6 +81,7 @@ export default class CallsTable extends Component {
                     }}
                     pagination={pagination}
                     scroll={{ x: 1080 }}
+                    rowKey={() => v4()}
                 />
             </Catcher>
         );
