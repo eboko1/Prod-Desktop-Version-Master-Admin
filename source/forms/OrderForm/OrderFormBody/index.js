@@ -509,6 +509,14 @@ export default class OrderFormBody extends Component {
                                     className={Styles.copyIcon}
                                 />
                             </CopyToClipboard>
+                            <a className={Styles.callLink} href={ `tel:${_.get(fields, "clientPhone")}` }>
+                                <Icon
+                                    type="phone"
+                                    theme="twoTone"
+                                    className={Styles.phoneIcon}
+                                />
+                            </a>
+                                    
                         </div>
                     )}
                 </div>

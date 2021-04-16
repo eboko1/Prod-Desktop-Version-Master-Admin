@@ -8,7 +8,6 @@ import history from 'store/history';
 //proj
 import book from 'routes/book';
 import { fetchAPI } from 'utils';
-import {setReportOrdersFetching, emitError} from 'core/ui/duck';
 
 // own
 import {
@@ -18,7 +17,6 @@ import {
     setClientsFetching,
     setClientOrdersFetching,
     fetchClientOrdersSuccess,
-    createOrderForClientSuccess
 } from './duck';
 
 import {
@@ -56,16 +54,12 @@ export function* fetchClientOrdersSaga() {
             const {payload: {clientId}} = yield take(FETCH_CLIENT_ORDERS);
             yield put(setClientOrdersFetching(true));
 
-            console.log("ClientId: ", clientId);
-
             const {orders, stats} = yield call(
                 fetchAPI,
                 'GET',
                 `/orders/client/${clientId}`
             );
             
-            console.log("Req res: ", orders, stats);
-
             yield put(fetchClientOrdersSuccess({orders, stats}));
         } finally {
             yield put(setClientOrdersFetching(false));
