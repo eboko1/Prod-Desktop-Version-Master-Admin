@@ -764,8 +764,24 @@ export default class ProductPage extends Component {
                                 <WMSCellsModal
                                     warehouseId={product.defaultWarehouseId}
                                     visible={Boolean(selectedCell)}
-                                    confirmAction={(address)=>{
-
+                                    confirmAction={async (address, modalWarehouseId, count)=>{
+                                        await fetchAPI('POST', 'wms/cells/products', null, [
+                                            {
+                                                warehouseId: modalWarehouseId,
+                                                storeProductId: product.id,
+                                                address,
+                                                count,
+                                            }
+                                        ])
+                                        await fetchAPI('DELETE', 'wms/cells/products', null, [
+                                            {
+                                                warehouseId: product.defaultWarehouseId,
+                                                storeProductId: product.id,
+                                                address: selectedCell.wmsCellOptions.address,
+                                                count,
+                                            }
+                                        ])
+                                        await this._fetchProductCells();
                                     }}
                                     hideModal={()=>{
                                         this.setState({selectedCell: undefined})
