@@ -8,11 +8,12 @@ import moment from 'moment';
 // proj
 import { answered } from 'core/calls/config';
 import book from 'routes/book';
+import { StyledButton } from 'commons';
 
 // // own
 import Styles from './styles.m.css';
 
-export function columnsConfig(formatMessage, showPhone, phones) {
+export function columnsConfig(formatMessage, showPhone, phones, fetchRecordingLink, callsLinksCache) {
     const date = {
         title:     <FormattedMessage id='calls-table.date' />,
         width:     95,
@@ -121,15 +122,19 @@ export function columnsConfig(formatMessage, showPhone, phones) {
         title:     <FormattedMessage id='calls-table.record' />,
         dataIndex: 'recordingLink',
         width:     'auto',
-        key:       'recordingLink',
-        render:    recordingLink =>
-            recordingLink ? (
-                <audio controls>
-                    <source src={ recordingLink } />
-                </audio>
-            ) : (
-                <FormattedMessage id='calls-table.no_record' />
-            ),
+        render:    (val, call) => {
+            return String(call.id) in callsLinksCache//Check if that key exists in cash memory
+                ?   Boolean(callsLinksCache[call.id]) //False for empty rows(but we key exists)
+                    ?   <audio controls>
+                            <source src={ callsLinksCache[call.id] } />
+                        </audio>
+                    :   <FormattedMessage id='calls-table.no_record' />
+                :   (<div>
+                        <StyledButton onClick={() => fetchRecordingLink({callId: call.id})}>
+                            <FormattedMessage id='calls-table.show_record' />
+                        </StyledButton>
+                    </div>);
+        }
     };
 
     return [

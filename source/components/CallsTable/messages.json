@@ -11,7 +11,8 @@
     "calls-table.record": "Record",
     "calls-table.answered": "Answered",
     "calls-table.missed": "Missed",
-    "calls-table.no_record": "No record"
+    "calls-table.no_record": "No record",
+    "calls-table.show_record": "Show record"
   },
   "ru": {
     "calls-table.date": "Дата",
@@ -25,7 +26,8 @@
     "calls-table.record": "Запись",
     "calls-table.answered": "Принятые",
     "calls-table.missed": "Пропущенные",
-    "calls-table.no_record": "Нет записи"
+    "calls-table.no_record": "Нет записи",
+    "calls-table.show_record": "Показать запись"
   },
   "uk": {
     "calls-table.date": "Дата",
@@ -39,6 +41,7 @@
     "calls-table.record": "Запис",
     "calls-table.answered": "Прийняті",
     "calls-table.missed": "Пропущені",
-    "calls-table.no_record": "Немає запису"
+    "calls-table.no_record": "Немає запису",
+    "calls-table.show_record": "Показати запис"
   }
 }

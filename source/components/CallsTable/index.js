@@ -37,12 +37,16 @@ export default class CallsTable extends Component {
             filter,
             intl: { formatMessage },
             callsFetching,
+            fetchRecordingLink,
+            callsLinksCache,
         } = this.props;
 
         const columns = columnsConfig(
             formatMessage,
             this._showPhone,
             this.state.visiblePhones,
+            fetchRecordingLink,
+            callsLinksCache
         );
 
         const pagination = {
