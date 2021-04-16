@@ -1,11 +1,14 @@
 {
     "en": {
-
+        "client_page.title": "Edit client",
+        "client_page.create_order": "Create order"
     },
     "ru": {
-
+        "client_page.title": "Редактировать клиента",
+        "client_page.create_order": "Создать н/з"
     },
     "uk": {
-
+        "client_page.title": "Редагувати клієнта",
+        "client_page.create_order": "Створити н/з"
     }
 }
