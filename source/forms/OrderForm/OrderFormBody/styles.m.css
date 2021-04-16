@@ -58,14 +58,27 @@
     cursor: pointer;
     color: var(--primary);
     font-weight: bold;
-    margin: 24px 0 24px 10px;
+    margin: 24px 0 8px 10px;
 }
 
 .copyIcon {
-    font-size: 16px;
+    font-size: 20px;
     cursor: pointer;
     color: var(--link);
     vertical-align: text-bottom;
+    margin-bottom: 8px;
+}
+
+.phoneIcon {
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--link);
+    vertical-align: text-bottom;
+}
+
+.callLink {
+    display: flex;
+    justify-content: center;
 }
 
 .bodyColumn {
