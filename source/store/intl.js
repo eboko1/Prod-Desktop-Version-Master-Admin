@@ -132,9 +132,10 @@ import SettingSalaryTable from 'components/SettingSalaryTable/messages';
 import ArrayScheduleInput from 'components/ArrayScheduleInput/messages';
 import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages';
 import ChangeStatusDropdown from 'components/ChangeStatusDropdown/messages';
-import ClientFeedbackTab from 'components/ClientFeedbackTab/messages';
-import ClientOrdersTab from 'components/ClientOrdersTab/messages';
-import ClientMRDsTab from 'components/ClientMRDsTab/messages';
+import ClientFeedbackTab from 'components/ClientTabs/ClientFeedbackTab/messages';
+import ClientOrdersTab from 'components/ClientTabs/ClientOrdersTab/messages';
+import ClientMRDsTab from 'components/ClientTabs/ClientMRDsTab/messages';
+import ClientCallsTab from 'components/ClientTabs/ClientCallsTab/messages';
 import EmployeeFeedback from 'components/EmployeeFeedback/messages';
 import EmployeeStatistics from 'components/EmployeeStatistics/messages';
 import ReviewsTable from 'components/ReviewsTable/messages';
@@ -281,6 +282,7 @@ const messages = merge.all([
     ClientFeedbackTab,
     ClientOrdersTab,
     ClientMRDsTab,
+    ClientCallsTab,
     EmployeeFeedback,
     EmployeeStatistics,
     ReviewsTable,

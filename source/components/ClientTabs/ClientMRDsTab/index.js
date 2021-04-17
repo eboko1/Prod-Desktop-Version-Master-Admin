@@ -15,7 +15,7 @@ import {
     //selectCashOrderEntityIsFetching,
 } from 'core/clientMRDs/duck';
 import { Loader } from "commons";
-import ClientMRDsTable from '../Tables/ClientMRDsTable'
+import { ClientMRDsTable } from 'components'
 import { setModal, resetModal, MODALS } from "core/modals/duck";
 import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
 import { CashOrderModal } from "modals";

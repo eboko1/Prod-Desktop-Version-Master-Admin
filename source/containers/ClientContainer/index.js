@@ -19,7 +19,12 @@ import {
     EditClientVehicleForm,
     EditClientForm,
 } from 'forms';
-import { ClientFeedbackTab, ClientOrdersTab, ClientMRDsTab } from 'components';
+import {
+    ClientFeedbackTab,
+    ClientOrdersTab,
+    ClientMRDsTab,
+    ClientCallsTab
+} from 'components';
 
 // own
 const { TabPane } = Tabs;
@@ -128,6 +133,14 @@ export default class ClientContainer extends Component {
                         key='clientDebt'
                     >
                         <ClientMRDsTab clientId={clientId} client={clientEntity}/>
+                    </TabPane>
+                    <TabPane
+                        // disabled={ isForbidden(user, ACCESS_RECEIVABLES_GET) }
+                        tab={<FormattedMessage id={ 'client_container.calls'}/>}
+                        key='calls'
+                    >
+                        Hello
+                        {/* <ClientMRDsTab clientId={clientId} client={clientEntity}/> */}
                     </TabPane>
                 </Tabs>
             </Catcher>
