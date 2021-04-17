@@ -136,11 +136,11 @@ export default class ClientContainer extends Component {
                     </TabPane>
                     <TabPane
                         // disabled={ isForbidden(user, ACCESS_RECEIVABLES_GET) }
+                        disabled={true}
                         tab={<FormattedMessage id={ 'client_container.calls'}/>}
                         key='calls'
                     >
-                        Hello
-                        {/* <ClientMRDsTab clientId={clientId} client={clientEntity}/> */}
+                        <ClientCallsTab />
                     </TabPane>
                 </Tabs>
             </Catcher>
