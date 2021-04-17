@@ -33,8 +33,9 @@ export default class ClientOrdersContainer extends React.Component {
         const {
             orders,
             clientOrdersFetching,
-            intl: {formatMessage}
+            intl: {formatMessage},
         } = this.props;
+
 
         return (
             <div className={Styles.tableCont}>
