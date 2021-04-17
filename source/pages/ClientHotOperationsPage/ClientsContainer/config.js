@@ -18,7 +18,7 @@ import Styles from './styles.m.css';
 //It must be 100% of width in total!
 const defWidth = {
     client_full_name: '15%',
-    actions: '10%',
+    actions: '5%',
     client_phones: '20%',
     client_vehicles: 'auto',
     client_debts: '10%',
@@ -50,10 +50,13 @@ export function columnsConfig(props) {
 
     const actionsCol = {
         width: defWidth.actions,
+        align: 'center',
         render: (val, client) => {
-            return (<Button onClick={() => onCreateOrderForClient({clientId: client.clientId})}>
-                <FormattedMessage id={"client_hot_operations_page.create_new_order"} />
-            </Button>)
+            return (
+                <StyledButton type='primary' onClick={() => onCreateOrderForClient({clientId: client.clientId})}>
+                    <Icon type="plus" className={Styles.newOrderIcon}/>
+                </StyledButton>
+            )
         }
     };
     
