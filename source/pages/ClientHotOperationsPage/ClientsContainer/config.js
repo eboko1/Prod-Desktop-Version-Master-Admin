@@ -8,6 +8,7 @@ import { v4 } from "uuid";
 
 //Proj
 import book from 'routes/book';
+import { Numeral } from "commons";
 
 //Own
 import Styles from './styles.m.css';
@@ -20,7 +21,8 @@ const defWidth = {
     actions: '10%',
     client_phones: '20%',
     client_vehicles: 'auto',
-    vehicle_vin: '20%'
+    client_debts: '10%',
+    vehicle_vin: '15%'
 }
 
 /* eslint-disable complexity */
@@ -76,6 +78,23 @@ export function columnsConfig(props) {
         }
     };
 
+    const debtsCol = {
+        title:      <FormattedMessage id='client_hot_operations_page.debt' />,
+        width:      defWidth.client_debts,
+        dataIndex:  'totalDebtWithTaxes',
+        key:        'totalDebtWithTaxes',
+        render: (debt) => {
+            return (
+                <Numeral
+                    nullText='0'
+                    mask='0,0.00'
+                >
+                    { debt }
+                </Numeral>
+            );
+        }
+    };
+
     const vehicleCol = {
         title:      <FormattedMessage id='vehicle' />,
         width:      defWidth.client_vehicles,
@@ -114,6 +133,7 @@ export function columnsConfig(props) {
         clientFullNameCol,
         actionsCol,
         phonesCol,
+        debtsCol,
         vehicleCol,
         vinCol
     ];
