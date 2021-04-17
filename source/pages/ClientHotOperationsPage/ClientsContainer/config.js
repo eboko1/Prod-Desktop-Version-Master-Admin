@@ -2,13 +2,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Button } from 'antd';
+import { Button, Icon } from 'antd';
 import _ from 'lodash';
 import { v4 } from "uuid";
 
 //Proj
 import book from 'routes/book';
-import { Numeral } from "commons";
+import { Numeral, StyledButton } from "commons";
 
 //Own
 import Styles from './styles.m.css';
@@ -100,14 +100,21 @@ export function columnsConfig(props) {
         width:      defWidth.client_vehicles,
         key:        'vehicle',
         render: client => {
-            const vehicle = _.get(client, 'vehicles[0]');
-            if (!vehicle) {
-                return '';
-            }
+            const vehicles = _.get(client, 'vehicles');
+            return vehicles
+                ? (_.map(vehicles, (vehicle) => {
+                    if(!vehicle.model) return "";
 
-            return vehicle.model
-                ? `${vehicle.make} ${vehicle.model} (${vehicle.year})`
-                : '';
+                    return (
+                        <div key={v4()} className={Styles.vehicle}>
+                            <span>{`${vehicle.make} ${vehicle.model} (${vehicle.year})`}</span>
+                            <StyledButton type='primary' onClick={() => onCreateOrderForClient({clientId: client.clientId, vehicleId: vehicle.id})}>
+                                <Icon type="plus" className={Styles.newOrderIcon}/>
+                            </StyledButton>
+                        </div>
+                    );
+                }))
+                :"---";
         },
     };
 

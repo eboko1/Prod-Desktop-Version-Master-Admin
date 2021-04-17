@@ -66,12 +66,12 @@ export default class ClientsContainer extends React.Component {
     }
 
     /**
-     * This event handler is used to create an order which will contain specific client
-     * @param {*} param0 Contains clientId which is used to define client in order
+     * This event handler is used to create an order which will contain specific client and may contain vehicle if id was provided
+     * @param {*} param0 Contains clientId which is used to define client in order and vehicleId of this client
      */
-    onCreateOrderForClient = ({clientId}) => {
+    onCreateOrderForClient = ({clientId, vehicleId}) => {
         const {user} = this.props;
-        this.props.createOrderForClient({clientId, managerId: user.id});
+        this.props.createOrderForClient({clientId, managerId: user.id, vehicleId});
     }
 
     render() {
