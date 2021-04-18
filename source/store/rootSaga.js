@@ -18,6 +18,7 @@ import { saga as clientSaga } from 'core/client/saga';
 import { saga as clientRequisitesSaga } from 'core/clientRequisite/saga';
 import { saga as clientOrdersSaga } from 'core/clientOrders/saga';
 import { saga as clientMRDsSaga } from 'core/clientMRDs/saga';
+import { saga as clientHotOperationsSaga } from 'core/clientHotOperations/saga';
 import { saga as employeesSaga } from 'core/employees/saga';
 import { saga as vehicleTypesSaga } from 'core/vehicleTypes/saga';
 
@@ -27,6 +28,7 @@ import { saga as reportClientDebtsSaga } from 'core/reports/reportClientDebts/sa
 import { saga as reportLoadKPISaga } from 'core/reports/reportLoadKPI/saga';
 import { saga as reportAnalyticsSaga } from 'core/reports/reportAnalytics/saga';
 import { saga as reportCashFlowSaga } from 'core/reports/reportCashFlow/saga';
+import { saga as reportCashOrdersLogsSaga } from 'core/reports/reportCashOrdersLogs/saga';
 
 // containers
 import { saga as dashboardSaga } from 'core/dashboard/saga';
@@ -110,6 +112,7 @@ export default function* rootSaga() {
         editClientFormSaga(),
         clientOrdersSaga(),
         clientMRDsSaga(),
+        clientHotOperationsSaga(),
         vehicleTypesSaga(),
 
         // Reports
@@ -119,6 +122,7 @@ export default function* rootSaga() {
         reportClientDebtsSaga(),
         reportLoadKPISaga(),
         reportCashFlowSaga(),
+        reportCashOrdersLogsSaga(),
         
         clientRequisitesSaga(),
         orderTaskFormSaga(),

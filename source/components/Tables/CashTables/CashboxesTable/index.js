@@ -3,10 +3,17 @@ import React, { Component } from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import { Table } from "antd";
+import { v4 } from 'uuid';
 
 // proj
-import { fetchCashboxes, deleteCashbox } from "core/cash/duck";
 import { permissions, isForbidden } from 'utils';
+import {
+    fetchCashboxes,
+    deleteCashbox,
+    openShift,
+    closeShift,
+    fetchXReport,
+} from "core/cash/duck";
 
 // own
 import { columnsConfig } from "./config";
@@ -19,6 +26,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchCashboxes,
     deleteCashbox,
+    openShift,
+    closeShift,
+    fetchXReport,
 };
 
 @injectIntl
@@ -31,15 +41,23 @@ export class CashboxesTable extends Component {
             deleteCashbox:      props.deleteCashbox,
             formatMessage:      props.intl.formatMessage,
             isCRUDForbidden:    isForbidden(props.user, permissions.ACCESS_CATALOGUE_CASH_CRUD),
+            onOpenServiceInputModal: props.onOpenServiceInputModal,
+            onOpenCashOrderModal: props.onOpenCashOrderModal,
+            openShift: props.openShift,
+            closeShift: props.closeShift,
+            fetchXReport: props.fetchXReport,
+            user: props.user,
         });
     }
+
+    
 
     componentDidMount() {
         this.props.fetchCashboxes();
     }
 
     render() {
-        const { cashboxesFetching, cashboxes } = this.props;
+        const { cashboxesFetching, cashboxes, onOpenServiceInputModal, onOpenCashOrderModal } = this.props;
 
         return (
             <Table
@@ -47,6 +65,7 @@ export class CashboxesTable extends Component {
                 columns={this.columns}
                 dataSource={cashboxes}
                 loading={cashboxesFetching}
+                rowKey={() => v4()}
                 pagination={false}
                 locale={{
                     emptyText: <FormattedMessage id="no_data" />,

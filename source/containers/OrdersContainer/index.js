@@ -333,6 +333,7 @@ class OrdersContainer extends Component {
             <Catcher>
                 <div className={ Styles.paper }>
                     <Table
+                        bordered
                         size='small'
                         className={ Styles.ordersTable }
                         columns={ columns }
