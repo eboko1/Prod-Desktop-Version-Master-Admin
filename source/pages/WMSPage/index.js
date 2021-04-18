@@ -147,14 +147,20 @@ export default class WMSPage extends Component {
         })
     }
 
-    componentDidMount() {
+    componentDidMount = async () => {
+        if(this.props.location && this.props.location.state) {
+            this.setState({
+                activeKey: 'plan',
+            })
+        }
         this.props.fetchWarehouses();
     }
 
     componentDidUpdate = async (prevProps) => {
-        if(this.props.warehouses.length && !prevProps.warehouses.length) {
+        if(this.props.warehouses.length && !prevProps.warehouses.length && !this.state.warehouseId) {
+            const warehouseId = this.props.location && this.props.location.state ? this.props.location.state.warehouseId : this.props.warehouses[0].id;
             await this.setState({
-                warehouseId: this.props.warehouses[0].id
+                warehouseId,
             });
             this._fetchCells();
         }
