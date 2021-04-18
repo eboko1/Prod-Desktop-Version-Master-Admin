@@ -2,17 +2,20 @@
 import React, { Component } from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { Switch, Input, Button, notification, Select, Table, InputNumber, Dropdown, Icon, Menu, Modal } from "antd";
+import { withRouter } from "react-router";
 import _ from 'lodash';
 import moment from 'moment';
 import { type } from "ramda";
 
 // proj
 import { permissions, isForbidden, fetchAPI } from "utils";
+import { Barcode } from 'components';
 
 // own
 import Styles from "./styles.m.css";
 const Option = Select.Option;
 
+@withRouter
 @injectIntl
 export default class WMSAddressSettings extends Component {
     constructor(props) {
@@ -236,6 +239,31 @@ export default class WMSAddressSettings extends Component {
                         />
                     )
                 }
+            },
+            {
+                title: <FormattedMessage id='navigation.barcode'/>,
+                key: 'barcode',
+                dataIndex: 'barcode',
+                render: (data, row) => {
+                    return (
+                        <Barcode
+                            value={data}
+                            enableScanIcon
+                            iconStyle={{
+                                margin: "0 8px 0 0",
+                                fornSize: 18,
+                                verticalAlign: "sub",
+                            }}
+                            prefix={'WMS'}
+                            table={'CELLS'}
+                            referenceId={row.address}
+                            onConfirm={(code, pref, fullCode)=>{
+                                row.barcode = fullCode;
+                                this.setState({});
+                            }}
+                        />
+                    )
+                }
             }
         ]
     }
@@ -261,7 +289,7 @@ export default class WMSAddressSettings extends Component {
 
     componentDidMount() {
         this.setState({
-            addressSettings: this.props.cells
+            addressSettings: this.props.cells,
         })
     }
 

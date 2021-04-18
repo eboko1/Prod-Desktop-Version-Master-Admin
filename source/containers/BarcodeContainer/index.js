@@ -11,7 +11,7 @@ import { setModal, resetModal, MODALS } from 'core/modals/duck';
 // proj
 import { Catcher } from "commons";
 import { Barcode } from "components";
-import { StoreProductModal } from "modals";
+import { StoreProductModal, WMSCellsModal } from "modals";
 import book from 'routes/book';
 
 // own
@@ -130,6 +130,8 @@ export default class BarcodeContainer extends Component {
 					barcode: elem.barcode,
 				})
 			});
+		} else if(table == 'CELLS') {
+
 		}
 		
 		this.setState({
@@ -353,14 +355,15 @@ export default class BarcodeContainer extends Component {
 	
     render() {
         const { user, intl: { formatMessage }, history, setModal } = this.props;
-		const { inputCode, modalInput, modalVisible, confirmAction, modalData, selectedRowId, tables, table } = this.state;
+		const { inputCode, modalInput, modalVisible, confirmAction, modalData, selectedRowId, tables, table, WMSModal } = this.state;
 		const isValidCode = Boolean(inputCode) && (/\w+-\d+\-\w+/).test(inputCode);
 		const prefix = inputCode.slice(0, 3);
 		const isOrder = isValidCode && prefix == 'MRD' && inputCode.length == 15,
 			  isStoreProduct = isValidCode && prefix == 'STP' || tables.includes("STORE_PRODUCTS"),
 			  isVehicle = isValidCode && prefix == 'CVH' || tables.includes("CLIENTS_VEHICLES"),
 			  isEmployee = isValidCode && prefix == 'EML' || tables.includes("EMPLOYEES"),
-			  isLabor = isValidCode && prefix == 'LBS' || tables.includes("LABORS");
+			  isLabor = isValidCode && prefix == 'LBS' || tables.includes("LABORS"),
+			  isCell = isValidCode && prefix == 'WMS' || tables.includes("CELLS");
 
         const pageData = [
         	{
@@ -389,7 +392,11 @@ export default class BarcodeContainer extends Component {
         			},
         			{
         				title: 'barcode.cell_code',
-        				disabled: true,
+        				disabled: !inputCode || isValidCode,
+						table: 'CELLS',
+						onClick: ()=>{
+							this.setState({WMSModal: true})
+						}
         			}
         		]
         	},
@@ -556,6 +563,51 @@ export default class BarcodeContainer extends Component {
 									pathname: `${book.employeesPage}/${barcodeData.referenceId}`,
 								});
 							}
+						},
+        			},
+        		]
+        	},
+			{
+        		title: 'Ячейка',
+        		childs: [
+					{
+        				title: 'Положить товар',
+        				disabled: !isCell,
+						table: 'STORE_PRODUCTS',
+						onClick: this._showModal,
+						confirmAction: async ()=>{
+							const barcodeData = await this._getByBarcode('CELLS');
+							console.log(barcodeData)
+							if(barcodeData) {
+								const warehouseId = barcodeData.referenceId.split('.');
+								await fetchAPI('POST', 'wms/cells/products', null, [
+									{
+										warehouseId: warehouseId[0],
+										storeProductId: this.state.selectedRowId,
+										address: barcodeData.referenceId,
+										count: 1,
+									}
+								])
+								this._hideModal();
+							}
+						},
+        			},
+        			{
+        				title: 'Инвентаризация',
+        				disabled: !isCell,
+						onClick: async () => {
+							const barcodeData = await this._getByBarcode('CELLS');
+							if(barcodeData) {
+								const warehouseId = barcodeData.referenceId.split('.');
+								history.push({
+									pathname: book.wms,
+									state: {
+										warehouseId: warehouseId[0],
+										address: barcodeData.referenceId,
+									}
+								});
+							}
+							
 						},
         			},
         		]
@@ -752,6 +804,37 @@ export default class BarcodeContainer extends Component {
 					</div>
 				</Modal>
 				<StoreProductModal/>
+				<WMSCellsModal
+					visible={Boolean(WMSModal)}
+					confirmAction={async (address, modalWarehouseId, count)=>{
+						try {
+							await fetchAPI(
+								'POST', 
+								'barcodes', 
+								undefined, 
+								[{
+									referenceId: address,
+									table: 'CELLS',
+									customCode: inputCode,
+								}],
+								{handleErrorInternally: true}
+							);
+							this.setState({
+								inputCode : "",
+							})
+							notification.success({
+								message: `Штрих-код задан`,
+							});
+						} catch(e) {
+							notification.error({
+								message: `Штрих-код уже задан`,
+							});
+						}
+					}}
+					hideModal={()=>{
+						this.setState({WMSModal: undefined})
+					}}
+				/>
             </Catcher>
         );
     }
