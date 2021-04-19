@@ -37,7 +37,7 @@ export function* fetchCallsSaga() {
                 statusIn:  config[ filter.mode ],
                 page:      filter.page,
                 channelId: filter.channelId,
-                // ..._.omit(filter, [ 'period', 'mode' ]),
+                clientId:  filter.clientId,
             };
 
             const data = yield call(fetchAPI, 'GET', 'calls', queries);

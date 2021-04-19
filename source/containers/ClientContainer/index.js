@@ -55,7 +55,7 @@ export default class ClientContainer extends Component {
         return (
             <Catcher>
                 <Tabs
-                    defaultActiveKey= {specificTab ? specificTab :'generalInfo'}
+                    defaultActiveKey={specificTab ? specificTab :'generalInfo'}
                     tabPosition={!isMobile ? 'right' : 'top'}
                     type='card'
                 >
@@ -135,12 +135,10 @@ export default class ClientContainer extends Component {
                         <ClientMRDsTab clientId={clientId} client={clientEntity}/>
                     </TabPane>
                     <TabPane
-                        // disabled={ isForbidden(user, ACCESS_RECEIVABLES_GET) }
-                        disabled={true}
                         tab={<FormattedMessage id={ 'client_container.calls'}/>}
                         key='calls'
                     >
-                        <ClientCallsTab />
+                        <ClientCallsTab/>
                     </TabPane>
                 </Tabs>
             </Catcher>

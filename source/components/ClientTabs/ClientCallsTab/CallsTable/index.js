@@ -1,3 +1,7 @@
+/**
+ * This table component is used to show client calls, it takes data from existing redux-saga core(calls).
+ */
+
 // vendor
 import React, { Component } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";

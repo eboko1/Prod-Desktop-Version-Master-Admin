@@ -126,17 +126,22 @@ export function columnsConfig(props) {
         width:      defWidth.vehicle_vin,
         key:        'vin',
         render: client => {
-            const vehicle = _.get(client, 'vehicles[0]');
-            if (!vehicle) {
-                return '';
+            const vehicles = _.get(client, 'vehicles');
+            return vehicles
+                ? (_.map(vehicles, (vehicle) => {
+                    if(!vehicle.model) return "";
+
+                    const vehicleVin = vehicle.vin || '';
+                    const vehicleNumber = vehicle.number || '';
+
+                    return (
+                        <div key={v4()} className={Styles.vin}>
+                            <div>{`${vehicleNumber + ' ' + vehicleVin}`}</div>
+                        </div>
+                    );
+                }))
+                :"---";
             }
-
-            const vin = vehicle.vin || '';
-
-            return vehicle.number
-                ? vehicle.number + ' ' + vin
-                : vehicle.vin;
-        },
     };
 
     return [

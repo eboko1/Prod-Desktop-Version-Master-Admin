@@ -27,14 +27,23 @@ export const SET_CALLS_PERIOD = `${prefix}/SET_CALLS_PERIOD`;
 export const SET_CALLS_CHANNEL_ID = `${prefix}/SET_CALLS_CHANNEL_ID`;
 export const SET_CALLS_CHART_MODE = `${prefix}/SET_CALLS_CHART_MODE`;
 export const SET_CALLS_TABLE_MODE = `${prefix}/SET_CALLS_TABLE_MODE`;
+export const SET_CLIENT_FILTER = `${prefix}/SET_CLIENT_FILTER`;
 export const SET_CALLS_PAGE_FILTER = `${prefix}/SET_CALLS_PAGE_FILTER`;
+
+/**
+ * Tabs constants you can use to define which tab you are currently usig now
+ */
+export const tabs = {
+    callsChart: 'callsChart',
+    callsTable: 'callsTable'
+}
 
 /**
  * Reducer
  * */
 
 const ReducerState = {
-    tab:             'callsChart',
+    tab:             tabs.callsChart,
     channels:        [],
     calls:           [],
     stats:           {},
@@ -50,6 +59,7 @@ const ReducerState = {
         mode:       'answered',
         page:       1,
         chartModes: {},
+        clientId:   undefined,
     },
 };
 
@@ -131,6 +141,16 @@ export default function reducer(state = ReducerState, action) {
                     mode: payload,
                     page: 1,
                 },
+            };
+        
+        case SET_CLIENT_FILTER:
+            const {clientId} = payload;
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    clientId: clientId
+                }
             };
 
         case SET_CALLS_PAGE_FILTER:
@@ -240,6 +260,11 @@ export const setCallsChartMode = mode => ({
 export const setCallsTableMode = mode => ({
     type:    SET_CALLS_TABLE_MODE,
     payload: mode,
+});
+
+export const setClientFilter = ({clientId}) => ({
+    type: SET_CLIENT_FILTER,
+    payload: {clientId}
 });
 
 export const setCallsPageFilter = page => ({
