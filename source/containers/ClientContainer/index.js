@@ -55,7 +55,7 @@ export default class ClientContainer extends Component {
         return (
             <Catcher>
                 <Tabs
-                    defaultActiveKey='calls' //{specificTab ? specificTab :'generalInfo'} //Temporary, replace to card later
+                    defaultActiveKey={specificTab ? specificTab :'generalInfo'}
                     tabPosition={!isMobile ? 'right' : 'top'}
                     type='card'
                 >
