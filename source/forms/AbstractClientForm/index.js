@@ -2,7 +2,7 @@
 import _ from "lodash";
 import moment from "moment";
 import React, { Component } from "react";
-import { Form, Row, Col, notification } from "antd";
+import { Form, Row, Col, notification, Icon } from "antd";
 import { FormattedMessage, injectIntl } from "react-intl";
 
 // proj
@@ -361,7 +361,14 @@ export class AbstractClientForm extends Component {
                                     ]}
                                     fieldName="phones"
                                     fieldTitle={
-                                        <FormattedMessage id="add_client_form.phones" />
+                                        (phoneNumber) => {
+                                            return (
+                                                <a href={`tel:380${phoneNumber}`} className={ Styles.link }>
+                                                    <FormattedMessage id="add_client_form.phones" />
+                                                    <Icon className={Styles.phoneIcon} type="phone" theme="twoTone" />
+                                                </a>
+                                            );
+                                        }
                                     }
                                     buttonText={
                                         <FormattedMessage id="add_client_form.add_phone" />
