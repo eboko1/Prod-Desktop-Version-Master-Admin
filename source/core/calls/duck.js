@@ -30,11 +30,19 @@ export const SET_CALLS_TABLE_MODE = `${prefix}/SET_CALLS_TABLE_MODE`;
 export const SET_CALLS_PAGE_FILTER = `${prefix}/SET_CALLS_PAGE_FILTER`;
 
 /**
+ * Tabs constants you can use to define which tab you are currently usig now
+ */
+export const tabs = {
+    callsChart: 'callsChart',
+    callsTable: 'callsTable'
+}
+
+/**
  * Reducer
  * */
 
 const ReducerState = {
-    tab:             'callsChart',
+    tab:             tabs.callsChart,
     channels:        [],
     calls:           [],
     stats:           {},
