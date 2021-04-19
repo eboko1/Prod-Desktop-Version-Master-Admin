@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import { Icon, Popconfirm } from 'antd';
+import { Icon, Popconfirm, Popover } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
@@ -186,19 +186,28 @@ export function columnsConfig(props) {
                                     okText={ <FormattedMessage id='yes' /> }
                                     cancelText={ <FormattedMessage id='no' />}
                                 >
-                                    <Icon
-                                        type='exclamation-circle'
-                                        className={Styles.unregisteredIcon}
-                                    />
+                                    <Popover content={<FormattedMessage id='cash-table.hint_repeat_registration' />}>
+                                        <Icon
+                                            type='exclamation-circle'
+                                            className={Styles.unregisteredIcon}
+                                        />
+                                    </Popover>
                                 </Popconfirm>
-                                <Icon
-                                    type="message"
-                                    className={ Styles.sendSMS }
-                                />
-                                <Icon
-                                    type="mail"
-                                    className={ Styles.sendMail }
-                                />
+
+                                <Popover content={<FormattedMessage id='cash-table.hint_send_sms' />}>
+                                    <Icon
+                                        type="message"
+                                        className={ Styles.sendSMS }
+                                    />
+                                </Popover>
+                                
+                                <Popover content={<FormattedMessage id='cash-table.hint_send_email' />}>
+                                    <Icon
+                                        type="mail"
+                                        className={ Styles.sendMail }
+                                    />
+                                </Popover>
+                                
                             </div>
                         )
                         : null
