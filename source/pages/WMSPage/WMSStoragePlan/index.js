@@ -27,7 +27,7 @@ export default class WMSStoragePlan extends Component {
         };
 
         const cell = {
-            title: <FormattedMessage id="Ячейка" />,
+            title: <FormattedMessage id="wms.cell" />,
             key: 'address',
             dataIndex: 'address',
             sorter: (a, b) => String(a.address).localeCompare(String(b.address)),
@@ -49,7 +49,7 @@ export default class WMSStoragePlan extends Component {
         }
 
         const code = {
-            title: <FormattedMessage id="Код товара" />,
+            title: <FormattedMessage id="order_form_table.product_code" />,
             key: 'code',
             dataIndex: 'code',
             sorter: (a, b) => String(a.code).localeCompare(String(b.code)),
@@ -71,14 +71,14 @@ export default class WMSStoragePlan extends Component {
         }
 
         const brand = {
-            title: <FormattedMessage id="Бренд" />,
+            title: <FormattedMessage id="brand" />,
             key: 'brandName',
             dataIndex: 'brandName',
             sorter: (a, b) => String(a.brandName).localeCompare(String(b.brandName)),
         }
 
         const name = {
-            title: <FormattedMessage id="Наименование" />,
+            title: <FormattedMessage id="order_form_table.detail_name" />,
             key: 'name',
             dataIndex: 'name',
             sorter: (a, b) => String(a.name).localeCompare(String(b.name)),
@@ -92,7 +92,7 @@ export default class WMSStoragePlan extends Component {
         }
 
         const fullness = {
-            title: <FormattedMessage id="Заполненность" />,
+            title: <FormattedMessage id="wms.fullness" />,
             key: 'fullness',
             dataIndex: 'fullness',
             sorter: (a, b) => a.fullness - b.fullness,
@@ -104,13 +104,14 @@ export default class WMSStoragePlan extends Component {
                 return (
                     <Button
                         type='primary'
+                        disabled={!row.address}
                         onClick={()=>{
                             this.setState({
                                 selectedCell: row,
                             })
                         }}
                     >
-                        <FormattedMessage id='Переместить'/>
+                        <FormattedMessage id='wms.transfer'/>
                     </Button>
                 )
             }
@@ -153,6 +154,7 @@ export default class WMSStoragePlan extends Component {
                 ...elem.storeProduct,
                 ...elem.wmsCellOptions,
                 brandName: elem.brand.name,
+                key,
             }
         })
         this.setState({
@@ -161,10 +163,10 @@ export default class WMSStoragePlan extends Component {
         })
     }
 
-    componentDidMount() {
-        if(this.props.location && this.props.location.state) {
+    componentDidMount(prevProps) {
+        if(this.props.tableFilter) {
             this.setState({
-                tableFilter: this.props.location.state.address
+                tableFilter: this.props.tableFilter
             })
         }
         this._fetchData('CELLS');
@@ -191,14 +193,14 @@ export default class WMSStoragePlan extends Component {
                 {type != 'CELLS' &&
                     <Menu.Item>
                         <div onClick={()=>this._fetchData('CELLS')}>
-                            <FormattedMessage id='План склада по ячейкам' />
+                            <FormattedMessage id='wms.storage_plan_by_cell' />
                         </div>
                     </Menu.Item>
                 }
                 {type != 'PRODUCTS' &&
                     <Menu.Item>
                         <div onClick={()=>this._fetchData('PRODUCTS')}>
-                            <FormattedMessage id='План склада по товарам' />
+                            <FormattedMessage id='wms.storage_plan_by_product' />
                         </div>
                     </Menu.Item>
                 }
@@ -211,8 +213,8 @@ export default class WMSStoragePlan extends Component {
                     <FormattedMessage
                         id={ 
                             type == 'CELLS'
-                                ? 'План склада по ячейкам'
-                                : 'План склада по товарам'
+                                ? 'wms.storage_plan_by_cell'
+                                : 'wms.storage_plan_by_product'
                         } 
                     />
                     <Dropdown overlay={menu}>

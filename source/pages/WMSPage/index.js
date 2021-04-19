@@ -55,7 +55,7 @@ export default class WMSPage extends Component {
 
         this.columns = [
             {
-                title: <FormattedMessage id="Дата" />,
+                title: <FormattedMessage id="date" />,
                 key: 'datetime',
                 dataIndex: 'datetime',
                 sorter: (a, b) => moment(a.datetime).format('DD/MM/YYYY').localeCompare(moment(b.datetime).format('DD/MM/YYYY')),
@@ -66,25 +66,25 @@ export default class WMSPage extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Ячейка" />,
+                title: <FormattedMessage id="wms.cell" />,
                 key: 'address',
                 dataIndex: 'address',
                 sorter: (a, b) => String(a.address).localeCompare(String(b.address)),
             },
             {
-                title: <FormattedMessage id="Код товара" />,
+                title: <FormattedMessage id="order_form_table.product_code" />,
                 key: 'code',
                 dataIndex: 'code',
                 sorter: (a, b) => String(a.code).localeCompare(String(b.code)),
             },
             {
-                title: <FormattedMessage id="Бренд" />,
+                title: <FormattedMessage id="brand" />,
                 key: 'brandName',
                 dataIndex: 'brandName',
                 sorter: (a, b) => String(a.brandName).localeCompare(String(b.brandName)),
             },
             {
-                title: <FormattedMessage id="Наименование" />,
+                title: <FormattedMessage id="order_form_table.detail_name" />,
                 key: 'name',
                 dataIndex: 'name',
                 sorter: (a, b) => String(a.name).localeCompare(String(b.name)),
@@ -96,7 +96,7 @@ export default class WMSPage extends Component {
                 sorter: (a, b) => a.count - b.count,
             },
             {
-                title: <FormattedMessage id="Номер документа" />,
+                title: <FormattedMessage id="storage.document_number" />,
                 key: 'storeDocId',
                 dataIndex: 'storeDocId',
                 render: (data, row) => {
@@ -119,7 +119,7 @@ export default class WMSPage extends Component {
         })
         const cells = await fetchAPI('GET', `wms/cells`, {warehouseId});
         const generateSettings = await fetchAPI('GET', `wms/address_options`, {warehouseId})
-        if(cells.stats.count == 0) {
+        if(cells && cells.stats.count == 0) {
             this.state.activeKey = 'generate';
         }
         await this.setState({
@@ -148,27 +148,31 @@ export default class WMSPage extends Component {
     }
 
     componentDidMount = async () => {
-        if(this.props.location && this.props.location.state) {
-            this.setState({
-                activeKey: 'plan',
-            })
-        }
-        this.props.fetchWarehouses();
+        await this.props.fetchWarehouses();
     }
 
     componentDidUpdate = async (prevProps) => {
-        if(this.props.warehouses.length && !prevProps.warehouses.length && !this.state.warehouseId) {
-            const warehouseId = this.props.location && this.props.location.state ? this.props.location.state.warehouseId : this.props.warehouses[0].id;
+        if(this.props.warehouses.length && !prevProps.warehouses.length) {
             await this.setState({
-                warehouseId,
+                warehouseId: this.props.warehouses[0].id,
             });
-            this._fetchCells();
+            if(this.props.location && this.props.location.state) {
+                await this.setState({
+                    activeKey: 'plan',
+                    warehouseId: Number(this.props.location.state.warehouseId),
+                    tableFilter: this.props.location.state.address
+                })
+            }
+            await this._fetchCells();
+            await this.setState({
+                tableFilter: undefined
+            })
         }
     }
 
     render() {
         const { user, warehouses, intl: {formatMessage} } = this.props;
-        const { cells, activeKey, warehouseId, generateSettings, movement, startDate, endDate, address, storeProductId, movementFilter } = this.state;
+        const { cells, activeKey, warehouseId, generateSettings, movement, startDate, endDate, address, storeProductId, movementFilter, tableFilter } = this.state;
         return !cells ? (
             <Spinner spin={ true }/>
         ) : (
@@ -219,7 +223,7 @@ export default class WMSPage extends Component {
                         }}
                     >
                         <TabPane
-                            tab={<FormattedMessage id="План склада"/>}
+                            tab={<FormattedMessage id="wms.storage_plan"/>}
                             key="plan"
                             disabled={!cells.length}
                         >
@@ -229,11 +233,12 @@ export default class WMSPage extends Component {
                                     fetchCells={this._fetchCells}
                                     fetchMovement={this._fetchMovement}
                                     warehouseId={warehouseId}
+                                    tableFilter={tableFilter}
                                 />
                             }
                         </TabPane>
                         <TabPane
-                            tab={<FormattedMessage id="Настройки ячеек"/>}
+                            tab={<FormattedMessage id="wms.cell_settings"/>}
                             key="settings"
                             disabled={!cells.length}
                         >
@@ -244,7 +249,7 @@ export default class WMSPage extends Component {
                             />
                         </TabPane>
                         <TabPane
-                            tab={<FormattedMessage id="Сгенерировать WMS"/>}
+                            tab={<FormattedMessage id="wms.generate_wms"/>}
                             key="generate"
                         >
                             <WMSGenerateCells
@@ -255,7 +260,7 @@ export default class WMSPage extends Component {
                         </TabPane>
                         {movement && 
                             <TabPane
-                                tab={<FormattedMessage id="Движение"/>}
+                                tab={<FormattedMessage id="wms.movement"/>}
                                 key="movement"
                             >
                                 <div

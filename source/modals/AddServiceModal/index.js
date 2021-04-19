@@ -663,7 +663,7 @@ class AddServiceModal extends React.Component{
                         }]
                     } else {
                         notification.warning({
-                            message: 'Код не найден',
+                            message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
                         });
                         this.props.hideModal();
                     }

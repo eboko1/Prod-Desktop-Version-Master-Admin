@@ -65,7 +65,7 @@ export default class ProductPage extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Ячейка" />,
+                title: <FormattedMessage id="wms.cell" />,
                 key: 'address',
                 dataIndex: 'wmsCellOptions',
                 render: (data, row)=>{
@@ -80,7 +80,7 @@ export default class ProductPage extends Component {
                 dataIndex: 'sum',
             },
             {
-                title: <FormattedMessage id="Заполненность" />,
+                title: <FormattedMessage id="wms.fullness" />,
                 key: 'fullness',
                 dataIndex: 'fullness',
             },
@@ -97,7 +97,7 @@ export default class ProductPage extends Component {
                                 });
                             }}
                         >
-                            <FormattedMessage id='Переместить'/>
+                            <FormattedMessage id='wms.transfer'/>
                         </Button>
                     )
                 }
@@ -564,12 +564,12 @@ export default class ProductPage extends Component {
                                 </div>
                                 <div className={Styles.storeTabRow}>
                                     <span className={Styles.storeFieldLabel}>
-                                        <FormattedMessage id='Ячейка по умолчанию'/>
+                                        <FormattedMessage id='product.default_cell'/>
                                     </span>
                                     <Select
                                         className={Styles.storeField}
                                         value={product.cellAddresses ? product.cellAddresses[0] : undefined}
-                                        placeholder={formatMessage({id: 'Ячейка по умолчанию'})}
+                                        placeholder={formatMessage({id: 'product.default_cell'})}
                                         showSearch
                                         disabled={!product.defaultWarehouseId}
                                         optionFilterProp={'children'}
@@ -649,7 +649,7 @@ export default class ProductPage extends Component {
                                 <div className={Styles.storeTabRow}>
                                         <div>
                                             <div>
-                                                <FormattedMessage id='Ширина (см)'/>
+                                                <FormattedMessage id='wms.width'/>
                                             </div>
                                             <InputNumber
                                                 value={product.width}
@@ -662,7 +662,7 @@ export default class ProductPage extends Component {
                                         </div>
                                         <div>
                                             <div>
-                                                <FormattedMessage id='Высота (см)'/>
+                                                <FormattedMessage id='wms.height'/>
                                             </div>
                                             <InputNumber
                                                 value={product.height}
@@ -675,7 +675,7 @@ export default class ProductPage extends Component {
                                         </div>
                                         <div>
                                             <div>
-                                                <FormattedMessage id='Глубина (см)'/>
+                                                <FormattedMessage id='wms.depth'/>
                                             </div>
                                             <InputNumber
                                                 value={product.depth}
@@ -688,7 +688,7 @@ export default class ProductPage extends Component {
                                         </div>
                                         <div>
                                             <div>
-                                                <FormattedMessage id='Вес (кг)'/>
+                                                <FormattedMessage id='wms.weight'/>
                                             </div>
                                             <InputNumber
                                                 value={product.weight}
@@ -750,7 +750,7 @@ export default class ProductPage extends Component {
                         <TabPane
                             tab={
                                 <FormattedMessage
-                                    id={"Ячейки"}
+                                    id={"wms.cells"}
                                 />
                             }
                             key="cell"

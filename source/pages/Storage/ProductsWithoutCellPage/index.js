@@ -32,7 +32,7 @@ export default class ProductsWithoutCellPage extends Component {
 
         this.columns = [
             {
-                title: <FormattedMessage id="Код товара" />,
+                title: <FormattedMessage id="order_form_table.product_code" />,
                 key: 'code',
                 dataIndex: 'code',
                 sorter: (a, b) => String(a.code).localeCompare(String(b.code)),
@@ -53,7 +53,7 @@ export default class ProductsWithoutCellPage extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Бренд" />,
+                title: <FormattedMessage id="brand" />,
                 key: 'brand',
                 dataIndex: 'brand',
                 sorter: (a, b) => String(a.brandName).localeCompare(String(b.brandName)),
@@ -64,7 +64,7 @@ export default class ProductsWithoutCellPage extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Наименование" />,
+                title: <FormattedMessage id="order_form_table.detail_name" />,
                 key: 'name',
                 dataIndex: 'name',
                 sorter: (a, b) => String(a.name).localeCompare(String(b.name)),
@@ -92,7 +92,7 @@ export default class ProductsWithoutCellPage extends Component {
                                 });
                             }}
                         >
-                            <FormattedMessage id='Переместить'/>
+                            <FormattedMessage id='wms.transfer'/>
                         </Button>
                     )
                 }

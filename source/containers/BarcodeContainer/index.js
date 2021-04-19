@@ -169,11 +169,11 @@ export default class BarcodeContainer extends Component {
 				inputCode : "",
 			})
 			notification.success({
-				message: `Штрих-код задан`,
+				message: this.props.intl.formatMessage({id: 'barcode.barcode_setted'}),
 			});
 		} catch(e) {
 			notification.error({
-				message: `Штрих-код уже задан`,
+				message: this.props.intl.formatMessage({id: 'barcode.barcode_already_set'}),
 			});
 		}
 		
@@ -319,14 +319,14 @@ export default class BarcodeContainer extends Component {
 			const response = await fetchAPI('POST', `store_docs`, null, payload);
 			if(response && response.created) {
 				notification.success({
-					message: `Успешно`,
+					message: this.props.intl.formatMessage({id: 'barcode.success'}),
 				});
 				this.setState({
 					inputCode: "",
 				})
 			} else {
 				notification.error({
-					message: `Недостаточно товара`,
+					message: this.props.intl.formatMessage({id: 'storage_document.error.available'}),
 				});
 			}
 		}
@@ -568,10 +568,10 @@ export default class BarcodeContainer extends Component {
         		]
         	},
 			{
-        		title: 'Ячейка',
+        		title: 'wms.cell',
         		childs: [
 					{
-        				title: 'Положить товар',
+        				title: 'barcode.wms.put_product',
         				disabled: !isCell,
 						table: 'STORE_PRODUCTS',
 						onClick: this._showModal,
@@ -593,7 +593,7 @@ export default class BarcodeContainer extends Component {
 						},
         			},
         			{
-        				title: 'Инвентаризация',
+        				title: 'barcode.wms.inventorization',
         				disabled: !isCell,
 						onClick: async () => {
 							const barcodeData = await this._getByBarcode('CELLS');
@@ -823,11 +823,11 @@ export default class BarcodeContainer extends Component {
 								inputCode : "",
 							})
 							notification.success({
-								message: `Штрих-код задан`,
+								message: this.props.intl.formatMessage({id: 'barcode.barcode_setted'}),
 							});
 						} catch(e) {
 							notification.error({
-								message: `Штрих-код уже задан`,
+								message: this.props.intl.formatMessage({id: 'barcode.barcode_already_set'}),
 							});
 						}
 					}}
