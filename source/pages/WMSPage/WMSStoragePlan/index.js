@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { Switch, Input, Button, notification, Select, Table, InputNumber, Dropdown, Icon, Menu } from "antd";
+import { withRouter } from "react-router";
 import _ from 'lodash';
 import moment from 'moment';
 import { type } from "ramda";
@@ -14,6 +15,7 @@ import { WMSCellsModal } from 'modals';
 import Styles from "./styles.m.css";
 const Option = Select.Option;
 
+@withRouter
 @injectIntl
 export default class WMSStoragePlan extends Component {
     constructor(props) {
@@ -160,6 +162,11 @@ export default class WMSStoragePlan extends Component {
     }
 
     componentDidMount() {
+        if(this.props.location && this.props.location.state) {
+            this.setState({
+                tableFilter: this.props.location.state.address
+            })
+        }
         this._fetchData('CELLS');
     }
 
