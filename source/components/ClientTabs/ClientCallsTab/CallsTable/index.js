@@ -1,36 +1,46 @@
 // vendor
 import React, { Component } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
-import { Radio, Table } from "antd";
+import { connect } from "react-redux";
+import { Table } from "antd";
 import _ from "lodash";
 import { v4 } from 'uuid';
 
 // proj
 import { Catcher, Loader } from "commons";
+import {
+    fetchCalls,
+    setCallsPageFilter,
+    selectCallsData,
+    selectCallsFilter,
+    selectCallsStats,
+    fetchRecordingLink,
+    selectCallsLinksCache
+} from "core/calls/duck";
 
 //own
-import { columnsConfig } from "./callsTableConfig.js";
+import { columnsConfig } from "./config.js";
 import Styles from "./styles.m.css";
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
+
+const mapStateToProps = state => {
+    return {
+        calls: selectCallsData(state),
+        stats: selectCallsStats(state),
+        filter: { ...selectCallsFilter(state) },
+        callsLinksCache: selectCallsLinksCache(state),
+        callsFetching:     state.ui.callsFetching,
+    };
+};
+
+const mapDispatchToProps = {
+    fetchCalls,
+    setCallsPageFilter,
+    fetchRecordingLink,
+};
 
 @injectIntl
+@connect(mapStateToProps, mapDispatchToProps)
 export default class CallsTable extends Component {
-    state = {
-        visiblePhones: [],
-    };
-
-    _setCallsTableFilterMode = mode => {
-        this.props.setCallsTableMode(mode);
-        this.props.fetchCalls();
-    };
-
-    _showPhone = phone => {
-        this.setState(state => ({
-            visiblePhones: [...state.visiblePhones, phone],
-        }));
-    };
-
     render() {
         const {
             calls,
@@ -42,34 +52,27 @@ export default class CallsTable extends Component {
             callsLinksCache,
         } = this.props;
 
-        const columns = columnsConfig(
+        const columns = columnsConfig({
             formatMessage,
-            this._showPhone,
-            this.state.visiblePhones,
             fetchRecordingLink,
             callsLinksCache
-        );
+        });
 
         const pagination = {
             pageSize: 25,
             size: "small",
             total: Math.ceil(_.get(stats, "total") / 25) * 25,
-            hideOnSinglePage: true,
             current: filter.page,
             onChange: page => {
                 this.props.setCallsPageFilter(page);
-                this.setState({ visiblePhones: [] });
                 this.props.fetchCalls();
             },
         };
-
-        const callsTableControls = this._renderCallsTableControls();
 
         return callsFetching ? (
             <Loader loading={callsFetching} />
         ) : (
             <Catcher>
-                {callsTableControls}
                 <Table
                     size="small"
                     className={Styles.table}
@@ -86,25 +89,4 @@ export default class CallsTable extends Component {
             </Catcher>
         );
     }
-
-    _renderCallsTableControls = () => {
-        const { filter } = this.props;
-
-        return (
-            <RadioGroup value={filter.mode}>
-                <RadioButton
-                    value="answered"
-                    onClick={() => this._setCallsTableFilterMode("answered")}
-                >
-                    <FormattedMessage id="calls-table.answered" />
-                </RadioButton>
-                <RadioButton
-                    value="missed"
-                    onClick={() => this._setCallsTableFilterMode("missed")}
-                >
-                    <FormattedMessage id="calls-table.missed" />
-                </RadioButton>
-            </RadioGroup>
-        );
-    };
 }

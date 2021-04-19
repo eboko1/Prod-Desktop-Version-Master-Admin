@@ -8,7 +8,6 @@ import history from 'store/history';
 //proj
 import book from 'routes/book';
 import { fetchAPI } from 'utils';
-import {setReportOrdersFetching, emitError} from 'core/ui/duck';
 
 // own
 import {
@@ -18,7 +17,6 @@ import {
     setClientsFetching,
     setClientOrdersFetching,
     fetchClientOrdersSuccess,
-    createOrderForClientSuccess
 } from './duck';
 
 import {
@@ -56,16 +54,12 @@ export function* fetchClientOrdersSaga() {
             const {payload: {clientId}} = yield take(FETCH_CLIENT_ORDERS);
             yield put(setClientOrdersFetching(true));
 
-            console.log("ClientId: ", clientId);
-
             const {orders, stats} = yield call(
                 fetchAPI,
                 'GET',
                 `/orders/client/${clientId}`
             );
             
-            console.log("Req res: ", orders, stats);
-
             yield put(fetchClientOrdersSuccess({orders, stats}));
         } finally {
             yield put(setClientOrdersFetching(false));
@@ -75,13 +69,13 @@ export function* fetchClientOrdersSaga() {
 
 export function* createOrderForClientSaga() {
     while(true) {
+        const { payload: {clientId, managerId, vehicleId} } = yield take(CREATE_ORDER_FOR_CLIENT);
+        if(!clientId) continue;
+        
+        //Get client
+        const client = yield call(fetchAPI, 'GET', `clients/${clientId}`);
+        
         try {
-            const { payload: {clientId, managerId} } = yield take(CREATE_ORDER_FOR_CLIENT);
-            if(!clientId) continue;
-
-            //Get client
-            const client = yield call(fetchAPI, 'GET', `clients/${clientId}`);
-
             const response = yield call(
                 fetchAPI,
                 'POST',
@@ -89,6 +83,7 @@ export function* createOrderForClientSaga() {
                 null,
                 {
                     clientId: client.clientId,
+                    clientVehicleId: vehicleId ? vehicleId : void 0,
                     duration: 0.5,
                     clientPhone: client.phones[0],
                     stationLoads: [{
@@ -103,24 +98,22 @@ export function* createOrderForClientSaga() {
                 {handleErrorInternally: true}
             );
 
-            
             if(response && response.created) {
                 // If successfully created new order redirect on its page 
                 history.push({
                     pathname: `${book.order}/${response.created[0].id}`
                 });
-            } else {
-                notification.error({
-                    message: response.message
-                })
             }
 
-        } finally {
-            
+        } catch(err) {
+            const { response } = err;
+            console.error(err);
+            response && notification.error({
+                message: response.message
+            })
         }
     }
 }
-
 
 export function* saga() {
     yield all([ call(fetchClientsSaga), call(fetchClientOrdersSaga), call(createOrderForClientSaga) ]);

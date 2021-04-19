@@ -2,12 +2,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Button } from 'antd';
+import { Button, Icon } from 'antd';
 import _ from 'lodash';
 import { v4 } from "uuid";
 
 //Proj
 import book from 'routes/book';
+import { Numeral, StyledButton } from "commons";
 
 //Own
 import Styles from './styles.m.css';
@@ -17,10 +18,11 @@ import Styles from './styles.m.css';
 //It must be 100% of width in total!
 const defWidth = {
     client_full_name: '15%',
-    actions: '10%',
+    actions: '5%',
     client_phones: '20%',
     client_vehicles: 'auto',
-    vehicle_vin: '20%'
+    client_debts: '10%',
+    vehicle_vin: '15%'
 }
 
 /* eslint-disable complexity */
@@ -48,10 +50,13 @@ export function columnsConfig(props) {
 
     const actionsCol = {
         width: defWidth.actions,
+        align: 'center',
         render: (val, client) => {
-            return (<Button onClick={() => onCreateOrderForClient({clientId: client.clientId})}>
-                <FormattedMessage id={"client_hot_operations_page.create_new_order"} />
-            </Button>)
+            return (
+                <StyledButton type='primary' onClick={() => onCreateOrderForClient({clientId: client.clientId})}>
+                    <Icon type="plus" className={Styles.newOrderIcon}/>
+                </StyledButton>
+            )
         }
     };
     
@@ -76,19 +81,43 @@ export function columnsConfig(props) {
         }
     };
 
+    const debtsCol = {
+        title:      <FormattedMessage id='client_hot_operations_page.debt' />,
+        width:      defWidth.client_debts,
+        dataIndex:  'totalDebtWithTaxes',
+        key:        'totalDebtWithTaxes',
+        render: (debt) => {
+            return (
+                <Numeral
+                    nullText='0'
+                    mask='0,0.00'
+                >
+                    { debt }
+                </Numeral>
+            );
+        }
+    };
+
     const vehicleCol = {
         title:      <FormattedMessage id='vehicle' />,
         width:      defWidth.client_vehicles,
         key:        'vehicle',
         render: client => {
-            const vehicle = _.get(client, 'vehicles[0]');
-            if (!vehicle) {
-                return '';
-            }
+            const vehicles = _.get(client, 'vehicles');
+            return vehicles
+                ? (_.map(vehicles, (vehicle) => {
+                    if(!vehicle.model) return "";
 
-            return vehicle.model
-                ? `${vehicle.make} ${vehicle.model} (${vehicle.year})`
-                : '';
+                    return (
+                        <div key={v4()} className={Styles.vehicle}>
+                            <span>{`${vehicle.make} ${vehicle.model} (${vehicle.year})`}</span>
+                            <StyledButton type='primary' onClick={() => onCreateOrderForClient({clientId: client.clientId, vehicleId: vehicle.id})}>
+                                <Icon type="plus" className={Styles.newOrderIcon}/>
+                            </StyledButton>
+                        </div>
+                    );
+                }))
+                :"---";
         },
     };
 
@@ -114,6 +143,7 @@ export function columnsConfig(props) {
         clientFullNameCol,
         actionsCol,
         phonesCol,
+        debtsCol,
         vehicleCol,
         vinCol
     ];

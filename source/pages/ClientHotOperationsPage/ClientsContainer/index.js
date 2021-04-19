@@ -5,6 +5,7 @@ Container used to show clients and perform basic search of them.
 import React from 'react';
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { withRouter } from "react-router";
 import { Table, Input } from 'antd';
 import { v4 } from 'uuid';
 
@@ -14,7 +15,7 @@ import {
     setSortPage,
     fetchClientOrders,
     setClientRowKey,
-    createOrderForClient
+    createOrderForClient,
 } from 'core/clientHotOperations/duck';
 
 //Own
@@ -28,7 +29,8 @@ const mapStateToProps = state => ({
     stats:               state.clientHotOperations.stats,
     clientsFetching:     state.clientHotOperations.clientsFetching,
     sort:                state.clientHotOperations.sort,
-    expandedClientRow:   state.clientHotOperations.expandedClientRow
+    expandedClientRow:   state.clientHotOperations.expandedClientRow,
+    searchQuery:         state.clientHotOperations.filters.query
 });
 
 const mapDispatchToProps = {
@@ -44,27 +46,32 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 @injectIntl
+@withRouter
 export default class ClientsContainer extends React.Component {
     constructor(props) {
         super(props);
 
         this.handleSearch = _.debounce(value => {
-            this.props.setFiltersSearchQuery(value);
+            this.props.setFiltersSearchQuery(value.replace(/[+()]/g,''));
         }, 1000).bind(this);
+
+        this.urlParams = new URLSearchParams(location.search); //Get params from query sting
+        this.initialSearchQuery = this.urlParams.get('initial_search_query'); //Get init search value, we can use it to initialize Inputs
+        this.initialSearchQuery && this.props.setFiltersSearchQuery(this.initialSearchQuery.replace(/[+()]/g,'')); //Set filter and fetch data if needed
     }
 
     onSearch = e => {
-        const value = e.target.value.replace(/[+()]/g,'');
+        const value = e.target.value;
         this.handleSearch(value);
     }
 
     /**
-     * This event handler is used to create an order which will contain specific client
-     * @param {*} param0 Contains clientId which is used to define client in order
+     * This event handler is used to create an order which will contain specific client and may contain vehicle if id was provided
+     * @param {*} param0 Contains clientId which is used to define client in order and vehicleId of this client
      */
-    onCreateOrderForClient = ({clientId}) => {
+    onCreateOrderForClient = ({clientId, vehicleId}) => {
         const {user} = this.props;
-        this.props.createOrderForClient({clientId, managerId: user.id});
+        this.props.createOrderForClient({clientId, managerId: user.id, vehicleId});
     }
 
     render() {
@@ -76,7 +83,8 @@ export default class ClientsContainer extends React.Component {
             setSortPage,
             fetchClientOrders,
             setClientRowKey,
-            expandedClientRow
+            expandedClientRow,
+            searchQuery
         } = this.props;
 
         const pagination = {
@@ -94,7 +102,7 @@ export default class ClientsContainer extends React.Component {
             <div>
                 <div className={Styles.filtersCont}>
                     <div className={Styles.textCont}><FormattedMessage id={"client_hot_operations_page.search"} />: </div>
-                    <div className={Styles.inputCont}><Input onChange={this.onSearch} allowClear/></div>
+                    <div className={Styles.inputCont}><Input defaultValue={this.initialSearchQuery} onChange={this.onSearch} allowClear/></div>
                     
                 </div>
                 

@@ -70,10 +70,8 @@ export default class ClientHotOperationsPage extends Component {
             >
                 <ClientsContainer />
                 <AddClientModal
-                    // searchQuery={searchClientQuery}
                     visible={this.props.modal}
                     resetModal={this.props.resetModal}
-                    // addClientFormData={this.props.addClientFormData}
                 />
             </Layout>
         );

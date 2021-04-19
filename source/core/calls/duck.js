@@ -18,6 +18,9 @@ export const FETCH_CALLS_SUCCESS = `${prefix}/FETCH_CALLS_SUCCESS`;
 export const FETCH_CALLS_CHART = `${prefix}/FETCH_CALLS_CHART`;
 export const FETCH_CALLS_CHART_SUCCESS = `${prefix}/FETCH_CALLS_CHART_SUCCESS`;
 
+export const FETCH_RECORDING_LINK = `${prefix}/FETCH_RECORDING_LINK`;
+export const FETCH_RECORDING_LINK_SUCCESS = `${prefix}/FETCH_RECORDING_LINK_SUCCESS`;
+
 export const SET_CALLS_TAB = `${prefix}/SET_CALLS_TAB`;
 export const SET_CALLS_DATERANGE = `${prefix}/SET_CALLS_DATERANGE`;
 export const SET_CALLS_PERIOD = `${prefix}/SET_CALLS_PERIOD`;
@@ -31,12 +34,13 @@ export const SET_CALLS_PAGE_FILTER = `${prefix}/SET_CALLS_PAGE_FILTER`;
  * */
 
 const ReducerState = {
-    tab:      'callsChart',
-    channels: [],
-    calls:    [],
-    stats:    {},
-    chart:    [],
-    filter:   {
+    tab:             'callsChart',
+    channels:        [],
+    calls:           [],
+    stats:           {},
+    chart:           [],
+    callsLinksCache: {}, //Contains key-value pairs which represents callId - recording link, it is required because Binotel does not provide long term links
+    filter:     {
         channelId: null,
         startDate: moment()
             .subtract(3, 'months')
@@ -63,6 +67,16 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 ...payload,
+            };
+
+        case FETCH_RECORDING_LINK_SUCCESS:
+            const {callId, recordingLink} = payload;
+            return {
+                ...state,
+                callsLinksCache: {
+                    ...state.callsLinksCache,
+                    [callId]: recordingLink
+                }
             };
 
         case SET_CALLS_TAB:
@@ -140,6 +154,7 @@ export default function reducer(state = ReducerState, action) {
 export const stateSelector = state => state[ moduleName ];
 export const selectCallsFilter = state => state[ moduleName ].filter;
 export const selectCallsStats = state => state[ moduleName ].stats;
+export const selectCallsLinksCache = state => state[ moduleName ].callsLinksCache;
 
 export const selectCallsData = createSelector([ stateSelector ], ({ calls }) =>
     calls.map(call => ({
@@ -185,6 +200,16 @@ export const fetchCallsChart = init => ({
 export const fetchCallsChartSuccess = data => ({
     type:    FETCH_CALLS_CHART_SUCCESS,
     payload: data,
+});
+
+export const fetchRecordingLink = ({callId}) => ({
+    type: FETCH_RECORDING_LINK,
+    payload: {callId}
+});
+
+export const fetchRecordingLinkSuccess = ({callId, recordingLink}) => ({
+    type: FETCH_RECORDING_LINK_SUCCESS,
+    payload: {callId, recordingLink}
 });
 
 export const setCallsTab = tab => ({
