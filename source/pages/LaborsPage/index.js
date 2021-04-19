@@ -500,14 +500,14 @@ export default class LaborsPage extends Component {
                 render: (row)=>{
                     const buttonType = row.masterLaborId >= 9000 ? 'danger' : 'primary';
                     const iconType = row.masterLaborId >= 9000 ? 'delete' : 'undo';
-                    return Boolean(row.laborBusinessId) ? (
+                    return (
                         <Popconfirm
                             title={
                                 <FormattedMessage id='add_order_form.delete_confirm' />
                             }
-                            onConfirm={ () => {
-                                row.deleted = true;
-                                this.setState({});
+                            onConfirm={ async () => {
+                                await fetchAPI('PUT', `labors/reset?laborIds=[${row.id}]`);
+                                this.fetchLabors();
                             } }
                         >
                             <Button
@@ -524,16 +524,6 @@ export default class LaborsPage extends Component {
                                 <Icon type={iconType}/>
                             </Button>
                         </Popconfirm>
-                    ) : (
-                        <Button
-                            type={buttonType}
-                            disabled
-                            style={{
-                                width: '100%'
-                            }}
-                        >
-                            <Icon type={iconType}/>
-                        </Button>
                     )
                 }
             }
@@ -572,12 +562,9 @@ export default class LaborsPage extends Component {
     }
 
     async saveLabors() {
-        var labors = [], newLabors = [], deletedLabors = [];
+        var labors = [], newLabors = [];
         this.state.labors.map((elem)=>{
-            if(elem.deleted) {
-                deletedLabors.push(elem.laborId);
-            }
-            else if(elem.changed && !elem.new) {
+            if(elem.changed && !elem.new) {
                 labors.push({
                     masterLaborId: elem.masterLaborId,
                     storeGroupId: elem.storeGroupId,
@@ -585,7 +572,7 @@ export default class LaborsPage extends Component {
                     crossId: elem.crossId || null,
                 });
                 if(elem.laborId) labors[labors.length-1].laborId = elem.laborId;
-                if(elem.customName) labors[labors.length-1].customName = elem.customName;
+                if(elem.customName) labors[labors.length-1].name = elem.customName;
                 if(elem.fixed) {
                     labors[labors.length-1].fixed = true;
                     labors[labors.length-1].price = elem.price || 1;
@@ -618,9 +605,6 @@ export default class LaborsPage extends Component {
         if(newLabors.length) {
             await fetchAPI('POST', 'labors', null, newLabors);
         } 
-        if(deletedLabors.length) {
-            await fetchAPI('DELETE', `labors?laborIds=[${deletedLabors}]`);
-        }
         if(labors.length) {
             await fetchAPI('PUT', 'labors', null, labors);
         }
