@@ -138,7 +138,7 @@ export default class ClientContainer extends Component {
                         tab={<FormattedMessage id={ 'client_container.calls'}/>}
                         key='calls'
                     >
-                        <ClientCallsTab />
+                        <ClientCallsTab/>
                     </TabPane>
                 </Tabs>
             </Catcher>

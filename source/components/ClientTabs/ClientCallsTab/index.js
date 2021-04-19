@@ -1,3 +1,9 @@
+/**
+ * This tab combines existing functionality for cals(duck, saga) but provides client oriented result.
+ * For example we search calls for specific client only ond show only them without charts.
+ */
+
+
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -13,6 +19,7 @@ import {
     setCallsChannelId,
     setCallsTab,
     tabs,
+    setClientFilter,
 } from 'core/calls/duck';
 
 // own
@@ -30,6 +37,7 @@ const mapStateToProps = state => ({
     filter:            state.calls.filter,
     callsInitializing: state.ui.callsInitializing,
     callsFetching:     state.ui.callsFetching,
+    clientEntity:      state.client.clientEntity,
 });
 
 const mapDispatchToProps = {
@@ -37,6 +45,7 @@ const mapDispatchToProps = {
     setCallsDaterange,
     setCallsChannelId,
     setCallsTab,
+    setClientFilter,
 };
 
 @connect(
@@ -49,8 +58,20 @@ export default class ClientCallsTab extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchCalls();
-        this.props.setCallsTab(tabs.callsTable);
+        const {
+            fetchCalls,
+            setCallsTab,
+        } = this.props;
+
+        fetchCalls();
+        setCallsTab(tabs.callsTable);//Set this tab as we use this one only here
+    }
+
+    componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        if (this.props.clientEntity.clientId !== prevProps.clientEntity.clientId) {
+            this._setClientFilter();
+        }
     }
 
     /**
@@ -84,6 +105,20 @@ export default class ClientCallsTab extends Component {
         fetchCalls();
     };
 
+    /**
+     * Set client filter, is is needed to fetch data for a specific client
+     */
+    _setClientFilter = () => {
+        const {
+            setClientFilter,
+            clientEntity
+        } = this.props;
+        const { clientId } = clientEntity || {};
+
+        clientId && setClientFilter({clientId}); //We search all calls for specific client only on this page
+        fetchCalls();
+    }
+
     render() {
         const {
             tab,
@@ -91,6 +126,10 @@ export default class ClientCallsTab extends Component {
             callsInitializing,
             callsFetching,
             filter: { startDate, endDate },
+        } = this.props;
+
+        const {
+            clientEntity
         } = this.props;
 
         return callsInitializing ? (
