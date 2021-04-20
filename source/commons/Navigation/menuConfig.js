@@ -195,11 +195,11 @@ export default {
             iconType: 'inbox',
             name:     'navigation.storage',
             items:    [
-                // {
-                //     key:  '/wms',
-                //     link: book.wms,
-                //     name: 'navigation.wms',
-                // },
+                {
+                    key:  '/wms',
+                    link: book.wms,
+                    name: 'navigation.wms',
+                },
                 {
                     key:      '/storage-balance',
                     disabled: user =>
@@ -241,6 +241,11 @@ export default {
                         isForbidden(user, permissions.VIEW_STORE),
                     link: book.storageMovement,
                     name: 'navigation.storage_movement',
+                },
+                {
+                    key:  '/products-without-cell',
+                    link: book.productsWithoutCell,
+                    name: 'navigation.products_without_cell',
                 }
             ],
         },

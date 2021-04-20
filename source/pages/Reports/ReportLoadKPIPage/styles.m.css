@@ -14,14 +14,14 @@
 }
 
 .filterCont {
-    width: 30%;
+    width: 35%;
     background-color: transparent;
 }
 
 .statsCont {
     background-color: white;
     padding-left: 5px;
-    width: 70%;
+    width: 65%;
     overflow: scroll;
 }
 

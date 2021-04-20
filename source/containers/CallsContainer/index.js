@@ -17,6 +17,8 @@ import {
     selectCallsData,
     selectCallsFilter,
     selectCallsStats,
+    fetchRecordingLink,
+    selectCallsLinksCache
 } from "core/calls/duck";
 
 import { Catcher } from "commons";
@@ -34,6 +36,7 @@ const mapStateToProps = state => {
         chart: [...selectCallsChartData(state)],
         filter: { ...selectCallsFilter(state) },
         callsChartFetching: state.ui.callsChartFetching,
+        callsLinksCache: selectCallsLinksCache(state),
     };
 };
 
@@ -44,6 +47,7 @@ const mapDispatchToProps = {
     setCallsChartMode,
     setCallsTableMode,
     setCallsPageFilter,
+    fetchRecordingLink,
 };
 
 @injectIntl
@@ -76,6 +80,8 @@ export default class CallsContainer extends Component {
             fetchCallsChart,
             callsChartFetching,
             callsFetching,
+            fetchRecordingLink,
+            callsLinksCache,
         } = this.props;
 
         return (
@@ -110,6 +116,8 @@ export default class CallsContainer extends Component {
                             setCallsTableMode={setCallsTableMode}
                             setCallsPageFilter={setCallsPageFilter}
                             callsFetching={callsFetching}
+                            fetchRecordingLink={fetchRecordingLink}
+                            callsLinksCache={callsLinksCache}
                         />
                     </TabPane>
                 </Tabs>

@@ -29,7 +29,9 @@ import DashboardPage from 'pages/DashboardPage/messages';
 import RolePage from 'pages/RolePage/messages';
 import PackagePage from 'pages/PackagePage/messages';
 import ClientsPage from 'pages/ClientsPage/messages';
+import ClientPage from 'pages/ClientPage/messages';
 import CashClientsDebtsPage from 'pages/CashClientsDebtsPage/messages';
+import ClientHotOperationsPage from 'pages/ClientHotOperationsPage/messages';
 import EmployeesPage from 'pages/EmployeesPage/messages';
 import AddEmployeePage from 'pages/AddEmployeePage/messages';
 import ChartPage from 'pages/ChartPage/messages';
@@ -53,6 +55,7 @@ import RepairMapSettingPage from 'pages/RepairMapSettingPage/messages';
 import Locations from 'pages/Locations/messages';
 import SyncImportExport from 'pages/SyncImportExport/messages';
 import ProductPage from 'pages/ProductPage/messages';
+import WMSPage from 'pages/WMSPage/messages';
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
@@ -130,9 +133,10 @@ import SettingSalaryTable from 'components/SettingSalaryTable/messages';
 import ArrayScheduleInput from 'components/ArrayScheduleInput/messages';
 import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages';
 import ChangeStatusDropdown from 'components/ChangeStatusDropdown/messages';
-import ClientFeedbackTab from 'components/ClientFeedbackTab/messages';
-import ClientOrdersTab from 'components/ClientOrdersTab/messages';
-import ClientMRDsTab from 'components/ClientMRDsTab/messages';
+import ClientFeedbackTab from 'components/ClientTabs/ClientFeedbackTab/messages';
+import ClientOrdersTab from 'components/ClientTabs/ClientOrdersTab/messages';
+import ClientMRDsTab from 'components/ClientTabs/ClientMRDsTab/messages';
+import ClientCallsTab from 'components/ClientTabs/ClientCallsTab/messages';
 import EmployeeFeedback from 'components/EmployeeFeedback/messages';
 import EmployeeStatistics from 'components/EmployeeStatistics/messages';
 import ReviewsTable from 'components/ReviewsTable/messages';
@@ -174,7 +178,9 @@ const messages = merge.all([
     RolePage,
     PackagePage,
     ClientsPage,
+    ClientPage,
     CashClientsDebtsPage,
+    ClientHotOperationsPage,
     EmployeesPage,
     AddEmployeePage,
     ChartPage,
@@ -198,6 +204,7 @@ const messages = merge.all([
     Locations,
     SyncImportExport,
     ProductPage,
+    WMSPage,
 
     // containers
     OrdersContainer,
@@ -277,6 +284,7 @@ const messages = merge.all([
     ClientFeedbackTab,
     ClientOrdersTab,
     ClientMRDsTab,
+    ClientCallsTab,
     EmployeeFeedback,
     EmployeeStatistics,
     ReviewsTable,

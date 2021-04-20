@@ -74,7 +74,7 @@ export default class ServiceInputModal extends Component {
                 visible={modal === MODALS.SERVICE_INPUT}
                 maskClosable={false}
                 title={<FormattedMessage id="service_input_modal.service input"/>}
-                width={'50vh'}
+                width={'70vh'}
                 onCancel={() => this.handleCancel()}
                 onOk={this.onOk}
             >

@@ -2,9 +2,7 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Table } from 'antd';
-
-// proj
-import { Loader } from 'commons';
+import { v4 } from "uuid";
 
 // own
 import { columnsConfig } from './config';
@@ -24,7 +22,6 @@ export class ReportLoadKPITable extends Component {
             stats,
             isFetching,
         } = this.props;
-        let rowKeyCounter = 0;
 
         const pagination = {
             pageSize:         25,
@@ -47,7 +44,7 @@ export class ReportLoadKPITable extends Component {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
                     scroll={ { x: 1800, y: '50vh' } }
-                    rowKey={ record =>  rowKeyCounter++}
+                    rowKey={ () => v4() }
                     bordered
                     loading={isFetching}
                 />

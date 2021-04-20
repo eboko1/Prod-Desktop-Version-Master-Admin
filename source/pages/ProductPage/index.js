@@ -50,7 +50,7 @@ export default class ProductPage extends Component {
             startDate: moment().startOf('year'),
             endDate: moment(),
             cells: [],
-            cellTableData: [],
+            productCells: [],
             selectedCell: undefined,
         };
         this.cellTabColumns = [
@@ -58,11 +58,21 @@ export default class ProductPage extends Component {
                 title: <FormattedMessage id="navigation.storage" />,
                 key: 'warehouse',
                 dataIndex: 'warehouse',
+                render: (data, row)=>{
+                    return (
+                        data.name
+                    )
+                }
             },
             {
-                title: <FormattedMessage id="Ячейка" />,
+                title: <FormattedMessage id="wms.cell" />,
                 key: 'address',
-                dataIndex: 'address',
+                dataIndex: 'wmsCellOptions',
+                render: (data, row)=>{
+                    return (
+                        data.address
+                    )
+                }
             },
             {
                 title: <FormattedMessage id="count" />,
@@ -70,7 +80,7 @@ export default class ProductPage extends Component {
                 dataIndex: 'sum',
             },
             {
-                title: <FormattedMessage id="Заполненность" />,
+                title: <FormattedMessage id="wms.fullness" />,
                 key: 'fullness',
                 dataIndex: 'fullness',
             },
@@ -83,11 +93,11 @@ export default class ProductPage extends Component {
                             type='primary'
                             onClick={()=>{
                                 this.setState({
-                                    selectedCell: data,
-                                })
+                                    selectedCell: row,
+                                });
                             }}
                         >
-                            <FormattedMessage id='Переместить'/>
+                            <FormattedMessage id='wms.transfer'/>
                         </Button>
                     )
                 }
@@ -100,7 +110,7 @@ export default class ProductPage extends Component {
         const { warehouseId, startDate, endDate } = this.state;
         const productMovement = await fetchAPI(
             'GET',
-            `/store_doc_products/`,
+            `store_doc_products`,
             {
                 productId: id, 
                 warehouseId,
@@ -113,12 +123,26 @@ export default class ProductPage extends Component {
         })
     }
 
+    _fetchProductCells = async () => {
+        const { id } = this.props;
+        const productCells = await fetchAPI(
+            'GET',
+            `wms/cells/statuses`,
+            {
+                storeProductId: id,
+            }
+        );
+        this.setState({
+            productCells: productCells.list
+        })
+    }
+
     _fetchProduct = async () => {
         this.setState({
             product: undefined,
         })
         const { id } = this.props;
-        const product = await fetchAPI('GET', `/store_products/${id}`);
+        const product = await fetchAPI('GET', `store_products/${id}`);
         product.saveOnStock = Boolean(product.saveOnStock);
         product.multiplicity = product.multiplicity || 1;
         product.min = product.min || 1;
@@ -133,7 +157,7 @@ export default class ProductPage extends Component {
         
         await fetchAPI(
             'PUT',
-            `/store_products/${product.id}`,
+            `store_products/${product.id}`,
             null,
             _.pick(
                 product,
@@ -167,7 +191,7 @@ export default class ProductPage extends Component {
     _fetchWMSCells = async () => {
         const { product } = this.state;
         if(product.defaultWarehouseId) {
-            const cells = await fetchAPI('GET', `/wms/cells`, {warehouseId: product.defaultWarehouseId});
+            const cells = await fetchAPI('GET', `wms/cells`, {warehouseId: product.defaultWarehouseId});
             
             this.setState({
                 cells: cells.list,
@@ -181,6 +205,7 @@ export default class ProductPage extends Component {
         this.props.fetchPriceGroups();
         await this._fetchProduct();
         this._fetchProductMovement();
+        this._fetchProductCells();
         this._fetchWMSCells();
     }
 
@@ -190,7 +215,7 @@ export default class ProductPage extends Component {
 
     render() {
         const { intl: { formatMessage }, user, id, warehouses, suppliers, priceGroups } = this.props;
-        const { product, activeKey, movementData, startDate, endDate, cells, cellTableData, selectedCell } = this.state;
+        const { product, activeKey, movementData, startDate, endDate, cells, productCells, selectedCell } = this.state;
         return !product ? (
             <Spinner spin={ true }/>
         ) : (
@@ -263,7 +288,7 @@ export default class ProductPage extends Component {
                                                         value={product.markup || 0}
                                                         disabled
                                                         style={{color: 'var(--text)'}}
-                                                        formatter={(value)=>value + '%'}
+                                                        formatter={(value)=>value*100 + '%'}
                                                         precision={2}
                                                     />
                                                 </div>
@@ -275,7 +300,7 @@ export default class ProductPage extends Component {
                                                         value={product.margin || 0}
                                                         disabled
                                                         style={{color: 'var(--text)'}}
-                                                        formatter={(value)=>value + '%'}
+                                                        formatter={(value)=>value*100 + '%'}
                                                         precision={2}
                                                     />
                                                     <span className={Styles.pricesFieldCurHidden}>
@@ -447,7 +472,7 @@ export default class ProductPage extends Component {
                                                         value={product.minMarkup || 0}
                                                         disabled
                                                         style={{color: 'var(--text)'}}
-                                                        formatter={(value)=>value + '%'}
+                                                        formatter={(value)=>value*100 + '%'}
                                                         precision={2}
                                                     />
                                                 </div>
@@ -459,7 +484,7 @@ export default class ProductPage extends Component {
                                                         value={product.minMargin || 0}
                                                         disabled
                                                         style={{color: 'var(--text)'}}
-                                                        formatter={(value)=>value + '%'}
+                                                        formatter={(value)=>value*100 + '%'}
                                                         precision={2}
                                                     />
                                                     <span className={Styles.pricesFieldCurHidden}>
@@ -539,12 +564,12 @@ export default class ProductPage extends Component {
                                 </div>
                                 <div className={Styles.storeTabRow}>
                                     <span className={Styles.storeFieldLabel}>
-                                        <FormattedMessage id='Ячейка по умолчанию'/>
+                                        <FormattedMessage id='product.default_cell'/>
                                     </span>
                                     <Select
                                         className={Styles.storeField}
                                         value={product.cellAddresses ? product.cellAddresses[0] : undefined}
-                                        placeholder={formatMessage({id: 'Ячейка по умолчанию'})}
+                                        placeholder={formatMessage({id: 'product.default_cell'})}
                                         showSearch
                                         disabled={!product.defaultWarehouseId}
                                         optionFilterProp={'children'}
@@ -624,7 +649,7 @@ export default class ProductPage extends Component {
                                 <div className={Styles.storeTabRow}>
                                         <div>
                                             <div>
-                                                <FormattedMessage id='Ширина (см)'/>
+                                                <FormattedMessage id='wms.width'/>
                                             </div>
                                             <InputNumber
                                                 value={product.width}
@@ -637,7 +662,7 @@ export default class ProductPage extends Component {
                                         </div>
                                         <div>
                                             <div>
-                                                <FormattedMessage id='Высота (см)'/>
+                                                <FormattedMessage id='wms.height'/>
                                             </div>
                                             <InputNumber
                                                 value={product.height}
@@ -650,7 +675,7 @@ export default class ProductPage extends Component {
                                         </div>
                                         <div>
                                             <div>
-                                                <FormattedMessage id='Глубина (см)'/>
+                                                <FormattedMessage id='wms.depth'/>
                                             </div>
                                             <InputNumber
                                                 value={product.depth}
@@ -663,7 +688,7 @@ export default class ProductPage extends Component {
                                         </div>
                                         <div>
                                             <div>
-                                                <FormattedMessage id='Вес (кг)'/>
+                                                <FormattedMessage id='wms.weight'/>
                                             </div>
                                             <InputNumber
                                                 value={product.weight}
@@ -725,23 +750,38 @@ export default class ProductPage extends Component {
                         <TabPane
                             tab={
                                 <FormattedMessage
-                                    id={"Ячейки"}
+                                    id={"wms.cells"}
                                 />
                             }
                             key="cell"
-                            disabled
                         >
                             <div className={Styles.cellsTab}>
                                 <Table
                                     size={'small'}
                                     columns={this.cellTabColumns}
-                                    dataSource={cellTableData}
+                                    dataSource={productCells}
                                 />
                                 <WMSCellsModal
                                     warehouseId={product.defaultWarehouseId}
                                     visible={Boolean(selectedCell)}
-                                    confirmAction={(address)=>{
-
+                                    confirmAction={async (address, modalWarehouseId, count)=>{
+                                        await fetchAPI('POST', 'wms/cells/products', null, [
+                                            {
+                                                warehouseId: modalWarehouseId,
+                                                storeProductId: product.id,
+                                                address,
+                                                count,
+                                            }
+                                        ])
+                                        await fetchAPI('DELETE', 'wms/cells/products', null, [
+                                            {
+                                                warehouseId: product.defaultWarehouseId,
+                                                storeProductId: product.id,
+                                                address: selectedCell.wmsCellOptions.address,
+                                                count,
+                                            }
+                                        ])
+                                        await this._fetchProductCells();
                                     }}
                                     hideModal={()=>{
                                         this.setState({selectedCell: undefined})

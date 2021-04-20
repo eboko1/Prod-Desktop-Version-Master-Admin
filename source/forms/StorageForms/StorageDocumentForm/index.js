@@ -113,7 +113,7 @@ class StorageDocumentForm extends Component {
                 productBarcode: barcode
             })
             notification.warning({
-                message: 'Код не найден',
+                message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
             });
         }
         
@@ -238,7 +238,9 @@ class StorageDocumentForm extends Component {
             incomeWarehouseId,
             expenseWarehouseId,
             remainSum,
+            warehouseId,
         } = this.props.formData;
+        console.log(this)
         const dateFormat = 'DD.MM.YYYY';
         const disabled = status == DONE;
         const onlySum = type == TRANSFER || type == ORDER || documentType == OWN_CONSUMPTION || documentType == INVENTORY;
@@ -699,7 +701,7 @@ class StorageDocumentForm extends Component {
                         editDocProduct={editDocProduct}
                         priceDisabled={type == TRANSFER || documentType == OWN_CONSUMPTION}
                         warehouses={warehouses}
-                        warehouseId={incomeWarehouseId || expenseWarehouseId}
+                        warehouseId={warehouseId}
                         warning={warning}
                         user={user}
                         sellingPrice={type == EXPENSE}
@@ -952,7 +954,7 @@ class DocProductsTable extends React.Component {
         };
 
         this.cellColumn = {
-            title:      <FormattedMessage id='Ячейка'/>,
+            title:      <FormattedMessage id='wms.cell'/>,
             key:       'addToAddress',
             dataIndex: 'addToAddress',
             render:     (data, elem)=>{
@@ -1645,9 +1647,9 @@ class AddProductModal extends React.Component {
                             }}
                         />
                     </div>
-                    {/* {this.props.type == INCOME || this.props.documentType == ORDERINCOME ?
+                    {this.props.type == INCOME || this.props.documentType == ORDERINCOME ?
                         <div className={Styles.addProductItemWrap} style={{minWidth: 120}}>
-                            <FormattedMessage id='Ячейка' />
+                            <FormattedMessage id='wms.cell' />
                             <Input
                                 value={addToAddress}
                                 onClick={()=>{
@@ -1655,6 +1657,7 @@ class AddProductModal extends React.Component {
                                 }}
                             />
                             <WMSCellsModal
+                                fixedWarehouse
                                 warehouseId={this.props.warehouseId}
                                 visible={Boolean(showCellModal)}
                                 confirmAction={(addToAddress)=>{
@@ -1667,7 +1670,7 @@ class AddProductModal extends React.Component {
                                 }}
                             />
                         </div> : null    
-                    } */}
+                    }
                     {!this.props.priceDisabled &&
                     <div className={Styles.addProductItemWrap}>
                         <div><FormattedMessage id='order_form_table.price' /></div>

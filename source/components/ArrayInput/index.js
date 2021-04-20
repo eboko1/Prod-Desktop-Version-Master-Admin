@@ -15,57 +15,56 @@ class ArrayInput extends Component {
     constructor(props) {
         super(props);
 
+        //Create unique ID for each field which will be created for each array entry.
         this.uuid = props.initialValue ? props.initialValue.length : 0;
+
+        //Get keys for each field by extracing keys from array or by creating new
         const keys = props.initialValue
             ? _.keys(props.initialValue)
             : props.optional
                 ? []
                 : [ this.uuid++ ];
 
-        this.state = {
-            keys,
-        };
+        this.state = { keys };
     }
 
+    /**
+     * Get default value for a specific field
+     * @param {*} key Unique field key
+     * @returns Default field value or formatted default phone number
+     */
     _getDefaultValue = key => {
         const value = (this.props.initialValue || [])[ key ];
         if (!value) {
             return void 0;
         }
 
-        // TODO locale & number
         return this.props.phone
             ? Number(value.replace(/[^\d]/g, '').replace(/^38/, ''))
             : value;
     };
 
+    /**
+     * Remove key from global array of keys, so its field will be removed too
+     * @param {*} key Key to remove
+     */
     remove = key => {
         const {
             optional,
-            // form: { getFieldValue, setFieldsValue },
         } = this.props;
 
-        //const keys = getFieldValue(`${this.props.fieldName}Keys`);
         const keys = this.state.keys;
         if (keys.length === 1 && !optional) {
             return;
         }
 
         this.setState({ keys: keys.filter(value => value !== key) });
-        // setFieldsValue({
-        //     [ `${this.props.fieldName}Keys` ]: keys.filter(
-        //         value => value !== key,
-        //     ),
-        // });
     };
 
+    /**
+     * Add new unique key to array of kes, so new field will be created.
+     */
     add = () => {
-        // const keys = this.props.form.getFieldValue(
-        //     `${this.props.fieldName}Keys`,
-        // );
-        // this.props.form.setFieldsValue({
-        //     [ `${this.props.fieldName}Keys` ]: [ ...keys, uuid++ ],
-        // });
         const keys = this.state.keys;
         this.setState({ keys: [ ...keys, this.uuid++ ] });
     };
@@ -74,11 +73,6 @@ class ArrayInput extends Component {
         const { getFieldDecorator } = this.props.form;
         const { fieldName, fieldTitle, rules, optional } = this.props;
 
-        // getFieldDecorator(`${fieldName}Keys`, {
-        //     initialValue: optional ? [] : [ 0 ],
-        // });
-        //const keys = getFieldValue(`${fieldName}Keys`);
-        // TODO locale
         const keys = this.state.keys;
 
         const formatter = value => {
@@ -119,13 +113,14 @@ class ArrayInput extends Component {
                 <Row type='flex' align='middle' key={ key }>
                     <Col span={ 20 }>
                         { this.props.phone ? (
+                            //This is used for phone numbers
                             <DecoratedInputNumber
                                 { ...options }
                                 hasFeedback
                                 fields={ {} }
                                 initialValue={ this._getDefaultValue(key) }
                                 formItem
-                                label={ fieldTitle }
+                                label={ _.isFunction(fieldTitle)? fieldTitle(this._getDefaultValue(key)): fieldTitle }
                                 getFieldDecorator={ getFieldDecorator }
                                 key={ key }
                                 field={ `${fieldName}[${key}][number]` }
@@ -133,13 +128,14 @@ class ArrayInput extends Component {
                                 className={Styles.arrayInput}
                             />
                         ) : (
+                            //Is used if input is now like phone number
                             <DecoratedInput
                                 { ...options }
                                 hasFeedback
                                 fields={ {} }
                                 initialValue={ this._getDefaultValue(key) }
                                 formItem
-                                label={ fieldTitle }
+                                label={ _.isFunction(fieldTitle)? fieldTitle(this._getDefaultValue(key)): fieldTitle }
                                 getFieldDecorator={ getFieldDecorator }
                                 key={ key }
                                 field={ `${fieldName}[${key}]` }

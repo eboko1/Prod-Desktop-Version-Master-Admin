@@ -12,10 +12,9 @@ import {
     setClientMRDsPage,
     setCashOrderModalMounted,
     setCashOrderEntityIsFetching,
-    //selectCashOrderEntityIsFetching,
 } from 'core/clientMRDs/duck';
 import { Loader } from "commons";
-import ClientMRDsTable from '../Tables/ClientMRDsTable'
+import { ClientMRDsTable } from 'components'
 import { setModal, resetModal, MODALS } from "core/modals/duck";
 import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
 import { CashOrderModal } from "modals";
@@ -50,7 +49,6 @@ const mapDispatchToProps = {
     setCashOrderEntityIsFetching,
     fetchCashOrderEntity,
     clearCashOrderForm,
-    //selectCashOrderEntityIsFetching,
 };
 
 @connect(
@@ -104,43 +102,22 @@ export default class ClientMRDsTab extends Component {
     _onOpenPrintCashOrderModal = async (orderId) => {
         const cashOrderEntity = await fetchCashOrderEntity(orderId);
         await this._onOpenPrintCashOrderModal(cashOrderEntity);
-        // await setCashOrderEntityIsFetching(true);
         await this.props.setModal(MODALS.CASH_ORDER, {
             printMode: true,
             editMode: false,
             cashOrderEntity: cashOrderEntity,
         });
-        // this.setState({ cashOrderModalMounted: true });
         this.props.setCashOrderModalMounted(true);
     };
 
     _onCloseCashOrderModal = () => {
         this.props.resetModal();
         this.props.clearCashOrderForm();
-        // this.setState({ cashOrderModalMounted: false });
         this.props.setCashOrderModalMounted(false);
     };
 
     _loadPrintModal = async (orderId) => {
         await this._onOpenPrintCashOrderModal(orderId);
-        // const {cashOrderEntity, cashOrderEntityIsFetching, fetchCashOrderEntity, setCashOrderEntityIsFetching, selectCashOrderEntityIsFetching} = this.props;
-        // new Promise((resolve) => resolve(fetchCashOrderEntity(orderId)))
-        //     .then(() => {
-        //         this._onOpenPrintCashOrderModal(cashOrderEntity);
-        //     });
-        // await fetchCashOrderEntity(orderId);
-        // await this._onOpenPrintCashOrderModal(cashOrderEntity);
-        // await setCashOrderEntityIsFetching(true);
-
-        // const cashOrderEntity = await this.fetchCashOrderEntity_hardCode(orderId);
-        // this._onOpenPrintCashOrderModal(cashOrderEntity);
-        // console.log(cashOrderEntity);
-        // if(cashOrderEntityIsFetching) {
-        //     console.log("Yes, it is fetching!");
-        //     <Loader />
-        // } else {
-            
-        // }
     }
 
     render() {
@@ -153,8 +130,6 @@ export default class ClientMRDsTab extends Component {
             stats,
             clientMRDsPage,
             clientId,
-            cashOrderEntity,
-            cashOrderModalMounted,
             modal,
             modalProps,
         } = this.props;
@@ -183,7 +158,6 @@ export default class ClientMRDsTab extends Component {
                     clientId={clientId}
                     stats={stats}
                     fetchCashOrderEntity={fetchCashOrderEntity}
-                    // openPrint={() => this._onOpenPrintCashOrderModal(cashOrderEntity)}
                     openPrint={this._loadPrintModal}
                     showCashOrderModal={this._showCashOrderModal}
                 />

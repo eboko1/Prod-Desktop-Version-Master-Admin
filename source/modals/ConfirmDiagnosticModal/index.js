@@ -212,17 +212,17 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     addServicesByLaborId(id, index = -1, commentary, status) {
-        const service = this.props.labors.find(x => x.laborId == id);
+        const service = this.props.labors.find(x => x.id == id);
         if(service == undefined) return;
 
         if(index == -1) {
             this.state.servicesList[this.state.servicesList.length-1] = Object.assign({},{
                 key: this.state.servicesList.length,
                 id: id,
-                productId: service.productId,
+                storeGroupId: service.storeGroupId,
                 name: service.name,
-                count: service.normHours,
-                price: service.price,
+                count: service.laborPrice.normHours,
+                price: service.laborPrice.price,
                 checked: true,
                 commentary: commentary,
                 status: status,
@@ -233,9 +233,9 @@ class ConfirmDiagnosticModal extends React.Component{
             this.state.servicesList[index].id = id;
             this.state.servicesList[index].status = status;
             this.state.servicesList[index].name = service.name;
-            this.state.servicesList[index].productId= service.productId;
-            this.state.servicesList[index].count = service.normHours;
-            this.state.servicesList[index].price= service.price;
+            this.state.servicesList[index].storeGroupId= service.storeGroupId;
+            this.state.servicesList[index].count = service.laborPrice.normHours;
+            this.state.servicesList[index].price= service.laborPrice.price;
         }
         this.setState({
             update: true,
@@ -369,11 +369,11 @@ class ConfirmDiagnosticModal extends React.Component{
                 elem.labor.map((labor)=>{
                     let laborObjCopy = Object.assign({}, {
                         key: that.state.servicesList.length+index+1,
-                        id: labor.laborId,
-                        productId: labor.productId,
+                        id: labor.id,
+                        storeGroupId: labor.storeGroupId,
                         name: labor.name,
-                        count: labor.normHours,
-                        price: labor.price,
+                        count: labor.laborPrice.normHours,
+                        price: labor.laborPrice.price,
                         checked: true,
                         commentary: elem.comment,
                         status: elem.isCritical ? 3 : 2,
@@ -555,11 +555,11 @@ class ConfirmDiagnosticModal extends React.Component{
         return this.props.labors.map(
             (data, index) => (
                 <Option
-                    value={ String(data.laborId) }
+                    value={ String(data.id) }
                     key={index}
-                    labor_id={data.laborId}
+                    labor_id={data.id}
                     master_labor_id={data.masterLaborId}
-                    product_id={data.productId}
+                    product_id={data.storeGroupId}
                     default_hours={data.normHours}
                     price={data.price}
                 >
@@ -609,7 +609,7 @@ class ConfirmDiagnosticModal extends React.Component{
                     >
                         {
                             data.automaticly ?
-                            this.servicesOptions.filter((elem)=>elem.props.product_id == data.productId) :
+                            this.servicesOptions.filter((elem)=>elem.props.product_id == data.storeGroupId) :
                             this.servicesOptions
                         }
                     </Select>

@@ -12,9 +12,10 @@ import ArrayScheduleInput from './ArrayScheduleInput';
 import ArrayBreakScheduleInput from './ArrayBreakScheduleInput';
 import SettingSalaryTable from './SettingSalaryTable';
 import EmployeesTable from './EmployeesTable';
-import ClientFeedbackTab from './ClientFeedbackTab';
-import ClientOrdersTab from './ClientOrdersTab';
-import ClientMRDsTab from './ClientMRDsTab';
+import ClientFeedbackTab from './ClientTabs/ClientFeedbackTab';
+import ClientOrdersTab from './ClientTabs/ClientOrdersTab';
+import ClientMRDsTab from './ClientTabs/ClientMRDsTab';
+import ClientCallsTab from './ClientTabs/ClientCallsTab';
 import FormattedDatetime from './FormattedDatetime';
 import Rating from './Rating';
 import { Like } from './Like';
@@ -74,6 +75,7 @@ export {
     ClientFeedbackTab,
     ClientOrdersTab,
     ClientMRDsTab,
+    ClientCallsTab,
     FormattedDatetime,
     Rating,
     Like,

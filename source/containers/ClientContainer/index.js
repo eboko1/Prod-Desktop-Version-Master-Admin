@@ -19,7 +19,12 @@ import {
     EditClientVehicleForm,
     EditClientForm,
 } from 'forms';
-import { ClientFeedbackTab, ClientOrdersTab, ClientMRDsTab } from 'components';
+import {
+    ClientFeedbackTab,
+    ClientOrdersTab,
+    ClientMRDsTab,
+    ClientCallsTab
+} from 'components';
 
 // own
 const { TabPane } = Tabs;
@@ -50,7 +55,7 @@ export default class ClientContainer extends Component {
         return (
             <Catcher>
                 <Tabs
-                    defaultActiveKey= {specificTab ? specificTab :'generalInfo'}
+                    defaultActiveKey={specificTab ? specificTab :'generalInfo'}
                     tabPosition={!isMobile ? 'right' : 'top'}
                     type='card'
                 >
@@ -128,6 +133,12 @@ export default class ClientContainer extends Component {
                         key='clientDebt'
                     >
                         <ClientMRDsTab clientId={clientId} client={clientEntity}/>
+                    </TabPane>
+                    <TabPane
+                        tab={<FormattedMessage id={ 'client_container.calls'}/>}
+                        key='calls'
+                    >
+                        <ClientCallsTab/>
                     </TabPane>
                 </Tabs>
             </Catcher>

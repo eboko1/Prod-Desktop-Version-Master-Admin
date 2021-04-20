@@ -67,14 +67,19 @@
         "export_import_pages.status.CALL": "Call",
         "export_import_pages.responsible": "Responsible",
         "export_import_pages.import": "Import",
-        "export_import_pages.imported": "Imported",
+        "export_import_pages.imported_success": "Imported",
         "export_import_pages.PENDING": "Pending",
         "export_import_pages.IN_PROGRESS": "In Progress",
         "export_import_pages.ERROR": "Error",
         "export_import_pages.DONE": "Done",
         "export_import_pages.errors": "Errors",
         "export_import_pages.row": "Row",
-        "export_import_pages.message": "Message"
+        "export_import_pages.message": "Message",
+        "export_import_pages.orders_details": "Orders details",
+        "export_import_pages.orders_labors": "Orders labors",
+        "export_import_pages.warehouses": "Warehouses",
+        "export_import_pages.store_doc_products": "Store documents products",
+        "export_import_pages.requisites": "Requisites"
     },
     "ru": {
         "export_import_pages.export_data": "Экспортировать даные",
@@ -144,14 +149,19 @@
         "export_import_pages.status.CALL": "Звонки",
         "export_import_pages.responsible": "Ответственный",
         "export_import_pages.import": "Импортировать",
-        "export_import_pages.imported": "Импортировано",
+        "export_import_pages.imported_success": "Импортировано",
         "export_import_pages.PENDING": "Pending",
         "export_import_pages.IN_PROGRESS": "In Progress",
         "export_import_pages.ERROR": "Error",
         "export_import_pages.DONE": "Done",
         "export_import_pages.errors": "Ошибки",
         "export_import_pages.row": "Строка",
-        "export_import_pages.message": "Сообщение"
+        "export_import_pages.message": "Сообщение",
+        "export_import_pages.orders_details": "Запчасти н/з",
+        "export_import_pages.orders_labors": "Работы н/з",
+        "export_import_pages.warehouses": "Склады",
+        "export_import_pages.store_doc_products": "Товары складских документов",
+        "export_import_pages.requisites": "Реквизиты"
     },
     "uk": {
         "export_import_pages.export_data": "Экспортировать даные",
@@ -221,13 +231,18 @@
         "export_import_pages.status.CALL": "Звонки",
         "export_import_pages.responsible": "Ответственный",
         "export_import_pages.import": "Импортировать",
-        "export_import_pages.imported": "Импортировано",
+        "export_import_pages.imported_success": "Импортировано",
         "export_import_pages.PENDING": "Pending",
         "export_import_pages.IN_PROGRESS": "In Progress",
         "export_import_pages.ERROR": "Error",
         "export_import_pages.DONE": "Done",
         "export_import_pages.errors": "Ошибки",
         "export_import_pages.row": "Строка",
-        "export_import_pages.message": "Сообщение"
+        "export_import_pages.message": "Сообщение",
+        "export_import_pages.orders_details": "Деталі н/з",
+        "export_import_pages.orders_labors": "Роботи н/з",
+        "export_import_pages.warehouses": "Склади",
+        "export_import_pages.store_doc_products": "Товари складських документів",
+        "export_import_pages.requisites": "Реквізити"
     }
 }
