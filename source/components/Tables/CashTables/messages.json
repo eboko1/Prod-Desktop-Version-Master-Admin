@@ -22,12 +22,20 @@
 		"cash_report_table.payment_respite": "Payment term",
 		"cash_report_table.current_debt": "Current debt",
 		"cash-table.overdue_debt": "Overdue debt",
-		"cash-table.not_overdue_debt": "Not overdue debt"
+		"cash-table.not_overdue_debt": "Not overdue debt",
+		"cash-table.confirm": "Repeat the registration of this cash order at the cash desk with RST again?",
+		"cash-table.hint_open_shift": "Open shift",
+        "cash-table.hint_close_shift": "Close shift",
+        "cash-table.hint_service_input": "Make service input",
+        "cash-table.hint_x_report": "Get xReport",
+		"cash-table.hint_repeat_registration": "Repeat the registration of this cash order at the cash desk with RST.",
+		"cash-table.hint_send_sms": "Send SMS with a link to a fiscal receipt.",
+		"cash-table.hint_send_email": "Send an email with a fiscal receipt."
 	},
 	"ru": {
 		"cash-table.name": "Наименование Кассы",
 		"cash-table.type": "Тип",
-		"cash-table.fiscalNumber": "Номер ККМ",
+		"cash-table.fiscalNumber": "Номер РРО",
 		"cash-table.description": "Описание",
 		"cash-table.increase": "Приход",
 		"cash-table.decrease": "Расход",
@@ -48,7 +56,15 @@
 		"cash_report_table.payment_respite": "Отсрочка",
 		"cash_report_table.current_debt": "Задолженность",
 		"cash-table.overdue_debt": "Просроченная задолженность",
-		"cash-table.not_overdue_debt": "Не просрочена задолженность"
+		"cash-table.not_overdue_debt": "Не просрочена задолженность",
+		"cash-table.confirm": "Повторить регистрацию данного кассового ордера в кассе c РРО еще раз?",
+		"cash-table.hint_open_shift": "Открыть смену",
+        "cash-table.hint_close_shift": "Закрыть смену",
+        "cash-table.hint_service_input": "Сервисное внесения в кассу",
+        "cash-table.hint_x_report": "Получить x-отчет",
+		"cash-table.hint_repeat_registration": "Повторить регистрацию данного кассового ордера в кассе c РРО.",
+		"cash-table.hint_send_sms": "Отправить СМС с ссылкой на фискальный чек.",
+		"cash-table.hint_send_email": "Отправить емейл с фискальным чеком."
 	},
 	"uk": {
 		"cash-table.name": "Назва Каси",
@@ -74,6 +90,14 @@
 		"cash_report_table.payment_respite": "Відстрочка",
 		"cash_report_table.current_debt": "Заборгованість",
 		"cash-table.overdue_debt": "Прострочена заборгованість",
-		"cash-table.not_overdue_debt": "Не прострочена заборгованість"
+		"cash-table.not_overdue_debt": "Не прострочена заборгованість",
+		"cash-table.confirm": "Повторити реєстрацію цього касового чеку в касі з РРО ще раз?",
+		"cash-table.hint_open_shift": "Відкрити зміну",
+        "cash-table.hint_close_shift": "Закрити зміну",
+        "cash-table.hint_service_input": "Сервісне внесення в касу",
+        "cash-table.hint_x_report": "Отримати x-звіт",
+		"cash-table.hint_repeat_registration": "Повторити реєстрацію цього касового чеку в касі з РРО.",
+		"cash-table.hint_send_sms": "Відправити СМС з посиланням на фіскальний чек.",
+		"cash-table.hint_send_email": "Надіслати емейл з фіскальним чеком."
 	}
 }

@@ -1,11 +1,11 @@
 // vendor
 import React, { Component } from 'react';
+import { Form, Select, Row, Col } from 'antd';
 import { connect } from 'react-redux';
-import { Form, Select, Icon, Row, Button } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { permissions, isForbidden } from 'utils';
 
 // proj
-import { createCashbox } from 'core/cash/duck';
 import { DecoratedInput, DecoratedSelect } from 'forms/DecoratedFields';
 
 // own
@@ -13,121 +13,141 @@ import { cashboxTypes } from './config';
 import Styles from './styles.m.css';
 const Option = Select.Option;
 
-const formItemLayout = {
-	labelCol: { span: 8 },
-	wrapperCol: { span: 16 },
-};
-
-const formItemStyle = {
-	labelAlign: 'left',
-	style: {
-		marginBottom: 4,
-		display: 'flex',
-		alignItems: 'center',
-	},
+const mapStateToProps = state => {
+    return {
+        user: state.auth,
+    };
 };
 
 @injectIntl
 @Form.create()
-@connect(null, { createCashbox })
+@connect(
+    mapStateToProps,
+    void 0,
+)
 export class CashCreationForm extends Component {
-	_submit = () => {
-		const { form, createCashbox } = this.props;
-		form.validateFields((err, values) => {
-			if (!err) {
-				createCashbox(values);
-				form.resetFields();
-			}
-		});
-	};
+	constructor(props) {
+		super(props);
 
-	handleCancel = () => {
-		this.setState({ visible: false });
-	};
+		props.getFormRefCB && props.getFormRefCB(this.props.form); //Callback to get form's refference
+	}
+
+	/**
+	 * This method generates styled and structured row 
+	 * @param {*} label     The component which represents label(like any div, h1, h2, h3 and other tags)
+	 * @param {*} component The component to be placed as a main input or select(pass Form item in it)
+	 * @returns 
+	 */
+	generateStyledContentRow(label, component) {
+		return (
+			<Row className={Styles.row}>
+				<Col className={Styles.label} span={8}>
+					{label}
+				</Col>
+
+				<Col className={Styles.content} span={16}>
+					{component}
+				</Col>
+			</Row>
+		);
+	}
 
 	render() {
-		const { getFieldDecorator } = this.props.form;
-		const { formatMessage } = this.props.intl;
+		const {
+			user,
+			form: {getFieldDecorator},
+			intl: {formatMessage}
+		} = this.props;
 
 		return (
 			<Form
-				layout='horizontal'
-				className={Styles.form}
-				onSubmit={this._submit}
 				id='cash-creation-form'
 			>
-				<Form.Item
-					label={<FormattedMessage id='cash-creation-form.name' />}
-					{...formItemStyle}
-					{...formItemLayout}
-				>
-					<DecoratedInput
-						field='name'
-						rules={[
-							{
-								required: true,
-								message: formatMessage({
-									id: 'cash-creation-form.name.validation',
-								}),
-							},
-						]}
-						getFieldDecorator={getFieldDecorator}
-						cnStyles={Styles.field}
-					/>
-				</Form.Item>
-				<Form.Item
-					label={<FormattedMessage id='cash-creation-form.type' />}
-					{...formItemStyle}
-					{...formItemLayout}
-				>
-					<DecoratedSelect
-						field='type'
-						getFieldDecorator={getFieldDecorator}
-						initialValue={cashboxTypes.CASH}
-						cnStyles={Styles.field}
-						getPopupContainer={() =>
-							document.getElementById('cash-creation-form')
-						}
-					>
-						{Object.values(cashboxTypes).map((item) => (
-							<Option value={item} key={item}>
-								{formatMessage({
-									id: `cash-creation-form.type-${item}`,
-								})}
-							</Option>
-						))}
-					</DecoratedSelect>
-				</Form.Item>
-				<Form.Item
-					label={<FormattedMessage id='cash-creation-form.fiscalNumber' />}
-					{...formItemStyle}
-					{...formItemLayout}
-				>
-					<DecoratedInput
-						field='fiscalNumber'
-						rules={[
-							{
-								message: formatMessage({
-									id: 'cash-creation-form.fiscalNumber.validation',
-								}),
-							},
-						]}
-						getFieldDecorator={getFieldDecorator}
-						cnStyles={Styles.field}
-					/>
-				</Form.Item>
-				<Form.Item
-					label={<FormattedMessage id='cash-creation-form.description' />}
-					{...formItemStyle}
-					{...formItemLayout}
-				>
-					<DecoratedInput
-						fields={{}}
-						cnStyles={Styles.field}
-						field='description'
-						getFieldDecorator={getFieldDecorator}
-					/>
-				</Form.Item>
+					
+				{/* ------------------------------------------------------------- */}
+				{this.generateStyledContentRow(
+					(<span><FormattedMessage id='cash-creation-form.name' />:</span>),
+					(
+						<DecoratedInput
+							field='name'
+							formItem
+							rules={[
+								{
+									required: true,
+									message: formatMessage({id: 'cash-creation-form.name.validation'}),
+								},
+							]}
+							getFieldDecorator={getFieldDecorator}
+							className={Styles.formItemStyle}
+						/>
+					)
+				)}
+				{/* ------------------------------------------------------------- */}
+
+				{/* ------------------------------------------------------------- */}
+				{this.generateStyledContentRow(
+					(<span><FormattedMessage id='cash-creation-form.type' />:</span>),
+					(
+						<DecoratedSelect
+							field='type'
+							formItem
+							getFieldDecorator={getFieldDecorator}
+							initialValue={cashboxTypes.CASH}
+							className={Styles.formItemStyle}
+							getPopupContainer={() =>
+								document.getElementById('cash-creation-form')
+							}
+						>
+							{Object.values(cashboxTypes).map((item) => (
+								<Option value={item} key={item}>
+									{formatMessage({id: `cash-creation-form.type-${item}`})}
+								</Option>
+							))}
+						</DecoratedSelect>
+					)
+				)}
+				{/* ------------------------------------------------------------- */}
+				
+				{/* ------------------------------------------------------------- */}
+				{this.generateStyledContentRow(
+					(<span><FormattedMessage id='cash-creation-form.fiscal_number' />:</span>),
+					(
+						<DecoratedInput
+							field='fiscalNumber'
+							formItem
+							disabled={isForbidden(user, permissions.ACCESS_CASHBOX_CRUD)}//Disable to prevent prod from coccupting(temp)
+							rules={[
+								{
+									len: 10,
+									message: formatMessage({id: 'cash-creation-form.fiscal_number_too_short'}),
+								},
+								{
+									pattern: /^\d+$/,
+									message: formatMessage({id: 'cash-creation-form.fiscal_number_digits_only'}),
+								}
+							]}
+							className={Styles.formItemStyle}
+							getFieldDecorator={getFieldDecorator}
+						/>
+					)
+				)}
+				{/* ------------------------------------------------------------- */}
+
+				{/* ------------------------------------------------------------- */}
+				{this.generateStyledContentRow(
+					(<span><FormattedMessage id='cash-creation-form.description' />:</span>),
+					(
+						<DecoratedInput
+							field='description'
+							formItem
+							rules={[]} //If you will not provide this you won't be aple to enter text into this input
+							className={Styles.formItemStyle}
+							getFieldDecorator={getFieldDecorator}
+						/>
+					)
+				)}
+				{/* ------------------------------------------------------------- */}
+						
 			</Form>
 		);
 	}

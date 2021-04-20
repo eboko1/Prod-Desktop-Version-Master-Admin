@@ -9,6 +9,7 @@ export const RESET_MODAL = `${prefix}/RESET_MODAL`;
 
 export const MODALS = {
     ADD_CLIENT:             'ADD_CLIENT',
+    ADD_CASHBOX:            'ADD_CASHBOX',
     CANCEL_REASON:          'CANCEL_REASON',
     CASH_ORDER:             'CASH_ORDER',
     CHANGE_TASK:            'CHANGE_TASK',
@@ -27,6 +28,7 @@ export const MODALS = {
     PDF_VIEWER:             'PDF_VIEWER',
     STORE_GROUP:            'STORE_GROUP',
     STORE_PRODUCT:          'STORE_PRODUCT',
+    SERVICE_INPUT:          'SERVICE_INPUT',
 
     //Report modals
     REPORT_ORDERS_FILTER:   'REPORT_ORDERS_FILTER',

@@ -31,6 +31,7 @@ import {
     CashBankPage,
     CashFlowPage,
     CashClientsDebtsPage,
+    ClientHotOperationsPage,
     SuppliersPage,
     PaymentPage,
     SubscriptionHistoryPage,
@@ -60,6 +61,7 @@ import {
     ReportOrdersPage,
     ReportLoadKPIPage,
     ReportCashFlowPage,
+    ReportCashOrdersLogsPage,
     LocationsPage,
     LocationSettingsPage,
     LocationsDocumentPage,
@@ -69,7 +71,8 @@ import {
     SyncExportPage,
     BarcodePage,
     ProductPage,
-    WMSPage
+    WMSPage,
+    ProductsWithoutCellPage,
 } from 'pages';
 import book from './book';
 
@@ -186,6 +189,11 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
+                    component={ ClientHotOperationsPage }
+                    path={ book.clientHotOperations }
+                />
+                <Route
+                    exact
                     component={ CashBankPage }
                     path={ book.cashBankPage }
                 />
@@ -271,6 +279,11 @@ export default class Private extends Component {
                     path={ book.wms }
                     render={ props => <WMSPage { ...props } /> }
                 />
+                <Route
+                    exact
+                    component={ ProductsWithoutCellPage }
+                    path={ book.productsWithoutCell }
+                />
                 { /* Locations */ }
                 <Route
                     exact
@@ -338,6 +351,11 @@ export default class Private extends Component {
                     exact
                     component={ ReportCashFlowPage }
                     path={ book.reportCashFlow }
+                />
+                <Route
+                    exact
+                    component={ ReportCashOrdersLogsPage }
+                    path={ book.reportCashOrdersLogs }
                 />
 
                 { /* Payment */ }

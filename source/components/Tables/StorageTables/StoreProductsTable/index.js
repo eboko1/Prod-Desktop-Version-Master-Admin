@@ -43,8 +43,6 @@ const ProductsTable = memo(props => {
         },
     };
 
-    console.log(props)
-
     return (
         <Table
             size='small'

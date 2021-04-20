@@ -18,8 +18,10 @@ import {
     selectCallsFilter,
     fetchCallsSuccess,
     fetchCallsChartSuccess,
+    fetchRecordingLinkSuccess,
     FETCH_CALLS,
     FETCH_CALLS_CHART,
+    FETCH_RECORDING_LINK,
 } from './duck';
 
 export function* fetchCallsSaga() {
@@ -35,7 +37,7 @@ export function* fetchCallsSaga() {
                 statusIn:  config[ filter.mode ],
                 page:      filter.page,
                 channelId: filter.channelId,
-                // ..._.omit(filter, [ 'period', 'mode' ]),
+                clientId:  filter.clientId,
             };
 
             const data = yield call(fetchAPI, 'GET', 'calls', queries);
@@ -85,6 +87,20 @@ export function* fetchCallsChartSaga() {
     }
 }
 
+export function* fetchRecordingLinkSaga() {
+    while (true) {
+        try {
+            const { payload: {callId} } = yield take(FETCH_RECORDING_LINK);
+            
+            const {link} = yield call(fetchAPI, 'GET', `binotel_get_audio_url/${callId}`);
+
+            yield put(fetchRecordingLinkSuccess({callId: callId, recordingLink: link}));
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
+
 export function* saga() {
-    yield all([ call(fetchCallsSaga), call(fetchCallsChartSaga) ]);
+    yield all([ call(fetchCallsSaga), call(fetchCallsChartSaga), call(fetchRecordingLinkSaga) ]);
 }

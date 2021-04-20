@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import { Icon } from 'antd';
+import { Icon, Popconfirm, Popover } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
@@ -165,11 +165,53 @@ export function columnsConfig(props) {
         width:  'auto',
     };
 
+    const rstCodeCol = {
+        title:     'PPO',
+        dataIndex: 'fiscalNumber',
+        width:  'auto',
+    };
+
     const actionsCol = {
         key:    'actions',
         width:  'auto',
         render: (key, cashOrder) => (
             <>
+                {
+                    (cashOrder.rst && !cashOrder.isRegisteredWithRst)
+                        ? (
+                            <div>
+                                <Popconfirm
+                                    title={ <FormattedMessage id='cash-table.confirm' />}
+                                    onConfirm={() => props.onRegisterInCashdesk(cashOrder.id)}
+                                    okText={ <FormattedMessage id='yes' /> }
+                                    cancelText={ <FormattedMessage id='no' />}
+                                >
+                                    <Popover content={<FormattedMessage id='cash-table.hint_repeat_registration' />}>
+                                        <Icon
+                                            type='exclamation-circle'
+                                            className={Styles.unregisteredIcon}
+                                        />
+                                    </Popover>
+                                </Popconfirm>
+
+                                <Popover content={<FormattedMessage id='cash-table.hint_send_sms' />}>
+                                    <Icon
+                                        type="message"
+                                        className={ Styles.sendSMS }
+                                    />
+                                </Popover>
+                                
+                                <Popover content={<FormattedMessage id='cash-table.hint_send_email' />}>
+                                    <Icon
+                                        type="mail"
+                                        className={ Styles.sendMail }
+                                    />
+                                </Popover>
+                                
+                            </div>
+                        )
+                        : null
+                }
                 <Icon
                     type='printer'
                     onClick={ () => props.openPrint(cashOrder) }
@@ -226,6 +268,7 @@ export function columnsConfig(props) {
         sumCol,
         analyticsCol,
         descriptionCol,
+        rstCodeCol,
         actionsCol,
     ] : [
         dateCol,

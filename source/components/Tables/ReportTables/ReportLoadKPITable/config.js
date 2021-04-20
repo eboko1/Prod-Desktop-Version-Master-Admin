@@ -1,29 +1,15 @@
 // vendor
 import React from 'react';
-import { Input, Icon, Checkbox, Menu, Dropdown, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import moment from 'moment';
 import _ from 'lodash';
+import { v4 } from "uuid";
 
 // proj
-import { Numeral } from 'commons';
-import { FormattedDatetime, DateRangePicker } from 'components';
 import book from 'routes/book';
 
 // own
 import Styles from './styles.m.css';
-
-const DEF_DATE_FORMAT = 'YYYY/MM/DD';
-
-const statuses = {
-    required: 'transfer_required',
-    reserve: 'transfer_reserve',
-    not_complete: 'transfer_not_complete',
-    approve: 'transfer_approve',
-    progress: 'transfer_progress',
-    success: 'transfer_success',
-}
 
 //Choose width for each col
 //It must be 100% of width in total!
@@ -61,6 +47,7 @@ const formatNumber = (number, precision = 0) => {
 export function columnsConfig() {
 
     const noCol = {
+        key: v4(),
         children: [
             {
                 title:     <FormattedMessage id='report_load_kpi_page.no' />,
@@ -75,6 +62,7 @@ export function columnsConfig() {
     };
 
     const clientVehicleCol = {
+        key: v4(),
         children: [
             {
                 title: () => {
@@ -93,7 +81,8 @@ export function columnsConfig() {
                         {vehicles
                             ? vehicles.map((elem) => {
                                 const {vehicleNumber, vehicleMake, vehicleModel, vehicleModification, vehicleYear} = elem;
-                                return (<div className={ Styles.clientVehicle }>                                    
+
+                                return (<div className={ Styles.clientVehicle } key={v4()}>                                    
                                     <span className={ Styles.vehicleNum }>
                                         {
                                             vehicleNumber
@@ -116,6 +105,7 @@ export function columnsConfig() {
     };
     
     const clientNameCol = {
+        key: v4(),
         children: [
             {
                 title: () => {
@@ -139,19 +129,19 @@ export function columnsConfig() {
                             > {clientName} </Link>
                         </div>
                         <div>
-                        {clientPhones
-                            ? clientPhones.map((elem) => {
-                                return (<div>
-                                    <div>
-                                        <a  className={ Styles.clientPhone } href={ `tel:${elem}` }>
-                                            {elem}
-                                        </a>
-                                    </div>
-                                </div>)
-                            })
-                            : "-"
-                        }
-                    </div>
+                            {clientPhones
+                                ? clientPhones.map((elem) => {
+                                    return (
+                                        <div key={v4()}>
+                                            <a  className={ Styles.clientPhone } href={ `tel:${elem}` }>
+                                                {elem}
+                                            </a>
+                                        </div>
+                                    )
+                                })
+                                : "-"
+                            }
+                        </div>
                     </div>;
                 }
             }
@@ -159,6 +149,7 @@ export function columnsConfig() {
     };
 
     const orderCol = {
+        key: v4(),
         title:     <FormattedMessage id='report_load_kpi_page.order' />,
         children: [
             {
@@ -227,6 +218,7 @@ export function columnsConfig() {
     };
     
     const locationsCol = {
+        key: v4(),
         title:     <FormattedMessage id='report_load_kpi_page.location' />,
         children: [
             {
@@ -319,6 +311,7 @@ export function columnsConfig() {
     };
 
     const efficiencyCol = {
+        key: v4(),
         title:     <FormattedMessage id={'report_load_kpi_page.efficiency'} />,
         children: [
             {
@@ -389,6 +382,7 @@ export function columnsConfig() {
             },
         ]
     };
+
     return [
         noCol,
         clientVehicleCol,
@@ -396,6 +390,5 @@ export function columnsConfig() {
         orderCol,
         locationsCol,
         efficiencyCol,
-        
     ];
 }
