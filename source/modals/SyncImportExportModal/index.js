@@ -154,6 +154,13 @@ const SYNC_CASH_ORDERS = [
 		priority: CARBOOK,
 		table: 'CASH_ORDERS',
 	},
+	{
+		name: 'requisites',
+		checked: true,
+		sync: NONE,
+		priority: CARBOOK,
+		table: 'REQUISITES',
+	},
 ];
 
 const mapStateToProps = state => {
