@@ -9,7 +9,8 @@
         "product.purchase_price": "Purchase price",
         "product.last_purchase_price": "Last purchase price",
         "product.fixed_purchase_price": "Fixed purchase price",
-        "product.minimal_sale_price": "Minimal sale price"
+        "product.minimal_sale_price": "Minimal sale price",
+        "product.default_cell": "Default cell"
     },
     "ru": {
         "product": "Товар",
@@ -21,7 +22,8 @@
         "product.purchase_price": "Цена закупки",
         "product.last_purchase_price": "Последняя закупочная цена",
         "product.fixed_purchase_price": "Фиксированная закупочная цена",
-        "product.minimal_sale_price": "Минимальная цена продажи"
+        "product.minimal_sale_price": "Минимальная цена продажи",
+        "product.default_cell": "Ячейка по умолчанию"
     },
     "uk": {
         "product": "Товар",
@@ -33,7 +35,8 @@
         "product.purchase_price": "Ціна придбання",
         "product.last_purchase_price": "Остання ціна придбання",
         "product.fixed_purchase_price": "Фіксована ціна придбання",
-        "product.minimal_sale_price": "Мінімальна ціна продажу"
+        "product.minimal_sale_price": "Мінімальна ціна продажу",
+        "product.default_cell": "Ячейка по умолчанию"
     }
   }
   

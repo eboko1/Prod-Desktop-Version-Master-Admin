@@ -39,12 +39,12 @@ export default class WMSGenerateCells extends Component {
                 width: '20%',
                 render: (data, row) => {
                     return (
-                        <FormattedMessage id={`${data}`} />
+                        <FormattedMessage id={`wms.${data}`} />
                     )
                 }
             },
             {
-                title: <FormattedMessage id="Активно" />,
+                title: <FormattedMessage id="wms.active" />,
                 key: 'active',
                 dataIndex: 'active',
                 width: '10%',
@@ -61,7 +61,7 @@ export default class WMSGenerateCells extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Активно" />,
+                title: <FormattedMessage id="wms.alias" />,
                 key: 'aliasType',
                 dataIndex: 'aliasType',
                 width: '20%',
@@ -91,7 +91,7 @@ export default class WMSGenerateCells extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Добавлять 0" />,
+                title: <FormattedMessage id="wms.add_zero" />,
                 key: 'addZeros',
                 dataIndex: 'addZeros',
                 width: '12%',
@@ -108,7 +108,7 @@ export default class WMSGenerateCells extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Минимальное" />,
+                title: <FormattedMessage id="wms.min" />,
                 key: 'minValue',
                 dataIndex: 'minValue',
                 width: '19%',
@@ -125,7 +125,7 @@ export default class WMSGenerateCells extends Component {
                 }
             },
             {
-                title: <FormattedMessage id="Максимальное" />,
+                title: <FormattedMessage id="wms.max" />,
                 key: 'maxValue',
                 dataIndex: 'maxValue',
                 width: '19%',
@@ -196,12 +196,16 @@ export default class WMSGenerateCells extends Component {
     render() {
         const { warehouseId } = this.props;
         const { generateSettings } = this.state;
+        let isActive = false;
+        generateSettings.map(({active})=>{
+            isActive = isActive || active
+        })
         return (
             <div>
                 {warehouseId 
                     ? <>
                         <div className={Styles.tabTitle}>
-                            <FormattedMessage id='Настройки системы адресов хранения' />
+                            <FormattedMessage id='wms.address_system_settings' />
                         </div>
                         <Table
                             size={'small'}
@@ -214,13 +218,14 @@ export default class WMSGenerateCells extends Component {
                             <Button
                                 type='primary'
                                 onClick={this._generateAddresses}
+                                disabled={!isActive}
                             >
-                                <FormattedMessage id='Сгенерировать адреса хранения'/>
+                                <FormattedMessage id='wms.generate_cells'/>
                             </Button>
                         </div>
                     </>
                     : <div className={`${Styles.tabTitle} ${Styles.selectWarehouse}`}>
-                        <FormattedMessage id='Выберите склад' />
+                        <FormattedMessage id='wms.select_warehose' />
                     </div>
                 }
             </div>

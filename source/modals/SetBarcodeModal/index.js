@@ -115,11 +115,11 @@ export default class SetBarcodeModal extends Component {
 				{handleErrorInternally: true}
 			);
 			notification.success({
-				message: `Штрих-код задан`,
+				message: this.props.intl.formatMessage({id: 'barcode.barcode_setted'}),
 			});
 		} catch(e) {
 			notification.error({
-				message: `Штрих-код уже задан`,
+				message: this.props.intl.formatMessage({id: 'barcode.barcode_already_set'}),
 			});
 		}
 	}
