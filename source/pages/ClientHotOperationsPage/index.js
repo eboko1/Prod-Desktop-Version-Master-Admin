@@ -1,9 +1,14 @@
 /*
-This page is a node page for client hot operations. It was developed o work with Biinotel service.
+This page is a node page for client hot operations. It was developed to work with Biinotel service.
+But it is very universal page, so it can be used somewhere else. All components have to be as autonomous as possible.
+All folders have to structured in feature first order(all subcomponents in the same folder as parent is and each module 
+autonomous as possible)
+
 User on this page can select some operations for client:
     1. Create a new client - will be redirected to the page where user can create a new client
     2. Open client page - Redirect to a page with client's information(client page)
     3. Create order with that client
+    4. Create a new order with a client and its car
 */
 
 // vendor
