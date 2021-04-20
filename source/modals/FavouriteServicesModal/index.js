@@ -270,7 +270,7 @@ class FavouriteServicesModal extends React.Component{
                         <InputNumber
                             value={Math.round(data*10)/10 || 0}
                             className={Styles.serviceNumberInput}
-                            min={1}
+                            min={0.1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -367,7 +367,7 @@ class FavouriteServicesModal extends React.Component{
             serviceId: this.state.dataSource[index].laborId,
             serviceName: this.state.dataSource[index].serviceName,
             employeeId: this.state.dataSource[index].employeeId,
-            serviceHours: this.state.dataSource[index].hours ? this.state.dataSource[index].hours : 1,
+            serviceHours: this.state.dataSource[index].hours ? this.state.dataSource[index].hours : 0,
             purchasePrice: this.state.dataSource[index].purchasePrice,
             count: this.state.dataSource[index].count ? this.state.dataSource[index].count : 1,
             servicePrice: this.state.dataSource[index].price,
@@ -401,6 +401,7 @@ class FavouriteServicesModal extends React.Component{
 
     setHours(hours, index) {
         this.state.dataSource[index].hours = hours;
+        this.state.dataSource[index].count = hours;
         this.setState({
             update: true
         })
@@ -455,10 +456,12 @@ class FavouriteServicesModal extends React.Component{
             data.labors.map((elem, i)=>{
                 elem.key = i;
                 elem.employeeId = that.props.defaultEmployeeId;
-                elem.masterLaborId = elem.laborData[0].masterLaborId;
-                elem.storeGroupId = elem.laborData[0].productId;
+                elem.masterLaborId = elem.laborData.masterLaborId;
+                elem.storeGroupId = elem.laborData.storeGroupId;
                 elem.serviceName = elem.name;
-                elem.price = elem.price ? elem.price : that.props.normHourPrice;
+                elem.price = elem.laborData.laborPrice.price || that.props.normHourPrice;
+                elem.count = elem.laborData.laborPrice.normHours || 1;
+                elem.hours = 0;
             });
             that.setState({
                 dataSource: data.labors,
@@ -475,8 +478,8 @@ class FavouriteServicesModal extends React.Component{
 
     buildStoreGroupsTree() {
         var treeData = [];
-        for(let i = 0; i < this.storeGroups && this.storeGroups.length ? this.storeGroups.length : 0; i++) {
-            const parentGroup = this.storeGroups[i];
+        for(let i = 0; i < this.props.details.length; i++) {
+            const parentGroup = this.props.details[i];
             treeData.push({
                 title: `${parentGroup.name} (#${parentGroup.id})`,
                 name: parentGroup.name,
@@ -523,7 +526,7 @@ class FavouriteServicesModal extends React.Component{
 
     getOptions() {
         this.servicesOptions = this.props.labors.map((elem, index)=>(
-            <Option key={index} value={elem.laborId} master_id={elem.masterLaborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
+            <Option key={index} value={elem.laborId} master_id={elem.masterLaborId} product_id={elem.storeGroupId} norm_hours={elem.laborPrice.normHours} price={elem.laborPrice.price}>
                 {elem.name ? elem.name : elem.defaultName}
             </Option>
         ));
@@ -541,10 +544,10 @@ class FavouriteServicesModal extends React.Component{
             servicesOptions = servicesOptions.filter((elem, index)=>elem.masterLaborId == masterLaborId);
         }
         if(storeGroupId) {
-            servicesOptions = servicesOptions.filter((elem, index)=>elem.productId == storeGroupId);
+            servicesOptions = servicesOptions.filter((elem, index)=>elem.storeGroupId == storeGroupId);
         }
         servicesOptions = servicesOptions.map((elem, index)=>(
-            <Option key={index} value={elem.laborId}  master_id={elem.masterLaborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
+            <Option key={index} value={elem.laborId}  master_id={elem.masterLaborId} product_id={elem.storeGroupId} norm_hours={elem.laborPrice.normHours} price={elem.laborPrice.price}>
                 {elem.name ? elem.name : elem.defaultName}
             </Option>
         ))
@@ -556,8 +559,8 @@ class FavouriteServicesModal extends React.Component{
         this.fetchData();
     }
 
-    componentWillUpdate(_, nextState) {
-        if(this.state.visible==false && nextState.visible==true) {
+    componentWillUpdate(_, prevState) {
+        if(this.state.visible && !prevState.visible) {
             this.fetchData();
         }
     }

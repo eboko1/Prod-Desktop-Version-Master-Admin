@@ -28,14 +28,14 @@ export default class WMSAddressSettings extends Component {
 
         this.columns = [
             {
-                title: <FormattedMessage id="Адрес" />,
+                title: <FormattedMessage id="wms.address" />,
                 key: 'address',
                 dataIndex: 'address',
             },
             {
                 title: () => 
                     <div>
-                        <FormattedMessage id="Активно" />
+                        <FormattedMessage id="wms.active" />
                         {this.state.selectedRows.length ?
                             <div>
                                 <Switch
@@ -68,7 +68,7 @@ export default class WMSAddressSettings extends Component {
             {
                 title: () => 
                     <div>
-                        <FormattedMessage id="Ширина (см)" />
+                        <FormattedMessage id="wms.width" />
                         {this.state.selectedRows.length ? 
                             <div>
                                 <InputNumber
@@ -103,7 +103,7 @@ export default class WMSAddressSettings extends Component {
             {
                 title: () => 
                     <div>
-                        <FormattedMessage id="Высота (см)" />
+                        <FormattedMessage id="wms.height" />
                         {this.state.selectedRows.length ? 
                             <div>
                                 <InputNumber
@@ -138,7 +138,7 @@ export default class WMSAddressSettings extends Component {
             {
                 title: () => 
                     <div>
-                        <FormattedMessage id="Глубина (см)" />
+                        <FormattedMessage id="wms.depth" />
                         {this.state.selectedRows.length ? 
                             <div>
                                 <InputNumber
@@ -173,7 +173,7 @@ export default class WMSAddressSettings extends Component {
             {
                 title: () => 
                     <div>
-                        <FormattedMessage id="Объем (см3)" />
+                        <FormattedMessage id="wms.volume" />
                         {this.state.selectedRows.length ? 
                             <div>
                                 <InputNumber
@@ -208,7 +208,7 @@ export default class WMSAddressSettings extends Component {
             {
                 title: () => 
                     <div>
-                        <FormattedMessage id="Нагрузка (кг)" />
+                        <FormattedMessage id="wms.weight" />
                         {this.state.selectedRows.length ? 
                             <div>
                                 <InputNumber
@@ -277,12 +277,14 @@ export default class WMSAddressSettings extends Component {
             delete elem.businessId;
             delete elem.barcode;
         })
-        await fetchAPI(
-            'PUT',
-            'wms/cell_options',
-            {warehouseId},
-            payload
-        );
+        if(payload.length) {
+            await fetchAPI(
+                'PUT',
+                'wms/cell_options',
+                {warehouseId},
+                payload
+            );
+        }
         fetchCells();
     }
 
@@ -322,12 +324,12 @@ export default class WMSAddressSettings extends Component {
             <Menu>
                 <Menu.Item>
                     <div>
-                        <FormattedMessage id='Импортировать' />
+                        <FormattedMessage id='wms.import' />
                     </div>
                 </Menu.Item>
                 <Menu.Item>
                     <div onClick={()=>this.setState({setAllModalVisible: true})}>
-                        <FormattedMessage id='Задать все' />
+                        <FormattedMessage id='wms.set_all' />
                     </div>
                 </Menu.Item>
                 <Menu.Item>
@@ -339,7 +341,7 @@ export default class WMSAddressSettings extends Component {
                         })
                     }}
                 >
-                        <FormattedMessage id='Расчитать объем' />
+                        <FormattedMessage id='wms.calculete_volume' />
                     </div>
                 </Menu.Item>
                 <Menu.Item>
@@ -355,7 +357,7 @@ export default class WMSAddressSettings extends Component {
                         })
                     }}
                 >
-                        <FormattedMessage id='Удалить все' />
+                        <FormattedMessage id='wms.delete_all' />
                     </div>
                 </Menu.Item>
             </Menu>
@@ -364,7 +366,7 @@ export default class WMSAddressSettings extends Component {
         return (
             <div>
                 <div className={Styles.tabTitle}>
-                    <FormattedMessage id='Настройки адресных ячеек' />
+                    <FormattedMessage id='wms.address_cell_settings' />
                     <Dropdown overlay={menu}>
                         <Icon type='menu' className={Styles.menuIcon}/>
                     </Dropdown>
@@ -429,14 +431,14 @@ class SetAllModal extends Component {
         return (
             <Modal
                 visible={visible}
-                title={<FormattedMessage id='Задать все' />}
+                title={<FormattedMessage id='wms.set_all' />}
                 onCancel={hideModal}
                 onOk={()=>confirmAction(width, height, depth, volume, weight)}
                 destroyOnClose
                 width={'fit-content'}
             >
                 <div className={Styles.setAllModalRow}>
-                    <FormattedMessage id='Ширина (см)'/>
+                    <FormattedMessage id='wms.width'/>
                     <InputNumber
                         min={0}
                         onChange={(width)=>{
@@ -445,7 +447,7 @@ class SetAllModal extends Component {
                     />
                 </div>
                 <div className={Styles.setAllModalRow}>
-                    <FormattedMessage id='Высота (см)'/>
+                    <FormattedMessage id='wms.height'/>
                     <InputNumber
                         min={0}
                         onChange={(height)=>{
@@ -454,7 +456,7 @@ class SetAllModal extends Component {
                     />
                 </div>
                 <div className={Styles.setAllModalRow}>
-                    <FormattedMessage id='Глубина (см)'/>
+                    <FormattedMessage id='wms.depth'/>
                     <InputNumber
                         min={0}
                         onChange={(depth)=>{
@@ -463,7 +465,7 @@ class SetAllModal extends Component {
                     />
                 </div>
                 <div className={Styles.setAllModalRow}>
-                    <FormattedMessage id='Объем (см3)'/>
+                    <FormattedMessage id='wms.volume'/>
                     <InputNumber
                         min={0}
                         onChange={(volume)=>{
@@ -472,7 +474,7 @@ class SetAllModal extends Component {
                     />
                 </div>
                 <div className={Styles.setAllModalRow}>
-                    <FormattedMessage id='Вес (кг)'/>
+                    <FormattedMessage id='wms.weight'/>
                     <InputNumber
                         min={0}
                         onChange={(weight)=>{

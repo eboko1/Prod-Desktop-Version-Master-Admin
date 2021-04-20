@@ -113,7 +113,7 @@ class StorageDocumentForm extends Component {
                 productBarcode: barcode
             })
             notification.warning({
-                message: 'Код не найден',
+                message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
             });
         }
         
@@ -954,7 +954,7 @@ class DocProductsTable extends React.Component {
         };
 
         this.cellColumn = {
-            title:      <FormattedMessage id='Ячейка'/>,
+            title:      <FormattedMessage id='wms.cell'/>,
             key:       'addToAddress',
             dataIndex: 'addToAddress',
             render:     (data, elem)=>{
@@ -1649,7 +1649,7 @@ class AddProductModal extends React.Component {
                     </div>
                     {this.props.type == INCOME || this.props.documentType == ORDERINCOME ?
                         <div className={Styles.addProductItemWrap} style={{minWidth: 120}}>
-                            <FormattedMessage id='Ячейка' />
+                            <FormattedMessage id='wms.cell' />
                             <Input
                                 value={addToAddress}
                                 onClick={()=>{

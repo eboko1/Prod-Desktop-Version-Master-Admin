@@ -171,15 +171,19 @@ export default class Barcode extends Component {
                     inputCode : "",
                 })
                 notification.success({
-                    message: `Штрих-код задан`,
+                    message: this.props.intl.formatMessage({id: 'barcode.barcode_setted'}),
                 });
                 if(onConfirm) {
                     onConfirm(scanedCode, fullPrefix, codeWithPrefix);
                 }
             } catch(e) {
                 notification.error({
-                    message: `Штрих-код уже задан`,
+                    message: this.props.intl.formatMessage({id: 'barcode.barcode_already_set'}),
                 });
+                this.setState({
+                    scanedInputValue: undefined,
+                    scanedCode: undefined,
+                })
             }
         } else if(onConfirm) {
             if(multipleMode) {

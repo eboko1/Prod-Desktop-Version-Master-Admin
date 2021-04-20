@@ -68,21 +68,21 @@ class ServicesTable extends Component {
                                                 details: [],
                                                 services: [],
                                             };
-                                            const { labor } = await fetchAPI('GET', `labors/${laborBarcode.referenceId}`);
+                                            const labor = await fetchAPI('GET', `labors/${laborBarcode.referenceId}`);
                                             payload.services.push({
-                                                serviceId: labor[0].laborId,
-                                                serviceName: labor[0].name || labor[0].defaultName,
+                                                serviceId: labor.id,
+                                                serviceName: labor.name || labor.defaultName,
                                                 employeeId: this.props.defaultEmployeeId,
                                                 serviceHours: 0,
                                                 purchasePrice: 0,
-                                                count: Number(labor[0].normHours) || 0,
-                                                servicePrice: Number(labor[0].price) || this.props.normHourPrice,
+                                                count: Number(labor.laborPrice.normHours) || 0,
+                                                servicePrice: Number(labor.laborPrice.price) || this.props.normHourPrice,
                                             })
                                             await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
                                             await this.updateDataSource();
                                         } else {
                                             notification.warning({
-                                                message: 'Код не найден',
+                                                message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
                                             });
                                         }
                                     }}

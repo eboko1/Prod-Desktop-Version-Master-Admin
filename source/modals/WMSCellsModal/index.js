@@ -41,7 +41,7 @@ export default class WMSCellsModal extends Component {
             {
                 title: () =>
                     <div>
-                        <FormattedMessage id="Адрес" />
+                        <FormattedMessage id="wms.address" />
                         <Input
                             allowClear
                             value={this.state.addressFilter}
@@ -59,11 +59,11 @@ export default class WMSCellsModal extends Component {
             {
                 title: () => 
                     <div>
-                        <FormattedMessage id="Ширина (см)" />
+                        <FormattedMessage id="wms.width" />
                         <Input
                             allowClear
                             value={this.state.widthFilter}
-                            placeholder={this.props.intl.formatMessage({id: 'Ширина (см)'})}
+                            placeholder={this.props.intl.formatMessage({id: 'wms.width'})}
                             onChange={({target})=>{
                                 this.setState({
                                     widthFilter: target.value.replace(/\D/g,'')
@@ -77,11 +77,11 @@ export default class WMSCellsModal extends Component {
             {
                 title: () => 
                     <div>
-                        <FormattedMessage id="Высота (см)" />
+                        <FormattedMessage id="wms.height" />
                         <Input
                             allowClear
                             value={this.state.heightFilter}
-                            placeholder={this.props.intl.formatMessage({id: 'Высота (см)'})}
+                            placeholder={this.props.intl.formatMessage({id: 'wms.height'})}
                             onChange={({target})=>{
                                 this.setState({
                                     heightFilter: target.value.replace(/\D/g,'')
@@ -95,11 +95,11 @@ export default class WMSCellsModal extends Component {
             {
                 title: () => 
                     <div>
-                        <FormattedMessage id="Глубина (см)" />
+                        <FormattedMessage id="wms.depth" />
                         <Input
                             allowClear
                             value={this.state.depthFilter}
-                            placeholder={this.props.intl.formatMessage({id: 'Глубина (см)'})}
+                            placeholder={this.props.intl.formatMessage({id: 'wms.depth'})}
                             onChange={({target})=>{
                                 this.setState({
                                     depthFilter: target.value.replace(/\D/g,'')
@@ -113,11 +113,11 @@ export default class WMSCellsModal extends Component {
             {
                 title: () => 
                     <div>
-                        <FormattedMessage id="Объем (см3)" />
+                        <FormattedMessage id="wms.volume" />
                         <Input
                             allowClear
                             value={this.state.volumeFilter}
-                            placeholder={this.props.intl.formatMessage({id: 'Объем (см3)'})}
+                            placeholder={this.props.intl.formatMessage({id: 'wms.volume'})}
                             onChange={({target})=>{
                                 this.setState({
                                     volumeFilter: target.value.replace(/\D/g,'')
@@ -131,11 +131,11 @@ export default class WMSCellsModal extends Component {
             {
                 title: () => 
                     <div>
-                        <FormattedMessage id="Нагрузка (кг)" />
+                        <FormattedMessage id="wms.weight" />
                         <Input
                             allowClear
                             value={this.state.weightFilter}
-                            placeholder={this.props.intl.formatMessage({id: 'Нагрузка (кг)'})}
+                            placeholder={this.props.intl.formatMessage({id: 'wms.weight'})}
                             onChange={({target})=>{
                                 this.setState({
                                     weightFilter: target.value.replace(/\D/g,'')
@@ -149,11 +149,11 @@ export default class WMSCellsModal extends Component {
 			{
                 title: () => 
                     <div>
-                        <FormattedMessage id="Заполненность" />
+                        <FormattedMessage id="wms.fullness" />
                         <Input
                             allowClear
                             value={this.state.fullnessFilter}
-                            placeholder={this.props.intl.formatMessage({id: 'Заполненность'})}
+                            placeholder={this.props.intl.formatMessage({id: 'wms.fullness'})}
                             onChange={({target})=>{
                                 this.setState({
                                     fullnessFilter: target.value.replace(/\D/g,'')
@@ -175,7 +175,7 @@ export default class WMSCellsModal extends Component {
 								this._handleOk(data);
 							}}
 						>
-							<FormattedMessage id='Выбрать'/>
+							<FormattedMessage id='select'/>
 						</Button>
 					)
 				}
@@ -256,7 +256,7 @@ export default class WMSCellsModal extends Component {
 						minWidth: 580,
 					}}
 					width={'fit-content'}
-                    title={<FormattedMessage id="Выбор ячейки" />}
+                    title={<FormattedMessage id="wms.cell_select" />}
                     onCancel={this._hideModal}
                     destroyOnClose
 					footer={null}

@@ -136,7 +136,7 @@ export default class ComplexesModal extends React.Component{
                         element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) :
                         element.name,
                     serviceId: element.id,
-                    count: Number(element.count * this.props.laborTimeMultiplier) || this.props.laborTimeMultiplier,
+                    count: Number(element.count * (this.props.laborTimeMultiplier || 1)) || this.props.laborTimeMultiplier,
                     serviceHours: 0,
                     servicePrice: element.price ? element.price : Number(this.props.normHourPrice),
                     comment: element.commentary,
@@ -269,12 +269,12 @@ export default class ComplexesModal extends React.Component{
                                 this.setState({});
                             }}
                         >
-                            {labors.map(({laborId, name, price, normHours}, key)=>(
+                            {labors.map(({id, name, laborPrice}, key)=>(
                                 <Option
                                     key={key}
-                                    value={laborId}
-                                    price={price}
-                                    hours={normHours}
+                                    value={id}
+                                    price={laborPrice.price}
+                                    hours={laborPrice.normHours}
                                     name={name}
                                 >
                                     {name}
@@ -494,9 +494,9 @@ export default class ComplexesModal extends React.Component{
                                     }}
                                     onChange={(value, label, {triggerNode})=>{
                                         const labors = triggerNode.props.labors.map((elem)=>{
+                                            console.log(elem)
                                             elem.checked = true;
-                                            elem.id = elem.laborId,
-                                            elem.count = elem.normHours || 1;
+                                            elem.count = elem.laborPrice ? elem.laborPrice.normHours : 1;
                                             elem.commentary = {
                                                 comment: undefined,
                                                 positions: [],

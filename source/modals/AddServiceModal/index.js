@@ -124,7 +124,7 @@ class AddServiceModal extends React.Component{
                 dataIndex: 'laborId',
                 width:     'auto',
                 render: (data, elem)=>{
-                    const currentServiceOption = this.servicesOptions.find((labor)=>labor.laborId==data);
+                    const currentServiceOption = this.servicesOptions.find((labor)=>labor.id==data);
                     return (
                         <Select
                             allowClear
@@ -151,7 +151,7 @@ class AddServiceModal extends React.Component{
                                     elem.laborId = value;
                                     elem.serviceName = option.props.children;
                                     elem.masterLaborId = option.props.master_id;
-                                    elem.storeGroupId = option.props.product_id;
+                                    elem.storeGroupId = option.props.store_group_id;
                                     elem.count = option.props.hours;
                                     elem.price = price;
                                     elem.sum = price * count;
@@ -183,29 +183,29 @@ class AddServiceModal extends React.Component{
                                     this.servicesOptions.map((elem, index)=>(
                                         <Option
                                             key={index}
-                                            value={elem.laborId}
+                                            value={elem.id}
                                             master_id={elem.masterLaborId}
-                                            product_id={elem.productId}
-                                            price={elem.price}
+                                            store_group_id={elem.storeGroupId}
+                                            price={elem.laborPrice.price}
                                             cross_id={elem.crossId}
                                             barcode={elem.barcode}
-                                            hours={elem.normHours}
+                                            hours={elem.laborPrice.normHours}
                                         >
-                                            {elem.name || elem.defaultName}
+                                            {elem.customName || elem.name}
                                         </Option>
                                     )) :
                                     elem.laborId && currentServiceOption ? 
                                     <Option
                                         key={0}
-                                        value={currentServiceOption.laborId}
+                                        value={currentServiceOption.id}
                                         master_id={currentServiceOption.masterLaborId}
-                                        product_id={currentServiceOption.productId}
-                                        price={currentServiceOption.price}
+                                        store_group_id={currentServiceOption.storeGroupId}
+                                        price={currentServiceOption.laborPrice.price}
                                         cross_id={currentServiceOption.crossId}
                                         barcode={currentServiceOption.barcode}
-                                        hours={currentServiceOption.normHours}
+                                        hours={currentServiceOption.laborPrice.normHours}
                                     >
-                                        {currentServiceOption.name || currentServiceOption.defaultName}
+                                        {currentServiceOption.customName || currentServiceOption.name}
                                     </Option> : 
                                     []
                             }
@@ -530,9 +530,9 @@ class AddServiceModal extends React.Component{
         this.props.hideModal();
     };
 
-    async getRelatedLabors(id) {
+    async getRelatedLabors(laborId) {
         let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/labors/related?id=${id}`;
+        let url = __API_URL__ + `/labors/related?id=${laborId}`;
         try {
             const response = await fetch(url, {
                 method: 'GET',
@@ -550,8 +550,8 @@ class AddServiceModal extends React.Component{
                             key: key,
                             related: true,
                             serviceName: labor.name,
-                            storeGroupId: labor.productId,
-                            defaultName: labor.name,
+                            storeGroupId: labor.storeGroupId,
+                            customName: labor.customName,
                             count: labor.normHours || 1,
                             employeeId: this.props.defaultEmployeeId,
                             comment: {
@@ -615,10 +615,10 @@ class AddServiceModal extends React.Component{
             servicesOptions = servicesOptions.filter((elem, index)=>elem.masterLaborId == masterLaborId);
         }
         if(storeGroupId) {
-            servicesOptions = servicesOptions.filter((elem, index)=>elem.productId == storeGroupId);
+            servicesOptions = servicesOptions.filter((elem, index)=>elem.storeGroupId == storeGroupId);
         }
         if(laborId) {
-            servicesOptions = servicesOptions.filter((elem, index)=>elem.laborId == laborId);
+            servicesOptions = servicesOptions.filter((elem, index)=>elem.id == laborId);
         }
 
         this.servicesOptions = [...servicesOptions];
@@ -629,47 +629,13 @@ class AddServiceModal extends React.Component{
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const { visible, labor, defaultEmployeeId, normHourPrice, laborTimeMultiplier } = this.props;
-        const editing = Boolean(labor && labor.laborId);
+        console.log(this);
+        const { visible, labor } = this.props;
+        const editing = Boolean(labor && labor.id);
         if(prevProps.visible == false && visible) {
-            
             this.getOptions();
             this.state.mainTableSource = [{...labor}];
             
-            if(!editing) {
-                if(labor.barcode) {
-                    const barcodeLabor = this.servicesOptions.find((elem)=>elem.laborId == labor.referenceId );
-                    if(barcodeLabor) {
-                        const { 
-                            laborId,
-                            name,
-                            defaultName,
-                            masterLaborId,
-                            productId,
-                            normHours,
-                        } = barcodeLabor;
-                        const price = barcodeLabor.price || normHourPrice;
-                        const count = (barcodeLabor.normHours || 1) * laborTimeMultiplier;
-                        const sum = price * count;
-                        this.state.mainTableSource = [{
-                            laborId,
-                            serviceName: name || defaultName,
-                            masterLaborId,
-                            storeGroupId: productId,
-                            hours: Number(normHours),
-                            price,
-                            count,
-                            sum,
-                        }]
-                    } else {
-                        notification.warning({
-                            message: 'Код не найден',
-                        });
-                        this.props.hideModal();
-                    }
-                }
-                this.state.mainTableSource[0].employeeId = defaultEmployeeId;
-            }
             this.setState({
                 editing: editing,
             })
