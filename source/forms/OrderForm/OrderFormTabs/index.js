@@ -559,7 +559,7 @@ export default class OrderFormTabs extends React.PureComponent {
 						/>
 					</TabPane>
 				)}
-				{!addOrderForm && !areStockForbidden && (
+				{/* {!addOrderForm && !areStockForbidden && (
 					<TabPane
 						forceRender
 						tab={formatMessage({
@@ -575,7 +575,7 @@ export default class OrderFormTabs extends React.PureComponent {
 							activeKey={this.state.activeKey}
 						/>
 					</TabPane>
-				)}
+				)} */}
 				{!isForbidden(user, ACCESS_ORDER_COMMENTS) && (
 					<TabPane
 						forceRender
