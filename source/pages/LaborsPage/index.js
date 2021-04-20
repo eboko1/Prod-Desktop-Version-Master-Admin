@@ -566,21 +566,16 @@ export default class LaborsPage extends Component {
         this.state.labors.map((elem)=>{
             if(elem.changed && !elem.new) {
                 labors.push({
+                    id: elem.id,
                     masterLaborId: elem.masterLaborId,
                     storeGroupId: elem.storeGroupId,
                     disabled: Boolean(elem.disabled),
                     crossId: elem.crossId || null,
+                    name: elem.customName,
+                    fixed: Boolean(elem.fixed),
+                    price: elem.price || 1,
+                    normHours: elem.normHours || 1,
                 });
-                if(elem.laborId) labors[labors.length-1].laborId = elem.laborId;
-                if(elem.customName) labors[labors.length-1].name = elem.customName;
-                if(elem.fixed) {
-                    labors[labors.length-1].fixed = true;
-                    labors[labors.length-1].price = elem.price || 1;
-                }
-                else {
-                    labors[labors.length-1].fixed = false;
-                    labors[labors.length-1].normHours = elem.normHours || 1;
-                }
             }
             else if(elem.new && elem.masterLaborId && elem.storeGroupId) {
                 newLabors.push({
@@ -588,17 +583,11 @@ export default class LaborsPage extends Component {
                     storeGroupId: elem.storeGroupId,
                     disabled: Boolean(elem.disabled),
                     crossId: elem.crossId || null,
+                    name: elem.customName,
+                    fixed: Boolean(elem.fixed),
+                    price: elem.price || 1,
+                    normHours: elem.normHours || 1,
                 });
-                //if(elem.laborId) newLabors[newLabors.length-1].laborId = elem.laborId;
-                if(elem.customName) newLabors[newLabors.length-1].customName = elem.customName;
-                if(elem.fixed) {
-                    newLabors[newLabors.length-1].fixed = true;
-                    newLabors[newLabors.length-1].price = elem.price || 1;
-                }
-                else {
-                    newLabors[newLabors.length-1].fixed = false;
-                    newLabors[newLabors.length-1].normHours = elem.normHours || 1;
-                }
             }
         });
 

@@ -288,7 +288,7 @@ export default class ProductPage extends Component {
                                                         value={product.markup || 0}
                                                         disabled
                                                         style={{color: 'var(--text)'}}
-                                                        formatter={(value)=>value + '%'}
+                                                        formatter={(value)=>value*100 + '%'}
                                                         precision={2}
                                                     />
                                                 </div>
@@ -300,7 +300,7 @@ export default class ProductPage extends Component {
                                                         value={product.margin || 0}
                                                         disabled
                                                         style={{color: 'var(--text)'}}
-                                                        formatter={(value)=>value + '%'}
+                                                        formatter={(value)=>value*100 + '%'}
                                                         precision={2}
                                                     />
                                                     <span className={Styles.pricesFieldCurHidden}>
@@ -472,7 +472,7 @@ export default class ProductPage extends Component {
                                                         value={product.minMarkup || 0}
                                                         disabled
                                                         style={{color: 'var(--text)'}}
-                                                        formatter={(value)=>value + '%'}
+                                                        formatter={(value)=>value*100 + '%'}
                                                         precision={2}
                                                     />
                                                 </div>
@@ -484,7 +484,7 @@ export default class ProductPage extends Component {
                                                         value={product.minMargin || 0}
                                                         disabled
                                                         style={{color: 'var(--text)'}}
-                                                        formatter={(value)=>value + '%'}
+                                                        formatter={(value)=>value*100 + '%'}
                                                         precision={2}
                                                     />
                                                     <span className={Styles.pricesFieldCurHidden}>

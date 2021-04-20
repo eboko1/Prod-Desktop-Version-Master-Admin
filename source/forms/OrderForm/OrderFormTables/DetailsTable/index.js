@@ -73,17 +73,17 @@ class DetailsTable extends Component {
         );
 
         this.columns = [
-            {
-                key:       'position',
-                render:    (row) => {
-                    return (
-                        <div>
-                            <Icon type="up-square" className={Styles.positionArrows}/>
-                            <Icon type="down-square"  className={Styles.positionArrows}/>
-                        </div>
-                    )
-                },
-            },
+            // {
+            //     key:       'position',
+            //     render:    (row) => {
+            //         return (
+            //             <div>
+            //                 <Icon type="up-square" className={Styles.positionArrows}/>
+            //                 <Icon type="down-square"  className={Styles.positionArrows}/>
+            //             </div>
+            //         )
+            //     },
+            // },
             {
                 title:      ()=>(
                                 <div className={Styles.headerActions}>
@@ -216,7 +216,7 @@ class DetailsTable extends Component {
                 render:    (data, row) => {
                     return (
                         <div>
-                            <div>
+                            <div style={{fontWeight: 700}}>
                                 {row.detailCode || <FormattedMessage id='long_dash' />}
                             </div>
                             <div>
@@ -376,28 +376,28 @@ class DetailsTable extends Component {
                     );
                 },
             },
-            {
-                title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='order_form_table.discount' />
-                    </div>
-                ),
-                className: Styles.numberColumn,
-                key:       'discount',
-                dataIndex: 'discount',
-                render:    data => {
-                    return (
-                        <span>
-                            { data
-                                ? `${data}`.replace(
-                                    /\B(?=(\d{3})+(?!\d))/g,
-                                    ' ',
-                                )
-                                : 0 }%
-                        </span>
-                    );
-                },
-            },
+            // {
+            //     title: (
+            //         <div className={ Styles.numberColumn }>
+            //             <FormattedMessage id='order_form_table.discount' />
+            //         </div>
+            //     ),
+            //     className: Styles.numberColumn,
+            //     key:       'discount',
+            //     dataIndex: 'discount',
+            //     render:    data => {
+            //         return (
+            //             <span>
+            //                 { data
+            //                     ? `${data}`.replace(
+            //                         /\B(?=(\d{3})+(?!\d))/g,
+            //                         ' ',
+            //                     )
+            //                     : 0 }%
+            //             </span>
+            //         );
+            //     },
+            // },
             {
                 title: (
                     <div className={ Styles.numberColumn }>
@@ -533,59 +533,59 @@ class DetailsTable extends Component {
                     )
                 }
             },
-            {
-                title:     <FormattedMessage id='order_form_table.status' />,
-                key:       'agreement',
-                dataIndex: 'agreement',
-                render:    (data, elem) => {
-                    const key = elem.key;
-                    const confirmed = data.toLowerCase();
-                    let color;
-                    switch (confirmed) {
-                        case 'rejected':
-                            color = 'rgb(255, 126, 126)';
-                            break;
-                        case 'agreed':
-                            color = 'var(--green)';
-                            break;
-                        default:
-                            color = null;
-                    }
+            // {
+            //     title:     <FormattedMessage id='order_form_table.status' />,
+            //     key:       'agreement',
+            //     dataIndex: 'agreement',
+            //     render:    (data, elem) => {
+            //         const key = elem.key;
+            //         const confirmed = data.toLowerCase();
+            //         let color;
+            //         switch (confirmed) {
+            //             case 'rejected':
+            //                 color = 'rgb(255, 126, 126)';
+            //                 break;
+            //             case 'agreed':
+            //                 color = 'var(--green)';
+            //                 break;
+            //             default:
+            //                 color = null;
+            //         }
 
-                    return (
-                        <Select
-                            disabled={ isForbidden(
-                                this.props.user,
-                                permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS,
-                            ) }
-                            style={ { color: color } }
-                            value={ confirmed }
-                            onChange={ value => {
-                                elem.agreement = value.toUpperCase();
-                                this.updateDetail(key, elem);
-                            } }
-                        >
-                            <Option key={ 0 } value={ 'undefined' }>
-                                <FormattedMessage id='status.undefined' />
-                            </Option>
-                            <Option
-                                key={ 1 }
-                                value={ 'agreed' }
-                                style={ { color: 'var(--green)' } }
-                            >
-                                <FormattedMessage id='status.agreed' />
-                            </Option>
-                            <Option
-                                key={ 2 }
-                                value={ 'rejected' }
-                                style={ { color: 'rgb(255, 126, 126)' } }
-                            >
-                                <FormattedMessage id='status.rejected' />
-                            </Option>
-                        </Select>
-                    );
-                },
-            },
+            //         return (
+            //             <Select
+            //                 disabled={ isForbidden(
+            //                     this.props.user,
+            //                     permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS,
+            //                 ) }
+            //                 style={ { color: color } }
+            //                 value={ confirmed }
+            //                 onChange={ value => {
+            //                     elem.agreement = value.toUpperCase();
+            //                     this.updateDetail(key, elem);
+            //                 } }
+            //             >
+            //                 <Option key={ 0 } value={ 'undefined' }>
+            //                     <FormattedMessage id='status.undefined' />
+            //                 </Option>
+            //                 <Option
+            //                     key={ 1 }
+            //                     value={ 'agreed' }
+            //                     style={ { color: 'var(--green)' } }
+            //                 >
+            //                     <FormattedMessage id='status.agreed' />
+            //                 </Option>
+            //                 <Option
+            //                     key={ 2 }
+            //                     value={ 'rejected' }
+            //                     style={ { color: 'rgb(255, 126, 126)' } }
+            //                 >
+            //                     <FormattedMessage id='status.rejected' />
+            //                 </Option>
+            //             </Select>
+            //         );
+            //     },
+            // },
             {
                 key:    'favourite',
                 render: elem => {

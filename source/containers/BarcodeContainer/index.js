@@ -257,16 +257,16 @@ export default class BarcodeContainer extends Component {
 					purchasePrice: 0,
 				})
 			} else if(barcodeData.table == 'LABORS') {
-				const { labor } = await fetchAPI('GET', `labors/${barcodeData.referenceId}`);
+				const labor = await fetchAPI('GET', `labors/${barcodeData.referenceId}`);
 				activeTab = 'services';
 				payload.services.push({
-					serviceId: labor[0].laborId,
-					serviceName: labor[0].name || labor[0].defaultName,
+					serviceId: labor.id,
+					serviceName: labor.name || labor.defaultName,
 					employeeId: this.props.defaultEmployeeId,
 					serviceHours: 0,
 					purchasePrice: 0,
-					count: Number(labor[0].normHours) || 0,
-					servicePrice: Number(labor[0].price) || this.props.normHourPrice,
+					count: Number(labor.laborPrice.normHours) || 0,
+					servicePrice: Number(labor.laborPrice.price) || this.props.normHourPrice,
 				})
 			}
 
