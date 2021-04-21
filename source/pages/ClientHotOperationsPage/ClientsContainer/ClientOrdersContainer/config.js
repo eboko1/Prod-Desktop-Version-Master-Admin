@@ -7,9 +7,8 @@ import moment from 'moment';
 
 //Proj
 import book from 'routes/book';
-import { OrdersStatusesMapper } from "commons";
+import { Numeral, OrdersStatusesMapper } from "commons";
 import { OrderStatusIcon, RepairMapIndicator } from 'components';
-import { Numeral } from 'commons';
 
 //Own
 import Styles from './styles.m.css';
@@ -76,11 +75,7 @@ export function columnsConfig() {
         width:     defWidth.order_status,
         dataIndex: 'status',
         key:       'status',
-        render:    (status) => (
-            <>
-                <OrdersStatusesMapper status={status}/>
-            </>
-        ),
+        render:    (status) => (<OrdersStatusesMapper status={status}/>),
     };
 
     const beginDatetimeCol = {

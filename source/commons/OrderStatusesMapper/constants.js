@@ -2,7 +2,7 @@
  * Object whick contains constants of an order status value
  */
 export const statuses =  Object.freeze({
-    required: 'REQIRED',
+    required: 'REQUIRED',
     reserve: 'RESERVE',
     not_complete: 'NOT_COMPLETE',
     approve: 'APPROVE',
