@@ -18,6 +18,7 @@ import Styles from './styles.m.css';
 //It must be 100% of width in total!
 const defWidth = {
     order:               'auto',
+    order_status:               '10%',
     begin_datetime:      '10%',
     sum:                 '10%',
     remaining_sum:       '10%',
@@ -36,7 +37,6 @@ export function columnsConfig() {
         key:       'num',
         render:    (val, order) => (
             <>
-                <OrdersStatusesMapper status={"text"}/>
                 <Link
                     className={ Styles.orderLink }
                     to={ `${book.order}/${order.id}` }
@@ -67,6 +67,18 @@ export function columnsConfig() {
                     </div>
                 ) }
                 <RepairMapIndicator data={order.repairMapIndicator}/>
+            </>
+        ),
+    };
+
+    const orderStatusCol = {
+        title:     <FormattedMessage id='orders.status' />,
+        width:     defWidth.order_status,
+        dataIndex: 'status',
+        key:       'status',
+        render:    (status) => (
+            <>
+                <OrdersStatusesMapper status={status}/>
             </>
         ),
     };
@@ -153,6 +165,7 @@ export function columnsConfig() {
 
     return [,
         orderCol,
+        orderStatusCol,
         beginDatetimeCol,
         sumCol,
         remainingSumCol,

@@ -30,7 +30,7 @@ export default class OrdersStatusesMapper extends React.Component {
             intl: {formatMessage}
         } = this.props;
 
-        switch(status.toLowerCase()) {
+        switch(status.toUpperCase()) {
             case statuses.required:        return formatMessage( {id: "order_statuses_mapper.required"} );
             case statuses.reserve:         return formatMessage( {id: "order_statuses_mapper.reserve"} );
             case statuses.not_complete:    return formatMessage( {id: "order_statuses_mapper.not_complete"} );
@@ -48,7 +48,7 @@ export default class OrdersStatusesMapper extends React.Component {
         const {
             status
         } = this.props;
-
+        
         return (
             <span>
                 {this.statusLangMapper(status)}
