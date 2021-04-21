@@ -38,6 +38,10 @@ const mapDispatchToProps = {
     setSearchQuery,
 };
 
+/**
+ * This page contains table of clieents and its operations, it is an old page and it was replaced with clientHotOperations.
+ * May be in future it can be deleted permanently.
+ */
 @connect(
     mapStateToProps,
     mapDispatchToProps,

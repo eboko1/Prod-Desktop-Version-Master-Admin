@@ -13,7 +13,6 @@ import {
     MyTasksPage,
     PackagePage,
     RolePage,
-    ClientsPage,
     ClientPage,
     EmployeesPage,
     AddEmployeePage,
@@ -119,11 +118,6 @@ export default class Private extends Component {
                     path={ book.barcodePage }
                 />
                 { /* Reference book */ }
-                <Route
-                    exact
-                    component={ ClientsPage }
-                    path={ book.clients }
-                />
                 <Route
                     exact
                     render={ props => <ClientPage { ...props } /> }
