@@ -16,19 +16,9 @@ const RadioGroup = Radio.Group;
 
 @injectIntl
 export default class CallsTable extends Component {
-    state = {
-        visiblePhones: [],
-    };
-
     _setCallsTableFilterMode = mode => {
         this.props.setCallsTableMode(mode);
         this.props.fetchCalls();
-    };
-
-    _showPhone = phone => {
-        this.setState(state => ({
-            visiblePhones: [...state.visiblePhones, phone],
-        }));
     };
 
     render() {
@@ -36,19 +26,12 @@ export default class CallsTable extends Component {
             calls,
             stats,
             filter,
-            intl: { formatMessage },
             callsFetching,
             fetchRecordingLink,
             callsLinksCache,
         } = this.props;
 
-        const columns = columnsConfig(
-            formatMessage,
-            this._showPhone,
-            this.state.visiblePhones,
-            fetchRecordingLink,
-            callsLinksCache
-        );
+        const columns = columnsConfig({ fetchRecordingLink, callsLinksCache });
 
         const pagination = {
             pageSize: 25,
