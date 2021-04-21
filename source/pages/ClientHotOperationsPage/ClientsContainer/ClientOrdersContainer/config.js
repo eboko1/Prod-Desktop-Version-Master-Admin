@@ -3,11 +3,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
-import { v4 } from "uuid";
 import moment from 'moment';
 
 //Proj
 import book from 'routes/book';
+import { OrdersStatusesMapper } from "commons";
 import { OrderStatusIcon, RepairMapIndicator } from 'components';
 import { Numeral } from 'commons';
 
@@ -36,6 +36,7 @@ export function columnsConfig() {
         key:       'num',
         render:    (val, order) => (
             <>
+                <OrdersStatusesMapper status={"text"}/>
                 <Link
                     className={ Styles.orderLink }
                     to={ `${book.order}/${order.id}` }
