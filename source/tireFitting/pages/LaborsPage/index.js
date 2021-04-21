@@ -172,7 +172,7 @@ export default class LaborsPage extends Component {
                                 this.state.labors[key].storeGroupId = value;
                                 this.state.labors[key].laborCode = `${elem.masterLaborId ? elem.masterLaborId : "0000"}-${value}`;
                                 this.state.labors[key].detailTitle = option.props.title;
-                                this.state.labors[key].name = this.state.labors[key].defaultName + " " + option.props.title;
+                                this.state.labors[key].customName = this.state.labors[key].name + " " + option.props.title;
                                 this.setState({
                                     update: true
                                 })
@@ -521,7 +521,7 @@ export default class LaborsPage extends Component {
                 title:  <FormattedMessage id="order_form_table.detail_name" />,
                 key:       'name',
                 render: (elem)=>{
-                    return elem.name || elem.defaultName;
+                    return elem.name || elem.customName;
                 }
             },
             {
@@ -608,6 +608,7 @@ export default class LaborsPage extends Component {
             }
             else if(elem.new && elem.masterLaborId && elem.storeGroupId) {
                 newLabors.push({
+                    id: `${elem.masterLaborId}${elem.storeGroupId}`,
                     masterLaborId: elem.masterLaborId,
                     storeGroupId: elem.storeGroupId,
                     disabled: Boolean(elem.disabled),
@@ -621,7 +622,7 @@ export default class LaborsPage extends Component {
         });
 
         if(newLabors.length) {
-            await fetchAPI('POST', 'labors', null, newLabors);
+            await fetchAPI('PUT', 'labors', null, newLabors);
         } 
         if(labors.length) {
             await fetchAPI('PUT', 'labors', null, labors);

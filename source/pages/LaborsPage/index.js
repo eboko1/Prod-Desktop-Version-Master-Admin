@@ -91,7 +91,7 @@ export default class LaborsPage extends Component {
                                 }}
                                 prefix={'LBS'}
                                 table={'LABORS'}
-                                referenceId={row.laborId}
+                                referenceId={row.id}
                                 onConfirm={(code, pref, fullCode)=>{
                                     row.barcode = fullCode;
                                     this.setState({});
@@ -579,6 +579,7 @@ export default class LaborsPage extends Component {
             }
             else if(elem.new && elem.masterLaborId && elem.storeGroupId) {
                 newLabors.push({
+                    id: `${elem.masterLaborId}${elem.storeGroupId}`,
                     masterLaborId: elem.masterLaborId,
                     storeGroupId: elem.storeGroupId,
                     disabled: Boolean(elem.disabled),
@@ -592,7 +593,7 @@ export default class LaborsPage extends Component {
         });
 
         if(newLabors.length) {
-            await fetchAPI('POST', 'labors', null, newLabors);
+            await fetchAPI('PUT', 'labors', null, newLabors);
         } 
         if(labors.length) {
             await fetchAPI('PUT', 'labors', null, labors);
