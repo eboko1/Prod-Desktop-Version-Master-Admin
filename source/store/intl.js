@@ -16,9 +16,12 @@ import Storage from 'locales/storage.json';
 // Messages
 import global from 'utils/messages';
 import errorMessage from 'core/errorMessage/messages';
+
 // commons
 import Header from 'commons/Header/messages';
 import Navigation from 'commons/Navigation/messages';
+import OrderStatusesMapper from "commons/OrderStatusesMapper/messages";
+
 // pages
 import ExceptionPage from 'pages/ExceptionPage/messages';
 import ProfilePage from 'pages/ProfilePage/messages';
@@ -167,6 +170,7 @@ const messages = merge.all([
     Navigation,
     Header,
     Footer,
+    OrderStatusesMapper,
 
     // pages
     ProfilePage,

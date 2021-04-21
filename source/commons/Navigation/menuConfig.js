@@ -67,11 +67,11 @@ export default {
                     name: 'navigation.cash_settings',
                 },
                 {
-                    key:      '/clients',
-                    link:     book.clients,
+                    key:      '/clientHotOperations',
+                    link:     book.clientHotOperations,
                     disabled: user =>
                         isForbidden(user, permissions.GET_CLIENTS),
-                    name: 'navigation.clients',
+                    name: 'navigation.client_hot_operations',
                 },
                 {
                     key:      '/employees',

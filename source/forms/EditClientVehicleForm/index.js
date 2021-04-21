@@ -189,7 +189,7 @@ export class EditClientVehicleForm extends Component {
                 className={Styles.list}
                 renderItem={(item, index) => (
                     <List.Item className={Styles.listItem}>
-                        <Form>
+                        <Form className={Styles.form}>
                             <Row gutter={8} type="flex" align="bottom">
                                 <Col span={4}>
                                     {vehicleLabel(item, index)}{" "}
@@ -219,6 +219,7 @@ export class EditClientVehicleForm extends Component {
                                         </Modal>
                                     )}
                                 </Col>
+                                {/* --------------------------------------------------------------------------- */}
                                 <Col span={1}>
                                     <DecoratedCheckbox
                                         fields={{}}
@@ -230,7 +231,8 @@ export class EditClientVehicleForm extends Component {
                                         }
                                     />
                                 </Col>
-                                <Col span={4}>
+                                {/* --------------------------------------------------------------------------- */}
+                                <Col span={3}>
                                     {editableItem === index ? (
                                         <DecoratedInput
                                             formItem
@@ -260,6 +262,7 @@ export class EditClientVehicleForm extends Component {
                                         item.number
                                     )}
                                 </Col>
+                                {/* --------------------------------------------------------------------------- */}
                                 <Col span={4}>
                                     {editableItem === index ? (
                                         <DecoratedInput
@@ -279,6 +282,7 @@ export class EditClientVehicleForm extends Component {
                                         item.vin
                                     )}
                                 </Col>
+                                {/* --------------------------------------------------------------------------- */}
                                 {vehicleTypes &&
                                     <Col span={3}>
                                         {editableItem === index ? (
@@ -333,6 +337,7 @@ export class EditClientVehicleForm extends Component {
                                         )}
                                     </Col>
                                 }
+                                {/* --------------------------------------------------------------------------- */}
                                 <Col span={3}>
                                     {editableItem === index ? (
                                         <div style={{display: "flex", alignItems: "center"}}>
@@ -373,6 +378,7 @@ export class EditClientVehicleForm extends Component {
                                         />
                                     )}
                                 </Col>
+                                {/* --------------------------------------------------------------------------- */}
                                 <Col span={1}>
                                     {!isEditForbidden ? (
                                         editableItem === index ? (
@@ -395,6 +401,7 @@ export class EditClientVehicleForm extends Component {
                                         )
                                     ) : null}
                                 </Col>
+                                {/* --------------------------------------------------------------------------- */}
                                 <Col span={1}>
                                     {!isForbidden(user, permissions.ACCESS_CLIENTS_VEHICLE_TRANSFER) && !isEditForbidden ? (
                                         <ClientVehicleTransfer
@@ -404,6 +411,7 @@ export class EditClientVehicleForm extends Component {
                                         />
                                     ) : null}
                                 </Col>
+                                {/* --------------------------------------------------------------------------- */}
                                 <Col span={1}>
                                     {!isEditForbidden ? (
                                         <Icon
@@ -418,16 +426,18 @@ export class EditClientVehicleForm extends Component {
                                         />
                                     ) : null}
                                 </Col>
+                                {/* --------------------------------------------------------------------------- */}
+                                <Col span={1}>
+                                    <StyledButton
+                                        type="primary"
+                                        onClick={() => this.onCreateOrderForClient({vehicle: item})}//Call with current vehicle
+                                        disabled={ isForbidden(user, permissions.CREATE_ORDER) }
+                                    >
+                                        <Icon type="plus" className={Styles.newOrderIcon}/>
+                                    </StyledButton>
+                                </Col>
                             </Row>
                         </Form>
-                        
-                        <StyledButton
-                            type="primary"
-                            onClick={() => this.onCreateOrderForClient({vehicle: item}) //Call with current vehicle
-                        }>
-                            <FormattedMessage id='client_page.create_order' />
-                        </StyledButton>
-
                     </List.Item>
                 )}
             />

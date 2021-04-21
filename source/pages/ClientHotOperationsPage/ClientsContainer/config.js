@@ -2,13 +2,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Button, Icon } from 'antd';
+import { Icon } from 'antd';
 import _ from 'lodash';
 import { v4 } from "uuid";
 
 //Proj
 import book from 'routes/book';
 import { Numeral, StyledButton } from "commons";
+import { permissions, isForbidden } from 'utils';
 
 //Own
 import Styles from './styles.m.css';
@@ -21,7 +22,7 @@ const defWidth = {
     actions: '5%',
     client_phones: '20%',
     client_vehicles: 'auto',
-    client_debts: '10%',
+    client_debts: '8%',
     vehicle_vin: '15%'
 }
 
@@ -29,6 +30,7 @@ const defWidth = {
 export function columnsConfig(props) {
 
     const {
+        user,
         onCreateOrderForClient
     } = props;
 
@@ -53,7 +55,11 @@ export function columnsConfig(props) {
         align: 'center',
         render: (val, client) => {
             return (
-                <StyledButton type='primary' onClick={() => onCreateOrderForClient({clientId: client.clientId})}>
+                <StyledButton
+                    type='primary'
+                    onClick={() => onCreateOrderForClient({clientId: client.clientId})}
+                    disabled={ isForbidden(user, permissions.CREATE_ORDER) }
+                >
                     <Icon type="plus" className={Styles.newOrderIcon}/>
                 </StyledButton>
             )
@@ -82,20 +88,37 @@ export function columnsConfig(props) {
     };
 
     const debtsCol = {
-        title:      <FormattedMessage id='client_hot_operations_page.debt' />,
-        width:      defWidth.client_debts,
-        dataIndex:  'totalDebtWithTaxes',
-        key:        'totalDebtWithTaxes',
-        render: (debt) => {
-            return (
+        title:     <FormattedMessage id='client_hot_operations_page.debt' />,
+        width:     defWidth.client_debts,
+        dataIndex: 'totalDebtWithTaxes',
+        key:       'totalDebtWithTaxes',
+        render:    (totalDebtWithTaxes, client) => {
+            
+            const debt = totalDebtWithTaxes ? totalDebtWithTaxes : 0;
+
+            const debtText = (
                 <Numeral
+                    className={Styles.debt}
                     nullText='0'
                     mask='0,0.00'
                 >
-                    { debt }
+                    {debt}
                 </Numeral>
             );
-        }
+
+            return !isForbidden(user, permissions.GET_CLIENTS_BASIC_INFORMATION) ? (
+                <Link
+                    to={{
+                        pathname: `${book.client}/${client.clientId}`,
+                        state:{
+                            specificTab: 'clientDebt'
+                        },
+                    }}
+                >
+                    {debtText}
+                </Link>
+            ) : debtText
+        },
     };
 
     const vehicleCol = {
@@ -111,7 +134,11 @@ export function columnsConfig(props) {
                     return (
                         <div key={v4()} className={Styles.vehicle}>
                             <span>{`${vehicle.make} ${vehicle.model} (${vehicle.year})`}</span>
-                            <StyledButton type='primary' onClick={() => onCreateOrderForClient({clientId: client.clientId, vehicleId: vehicle.id})}>
+                            <StyledButton
+                                type='primary'
+                                onClick={() => onCreateOrderForClient({clientId: client.clientId, vehicleId: vehicle.id})}
+                                disabled={ isForbidden(user, permissions.CREATE_ORDER) }
+                            >
                                 <Icon type="plus" className={Styles.newOrderIcon}/>
                             </StyledButton>
                         </div>

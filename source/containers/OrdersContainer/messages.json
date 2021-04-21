@@ -2,6 +2,7 @@
   "en": {
     "currency": "eur.",
     "orders.order": "Order",
+    "orders.status": "Status",    
     "orders.creation_date": "Created",
     "orders.begin_date": "Appointment",
     "orders.delivery_date": "Delivery",
@@ -57,6 +58,7 @@
   "ru": {
     "currency": "грн.",
     "orders.order": "Заказ",
+    "orders.status": "Статус", 
     "orders.creation_date": "Дата Создания",
     "orders.begin_date": "Дата Записи",
     "orders.delivery_date": "Дата Выдачи",
@@ -107,6 +109,7 @@
   "uk": {
     "currency": "грн.",
     "orders.order": "Замовлення",
+    "orders.status": "Статус", 
     "orders.creation_date": "Дата Створення",
     "orders.begin_date": "Дата Запису",
     "orders.delivery_date": "Дата Видачі",
