@@ -9,6 +9,7 @@ import { setModal, resetModal, MODALS } from "core/modals/duck";
 import { Layout, StyledButton } from "commons";
 import { fetchClients } from 'core/clientHotOperations/duck';
 import { AddClientModal } from 'modals';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import ClientsContainer from './ClientsContainer';
@@ -64,7 +65,12 @@ export default class ClientHotOperationsPage extends Component {
                 title={ <div><FormattedMessage id="navigation.client_hot_operations" /></div> }
                 paper={true}
                 controls={(<div>
-                    <StyledButton onClick={this.onAddClientModal} className={Styles.styledButton} type="secondary">
+                    <StyledButton
+                        onClick={this.onAddClientModal}
+                        className={Styles.styledButton}
+                        type="secondary"
+                        disabled={ isForbidden(this.props.user, permissions.CREATE_EDIT_DELETE_CLIENTS) }
+                    >
                         <FormattedMessage id={"client_hot_operations_page.create_new_cient"} />
                     </StyledButton>
                 </div>)}

@@ -430,8 +430,9 @@ export class EditClientVehicleForm extends Component {
                                 <Col span={1}>
                                     <StyledButton
                                         type="primary"
-                                        onClick={() => this.onCreateOrderForClient({vehicle: item}) //Call with current vehicle
-                                    }>
+                                        onClick={() => this.onCreateOrderForClient({vehicle: item})}//Call with current vehicle
+                                        disabled={ isForbidden(user, permissions.CREATE_ORDER) }
+                                    >
                                         <Icon type="plus" className={Styles.newOrderIcon}/>
                                     </StyledButton>
                                 </Col>

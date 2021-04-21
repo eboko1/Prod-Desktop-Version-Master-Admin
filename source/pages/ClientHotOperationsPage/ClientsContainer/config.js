@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Button, Icon } from 'antd';
+import { Icon } from 'antd';
 import _ from 'lodash';
 import { v4 } from "uuid";
 
@@ -55,7 +55,11 @@ export function columnsConfig(props) {
         align: 'center',
         render: (val, client) => {
             return (
-                <StyledButton type='primary' onClick={() => onCreateOrderForClient({clientId: client.clientId})}>
+                <StyledButton
+                    type='primary'
+                    onClick={() => onCreateOrderForClient({clientId: client.clientId})}
+                    disabled={ isForbidden(user, permissions.CREATE_ORDER) }
+                >
                     <Icon type="plus" className={Styles.newOrderIcon}/>
                 </StyledButton>
             )
@@ -130,7 +134,11 @@ export function columnsConfig(props) {
                     return (
                         <div key={v4()} className={Styles.vehicle}>
                             <span>{`${vehicle.make} ${vehicle.model} (${vehicle.year})`}</span>
-                            <StyledButton type='primary' onClick={() => onCreateOrderForClient({clientId: client.clientId, vehicleId: vehicle.id})}>
+                            <StyledButton
+                                type='primary'
+                                onClick={() => onCreateOrderForClient({clientId: client.clientId, vehicleId: vehicle.id})}
+                                disabled={ isForbidden(user, permissions.CREATE_ORDER) }
+                            >
                                 <Icon type="plus" className={Styles.newOrderIcon}/>
                             </StyledButton>
                         </div>
