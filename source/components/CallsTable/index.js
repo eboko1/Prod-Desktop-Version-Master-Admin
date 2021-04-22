@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { Radio, Table } from "antd";
 import _ from "lodash";
+import { v4 } from 'uuid';
 
 // proj
 import { Catcher, Loader } from "commons";
@@ -15,19 +16,9 @@ const RadioGroup = Radio.Group;
 
 @injectIntl
 export default class CallsTable extends Component {
-    state = {
-        visiblePhones: [],
-    };
-
     _setCallsTableFilterMode = mode => {
         this.props.setCallsTableMode(mode);
         this.props.fetchCalls();
-    };
-
-    _showPhone = phone => {
-        this.setState(state => ({
-            visiblePhones: [...state.visiblePhones, phone],
-        }));
     };
 
     render() {
@@ -35,19 +26,16 @@ export default class CallsTable extends Component {
             calls,
             stats,
             filter,
-            intl: { formatMessage },
             callsFetching,
+            fetchRecordingLink,
+            callsLinksCache,
         } = this.props;
 
-        const columns = columnsConfig(
-            formatMessage,
-            this._showPhone,
-            this.state.visiblePhones,
-        );
+        const columns = columnsConfig({ fetchRecordingLink, callsLinksCache });
 
         const pagination = {
             pageSize: 25,
-            size: "large",
+            size: "small",
             total: Math.ceil(_.get(stats, "total") / 25) * 25,
             hideOnSinglePage: true,
             current: filter.page,
@@ -76,6 +64,7 @@ export default class CallsTable extends Component {
                     }}
                     pagination={pagination}
                     scroll={{ x: 1080 }}
+                    rowKey={() => v4()}
                 />
             </Catcher>
         );

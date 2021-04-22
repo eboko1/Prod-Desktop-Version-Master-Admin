@@ -1,21 +1,32 @@
 // vendor
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Icon, Button } from 'antd';
+import { Icon } from 'antd';
 import moment from 'moment';
 
 // proj
 import { answered } from 'core/calls/config';
-import book from 'routes/book';
+import { StyledButton } from 'commons';
 
 // // own
 import Styles from './styles.m.css';
 
-export function columnsConfig(formatMessage, showPhone, phones) {
+const defWidth = {
+    date: '10%',
+    status: '5%',
+    order: '10%',
+    caller: '10%',
+    recipient: '10%',
+    waiting: '10%',
+    duration: '10%',
+    innerRecipient: '10%',
+    record: '30%',
+};
+
+export function columnsConfig({fetchRecordingLink, callsLinksCache}) {
     const date = {
         title:     <FormattedMessage id='calls-table.date' />,
-        width:     95,
+        width:     defWidth.date,
         dataIndex: 'datetime',
         key:       'date',
         render:    date => (
@@ -27,7 +38,7 @@ export function columnsConfig(formatMessage, showPhone, phones) {
 
     const status = {
         title:     <FormattedMessage id='calls-table.status' />,
-        width:     70,
+        width:     defWidth.status,
         dataIndex: 'status',
         key:       'status',
         render:    status => (
@@ -43,43 +54,26 @@ export function columnsConfig(formatMessage, showPhone, phones) {
                 type={
                     answered.includes(status) ? 'check-circle' : 'close-circle'
                 }
-                // theme='outlined'
             />
-        ),
-    };
-
-    const order = {
-        title:     <FormattedMessage id='calls-table.order' />,
-        dataIndex: 'orderId',
-        key:       'orderId',
-        width:     80,
-        render:    orderId => (
-            <Link className={ Styles.orderLink } to={ `${book.order}/${orderId}` }>
-                { orderId }
-            </Link>
         ),
     };
 
     const caller = {
         title:     <FormattedMessage id='calls-table.caller' />,
-        width:     160,
+        width:     defWidth.caller,
         dataIndex: 'caller',
         key:       'caller',
-        render:    (caller, row, index) =>
-            phones.includes(index) ? (
+        render:    (caller) =>
+            (
                 <a href={ `tel:${caller}` } className={ Styles.orderLink }>
                     { caller }
                 </a>
-            ) : (
-                <Button type='primary' onClick={ () => showPhone(index) }>
-                    <FormattedMessage id='show' />
-                </Button>
             ),
     };
 
     const recipient = {
         title:     <FormattedMessage id='calls-table.recipient' />,
-        width:     160,
+        width:     defWidth.recipient,
         dataIndex: 'recipient',
         key:       'recipient',
         render:    recipient => (
@@ -91,7 +85,7 @@ export function columnsConfig(formatMessage, showPhone, phones) {
 
     const waiting = {
         title:     <FormattedMessage id='calls-table.waiting' />,
-        width:     140,
+        width:     defWidth.waiting,
         dataIndex: 'waiting',
         key:       'waiting',
         render:    waiting => <div>{ waiting }</div>,
@@ -99,7 +93,7 @@ export function columnsConfig(formatMessage, showPhone, phones) {
 
     const duration = {
         title:     <FormattedMessage id='calls-table.duration' />,
-        width:     140,
+        width:     defWidth.duration,
         dataIndex: 'duration',
         key:       'duration',
         render:    duration => <div>{ duration }</div>,
@@ -107,7 +101,7 @@ export function columnsConfig(formatMessage, showPhone, phones) {
 
     const innerRecipient = {
         title:     <FormattedMessage id='calls-table.innerRecipient' />,
-        width:     140,
+        width:     defWidth.innerRecipient,
         dataIndex: 'innerRecipient',
         key:       'innerRecipient',
         render:    innerRecipient => (
@@ -119,23 +113,26 @@ export function columnsConfig(formatMessage, showPhone, phones) {
 
     const record = {
         title:     <FormattedMessage id='calls-table.record' />,
+        width:     defWidth.record,
         dataIndex: 'recordingLink',
-        width:     'auto',
-        key:       'recordingLink',
-        render:    recordingLink =>
-            recordingLink ? (
-                <audio controls>
-                    <source src={ recordingLink } />
-                </audio>
-            ) : (
-                <FormattedMessage id='calls-table.no_record' />
-            ),
+        render:    (val, call) => {
+            return String(call.id) in callsLinksCache//Check if that key exists in cash memory
+                ?   Boolean(callsLinksCache[call.id]) //False for empty rows(but we key exists)
+                    ?   <audio controls>
+                            <source src={ callsLinksCache[call.id] } />
+                        </audio>
+                    :   <FormattedMessage id='calls-table.no_record' />
+                :   (<div>
+                        <StyledButton type="primary" onClick={() => fetchRecordingLink({callId: call.id})}>
+                            <FormattedMessage id='calls-table.show_record' />
+                        </StyledButton>
+                    </div>);
+        }
     };
 
     return [
         date,
         status,
-        order,
         caller,
         recipient,
         waiting,

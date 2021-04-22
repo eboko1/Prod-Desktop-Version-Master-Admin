@@ -13,7 +13,6 @@ import {
     MyTasksPage,
     PackagePage,
     RolePage,
-    ClientsPage,
     ClientPage,
     EmployeesPage,
     AddEmployeePage,
@@ -31,6 +30,7 @@ import {
     CashBankPage,
     CashFlowPage,
     CashClientsDebtsPage,
+    ClientHotOperationsPage,
     SuppliersPage,
     PaymentPage,
     SubscriptionHistoryPage,
@@ -70,7 +70,8 @@ import {
     SyncExportPage,
     BarcodePage,
     ProductPage,
-    WMSPage
+    WMSPage,
+    ProductsWithoutCellPage,
 } from 'pages';
 import book from './book';
 
@@ -117,11 +118,6 @@ export default class Private extends Component {
                     path={ book.barcodePage }
                 />
                 { /* Reference book */ }
-                <Route
-                    exact
-                    component={ ClientsPage }
-                    path={ book.clients }
-                />
                 <Route
                     exact
                     render={ props => <ClientPage { ...props } /> }
@@ -184,6 +180,11 @@ export default class Private extends Component {
                     exact
                     component={ CashClientsDebtsPage }
                     path={ book.cashClientsDebtsPage }
+                />
+                <Route
+                    exact
+                    component={ ClientHotOperationsPage }
+                    path={ book.clientHotOperations }
                 />
                 <Route
                     exact
@@ -271,6 +272,11 @@ export default class Private extends Component {
                     exact
                     path={ book.wms }
                     render={ props => <WMSPage { ...props } /> }
+                />
+                <Route
+                    exact
+                    component={ ProductsWithoutCellPage }
+                    path={ book.productsWithoutCell }
                 />
                 { /* Locations */ }
                 <Route

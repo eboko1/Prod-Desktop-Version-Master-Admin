@@ -2,6 +2,7 @@
     "en": {
         "report_cash_orders_logs_page.log_id": "ID",
         "report_cash_orders_logs_page.operation_type": "Operation type",
+        "report_cash_orders_logs_page.date": "Date",
         "report_cash_orders_logs_page.cashdesk_document_id": "Cashdesk document ID",
         "report_cash_orders_logs_page.total_sum": "Total sum",
         "report_cash_orders_logs_page.cash_in_box": "Cash in box",
@@ -35,6 +36,7 @@
     "ru": {
         "report_cash_orders_logs_page.log_id": "ID",
         "report_cash_orders_logs_page.operation_type": "Тип операции",
+        "report_cash_orders_logs_page.date": "Дата",
         "report_cash_orders_logs_page.cashdesk_document_id": "ID чека",
         "report_cash_orders_logs_page.total_sum": "Итого",
         "report_cash_orders_logs_page.cash_in_box": "Наличные в кассе",
@@ -68,6 +70,7 @@
     "uk": {
         "report_cash_orders_logs_page.log_id": "ID",
         "report_cash_orders_logs_page.operation_type": "Тип операції",
+        "report_cash_orders_logs_page.date": "Дата",
         "report_cash_orders_logs_page.cashdesk_document_id": "ID чека",
         "report_cash_orders_logs_page.total_sum": "Загальна сума",
         "report_cash_orders_logs_page.cash_in_box": "Готівка в касі",

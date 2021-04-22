@@ -91,7 +91,7 @@ export default class LaborsPage extends Component {
                                 }}
                                 prefix={'LBS'}
                                 table={'LABORS'}
-                                referenceId={row.laborId}
+                                referenceId={row.id}
                                 onConfirm={(code, pref, fullCode)=>{
                                     row.barcode = fullCode;
                                     this.setState({});
@@ -139,9 +139,9 @@ export default class LaborsPage extends Component {
                             value={this.state.labors[key].masterLaborId ? this.state.labors[key].masterLaborId : undefined}
                             onChange={(value, option)=>{
                                 this.state.labors[key].masterLaborId = value;
-                                this.state.labors[key].defaultName = option.props.children;
-                                this.state.labors[key].laborCode = `${value}-${elem.productId ? elem.productId : '0000000'}`;
-                                this.state.labors[key].name = option.props.children + " " + this.state.labors[key].detailTitle;
+                                this.state.labors[key].name = option.props.children;
+                                this.state.labors[key].laborCode = `${value}-${elem.storeGroupId ? elem.storeGroupId : '0000000'}`;
+                                this.state.labors[key].customName = option.props.children + " " + this.state.labors[key].detailTitle;
                                 this.setState({
                                     update: true
                                 })
@@ -212,8 +212,8 @@ export default class LaborsPage extends Component {
                         </div>
                     )
                 },
-                dataIndex: 'productId',
-                key:       'productId',
+                dataIndex: 'storeGroupId',
+                key:       'storeGroupId',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return !elem.new ? (
@@ -226,16 +226,16 @@ export default class LaborsPage extends Component {
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                             treeData={this.treeData}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
-                            value={this.state.labors[key].productId ? this.state.labors[key].productId : undefined}
+                            value={this.state.labors[key].storeGroupId ? this.state.labors[key].storeGroupId : undefined}
                             filterTreeNode={(input, node) => (
                                 node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
                                 String(node.props.value).indexOf(input.toLowerCase()) >= 0
                             )}
                             onSelect={(value, option)=>{
-                                this.state.labors[key].productId = value;
+                                this.state.labors[key].storeGroupId = value;
                                 this.state.labors[key].laborCode = `${elem.masterLaborId ? elem.masterLaborId : "0000"}-${value}`;
                                 this.state.labors[key].detailTitle = option.props.title;
-                                this.state.labors[key].name = this.state.labors[key].defaultName + " " + option.props.title;
+                                this.state.labors[key].customName = this.state.labors[key].name + " " + option.props.title;
                                 this.setState({
                                     update: true
                                 })
@@ -262,8 +262,8 @@ export default class LaborsPage extends Component {
                         </div>
                     )
                 },
-                dataIndex: 'defaultName',
-                key:       'defaultName',
+                dataIndex: 'masterLaborName',
+                key:       'name',
             },
             {
                 title:  ()=>{
@@ -283,7 +283,7 @@ export default class LaborsPage extends Component {
                         </div>
                     )
                 },
-                key:       'name',
+                key:       'customName',
                 render: (elem)=>{
                     const key = elem.key;
                     return (
@@ -291,10 +291,10 @@ export default class LaborsPage extends Component {
                             disabled={isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD)}
                             ref={(input) => { this.nameInput = input; }} 
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
-                            value={elem.name?elem.name:null}
+                            value={elem.customName?elem.customName:null}
                             onChange={(event)=>{
                                 elem.changed = true;
-                                elem.name = event.target.value;
+                                elem.customName = event.target.value;
                                 this.setState({
                                     update: true,
                                 });
@@ -314,7 +314,7 @@ export default class LaborsPage extends Component {
                                     onChange={(event)=>{
                                         this.state.selectedRows.map((elem)=>{
                                             elem.changed = true;
-                                            elem.disable = !event.target.checked;
+                                            elem.disabled = !event.target.checked;
                                         })
                                         this.setState({});
                                     }}
@@ -323,14 +323,14 @@ export default class LaborsPage extends Component {
                         </div>
                     )
                 },
-                key:       'disable',
-                dataIndex: 'disable',
+                key:       'disabled',
+                dataIndex: 'disabled',
                 render: (data, elem)=>{
                     return (
                         <Checkbox
                             checked={!data}
                             onChange={(event)=>{
-                                elem.disable = !event.target.checked;
+                                elem.disabled = !event.target.checked;
                                 elem.changed = true;
                                 this.setState({});
                             }}
@@ -500,14 +500,14 @@ export default class LaborsPage extends Component {
                 render: (row)=>{
                     const buttonType = row.masterLaborId >= 9000 ? 'danger' : 'primary';
                     const iconType = row.masterLaborId >= 9000 ? 'delete' : 'undo';
-                    return Boolean(row.laborBusinessId) ? (
+                    return (
                         <Popconfirm
                             title={
                                 <FormattedMessage id='add_order_form.delete_confirm' />
                             }
-                            onConfirm={ () => {
-                                row.deleted = true;
-                                this.setState({});
+                            onConfirm={ async () => {
+                                await fetchAPI('PUT', `labors/reset?laborIds=[${row.id}]`);
+                                this.fetchLabors();
                             } }
                         >
                             <Button
@@ -524,16 +524,6 @@ export default class LaborsPage extends Component {
                                 <Icon type={iconType}/>
                             </Button>
                         </Popconfirm>
-                    ) : (
-                        <Button
-                            type={buttonType}
-                            disabled
-                            style={{
-                                width: '100%'
-                            }}
-                        >
-                            <Icon type={iconType}/>
-                        </Button>
                     )
                 }
             }
@@ -572,52 +562,42 @@ export default class LaborsPage extends Component {
     }
 
     async saveLabors() {
-        var labors = [], newLabors = [], deletedLabors = [];
+        var labors = [], newLabors = [];
         this.state.labors.map((elem)=>{
-            if(elem.deleted) {
-                deletedLabors.push(elem.laborId);
-            }
-            else if(elem.changed && !elem.new && elem.laborBusinessId) {
+            if(elem.changed && !elem.new) {
                 labors.push({
+                    id: elem.id,
                     masterLaborId: elem.masterLaborId,
-                    productId: elem.productId,
-                    disable: Boolean(elem.disable),
+                    storeGroupId: elem.storeGroupId,
+                    disabled: Boolean(elem.disabled),
                     crossId: elem.crossId || null,
+                    name: elem.customName,
+                    fixed: Boolean(elem.fixed),
+                    price: elem.price || 1,
+                    normHours: elem.normHours || 1,
                 });
-                if(elem.laborId) labors[labors.length-1].laborId = elem.laborId;
-                if(elem.name) labors[labors.length-1].name = elem.name;
-                if(elem.fixed) {
-                    labors[labors.length-1].fixed = true;
-                    labors[labors.length-1].price = elem.price || 1;
-                }
-                else {
-                    labors[labors.length-1].fixed = false;
-                    labors[labors.length-1].normHours = elem.normHours || 1;
-                }
             }
-            else if(elem.new && elem.masterLaborId && elem.productId || !elem.laborBusinessId && elem.changed && elem.laborId) {
+            else if(elem.new && elem.masterLaborId && elem.storeGroupId) {
                 newLabors.push({
+                    id: `${elem.masterLaborId}${elem.storeGroupId}`,
                     masterLaborId: elem.masterLaborId,
-                    productId: elem.productId,
-                    disable: Boolean(elem.disable),
+                    storeGroupId: elem.storeGroupId,
+                    disabled: Boolean(elem.disabled),
                     crossId: elem.crossId || null,
+                    name: elem.customName,
+                    fixed: Boolean(elem.fixed),
+                    price: elem.price || 1,
+                    normHours: elem.normHours || 1,
                 });
-                //if(elem.laborId) newLabors[newLabors.length-1].laborId = elem.laborId;
-                if(elem.name) newLabors[newLabors.length-1].name = elem.name;
-                if(elem.fixed) {
-                    newLabors[newLabors.length-1].fixed = true;
-                    newLabors[newLabors.length-1].price = elem.price || 1;
-                }
-                else {
-                    newLabors[newLabors.length-1].fixed = false;
-                    newLabors[newLabors.length-1].normHours = elem.normHours || 1;
-                }
             }
         });
 
-        await fetchAPI('POST', 'labors', null, newLabors);
-        await fetchAPI('DELETE', `labors?laborIds=[${deletedLabors}]`);
-        await fetchAPI('PUT', 'labors', null, labors);
+        if(newLabors.length) {
+            await fetchAPI('PUT', 'labors', null, newLabors);
+        } 
+        if(labors.length) {
+            await fetchAPI('PUT', 'labors', null, labors);
+        }
         this.fetchLabors();
     }
 
@@ -631,7 +611,11 @@ export default class LaborsPage extends Component {
         response.labors.sort((a, b) => a.masterLaborId < b.masterLaborId ? -1 : (a.masterLaborId > b.masterLaborId ? 1 : 0));
         response.labors.map((elem, index)=>{
             elem.key = index;
-            elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
+            elem.laborCode = `${elem.masterLaborId}-${elem.storeGroupId}`;
+            elem.price = elem.laborPrice.price;
+            elem.fixed = elem.laborPrice.fixed;
+            elem.normHours = elem.laborPrice.normHours;
+            elem.customName = elem.customName || elem.name;
         })
         this.setState({
             labors: response.labors,
@@ -727,16 +711,16 @@ export default class LaborsPage extends Component {
         if(
             !isForbidden(this.props.user, permissions.ACCESS_CATALOGUE_LABORS_CRUD) && 
             labors.length && 
-            (labors[labors.length-1].defaultName != "" || labors[labors.length-1].masterLaborId != "")
+            (labors[labors.length-1].name != "" || labors[labors.length-1].masterLaborId != "")
         ) {
             labors.push({
                 key: labors.length,
                 laborCode: "0000-0000000",
                 masterLaborId: "",
-                productId: "",
+                storeGroupId: "",
                 detailTitle: "",
-                defaultName: "",
                 name: "",
+                customName: "",
                 fixed: false,
                 normHours: 1,
                 price: null,
@@ -746,12 +730,12 @@ export default class LaborsPage extends Component {
         const columns = this.columns;
         var dataSource = [...labors];
         dataSource = dataSource.filter((elem)=>!elem.deleted);
-        if(filterCode) dataSource = dataSource.filter((data, i) => data.laborCode.replace('-', '').includes(filterCode));
+        if(filterCode) dataSource = dataSource.filter((data, i) => String(data.laborCode).replace('-', '').includes(filterCode));
         if(filterCrossId) dataSource = dataSource.filter((data, i) => String(data.crossId).includes(filterCrossId));
         if(filterId) dataSource = dataSource.filter((data, i) => String(data.masterLaborId).includes(String(filterId)));
-        if(filterDetail) dataSource = dataSource.filter((data, i) => String(data.productId).includes(String(filterDetail)));
-        if(filterDefaultName) dataSource = dataSource.filter((data, i) => data.defaultName.toLowerCase().includes(filterDefaultName.toLowerCase()));
-        if(filterName) dataSource = dataSource.filter((data, i) => data.name.toLowerCase().includes(filterName.toLowerCase()));
+        if(filterDetail) dataSource = dataSource.filter((data, i) => String(data.storeGroupId).includes(String(filterDetail)));
+        if(filterDefaultName) dataSource = dataSource.filter((data, i) => String(data.masterLaborName).toLowerCase().includes(filterDefaultName.toLowerCase()));
+        if(filterName) dataSource = dataSource.filter((data, i) => String(data.customName).toLowerCase().includes(filterName.toLowerCase()));
 
         return (
             <Layout

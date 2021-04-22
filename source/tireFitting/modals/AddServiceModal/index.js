@@ -77,11 +77,11 @@ class AddServiceModal extends React.Component{
                                 this.servicesOptions.map((elem, index)=>(
                                     <Option
                                         key={index}
-                                        value={elem.laborId}
+                                        value={elem.id}
                                         master_id={elem.masterLaborId}
-                                        product_id={elem.productId}
-                                        norm_hours={elem.normHours}
-                                        price={elem.price}
+                                        product_id={elem.storeGroupId}
+                                        norm_hours={elem.laborPrice.normHours}
+                                        price={elem.laborPrice.price}
                                         cross_id={elem.crossId}
                                     >
                                         {elem.name ? elem.name : elem.defaultName}
@@ -481,7 +481,10 @@ class AddServiceModal extends React.Component{
 
     componentDidUpdate(prevState) {
         if(prevState.visible == false && this.props.visible) {
-            const editing = Boolean(this.props.labor && this.props.labor.laborId);
+            const editing = Boolean(this.props.labor && this.props.labor.id);
+            if(editing) {
+                this.getPrice(this.props.labor.laborId);
+            }
             this.getOptions();
             this.state.mainTableSource = [{...this.props.labor}];
             

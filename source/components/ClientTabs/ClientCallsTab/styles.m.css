@@ -1,0 +1,9 @@
+.filters {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.channels {
+    min-width: 20%;
+}

@@ -137,8 +137,8 @@
         "tire.defaultRadius": "Default Radius",
         "tire.group": "Group",
         "tire.name": "Name",
-        "order_form_table.external_id": "Own code"
-        
+        "order_form_table.external_id": "Own code",
+        "order_form_table.code_not_found": "Code not found"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -278,7 +278,8 @@
         "tire.defaultRadius": "Стандартный радиус",
         "tire.group": "Группа",
         "tire.name": "Название",
-        "order_form_table.external_id": "Свой код"
+        "order_form_table.external_id": "Свой код",
+        "order_form_table.code_not_found": "Код не найден"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -418,6 +419,7 @@
         "tire.defaultRadius": "Стандартний радіус",
         "tire.group": "Група",
         "tire.name": "Найменування",
-        "order_form_table.external_id": "Свій код"
+        "order_form_table.external_id": "Свій код",
+        "order_form_table.code_not_found": "Код не найден"
     }
 }

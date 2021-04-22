@@ -21,6 +21,7 @@ import { formsReducer as forms } from 'core/forms';
 import { storageReducer as storage } from 'core/storage';
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import clientsReducer, { moduleName as clientsModule } from 'core/clients/duck';
+import clientHotOperationsReducer, { moduleName as clientHotOperationsModule } from 'core/clientHotOperations/duck';
 import myTasksReducer, { moduleName as myTasksModule } from 'core/myTasks/duck';
 import employeesReducer, {
     moduleName as employeesModule,
@@ -119,6 +120,7 @@ const appState = {
     [ reportCashOrdersLogsModule ]: reportCashOrdersLogsReducer,
     [ clientRequisiteModule ]:      clientRequisiteReducer,
     [ clientsModule ]:              clientsReducer,
+    [ clientHotOperationsModule ]:  clientHotOperationsReducer,
     [ dashboardModule ]:            dashboardReducer,
     [ employeeScheduleModule ]:     employeeScheduleReducer,
     [ employeesModule ]:            employeesReducer,

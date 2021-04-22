@@ -11,16 +11,21 @@ import { images } from 'utils';
 
 /**
  * Takes path to Icon and generates customized Icon component
- * @param {*} icon file path
+ * @param {*} icon    file path
  * @param {*} onClick event handler
- * @param {*} user icurrent user object, is used for access
+ * @param {*} user    current user object, is used for access(disables button if access is forbidden)
+ * @param {*} hint    button popup hint
+ * @param {*} param0  options for button: {disabled}
  * @returns Component (Icon)
  */
-function generateIcon(icon, onClick, user, hint) {
+function generateIcon(icon, onClick, user, hint, options) {
+	const {
+		disabled
+	} = options || {};
 	const btn = (
 		<Button
 			onClick={onClick}
-			disabled= {isForbidden(user, permissions.ACCESS_OTHER_OPERATION_RST)}
+			disabled= {disabled || isForbidden(user, permissions.ACCESS_OTHER_OPERATION_RST)}
 		>
 			<div
 				style={ {
@@ -40,7 +45,6 @@ function generateIcon(icon, onClick, user, hint) {
 		:   (btn)
 }
 
-/* eslint-disable complexity */
 export function columnsConfig(props) {
 	const {
 		user
@@ -115,7 +119,8 @@ export function columnsConfig(props) {
 					images.openLockIcon,
 					() => props.openShift(obj.id),
 					user,
-					(<FormattedMessage id="cash-table.hint_open_shift"/>)
+					(<FormattedMessage id="cash-table.hint_open_shift"/>),
+					{disabled: obj.isShiftOpen}
 				)
 				: null;
 		},
@@ -131,7 +136,8 @@ export function columnsConfig(props) {
 					images.cashboxIcon,
 					() => props.onOpenServiceInputModal(obj.id),
 					user,
-					(<FormattedMessage id="cash-table.hint_service_input"/>)
+					(<FormattedMessage id="cash-table.hint_service_input"/>),
+					{disabled: !obj.isShiftOpen}
 				)
 				: null;
 		},
@@ -143,7 +149,13 @@ export function columnsConfig(props) {
 		key: 'xReportCol',
 		render: (rst, obj) => {
 			return rst
-				? generateIcon(images.reportIcon, () => props.fetchXReport(obj.id), user, (<FormattedMessage id="cash-table.hint_x_report"/>))
+				? generateIcon(
+					images.reportIcon,
+					() => props.fetchXReport(obj.id),
+					user,
+					(<FormattedMessage id="cash-table.hint_x_report"/>),
+					{disabled: !obj.isShiftOpen}
+				)
 				: null;
 		},
 	}
@@ -154,7 +166,12 @@ export function columnsConfig(props) {
 		key: 'zReportCol',
 		render: (rst, obj) => {
 			return rst
-				? generateIcon(images.closedLockIcon, () => props.closeShift(obj.id), user, (<FormattedMessage id="cash-table.hint_close_shift"/>))
+				? generateIcon(
+					images.closedLockIcon,
+					() => props.closeShift(obj.id),
+					user,
+					(<FormattedMessage id="cash-table.hint_close_shift"/>)
+				)
 				: null;
 		},
 	}

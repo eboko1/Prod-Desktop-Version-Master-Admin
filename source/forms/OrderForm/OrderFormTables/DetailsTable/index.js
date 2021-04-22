@@ -10,6 +10,9 @@ import {
     Input,
     Modal,
     notification,
+    Checkbox,
+    Dropdown,
+    Menu,
 } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from "react-redux";
@@ -70,6 +73,17 @@ class DetailsTable extends Component {
         );
 
         this.columns = [
+            // {
+            //     key:       'position',
+            //     render:    (row) => {
+            //         return (
+            //             <div>
+            //                 <Icon type="up-square" className={Styles.positionArrows}/>
+            //                 <Icon type="down-square"  className={Styles.positionArrows}/>
+            //             </div>
+            //         )
+            //     },
+            // },
             {
                 title:      ()=>(
                                 <div className={Styles.headerActions}>
@@ -108,7 +122,7 @@ class DetailsTable extends Component {
                                                     productBarcode: code,
                                                 })
                                                 notification.warning({
-                                                    message: 'Код не найден',
+                                                    message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
                                                 });
                                             }
                                         }}
@@ -196,15 +210,24 @@ class DetailsTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.detail_name' />,
-                key:       'detail',
-                dataIndex: 'detailName',
-                render:    data => {
-                    return data ? data : <FormattedMessage id='long_dash' />;
+                title:     <FormattedMessage id='order_form_table.detail_code' />,
+                key:       'code',
+                dataIndex: 'detailCode',
+                render:    (data, row) => {
+                    return (
+                        <div>
+                            <div style={{fontWeight: 700}}>
+                                {row.detailCode || <FormattedMessage id='long_dash' />}
+                            </div>
+                            <div>
+                                {row.detailName}
+                            </div>
+                        </div>
+                    )
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.brand' />,
+                title:      <FormattedMessage id='order_form_table.brand' />,
                 key:       'brand',
                 dataIndex: 'brandName',
                 render:    data => {
@@ -212,35 +235,26 @@ class DetailsTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.detail_code' />,
-                key:       'code',
-                dataIndex: 'detailCode',
-                render:    data => {
-                    return data ? data : <FormattedMessage id='long_dash' />;
-                },
-            },
-            {
-                title:     <FormattedMessage id='order_form_table.supplier' />,
+                title:  <div style={{whiteSpace: 'pre', textAlign: 'left'}}>
+                            <FormattedMessage id='storage' /> / <FormattedMessage id='order_form_table.supplier' />
+                        </div>,
                 key:       'supplierName',
-                dataIndex: 'supplierName',
-                render:    data => {
-                    return data ? data : <FormattedMessage id='long_dash' />;
-                },
-            },
-            {
-                title: (
-                    <div
-                        title={ this.props.intl.formatMessage({
-                            id: 'order_form_table.AI_title',
-                        }) }
-                    >
-                        <FormattedMessage id='order_form_table.AI' />
-                    </div>
-                ),
-                key:       'AI',
-                dataIndex: 'store',
-                render:    store => {
-                    return <AvailabilityIndicator indexArray={ store } />;
+                render:    row => {
+                    return (
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-around'
+                            }}
+                        >
+                            <div style={{width: '50%'}}>
+                                {row.supplierName || <FormattedMessage id='long_dash' />}
+                            </div>
+                            <div style={{width: '50%'}}>
+                                <AvailabilityIndicator indexArray={ row.store } />
+                            </div>
+                        </div>
+                    )
                 },
             },
             {
@@ -252,11 +266,11 @@ class DetailsTable extends Component {
                 className: Styles.numberColumn,
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
-                render:    data => {
+                render:    (data, row) => {
                     let strVal = Number(data).toFixed(2);
 
                     return (
-                        <span>
+                        <div>
                             { data ? 
                                 `${strVal}`.replace(
                                     /\B(?=(\d{3})+(?!\d))/g,
@@ -264,7 +278,7 @@ class DetailsTable extends Component {
                                 ) : (
                                     <FormattedMessage id='long_dash' />
                                 ) }
-                        </span>
+                        </div>
                     );
                 },
             },
@@ -318,8 +332,7 @@ class DetailsTable extends Component {
                                     /\B(?=(\d{3})+(?!\d))/g,
                                     ' ',
                                 )
-                                : 0 }{ ' ' }
-                            <FormattedMessage id='pc' />
+                                : 0 }
                         </span>
                     );
                 },
@@ -363,6 +376,28 @@ class DetailsTable extends Component {
                     );
                 },
             },
+            // {
+            //     title: (
+            //         <div className={ Styles.numberColumn }>
+            //             <FormattedMessage id='order_form_table.discount' />
+            //         </div>
+            //     ),
+            //     className: Styles.numberColumn,
+            //     key:       'discount',
+            //     dataIndex: 'discount',
+            //     render:    data => {
+            //         return (
+            //             <span>
+            //                 { data
+            //                     ? `${data}`.replace(
+            //                         /\B(?=(\d{3})+(?!\d))/g,
+            //                         ' ',
+            //                     )
+            //                     : 0 }%
+            //             </span>
+            //         );
+            //     },
+            // },
             {
                 title: (
                     <div className={ Styles.numberColumn }>
@@ -397,58 +432,160 @@ class DetailsTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.status' />,
-                key:       'agreement',
-                dataIndex: 'agreement',
-                render:    (data, elem) => {
-                    const key = elem.key;
+                key:        'status',
+                dataIndex:  'agreement',
+                render:     (data, row) => {
+                    const key = row.key;
                     const confirmed = data.toLowerCase();
-                    let color;
+                    let color, icon;
                     switch (confirmed) {
                         case 'rejected':
                             color = 'rgb(255, 126, 126)';
+                            icon = 'close-circle';
                             break;
                         case 'agreed':
                             color = 'var(--green)';
+                            icon = 'check-circle';
                             break;
                         default:
                             color = null;
+                            icon = 'question-circle';
                     }
-
-                    return (
-                        <Select
-                            disabled={ isForbidden(
-                                this.props.user,
-                                permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS,
-                            ) }
-                            style={ { color: color } }
-                            value={ confirmed }
-                            onChange={ value => {
-                                elem.agreement = value.toUpperCase();
-                                this.updateDetail(key, elem);
-                            } }
-                        >
-                            <Option key={ 0 } value={ 'undefined' }>
+                    const updateAgreement = (value) => {
+                        row.agreement = value.toUpperCase();
+                        this.updateDetail(key, row);
+                    }
+                    const menu = (
+                        <Menu onClick={this.handleMenuClick}>
+                            <Menu.Item
+                                key="undefined"
+                                onClick={()=>{
+                                    updateAgreement('undefined')
+                                }}
+                            >
+                                <Icon
+                                    type={'question-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        verticalAlign: 'sub',
+                                        marginRight: 8
+                                    }}
+                                />
                                 <FormattedMessage id='status.undefined' />
-                            </Option>
-                            <Option
-                                key={ 1 }
-                                value={ 'agreed' }
-                                style={ { color: 'var(--green)' } }
+                            </Menu.Item>
+                            <Menu.Item
+                                key="agreed"
+                                style={{color: 'var(--green)'}}
+                                onClick={()=>{
+                                    updateAgreement('agreed')
+                                }}
                             >
+                                <Icon
+                                    type={'check-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        verticalAlign: 'sub',
+                                        marginRight: 8,
+                                    }}
+                                />
                                 <FormattedMessage id='status.agreed' />
-                            </Option>
-                            <Option
-                                key={ 2 }
-                                value={ 'rejected' }
-                                style={ { color: 'rgb(255, 126, 126)' } }
+                            </Menu.Item>
+                            <Menu.Item
+                                key="rejected"
+                                style={{color: 'rgb(255, 126, 126)'}}
+                                onClick={()=>{
+                                    updateAgreement('rejected')
+                                }}
                             >
+                                <Icon
+                                    type={'close-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        marginRight: 8,
+                                    }}
+                                />
                                 <FormattedMessage id='status.rejected' />
-                            </Option>
-                        </Select>
+                            </Menu.Item>
+                        </Menu>
                     );
-                },
+                    return isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS) ? (
+                        <Icon
+                            type={icon}
+                            style={{
+                                fontSize: 24,
+                                color,
+                            }}
+                        />
+                    ) : (
+                        <div>
+                            <Dropdown
+                                overlay={menu}
+                            >
+                                <Icon
+                                    type={icon}
+                                    style={{
+                                        fontSize: 24,
+                                        color,
+                                    }}
+                                />
+                            </Dropdown>
+                        </div>
+                    )
+                }
             },
+            // {
+            //     title:     <FormattedMessage id='order_form_table.status' />,
+            //     key:       'agreement',
+            //     dataIndex: 'agreement',
+            //     render:    (data, elem) => {
+            //         const key = elem.key;
+            //         const confirmed = data.toLowerCase();
+            //         let color;
+            //         switch (confirmed) {
+            //             case 'rejected':
+            //                 color = 'rgb(255, 126, 126)';
+            //                 break;
+            //             case 'agreed':
+            //                 color = 'var(--green)';
+            //                 break;
+            //             default:
+            //                 color = null;
+            //         }
+
+            //         return (
+            //             <Select
+            //                 disabled={ isForbidden(
+            //                     this.props.user,
+            //                     permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS,
+            //                 ) }
+            //                 style={ { color: color } }
+            //                 value={ confirmed }
+            //                 onChange={ value => {
+            //                     elem.agreement = value.toUpperCase();
+            //                     this.updateDetail(key, elem);
+            //                 } }
+            //             >
+            //                 <Option key={ 0 } value={ 'undefined' }>
+            //                     <FormattedMessage id='status.undefined' />
+            //                 </Option>
+            //                 <Option
+            //                     key={ 1 }
+            //                     value={ 'agreed' }
+            //                     style={ { color: 'var(--green)' } }
+            //                 >
+            //                     <FormattedMessage id='status.agreed' />
+            //                 </Option>
+            //                 <Option
+            //                     key={ 2 }
+            //                     value={ 'rejected' }
+            //                     style={ { color: 'rgb(255, 126, 126)' } }
+            //                 >
+            //                     <FormattedMessage id='status.rejected' />
+            //                 </Option>
+            //             </Select>
+            //         );
+            //     },
+            // },
             {
                 key:    'favourite',
                 render: elem => {
@@ -832,6 +969,7 @@ class DetailsTable extends Component {
                     columns={ columns }
                     dataSource={ dataSource }
                     pagination={ false }
+                    rowClassName={Styles.detailsTableRow}
                 />
                 <DetailProductModal
                     labors={ labors }
@@ -1453,7 +1591,7 @@ export class ReserveButton extends React.Component {
                             this.reserveProduct();
                         }}
                     > 
-                        <p>{detail.reservedCount || 0} <FormattedMessage id='pc'/></p>
+                        <p>{detail.reservedCount || 0}</p>
                     </Button> :
                     <Button
                         disabled={disabled}

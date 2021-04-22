@@ -17,7 +17,12 @@
         "barcode.vehicle.create_order": "Create order",
         "barcode.product.reception": "Make Reception",
         "barcode.product.to_repair": "Transfer for the repair shop",
-        "barcode.product.to_tool": "Return from the repair shop"
+        "barcode.product.to_tool": "Return from the repair shop",
+        "barcode.wms.inventorization": "Inventorization",
+        "barcode.wms.put_product": "Put product",
+        "barcode.barcode_setted": "Barcode setted",
+        "barcode.barcode_already_set": "Barcode already set",
+        "barcode.success": "Success!"
     },
     "ru": {
         "barcode.search": "Поиск...",
@@ -37,7 +42,12 @@
         "barcode.vehicle.create_order": "Создать н/з",
         "barcode.product.reception": "Принять на склад",
         "barcode.product.to_repair": "Выдать в цех",
-        "barcode.product.to_tool": "Вернуть из цеха"
+        "barcode.product.to_tool": "Вернуть из цеха",
+        "barcode.wms.inventorization": "Инвентаризация",
+        "barcode.wms.put_product": "Положить товар",
+        "barcode.barcode_setted": "Штрих-код установлен",
+        "barcode.barcode_already_set": "Штрих-код уже установлен",
+        "barcode.success": "Успешно!"
     },
     "uk": {
         "barcode.search": "Пошук...",
@@ -57,6 +67,11 @@
         "barcode.vehicle.create_order": "Створити н/з",
         "barcode.product.reception": "Прийняти на склад",
         "barcode.product.to_repair": "Видати в цех",
-        "barcode.product.to_tool": "Повернути з цеху"
+        "barcode.product.to_tool": "Повернути з цеху",
+        "barcode.wms.inventorization": "Инвентаризация",
+        "barcode.wms.put_product": "Положить товар",
+        "barcode.barcode_setted": "Штрих-код установлен",
+        "barcode.barcode_already_set": "Штрих-код уже установлен",
+        "barcode.success": "Успешно!"
     }
 }
