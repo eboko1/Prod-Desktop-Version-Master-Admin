@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Icon } from 'antd';
+import { Icon, Popover, Button } from 'antd';
 import _ from 'lodash';
 import { v4 } from "uuid";
 
@@ -26,7 +26,35 @@ const defWidth = {
     vehicle_vin: '15%'
 }
 
-/* eslint-disable complexity */
+/**
+ * Creates specificly styled button with popup hint
+ * @property onClick - event handler
+ * @property user - user to make permissin validations for
+ * @property popMessage - message to show when hovered
+ * @returns Styled button with handler, popMessage and permisions setup
+ */
+const CreateOrderBtn = (props) => {
+    const {
+        onClick,
+        user,
+        popMessage
+    } = props;
+
+    const content = (<div>{popMessage}</div>);
+
+    return (
+        <Popover content={content}>
+            <Button
+                type='primary'
+                onClick={onClick}
+                disabled={ isForbidden(user, permissions.CREATE_ORDER) }
+            >
+                <Icon type="plus" className={Styles.newOrderIcon}/>
+            </Button>
+        </Popover>
+    );
+}
+
 export function columnsConfig(props) {
 
     const {
@@ -55,13 +83,11 @@ export function columnsConfig(props) {
         align: 'center',
         render: (val, client) => {
             return (
-                <StyledButton
-                    type='primary'
+                <CreateOrderBtn
                     onClick={() => onCreateOrderForClient({clientId: client.clientId})}
-                    disabled={ isForbidden(user, permissions.CREATE_ORDER) }
-                >
-                    <Icon type="plus" className={Styles.newOrderIcon}/>
-                </StyledButton>
+                    user={user}
+                    popMessage={<FormattedMessage id="client_hot_operations_page.hint_create_order_with_cient"/>}
+                />
             )
         }
     };
@@ -134,13 +160,11 @@ export function columnsConfig(props) {
                     return (
                         <div key={v4()} className={Styles.vehicle}>
                             <span>{`${vehicle.make} ${vehicle.model} (${vehicle.year})`}</span>
-                            <StyledButton
-                                type='primary'
+                            <CreateOrderBtn
                                 onClick={() => onCreateOrderForClient({clientId: client.clientId, vehicleId: vehicle.id})}
-                                disabled={ isForbidden(user, permissions.CREATE_ORDER) }
-                            >
-                                <Icon type="plus" className={Styles.newOrderIcon}/>
-                            </StyledButton>
+                                user={user}
+                                popMessage={<FormattedMessage id="client_hot_operations_page.hint_create_order_with_cient_and_vehicle"/>}
+                            />
                         </div>
                     );
                 }))
