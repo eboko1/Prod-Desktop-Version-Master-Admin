@@ -92,8 +92,21 @@ export function columnsConfig(props) {
 		dataIndex: 'rst',
 		key: 'isCashOrderRSTCol',
 		render: (rst, obj) => {
+
+			/** Creates Styled icon for cashbox with rst(red or green) depending on cash box state(opened or closed)*/
+			const cashBoxWithRST = ({isShiftOpen}) => (
+				<Popover
+					content={<FormattedMessage id={isShiftOpen
+						? "cash-table.hint_open_cash_box_with_rst"
+						: "cash-table.hint_closed_cash_box_with_rst"}
+					/>}
+				>
+					<Icon style={{fontSize: '16px', color: isShiftOpen? 'green': 'red'}} type="check-square" />
+				</Popover>
+			);
+
 			return rst
-				? (<Icon style={{fontSize: '16px', color: obj.isShiftOpen? 'green': 'red'}} type="check-square" />)
+				? cashBoxWithRST({isShiftOpen: obj.isShiftOpen})
 				: null;
 		}
 	};
