@@ -2,19 +2,19 @@
     word-break: keep-all;
 }
 
-.printIcon {
+.unregisteredIcon, .sendSMS, .sendMail, .printIcon, .editIcon {
+    display: inline-block;
+    margin-left: 8px;
     font-size: 24px;
+    color: black;
+}
+
+.printIcon {
     color: var(--primary);
 }
 
 .editIcon {
-    font-size: 24px;
     color: var(--secondary);
-}
-
-.unregisteredIcon, .sendSMS, .sendMail {
-    font-size: 24px;
-    color: black;
 }
 
 .unregisteredIcon {
