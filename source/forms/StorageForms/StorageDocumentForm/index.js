@@ -83,31 +83,33 @@ class StorageDocumentForm extends Component {
 
         if(productBarcode) {
             const detail = await fetchAPI('GET', `store_products/${productBarcode.referenceId}`);
-            const {
-                id,
-                brand,
-                code,
-                name,
-                stockPrice,
-                sellingPrice,
-                quantity,
-                tradeCode,
-                purchasePrice,
-                cellAddresses,
-            } = detail;
-            const addToAddress = cellAddresses ? cells.find((cell)=>cell.address == cellAddresses[0]) : undefined;
-            await this.props.addDocProduct({
-                productId: id,
-                detailCode: code,
-                brandName: brand.name,
-                brandId: brand.id,
-                tradeCode: tradeCode,
-                detailName: name,
-                stockPrice: Number(purchasePrice || 0),
-                sellingPrice: Number(sellingPrice || 0),
-                quantity: quantity || 1,
-                addToAddress: addToAddress ? addToAddress.address : undefined
-            });
+            if(detail) {
+                const {
+                    id,
+                    brand,
+                    code,
+                    name,
+                    stockPrice,
+                    sellingPrice,
+                    quantity,
+                    tradeCode,
+                    purchasePrice,
+                    cellAddresses,
+                } = detail;
+                const addToAddress = cellAddresses ? cells.find((cell)=>cell.address == cellAddresses[0]) : undefined;
+                await this.props.addDocProduct({
+                    productId: id,
+                    detailCode: code,
+                    brandName: brand.name,
+                    brandId: brand.id,
+                    tradeCode: tradeCode,
+                    detailName: name,
+                    stockPrice: Number(purchasePrice || 0),
+                    sellingPrice: Number(sellingPrice || 0),
+                    quantity: quantity || 1,
+                    addToAddress: addToAddress ? addToAddress.address : undefined
+                });
+            }
         } else {
             this.setState({
                 productBarcode: barcode
