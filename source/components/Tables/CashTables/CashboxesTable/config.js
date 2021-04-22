@@ -8,6 +8,7 @@ import { permissions, isForbidden } from 'utils';
 import { images } from 'utils';
 
 // own
+import Styles from './styles.m.css';
 
 /**
  * Takes path to Icon and generates customized Icon component
@@ -101,7 +102,13 @@ export function columnsConfig(props) {
 						: "cash-table.hint_closed_cash_box_with_rst"}
 					/>}
 				>
-					<Icon style={{fontSize: '16px', color: isShiftOpen? 'green': 'red'}} type="check-square" />
+					<Icon
+						className={[
+							Styles.cashboxStatusIcon,
+							isShiftOpen? Styles.openCashboxIcon: Styles.closedCashboxIcon
+						].join(", ")}
+						type="check-square"
+					/>
 				</Popover>
 			);
 
@@ -118,7 +125,7 @@ export function columnsConfig(props) {
 		render: (cashboxId) => {
 			return (
 				<Popover content={<FormattedMessage id="cash-table.hint_create_cash_order" />}>
-					<Icon onClick={() => props.onOpenCashOrderModal({cashboxId})} style={{fontSize: '16px'}} type="dollar" />
+					<Icon onClick={() => props.onOpenCashOrderModal({cashboxId})} className={Styles.createCashOrderIcon} type="dollar" />
 				</Popover>
 			);
 		},
