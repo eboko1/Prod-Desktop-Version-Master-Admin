@@ -174,58 +174,72 @@ export function columnsConfig(props) {
     const actionsCol = {
         key:    'actions',
         width:  'auto',
-        render: (key, cashOrder) => (
-            <>
-                {
-                    (cashOrder.rst && !cashOrder.isRegisteredWithRst)
-                        ? (
-                            <div>
-                                <Popconfirm
-                                    title={ <FormattedMessage id='cash-table.confirm' />}
-                                    onConfirm={() => props.onRegisterInCashdesk(cashOrder.id)}
-                                    okText={ <FormattedMessage id='yes' /> }
-                                    cancelText={ <FormattedMessage id='no' />}
-                                >
-                                    <Popover content={<FormattedMessage id='cash-table.hint_repeat_registration' />}>
-                                        <Icon
-                                            type='exclamation-circle'
-                                            className={Styles.unregisteredIcon}
-                                        />
-                                    </Popover>
-                                </Popconfirm>
+        render: (key, cashOrder) => {
 
-                                <Popover content={<FormattedMessage id='cash-table.hint_send_sms' />}>
-                                    <Icon
-                                        type="message"
-                                        className={ Styles.sendSMS }
-                                    />
-                                </Popover>
-                                
-                                <Popover content={<FormattedMessage id='cash-table.hint_send_email' />}>
-                                    <Icon
-                                        type="mail"
-                                        className={ Styles.sendMail }
-                                    />
-                                </Popover>
-                                
-                            </div>
-                        )
-                        : null
-                }
-                <Icon
-                    type='printer'
-                    onClick={ () => props.openPrint(cashOrder) }
-                    className={ Styles.printIcon }
-                />
-                { props.openEdit ? (
+            /** Creates an icon with styles and popup.
+             * @param popMessage - popup hint when hovered
+             * @param options - Icon options (type, className ...)
+             */
+            const iconWithPop = ({popMessage, options}) => {
+                return (
+                    <Popover content={popMessage}>
+                        <Icon {...options}/>
+                    </Popover>
+                );
+            }
+            
+            /** When cashOrder was successfully registered in cashdesk api service */
+            const cashOrderWithRST = (
+                <div>
+                    {iconWithPop({
+                        popMessage: (<FormattedMessage id='cash-table.hint_send_sms' />),
+                        options: {type: "message", className: Styles.sendSMS}
+                    })}
+                    
+                    {iconWithPop({
+                        popMessage: (<FormattedMessage id='cash-table.hint_send_email' />),
+                        options: {type: "mail", className: Styles.sendMail}
+                    })}
+                </div>
+            );
+            
+            /** When cashOrder was not registered in cashdesk api service */
+            const cashOrderWithFailedRST = (<div>
+                <Popconfirm
+                    title={ <FormattedMessage id='cash-table.confirm' />}
+                    onConfirm={() => props.onRegisterInCashdesk(cashOrder.id)}
+                    okText={ <FormattedMessage id='yes' /> }
+                    cancelText={ <FormattedMessage id='no' />}
+                >
+                    {iconWithPop({
+                        popMessage: (<FormattedMessage id='cash-table.hint_repeat_registration' />),
+                        options: {type: "exclamation-circle", className: Styles.unregisteredIcon}
+                    })}
+                </Popconfirm>
+            </div>);
+
+            return (
+                <>
+                    {
+                        (cashOrder.rst)
+                            ? cashOrder.isRegisteredWithRst
+                                ? cashOrderWithRST
+                                : cashOrderWithFailedRST
+                            : null
+                    }
+                    <Icon
+                        type='printer'
+                        onClick={ () => props.openPrint(cashOrder) }
+                        className={ Styles.printIcon }
+                    />
                     <Icon
                         type='edit'
                         onClick={ () => props.openEdit(cashOrder) }
                         className={ Styles.editIcon }
                     />
-                ) : null }
-            </>
-        ),
+                </>
+            );
+        },
     };
 
     const orderAndConterpartyCol = {
