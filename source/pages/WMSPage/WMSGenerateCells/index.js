@@ -116,6 +116,7 @@ export default class WMSGenerateCells extends Component {
                     return row.active && (
                         <Input
                             value={data}
+                            maxLength={1}
                             onChange={(event)=>{
                                 row.minValue = event.target.value;
                                 this.setState({})
@@ -133,6 +134,7 @@ export default class WMSGenerateCells extends Component {
                     return row.active && (
                         <Input
                             value={data}
+                            maxLength={1}
                             onChange={(event)=>{
                                 row.maxValue = event.target.value;
                                 this.setState({})

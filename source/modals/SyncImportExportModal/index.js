@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect } from "react-redux";
-import { Table, Icon, Popconfirm, notification, Button, Modal, Checkbox, Radio, Progress, Select, DatePicker, Upload, message } from "antd";
+import { Table, Icon, Popconfirm, notification, Button, Modal, Checkbox, Radio, Progress, Select, DatePicker, Upload, Popover, Input } from "antd";
 import { Link } from 'react-router-dom';
 import _ from "lodash";
 import moment from "moment";
@@ -13,6 +13,7 @@ import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
+const { RangePicker } = DatePicker;
 const 	ALL = 'ALL',
 		FROM_DOCS = 'FROM_DOCS',
 		NONE = 'NONE',
@@ -330,6 +331,74 @@ export default class SyncImportExportModal extends Component {
                 ],
         	}
         ];
+
+		this.filterColumn = [
+			{
+				key: "filter",		                
+				render: (row)=>{
+					const content = (
+						<div>
+							<RangePicker
+								style={{
+									width: '100%'
+								}}
+								value={[row.tableFromDate, row.tableToDate]}
+								onChange={([tableFromDate, tableToDate])=>{
+									console.log(tableFromDate, tableToDate);
+									row.tableFromDate = tableFromDate;
+									row.tableToDate = tableToDate;
+									row.tableFromId = undefined;
+									row.tableToId = undefined;
+									this.setState({});
+								}}
+							/>
+							<div
+								style={{
+									display: 'flex',
+									marginTop: 8
+								}}
+							>
+								<Input
+									value={row.tableFromId}
+									placeholder={'От заданого ID'}
+									onChange={({target})=>{
+										row.tableFromId = target.value;
+										row.tableFromDate = undefined;
+										row.tableToDate = undefined;
+										this.setState({});
+									}}
+								/>
+								<Input
+									value={row.tableToId}
+									placeholder={'До заданого ID'}
+									onChange={({target})=>{
+										row.tableToId = target.value;
+										row.tableFromDate = undefined;
+										row.tableToDate = undefined;
+										this.setState({});
+									}}
+								/>
+							</div>
+						</div>
+					);
+					return row.name && (
+						<Popover
+							trigger="click"
+							content={content}
+						>
+							<Icon
+								type='control'
+								style={{
+									fontSize: 24, 
+									verticalAlign: 'middle',
+									color: row.tableFromId || row.tableToId || row.tableFromDate ? 'var(--primary)' : 'var(--text)'
+								}}
+							/>
+						</Popover>
+					)
+				}
+			}
+		]
     }
 
     handleCancel = () => {
@@ -364,9 +433,10 @@ export default class SyncImportExportModal extends Component {
     			width={'fit-content'}
     			destroyOnClose
 				maskClosable={false}
+				zIndex={200}
     		>
     			<Table
-    				columns={type == 'IMPORT' ? [...this.mainColumns, ...this.priorityColumn] : [...this.mainColumns, ...this.syncColumn]}
+    				columns={type == 'IMPORT' ? [...this.mainColumns, ...this.priorityColumn, ...this.filterColumn] : [...this.mainColumns, ...this.syncColumn, ...this.filterColumn]}
 		    		dataSource={dataSource}
 		    		rowKey='table'
 	                pagination={false}
@@ -430,11 +500,15 @@ class SyncImportExportParametersModal extends Component {
 	    		syncDocs: syncDocs,
 	    		status: status,
 	    		syncPeriod: syncPeriod,
-	    		tablesOptions: tablesOptions.filter(({checked})=>checked).map(({checked, table, sync, priority})=>{
+	    		tablesOptions: tablesOptions.filter(({checked})=>checked).map(({checked, table, sync, priority, tableFromId, tableToId, tableFromDate, tableToDate})=>{
 	    			if(checked) {
 	    				return {
 	    					table,
 	    					sync: sync == NONE ? ALL : sync,
+							tableFromId: tableFromId || null,
+							tableToId: tableToId || null,
+							tableFromDate: tableFromDate || null,
+							tableToDate: tableToDate || null,
 	    				}
 	    			}
 	    		}),
@@ -489,11 +563,15 @@ class SyncImportExportParametersModal extends Component {
     		this.setState({
     			confirmLoading: true,
     		});
-    		const normalizedTablesOptions = [...tablesOptions.filter(({checked})=>checked).map(({checked, table, sync, priority})=>{
+    		const normalizedTablesOptions = [...tablesOptions.filter(({checked})=>checked).map(({checked, table, sync, priority, tableFromId, tableToId, tableFromDate, tableToDate})=>{
 	    			if(checked) {
 	    				return {
 	    					table,
 	    					priority,
+							tableFromId: tableFromId || null,
+							tableToId: tableToId || null,
+							tableFromDate: tableFromDate || null,
+							tableToDate: tableToDate || null,
 	    				}
 	    			}
 	    		})
