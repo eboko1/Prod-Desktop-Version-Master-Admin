@@ -245,16 +245,15 @@ export function columnsConfig(props) {
             return (
                 <div>
                     <span>
-                        <Icon
-                            type='printer'
-                            onClick={ () => props.openPrint(cashOrder) }
-                            className={ Styles.printIcon }
-                        />
-                        <Icon
-                            type='edit'
-                            onClick={ () => props.openEdit(cashOrder) }
-                            className={ Styles.editIcon }
-                        />
+                        {iconWithPop({
+                            popMessage: (<FormattedMessage id='cash-table.hint_print_cash_order' />),
+                            options: {type: "printer", className: Styles.printIcon, onClick: () => props.openPrint(cashOrder)}
+                        })}
+
+                        {iconWithPop({
+                            popMessage: (<FormattedMessage id='cash-table.hint_edit_cash_order' />),
+                            options: {type: "edit", className: Styles.editIcon, onClick: () => props.openEdit(cashOrder)}
+                        })}
                     </span>
                     {
                         (cashOrder.rst)

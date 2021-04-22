@@ -34,7 +34,9 @@
 		"cash-table.hint_open_cash_box_with_rst": "Opened cashbox with RST.",
 		"cash-table.hint_closed_cash_box_with_rst": "Closed cashbox with RST.",
 		"cash-table.hint_create_cash_order": "Create cash order.",
-		"cash-table.hint_download_receipt": "Download receipt."
+		"cash-table.hint_download_receipt": "Download receipt.",
+		"cash-table.hint_print_cash_order": "Print cash order.",
+		"cash-table.hint_edit_cash_order": "Edit cash order."
 	},
 	"ru": {
 		"cash-table.name": "Наименование Кассы",
@@ -72,7 +74,9 @@
 		"cash-table.hint_open_cash_box_with_rst": "Открытая касса с РРО.",
 		"cash-table.hint_closed_cash_box_with_rst": "Закрытая касса с РРО.",
 		"cash-table.hint_create_cash_order": "Создать кассовый ордер.",
-		"cash-table.hint_download_receipt": "Скачать чек."
+		"cash-table.hint_download_receipt": "Скачать чек.",
+		"cash-table.hint_print_cash_order": "Печатать кассовый ордер.",
+		"cash-table.hint_edit_cash_order": "Редактировать кассовый ордер."
 	},
 	"uk": {
 		"cash-table.name": "Назва Каси",
@@ -110,6 +114,8 @@
 		"cash-table.hint_open_cash_box_with_rst": "Відкрита каса з РРО.",
 		"cash-table.hint_closed_cash_box_with_rst": "Закрита каса з РРО.",
 		"cash-table.hint_create_cash_order": "Створити касовий ордер.",
-		"cash-table.hint_download_receipt": "Завантажити чек."
+		"cash-table.hint_download_receipt": "Завантажити чек.",
+		"cash-table.hint_print_cash_order": "Друкувати касовий ордер.",
+		"cash-table.hint_edit_cash_order": "Редагувати касовий ордер."
 	}
 }
