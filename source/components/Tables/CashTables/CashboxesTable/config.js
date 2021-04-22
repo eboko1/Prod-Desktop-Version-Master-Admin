@@ -117,7 +117,9 @@ export function columnsConfig(props) {
 		key: 'addCashOrderCol',
 		render: (cashboxId) => {
 			return (
-				<Icon onClick={() => props.onOpenCashOrderModal({cashboxId})} style={{fontSize: '16px'}} type="dollar" />
+				<Popover content={<FormattedMessage id="cash-table.hint_create_cash_order" />}>
+					<Icon onClick={() => props.onOpenCashOrderModal({cashboxId})} style={{fontSize: '16px'}} type="dollar" />
+				</Popover>
 			);
 		},
 	}
