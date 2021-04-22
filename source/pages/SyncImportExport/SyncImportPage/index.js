@@ -179,6 +179,11 @@ class ErrorsModal extends Component {
                 key: "row",
             },
             {
+                title: <FormattedMessage id="Поле" />,
+                dataIndex: "field",
+                key: "field",
+            },
+            {
                 title:  <FormattedMessage id="export_import_pages.message" />,
                 dataIndex: "message",
                 key: "message",
