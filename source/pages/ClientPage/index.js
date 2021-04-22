@@ -2,9 +2,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import { Button, Popover } from 'antd';
 
 // proj
-import { Layout, Spinner, StyledButton } from 'commons';
+import { Layout, Spinner } from 'commons';
 import { ClientContainer } from 'containers';
 import { permissions, isForbidden } from 'utils';
 import {
@@ -59,13 +60,15 @@ export default class ClientPage extends Component {
                 title={ <FormattedMessage id='client_page.title' /> }
                 controls={(
                     <div>
-                        <StyledButton
-                            type="primary"
-                            onClick={this.onCreateOrderForClient}
-                            disabled={ isForbidden(user, permissions.CREATE_ORDER) }
-                        >
-                            <FormattedMessage id='client_page.create_order' />
-                        </StyledButton>
+                        <Popover content={<FormattedMessage id="client_page.hint_create_order_with_client"/>}>
+                            <Button
+                                type="primary"
+                                onClick={this.onCreateOrderForClient}
+                                disabled={ isForbidden(user, permissions.CREATE_ORDER) }
+                            >
+                                <FormattedMessage id='client_page.create_order' />
+                            </Button>
+                        </Popover>
                     </div>
                 )}
             >

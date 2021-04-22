@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from "react";
-import { List, Form, Row, Col, notification, Icon, Button, Modal, Select } from "antd";
+import { List, Form, Row, Col, notification, Icon, Button, Modal, Select, Popover } from "antd";
 import { injectIntl, FormattedMessage } from "react-intl";
 import _ from "lodash";
 
@@ -428,13 +428,16 @@ export class EditClientVehicleForm extends Component {
                                 </Col>
                                 {/* --------------------------------------------------------------------------- */}
                                 <Col span={1}>
-                                    <StyledButton
-                                        type="primary"
-                                        onClick={() => this.onCreateOrderForClient({vehicle: item})}//Call with current vehicle
-                                        disabled={ isForbidden(user, permissions.CREATE_ORDER) }
-                                    >
-                                        <Icon type="plus" className={Styles.newOrderIcon}/>
-                                    </StyledButton>
+                                    <Popover content={<FormattedMessage id="client_page.hint_create_order_with_client_and_vehicle"/>}>
+                                        <Button
+                                            type="primary"
+                                            onClick={() => this.onCreateOrderForClient({vehicle: item})}//Call with current vehicle
+                                            disabled={ isForbidden(user, permissions.CREATE_ORDER) }
+
+                                        >
+                                            <Icon type="plus" className={Styles.newOrderIcon}/>
+                                        </Button>
+                                    </Popover>
                                 </Col>
                             </Row>
                         </Form>

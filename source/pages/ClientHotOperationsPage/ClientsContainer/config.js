@@ -86,7 +86,7 @@ export function columnsConfig(props) {
                 <CreateOrderBtn
                     onClick={() => onCreateOrderForClient({clientId: client.clientId})}
                     user={user}
-                    popMessage={<FormattedMessage id="client_hot_operations_page.hint_create_order_with_cient"/>}
+                    popMessage={<FormattedMessage id="client_hot_operations_page.hint_create_order_with_client"/>}
                 />
             )
         }
@@ -163,7 +163,7 @@ export function columnsConfig(props) {
                             <CreateOrderBtn
                                 onClick={() => onCreateOrderForClient({clientId: client.clientId, vehicleId: vehicle.id})}
                                 user={user}
-                                popMessage={<FormattedMessage id="client_hot_operations_page.hint_create_order_with_cient_and_vehicle"/>}
+                                popMessage={<FormattedMessage id="client_hot_operations_page.hint_create_order_with_client_and_vehicle"/>}
                             />
                         </div>
                     );
