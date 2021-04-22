@@ -2,7 +2,7 @@
     word-break: keep-all;
 }
 
-.unregisteredIcon, .sendSMS, .sendMail, .printIcon, .editIcon {
+.unregisteredIcon, .sendSMS, .sendMailIcon, .printIcon, .editIcon, .downloadIcon {
     display: inline-block;
     margin-left: 8px;
     font-size: 24px;
@@ -21,8 +21,12 @@
     color: red;
 }
 
-.sendMail {
+.sendMailIcon {
     color: blue;
+}
+
+.downloadIcon {
+    color: orange;
 }
 
 .unregisteredCashOrder {

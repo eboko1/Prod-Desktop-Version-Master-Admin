@@ -217,7 +217,12 @@ export function columnsConfig(props) {
                     
                     {iconWithPop({
                         popMessage: (<FormattedMessage id='cash-table.hint_send_email' />),
-                        options: {type: "mail", className: Styles.sendMail}
+                        options: {type: "mail", className: Styles.sendMailIcon}
+                    })}
+
+                    {iconWithPop({
+                        popMessage: (<FormattedMessage id='cash-table.hint_download_receipt' />),
+                        options: {type: "download", className: Styles.downloadIcon}
                     })}
                 </span>
             );
