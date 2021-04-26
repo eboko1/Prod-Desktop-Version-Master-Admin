@@ -118,7 +118,19 @@ export default class WMSGenerateCells extends Component {
                             value={data}
                             maxLength={1}
                             onChange={(event)=>{
-                                row.minValue = event.target.value;
+                                let { value } = event.target;
+                                switch(row.aliasType) {
+                                    case CAPITAL_LETTERS:
+                                        value = value.replace(/[^A-Za-z]/g, '').toUpperCase();
+                                        break;
+                                    case LOWER_CASE_LETTERS:
+                                        value = value.replace(/[^A-Za-z]/g, '').toLowerCase();
+                                        break;
+                                    case NUMBERS:
+                                        value = value.replace(/[^0-9]/g, '');
+                                        break;
+                                }
+                                row.minValue = value;
                                 this.setState({})
                             }}
                         />
@@ -136,7 +148,19 @@ export default class WMSGenerateCells extends Component {
                             value={data}
                             maxLength={1}
                             onChange={(event)=>{
-                                row.maxValue = event.target.value;
+                                let { value } = event.target;
+                                switch(row.aliasType) {
+                                    case CAPITAL_LETTERS:
+                                        value = value.replace(/[^A-Za-z]/g, '').toUpperCase();
+                                        break;
+                                    case LOWER_CASE_LETTERS:
+                                        value = value.replace(/[^A-Za-z]/g, '').toLowerCase();
+                                        break;
+                                    case NUMBERS:
+                                        value = value.replace(/[^0-9]/g, '');
+                                        break;
+                                }
+                                row.maxValue = value;
                                 this.setState({})
                             }}
                         />
