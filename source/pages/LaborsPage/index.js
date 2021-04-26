@@ -262,7 +262,7 @@ export default class LaborsPage extends Component {
                         </div>
                     )
                 },
-                dataIndex: 'name',
+                dataIndex: 'masterLaborName',
                 key:       'name',
             },
             {
@@ -615,6 +615,7 @@ export default class LaborsPage extends Component {
             elem.price = elem.laborPrice.price;
             elem.fixed = elem.laborPrice.fixed;
             elem.normHours = elem.laborPrice.normHours;
+            elem.customName = elem.customName || elem.name;
         })
         this.setState({
             labors: response.labors,
@@ -729,12 +730,12 @@ export default class LaborsPage extends Component {
         const columns = this.columns;
         var dataSource = [...labors];
         dataSource = dataSource.filter((elem)=>!elem.deleted);
-        if(filterCode) dataSource = dataSource.filter((data, i) => data.laborCode.replace('-', '').includes(filterCode));
+        if(filterCode) dataSource = dataSource.filter((data, i) => String(data.laborCode).replace('-', '').includes(filterCode));
         if(filterCrossId) dataSource = dataSource.filter((data, i) => String(data.crossId).includes(filterCrossId));
         if(filterId) dataSource = dataSource.filter((data, i) => String(data.masterLaborId).includes(String(filterId)));
         if(filterDetail) dataSource = dataSource.filter((data, i) => String(data.storeGroupId).includes(String(filterDetail)));
-        if(filterDefaultName) dataSource = dataSource.filter((data, i) => data.name.toLowerCase().includes(filterDefaultName.toLowerCase()));
-        if(filterName) dataSource = dataSource.filter((data, i) => data.customName.toLowerCase().includes(filterName.toLowerCase()));
+        if(filterDefaultName) dataSource = dataSource.filter((data, i) => String(data.masterLaborName).toLowerCase().includes(filterDefaultName.toLowerCase()));
+        if(filterName) dataSource = dataSource.filter((data, i) => String(data.customName).toLowerCase().includes(filterName.toLowerCase()));
 
         return (
             <Layout
