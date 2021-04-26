@@ -385,6 +385,7 @@ class StorageDocumentPage extends Component {
                     stockPrice: formData.type == EXPENSE ? elem.sellingPrice : elem.stockPrice,
                     sellingPrice: elem.sellingPrice,
                     addToAddress: elem.addToAddress || null,
+                    getFromAddress: elem.getFromAddress || null,
                 })
                 if(elem.tradeCode) {
                     createData.docProducts[createData.docProducts.length-1].supplierPartNumber = elem.tradeCode;

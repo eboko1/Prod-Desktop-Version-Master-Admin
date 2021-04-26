@@ -96,7 +96,7 @@ class StorageDocumentForm extends Component {
                     purchasePrice,
                     cellAddresses,
                 } = detail;
-                const addToAddress = cellAddresses ? cells.find((cell)=>cell.address == cellAddresses[0]) : undefined;
+                const addToAddress = cellAddresses ? cells.find((cell)=>cell.address == cellAddresses[0] && cell.enabled) : undefined;
                 await this.props.addDocProduct({
                     productId: id,
                     detailCode: code,
@@ -729,7 +729,7 @@ class StorageDocumentForm extends Component {
                         tradeCode,
                         cellAddresses,
                     } = detail;
-                    const addToAddress = cellAddresses ? cells.find((cell)=>cell.address == cellAddresses[0]) : undefined;
+                    const addToAddress = cellAddresses ? cells.find((cell)=>cell.address == cellAddresses[0] && cell.enabled) : undefined;
                     await this.props.addDocProduct({
                         productId: id,
                         detailCode: code,
@@ -972,7 +972,7 @@ class DocProductsTable extends React.Component {
         const tblColumns = [...this.columns];
         if(type == EXPENSE) {
             tblColumns.splice( 7, 0, this.purchaseColumn);
-        } else if(type == INCOME || documentType == ORDERINCOME) {
+        } else if(type != ORDER && documentType != EXPENSE) {
             tblColumns.splice( 5, 0, this.cellColumn);
         }
         var tableData = docProducts;
@@ -1220,7 +1220,7 @@ class AddProductModal extends React.Component {
             storageProduct = storageProducts.find((elem)=>elem.code==detailCode && (!brandId || elem.brandId == brandId));
         }
         if(storageProduct) {
-            const addToAddress = storageProduct.cellAddresses ? cells.find((cell)=>cell.address == storageProduct.cellAddresses[0]) : undefined;
+            const addToAddress = storageProduct.cellAddresses ? cells.find((cell)=>cell.address == storageProduct.cellAddresses[0] && cell.enabled) : undefined;
             storageBalance[0].count = storageProduct.countInWarehouses;
             storageBalance[1].count = storageProduct.reservedCount;
             storageBalance[2].count = storageProduct.countInOrders;
@@ -1405,7 +1405,7 @@ class AddProductModal extends React.Component {
         if(!prevProps.visible && this.props.visible) {
             this.getStorageProducts();
             if(product) {
-                const addToAddress = product.cellAddresses ? cells.find((cell)=>cell.address == product.cellAddresses[0]) : undefined;
+                const addToAddress = product.cellAddresses ? cells.find((cell)=>cell.address == product.cellAddresses[0] && cell.enabled) : undefined;
                 this.setState({
                     editMode: true,
                     brandId: product.brandId,
@@ -1436,7 +1436,7 @@ class AddProductModal extends React.Component {
         const { storageBalance } = this.state;
         const product = this.state.storageProducts.find((product)=>product.id == productId);
         if(product) {
-            const addToAddress = product.cellAddresses ? cells.find((cell)=>cell.address == product.cellAddresses[0]) : undefined;
+            const addToAddress = product.cellAddresses ? cells.find((cell)=>cell.address == product.cellAddresses[0] && cell.enabled) : undefined;
             storageBalance[0].count = product.countInWarehouses;
             storageBalance[1].count = product.reservedCount;
             storageBalance[2].count = product.countInOrders;
@@ -1649,7 +1649,7 @@ class AddProductModal extends React.Component {
                             }}
                         />
                     </div>
-                    {this.props.type == INCOME || this.props.documentType == ORDERINCOME ?
+                    {this.props.type != ORDER && this.props.documentType != EXPENSE ?
                         <div className={Styles.addProductItemWrap} style={{minWidth: 120}}>
                             <FormattedMessage id='wms.cell' />
                             <Input
