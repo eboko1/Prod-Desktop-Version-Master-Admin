@@ -68,10 +68,10 @@
         "barcode.product.reception": "Прийняти на склад",
         "barcode.product.to_repair": "Видати в цех",
         "barcode.product.to_tool": "Повернути з цеху",
-        "barcode.wms.inventorization": "Инвентаризация",
-        "barcode.wms.put_product": "Положить товар",
-        "barcode.barcode_setted": "Штрих-код установлен",
-        "barcode.barcode_already_set": "Штрих-код уже установлен",
-        "barcode.success": "Успешно!"
+        "barcode.wms.inventorization": "Інвентаризація",
+        "barcode.wms.put_product": "Покласти товар",
+        "barcode.barcode_setted": "Штрих-код встановлено",
+        "barcode.barcode_already_set": "Штрих-код вже встановлено",
+        "barcode.success": "Успішно!"
     }
 }
