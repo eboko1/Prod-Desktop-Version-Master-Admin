@@ -26,6 +26,11 @@ const mapDispatchToProps = {
 	clearCashOrderForm,
 };
 
+/**
+ * Cash setting page is used to work with cashboxes, you can delere create and setting them up.
+ * Currently there are different types of cash boxes, some of them are carbook internal features,
+ * and others are connected to government servers(via cashdesk api service for example)
+ */
 @connect(mapStateToProps, mapDispatchToProps)
 export default class CashSettingsPage extends Component {
 	constructor(props) {

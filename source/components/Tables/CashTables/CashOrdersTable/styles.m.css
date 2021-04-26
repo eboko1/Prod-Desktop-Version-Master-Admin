@@ -2,19 +2,31 @@
     word-break: keep-all;
 }
 
-.printIcon {
+.unregisteredIcon, .sendSMS, .sendMailIcon, .printIcon, .editIcon, .downloadIcon {
+    display: inline-block;
+    margin-left: 8px;
     font-size: 24px;
+    color: black;
+}
+
+.printIcon {
     color: var(--primary);
 }
 
 .editIcon {
-    font-size: 24px;
     color: var(--secondary);
 }
 
-.unregisteredIcon, .sendSMS, .sendMail {
-    font-size: 24px;
-    color: black;
+.unregisteredIcon {
+    color: red;
+}
+
+.sendMailIcon {
+    color: blue;
+}
+
+.downloadIcon {
+    color: orange;
 }
 
 .unregisteredCashOrder {

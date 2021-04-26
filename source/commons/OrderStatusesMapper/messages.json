@@ -1,0 +1,43 @@
+{
+    "en": {
+      "order_statuses_mapper.not_complete": "New",
+      "order_statuses_mapper.required": "Postponed",
+      "order_statuses_mapper.reserve": "Reservation",
+      "order_statuses_mapper.call": "Call",
+      "order_statuses_mapper.approve": "Appointment",
+      "order_statuses_mapper.progress": "Repair",
+      "order_statuses_mapper.success": "Done",
+      "order_statuses_mapper.cancel": "Cancel",
+      "order_statuses_mapper.redundant": "Redundant",
+      "order_statuses_mapper.invite": "Invite",
+      "order_statuses_mapper.unknown_status": "UNKNOWN"
+
+    },
+    "ru": {
+      "order_statuses_mapper.not_complete": "Новый",
+      "order_statuses_mapper.required": "Под вопросом",
+      "order_statuses_mapper.reserve": "Резерв",
+      "order_statuses_mapper.call": "Звонок",
+      "order_statuses_mapper.approve": "Запись",
+      "order_statuses_mapper.progress": "Ремонт",
+      "order_statuses_mapper.success": "Выполнено",
+      "order_statuses_mapper.cancel": "Отменить",
+      "order_statuses_mapper.redundant": "Мусорные",
+      "order_statuses_mapper.invite": "Приглашение",
+      "order_statuses_mapper.unknown_status": "НЕИЗВЕСТНЫЙ"
+    },
+    "uk": {
+      "order_statuses_mapper.not_complete": "Новий",
+      "order_statuses_mapper.required": "Під питанням",
+      "order_statuses_mapper.reserve": "Резерв",
+      "order_statuses_mapper.call": "Дзвінок",
+      "order_statuses_mapper.approve": "Запис",
+      "order_statuses_mapper.progress": "Ремонт",
+      "order_statuses_mapper.success": "Завершено",
+      "order_statuses_mapper.cancel": "Відмінити",
+      "order_statuses_mapper.redundant": "Мусорне",
+      "order_statuses_mapper.invite": "Запрошення",
+      "order_statuses_mapper.unknown_status": "НЕВІДОМИЙ"
+    }
+  }
+  

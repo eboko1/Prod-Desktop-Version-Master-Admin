@@ -8,6 +8,7 @@ import { permissions, isForbidden } from 'utils';
 import { images } from 'utils';
 
 // own
+import Styles from './styles.m.css';
 
 /**
  * Takes path to Icon and generates customized Icon component
@@ -92,8 +93,27 @@ export function columnsConfig(props) {
 		dataIndex: 'rst',
 		key: 'isCashOrderRSTCol',
 		render: (rst, obj) => {
+
+			/** Creates Styled icon for cashbox with rst(red or green) depending on cash box state(opened or closed)*/
+			const cashBoxWithRST = ({isShiftOpen}) => (
+				<Popover
+					content={<FormattedMessage id={isShiftOpen
+						? "cash-table.hint_open_cash_box_with_rst"
+						: "cash-table.hint_closed_cash_box_with_rst"}
+					/>}
+				>
+					<Icon
+						className={[
+							Styles.cashboxStatusIcon,
+							isShiftOpen? Styles.openCashboxIcon: Styles.closedCashboxIcon
+						].join(", ")}
+						type="check-square"
+					/>
+				</Popover>
+			);
+
 			return rst
-				? (<Icon style={{fontSize: '16px', color: obj.isShiftOpen? 'green': 'red'}} type="check-square" />)
+				? cashBoxWithRST({isShiftOpen: obj.isShiftOpen})
 				: null;
 		}
 	};
@@ -104,7 +124,9 @@ export function columnsConfig(props) {
 		key: 'addCashOrderCol',
 		render: (cashboxId) => {
 			return (
-				<Icon onClick={() => props.onOpenCashOrderModal({cashboxId})} style={{fontSize: '16px'}} type="dollar" />
+				<Popover content={<FormattedMessage id="cash-table.hint_create_cash_order" />}>
+					<Icon onClick={() => props.onOpenCashOrderModal({cashboxId})} className={Styles.createCashOrderIcon} type="dollar" />
+				</Popover>
 			);
 		},
 	}

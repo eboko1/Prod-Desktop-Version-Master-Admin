@@ -6,6 +6,7 @@ import Navigation from './Navigation';
 import Spinner from './Spinner';
 import Catcher from './Catcher';
 import Numeral from './Numeral';
+import OrdersStatusesMapper from './OrderStatusesMapper';
 import {
     MobileView,
     TabletView,
@@ -27,6 +28,7 @@ export {
     Spinner,
     Catcher,
     Numeral,
+    OrdersStatusesMapper,
     MobileView,
     TabletView,
     DesktopView,
