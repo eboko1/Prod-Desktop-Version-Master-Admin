@@ -532,11 +532,15 @@ export default class ProductPage extends Component {
                                             this.setState({});
                                         }}
                                     >
-                                        {suppliers.map((elem, i)=>
-                                            <Option key={i} value={elem.id}>
-                                                {elem.name}
-                                            </Option>
-                                        )}
+                                        {suppliers.map((elem, i)=>{
+                                            if(!elem.hide) {
+                                                return (
+                                                    <Option key={i} value={elem.id}>
+                                                        {elem.name}
+                                                    </Option>
+                                                )
+                                            }
+                                        })}
                                     </Select>
                                 </div>
                                 <div className={Styles.storeTabRow}>
@@ -551,6 +555,7 @@ export default class ProductPage extends Component {
                                         optionFilterProp={'children'}
                                         onChange={async (value)=>{
                                             product.defaultWarehouseId = value;
+                                            product.cellAddresses = undefined;
                                             await this.setState({});
                                             this._fetchWMSCells();
                                         }}
@@ -578,11 +583,15 @@ export default class ProductPage extends Component {
                                             this.setState({});
                                         }}
                                     >
-                                        {cells.map((elem, i)=>
-                                            <Option key={i} value={elem.address}>
-                                                {elem.address}
-                                            </Option>
-                                        )}
+                                        {cells.map((elem, i)=>{
+                                            if(elem.enabled) {
+                                                return (
+                                                    <Option key={i} value={elem.address}>
+                                                        {elem.address}
+                                                    </Option>
+                                                )
+                                            }
+                                        })}
                                     </Select>
                                 </div>
                                 <div className={Styles.storeTabRow}>

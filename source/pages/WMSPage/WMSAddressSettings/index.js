@@ -337,8 +337,8 @@ export default class WMSAddressSettings extends Component {
                         addressSettings.map(({height, width, depth}, key)=>{
                             addressSettings[key].changed = true;
                             addressSettings[key].volume = height * width * depth;
-                            this._saveCellsSettings();
                         })
+                        this._saveCellsSettings();
                     }}
                 >
                         <FormattedMessage id='wms.calculete_volume' />
@@ -347,14 +347,14 @@ export default class WMSAddressSettings extends Component {
                 <Menu.Item>
                     <div onClick={()=>{
                         addressSettings.map((elem, key)=>{
-                            addressSettings[key].changed = true;
-                            addressSettings[key].height = null;
-                            addressSettings[key].width = null;
-                            addressSettings[key].depth = null;
-                            addressSettings[key].weight = null;
-                            addressSettings[key].volume = null;
-                            this._saveCellsSettings();
+                            elem.changed = true;
+                            elem.height = null;
+                            elem.width = null;
+                            elem.depth = null;
+                            elem.weight = null;
+                            elem.volume = null;
                         })
+                        this._saveCellsSettings();
                     }}
                 >
                         <FormattedMessage id='wms.delete_all' />

@@ -480,6 +480,27 @@ export default class BarcodeContainer extends Component {
         	{
         		title: 'product',
         		childs: [
+					{
+        				title: 'barcode.create_product',
+        				disabled: !inputCode || isValidCode || isStoreProduct,
+						onClick: async () => {
+							setModal(MODALS.STORE_PRODUCT, {
+								barcode: inputCode,
+								onSubmit: async () => {
+									const barcodes = await fetchAPI('GET', 'barcodes',{
+										barcode: inputCode,
+									});
+									const tables = barcodes.map(({table})=>table);
+									this.setState({
+										tables: tables,
+									});
+								}
+							});
+							this.setState({
+								modalVisible: false,
+							})
+						},
+        			},
         			{
         				title: 'barcode.open_card',
         				disabled: !isStoreProduct,
@@ -506,21 +527,25 @@ export default class BarcodeContainer extends Component {
 						table: 'STORE_DOCS',
 						onClick: this._showModal,
 						confirmAction: this._addToStoreDoc,
-        			},
-        			{
+        			}
+        		]
+        	},
+			{
+				childs: [
+					{
         				title: 'barcode.product.to_repair',
 						onClick: this._productStorageOperation,
-        				disabled: !isStoreProduct || true,
+        				disabled: !isStoreProduct,
 						onClick: ()=>this._productStorageOperation('TO_REPAIR'),
         			},
         			{
         				title: 'barcode.product.to_tool',
 						onClick: this._productStorageOperation,
-        				disabled: !isStoreProduct || true,
+        				disabled: !isStoreProduct,
 						onClick: ()=>this._productStorageOperation('TO_TOOL'),
         			}
-        		]
-        	},
+				]
+			},
         	{
         		title: 'labor',
         		childs: [
@@ -674,7 +699,7 @@ export default class BarcodeContainer extends Component {
 	                	{pageData.map(({title, childs}, key)=>(
 	                		<div key={key} className={Styles.buttonBlock}>
 	                			<div className={Styles.buttonBlockTitle}>
-	                				<FormattedMessage id={title} />
+	                				{title && <FormattedMessage id={title} />}
 	                			</div>
 	                			{childs.map(({title, disabled, table, onClick, confirmAction}, index)=>(
 	                				<div key={`${key}-${index}`} className={Styles.buttonWrapp}>

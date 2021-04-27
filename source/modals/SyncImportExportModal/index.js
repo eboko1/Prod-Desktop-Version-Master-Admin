@@ -121,6 +121,18 @@ const SYNC_ORDERS = [
 		priority: CARBOOK,
 		table: 'ORDERS_LABORS',
 	},
+	{
+		name: 'stations',
+		checked: true,
+		sync: NONE,
+		priority: CARBOOK,
+		table: 'STATIONS',
+	},
+	{
+		sync: NONE,
+		priority: NONE,
+		table: NONE,
+	},
 ];
 
 const SYNC_STOCK = [
@@ -144,6 +156,18 @@ const SYNC_STOCK = [
 		sync: NONE,
 		priority: CARBOOK,
 		table: 'STORE_DOC_PRODUCTS',
+	},
+	{
+		name: 'analytics',
+		checked: true,
+		sync: NONE,
+		priority: CARBOOK,
+		table: 'ANALYTICS',
+	},
+	{
+		sync: NONE,
+		priority: NONE,
+		table: NONE,
 	},
 ];
 
