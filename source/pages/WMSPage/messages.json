@@ -36,7 +36,8 @@
         "wms.delete_all": "Delete all",
         "wms.select_warehose": "Select warehose",
         "wms.generate_cells": "Generate cells",
-        "wms.address_system_settings": "Address system settings"
+        "wms.address_system_settings": "Address system settings",
+        "wms.from_cell": "From cell"
     },
     "ru": {
         "wms.cell": "Ячейка",
@@ -75,7 +76,8 @@
         "wms.delete_all": "Удалить все",
         "wms.select_warehose": "Выберите склад",
         "wms.generate_cells": "Сгенерировать адреса хранения",
-        "wms.address_system_settings": "Настройки системы адресов хранения"
+        "wms.address_system_settings": "Настройки системы адресов хранения",
+        "wms.from_cell": "С ячейки"
     },
     "uk": {
         "wms.cell": "Комірка",
@@ -114,6 +116,7 @@
         "wms.delete_all": "Видалити всі",
         "wms.select_warehose": "Виберіть склад",
         "wms.generate_cells": "Згенерувати адреси зберігання",
-        "wms.address_system_settings": "Налаштування системи адрес зберігання"
+        "wms.address_system_settings": "Налаштування системи адрес зберігання",
+        "wms.from_cell": "З комірки"
     }
 }
