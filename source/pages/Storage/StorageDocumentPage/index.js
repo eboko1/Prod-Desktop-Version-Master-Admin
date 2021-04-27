@@ -383,7 +383,7 @@ class StorageDocumentPage extends Component {
                     productId: elem.productId,
                     quantity: elem.quantity || 1,
                     stockPrice: formData.type == EXPENSE ? elem.sellingPrice : elem.stockPrice,
-                    sellingPrice: elem.sellingPrice,
+                    sellingPrice: elem.sellingPrice || 0,
                     addToAddress: elem.addToAddress || null,
                     getFromAddress: elem.getFromAddress || null,
                 })
@@ -995,7 +995,8 @@ class StorageDocumentPage extends Component {
                                     <Icon
                                         type='save'
                                         style={{
-                                            ...headerIconStyle,                                        }}
+                                            ...headerIconStyle,
+                                        }}
                                         onClick={()=>{
                                             if(id) {
                                                 this.setState({loading: true});
