@@ -180,6 +180,13 @@ const SYNC_CASH_ORDERS = [
 		table: 'CASH_ORDERS',
 	},
 	{
+		name: 'cash_boxes',
+		checked: true,
+		sync: NONE,
+		priority: CARBOOK,
+		table: 'CASH_BOXES',
+	},
+	{
 		name: 'requisites',
 		checked: true,
 		sync: NONE,
