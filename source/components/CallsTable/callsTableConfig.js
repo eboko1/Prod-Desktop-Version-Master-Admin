@@ -93,6 +93,8 @@ export function columnsConfig({fetchRecordingLink, callsLinksCache}) {
         dataIndex: 'clients',
         key:       'clients',
         render:    clients => {
+            if(!clients) return "";
+            
             return clients.map((client) => {
                 return (
                     <div className={ Styles.client } key={v4()}>
