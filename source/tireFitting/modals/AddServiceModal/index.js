@@ -45,7 +45,7 @@ class AddServiceModal extends React.Component{
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", maxWidth: '95%' }}
                             filterOption={(input, option) => {
                                 return (
-                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.children).toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
                                     String(option.props.value).indexOf(input.toLowerCase()) >= 0 ||
                                     String(option.props.cross_id).toLowerCase().indexOf(input.toLowerCase()) >= 0
                                 )
