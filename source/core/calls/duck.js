@@ -262,10 +262,15 @@ export const setCallsTableMode = mode => ({
     payload: mode,
 });
 
-export const setClientFilter = ({clientId}) => ({
-    type: SET_CLIENT_FILTER,
-    payload: {clientId}
-});
+export const setClientFilter = ({clientId}) => {
+    return function(dispatch) {
+        dispatch({
+            type: SET_CLIENT_FILTER,
+            payload: {clientId}
+        });
+        return dispatch(fetchCalls());
+    }
+};
 
 export const setCallsPageFilter = page => ({
     type:    SET_CALLS_PAGE_FILTER,
