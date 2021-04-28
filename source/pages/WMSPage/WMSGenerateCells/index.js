@@ -116,7 +116,7 @@ export default class WMSGenerateCells extends Component {
                     return row.active && (
                         <Input
                             value={data}
-                            maxLength={1}
+                            maxLength={2}
                             onChange={(event)=>{
                                 let { value } = event.target;
                                 switch(row.aliasType) {
@@ -130,8 +130,11 @@ export default class WMSGenerateCells extends Component {
                                         value = value.replace(/[^0-9]/g, '');
                                         break;
                                 }
-                                row.minValue = value;
-                                this.setState({})
+                                if(value && value.length == 2) {
+                                    value = value[1];
+                                    row.minValue = value;
+                                    this.setState({})
+                                }
                             }}
                         />
                     )
@@ -146,7 +149,7 @@ export default class WMSGenerateCells extends Component {
                     return row.active && (
                         <Input
                             value={data}
-                            maxLength={1}
+                            maxLength={2}
                             onChange={(event)=>{
                                 let { value } = event.target;
                                 switch(row.aliasType) {
@@ -160,8 +163,11 @@ export default class WMSGenerateCells extends Component {
                                         value = value.replace(/[^0-9]/g, '');
                                         break;
                                 }
-                                row.maxValue = value;
-                                this.setState({})
+                                if(value && value.length == 2) {
+                                    value = value[1];
+                                    row.maxValue = value;
+                                    this.setState({})
+                                }
                             }}
                         />
                     )
