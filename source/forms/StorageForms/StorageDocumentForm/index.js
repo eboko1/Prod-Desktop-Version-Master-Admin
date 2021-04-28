@@ -131,8 +131,6 @@ class StorageDocumentForm extends Component {
         if(productBarcode) {
             this._addProductById(productBarcode.referenceId);
         } else {
-            //4019064001232
-            const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: barcode});
             this.setState({
                 productBarcode: barcode
             })

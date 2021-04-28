@@ -118,13 +118,33 @@ class DetailsTable extends Component {
                                                 await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
                                                 await this.updateDataSource();
                                             } else {
+                                                //4019064001232
                                                 const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: code});
-                                                this.setState({
-                                                    productBarcode: code,
-                                                })
-                                                notification.warning({
-                                                    message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
-                                                });
+                                                if(tecDocProducts && tecDocProducts.length) {
+                                                    const payload = {
+                                                        insertMode: true,
+                                                        details: [],
+                                                        services: [],
+                                                    };
+                                                    payload.details.push({
+                                                        storeGroupId: tecDocProducts[0].storeGroupId,
+                                                        name: tecDocProducts[0].description,
+                                                        productCode: tecDocProducts[0].partNumber,
+                                                        supplierBrandId: tecDocProducts[0].brandId,
+                                                        count: 1,
+                                                        price: 0,
+                                                        purchasePrice: 0,
+                                                    })
+                                                    await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
+                                                    await this.updateDataSource();
+                                                } else {
+                                                    this.setState({
+                                                        productBarcode: code,
+                                                    })
+                                                    notification.warning({
+                                                        message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
+                                                    });
+                                                }                                                
                                             }
                                         }}
                                     />
