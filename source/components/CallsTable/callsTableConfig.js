@@ -1,12 +1,15 @@
 // vendor
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import moment from 'moment';
+import { v4 } from 'uuid';
 
 // proj
 import { answered } from 'core/calls/config';
 import { StyledButton } from 'commons';
+import book from 'routes/book';
 
 // // own
 import Styles from './styles.m.css';
@@ -17,10 +20,11 @@ const defWidth = {
     order: '10%',
     caller: '10%',
     recipient: '10%',
-    waiting: '10%',
-    duration: '10%',
-    innerRecipient: '10%',
-    record: '30%',
+    client: 'auto',
+    waiting: '5%',
+    duration: '5%',
+    innerRecipient: '5%',
+    record: '20%',
 };
 
 export function columnsConfig({fetchRecordingLink, callsLinksCache}) {
@@ -83,6 +87,31 @@ export function columnsConfig({fetchRecordingLink, callsLinksCache}) {
         ),
     };
 
+    const client = {
+        title:     <FormattedMessage id='calls-table.client' />,
+        width:     defWidth.client,
+        dataIndex: 'clients',
+        key:       'clients',
+        render:    clients => {
+            return clients.map((client) => {
+                return (
+                    <div className={ Styles.client } key={v4()}>
+                        <Link
+                            to={{
+                                pathname: `${book.client}/${client.clientId}`,
+                                state:{
+                                    specificTab: 'clientDebt'
+                                },
+                            }}
+                        >
+                            {client.fullName}
+                        </Link>
+                    </div>
+                )
+            });
+        },
+    };
+
     const waiting = {
         title:     <FormattedMessage id='calls-table.waiting' />,
         width:     defWidth.waiting,
@@ -135,6 +164,7 @@ export function columnsConfig({fetchRecordingLink, callsLinksCache}) {
         status,
         caller,
         recipient,
+        client,
         waiting,
         duration,
         innerRecipient,
