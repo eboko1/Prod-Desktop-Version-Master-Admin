@@ -118,6 +118,7 @@ class DetailsTable extends Component {
                                                 await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
                                                 await this.updateDataSource();
                                             } else {
+                                                const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: code});
                                                 this.setState({
                                                     productBarcode: code,
                                                 })
