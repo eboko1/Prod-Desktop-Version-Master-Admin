@@ -82,7 +82,7 @@ export class EmployeeForm extends Component {
 		const passwordField = this._renderPasswordField();
 
 		return (
-			<Form layout='vertical'>
+			<Form layout='horizontal'>
 				<Row>
 					<Col span={8}>
 						<DecoratedCheckbox

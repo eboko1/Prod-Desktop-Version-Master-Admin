@@ -3,13 +3,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
-import { v4 } from "uuid";
 import moment from 'moment';
 
 //Proj
 import book from 'routes/book';
+import { Numeral, OrdersStatusesMapper } from "commons";
 import { OrderStatusIcon, RepairMapIndicator } from 'components';
-import { Numeral } from 'commons';
 
 //Own
 import Styles from './styles.m.css';
@@ -18,6 +17,7 @@ import Styles from './styles.m.css';
 //It must be 100% of width in total!
 const defWidth = {
     order:               'auto',
+    order_status:               '10%',
     begin_datetime:      '10%',
     sum:                 '10%',
     remaining_sum:       '10%',
@@ -68,6 +68,14 @@ export function columnsConfig() {
                 <RepairMapIndicator data={order.repairMapIndicator}/>
             </>
         ),
+    };
+
+    const orderStatusCol = {
+        title:     <FormattedMessage id='orders.status' />,
+        width:     defWidth.order_status,
+        dataIndex: 'status',
+        key:       'status',
+        render:    (status) => (<OrdersStatusesMapper status={status}/>),
     };
 
     const beginDatetimeCol = {
@@ -152,6 +160,7 @@ export function columnsConfig() {
 
     return [,
         orderCol,
+        orderStatusCol,
         beginDatetimeCol,
         sumCol,
         remainingSumCol,

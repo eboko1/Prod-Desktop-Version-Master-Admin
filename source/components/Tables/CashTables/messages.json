@@ -30,7 +30,13 @@
         "cash-table.hint_x_report": "Get xReport",
 		"cash-table.hint_repeat_registration": "Repeat the registration of this cash order at the cash desk with RST.",
 		"cash-table.hint_send_sms": "Send SMS with a link to a fiscal receipt.",
-		"cash-table.hint_send_email": "Send an email with a fiscal receipt."
+		"cash-table.hint_send_email": "Send an email with a fiscal receipt.",
+		"cash-table.hint_open_cash_box_with_rst": "Opened cashbox with RST.",
+		"cash-table.hint_closed_cash_box_with_rst": "Closed cashbox with RST.",
+		"cash-table.hint_create_cash_order": "Create cash order.",
+		"cash-table.hint_download_receipt": "Download receipt.",
+		"cash-table.hint_print_cash_order": "Print cash order.",
+		"cash-table.hint_edit_cash_order": "Edit cash order."
 	},
 	"ru": {
 		"cash-table.name": "Наименование Кассы",
@@ -64,7 +70,13 @@
         "cash-table.hint_x_report": "Получить x-отчет",
 		"cash-table.hint_repeat_registration": "Повторить регистрацию данного кассового ордера в кассе c РРО.",
 		"cash-table.hint_send_sms": "Отправить СМС с ссылкой на фискальный чек.",
-		"cash-table.hint_send_email": "Отправить емейл с фискальным чеком."
+		"cash-table.hint_send_email": "Отправить емейл с фискальным чеком.",
+		"cash-table.hint_open_cash_box_with_rst": "Открытая касса с РРО.",
+		"cash-table.hint_closed_cash_box_with_rst": "Закрытая касса с РРО.",
+		"cash-table.hint_create_cash_order": "Создать кассовый ордер.",
+		"cash-table.hint_download_receipt": "Скачать чек.",
+		"cash-table.hint_print_cash_order": "Печатать кассовый ордер.",
+		"cash-table.hint_edit_cash_order": "Редактировать кассовый ордер."
 	},
 	"uk": {
 		"cash-table.name": "Назва Каси",
@@ -98,6 +110,12 @@
         "cash-table.hint_x_report": "Отримати x-звіт",
 		"cash-table.hint_repeat_registration": "Повторити реєстрацію цього касового чеку в касі з РРО.",
 		"cash-table.hint_send_sms": "Відправити СМС з посиланням на фіскальний чек.",
-		"cash-table.hint_send_email": "Надіслати емейл з фіскальним чеком."
+		"cash-table.hint_send_email": "Надіслати емейл з фіскальним чеком.",
+		"cash-table.hint_open_cash_box_with_rst": "Відкрита каса з РРО.",
+		"cash-table.hint_closed_cash_box_with_rst": "Закрита каса з РРО.",
+		"cash-table.hint_create_cash_order": "Створити касовий ордер.",
+		"cash-table.hint_download_receipt": "Завантажити чек.",
+		"cash-table.hint_print_cash_order": "Друкувати касовий ордер.",
+		"cash-table.hint_edit_cash_order": "Редагувати касовий ордер."
 	}
 }

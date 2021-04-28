@@ -5,7 +5,7 @@ import moment from 'moment';
 
 // proj
 import { StyledButton } from 'commons';
-import { CallStatusIcon } from 'components';
+import { CallStatusIcon, FormattedDatetime } from 'components';
 
 const defWidth = {
     date: '10%',
@@ -18,6 +18,8 @@ const defWidth = {
     record: 'auto',
 };
 
+const DEF_UI_DATETIME_FORMAT = 'DD.MM.YYYY HH:mm';
+
 export function columnsConfig({fetchRecordingLink, callsLinksCache}) {
     const date = {
         title:     <FormattedMessage id='date' />,
@@ -26,7 +28,7 @@ export function columnsConfig({fetchRecordingLink, callsLinksCache}) {
         key:       'order-calls-date',
         render:    date => (
             <div style={ { wordBreak: 'normal' } }>
-                { moment(record.date).format('DD.MM.YYYY HH:mm') }
+                <FormattedDatetime datetime={ date } format={ DEF_UI_DATETIME_FORMAT } />
             </div>
         ),
     };

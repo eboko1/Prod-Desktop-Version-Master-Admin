@@ -2,10 +2,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import { Button, Popover } from 'antd';
 
 // proj
-import { Layout, Spinner, StyledButton } from 'commons';
+import { Layout, Spinner } from 'commons';
 import { ClientContainer } from 'containers';
+import { permissions, isForbidden } from 'utils';
 import {
     fetchClient,
     createOrderForClient
@@ -13,7 +15,6 @@ import {
 
 const mapStateToProps = state => ({
     user: state.auth,
-    // isFetching:   state.ui.clientFetching,
     clientEntity: state.client.clientEntity,
 });
 
@@ -49,7 +50,7 @@ export default class ClientPage extends Component {
     }
 
     render() {
-        const { isFetching, clientEntity, match, location, fetchClient } = this.props;
+        const { isFetching, clientEntity, match, location, fetchClient, user } = this.props;
         const specificTab = (location && location.state) ? location.state.specificTab : undefined;
 
         return isFetching ? (
@@ -59,9 +60,15 @@ export default class ClientPage extends Component {
                 title={ <FormattedMessage id='client_page.title' /> }
                 controls={(
                     <div>
-                        <StyledButton type="primary" onClick={this.onCreateOrderForClient}>
-                            <FormattedMessage id='client_page.create_order' />
-                        </StyledButton>
+                        <Popover content={<FormattedMessage id="client_page.hint_create_order_with_client"/>}>
+                            <Button
+                                type="primary"
+                                onClick={this.onCreateOrderForClient}
+                                disabled={ isForbidden(user, permissions.CREATE_ORDER) }
+                            >
+                                <FormattedMessage id='client_page.create_order' />
+                            </Button>
+                        </Popover>
                     </div>
                 )}
             >

@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 
 // proj
-import { Numeral } from 'commons';
+import { Numeral, OrdersStatusesMapper } from "commons";
 import { FormattedDatetime, DateRangePicker } from 'components';
 import book from 'routes/book';
 
@@ -14,15 +14,6 @@ import book from 'routes/book';
 import Styles from './styles.m.css';
 
 const DEF_DATE_FORMAT = 'YYYY/MM/DD';
-
-const statuses = {
-    required: 'transfer_required',
-    reserve: 'transfer_reserve',
-    not_complete: 'transfer_not_complete',
-    approve: 'transfer_approve',
-    progress: 'transfer_progress',
-    success: 'transfer_success',
-}
 
 //Choose width for each col
 //It must be 100% of width in total!
@@ -152,14 +143,8 @@ export function columnsConfig(props) {
     //Get corresponging status value
     const statusLangMapper = status => {
         switch(status.toLowerCase()) {
-            case 'required': return <FormattedMessage id={statuses.required} />;
-            case 'reserve': return <FormattedMessage id={statuses.reserve} />;
-            case 'not_complete': return <FormattedMessage id={statuses.not_complete} />;
-            case 'approve': return <FormattedMessage id={statuses.approve} />;
-            case 'progress': return <FormattedMessage id={statuses.progress} />;
-            case 'success': return <FormattedMessage id={statuses.success} />;
             case 'reset': return <FormattedMessage id='report-orders-table.reset' />;
-            default: return <FormattedMessage id="report-orders-table.unknown_status" />;
+            default: return <OrdersStatusesMapper status={status} />;
         }
     }
 

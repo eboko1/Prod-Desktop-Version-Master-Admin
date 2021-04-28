@@ -1,13 +1,11 @@
 // vendor
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Icon, Button } from 'antd';
+import { Icon } from 'antd';
 import moment from 'moment';
 
 // proj
 import { answered } from 'core/calls/config';
-import book from 'routes/book';
 import { StyledButton } from 'commons';
 
 // // own
@@ -25,7 +23,7 @@ const defWidth = {
     record: '30%',
 };
 
-export function columnsConfig(formatMessage, showPhone, phones, fetchRecordingLink, callsLinksCache) {
+export function columnsConfig({fetchRecordingLink, callsLinksCache}) {
     const date = {
         title:     <FormattedMessage id='calls-table.date' />,
         width:     defWidth.date,
@@ -65,15 +63,11 @@ export function columnsConfig(formatMessage, showPhone, phones, fetchRecordingLi
         width:     defWidth.caller,
         dataIndex: 'caller',
         key:       'caller',
-        render:    (caller, row, index) =>
-            phones.includes(index) ? (
+        render:    (caller) =>
+            (
                 <a href={ `tel:${caller}` } className={ Styles.orderLink }>
                     { caller }
                 </a>
-            ) : (
-                <Button type='primary' onClick={ () => showPhone(index) }>
-                    <FormattedMessage id='show' />
-                </Button>
             ),
     };
 

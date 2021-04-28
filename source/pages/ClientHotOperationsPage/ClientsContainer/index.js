@@ -84,7 +84,7 @@ export default class ClientsContainer extends React.Component {
             fetchClientOrders,
             setClientRowKey,
             expandedClientRow,
-            searchQuery
+            user
         } = this.props;
 
         const pagination = {
@@ -110,7 +110,7 @@ export default class ClientsContainer extends React.Component {
                     <Table
                         className={Styles.table}
                         dataSource={clients}
-                        columns={columnsConfig({ onCreateOrderForClient: this.onCreateOrderForClient })}
+                        columns={columnsConfig({user,  onCreateOrderForClient: this.onCreateOrderForClient })}
                         scroll={ { x: 1000, y: '70vh' } }
                         loading={clientsFetching}
                         pagination={pagination}

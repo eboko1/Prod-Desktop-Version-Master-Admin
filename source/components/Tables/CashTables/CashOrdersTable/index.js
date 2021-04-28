@@ -4,7 +4,6 @@ import { FormattedMessage } from 'react-intl';
 import { Table } from 'antd';
 
 // proj
-import { Loader } from 'commons';
 
 // own
 import { columnsConfig } from './config';
@@ -18,7 +17,7 @@ export class CashOrdersTable extends Component {
     _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
 
     render() {
-        const { cashOrders, cashOrdersFetching, totalCount, openPrint, openEdit, isMobile, onRegisterInCashdesk } = this.props;
+        const { cashOrders, cashOrdersFetching, openPrint, openEdit, isMobile, onRegisterInCashdesk } = this.props;
 
         this.columns = columnsConfig({
             openPrint: openPrint,
