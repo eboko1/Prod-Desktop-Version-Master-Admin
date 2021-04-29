@@ -287,7 +287,11 @@ export function* createCashOrderSaga() {
         try {
             const { payload } = yield take(CREATE_CASH_ORDER);
 
-            const isCashBoxRst =  Boolean(_.get(payload, 'cashBox.rst'));
+            //Get selected cashbox to register in cashdesk later
+            const cashBoxes = yield call(fetchAPI, 'GET', '/cash_boxes');
+            const cashBox = _.get(_.filter(cashBoxes, (obj) => obj.id == payload.cashBoxId), '[0]');
+
+            const isCashBoxRst =  Boolean(_.get(cashBox, 'rst'));
             const cashOrder = _.omit(payload, [
                 'counterpartyType',
                 'sumType',
