@@ -226,7 +226,7 @@ export function columnsConfig(props) {
                     
                     {iconWithPop({
                         popMessage: (<FormattedMessage id='cash-table.hint_send_email' />),
-                        options: {type: "mail", className: Styles.sendMailIcon, onClick: () => onSendEmail({cashOrderId: cashOrder.id})}
+                        options: { type: "mail", className: Styles.sendMailIcon} //, onClick: () => onSendEmail({cashOrderId: cashOrder.id})
                     })}
 
                     {iconWithPop({

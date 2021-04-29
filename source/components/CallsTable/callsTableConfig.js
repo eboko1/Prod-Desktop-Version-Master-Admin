@@ -101,9 +101,6 @@ export function columnsConfig({fetchRecordingLink, callsLinksCache}) {
                         <Link
                             to={{
                                 pathname: `${book.client}/${client.clientId}`,
-                                state:{
-                                    specificTab: 'clientDebt'
-                                },
                             }}
                         >
                             {client.fullName}
