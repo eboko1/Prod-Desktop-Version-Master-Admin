@@ -117,7 +117,7 @@ class DetailsTable extends Component {
                                                 })
                                                 await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
                                                 await this.updateDataSource();
-                                            } else {
+                                            } else if(code.length > 2) {
                                                 //4019064001232
                                                 const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: code});
                                                 if(tecDocProducts && tecDocProducts.length) {
@@ -145,6 +145,13 @@ class DetailsTable extends Component {
                                                         message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
                                                     });
                                                 }                                                
+                                            } else {
+                                                this.setState({
+                                                    productBarcode: code,
+                                                })
+                                                notification.warning({
+                                                    message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
+                                                });
                                             }
                                         }}
                                     />
