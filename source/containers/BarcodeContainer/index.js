@@ -276,22 +276,24 @@ export default class BarcodeContainer extends Component {
 				state: { activeTab }
 			});
 		} else {
-			const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: inputCode});
-			if(tecDocProducts && tecDocProducts.length) {
-				payload.details.push({
-					storeGroupId: tecDocProducts[0].storeGroupId,
-					name: tecDocProducts[0].description,
-					productCode: tecDocProducts[0].partNumber,
-					supplierBrandId: tecDocProducts[0].brandId,
-					count: 1,
-					price: 0,
-					purchasePrice: 0,
-				})
-				await fetchAPI('PUT', `orders/${selectedRowId}`, null, payload);
-				history.push({
-					pathname: `${book.order}/${selectedRowId}`,
-					state: { activeTab }
-				});
+			if(inputCode.length > 2) {
+				const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: inputCode});
+				if(tecDocProducts && tecDocProducts.length) {
+					payload.details.push({
+						storeGroupId: tecDocProducts[0].storeGroupId,
+						name: tecDocProducts[0].description,
+						productCode: tecDocProducts[0].partNumber,
+						supplierBrandId: tecDocProducts[0].brandId,
+						count: 1,
+						price: 0,
+						purchasePrice: 0,
+					})
+					await fetchAPI('PUT', `orders/${selectedRowId}`, null, payload);
+					history.push({
+						pathname: `${book.order}/${selectedRowId}`,
+						state: { activeTab }
+					});
+				}
 			}
 		}
 	}
@@ -504,13 +506,15 @@ export default class BarcodeContainer extends Component {
         				disabled: !inputCode || isValidCode || isStoreProduct,
 						onClick: async () => {
 							let code, brandId, groupId, name, brandName;
-							const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: inputCode});
-							if(tecDocProducts && tecDocProducts.length) {
-								code = tecDocProducts[0].partNumber;
-								brandId = tecDocProducts[0].brandId;
-								brandName = tecDocProducts[0].supplierName;
-								groupId = tecDocProducts[0].storeGroupId;
-								name = tecDocProducts[0].description;
+							if(inputCode.length > 2) {
+								const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: inputCode});
+								if(tecDocProducts && tecDocProducts.length) {
+									code = tecDocProducts[0].partNumber;
+									brandId = tecDocProducts[0].brandId;
+									brandName = tecDocProducts[0].supplierName;
+									groupId = tecDocProducts[0].storeGroupId;
+									name = tecDocProducts[0].description;
+								}
 							}
 							setModal(MODALS.STORE_PRODUCT, {
 								code,
@@ -690,9 +694,11 @@ export default class BarcodeContainer extends Component {
 										barcode: target.value,
 									});
 									const tables = barcodes.map(({table})=>table);
-									const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: target.value});
-									if(tecDocProducts && tecDocProducts.length) {
-										tables.push('TECDOC');
+									if(target.value.length > 2) {
+										const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: target.value});
+										if(tecDocProducts && tecDocProducts.length) {
+											tables.push('TECDOC');
+										}
 									}
 									this.setState({
 										tables: tables,
@@ -726,9 +732,11 @@ export default class BarcodeContainer extends Component {
 									barcode: value,
 								});
 								const tables = barcodes.map(({table})=>table);
-								const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: value});
-								if(tecDocProducts && tecDocProducts.length) {
-									tables.push('TECDOC');
+								if(value.length > 2) {
+									const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: value});
+									if(tecDocProducts && tecDocProducts.length) {
+										tables.push('TECDOC');
+									}
 								}
 								this.setState({
 									tables: tables,
