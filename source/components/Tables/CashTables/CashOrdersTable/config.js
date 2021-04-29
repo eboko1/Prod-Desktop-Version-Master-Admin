@@ -79,6 +79,7 @@ export function columnsConfig(props) {
         openEdit,
         onSendEmail,
         onSendSms,
+        downloadReceipt,
         isMobile
     } = props;
 
@@ -232,7 +233,7 @@ export function columnsConfig(props) {
 
                     {iconWithPop({
                         popMessage: (<FormattedMessage id='cash-table.hint_download_receipt' />),
-                        options: {type: "download", className: Styles.downloadIcon}
+                        options: {type: "download", className: Styles.downloadIcon, onClick: () => downloadReceipt({cashOrderId: cashOrder.id})}
                     })}
                 </span>
             );

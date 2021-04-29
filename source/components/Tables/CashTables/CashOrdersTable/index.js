@@ -5,7 +5,11 @@ import { connect } from "react-redux";
 import { Table } from 'antd';
 
 // proj
-import { sendEmailWithReceipt, sendSmsWithReceipt } from "core/cash/duck";
+import {
+    sendEmailWithReceipt,
+    sendSmsWithReceipt,
+    downloadReceipt
+} from "core/cash/duck";
 
 // own
 import { columnsConfig } from './config';
@@ -18,6 +22,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     sendEmailWithReceipt,
     sendSmsWithReceipt,
+    downloadReceipt,
 };
 
 @connect( mapStateToProps, mapDispatchToProps )
@@ -57,7 +62,15 @@ export class CashOrdersTable extends Component {
     }
 
     render() {
-        const { cashOrders, cashOrdersFetching, openPrint, openEdit, isMobile, onRegisterInCashdesk } = this.props;
+        const {
+            cashOrders,
+            cashOrdersFetching,
+            openPrint,
+            openEdit,
+            isMobile,
+            onRegisterInCashdesk,
+            downloadReceipt
+        } = this.props;
 
         this.columns = columnsConfig({
             openPrint: openPrint,
@@ -66,6 +79,7 @@ export class CashOrdersTable extends Component {
             isMobile:  isMobile,
             onSendEmail: this.onSendEmail,
             onSendSms: this.onSendSms,
+            downloadReceipt: downloadReceipt
         });
 
         const pagination = {

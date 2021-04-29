@@ -55,7 +55,8 @@ import {
     FETCH_X_REPORT,
     REGISTER_CASH_ORDER_IN_CASHDESK,
     SEND_EMAIL_WITH_RECEIPT,
-    SEND_SMS_WITH_RECEIPT
+    SEND_SMS_WITH_RECEIPT,
+    DOWNLOAD_RECEIPT
 } from './duck';
 
 export function* openShiftSaga() {
@@ -417,6 +418,29 @@ export function* sendSmsWithReceiptSaga() {
     }
 }
 
+export function* downloadReceiptSaga() {
+    while (true) {
+        try {
+            const {payload: {cashOrderId}} = yield take(DOWNLOAD_RECEIPT);
+
+            const response = yield call( fetchAPI, 'GET', `/cashdesk/receipt`, {data: {cashOrderId} }, null, {rawResponse: true} );
+
+            const reportFile = yield response.blob();
+    
+            const contentDispositionHeader = response.headers.get(
+                'content-disposition',
+            );
+            const fileName = contentDispositionHeader.match(
+                /^attachment; filename="(.*)"/,
+            )[ 1 ];
+            yield saveAs(reportFile, fileName);
+
+        } catch(err) {
+            emitError(err);
+        }
+    }
+}
+
 export function* saga() {
     yield all([
         call(openShiftSaga),
@@ -434,6 +458,7 @@ export function* saga() {
         call(registerCashOrderInCashdeskSaga),
         call(sendEmailWithReceiptSaga),
         call(sendSmsWithReceiptSaga),
+        call(downloadReceiptSaga),
         takeLatest(SET_SEARCH_QUERY, handleCashOrdersSearchSaga),
     ]);
 }

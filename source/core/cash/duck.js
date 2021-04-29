@@ -54,6 +54,7 @@ export const REGISTER_CASH_ORDER_IN_CASHDESK = `${prefix}/REGISTER_CASH_ORDER_IN
 
 export const SEND_EMAIL_WITH_RECEIPT = `${prefix}/SEND_EMAIL_WITH_RECEIPT`;
 export const SEND_SMS_WITH_RECEIPT = `${prefix}/SEND_SMS_WITH_RECEIPT`;
+export const DOWNLOAD_RECEIPT = `${prefix}/DOWNLOAD_RECEIPT`;
 
 /**
  * Reducer
@@ -382,3 +383,14 @@ export const sendEmailWithReceipt = ({receivers, cashOrderId}) => ({
     type: SEND_SMS_WITH_RECEIPT,
     payload: {receivers, cashOrderId}
 });
+
+/**
+ * Download receipt for an cash order which was made through cashbox with RST,
+ * other types of cashboxes do not have this ability
+ * @param {*} param.cashOrderId - cash order registgred via RST cashbox
+ * @returns 
+ */
+export const downloadReceipt = ({cashOrderId}) => ({
+    type: DOWNLOAD_RECEIPT,
+    payload: {cashOrderId}
+})
