@@ -45,7 +45,7 @@ export default class WMSCellsModal extends Component {
                         <Input
                             allowClear
                             value={this.state.addressFilter}
-                            placeholder={this.props.intl.formatMessage({id: 'Адрес'})}
+                            placeholder={this.props.intl.formatMessage({id: 'wms.address'})}
                             onChange={({target})=>{
                                 this.setState({
                                     addressFilter: target.value
@@ -188,9 +188,9 @@ export default class WMSCellsModal extends Component {
         if(warehouseId) {
             const dataSource = await fetchAPI('GET', 'wms/cells', {warehouseId});
             this.setState({
-                dataSource: dataSource.list,
+                dataSource: dataSource.list.filter(({enabled})=>enabled),
                 warehouseId,
-                count: (selectedCell && selectedCell.sum) || 1,
+                count: 1,
             });
         } else {
             this.setState({
@@ -198,8 +198,8 @@ export default class WMSCellsModal extends Component {
             });
             const dataSource = await fetchAPI('GET', 'wms/cells', {warehouseId: warehouses[0].id});
             this.setState({
-                dataSource: dataSource.list,
-                count: (selectedCell && selectedCell.sum) || 1,
+                dataSource: dataSource.list.filter(({enabled})=>enabled),
+                count: 1,
             });
         }
 	}

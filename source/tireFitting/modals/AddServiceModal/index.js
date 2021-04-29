@@ -45,7 +45,7 @@ class AddServiceModal extends React.Component{
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", maxWidth: '95%' }}
                             filterOption={(input, option) => {
                                 return (
-                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.children).toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
                                     String(option.props.value).indexOf(input.toLowerCase()) >= 0 ||
                                     String(option.props.cross_id).toLowerCase().indexOf(input.toLowerCase()) >= 0
                                 )
@@ -308,14 +308,13 @@ class AddServiceModal extends React.Component{
                 vehicleTypeId: clientVehicleTypeId,
                 radius: Math.round(clientVehicleRadius),
             })
-            console.log(this.priceGroups);
             this.priceGroupsOptions = this.priceGroups.map((elem, i)=>(
                 <Option key={i} value={elem.id} price={elem.price}>
                     {elem.name}
                 </Option>
             ))
             if(this.priceGroups && this.priceGroups.length) {
-                this.state.mainTableSource[0].price = this.priceGroups[0].price;
+                this.state.mainTableSource[0].price = this.priceGroups[0].price || this.state.mainTableSource[0].price;
                 this.state.mainTableSource[0].tireStationPriceGroupId = this.priceGroups[0].id;
                 this.setState({});
             }

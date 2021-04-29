@@ -137,7 +137,7 @@ class AddServiceModal extends React.Component{
                             //dropdownMatchSelectWidth={false}
                             filterOption={(input, option) => {
                                 return (
-                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.children).toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
                                     String(option.props.value).indexOf(input.toLowerCase()) >= 0 ||
                                     String(option.props.cross_id).toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
                                     String(option.props.barcode).toLowerCase().indexOf(input.toLowerCase()) >= 0

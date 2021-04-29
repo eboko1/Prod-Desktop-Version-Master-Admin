@@ -79,7 +79,15 @@
         "export_import_pages.orders_labors": "Orders labors",
         "export_import_pages.warehouses": "Warehouses",
         "export_import_pages.store_doc_products": "Store documents products",
-        "export_import_pages.requisites": "Requisites"
+        "export_import_pages.requisites": "Requisites",
+        "export_import_pages.stations": "Stations",
+        "export_import_pages.analytics": "Analytics",
+        "export_import_pages.stats": "Stats",
+        "export_import_pages.updatedCount": "Updated",
+        "export_import_pages.insertedCount": "Inserted",
+        "export_import_pages.skippedCount": "Skipped",
+        "export_import_pages.errorsCount": "Errors",
+        "export_import_pages.cash_boxes": "Cash boxes"
     },
     "ru": {
         "export_import_pages.export_data": "Экспортировать даные",
@@ -161,7 +169,15 @@
         "export_import_pages.orders_labors": "Работы н/з",
         "export_import_pages.warehouses": "Склады",
         "export_import_pages.store_doc_products": "Товары складских документов",
-        "export_import_pages.requisites": "Реквизиты"
+        "export_import_pages.requisites": "Реквизиты",
+        "export_import_pages.stations": "Посты",
+        "export_import_pages.analytics": "Аналитики",
+        "export_import_pages.stats": "Статистика",
+        "export_import_pages.updatedCount": "Обновлено",
+        "export_import_pages.insertedCount": "Вставлено",
+        "export_import_pages.skippedCount": "Пропущено",
+        "export_import_pages.errorsCount": "Ошибки",
+        "export_import_pages.cash_boxes": "Кассы"
     },
     "uk": {
         "export_import_pages.export_data": "Экспортировать даные",
@@ -243,6 +259,14 @@
         "export_import_pages.orders_labors": "Роботи н/з",
         "export_import_pages.warehouses": "Склади",
         "export_import_pages.store_doc_products": "Товари складських документів",
-        "export_import_pages.requisites": "Реквізити"
+        "export_import_pages.requisites": "Реквізити",
+        "export_import_pages.stations": "Пости",
+        "export_import_pages.analytics": "Аналітики",
+        "export_import_pages.stats": "Статистика",
+        "export_import_pages.updatedCount": "Оновлено",
+        "export_import_pages.insertedCount": "Вставлено",
+        "export_import_pages.skippedCount": "Пропущенно",
+        "export_import_pages.errorsCount": "Помилки",
+        "export_import_pages.cash_boxes": "Каси"
     }
 }
