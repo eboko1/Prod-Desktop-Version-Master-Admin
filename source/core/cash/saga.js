@@ -26,17 +26,12 @@ import {
     fetchCashboxesSuccess,
     fetchAnalyticsSuccess,
     setAnalyticsFetchingState,
-    createCashboxSuccess,
-    deleteCashboxSuccess,
     fetchCashOrders,
     fetchCashOrdersSuccess,
     fetchCashboxesBalanceSuccess,
     fetchCashboxesActivitySuccess,
     selectCashOrdersFilters,
     selectCashAccountingFilters,
-    printCashOrderSuccess,
-
-    
 } from './duck';
 
 import {
@@ -398,7 +393,12 @@ export function* sendEmailWithReceiptSaga() {
         try{
             //Just send an email
             yield call(fetchAPI, 'POST', `/cashdesk/send_email`, null, requestPayload);
-        } catch(err) {}
+        } catch(err) {
+
+        } finally {
+            notification.success();
+        }
+
     }
 }
 
@@ -414,7 +414,12 @@ export function* sendSmsWithReceiptSaga() {
         try{
             //Just send an sms to receivers
             yield call(fetchAPI, 'POST', `/cashdesk/send_sms`, null, requestPayload);
-        } catch(err) {}
+        } catch(err) {
+
+        } finally {
+            notification.success();
+        }
+
     }
 }
 
@@ -434,6 +439,8 @@ export function* downloadReceiptSaga() {
                 /^attachment; filename="(.*)"/,
             )[ 1 ];
             yield saveAs(reportFile, fileName);
+
+            notification.success();
 
         } catch(err) {
             emitError(err);
