@@ -116,10 +116,25 @@ export default class WMSGenerateCells extends Component {
                     return row.active && (
                         <Input
                             value={data}
-                            maxLength={1}
+                            maxLength={2}
                             onChange={(event)=>{
-                                row.minValue = event.target.value;
-                                this.setState({})
+                                let { value } = event.target;
+                                switch(row.aliasType) {
+                                    case CAPITAL_LETTERS:
+                                        value = value.replace(/[^A-Za-z]/g, '').toUpperCase();
+                                        break;
+                                    case LOWER_CASE_LETTERS:
+                                        value = value.replace(/[^A-Za-z]/g, '').toLowerCase();
+                                        break;
+                                    case NUMBERS:
+                                        value = value.replace(/[^0-9]/g, '');
+                                        break;
+                                }
+                                if(value && value.length == 2) {
+                                    value = value[1];
+                                    row.minValue = value;
+                                    this.setState({})
+                                }
                             }}
                         />
                     )
@@ -134,10 +149,25 @@ export default class WMSGenerateCells extends Component {
                     return row.active && (
                         <Input
                             value={data}
-                            maxLength={1}
+                            maxLength={2}
                             onChange={(event)=>{
-                                row.maxValue = event.target.value;
-                                this.setState({})
+                                let { value } = event.target;
+                                switch(row.aliasType) {
+                                    case CAPITAL_LETTERS:
+                                        value = value.replace(/[^A-Za-z]/g, '').toUpperCase();
+                                        break;
+                                    case LOWER_CASE_LETTERS:
+                                        value = value.replace(/[^A-Za-z]/g, '').toLowerCase();
+                                        break;
+                                    case NUMBERS:
+                                        value = value.replace(/[^0-9]/g, '');
+                                        break;
+                                }
+                                if(value && value.length == 2) {
+                                    value = value[1];
+                                    row.maxValue = value;
+                                    this.setState({})
+                                }
                             }}
                         />
                     )

@@ -12,6 +12,23 @@ import book from 'routes/book';
 // own
 import Styles from './styles.m.css';
 
+//Width of each column
+const defWidth = {
+    numberCol: 'auto',
+    cashOrderCol: '6%',
+    dateCol: '8%',
+    conterpartyCol: '8%',
+    orderCol: '8%',
+    activityCol: '8%',
+    sumCol: '5%',
+    analyticsCol: '15%',
+    descriptionCol: '8%',
+    rstCodeCol: '5%',
+    actionsCol: 'auto',
+
+    orderAndConterpartyCol: 'auto'
+}
+
 function renderCounterparty(cashOrder) {
     switch (true) {
         case Boolean(cashOrder.clientId):
@@ -55,13 +72,23 @@ function renderCounterparty(cashOrder) {
 
 /* eslint-disable complexity */
 export function columnsConfig(props) {
+
+    const {
+        onRegisterInCashdesk,
+        openPrint,
+        openEdit,
+        onSendEmail,
+        isMobile
+    } = props;
+
     const numberCol = {
         title:     <FormattedMessage id='cash-table.cashbox_num' />,
         dataIndex: 'cashBoxId',
-        width:  'auto',
+        width:     defWidth.numberCol,
         render:    (cashBoxId, { cashBoxName }) => (
             <div className={ Styles.breakWord }>
-                { cashBoxId } { cashBoxName }
+                <div>{ cashBoxId }</div>
+                <div>{ cashBoxName }</div>
             </div>
         ),
     };
@@ -69,13 +96,13 @@ export function columnsConfig(props) {
     const cashOrderCol = {
         title:     <FormattedMessage id='cash-table.order_num' />,
         dataIndex: 'id',
-        width:  'auto',
+        width:     defWidth.cashOrderCol,
     };
 
     const dateCol = {
         title:     <FormattedMessage id='cash-table.date' />,
         dataIndex: 'datetime',
-        width:  'auto',
+        width:     defWidth.dateCol,
         render:    date => (
             <FormattedDatetime datetime={ date } format={ 'DD.MM.YYYY' } />
         ),
@@ -83,13 +110,13 @@ export function columnsConfig(props) {
 
     const conterpartyCol = {
         title:     <FormattedMessage id='cash-table.conterparty' />,
-        width:  'auto',
+        width:     defWidth.conterpartyCol,
         render:    (key, cashOrder) => renderCounterparty(cashOrder),
     };
 
     const orderCol = {
         title:     <FormattedMessage id='cash-table.order' />,
-        width:  'auto',
+        width:     defWidth.orderCol,
         render:    ({orderId, storeDocId, orderNum, documentNumber}) => {
             return orderId ? (
                 <Link
@@ -112,7 +139,7 @@ export function columnsConfig(props) {
     const activityCol = {
         title:     <FormattedMessage id='cash-table.activity' />,
         dataIndex: 'type',
-        width:  'auto',
+        width:     defWidth.activityCol,
         render:    type => (
             <div className={ Styles.noBreak }>
                 <FormattedMessage id={ `cash-order-form.type.${type}` } />
@@ -123,7 +150,7 @@ export function columnsConfig(props) {
     const sumCol = {
         title:     <FormattedMessage id='cash-table.sum' />,
         dataIndex: 'sum',
-        width:  'auto',
+        width:     defWidth.sumCol,
         render:    (key, { increase, decrease }) =>
             increase ? (
                 <div
@@ -156,81 +183,102 @@ export function columnsConfig(props) {
     const analyticsCol = {
         title:     <FormattedMessage id='cash-table.analytics' />,
         dataIndex: 'analyticsName',
-        width:  'auto',
+        width:     defWidth.analyticsCol,
     };
 
     const descriptionCol = {
         title:     <FormattedMessage id='cash-table.comment' />,
         dataIndex: 'description',
-        width:  'auto',
+        width:     defWidth.descriptionCol,
     };
 
+    /** RST is a special device, it has fiscal code */
     const rstCodeCol = {
         title:     'PPO',
         dataIndex: 'fiscalNumber',
-        width:  'auto',
+        width:     defWidth.rstCodeCol,
     };
 
     const actionsCol = {
         key:    'actions',
-        width:  'auto',
-        render: (key, cashOrder) => (
-            <>
-                {
-                    (cashOrder.rst && !cashOrder.isRegisteredWithRst)
-                        ? (
-                            <div>
-                                <Popconfirm
-                                    title={ <FormattedMessage id='cash-table.confirm' />}
-                                    onConfirm={() => props.onRegisterInCashdesk(cashOrder.id)}
-                                    okText={ <FormattedMessage id='yes' /> }
-                                    cancelText={ <FormattedMessage id='no' />}
-                                >
-                                    <Popover content={<FormattedMessage id='cash-table.hint_repeat_registration' />}>
-                                        <Icon
-                                            type='exclamation-circle'
-                                            className={Styles.unregisteredIcon}
-                                        />
-                                    </Popover>
-                                </Popconfirm>
+        width:     defWidth.actionsCol,
+        render: (key, cashOrder) => {
 
-                                <Popover content={<FormattedMessage id='cash-table.hint_send_sms' />}>
-                                    <Icon
-                                        type="message"
-                                        className={ Styles.sendSMS }
-                                    />
-                                </Popover>
-                                
-                                <Popover content={<FormattedMessage id='cash-table.hint_send_email' />}>
-                                    <Icon
-                                        type="mail"
-                                        className={ Styles.sendMail }
-                                    />
-                                </Popover>
-                                
-                            </div>
-                        )
-                        : null
-                }
-                <Icon
-                    type='printer'
-                    onClick={ () => props.openPrint(cashOrder) }
-                    className={ Styles.printIcon }
-                />
-                { props.openEdit ? (
-                    <Icon
-                        type='edit'
-                        onClick={ () => props.openEdit(cashOrder) }
-                        className={ Styles.editIcon }
-                    />
-                ) : null }
-            </>
-        ),
+            /** Creates an icon with styles and popup.
+             * @param popMessage - popup hint when hovered
+             * @param options - Icon options (type, className ...)
+             */
+            const iconWithPop = ({popMessage, options}) => {
+                return (
+                    <Popover content={popMessage}>
+                        <Icon {...options}/>
+                    </Popover>
+                );
+            }
+            
+            /** When cashOrder was successfully registered in cashdesk api service those are available */
+            const cashOrderWithRST = (
+                <span>
+                    {iconWithPop({
+                        popMessage: (<FormattedMessage id='cash-table.hint_send_sms' />),
+                        options: {type: "message", className: Styles.sendSMS}
+                    })}
+                    
+                    {iconWithPop({
+                        popMessage: (<FormattedMessage id='cash-table.hint_send_email' />),
+                        options: { type: "mail", className: Styles.sendMailIcon} //, onClick: () => onSendEmail({cashOrderId: cashOrder.id})
+                    })}
+
+                    {iconWithPop({
+                        popMessage: (<FormattedMessage id='cash-table.hint_download_receipt' />),
+                        options: {type: "download", className: Styles.downloadIcon}
+                    })}
+                </span>
+            );
+            
+            /** When cashOrder was not registered in cashdesk api service those icons are visible */
+            const cashOrderWithFailedRST = (<span>
+                <Popconfirm
+                    title={ <FormattedMessage id='cash-table.confirm' />}
+                    onConfirm={() => onRegisterInCashdesk(cashOrder.id)}
+                    okText={ <FormattedMessage id='yes' /> }
+                    cancelText={ <FormattedMessage id='no' />}
+                >
+                    {iconWithPop({
+                        popMessage: (<FormattedMessage id='cash-table.hint_repeat_registration' />),
+                        options: {type: "exclamation-circle", className: Styles.unregisteredIcon}
+                    })}
+                </Popconfirm>
+            </span>);
+
+            return (
+                <div>
+                    <span>
+                        {iconWithPop({
+                            popMessage: (<FormattedMessage id='cash-table.hint_print_cash_order' />),
+                            options: {type: "printer", className: Styles.printIcon, onClick: () => openPrint(cashOrder)}
+                        })}
+
+                        {iconWithPop({
+                            popMessage: (<FormattedMessage id='cash-table.hint_edit_cash_order' />),
+                            options: {type: "edit", className: Styles.editIcon, onClick: () => openEdit(cashOrder)}
+                        })}
+                    </span>
+                    {
+                        (cashOrder.rst)
+                            ? cashOrder.isRegisteredWithRst
+                                ? cashOrderWithRST
+                                : cashOrderWithFailedRST
+                            : null
+                    }
+                </div>
+            );
+        },
     };
 
     const orderAndConterpartyCol = {
         title:     <FormattedMessage id='cash-table.order' />,
-        width:  'auto',
+        width:     defWidth.orderAndConterpartyCol,
         render:    (cashOrder) => {
             const conterparty = renderCounterparty(cashOrder)
             return cashOrder.orderId ? (
@@ -257,7 +305,7 @@ export function columnsConfig(props) {
         },
     };
 
-    return !props.isMobile ? 
+    return !isMobile ? 
     [
         numberCol,
         cashOrderCol,

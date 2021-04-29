@@ -52,6 +52,8 @@ export const FETCH_X_REPORT_SUCCESS = `${prefix}/FETCH_X_REPORT_SUCCESS`;
 
 export const REGISTER_CASH_ORDER_IN_CASHDESK = `${prefix}/REGISTER_CASH_ORDER_IN_CASHDESK`;
 
+export const SEND_MAIL_WITH_RECEIPT = `${prefix}/SEND_MAIL_WITH_RECEIPT`;
+
 /**
  * Reducer
  * */
@@ -354,4 +356,16 @@ export const fetchXReportSuccess = () => ({
 export const registerCashOrderInCashdesk = (cashOrderId) => ({
     type: REGISTER_CASH_ORDER_IN_CASHDESK,
     payload: cashOrderId
+});
+
+/**
+ * Send email to receivers, that mail contains informatin abot order RTS transactions(sells using RST)
+ * @param {Object} params
+ * @param {String[]} params.receivers - Array of receivers, email strings like [test@test.com, ...]
+ * @param {String|Number} params.cashOrderId - Cash order to generate data for
+ * @returns 
+ */
+export const sendMailWithReceipt = ({receivers, cashOrderId}) => ({
+    type: SEND_MAIL_WITH_RECEIPT,
+    payload: {receivers, cashOrderId}
 });

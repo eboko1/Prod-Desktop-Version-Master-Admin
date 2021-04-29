@@ -1,15 +1,25 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { connect } from "react-redux";
 import { Table } from 'antd';
 
 // proj
-import { Loader } from 'commons';
+import { sendMailWithReceipt } from "core/cash/duck";
 
 // own
 import { columnsConfig } from './config';
 import Styles from './styles.m.css';
 
+const mapStateToProps = state => ({
+    user: state.auth
+});
+
+const mapDispatchToProps = {
+    sendMailWithReceipt,
+};
+
+@connect( mapStateToProps, mapDispatchToProps )
 export class CashOrdersTable extends Component {
     constructor(props) {
         super(props);
@@ -17,14 +27,23 @@ export class CashOrdersTable extends Component {
 
     _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
 
+    onSendEmail = ({cashOrderId}) => {
+        const { user, sendMailWithReceipt } = this.props;
+
+        if(!user.email || !cashOrderId) return;
+
+        sendMailWithReceipt({receivers: [user.email], cashOrderId});
+    }
+
     render() {
-        const { cashOrders, cashOrdersFetching, totalCount, openPrint, openEdit, isMobile, onRegisterInCashdesk } = this.props;
+        const { cashOrders, cashOrdersFetching, openPrint, openEdit, isMobile, onRegisterInCashdesk } = this.props;
 
         this.columns = columnsConfig({
             openPrint: openPrint,
             openEdit:  openEdit,
             onRegisterInCashdesk,
             isMobile:  isMobile,
+            onSendEmail: this.onSendEmail
         });
 
         const pagination = {
