@@ -11,6 +11,7 @@ import {
 import nprogress from 'nprogress';
 import { saveAs } from 'file-saver';
 import _ from 'lodash';
+import { notification } from 'antd';
 
 //proj
 import {
@@ -306,6 +307,7 @@ export function* createCashOrderSaga() {
                 payload.editMode ? `cash_orders/${payload.id}` : 'cash_orders',
                 null,
                 cashOrder,
+                { handleErrorInternally: true }
             );
 
             //If cashbox contains rst it must be registred in cashdesk if possible 
@@ -314,8 +316,15 @@ export function* createCashOrderSaga() {
             }
 
             yield put(createCashOrderSuccess());
+
         } catch (error) {
             yield put(emitError(error));
+
+            //Print special error message if it exists
+            notification.error({
+                message: _.get(error, 'response.message')
+            });
+
         } finally {
             yield put(fetchCashOrders());
         }
