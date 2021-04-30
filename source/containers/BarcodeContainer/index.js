@@ -109,7 +109,10 @@ export default class BarcodeContainer extends Component {
 				}
 			});
 		} else if(table == 'ORDERS' && modalInput && modalInput.length > 2) {
-			const tableData = await fetchAPI('GET', 'orders', {query: modalInput, status: `not_complete,reserve,required,progress`});
+			const tableData = await fetchAPI('GET', 'orders', {query: modalInput, status: `not_complete,reserve,required,call,progress`});
+			// query=818&        status=not_complete%2Creserve%2Crequired%2Cprogress
+			// query=818&page=1& status=not_complete%2Crequired%2Ccall%2Creserve&    sortField=datetime&sortOrder=desc
+			// status=%2%2C%2Creserve&sortField=datetime&sortOrder=desc
 			modalData = tableData.orders.map((elem)=>{
 				return ({
 					id: elem.id,
@@ -844,7 +847,7 @@ export default class BarcodeContainer extends Component {
 						<Table 
 							columns={this.columns}
 							dataSource={
-								modalInput 
+								table != 'ORDERS' && modalInput 
 									? modalData.filter(({id, displayId, name, additional, barcode})=>{
 										const input = modalInput.toLowerCase();
 										return (
