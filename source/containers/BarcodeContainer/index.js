@@ -231,7 +231,7 @@ export default class BarcodeContainer extends Component {
 
 	_addToOrder = async (table) => {
 		const { history } = this.props;
-		const { selectedRowId } = this.state;
+		const { selectedRowId, inputCode } = this.state;
 		const payload = {
 			insertMode: true,
 			details: [],
@@ -275,6 +275,26 @@ export default class BarcodeContainer extends Component {
 				pathname: `${book.order}/${selectedRowId}`,
 				state: { activeTab }
 			});
+		} else {
+			if(inputCode.length > 2) {
+				const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: inputCode}, undefined, {handleErrorInternally: true});
+				if(tecDocProducts && tecDocProducts.length) {
+					payload.details.push({
+						storeGroupId: tecDocProducts[0].storeGroupId,
+						name: tecDocProducts[0].description,
+						productCode: tecDocProducts[0].partNumber,
+						supplierBrandId: tecDocProducts[0].brandId,
+						count: 1,
+						price: 0,
+						purchasePrice: 0,
+					})
+					await fetchAPI('PUT', `orders/${selectedRowId}`, null, payload);
+					history.push({
+						pathname: `${book.order}/${selectedRowId}`,
+						state: { activeTab }
+					});
+				}
+			}
 		}
 	}
 
@@ -363,7 +383,8 @@ export default class BarcodeContainer extends Component {
 			  isVehicle = isValidCode && prefix == 'CVH' || tables.includes("CLIENTS_VEHICLES"),
 			  isEmployee = isValidCode && prefix == 'EML' || tables.includes("EMPLOYEES"),
 			  isLabor = isValidCode && prefix == 'LBS' || tables.includes("LABORS"),
-			  isCell = isValidCode && prefix == 'WMS' || tables.includes("CELLS");
+			  isCell = isValidCode && prefix == 'WMS' || tables.includes("CELLS"),
+			  isTecDoc = tables.includes("TECDOC");
 
         const pageData = [
         	{
@@ -484,7 +505,23 @@ export default class BarcodeContainer extends Component {
         				title: 'barcode.create_product',
         				disabled: !inputCode || isValidCode || isStoreProduct,
 						onClick: async () => {
+							let code, brandId, groupId, name, brandName;
+							if(inputCode.length > 2) {
+								const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: inputCode}, undefined, {handleErrorInternally: true});
+								if(tecDocProducts && tecDocProducts.length) {
+									code = tecDocProducts[0].partNumber;
+									brandId = tecDocProducts[0].brandId;
+									brandName = tecDocProducts[0].supplierName;
+									groupId = tecDocProducts[0].storeGroupId;
+									name = tecDocProducts[0].description;
+								}
+							}
 							setModal(MODALS.STORE_PRODUCT, {
+								code,
+								brandId,
+								brandName,
+								name,
+								groupId,
 								barcode: inputCode,
 								onSubmit: async () => {
 									const barcodes = await fetchAPI('GET', 'barcodes',{
@@ -516,7 +553,7 @@ export default class BarcodeContainer extends Component {
         			},
         			{
         				title: 'barcode.add_to_order',
-        				disabled: !isStoreProduct,
+        				disabled: !isStoreProduct && !isTecDoc,
 						table: 'ORDERS',
 						onClick: this._showModal,
 						confirmAction: ()=>this._addToOrder('STORE_PRODUCTS'),
@@ -649,14 +686,21 @@ export default class BarcodeContainer extends Component {
 	                		placeholder={formatMessage({id: 'barcode.scan_barcode'})}
 							value={inputCode}
 							onChange={async ({target})=>{
+								const value = target.value.replace(/[^0-9A-Za-z-]/g, '')
 								this.setState({
-									inputCode: target.value,
+									inputCode: value,
 								});
-								if(target.value) {
+								if(value) {
 									const barcodes = await fetchAPI('GET', 'barcodes',{
-										barcode: target.value,
+										barcode: value,
 									});
 									const tables = barcodes.map(({table})=>table);
+									if(value.length > 2) {
+										const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: value}, undefined, {handleErrorInternally: true});
+										if(tecDocProducts && tecDocProducts.length) {
+											tables.push('TECDOC');
+										}
+									}
 									this.setState({
 										tables: tables,
 									});
@@ -689,6 +733,12 @@ export default class BarcodeContainer extends Component {
 									barcode: value,
 								});
 								const tables = barcodes.map(({table})=>table);
+								if(value.length > 2) {
+									const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: value}, undefined, {handleErrorInternally: true});
+									if(tecDocProducts && tecDocProducts.length) {
+										tables.push('TECDOC');
+									}
+								}
 								this.setState({
 									tables: tables,
 								});
