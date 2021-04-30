@@ -52,7 +52,9 @@ export const FETCH_X_REPORT_SUCCESS = `${prefix}/FETCH_X_REPORT_SUCCESS`;
 
 export const REGISTER_CASH_ORDER_IN_CASHDESK = `${prefix}/REGISTER_CASH_ORDER_IN_CASHDESK`;
 
-export const SEND_MAIL_WITH_RECEIPT = `${prefix}/SEND_MAIL_WITH_RECEIPT`;
+export const SEND_EMAIL_WITH_RECEIPT = `${prefix}/SEND_EMAIL_WITH_RECEIPT`;
+export const SEND_SMS_WITH_RECEIPT = `${prefix}/SEND_SMS_WITH_RECEIPT`;
+export const DOWNLOAD_RECEIPT = `${prefix}/DOWNLOAD_RECEIPT`;
 
 /**
  * Reducer
@@ -359,13 +361,36 @@ export const registerCashOrderInCashdesk = (cashOrderId) => ({
 });
 
 /**
- * Send email to receivers, that mail contains informatin abot order RTS transactions(sells using RST)
+ * Send email to receivers, that email contains informatin about order RTS transactions(sells with RST)
  * @param {Object} params
  * @param {String[]} params.receivers - Array of receivers, email strings like [test@test.com, ...]
- * @param {String|Number} params.cashOrderId - Cash order to generate data for
+ * @param {String|Number} params.cashOrderId - Cash order to generate data from
  * @returns 
  */
-export const sendMailWithReceipt = ({receivers, cashOrderId}) => ({
-    type: SEND_MAIL_WITH_RECEIPT,
+export const sendEmailWithReceipt = ({receivers, cashOrderId}) => ({
+    type: SEND_EMAIL_WITH_RECEIPT,
     payload: {receivers, cashOrderId}
 });
+
+/**
+ * Send sms to receivers, that sms contains informatin about order RTS transactions(sells with RST)
+ * @param {Object} params
+ * @param {String[]} params.receivers - Array of receivers, phone numbers like [0958236712, ...]
+ * @param {String|Number} params.cashOrderId - Cash order to generate data from
+ * @returns 
+ */
+ export const sendSmsWithReceipt = ({receivers, cashOrderId}) => ({
+    type: SEND_SMS_WITH_RECEIPT,
+    payload: {receivers, cashOrderId}
+});
+
+/**
+ * Download receipt for an cash order which was made through cashbox with RST,
+ * other types of cashboxes do not have this ability
+ * @param {*} param.cashOrderId - cash order registgred via RST cashbox
+ * @returns 
+ */
+export const downloadReceipt = ({cashOrderId}) => ({
+    type: DOWNLOAD_RECEIPT,
+    payload: {cashOrderId}
+})
