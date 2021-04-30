@@ -78,6 +78,8 @@ export function columnsConfig(props) {
         openPrint,
         openEdit,
         onSendEmail,
+        onSendSms,
+        downloadReceipt,
         isMobile
     } = props;
 
@@ -221,17 +223,17 @@ export function columnsConfig(props) {
                 <span>
                     {iconWithPop({
                         popMessage: (<FormattedMessage id='cash-table.hint_send_sms' />),
-                        options: {type: "message", className: Styles.sendSMS}
+                        options: {type: "message", className: Styles.sendSMS, onClick: () => onSendSms({cashOrderId: cashOrder.id})}
                     })}
                     
                     {iconWithPop({
                         popMessage: (<FormattedMessage id='cash-table.hint_send_email' />),
-                        options: { type: "mail", className: Styles.sendMailIcon} //, onClick: () => onSendEmail({cashOrderId: cashOrder.id})
+                        options: {type: "mail", className: Styles.sendMailIcon, onClick: () => onSendEmail({cashOrderId: cashOrder.id})}
                     })}
 
                     {iconWithPop({
                         popMessage: (<FormattedMessage id='cash-table.hint_download_receipt' />),
-                        options: {type: "download", className: Styles.downloadIcon}
+                        options: {type: "download", className: Styles.downloadIcon, onClick: () => downloadReceipt({cashOrderId: cashOrder.id})}
                     })}
                 </span>
             );

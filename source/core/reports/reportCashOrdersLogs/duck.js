@@ -71,7 +71,8 @@ export const fetchCashOrdersLogsSuccess = ({cashdeskLogs, stats}) => ({
 });
 
 /**
- * Call this if you want do download receipt
+ * Is used when user want do download receipt.
+ * @param param.receiptId - Id of an receipt you want to get information about (example from cashdesk service: DEV_1536726327632732)
  * @returns 
  */
 export const fetchCashOrdersLogsReceipt = ({receiptId}) => ({ 

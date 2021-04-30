@@ -5,7 +5,11 @@ import { connect } from "react-redux";
 import { Table } from 'antd';
 
 // proj
-import { sendMailWithReceipt } from "core/cash/duck";
+import {
+    sendEmailWithReceipt,
+    sendSmsWithReceipt,
+    downloadReceipt
+} from "core/cash/duck";
 
 // own
 import { columnsConfig } from './config';
@@ -16,7 +20,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    sendMailWithReceipt,
+    sendEmailWithReceipt,
+    sendSmsWithReceipt,
+    downloadReceipt,
 };
 
 @connect( mapStateToProps, mapDispatchToProps )
@@ -27,23 +33,53 @@ export class CashOrdersTable extends Component {
 
     _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
 
+    /**
+     * Called when user want to receive receipt on his email, email is taken from currently active manager(user).
+     * We can send emails for RST cashOrders only
+     * @param {*} param.cashOrderId - cash order to generate email from(contains data about its RST cashbox)
+     * @returns 
+     */
     onSendEmail = ({cashOrderId}) => {
-        const { user, sendMailWithReceipt } = this.props;
+        const { user, sendEmailWithReceipt } = this.props;
 
         if(!user.email || !cashOrderId) return;
 
-        sendMailWithReceipt({receivers: [user.email], cashOrderId});
+        sendEmailWithReceipt({receivers: [user.email], cashOrderId});
+    }
+
+    /**
+     *  When user want to receive receipt on his modile via sms, phone number is taken from currently active manager(user).
+     * We can send sms for RST cashOrders only.
+     * @param {*} param.cashOrderId - cash order to generate email from(contains data about its RST cashbox)
+     * @returns 
+     */
+    onSendSms = ({cashOrderId}) => {
+        const { user, sendSmsWithReceipt } = this.props;
+
+        if(!user.phone || !cashOrderId) return;
+
+        sendSmsWithReceipt({receivers: [user.phone], cashOrderId});
     }
 
     render() {
-        const { cashOrders, cashOrdersFetching, openPrint, openEdit, isMobile, onRegisterInCashdesk } = this.props;
+        const {
+            cashOrders,
+            cashOrdersFetching,
+            openPrint,
+            openEdit,
+            isMobile,
+            onRegisterInCashdesk,
+            downloadReceipt
+        } = this.props;
 
         this.columns = columnsConfig({
             openPrint: openPrint,
             openEdit:  openEdit,
             onRegisterInCashdesk,
             isMobile:  isMobile,
-            onSendEmail: this.onSendEmail
+            onSendEmail: this.onSendEmail,
+            onSendSms: this.onSendSms,
+            downloadReceipt: downloadReceipt
         });
 
         const pagination = {

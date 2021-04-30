@@ -1,4 +1,5 @@
 // vendor
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox, Spin, Slider, notification } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -766,15 +767,15 @@ class DetailProductModal extends React.Component{
         }
     }
 
-    setCode(related, code, brandId, productId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber, supplierPartNumber) {
+    setCode(related, code, brandId, productId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber, supplierPartNumber, brandName) {
         const { mainTableSource, relatedDetails, radioValue } = this.state;
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         const currentDetail = related ? relatedDetails[key] : mainTableSource[key];
         this.unsetSupplier(key, related);
-
+        
         currentDetail.detailCode = code;
         currentDetail.brandId = brandId;
-        currentDetail.brandName = brand.brandName;
+        currentDetail.brandName = _.get(brand, 'brandName', _.get(currentDetail, 'brandName'));
         currentDetail.productId = productId;
         currentDetail.supplierOriginalCode = supplierOriginalCode;
         currentDetail.supplierProductNumber = supplierProductNumber;

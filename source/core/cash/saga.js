@@ -26,17 +26,12 @@ import {
     fetchCashboxesSuccess,
     fetchAnalyticsSuccess,
     setAnalyticsFetchingState,
-    createCashboxSuccess,
-    deleteCashboxSuccess,
     fetchCashOrders,
     fetchCashOrdersSuccess,
     fetchCashboxesBalanceSuccess,
     fetchCashboxesActivitySuccess,
     selectCashOrdersFilters,
     selectCashAccountingFilters,
-    printCashOrderSuccess,
-
-    
 } from './duck';
 
 import {
@@ -54,7 +49,9 @@ import {
     SERVICE_INPUT,
     FETCH_X_REPORT,
     REGISTER_CASH_ORDER_IN_CASHDESK,
-    SEND_MAIL_WITH_RECEIPT
+    SEND_EMAIL_WITH_RECEIPT,
+    SEND_SMS_WITH_RECEIPT,
+    DOWNLOAD_RECEIPT
 } from './duck';
 
 export function* openShiftSaga() {
@@ -386,7 +383,7 @@ export function* registerCashOrderInCashdeskSaga() {
 
 export function* sendEmailWithReceiptSaga() {
     while(true) {
-        const {payload: {receivers, cashOrderId}} = yield take(SEND_MAIL_WITH_RECEIPT);
+        const {payload: {receivers, cashOrderId}} = yield take(SEND_EMAIL_WITH_RECEIPT);
 
         const requestPayload = {
             receivers,
@@ -396,7 +393,58 @@ export function* sendEmailWithReceiptSaga() {
         try{
             //Just send an email
             yield call(fetchAPI, 'POST', `/cashdesk/send_email`, null, requestPayload);
-        } catch(err) {}
+        } catch(err) {
+
+        } finally {
+            notification.success();
+        }
+
+    }
+}
+
+export function* sendSmsWithReceiptSaga() {
+    while(true) {
+        const {payload: {receivers, cashOrderId}} = yield take(SEND_SMS_WITH_RECEIPT);
+
+        const requestPayload = {
+            receivers,
+            cashOrderId
+        };
+
+        try{
+            //Just send an sms to receivers
+            yield call(fetchAPI, 'POST', `/cashdesk/send_sms`, null, requestPayload);
+        } catch(err) {
+
+        } finally {
+            notification.success();
+        }
+
+    }
+}
+
+export function* downloadReceiptSaga() {
+    while (true) {
+        try {
+            const {payload: {cashOrderId}} = yield take(DOWNLOAD_RECEIPT);
+
+            const response = yield call( fetchAPI, 'GET', `/cashdesk/receipt`, {data: {cashOrderId} }, null, {rawResponse: true} );
+
+            const reportFile = yield response.blob();
+    
+            const contentDispositionHeader = response.headers.get(
+                'content-disposition',
+            );
+            const fileName = contentDispositionHeader.match(
+                /^attachment; filename="(.*)"/,
+            )[ 1 ];
+            yield saveAs(reportFile, fileName);
+
+            notification.success();
+
+        } catch(err) {
+            emitError(err);
+        }
     }
 }
 
@@ -416,6 +464,8 @@ export function* saga() {
         call(fetchAnalyticsSaga),
         call(registerCashOrderInCashdeskSaga),
         call(sendEmailWithReceiptSaga),
+        call(sendSmsWithReceiptSaga),
+        call(downloadReceiptSaga),
         takeLatest(SET_SEARCH_QUERY, handleCashOrdersSearchSaga),
     ]);
 }
