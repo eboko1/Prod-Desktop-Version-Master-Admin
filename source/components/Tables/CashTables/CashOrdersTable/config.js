@@ -72,6 +72,17 @@ function renderCounterparty(cashOrder) {
 
 /* eslint-disable complexity */
 export function columnsConfig(props) {
+
+    const {
+        onRegisterInCashdesk,
+        openPrint,
+        openEdit,
+        onSendEmail,
+        onSendSms,
+        downloadReceipt,
+        isMobile
+    } = props;
+
     const numberCol = {
         title:     <FormattedMessage id='cash-table.cashbox_num' />,
         dataIndex: 'cashBoxId',
@@ -207,31 +218,31 @@ export function columnsConfig(props) {
                 );
             }
             
-            /** When cashOrder was successfully registered in cashdesk api service */
+            /** When cashOrder was successfully registered in cashdesk api service those are available */
             const cashOrderWithRST = (
                 <span>
                     {iconWithPop({
                         popMessage: (<FormattedMessage id='cash-table.hint_send_sms' />),
-                        options: {type: "message", className: Styles.sendSMS}
+                        options: {type: "message", className: Styles.sendSMS, onClick: () => onSendSms({cashOrderId: cashOrder.id})}
                     })}
                     
                     {iconWithPop({
                         popMessage: (<FormattedMessage id='cash-table.hint_send_email' />),
-                        options: {type: "mail", className: Styles.sendMailIcon}
+                        options: {type: "mail", className: Styles.sendMailIcon, onClick: () => onSendEmail({cashOrderId: cashOrder.id})}
                     })}
 
                     {iconWithPop({
                         popMessage: (<FormattedMessage id='cash-table.hint_download_receipt' />),
-                        options: {type: "download", className: Styles.downloadIcon}
+                        options: {type: "download", className: Styles.downloadIcon, onClick: () => downloadReceipt({cashOrderId: cashOrder.id})}
                     })}
                 </span>
             );
             
-            /** When cashOrder was not registered in cashdesk api service */
+            /** When cashOrder was not registered in cashdesk api service those icons are visible */
             const cashOrderWithFailedRST = (<span>
                 <Popconfirm
                     title={ <FormattedMessage id='cash-table.confirm' />}
-                    onConfirm={() => props.onRegisterInCashdesk(cashOrder.id)}
+                    onConfirm={() => onRegisterInCashdesk(cashOrder.id)}
                     okText={ <FormattedMessage id='yes' /> }
                     cancelText={ <FormattedMessage id='no' />}
                 >
@@ -247,12 +258,12 @@ export function columnsConfig(props) {
                     <span>
                         {iconWithPop({
                             popMessage: (<FormattedMessage id='cash-table.hint_print_cash_order' />),
-                            options: {type: "printer", className: Styles.printIcon, onClick: () => props.openPrint(cashOrder)}
+                            options: {type: "printer", className: Styles.printIcon, onClick: () => openPrint(cashOrder)}
                         })}
 
                         {iconWithPop({
                             popMessage: (<FormattedMessage id='cash-table.hint_edit_cash_order' />),
-                            options: {type: "edit", className: Styles.editIcon, onClick: () => props.openEdit(cashOrder)}
+                            options: {type: "edit", className: Styles.editIcon, onClick: () => openEdit(cashOrder)}
                         })}
                     </span>
                     {
@@ -296,7 +307,7 @@ export function columnsConfig(props) {
         },
     };
 
-    return !props.isMobile ? 
+    return !isMobile ? 
     [
         numberCol,
         cashOrderCol,

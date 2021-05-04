@@ -1,5 +1,5 @@
 /**
- * This tab combines existing functionality for cals(duck, saga) but provides client oriented result.
+ * This tab combines existing functionality for calls(duck, saga) but provides client oriented result.
  * For example we search calls for specific client only ond show only them without charts.
  */
 
@@ -59,19 +59,11 @@ export default class ClientCallsTab extends Component {
 
     componentDidMount() {
         const {
-            fetchCalls,
             setCallsTab,
         } = this.props;
 
-        fetchCalls();
         setCallsTab(tabs.callsTable);//Set this tab as we use this one only here
-    }
-
-    componentDidUpdate(prevProps) {
-        // Typical usage (don't forget to compare props):
-        if (this.props.clientEntity.clientId !== prevProps.clientEntity.clientId) {
-            this._setClientFilter();
-        }
+        this._setClientFilter();
     }
 
     /**
@@ -116,7 +108,6 @@ export default class ClientCallsTab extends Component {
         const { clientId } = clientEntity || {};
 
         clientId && setClientFilter({clientId}); //We search all calls for specific client only on this page
-        fetchCalls();
     }
 
     render() {
@@ -128,9 +119,6 @@ export default class ClientCallsTab extends Component {
             filter: { startDate, endDate },
         } = this.props;
 
-        const {
-            clientEntity
-        } = this.props;
 
         return callsInitializing ? (
             <Spinner spin={ callsInitializing } />
