@@ -6,10 +6,11 @@ import { Table } from "antd";
 import _ from "lodash";
 
 // proj
-import book from "routes/book";
+// import book from "routes/book";
 import { DatePickerField } from "forms/_formkit";
 import { ResponsiveView } from "commons";
-import { BREAKPOINTS, linkTo } from "utils";
+import { BREAKPOINTS } from "utils";
+// import { BREAKPOINTS, linkTo } from "utils";
 import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
 import { setModal, resetModal, MODALS } from "core/modals/duck";
 import { ServiceInputModal, CashOrderModal } from 'modals';
@@ -100,15 +101,16 @@ export class CashBalanceTable extends Component {
         this.props.fetchCashboxesBalance();
     };
 
-    _onRowClick = data => {
-        const { filters, setCashOrdersFilters } = this.props;
-        linkTo(book.cashFlowPage);
-        setCashOrdersFilters({
-            cashBoxId: data.id,
-            startDate: "2019-01-01",
-            endDate: filters.date.format("YYYY-MM-DD"),
-        });
-    };
+    //I commented it beacause it is very useful code to learn
+    // _onRowClick = data => {
+    //     const { filters, setCashOrdersFilters } = this.props;
+    //     linkTo(book.cashFlowPage);
+    //     setCashOrdersFilters({
+    //         cashBoxId: data.id,
+    //         startDate: "2019-01-01",
+    //         endDate: filters.date.format("YYYY-MM-DD"),
+    //     });
+    // };
 
     render() {
         const {
@@ -144,9 +146,9 @@ export class CashBalanceTable extends Component {
                     dataSource={data}
                     loading={cashboxesFetching}
                     pagination={false}
-                    onRow={record => ({
-                        onClick: () => this._onRowClick(record),
-                    })}
+                    // onRow={record => ({
+                    //     onClick: () => this._onRowClick(record),
+                    // })}
                     locale={{
                         emptyText: <FormattedMessage id="no_data" />,
                     }}
