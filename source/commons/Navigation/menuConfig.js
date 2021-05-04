@@ -160,6 +160,13 @@ export default {
             name:     'navigation.accounting',
             items:    [
                 {
+                    key:      '/cash/bank',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_FINANCE_CASH),
+                    link: book.cashBankPage,
+                    name: 'navigation.cash_bank',
+                },
+                {
                     key:      '/cash/flow',
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_ACCOUNTING),
@@ -172,13 +179,6 @@ export default {
                         isForbidden(user, permissions.ACCESS_FINANCE_RECEIVABLE),
                     link: book.cashClientsDebtsPage,
                     name: 'navigation.clients_debts',
-                },
-                {
-                    key:      '/cash/bank',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_FINANCE_CASH),
-                    link: book.cashBankPage,
-                    name: 'navigation.cash_bank',
                 },
                 {
                     key:      '/report/cash_orders_logs',
