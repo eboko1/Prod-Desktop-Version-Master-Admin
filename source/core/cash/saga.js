@@ -23,6 +23,7 @@ import {analyticsLevels} from 'core/forms/reportAnalyticsForm/duck'
 // own
 import {
     fetchCashboxes,
+    fetchCashboxesBalance,
     fetchCashboxesSuccess,
     fetchAnalyticsSuccess,
     setAnalyticsFetchingState,
@@ -72,7 +73,7 @@ export function* openShiftSaga() {
             }
             
 
-            yield put(fetchCashboxes());
+            yield put(fetchCashboxesBalance());
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -106,7 +107,7 @@ export function* closeShiftSaga() {
 
             
 
-            yield put(fetchCashboxes());
+            yield put(fetchCashboxesBalance());
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -133,7 +134,7 @@ export function* serviceInputSaga() {
                 notification.error({message: err.response.message});
             }
 
-            yield put(fetchCashboxes());
+            yield put(fetchCashboxesBalance());
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -167,7 +168,7 @@ export function* xReportSaga() {
 
             
 
-            yield put(fetchCashboxes());
+            yield put(fetchCashboxesBalance());
         } catch (error) {
             yield put(emitError(error));
         } finally {
