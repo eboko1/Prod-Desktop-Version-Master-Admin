@@ -36,7 +36,7 @@ const mapDispatchToProps = {
  * For now this page replaces ordinar clients page.
  * 
  * User on this page can select some operations for client:
- *     1. Create a new client - will be redirected to the page where user can create a new client
+ *     1. Create a new client - will be redirected to the page where user can create a new client(or open client modal)
  *     2. Open client page - Redirect to a page with client's information(client page)
  *     3. Create order with that client
  *     4. Create a new order with a client and its car
