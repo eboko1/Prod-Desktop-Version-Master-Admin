@@ -23,6 +23,10 @@
 .disabledItem {
     width: 25%;
     padding: 4px 4px;
+    cursor: not-allowed;
+    & * {
+        pointer-events: none;
+    }
 }
 
 .item {

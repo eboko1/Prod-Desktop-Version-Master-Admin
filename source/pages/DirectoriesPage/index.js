@@ -23,21 +23,25 @@ const struct = [
                 itemName:  'navigation.products',
                 disabled:  false,
                 link:      book.products,
+                color:     'var(--db_approve)'
             },
             {
                 itemName:  'navigation.vehicles',
                 disabled:  false,
-                link:      book.vehicles,
+                link:      book.exception,
+                color:     'var(--db_approve)'
             },
             {
                 itemName:  'navigation.client_hot_operations',
                 disabled:  false,
                 link:      book.clientHotOperations,
+                color:     'var(--db_approve)'
             },
             {
                 itemName:  'navigation.employees',
                 disabled:  false,
                 link:      book.employeesPage,
+                color:     'var(--db_approve)'
             },
         ],
     },
@@ -47,22 +51,26 @@ const struct = [
             {
                 itemName:  'navigation.vehicles',
                 disabled:  false,
-                link:      book.vehicles,
+                link:      book.exception,
+                color:     'var(--db_progress)'
             },
             {
                 itemName:  'navigation.client_hot_operations',
                 disabled:  false,
-                link:      book.client_hot_operations,
+                link:      book.clientHotOperations,
+                color:     'var(--db_progress)'
             },
             {
                 itemName:  'navigation.employees',
                 disabled:  false,
                 link:      book.employeesPage,
+                color:     'var(--db_progress)'
             },
             {
                 itemName:  'navigation.suppliers',
                 disabled:  false,
                 link:      book.suppliersPage,
+                color:     'var(--db_progress)'
             },
         ],
     },
@@ -73,36 +81,43 @@ const struct = [
                 itemName:  'navigation.products',
                 disabled:  false,
                 link:      book.products,
+                color:     'var(--db_reserve)'
             },
             {
                 itemName:  'navigation.products_groups',
                 disabled:  false,
                 link:      book.productsGroups,
+                color:     'var(--db_reserve)'
             },
             {
                 itemName:  'navigation.price_groups',
                 disabled:  false,
                 link:      book.priceGroups,
+                color:     'var(--db_reserve)'
             },
             {
                 itemName:  'navigation.related_groups',
                 disabled:  true,
-                link:      book.relatedGroups,
+                link:      book.exception,
+                color:     'var(--db_reserve)'
             },
             {
                 itemName:  'navigation.warehouses',
                 disabled:  false,
                 link:      book.warehouses,
+                color:     'var(--db_reserve)'
             },
             {
                 itemName:  'wms.cells',
                 disabled:  false,
                 link:      book.wms,
+                color:     'var(--db_reserve)'
             },
             {
                 itemName:  'navigation.units',
                 disabled:  true,
-                link:      book.units,
+                link:      book.exception,
+                color:     'var(--db_reserve)'
             },
         ],
     },
@@ -113,41 +128,49 @@ const struct = [
                 itemName:  'navigation.labors_page',
                 disabled:  false,
                 link:      book.laborsPage,
+                color:     'var(--db_success)'
             },
             {
                 itemName:  'navigation.norm_hours',
                 disabled:  true,
-                link:      book.norm_hours,
+                link:      book.exception,
+                color:     'var(--db_success)'
             },
             {
                 itemName:  'navigation.complexes',
                 disabled:  true,
-                link:      book.complexes,
+                link:      book.exception,
+                color:     'var(--db_success)'
             },
             {
                 itemName:  'navigation.related_labors',
                 disabled:  true,
-                link:      book.relatedLabors,
+                link:      book.exception,
+                color:     'var(--db_success)'
             },
             {
                 itemName:  'navigation.repair_map',
                 disabled:  false,
                 link:      book.repairMapSetting,
+                color:     'var(--db_success)'
             },
             {
                 itemName:  'navigation.statuses',
                 disabled:  false,
-                link:      book.statuses,
+                link:      book.exception,
+                color:     'var(--db_success)'
             },
             {
                 itemName:  'navigation.locations_settings',
                 disabled:  false,
                 link:      book.locationSettings,
+                color:     'var(--db_success)'
             },
             {
                 itemName:  'navigation.diagnostic_patterns',
                 disabled:  false,
                 link:      book.diagnosticPatterns,
+                color:     'var(--db_success)'
             },
         ],
     },
@@ -158,16 +181,19 @@ const struct = [
                 itemName:  'navigation.cash_settings',
                 disabled:  false,
                 link:      book.cashSettingsPage,
+                color:     'var(--approve)'
             },
             {
                 itemName:  'navigation.requisites',
                 disabled:  false,
                 link:      book.requisites,
+                color:     'var(--approve)'
             },
             {
                 itemName:  'navigation.report_analytics',
                 disabled:  false,
                 link:      book.analytics,
+                color:     'var(--approve)'
             },
         ],
     },
@@ -178,21 +204,25 @@ const struct = [
                 itemName:  'navigation.main_settings',
                 disabled:  false,
                 link:      book.oldApp.settings,
+                color:     'var(--db-comment)'
             },
             {
                 itemName:  'navigation.posts',
                 disabled:  false,
-                link:      book.oldApp.controlPanel,
+                link:      book.exception,
+                color:     'var(--db-comment)'
             },
             {
                 itemName:  'navigation.cb24',
                 disabled:  false,
-                link:      book.oldApp.links,
+                link:      book.oldApp.link,
+                color:     'var(--db-comment)'
             },
             {
                 itemName:  'navigation.availabilities',
-                disabled:  true,
+                disabled:  false,
                 link:      book.availabilitiesPage,
+                color:     'var(--db-comment)'
             },
         ],
     },
@@ -228,19 +258,17 @@ export default class DirectoriesPage extends Component {
         )
     };
 
-    _renderItem = (blockTitle, {itemName, link, disabled}, key) => {
+    _renderItem = (blockTitle, {itemName, link, disabled, color}, key) => {
         return (
             <div key={ key } className={ disabled ? Styles.disabledItem + " " + Styles.item : Styles.item }>
-                <Link
+                <a
                     className={Styles.buttonLink}
-                    to={ {
-                        pathname: link,
-                    } }
+                    href={link}
                 >
-                    <Button className={Styles.itemButton}>
+                    <Button className={Styles.itemButton} disabled={disabled} style={{background: color}}>
                         <FormattedMessage id={itemName} />
                     </Button>
-                </Link>
+                </a>
             </div>
         )
     };
