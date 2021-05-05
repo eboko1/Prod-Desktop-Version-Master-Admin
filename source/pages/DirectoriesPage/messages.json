@@ -1,11 +1,23 @@
 {
     "en": {
-        
+        "directories.description": "Description",
+        "directories.popular": "Popular",
+        "directories.counterparties": "Counterparties",
+        "directories.orders": "Orders",
+        "directories.general_settings": "Settings"
     },
     "ru": {
-        
+        "directories.description": "Описание",
+        "directories.popular": "Популярные",
+        "directories.counterparties": "Контрагенты",
+        "directories.orders": "Наряд-заказы",
+        "directories.general_settings": "Общие настройки"
     },
     "uk": {
-        
+        "directories.description": "Опис",
+        "directories.popular": "Популярні",
+        "directories.counterparties": "Контрагенти",
+        "directories.orders": "Наряд-замовлення",
+        "directories.general_settings": "Налаштування"
     }
 }

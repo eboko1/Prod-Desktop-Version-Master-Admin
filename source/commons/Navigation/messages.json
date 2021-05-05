@@ -82,7 +82,17 @@
     "navigation.vehicle_types": "Vehicle Types",
     "navigation.tire_price_groups": "Price Groups",
     "navigation.wms": "WMS",
-    "navigation.products_without_cell": "Products without cell"
+    "navigation.products_without_cell": "Products without cell",
+    "navigation.directories": "Directories and settings",
+    "navigation.vehicles": "Vehicles",
+    "navigation.norm_hours": "Norm hours",
+    "navigation.complexes": "Complexes",
+    "navigation.related_labors": "Related labors",
+    "navigation.statuses": "Statuses",
+    "navigation.posts": "Posts",
+    "navigation.cb24": "cb24"
+
+
   },
   "ru": {
     "navigation.operations": "Операции",
@@ -167,7 +177,15 @@
     "navigation.vehicle_types": "Типы авто",
     "navigation.tire_price_groups": "Ценовые группы",
     "navigation.wms": "WMS",
-    "navigation.products_without_cell": "Товары без ячейки"
+    "navigation.products_without_cell": "Товары без ячейки",
+    "navigation.directories": "Справочники и настройки",
+    "navigation.vehicles": "Автомобили",
+    "navigation.norm_hours": "Нормо-часы",
+    "navigation.complexes": "Комплексы",
+    "navigation.related_labors": "Связанные работы",
+    "navigation.statuses": "Статусы",
+    "navigation.posts": "Посты",
+    "navigation.cb24": "cb24.eu"
   },
   "uk": {
     "navigation.operations": "Операції",
@@ -252,6 +270,14 @@
     "navigation.vehicle_types": "Типи авто",
     "navigation.tire_price_groups": "Цінові групи",
     "navigation.wms": "WMS",
-    "navigation.products_without_cell": "Товари без клітинки"
+    "navigation.products_without_cell": "Товари без клітинки",
+    "navigation.directories": "Довідники та налаштування",
+    "navigation.vehicles": "Автомобілі",
+    "navigation.norm_hours": "Нормо-години",
+    "navigation.complexes": "Комплекси",
+    "navigation.related_labors": "Повязані роботи",
+    "navigation.statuses": "Статуси",
+    "navigation.posts": "Пости",
+    "navigation.cb24": "cb24.eu"
   }
 }
