@@ -44,6 +44,7 @@ import RepairMapSettingPage from './RepairMapSettingPage';
 import BarcodePage from './BarcodePage';
 import ProductPage from './ProductPage';
 import WMSPage from './WMSPage';
+import DirectoriesPage from './DirectoriesPage';
 
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
@@ -99,4 +100,5 @@ export {
     BarcodePage,
     ProductPage,
     WMSPage,
+    DirectoriesPage,
 };

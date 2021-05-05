@@ -60,6 +60,11 @@ export default {
             name:     'navigation.catalog',
             items:    [
                 {
+                    key:      'directories',
+                    link: book.directoriesPage,
+                    name: 'navigation.directories',
+                },
+                {
                     key:      '/cash/settings',
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_CATALOGUE_CASH),
