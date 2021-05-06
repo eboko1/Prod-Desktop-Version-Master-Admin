@@ -34,8 +34,12 @@ import Styles from './styles.m.css';
     },    
     mapStateToProps: state => ({
         isMobile: state.ui.views.isMobile,
+        modalProps: state.modals.modalProps,
     }),
 })
+/**
+ * @param props.searchQuery Initial client phone number, will be used if provided proper value
+ */
 export default class AddClientModal extends Component {
     render() {
         const {
@@ -49,11 +53,14 @@ export default class AddClientModal extends Component {
             vehicleTypes,
         } = this.props;
 
+        //Get initial phone fom props or modalProps
+        const clientSearchQuery = searchQuery || (this.props.modalProps && this.props.modalProps.initialPhoneNuber);
+
         const { getFieldsValue, validateFields } = this.props.form;
         const title =
             this.props.intl.formatMessage({
                 id: 'add-client-form.add_client',
-            }) + (searchQuery ? ` (${searchQuery})` : '');
+            }) + (clientSearchQuery ? ` (${clientSearchQuery})` : '');
 
         return (
             <Modal
@@ -126,6 +133,7 @@ export default class AddClientModal extends Component {
             >
                 <AbstractClientForm
                     { ...this.props }
+                    searchQuery={clientSearchQuery}
                     wrappedComponentRef={ this.props.wrappedComponentRef }
                     addClientFormData={ addClientFormData }
                 />

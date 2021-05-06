@@ -92,14 +92,14 @@ export function columnsConfig({ fetchRecordingLink, callsLinksCache, onAddClient
         width: defWidth.client,
         dataIndex: 'clients',
         key: 'clients',
-        render: clients => {
+        render: (clients, call) => {
 
             return (!clients)
                 ? (
                     <Button
                         type="primary"
                         className={Styles.createClient}
-                        onClick={() => onAddClientModal()}
+                        onClick={() => onAddClientModal({initialPhoneNuber: call.caller})}
                     >
                         <FormattedMessage id='calls-table.create_new_client' />
                     </Button>
