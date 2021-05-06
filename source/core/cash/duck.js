@@ -361,27 +361,25 @@ export const registerCashOrderInCashdesk = (cashOrderId) => ({
 });
 
 /**
- * Send email to receivers, that email contains informatin about order RTS transactions(sells with RST)
+ * Send email to a client from cash order, that email contains receipth
  * @param {Object} params
- * @param {String[]} params.receivers - Array of receivers, email strings like [test@test.com, ...]
  * @param {String|Number} params.cashOrderId - Cash order to generate data from
  * @returns 
  */
-export const sendEmailWithReceipt = ({receivers, cashOrderId}) => ({
+export const sendEmailWithReceipt = ({cashOrderId}) => ({
     type: SEND_EMAIL_WITH_RECEIPT,
-    payload: {receivers, cashOrderId}
+    payload: {cashOrderId}
 });
 
 /**
- * Send sms to receivers, that sms contains informatin about order RTS transactions(sells with RST)
+ * Send sms to a client from cashorder, that sms contains receipt info
  * @param {Object} params
- * @param {String[]} params.receivers - Array of receivers, phone numbers like [0958236712, ...]
  * @param {String|Number} params.cashOrderId - Cash order to generate data from
  * @returns 
  */
- export const sendSmsWithReceipt = ({receivers, cashOrderId}) => ({
+ export const sendSmsWithReceipt = ({cashOrderId}) => ({
     type: SEND_SMS_WITH_RECEIPT,
-    payload: {receivers, cashOrderId}
+    payload: {cashOrderId}
 });
 
 /**
