@@ -7,8 +7,8 @@ import moment from 'moment';
 import { v4 } from 'uuid';
 
 // proj
-import { BREAKPOINTS, goTo } from "utils";
-import { answered } from 'core/calls/config';
+import { goTo } from "utils";
+import { answered, missed } from 'core/calls/config';
 import { StyledButton } from 'commons';
 import book from 'routes/book';
 
@@ -50,8 +50,8 @@ export function columnsConfig({ fetchRecordingLink, callsLinksCache, onAddClient
             <Icon
                 style={{
                     color: `${answered.includes(status)
-                            ? 'var(--secondary)'
-                            : 'var(--warning)'
+                        ? 'var(--secondary)'
+                        : 'var(--warning)'
                         }`,
                     fontSize: 24,
                 }}
@@ -152,16 +152,18 @@ export function columnsConfig({ fetchRecordingLink, callsLinksCache, onAddClient
         dataIndex: 'recordingLink',
         render: (val, call) => {
             return String(call.id) in callsLinksCache//Check if that key exists in cash memory
-                ? Boolean(callsLinksCache[call.id]) //False for empty rows(but we key exists)
+                ? Boolean(callsLinksCache[call.id]) //False for empty rows where key exists in the cash memory or if call was not accepted
                     ? <audio controls>
                         <source src={callsLinksCache[call.id]} />
                     </audio>
                     : <FormattedMessage id='calls-table.no_record' />
-                : (<div>
-                    <StyledButton type="primary" onClick={() => fetchRecordingLink({ callId: call.id })}>
-                        <FormattedMessage id='calls-table.show_record' />
-                    </StyledButton>
-                </div>);
+                : (!missed.includes(call.status))
+                    ?(<div>
+                            <StyledButton type="primary" onClick={() => fetchRecordingLink({ callId: call.id })}>
+                                <FormattedMessage id='calls-table.show_record' />
+                            </StyledButton>
+                        </div>)
+                    : <FormattedMessage id='calls-table.no_record' />
         }
     };
 
