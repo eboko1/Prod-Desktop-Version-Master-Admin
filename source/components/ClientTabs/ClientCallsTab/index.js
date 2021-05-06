@@ -9,10 +9,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Select } from 'antd';
+import moment from 'moment';
 
 // proj
 import { Spinner } from 'commons';
-import { DatePickerGroup } from 'components';
+import { DateRangePicker } from 'components';
 import {
     fetchCalls,
     setCallsDaterange,
@@ -112,7 +113,6 @@ export default class ClientCallsTab extends Component {
 
     render() {
         const {
-            tab,
             channels,
             callsInitializing,
             callsFetching,
@@ -125,13 +125,15 @@ export default class ClientCallsTab extends Component {
         ) : (
             <div>
                 <div className={Styles.filters}>
-                    <DatePickerGroup
-                        startDate={ startDate }
-                        endDate={ endDate }
-                        loading={ callsInitializing || callsFetching }
-                        onDaterangeChange={ this._setCallsDaterange }
-                        periodGroup={ tab !== tabs.callsTable }
-                    />
+                    {
+                        callsFetching
+                            ? ""
+                            : <DateRangePicker
+                                dateRange={[moment(startDate), moment(endDate)]}
+                                style={{margin: '0 0 0 8px'}}//prevent default space
+                                onDateChange={this._setCallsDaterange}
+                            />
+                    }
                     {channels && (
                         <Select
                             defaultValue='ALL'
