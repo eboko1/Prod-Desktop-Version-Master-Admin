@@ -99,7 +99,7 @@ export function columnsConfig({ fetchRecordingLink, callsLinksCache, onAddClient
                     <Button
                         type="primary"
                         className={Styles.createClient}
-                        onClick={() => onAddClientModal({initialPhoneNuber: call.caller})}
+                        onClick={() => onAddClientModal({initialPhoneNumber: call.caller})}
                     >
                         <FormattedMessage id='calls-table.create_new_client' />
                     </Button>

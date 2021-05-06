@@ -16,9 +16,10 @@ import ClientsContainer from './ClientsContainer';
 import Styles from "./styles.m.css";
 
 const mapStateToProps = state => ({
-    user: state.auth,
-    clients: state.clientHotOperations.clients,
-    modal: state.modals.modal,
+    user:            state.auth,
+    clients:         state.clientHotOperations.clients,
+    modal:           state.modals.modal,
+    searchQuery:     state.clientHotOperations.filters.query
 });
 
 const mapDispatchToProps = {
@@ -53,10 +54,11 @@ export default class ClientHotOperationsPage extends Component {
     }
 
     /**
-     * When "Create new client" button is pressed we have to open creating modal 
+     * When "Create new client" button is pressed we have to open creating modal
+     * If there is a value in input we pass this search value as phone number(it will be validated)
      */
     onAddClientModal = () => {
-        this.props.setModal(MODALS.ADD_CLIENT);
+        this.props.setModal(MODALS.ADD_CLIENT, {initialPhoneNumber: this.props.searchQuery});
     } 
 
     render() {  
@@ -76,6 +78,7 @@ export default class ClientHotOperationsPage extends Component {
                 </div>)}
             >
                 <ClientsContainer />
+
                 <AddClientModal
                     visible={this.props.modal}
                     resetModal={this.props.resetModal}

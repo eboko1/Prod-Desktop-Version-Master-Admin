@@ -39,8 +39,8 @@ export default class CallsTable extends Component {
      * When "Create new client" button is pressed we have to open creating modal 
      * @param params.initialPhoneNuber This phone number will be in modal's phone input
      */
-     onAddClientModal = ({initialPhoneNuber}={}) => {
-        this.props.setModal(MODALS.ADD_CLIENT, {initialPhoneNuber});
+     onAddClientModal = ({initialPhoneNumber}={}) => {
+        this.props.setModal(MODALS.ADD_CLIENT, {initialPhoneNumber});
     }
 
     render() {

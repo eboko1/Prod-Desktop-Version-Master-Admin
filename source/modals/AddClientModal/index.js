@@ -54,7 +54,7 @@ export default class AddClientModal extends Component {
         } = this.props;
 
         //Get initial phone fom props or modalProps
-        const clientSearchQuery = searchQuery || (this.props.modalProps && this.props.modalProps.initialPhoneNuber);
+        const clientSearchQuery = searchQuery || (this.props.modalProps && this.props.modalProps.initialPhoneNumber);
 
         const { getFieldsValue, validateFields } = this.props.form;
         const title =
