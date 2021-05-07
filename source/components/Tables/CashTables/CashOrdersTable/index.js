@@ -16,6 +16,7 @@ import { columnsConfig } from './config';
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
+    user: state.auth
 });
 
 const mapDispatchToProps = {
@@ -78,7 +79,8 @@ export class CashOrdersTable extends Component {
             isMobile:  isMobile,
             onSendEmail: this.onSendEmail,
             onSendSms: this.onSendSms,
-            downloadReceipt: downloadReceipt
+            downloadReceipt: downloadReceipt,
+            user: this.props.user
         });
 
         const pagination = {
