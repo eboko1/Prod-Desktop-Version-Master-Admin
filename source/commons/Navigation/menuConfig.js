@@ -61,100 +61,90 @@ export default {
             items:    [
                 {
                     key:      'directories',
-                    link: book.directoriesPage,
-                    name: 'navigation.directories',
+                    link:     book.directoriesPage,
+                    name:     'navigation.directories',
                 },
                 {
                     key:      '/cash/settings',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_CATALOGUE_CASH),
-                    link: book.cashSettingsPage,
-                    name: 'navigation.cash_settings',
+                    disabled: user => isForbidden(user, permissions.ACCESS_CATALOGUE_CASH),
+                    link:     book.cashSettingsPage,
+                    name:     'navigation.cash_settings',
                 },
                 {
                     key:      '/clientHotOperations',
                     link:     book.clientHotOperations,
-                    disabled: user =>
-                        isForbidden(user, permissions.GET_CLIENTS),
-                    name: 'navigation.client_hot_operations',
+                    disabled: user => isForbidden(user, permissions.GET_CLIENTS),
+                    name:     'navigation.client_hot_operations',
                 },
                 {
                     key:      '/employees',
                     link:     book.employeesPage,
-                    disabled: user =>
-                        isForbidden(user, permissions.GET_EMPLOYEES),
-                    name: 'navigation.employees',
+                    disabled: user => isForbidden(user, permissions.GET_EMPLOYEES),
+                    name:     'navigation.employees',
+                },
+                {
+                    key:      'vehicles',
+                    link:     book.vehicles,
+                    name:     'navigation.vehicles',
                 },
                 {
                     key:      '/warehouses',
                     link:     book.warehouses,
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_CATALOGUE_STOCK),
-                    name: 'navigation.warehouses',
+                    disabled: user => isForbidden(user, permissions.ACCESS_CATALOGUE_STOCK),
+                    name:     'navigation.warehouses',
                 },
                 {
                     key:      '/suppliers',
                     link:     book.suppliersPage,
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_SUPPLIERS),
-                    name: 'navigation.suppliers',
+                    disabled: user => isForbidden(user, permissions.ACCESS_SUPPLIERS),
+                    name:     'navigation.suppliers',
                 },
                 {
                     key:      '/products-groups',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_STORE_GROUPS),
-                    link: book.productsGroups,
-                    name: 'navigation.products_groups',
+                    disabled: user => isForbidden(user, permissions.ACCESS_STORE_GROUPS),
+                    link:     book.productsGroups,
+                    name:     'navigation.products_groups',
                 },
                 {
                     key:      '/price-groups',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_PRICE_GROUPS),
-                    link: book.priceGroups,
-                    name: 'navigation.price_groups',
+                    disabled: user => isForbidden(user, permissions.ACCESS_PRICE_GROUPS),
+                    link:     book.priceGroups,
+                    name:     'navigation.price_groups',
                 },
                 {
                     key:      '/products',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_STORE_PRODUCTS),
-                    link: book.products,
-                    name: 'navigation.products',
+                    disabled: user => isForbidden(user, permissions.ACCESS_STORE_PRODUCTS),
+                    link:     book.products,
+                    name:     'navigation.products',
                 },
                 {
                     key:      '/labors',
                     link:     book.laborsPage,
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_LABOR_CATALOGUE),
-                    name: 'navigation.labors_page',
+                    disabled: user => isForbidden(user, permissions.ACCESS_LABOR_CATALOGUE),
+                    name:     'navigation.labors_page',
                 },
                 {
                     key:      '/diagnostic-patterns',
-                    disabled: user =>
-                        isForbidden(
-                            user,
-                            permissions.ACCESS_DIAGNOSTIC_CATALOGUE,
-                        ),
-                    link: book.diagnosticPatterns,
-                    name: 'navigation.diagnostic_patterns',
+                    disabled: user => isForbidden(user, permissions.ACCESS_DIAGNOSTIC_CATALOGUE),
+                    link:     book.diagnosticPatterns,
+                    name:     'navigation.diagnostic_patterns',
                 },
                 {
                     key:      '/repair-map',
-                    link: book.repairMapSetting,
-                    name: 'navigation.repair_map',
+                    link:     book.repairMapSetting,
+                    name:     'navigation.repair_map',
                 },
                 {
                     key:      '/location-settings',
-                    link: book.locationSettings,
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_CATALOGUE_LOCATIONS),
-                    name: 'navigation.locations_settings',
+                    link:     book.locationSettings,
+                    disabled: user => isForbidden(user, permissions.ACCESS_CATALOGUE_LOCATIONS),
+                    name:     'navigation.locations_settings',
                 },
                 {
                     key:      '/report/analytics',
                     link:     book.analytics,
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS),
-                    name: 'navigation.report_analytics',
+                    disabled: user => isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS),
+                    name:     'navigation.report_analytics',
                 },
             ],
         },
