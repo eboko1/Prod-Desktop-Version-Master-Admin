@@ -27,7 +27,7 @@ const struct = [
             },
             {
                 itemName:  'navigation.vehicles',
-                disabled:  false,
+                disabled:  true,
                 link:      book.exception,
                 color:     'var(--db_approve)'
             },
@@ -50,7 +50,7 @@ const struct = [
         items: [
             {
                 itemName:  'navigation.vehicles',
-                disabled:  false,
+                disabled:  true,
                 link:      book.exception,
                 color:     'var(--db_progress)'
             },
@@ -156,7 +156,7 @@ const struct = [
             },
             {
                 itemName:  'navigation.statuses',
-                disabled:  false,
+                disabled:  true,
                 link:      book.exception,
                 color:     'var(--db_success)'
             },
@@ -208,7 +208,7 @@ const struct = [
             },
             {
                 itemName:  'navigation.posts',
-                disabled:  false,
+                disabled:  true,
                 link:      book.exception,
                 color:     'var(--db-comment)'
             },
