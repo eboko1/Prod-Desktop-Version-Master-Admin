@@ -40,3 +40,9 @@
 .noBreak {
     word-break: keep-all;
 }
+
+/* If component has this class it will be unclickable */
+.disabled{
+    pointer-events: none;
+    color: rgb(172, 172, 172);
+}

@@ -23,6 +23,7 @@ import {analyticsLevels} from 'core/forms/reportAnalyticsForm/duck'
 // own
 import {
     fetchCashboxes,
+    fetchCashboxesBalance,
     fetchCashboxesSuccess,
     fetchAnalyticsSuccess,
     setAnalyticsFetchingState,
@@ -72,7 +73,7 @@ export function* openShiftSaga() {
             }
             
 
-            yield put(fetchCashboxes());
+            yield put(fetchCashboxesBalance());
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -106,7 +107,7 @@ export function* closeShiftSaga() {
 
             
 
-            yield put(fetchCashboxes());
+            yield put(fetchCashboxesBalance());
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -133,7 +134,7 @@ export function* serviceInputSaga() {
                 notification.error({message: err.response.message});
             }
 
-            yield put(fetchCashboxes());
+            yield put(fetchCashboxesBalance());
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -167,7 +168,7 @@ export function* xReportSaga() {
 
             
 
-            yield put(fetchCashboxes());
+            yield put(fetchCashboxesBalance());
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -383,20 +384,21 @@ export function* registerCashOrderInCashdeskSaga() {
 
 export function* sendEmailWithReceiptSaga() {
     while(true) {
-        const {payload: {receivers, cashOrderId}} = yield take(SEND_EMAIL_WITH_RECEIPT);
+        const {payload: {cashOrderId}} = yield take(SEND_EMAIL_WITH_RECEIPT);
 
         const requestPayload = {
-            receivers,
             cashOrderId
         };
 
         try{
             //Just send an email
-            yield call(fetchAPI, 'POST', `/cashdesk/send_email`, null, requestPayload);
-        } catch(err) {
+            yield call(fetchAPI, 'POST', `/cashdesk/send_email`, null, requestPayload, { handleErrorInternally: true });
 
-        } finally {
             notification.success();
+        } catch(err) {
+            (err && err.response) && notification.error({
+                message: err.response.message
+            });
         }
 
     }
@@ -404,21 +406,16 @@ export function* sendEmailWithReceiptSaga() {
 
 export function* sendSmsWithReceiptSaga() {
     while(true) {
-        const {payload: {receivers, cashOrderId}} = yield take(SEND_SMS_WITH_RECEIPT);
+        const {payload: {cashOrderId}} = yield take(SEND_SMS_WITH_RECEIPT);
 
         const requestPayload = {
-            receivers,
             cashOrderId
         };
 
-        try{
-            //Just send an sms to receivers
-            yield call(fetchAPI, 'POST', `/cashdesk/send_sms`, null, requestPayload);
-        } catch(err) {
+        //Just send an sms to receivers
+        yield call(fetchAPI, 'POST', `/cashdesk/send_sms`, null, requestPayload);
 
-        } finally {
-            notification.success();
-        }
+        notification.success();
 
     }
 }

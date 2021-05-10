@@ -1,4 +1,7 @@
-// ringostat constants
+/**
+ * ringostat constants
+ * Call statuses
+ */
 const callsStatuses = Object.freeze({
     VOICEMAIL:        'VOICEMAIL',
     ANSWERED:         'ANSWERED',

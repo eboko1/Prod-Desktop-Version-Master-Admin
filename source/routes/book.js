@@ -51,10 +51,13 @@ const book = Object.freeze({
     clientId:                 '/client/:id',
     clientHotOperations:      '/client-hot-operations',
 
+    //Vehicles
+    vehicles:                 '/vehicles',
+
     // Employees
     employeesPage:            '/employees',
     addEmployee:              '/employees/add',
-    // TODO: employeeId
+
     editEmployee:             '/employees/:id',
 
     // Suppliers

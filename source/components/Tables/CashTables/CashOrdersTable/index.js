@@ -34,31 +34,31 @@ export class CashOrdersTable extends Component {
     _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
 
     /**
-     * Called when user want to receive receipt on his email, email is taken from currently active manager(user).
+     * Called when user want to send receipt on client's email, email is taken from client for which cash order was created.
      * We can send emails for RST cashOrders only
-     * @param {*} param.cashOrderId - cash order to generate email from(contains data about its RST cashbox)
+     * @param {*} param.cashOrderId - cash order to generate email from(contains data about its RST cashbox and client)
      * @returns 
      */
     onSendEmail = ({cashOrderId}) => {
-        const { user, sendEmailWithReceipt } = this.props;
+        const { sendEmailWithReceipt } = this.props;
 
-        if(!user.email || !cashOrderId) return;
+        if(!cashOrderId) return;
 
-        sendEmailWithReceipt({receivers: [user.email], cashOrderId});
+        sendEmailWithReceipt({ cashOrderId});
     }
 
     /**
-     *  When user want to receive receipt on his modile via sms, phone number is taken from currently active manager(user).
+     *  When user want to send receipt on client's modile via sms, phone number is taken from client for which cash order was created.
      * We can send sms for RST cashOrders only.
-     * @param {*} param.cashOrderId - cash order to generate email from(contains data about its RST cashbox)
+     * @param {*} param.cashOrderId - cash order to generate email from(contains data about its RST cashbox and client)
      * @returns 
      */
     onSendSms = ({cashOrderId}) => {
-        const { user, sendSmsWithReceipt } = this.props;
+        const { sendSmsWithReceipt } = this.props;
 
-        if(!user.phone || !cashOrderId) return;
+        if(!cashOrderId) return;
 
-        sendSmsWithReceipt({receivers: [user.phone], cashOrderId});
+        sendSmsWithReceipt({ cashOrderId});
     }
 
     render() {
@@ -79,7 +79,8 @@ export class CashOrdersTable extends Component {
             isMobile:  isMobile,
             onSendEmail: this.onSendEmail,
             onSendSms: this.onSendSms,
-            downloadReceipt: downloadReceipt
+            downloadReceipt: downloadReceipt,
+            user: this.props.user
         });
 
         const pagination = {
