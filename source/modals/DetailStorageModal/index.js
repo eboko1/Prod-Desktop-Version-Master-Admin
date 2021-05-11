@@ -341,51 +341,11 @@ class DetailStorageModal extends React.Component{
             {
                 key:       'select',
                 render: (elem)=>{
-                    var supplierBrandId = elem.supplierBrandId ? elem.supplierBrandId : (elem.price ? elem.price.supplierBrandId : undefined);
-                    var brandId = elem.brandId ? elem.brandId : (elem.price ? elem.price.brandId : undefined);
-                    var name = elem.storeGroupId == 1000000 ? elem.description : elem.storeGroupName;
-                    var supplierOriginalCode = elem.price ? elem.price.supplierOriginalCode : undefined;
-                    var supplierProductNumber = elem.price ? elem.price.supplierProductNumber : undefined;
-                    var supplierPartNumber = elem.price ? elem.price.supplierPartNumber : undefined;
-                    var isFromStock = elem.price ? elem.price.isFromStock : undefined;
-                    var defaultWarehouseId = elem.price ? elem.price.defaultWarehouseId : undefined;
                     return (
                         <Button
                             type="primary"
                             onClick={()=>{
-                                if(this.props.onSelect) {
-                                    this.props.onSelect(
-                                        elem.partNumber,
-                                        brandId,
-                                        elem.productId,
-                                        this.props.tableKey,
-                                        elem.storeGroupId,
-                                        name,
-                                        supplierOriginalCode,
-                                        supplierProductNumber,
-                                        supplierPartNumber,
-                                    );
-                                }
-                                if(this.props.setSupplier) {
-                                    this.props.setSupplier(
-                                        elem.businessSupplierId,
-                                        elem.businessSupplierName,
-                                        supplierBrandId, elem.purchasePrice,
-                                        elem.salePrice,
-                                        elem.store,
-                                        supplierOriginalCode,
-                                        supplierProductNumber,
-                                        supplierPartNumber,
-                                        this.props.tableKey,
-                                        isFromStock,
-                                        defaultWarehouseId,
-                                        elem.productId
-                                    );
-                                }
-                                if(this.props.selectProduct) {
-                                    this.props.selectProduct(elem.productId)
-                                }
-                                this.handleCancel();
+                                this.handleOk(elem);
                             }}
                         >
                             <FormattedMessage id="select" />
@@ -394,6 +354,51 @@ class DetailStorageModal extends React.Component{
                 }
             },
         ];
+    }
+
+    handleOk(elem) {
+        var supplierBrandId = elem.supplierBrandId ? elem.supplierBrandId : (elem.price ? elem.price.supplierBrandId : undefined);
+        var brandId = elem.brandId ? elem.brandId : (elem.price ? elem.price.brandId : undefined);
+        var name = elem.storeGroupId == 1000000 ? elem.description : elem.storeGroupName;
+        var supplierOriginalCode = elem.price ? elem.price.supplierOriginalCode : undefined;
+        var supplierProductNumber = elem.price ? elem.price.supplierProductNumber : undefined;
+        var supplierPartNumber = elem.price ? elem.price.supplierPartNumber : undefined;
+        var isFromStock = elem.price ? elem.price.isFromStock : undefined;
+        var defaultWarehouseId = elem.price ? elem.price.defaultWarehouseId : undefined;
+
+        if(this.props.onSelect) {
+            this.props.onSelect(
+                elem.partNumber,
+                brandId,
+                elem.productId,
+                this.props.tableKey,
+                elem.storeGroupId,
+                name,
+                supplierOriginalCode,
+                supplierProductNumber,
+                supplierPartNumber,
+            );
+        }
+        if(this.props.setSupplier) {
+            this.props.setSupplier(
+                elem.businessSupplierId,
+                elem.businessSupplierName,
+                supplierBrandId, elem.purchasePrice,
+                elem.salePrice,
+                elem.store,
+                supplierOriginalCode,
+                supplierProductNumber,
+                supplierPartNumber,
+                this.props.tableKey,
+                isFromStock,
+                defaultWarehouseId,
+                elem.productId
+            );
+        }
+        if(this.props.selectProduct) {
+            this.props.selectProduct(elem.productId)
+        }
+        this.handleCancel();
     }
 
     getAttributeFilter(key) {
@@ -449,8 +454,10 @@ class DetailStorageModal extends React.Component{
         this.state.dataSource[key].price.defaultWarehouseId = defaultWarehouseId;
         this.state.dataSource[key].productId = productId;
         this.setState({
-            update: true
-        })
+            update: true,
+        });
+
+        this.handleOk(this.state.dataSource[key]);
     }
 
     handleCancel = () => {
