@@ -289,7 +289,7 @@ class DetailsTable extends Component {
                 render:    (data, row) => {
                     return (
                         <div>
-                            <div style={{fontWeight: 700, textDecoration: 'underline'}}>
+                            <div style={{fontWeight: 700, textDecoration: row.detailCode && 'underline'}}>
                                 {row.productId 
                                     ? <Link to={ `${book.product}/${row.productId}` }>
                                         { row.detailCode }
@@ -331,7 +331,7 @@ class DetailsTable extends Component {
                         <div
                             style={{
                                 cursor: 'pointer',
-                                textDecoration: 'underline'
+                                textDecoration: data && 'underline'
                             }}
                             onClick={()=>{
                                 this.setState({
@@ -358,7 +358,7 @@ class DetailsTable extends Component {
                             }}
                         >
                             <div
-                                style={{width: '50%', cursor: 'pointer', textDecoration: 'underline'}}
+                                style={{width: '50%', cursor: 'pointer', textDecoration: row.supplierName && 'underline'}}
                                 onClick={()=>{
                                     if(row.supplierId !== 0) {
                                         this.setState({
@@ -766,8 +766,8 @@ class DetailsTable extends Component {
                                 padding: '6px 4px',
                                 textAlign: 'center',
                                 fontWeight: 500,
-                                textTransform: 'uppercase',
-                                border: '1px solid black',
+                                // textTransform: 'uppercase',
+                                // border: '1px solid black',
                             } }
                         >
                             <FormattedMessage id={`status.${data}`}/>
@@ -1022,9 +1022,6 @@ class DetailsTable extends Component {
         });
     }
     hideDetailProductModal() {
-        const { dataSource } = this.state;
-        const lastDetail = dataSource[dataSource.length - 1];
-        lastDetail.barcode = undefined;
         this.setState({
             productModalVisible: false,
         });

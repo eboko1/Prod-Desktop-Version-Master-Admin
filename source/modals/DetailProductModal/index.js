@@ -809,7 +809,6 @@ class DetailProductModal extends React.Component{
         currentDetail.reservedFromWarehouseId = defaultWarehouseId;
         currentDetail.productId = isFromStock ? productId : undefined;
         currentDetail.cellAddress = isFromStock ? cellAddress : undefined;
-        alert(cellAddress)
         if(brand) {
             currentDetail.brandId = brandId;
             currentDetail.brandName = brand && brand.brandName;
