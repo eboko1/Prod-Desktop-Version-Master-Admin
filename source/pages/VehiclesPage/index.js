@@ -11,6 +11,7 @@ import {Layout, Spinner} from 'commons';
 // own
 import Styles from './styles.m.css';
 import Block from './components/Block';
+import DataItem from './components/DataItem';
 
 const TabPane = Tabs.TabPane;
 
@@ -44,6 +45,13 @@ export default class VehiclesPage extends Component {
                                 </div>}
                             >
                                 <div>My custom content item</div>
+                                <div>
+                                    <DataItem label="Label">value</DataItem>
+                                </div>
+                                <div>
+                                    <DataItem label="Label">value</DataItem>
+                                    <DataItem label="Label">value</DataItem>
+                                </div>
                             </Block>
                         </div>
                         
