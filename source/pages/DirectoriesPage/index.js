@@ -265,7 +265,7 @@ export default class DirectoriesPage extends Component {
                     className={Styles.buttonLink}
                     href={link}
                 >
-                    <Button className={Styles.itemButton} disabled={disabled} style={{background: color}}>
+                    <Button className={Styles.itemButton} disabled={disabled} style={{background: color, fontWeight: 500}}>
                         <FormattedMessage id={itemName} />
                     </Button>
                 </a>
