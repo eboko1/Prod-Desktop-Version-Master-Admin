@@ -155,7 +155,8 @@ class DetailSupplierModal extends React.Component{
             fetched: false,
             dataSource: [],
             visible: false,
-        })
+        });
+        if(this.props.hideModal) this.props.hideModal();
     };
 
     fetchData() {
@@ -195,31 +196,42 @@ class DetailSupplierModal extends React.Component{
         });
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.visible && !prevProps.visible) {
+            this.fetchData();
+            this.setState({
+                visible: true,
+            })
+        }
+    }
+
     render() {
         const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_SUPPLIER_MODAL_WINDOW);
         return (
             <div>
-                <Button
-                    type='primary'
-                    disabled={disabled}
-                    onClick={()=>{
-                        this.fetchData();
-                        this.setState({
-                            visible: true,
-                        })
-                    }}
-                    title={this.props.intl.formatMessage({id: "details_table.details_supplier"})}
-                >
-                    <div
-                        style={{
-                            width: 18,
-                            height: 18,
-                            backgroundColor: disabled ? 'black' : 'white',
-                            mask: `url(${images.deliveryTruckIcon}) no-repeat center / contain`,
-                            WebkitMask: `url(${images.deliveryTruckIcon}) no-repeat center / contain`,
+                {!this.props.hideButton &&
+                    <Button
+                        type='primary'
+                        disabled={disabled}
+                        onClick={()=>{
+                            this.fetchData();
+                            this.setState({
+                                visible: true,
+                            })
                         }}
-                    ></div>
-                </Button>
+                        title={this.props.intl.formatMessage({id: "details_table.details_supplier"})}
+                    >
+                        <div
+                            style={{
+                                width: 18,
+                                height: 18,
+                                backgroundColor: disabled ? 'black' : 'white',
+                                mask: `url(${images.deliveryTruckIcon}) no-repeat center / contain`,
+                                WebkitMask: `url(${images.deliveryTruckIcon}) no-repeat center / contain`,
+                            }}
+                        ></div>
+                    </Button>
+                }
                 <Modal
                     width="85%"
                     visible={this.state.visible}

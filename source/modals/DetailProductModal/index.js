@@ -791,7 +791,7 @@ class DetailProductModal extends React.Component{
         this.setState({});
     }
 
-    setSupplier(related, supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, supplierPartNumber, key, isFromStock, defaultWarehouseId, productId, brandId) {
+    setSupplier(related, supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, supplierPartNumber, key, isFromStock, defaultWarehouseId, productId, brandId, cellAddress) {
         const { mainTableSource, relatedDetails } = this.state;
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         const currentDetail = related ? relatedDetails[key] : mainTableSource[key];
@@ -808,6 +808,8 @@ class DetailProductModal extends React.Component{
         currentDetail.isFromStock = isFromStock;
         currentDetail.reservedFromWarehouseId = defaultWarehouseId;
         currentDetail.productId = isFromStock ? productId : undefined;
+        currentDetail.cellAddress = isFromStock ? cellAddress : undefined;
+        alert(cellAddress)
         if(brand) {
             currentDetail.brandId = brandId;
             currentDetail.brandName = brand && brand.brandName;
@@ -992,7 +994,7 @@ class DetailProductModal extends React.Component{
 
     componentDidUpdate(prevProps) {
         const { user, visible, detail, allDetails, showOilModal } = this.props;
-        const editing = Boolean(detail.storeGroupId);
+        const editing = Boolean(detail && detail.storeGroupId);
         if(prevProps.visible == false && visible) {
             this.setState({
                 editing: editing,
