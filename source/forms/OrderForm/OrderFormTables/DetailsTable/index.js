@@ -17,14 +17,16 @@ import {
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from "react-redux";
 import _ from 'lodash';
+import { Link } from 'react-router-dom';
 
 // proj
 import { Catcher } from 'commons';
 import { permissions, isForbidden, images, fetchAPI } from 'utils';
-import { DetailProductModal, FavouriteDetailsModal, StoreProductTrackingModal, SetBarcodeModal } from 'modals';
+import { DetailProductModal, FavouriteDetailsModal, StoreProductTrackingModal, SetBarcodeModal, DetailStorageModal, DetailSupplierModal, DetailWarehousesCountModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
 import { MODALS, setModal } from 'core/modals/duck';
 import { Barcode } from "components";
+import book from 'routes/book';
 
 // own
 import Styles from './styles.m.css';
@@ -76,6 +78,79 @@ class DetailsTable extends Component {
 
         this.columns = [
             {
+                title:      ()=>(
+                    <div className={Styles.headerActions}>
+                        <Barcode
+                            button
+                            multipleMode
+                            prefix={'STP'}
+                            onConfirm={async (code, pref, fullCode) => {
+                                const barcodeData = await fetchAPI('GET', 'barcodes',{
+                                    barcode: fullCode,
+                                });
+                                const productBarcode = barcodeData.find(({table})=>table == 'STORE_PRODUCTS');
+                        
+                                if(productBarcode) {
+                                    const payload = {
+                                        insertMode: true,
+                                        details: [],
+                                        services: [],
+                                    };
+                                    const product = await fetchAPI('GET', `store_products/${productBarcode.referenceId}`);
+                                    payload.details.push({
+                                        productId: product.id,
+                                        storeGroupId: product.groupId,
+                                        name: product.name,
+                                        productCode: product.code,
+                                        supplierBrandId: product.brandId,
+                                        supplierId: 0,
+                                        count: 1,
+                                        price: product.sellingPrice || 0,
+                                        purchasePrice: product.purchasePrice || 0,
+                                    })
+                                    await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
+                                    await this.updateDataSource();
+                                } else if(code.length > 2) {
+                                    //4019064001232
+                                    const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: code});
+                                    if(tecDocProducts && tecDocProducts.length) {
+                                        const payload = {
+                                            insertMode: true,
+                                            details: [],
+                                            services: [],
+                                        };
+                                        payload.details.push({
+                                            storeGroupId: tecDocProducts[0].storeGroupId,
+                                            name: tecDocProducts[0].description,
+                                            productCode: tecDocProducts[0].partNumber,
+                                            supplierBrandId: tecDocProducts[0].brandId,
+                                            count: 1,
+                                            price: 0,
+                                            purchasePrice: 0,
+                                        })
+                                        await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
+                                        await this.updateDataSource();
+                                    } else {
+                                        this.setState({
+                                            productBarcode: code,
+                                        })
+                                        notification.warning({
+                                            message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
+                                        });
+                                    }                                                
+                                } else {
+                                    this.setState({
+                                        productBarcode: code,
+                                    })
+                                    notification.warning({
+                                        message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
+                                    });
+                                }
+                            }}
+                        />
+                    </div>
+                ),
+                align: 'center',
                 key:       'position',
                 render:    (row) => {
                     const prewOrder = row.key-1 >= 0 && this.state.dataSource[row.key-1].order;
@@ -119,81 +194,36 @@ class DetailsTable extends Component {
             {
                 title:      ()=>(
                                 <div className={Styles.headerActions}>
-                                    <Barcode
-                                        button
-                                        multipleMode
-                                        prefix={'STP'}
-                                        onConfirm={async (code, pref, fullCode) => {
-                                            const barcodeData = await fetchAPI('GET', 'barcodes',{
-                                                barcode: fullCode,
-                                            });
-                                            const productBarcode = barcodeData.find(({table})=>table == 'STORE_PRODUCTS');
-                                    
-                                            if(productBarcode) {
-                                                const payload = {
-                                                    insertMode: true,
-                                                    details: [],
-                                                    services: [],
-                                                };
-                                                const product = await fetchAPI('GET', `store_products/${productBarcode.referenceId}`);
-                                                payload.details.push({
-                                                    productId: product.id,
-                                                    storeGroupId: product.groupId,
-                                                    name: product.name,
-                                                    productCode: product.code,
-                                                    supplierBrandId: product.brandId,
-                                                    supplierId: 0,
-                                                    count: 1,
-                                                    price: product.sellingPrice || 0,
-                                                    purchasePrice: product.purchasePrice || 0,
-                                                })
-                                                await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
-                                                await this.updateDataSource();
-                                            } else if(code.length > 2) {
-                                                //4019064001232
-                                                const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: code});
-                                                if(tecDocProducts && tecDocProducts.length) {
-                                                    const payload = {
-                                                        insertMode: true,
-                                                        details: [],
-                                                        services: [],
-                                                    };
-                                                    payload.details.push({
-                                                        storeGroupId: tecDocProducts[0].storeGroupId,
-                                                        name: tecDocProducts[0].description,
-                                                        productCode: tecDocProducts[0].partNumber,
-                                                        supplierBrandId: tecDocProducts[0].brandId,
-                                                        count: 1,
-                                                        price: 0,
-                                                        purchasePrice: 0,
-                                                    })
-                                                    await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
-                                                    await this.updateDataSource();
-                                                } else {
-                                                    this.setState({
-                                                        productBarcode: code,
-                                                    })
-                                                    notification.warning({
-                                                        message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
-                                                    });
-                                                }                                                
-                                            } else {
-                                                this.setState({
-                                                    productBarcode: code,
-                                                })
-                                                notification.warning({
-                                                    message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
-                                                });
+                                    <div>
+                                        <Button
+                                            type={'primary'}
+                                            disabled={ this.props.disabled }
+                                            onClick={ () => {
+                                                this.showDetailProductModal(-1);
+                                            } }
+                                        >
+                                            <Icon type='plus'/>
+                                        </Button>
+                                    </div>
+                                    <div>
+                                        <FavouriteDetailsModal
+                                            treeData={ this.props.detailsTreeData }
+                                            disabled={ this.props.disabled}
+                                            user={ this.props.user }
+                                            tecdocId={ this.props.tecdocId }
+                                            orderId={ this.props.orderId }
+                                            brands={ this.props.allDetails.brands }
+                                            detail={
+                                                this.state.dataSource[
+                                                    this.state.productModalKey
+                                                ]
                                             }
-                                        }}
-                                    />
-                                    <div style={{opacity: 0, pointerEvents: 'none'}}>
-                                        <Barcode
-                                            button
+                                            updateDataSource={ this.updateDataSource }
                                         />
                                     </div>
                                 </div>
                             ),
+                align: 'left',
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {
@@ -237,34 +267,17 @@ class DetailsTable extends Component {
                                     } }
                                 ></div>
                             </Button>
-                            { !elem.detailName ? (
-                                <FavouriteDetailsModal
-                                    treeData={ this.props.detailsTreeData }
-                                    disabled={ this.props.disabled || elem.reserved }
-                                    user={ this.props.user }
-                                    tecdocId={ this.props.tecdocId }
-                                    orderId={ this.props.orderId }
-                                    brands={ this.props.allDetails.brands }
-                                    detail={
-                                        this.state.dataSource[
-                                            this.state.productModalKey
-                                        ]
-                                    }
-                                    updateDataSource={ this.updateDataSource }
-                                />
-                            ) : (
-                                <QuickEditModal
-                                    treeData={ this.props.detailsTreeData }
-                                    brands={ this.props.allDetails.brands }
-                                    disabled={
-                                        !elem.detailName || this.props.disabled || elem.reserved || stageDisabled
-                                    }
-                                    confirmed={ confirmed != 'undefined' }
-                                    detail={ elem }
-                                    onConfirm={ this.updateDetail }
-                                    tableKey={ elem.key }
-                                />
-                            ) }
+                            <QuickEditModal
+                                treeData={ this.props.detailsTreeData }
+                                brands={ this.props.allDetails.brands }
+                                disabled={
+                                    !elem.detailName || this.props.disabled || elem.reserved || stageDisabled
+                                }
+                                confirmed={ confirmed != 'undefined' }
+                                detail={ elem }
+                                onConfirm={ this.updateDetail }
+                                tableKey={ elem.key }
+                            />
                         </div>
                     );
                 },
@@ -276,8 +289,31 @@ class DetailsTable extends Component {
                 render:    (data, row) => {
                     return (
                         <div>
-                            <div style={{fontWeight: 700}}>
-                                {row.detailCode || <FormattedMessage id='long_dash' />}
+                            <div style={{fontWeight: 700, textDecoration: 'underline'}}>
+                                {row.productId 
+                                    ? <Link to={ `${book.product}/${row.productId}` }>
+                                        { row.detailCode }
+                                    </Link> 
+                                    : <span
+                                        style={{
+                                            cursor: 'pointer'
+                                        }}
+                                        onClick={()=>{
+                                            this.props.setModal(MODALS.STORE_PRODUCT, {
+                                                code: row.detailCode,
+                                                brandId: row.brandId,
+                                                brandName: row.brandName,
+                                                name: row.detailName,
+                                                groupId: row.storeGroupId,
+                                                onSubmit: async () => {
+                                                    this.updateDataSource();
+                                                }
+                                            });
+                                        }}
+                                    >
+                                        {row.detailCode || <FormattedMessage id='long_dash' />}
+                                    </span>
+                                }
                             </div>
                             <div>
                                 {row.detailName}
@@ -290,8 +326,22 @@ class DetailsTable extends Component {
                 title:      <FormattedMessage id='order_form_table.brand' />,
                 key:       'brand',
                 dataIndex: 'brandName',
-                render:    data => {
-                    return data ? data : <FormattedMessage id='long_dash' />;
+                render:    (data, row) => {
+                    return data ?
+                        <div
+                            style={{
+                                cursor: 'pointer',
+                                textDecoration: 'underline'
+                            }}
+                            onClick={()=>{
+                                this.setState({
+                                    storageModalSelectedRow: row,
+                                })
+                            }}
+                        >
+                            {data}
+                        </div> :
+                        <FormattedMessage id='long_dash' />;
                 },
             },
             {
@@ -307,7 +357,20 @@ class DetailsTable extends Component {
                                 justifyContent: 'space-around'
                             }}
                         >
-                            <div style={{width: '50%'}}>
+                            <div
+                                style={{width: '50%', cursor: 'pointer', textDecoration: 'underline'}}
+                                onClick={()=>{
+                                    if(row.supplierId !== 0) {
+                                        this.setState({
+                                            supplierModalSelectedRow: row,
+                                        })
+                                    } else {
+                                        this.setState({
+                                            warehousesModalSelectedRow: row,
+                                        })
+                                    }
+                                }}
+                            >
                                 {row.supplierName || <FormattedMessage id='long_dash' />}
                             </div>
                             {row.supplierId === 0 ?
@@ -523,7 +586,7 @@ class DetailsTable extends Component {
                     const discount = _.get(this.props, 'discount', 0)
                     return (
                         <span>
-                            { `${discount}`.replace(
+                            { `${discount || 0}`.replace(
                                     /\B(?=(\d{3})+(?!\d))/g,
                                     ' ',
                                 )
@@ -569,7 +632,7 @@ class DetailsTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.PD' />,
-                key:        'status',
+                key:        'agreement',
                 dataIndex:  'agreement',
                 render:     (data, row) => {
                     const key = row.key;
@@ -700,8 +763,10 @@ class DetailsTable extends Component {
                         <div 
                             style={ { 
                                 background: color,
-                                padding: '6px',
+                                padding: '6px 4px',
                                 textAlign: 'center',
+                                fontWeight: 500,
+                                textTransform: 'uppercase',
                                 border: '1px solid black',
                             } }
                         >
@@ -1064,6 +1129,7 @@ class DetailsTable extends Component {
             supplierOriginalCode: detail.supplierOriginalCode,
             supplierProductNumber: detail.supplierProductNumber,
             supplierPartNumber: detail.supplierPartNumber,
+            cellAddress: detail.cellAddress,
             comment: detail.comment || {
                 comment: undefined,
                 positions: [],
@@ -1183,34 +1249,22 @@ class DetailsTable extends Component {
             oilModalData,
             clearOilData,
         } = this.props;
-        const { fetched, dataSource, productModalVisible, productModalKey, reserveModalVisible, reserveModalData, productBarcode, selectedRowKeys } = this.state;
+        const {
+            fetched,
+            dataSource,
+            productModalVisible,
+            productModalKey,
+            reserveModalVisible,
+            reserveModalData,
+            productBarcode,
+            selectedRowKeys,
+            storageModalSelectedRow,
+            supplierModalSelectedRow,
+            warehousesModalSelectedRow,
+        } = this.state;
 
         const columns = this.columns;
-        if (
-            dataSource.length == 0 ||
-            dataSource[ dataSource.length - 1 ].detailName != undefined
-        ) {
-            dataSource.push({
-                key:          dataSource.length,
-                id:           undefined,
-                storeGroupId: undefined,
-                detailId:     undefined,
-                detailName:   undefined,
-                detailCode:   undefined,
-                brandId:      undefined,
-                brandName:    undefined,
-                comment:      {
-                    comment:   undefined,
-                    positions: [],
-                },
-                count:         0,
-                price:         0,
-                purchasePrice: 0,
-                sum:           0,
-                agreement:     'UNDEFINED',
-            });
-        }
-
+        
         const rowSelection = {
             selectedRowKeys,
             onChange: (selectedRowKeys, selectedRows) => {
@@ -1251,7 +1305,7 @@ class DetailsTable extends Component {
                     } }
                     brands={ allDetails.brands }
                     allDetails={ allDetails.details }
-                    detail={ dataSource[ productModalKey ] }
+                    detail={ productModalKey < 0 ? {} : dataSource[ productModalKey ] }
                     tableKey={ productModalKey }
                     updateDetail={ this.updateDetail }
                     updateDataSource={ this.updateDataSource }
@@ -1259,6 +1313,63 @@ class DetailsTable extends Component {
                     showOilModal={ showOilModal }
                     oilModalData={ oilModalData }
                     clearOilData={ clearOilData }
+                />
+                <DetailStorageModal
+                    hideButton
+                    user={ user }
+                    onSelect={(...args)=>{
+                        console.log(args);
+                        storageModalSelectedRow.detailCode = args[0];
+                        storageModalSelectedRow.brandId = args[1];
+                        storageModalSelectedRow.supplierBrandId = args[1];
+                        storageModalSelectedRow.detailName = args[5];
+                        storageModalSelectedRow.supplierOriginalCode = args[6];
+                        storageModalSelectedRow.supplierPartNumber = args[8];
+                        this.setState({})
+                    }}
+                    tecdocId={ tecdocId }
+                    setSupplier={(...args)=>{
+                        console.log(args);
+
+                        storageModalSelectedRow.supplierId = args[0];
+                        storageModalSelectedRow.purchasePrice = args[3];
+                        storageModalSelectedRow.price = args[4];
+                        storageModalSelectedRow.supplierOriginalCode = args[6];
+                        storageModalSelectedRow.supplierPartNumber = args[8];
+                        this.updateDetail(storageModalSelectedRow.key, storageModalSelectedRow);
+                    }}
+                    codeSearch
+                    storeGroupId={_.get(storageModalSelectedRow, 'storeGroupId')}
+                    codeFilter={_.get(storageModalSelectedRow, 'detailCode')}
+                    stockMode={false}
+                    visible={Boolean(storageModalSelectedRow)}
+                    hideModal={()=>{
+                        this.setState({
+                            storageModalSelectedRow: undefined,
+                        })
+                    }}
+                />
+                <DetailSupplierModal
+                    hideButton
+                    user={user}
+                    onSelect={(...args)=>{
+                        console.log(args);
+                        supplierModalSelectedRow.supplierId = args[0];
+                        supplierModalSelectedRow.purchasePrice = args[3];
+                        supplierModalSelectedRow.price = args[4];
+                        supplierModalSelectedRow.supplierOriginalCode = args[6];
+                        supplierModalSelectedRow.supplierPartNumber = args[8];
+                        this.updateDetail(supplierModalSelectedRow.key, supplierModalSelectedRow);
+                    }}
+                    storeGroupId={_.get(supplierModalSelectedRow, 'storeGroupId')}
+                    brandId={_.get(supplierModalSelectedRow, 'brandId')}
+                    detailCode={_.get(supplierModalSelectedRow, 'detailCode')}
+                    visible={Boolean(supplierModalSelectedRow)}
+                    hideModal={()=>{
+                        this.setState({
+                            supplierModalSelectedRow: undefined,
+                        })
+                    }}
                 />
                 <StoreProductTrackingModal
                     visible={reserveModalVisible}
@@ -1298,6 +1409,21 @@ class DetailsTable extends Component {
                         this.setState({
                             productBarcode: undefined,
                         })
+                    }}
+                />
+                <DetailWarehousesCountModal
+                    hideButton
+                    productId={_.get(warehousesModalSelectedRow, 'productId')}
+                    visible={ Boolean(warehousesModalSelectedRow)}
+                    orderId={ orderId }
+                    hideModal={ () => {
+                        this.setState({
+                            warehousesModalSelectedRow: undefined,
+                        })
+                    } }
+                    onSelect={(address, warehouseId)=>{
+                        warehousesModalSelectedRow.cellAddress = address;
+                        this.updateDetail(warehousesModalSelectedRow.key, warehousesModalSelectedRow);
                     }}
                 />
             </Catcher>

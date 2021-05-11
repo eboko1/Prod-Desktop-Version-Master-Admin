@@ -11,6 +11,8 @@ import {
     Button,
     Modal,
     notification,
+    Dropdown,
+    Menu,
 } from 'antd';
 import _ from 'lodash';
 
@@ -337,58 +339,107 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.status' />,
-                key:       'agreement',
-                dataIndex: 'agreement',
-                render:    (data, elem) => {
-                    const key = elem.key;
+                title:     <FormattedMessage id='order_form_table.PD' />,
+                key:        'agreement',
+                dataIndex:  'agreement',
+                render:     (data, row) => {
+                    const key = row.key;
                     const confirmed = data.toLowerCase();
-                    let color;
+                    let color, icon;
                     switch (confirmed) {
                         case 'rejected':
                             color = 'rgb(255, 126, 126)';
+                            icon = 'close-circle';
                             break;
                         case 'agreed':
                             color = 'var(--green)';
+                            icon = 'check-circle';
                             break;
                         default:
                             color = null;
+                            icon = 'question-circle';
                     }
-
-                    return (
-                        <Select
-                            disabled={ this.props.disabled || isForbidden(
-                                this.props.user,
-                                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
-                            ) }
-                            style={ { color: color } }
-                            value={ confirmed }
-                            onChange={ value => {
-                                elem.agreement = value.toUpperCase();
-                                //elem.stage = value == 'rejected' ? 'CANCELED' : 'INACTIVE';
-                                this.updateLabor(key, elem);
-                            } }
-                        >
-                            <Option key={ 0 } value={ 'undefined' }>
-                                <FormattedMessage id='status.undefined' />
-                            </Option>
-                            <Option
-                                key={ 1 }
-                                value={ 'agreed' }
-                                style={ { color: 'var(--green)' } }
+                    const updateAgreement = (value) => {
+                        row.agreement = value.toUpperCase();
+                        this.updateLabor(key, row);
+                    }
+                    const menu = (
+                        <Menu onClick={this.handleMenuClick}>
+                            <Menu.Item
+                                key="undefined"
+                                onClick={()=>{
+                                    updateAgreement('undefined')
+                                }}
                             >
-                                <FormattedMessage id='status.agreed' />
-                            </Option>
-                            <Option
-                                key={ 2 }
-                                value={ 'rejected' }
-                                style={ { color: 'rgb(255, 126, 126)' } }
+                                <Icon
+                                    type={'question-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        verticalAlign: 'sub',
+                                        marginRight: 8
+                                    }}
+                                />
+                                <FormattedMessage id='agreement.undefined' />
+                            </Menu.Item>
+                            <Menu.Item
+                                key="agreed"
+                                style={{color: 'var(--green)'}}
+                                onClick={()=>{
+                                    updateAgreement('agreed')
+                                }}
                             >
-                                <FormattedMessage id='status.rejected' />
-                            </Option>
-                        </Select>
+                                <Icon
+                                    type={'check-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        verticalAlign: 'sub',
+                                        marginRight: 8,
+                                    }}
+                                />
+                                <FormattedMessage id='agreement.agreed' />
+                            </Menu.Item>
+                            <Menu.Item
+                                key="rejected"
+                                style={{color: 'rgb(255, 126, 126)'}}
+                                onClick={()=>{
+                                    updateAgreement('rejected')
+                                }}
+                            >
+                                <Icon
+                                    type={'close-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        marginRight: 8,
+                                    }}
+                                />
+                                <FormattedMessage id='agreement.rejected' />
+                            </Menu.Item>
+                        </Menu>
                     );
-                },
+                    return isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS) ? (
+                        <Icon
+                            type={icon}
+                            style={{
+                                fontSize: 24,
+                                color,
+                            }}
+                        />
+                    ) : (
+                        <div>
+                            <Dropdown
+                                overlay={menu}
+                            >
+                                <Icon
+                                    type={icon}
+                                    style={{
+                                        fontSize: 24,
+                                        color,
+                                    }}
+                                />
+                            </Dropdown>
+                        </div>
+                    )
+                }
             },
             {
                 key:    'favourite',
