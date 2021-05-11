@@ -58,6 +58,7 @@ class DetailsTable extends Component {
             reserveModalData: undefined,
             productBarcode: undefined,
             selectedRowKeys: [],
+            selectedRows: [],
         };
 
         this.storeGroups = [];
@@ -423,7 +424,58 @@ class DetailsTable extends Component {
             {
                 title: (
                     <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='storage.RESERVE' />
+                        <div>
+                            <FormattedMessage id='storage.RESERVE' />
+                        </div>
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-evenly'
+                            }}
+                        >
+                            <Icon
+                                type="lock"
+                                style={{
+                                    fontSize: 18
+                                }}
+                                onClick={async () => {
+                                    await fetchAPI(
+                                        'POST',
+                                        `store_docs/reserve_all_possible`,
+                                        {
+                                            ordersAppurtenanciesIds: `[${this.state.selectedRows.map(({id})=>id)}]`,
+                                        },
+                                        undefined,
+                                        { handleErrorInternally: true }
+                                    );
+                                    await notification.success({
+                                        message: `Зарезервировано`,
+                                    });
+                                    await this.updateDataSource();
+                                }}
+                            />
+                            <Icon
+                                type="unlock"
+                                style={{
+                                    fontSize: 18
+                                }}
+                                onClick={async () => {
+                                    await fetchAPI(
+                                        'POST',
+                                        `store_docs/unreserve_all_possible`,
+                                        {
+                                            ordersAppurtenanciesIds: `[${this.state.selectedRows.map(({id})=>id)}]`,
+                                        },
+                                        undefined,
+                                        { handleErrorInternally: true }
+                                    );
+                                    await notification.success({
+                                        message: `Резерв снят`,
+                                    });
+                                    await this.updateDataSource();
+                                }}
+                            />
+                        </div>
                     </div>
                 ),
                 className: Styles.numberColumn,
@@ -648,8 +700,9 @@ class DetailsTable extends Component {
                         <div 
                             style={ { 
                                 background: color,
-                                padding: '8px',
+                                padding: '6px',
                                 textAlign: 'center',
+                                border: '1px solid black',
                             } }
                         >
                             <FormattedMessage id={`status.${data}`}/>
@@ -658,136 +711,242 @@ class DetailsTable extends Component {
                 },
             },
             {
-                key: 'cart',
-                render: row => {
-                    return (
-                        <Icon
-                            type="shopping"
-                            style={ { fontSize: 18 } }
-                        />
-                    )
-                }
-            },
-            {
-                key: 'duplicate',
-                render: row => {
-                    return (
-                        <Icon
-                            type="plus-square"
-                            style={ { fontSize: 18 } }
-                        />
-                    )
-                }
-            },
-            {
-                key:    'favourite',
-                render: elem => {
-                    return (
-                        <Popconfirm
-                            title={
-                                elem.frequentDetailId ? (
-                                    <FormattedMessage id='add_order_form.favourite_remove' />
-                                ) : (
-                                    <FormattedMessage id='add_order_form.favourite_confirm' />
-                                )
-                            }
-                            onConfirm={ async () => {
-                                var that = this;
-                                let token = localStorage.getItem(
-                                    '_my.carbook.pro_token',
-                                );
-                                let url = __API_URL__;
-                                let params = '/orders/frequent/details';
-                                if (elem.frequentDetailId) { params += `?ids=[${elem.frequentDetailId}]`; } else { params += `?storeGroupIds=[${elem.storeGroupId}]`; }
-                                url += params;
-                                try {
-                                    const response = await fetch(url, {
-                                        method: elem.frequentDetailId
-                                            ? 'DELETE'
-                                            : 'POST',
-                                        headers: {
-                                            Authorization:  token,
-                                            'Content-Type': 'application/json',
-                                        },
-                                    });
-                                    const result = await response.json();
-                                    if (result.success) {
-                                        that.updateDataSource();
-                                    } else {
-                                        console.log('BAD', result);
-                                    }
-                                } catch (error) {
-                                    console.error('ERROR:', error);
-                                }
-                            } }
-                        >
+                title: <FormattedMessage id='order_form_table.actions' />,
+                key: 'actions',
+                children: [
+                    {
+                        title: ()=>(
                             <Icon
-                                type='star'
-                                theme={ elem.frequentDetailId ? 'filled' : '' }
-                                style={ { color: 'gold', fontSize: 18 } }
-                                title={ this.props.intl.formatMessage({
-                                    id: elem.frequentDetailId
-                                        ? 'delete_from_favorites'
-                                        : 'add_to_favorites',
-                                }) }
-                            />
-                        </Popconfirm>
-                    );
-                },
-            },
-            {
-                key:    'delete',
-                render: elem => {
-                    const confirmed = elem.agreement.toLowerCase();
-                    const stageDisabled = elem.stage == AGREED || elem.stage == ORDERED || elem.stage == ACCEPTED || elem.stage == RESERVED || elem.stage == GIVEN || elem.stage == INSTALLED;
-                    const disabled =
-                        confirmed != 'undefined' || this.props.disabled || elem.reserved;
-
-                    return (
-                        <Popconfirm
-                            disabled={ disabled || stageDisabled }
-                            title={
-                                <FormattedMessage id='add_order_form.delete_confirm' />
-                            }
-                            onConfirm={ async () => {
-                                var that = this;
-                                let token = localStorage.getItem(
-                                    '_my.carbook.pro_token',
-                                );
-                                let url = __API_URL__;
-                                let params = `/orders/${this.props.orderId}/details?ids=[${elem.id}]`;
-                                url += params;
-                                try {
-                                    const response = await fetch(url, {
-                                        method:  'DELETE',
-                                        headers: {
-                                            Authorization:  token,
-                                            'Content-Type': 'application/json',
+                                type="shopping"
+                                style={ { fontSize: 18 } }
+                                onClick={async () => {
+                                    await fetchAPI(
+                                        'POST',
+                                        `store_docs/order_all_possible`,
+                                        {
+                                            ordersAppurtenanciesIds: `[${this.state.selectedRows.map(({id})=>id)}]`,
                                         },
+                                        undefined,
+                                        { handleErrorInternally: true }
+                                    );
+                                    await notification.success({
+                                        message: `Заказано`,
                                     });
-                                    const result = await response.json();
-                                    if (result.success) {
-                                        that.updateDataSource();
-                                    } else {
-                                        console.log('BAD', result);
-                                    }
-                                } catch (error) {
-                                    console.error('ERROR:', error);
-                                }
-                            } }
-                        >
-                            <Icon
-                                type='delete'
-                                className={
-                                    disabled || stageDisabled
-                                        ? Styles.disabledIcon
-                                        : Styles.deleteIcon
-                                }
+                                    await this.updateDataSource();
+                                }}
                             />
-                        </Popconfirm>
-                    );
-                },
+                        ),
+                        key: 'cart',
+                        render: row => {
+                            return (
+                                <Icon
+                                    type="shopping"
+                                    style={ { fontSize: 18 } }
+                                    onClick={async () => {
+                                        await fetchAPI(
+                                            'POST',
+                                            `store_docs/order_all_possible`,
+                                            {
+                                                ordersAppurtenanciesIds: `[${row.id}]`
+                                            }
+                                        );
+                                        await notification.success({
+                                            message: `Заказано`,
+                                        });
+                                        await this.updateDataSource();
+                                    }}
+                                />
+                            )
+                        }
+                    },
+                    {
+                        title: ()=>(
+                            <Icon
+                                type="plus-square"
+                                style={ { fontSize: 18 } }
+                                onClick={async () => {
+                                    const payload = {
+                                        insertMode: true,
+                                        details: [
+                                            ...this.state.selectedRows.map((row)=>(
+                                                {
+                                                    storeGroupId: row.storeGroupId,
+                                                    name: row.detailName,
+                                                    productCode: row.detailCode,
+                                                    supplierId: row.supplierId,
+                                                    supplierBrandId: row.supplierBrandId || row.brandId,
+                                                    purchasePrice: row.purchasePrice,
+                                                    count: row.count,
+                                                    price: row.price,
+                                                }
+                                            ))
+                                        ],
+                                    }
+                                    await fetchAPI(
+                                        'PUT',
+                                        `orders/${this.props.orderId}`,
+                                        undefined,
+                                        payload,
+                                    );
+                                    await this.updateDataSource();
+                                }}
+                            />
+                        ),
+                        key: 'duplicate',
+                        render: row => {
+                            return (
+                                <Icon
+                                    type="plus-square"
+                                    style={ { fontSize: 18 } }
+                                    onClick={async () => {
+                                        await fetchAPI(
+                                            'PUT',
+                                            `orders/${this.props.orderId}`,
+                                            undefined,
+                                            {
+                                                insertMode: true,
+                                                details: [
+                                                    {
+                                                        storeGroupId: row.storeGroupId,
+                                                        name: row.detailName,
+                                                        productCode: row.detailCode,
+                                                        supplierId: row.supplierId,
+                                                        supplierBrandId: row.supplierBrandId || row.brandId,
+                                                        purchasePrice: row.purchasePrice,
+                                                        count: row.count,
+                                                        price: row.price,
+                                                    }
+                                                ],
+                                            }
+                                        );
+                                        await this.updateDataSource();
+                                    }}
+                                />
+                            )
+                        }
+                    },
+                    {
+                        title: ()=>(
+                            <Icon
+                                type="star"
+                                style={ { fontSize: 18, color: 'gold' } }
+                                theme={ 'filled' }
+                                onClick={async () => {
+                                    await fetchAPI(
+                                        'POST',
+                                        `orders/frequent/details`,
+                                        {
+                                            storeGroupIds: `[${this.state.selectedRows.map(({storeGroupId, frequentDetailId})=>{
+                                                if(!frequentDetailId) return storeGroupId;
+                                                }
+                                            )}]`,
+                                        },
+                                        undefined,
+                                        { handleErrorInternally: true }
+                                    );
+                                    await notification.success({
+                                        message: `Добавлено`,
+                                    });
+                                    await this.updateDataSource();
+                                }}
+                            />
+                        ),
+                        key:    'favourite',
+                        render: elem => {
+                            return (
+                                <Popconfirm
+                                    title={
+                                        elem.frequentDetailId ? (
+                                            <FormattedMessage id='add_order_form.favourite_remove' />
+                                        ) : (
+                                            <FormattedMessage id='add_order_form.favourite_confirm' />
+                                        )
+                                    }
+                                    onConfirm={ async () => {
+                                        if(elem.frequentDetailId) {
+                                            await fetchAPI('DELETE', 'orders/frequent/details', { ids: `[${elem.frequentDetailId}]`});
+                                            await this.updateDataSource();
+                                        } else {
+                                            await fetchAPI('POST', 'orders/frequent/details', {storeGroupIds: `[${elem.storeGroupId}]`})
+                                            await this.updateDataSource();
+                                        }
+                                    } }
+                                >
+                                    <Icon
+                                        type='star'
+                                        theme={ elem.frequentDetailId ? 'filled' : '' }
+                                        style={ { color: 'gold', fontSize: 18 } }
+                                        title={ this.props.intl.formatMessage({
+                                            id: elem.frequentDetailId
+                                                ? 'delete_from_favorites'
+                                                : 'add_to_favorites',
+                                        }) }
+                                    />
+                                </Popconfirm>
+                            );
+                        },
+                    },
+                    {
+                        title: ()=>(
+                            <Popconfirm
+                                title={
+                                    <FormattedMessage id='add_order_form.delete_confirm' />
+                                }
+                                onConfirm={ async () => {
+                                    await fetchAPI(
+                                        'DELETE',
+                                        `orders/${this.props.orderId}/details`,
+                                        {
+                                            ids: `[${this.state.selectedRows.map(({id})=>id)}]`,
+                                        },
+                                        undefined,
+                                        { handleErrorInternally: true }
+                                    );
+                                    await notification.success({
+                                        message: `Удалено`,
+                                    });
+                                    await this.updateDataSource();
+                                } }
+                            >
+                                <Icon
+                                    type="delete"
+                                    className={Styles.deleteIcon}
+                                />
+                            </Popconfirm>
+                        ),
+                        key:    'delete',
+                        render: elem => {
+                            const confirmed = elem.agreement.toLowerCase();
+                            const stageDisabled = elem.stage == AGREED || elem.stage == ORDERED || elem.stage == ACCEPTED || elem.stage == RESERVED || elem.stage == GIVEN || elem.stage == INSTALLED;
+                            const disabled =
+                                confirmed != 'undefined' || this.props.disabled || elem.reserved;
+        
+                            return (
+                                <Popconfirm
+                                    disabled={ disabled || stageDisabled }
+                                    title={
+                                        <FormattedMessage id='add_order_form.delete_confirm' />
+                                    }
+                                    onConfirm={ async () => {
+                                        await fetchAPI('DELETE', `orders/${this.props.orderId}/details`, { ids: `[${elem.id}]`});
+                                        await this.updateDataSource();
+                                    } }
+                                >
+                                    <Icon
+                                        type='delete'
+                                        className={
+                                            disabled || stageDisabled
+                                                ? Styles.disabledIcon
+                                                : Styles.deleteIcon
+                                        }
+                                    />
+                                </Popconfirm>
+                            );
+                        },
+                    },
+                ]
             },
+            
         ];
     }
 
@@ -871,6 +1030,8 @@ class DetailsTable extends Component {
             });
             this.setState({
                 dataSource: data.orderDetails,
+                selectedRowKeys: [],
+                selectedRows: [],
                 fetched: true,
             });
         }
@@ -1054,7 +1215,8 @@ class DetailsTable extends Component {
             selectedRowKeys,
             onChange: (selectedRowKeys, selectedRows) => {
                 this.setState({
-                    selectedRowKeys
+                    selectedRowKeys,
+                    selectedRows,
                 })
             },
             getCheckboxProps: record => ({
