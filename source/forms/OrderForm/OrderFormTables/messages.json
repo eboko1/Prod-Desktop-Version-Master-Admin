@@ -73,7 +73,8 @@
     "photo": "photo",
     "order_form_table.markup": "Markup",
     "order_form_table.marge": "Marge",
-    "order_form_table.PD": "PD"
+    "order_form_table.PD": "PD",
+    "order_form_table.actions": "Actions"
   },
   "ru": {
     "order_form_table.confirm_exit": "Хотите сохранить изменения?",
@@ -149,7 +150,8 @@
     "photo": "Фото",
     "order_form_table.markup": "Наценка",
     "order_form_table.marge": "Маржа",
-    "order_form_table.PD": "ПД"
+    "order_form_table.PD": "ПД",
+    "order_form_table.actions": "Операции"
   },
   "uk": {
     "order_form_table.confirm_exit": "Бажаєте зберегти зміни?",
@@ -225,6 +227,7 @@
     "photo": "Фото",
     "order_form_table.markup": "Націнка",
     "order_form_table.marge": "Маржа",
-    "order_form_table.PD": "ПД"
+    "order_form_table.PD": "ПД",
+    "order_form_table.actions": "Дії"
   }
 }
