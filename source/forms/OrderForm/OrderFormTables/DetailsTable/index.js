@@ -57,6 +57,7 @@ class DetailsTable extends Component {
             reserveModalVisible: false,
             reserveModalData: undefined,
             productBarcode: undefined,
+            selectedRowKeys: [],
         };
 
         this.storeGroups = [];
@@ -73,17 +74,47 @@ class DetailsTable extends Component {
         );
 
         this.columns = [
-            // {
-            //     key:       'position',
-            //     render:    (row) => {
-            //         return (
-            //             <div>
-            //                 <Icon type="up-square" className={Styles.positionArrows}/>
-            //                 <Icon type="down-square"  className={Styles.positionArrows}/>
-            //             </div>
-            //         )
-            //     },
-            // },
+            {
+                key:       'position',
+                render:    (row) => {
+                    const prewOrder = row.key-1 >= 0 && this.state.dataSource[row.key-1].order;
+                    const nextOrder = row.key+1 < this.state.dataSource.length && this.state.dataSource[row.key+1].order;
+                    return (
+                        <div>
+                            <Icon
+                                type="up-square"
+                                className={`${Styles.positionArrows} ${(!prewOrder || !row.id) && Styles.disabledIcon}`}
+                                onClick={async ()=>{
+                                    await fetchAPI('PUT', 'orders/swap_details', 
+                                        {
+                                            orderId: this.props.orderId,
+                                            order1: row.order,
+                                            order2: prewOrder, 
+                                        },
+                                        undefined,
+                                        { handleErrorInternally: true }
+                                    );
+                                    await this.updateDataSource();
+                                }}
+                            />
+                            <Icon
+                                type="down-square"
+                                className={`${Styles.positionArrows} ${(!nextOrder || !row.id) && Styles.disabledIcon}`}
+                                onClick={async ()=>{
+                                    await fetchAPI('PUT', 'orders/swap_details', 
+                                        {
+                                            orderId: this.props.orderId,
+                                            order1: row.order,
+                                            order2: nextOrder, 
+                                        }
+                                    );
+                                    await this.updateDataSource();
+                                }}
+                            />
+                        </div>
+                    )
+                },
+            },
             {
                 title:      ()=>(
                                 <div className={Styles.headerActions}>
@@ -278,17 +309,27 @@ class DetailsTable extends Component {
                             <div style={{width: '50%'}}>
                                 {row.supplierName || <FormattedMessage id='long_dash' />}
                             </div>
-                            <div style={{width: '50%'}}>
-                                <AvailabilityIndicator indexArray={ row.store } />
-                            </div>
+                            {row.supplierId === 0 ?
+                                <div style={{width: '50%'}}>
+                                    {row.cellAddress}
+                                </div> :
+                                <div style={{width: '50%'}}>
+                                    <AvailabilityIndicator indexArray={ row.store } />
+                                </div>
+                            }
                         </div>
                     )
                 },
             },
             {
                 title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='order_form_table.purchasePrice' />
+                    <div>
+                        <div className={ Styles.numberColumn }>
+                            <FormattedMessage id='order_form_table.purchasePrice' />
+                        </div>
+                        <div className={ Styles.numberColumn }>
+                            <FormattedMessage id='order_form_table.markup' /> %
+                        </div>
                     </div>
                 ),
                 className: Styles.numberColumn,
@@ -296,50 +337,64 @@ class DetailsTable extends Component {
                 dataIndex: 'purchasePrice',
                 render:    (data, row) => {
                     let strVal = Number(data).toFixed(2);
+                    let markup = row.price && row.purchasePrice 
+                                ? row.price * 100 / row.purchasePrice
+                                : 0;
 
                     return (
                         <div>
-                            { data ? 
-                                `${strVal}`.replace(
-                                    /\B(?=(\d{3})+(?!\d))/g,
-                                    ' ',
-                                ) : (
-                                    <FormattedMessage id='long_dash' />
-                                ) }
+                            <div>
+                                { data ? 
+                                    `${strVal}`.replace(
+                                        /\B(?=(\d{3})+(?!\d))/g,
+                                        ' ',
+                                    ) : (
+                                        <FormattedMessage id='long_dash' />
+                                    ) }
+                            </div>
+                            <div>
+                                {markup.toFixed(0)}%
+                            </div>
                         </div>
                     );
                 },
             },
             {
                 title: (
-                    <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='order_form_table.price' />
-                        <p style={{
-                            color: 'var(--text2)',
-                            fontSize: 12,
-                            fontWeight: 400,
-                        }}>
-                            <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
-                        </p>
+                    <div>
+                        <div className={ Styles.numberColumn }>
+                            <FormattedMessage id='order_form_table.price' />
+                        </div>
+                        <div className={ Styles.numberColumn }>
+                            <FormattedMessage id='order_form_table.marge' /> %
+                        </div>
                     </div>
                 ),
                 className: Styles.numberColumn,
                 key:       'price',
                 dataIndex: 'price',
-                render:    data => {
+                render:    (data, row) => {
                     let strVal = Number(data).toFixed(2);
-
+                    let marge = row.price || row.purchasePrice 
+                                ? (row.price - row.purchasePrice) * 100 / row.price
+                                : 100;
                     return (
-                        <span>
-                            { data ? 
-                                `${strVal}`.replace(
-                                    /\B(?=(\d{3})+(?!\d))/g,
-                                    ' ',
-                                )
-                                : (
-                                    <FormattedMessage id='long_dash' />
-                                ) }
-                        </span>
+                        <div>
+                            <div>
+                                { data ? 
+                                    `${strVal}`.replace(
+                                        /\B(?=(\d{3})+(?!\d))/g,
+                                        ' ',
+                                    )
+                                    : (
+                                        <FormattedMessage id='long_dash' />
+                                    ) }
+                            </div>
+                            <div>
+                                {marge.toFixed(0)}%
+                            </div>
+                        </div>
+                        
                     );
                 },
             },
@@ -404,28 +459,27 @@ class DetailsTable extends Component {
                     );
                 },
             },
-            // {
-            //     title: (
-            //         <div className={ Styles.numberColumn }>
-            //             <FormattedMessage id='order_form_table.discount' />
-            //         </div>
-            //     ),
-            //     className: Styles.numberColumn,
-            //     key:       'discount',
-            //     dataIndex: 'discount',
-            //     render:    data => {
-            //         return (
-            //             <span>
-            //                 { data
-            //                     ? `${data}`.replace(
-            //                         /\B(?=(\d{3})+(?!\d))/g,
-            //                         ' ',
-            //                     )
-            //                     : 0 }%
-            //             </span>
-            //         );
-            //     },
-            // },
+            {
+                title: (
+                    <div className={ Styles.numberColumn }>
+                        <FormattedMessage id='order_form_table.discount' />
+                    </div>
+                ),
+                className: Styles.numberColumn,
+                key:       'discount',
+                render:    row => {
+                    const discount = _.get(this.props, 'discount', 0)
+                    return (
+                        <span>
+                            { `${discount}`.replace(
+                                    /\B(?=(\d{3})+(?!\d))/g,
+                                    ' ',
+                                )
+                            }%
+                        </span>
+                    );
+                },
+            },
             {
                 title: (
                     <div className={ Styles.numberColumn }>
@@ -443,7 +497,9 @@ class DetailsTable extends Component {
                 key:       'sum',
                 dataIndex: 'sum',
                 render:    data => {
-                    let strVal = Number(data).toFixed(2);
+                    const discount = _.get(this.props, 'discount', 0);
+                    const sum = data - (data * discount / 100);
+                    let strVal = Number(sum).toFixed(2);
 
                     return (
                         <span>
@@ -460,6 +516,7 @@ class DetailsTable extends Component {
                 },
             },
             {
+                title:     <FormattedMessage id='order_form_table.PD' />,
                 key:        'status',
                 dataIndex:  'agreement',
                 render:     (data, row) => {
@@ -499,7 +556,7 @@ class DetailsTable extends Component {
                                         marginRight: 8
                                     }}
                                 />
-                                <FormattedMessage id='status.undefined' />
+                                <FormattedMessage id='agreement.undefined' />
                             </Menu.Item>
                             <Menu.Item
                                 key="agreed"
@@ -516,7 +573,7 @@ class DetailsTable extends Component {
                                         marginRight: 8,
                                     }}
                                 />
-                                <FormattedMessage id='status.agreed' />
+                                <FormattedMessage id='agreement.agreed' />
                             </Menu.Item>
                             <Menu.Item
                                 key="rejected"
@@ -532,7 +589,7 @@ class DetailsTable extends Component {
                                         marginRight: 8,
                                     }}
                                 />
-                                <FormattedMessage id='status.rejected' />
+                                <FormattedMessage id='agreement.rejected' />
                             </Menu.Item>
                         </Menu>
                     );
@@ -561,59 +618,67 @@ class DetailsTable extends Component {
                     )
                 }
             },
-            // {
-            //     title:     <FormattedMessage id='order_form_table.status' />,
-            //     key:       'agreement',
-            //     dataIndex: 'agreement',
-            //     render:    (data, elem) => {
-            //         const key = elem.key;
-            //         const confirmed = data.toLowerCase();
-            //         let color;
-            //         switch (confirmed) {
-            //             case 'rejected':
-            //                 color = 'rgb(255, 126, 126)';
-            //                 break;
-            //             case 'agreed':
-            //                 color = 'var(--green)';
-            //                 break;
-            //             default:
-            //                 color = null;
-            //         }
+            {
+                title:     <FormattedMessage id='order_form_table.status' />,
+                key:       'status',
+                dataIndex: 'status',
+                render:    (data, row) => {
+                    let color;
+                    switch (data) {
+                        case 'UNDEFINED':
+                            color = 'var(--disabled)';
+                            break;
+                        case 'SPECIFY':
+                            color = 'var(--db-comment)';
+                            break;
+                        case 'SUPPLIER_CONFIRMED':
+                            color = 'var(--db_approve)';
+                            break;
+                        case 'ORDERED':
+                            color = 'var(--db_progress)';
+                            break;
+                        case 'RESERVE':
+                            color = 'var(--db_success)';
+                            break;
+                        default:
+                            color = null;
+                    }
 
-            //         return (
-            //             <Select
-            //                 disabled={ isForbidden(
-            //                     this.props.user,
-            //                     permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS,
-            //                 ) }
-            //                 style={ { color: color } }
-            //                 value={ confirmed }
-            //                 onChange={ value => {
-            //                     elem.agreement = value.toUpperCase();
-            //                     this.updateDetail(key, elem);
-            //                 } }
-            //             >
-            //                 <Option key={ 0 } value={ 'undefined' }>
-            //                     <FormattedMessage id='status.undefined' />
-            //                 </Option>
-            //                 <Option
-            //                     key={ 1 }
-            //                     value={ 'agreed' }
-            //                     style={ { color: 'var(--green)' } }
-            //                 >
-            //                     <FormattedMessage id='status.agreed' />
-            //                 </Option>
-            //                 <Option
-            //                     key={ 2 }
-            //                     value={ 'rejected' }
-            //                     style={ { color: 'rgb(255, 126, 126)' } }
-            //                 >
-            //                     <FormattedMessage id='status.rejected' />
-            //                 </Option>
-            //             </Select>
-            //         );
-            //     },
-            // },
+                    return row.id && (
+                        <div 
+                            style={ { 
+                                background: color,
+                                padding: '8px',
+                                textAlign: 'center',
+                            } }
+                        >
+                            <FormattedMessage id={`status.${data}`}/>
+                        </div>
+                    );
+                },
+            },
+            {
+                key: 'cart',
+                render: row => {
+                    return (
+                        <Icon
+                            type="shopping"
+                            style={ { fontSize: 18 } }
+                        />
+                    )
+                }
+            },
+            {
+                key: 'duplicate',
+                render: row => {
+                    return (
+                        <Icon
+                            type="plus-square"
+                            style={ { fontSize: 18 } }
+                        />
+                    )
+                }
+            },
             {
                 key:    'favourite',
                 render: elem => {
@@ -957,7 +1022,7 @@ class DetailsTable extends Component {
             oilModalData,
             clearOilData,
         } = this.props;
-        const { fetched, dataSource, productModalVisible, productModalKey, reserveModalVisible, reserveModalData, productBarcode } = this.state;
+        const { fetched, dataSource, productModalVisible, productModalKey, reserveModalVisible, reserveModalData, productBarcode, selectedRowKeys } = this.state;
 
         const columns = this.columns;
         if (
@@ -985,6 +1050,18 @@ class DetailsTable extends Component {
             });
         }
 
+        const rowSelection = {
+            selectedRowKeys,
+            onChange: (selectedRowKeys, selectedRows) => {
+                this.setState({
+                    selectedRowKeys
+                })
+            },
+            getCheckboxProps: record => ({
+                disabled: !record.id,
+            }),
+        };
+
         return (
             <Catcher>
                 <Table
@@ -997,6 +1074,7 @@ class DetailsTable extends Component {
                     columns={ columns }
                     dataSource={ dataSource }
                     pagination={ false }
+                    rowSelection={rowSelection}
                     rowClassName={Styles.detailsTableRow}
                 />
                 <DetailProductModal
