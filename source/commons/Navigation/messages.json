@@ -92,9 +92,8 @@
     "navigation.related_labors": "Related labors",
     "navigation.statuses": "Statuses",
     "navigation.posts": "Posts",
-    "navigation.cb24": "cb24"
-
-
+    "navigation.cb24": "cb24",
+    "navigation.print": "Print"
   },
   "ru": {
     "navigation.operations": "Операции",
@@ -189,7 +188,8 @@
     "navigation.related_labors": "Связанные работы",
     "navigation.statuses": "Статусы",
     "navigation.posts": "Посты",
-    "navigation.cb24": "cb24.eu"
+    "navigation.cb24": "cb24.eu",
+    "navigation.print": "Печать"
   },
   "uk": {
     "navigation.operations": "Операції",
@@ -284,6 +284,7 @@
     "navigation.related_labors": "Повязані роботи",
     "navigation.statuses": "Статуси",
     "navigation.posts": "Пости",
-    "navigation.cb24": "cb24.eu"
+    "navigation.cb24": "cb24.eu",
+    "navigation.print": "Друк"
   }
 }
