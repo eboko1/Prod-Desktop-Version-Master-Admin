@@ -149,7 +149,6 @@ export default class WMSGenerateCells extends Component {
                     return row.active && (
                         <Input
                             value={data}
-                            maxLength={2}
                             onChange={(event)=>{
                                 let { value } = event.target;
                                 switch(row.aliasType) {
@@ -163,11 +162,8 @@ export default class WMSGenerateCells extends Component {
                                         value = value.replace(/[^0-9]/g, '');
                                         break;
                                 }
-                                if(value && value.length == 2) {
-                                    value = value[1];
-                                    row.maxValue = value;
-                                    this.setState({})
-                                }
+                                row.maxValue = value;
+                                this.setState({})
                             }}
                         />
                     )
