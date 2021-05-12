@@ -7,6 +7,11 @@ import _ from 'lodash';
 
 // proj
 import {Layout, Spinner} from 'commons';
+import {
+    fetchVehicle,
+
+    selectVehicle
+} from 'core/vehicles/duck';
 
 // own
 import Styles from './styles.m.css';
@@ -15,9 +20,13 @@ import DataItem from './components/DataItem';
 
 const TabPane = Tabs.TabPane;
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+    vehicle: selectVehicle(state),
+});
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+    fetchVehicle
+};
 
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
@@ -26,7 +35,14 @@ export default class VehiclesPage extends Component {
         super(props);
     }
 
+    componentDidMount() {
+        this.props.fetchVehicle();
+        console.log("Here: ", this.props.fetchVehicle);
+    }
+
     render() {
+
+        console.log("Vehicle: ", this.props.vehicle);
 
         return (
             <Layout
@@ -34,6 +50,9 @@ export default class VehiclesPage extends Component {
                 description={"Description"}
                 controls={"Controls"}
             >
+                <button onClick={() => this.props.fetchVehicle()}>
+                    Fetch
+                </button>
                 <Tabs type="card" tabPosition="right" tabBarGutter={15}>
                     <TabPane tab="General info" key="general_info">
                         <div className={Styles.tabContent}>
@@ -50,6 +69,7 @@ export default class VehiclesPage extends Component {
                                 </div>
                                 <div>
                                     <DataItem label="Label">value</DataItem>
+                                    <DataItem label="Labelsadnsdaunusdf">valuecfsakioondfonodfnondoJHGYGFYI</DataItem>
                                     <DataItem label="Label">value</DataItem>
                                 </div>
                             </Block>

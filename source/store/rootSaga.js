@@ -21,6 +21,7 @@ import { saga as clientMRDsSaga } from 'core/clientMRDs/saga';
 import { saga as clientHotOperationsSaga } from 'core/clientHotOperations/saga';
 import { saga as employeesSaga } from 'core/employees/saga';
 import { saga as vehicleTypesSaga } from 'core/vehicleTypes/saga';
+import { saga as vehiclesSaga } from 'core/vehicles/saga';
 
 // Reports
 import { saga as reportOrdersSaga } from 'core/reports/reportOrders/saga';
@@ -114,6 +115,7 @@ export default function* rootSaga() {
         clientMRDsSaga(),
         clientHotOperationsSaga(),
         vehicleTypesSaga(),
+        vehiclesSaga(),
 
         // Reports
         reportOrdersSaga(),

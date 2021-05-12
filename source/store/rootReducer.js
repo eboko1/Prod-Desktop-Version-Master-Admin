@@ -23,18 +23,13 @@ import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import clientsReducer, { moduleName as clientsModule } from 'core/clients/duck';
 import clientHotOperationsReducer, { moduleName as clientHotOperationsModule } from 'core/clientHotOperations/duck';
 import myTasksReducer, { moduleName as myTasksModule } from 'core/myTasks/duck';
-import employeesReducer, {
-    moduleName as employeesModule,
-} from 'core/employees/duck';
+import employeesReducer, {moduleName as employeesModule} from 'core/employees/duck';
+import vehiclesReducer, {moduleName as vehiclesModule} from 'core/vehicles/duck';
 import orderReducer, { moduleName as orderModule } from 'core/order/duck';
 import modalsReducer, { moduleName as modalsModule } from 'core/modals/duck';
 import packageReducer, { moduleName as packageModule } from 'core/package/duck';
-import businessPackageReducer, {
-    moduleName as businessPackageModule,
-} from 'core/businessPackage/duck';
-import managerRoleReducer, {
-    moduleName as managerRoleModule,
-} from 'core/managerRole/duck';
+import businessPackageReducer, {moduleName as businessPackageModule} from 'core/businessPackage/duck';
+import managerRoleReducer, { moduleName as managerRoleModule} from 'core/managerRole/duck';
 
 import employeeScheduleReducer, {moduleName as employeeScheduleModule} from 'core/employeeSchedule/duck';
 import roleReducer, { moduleName as roleModule } from 'core/role/duck';
@@ -144,6 +139,7 @@ const appState = {
     [ warehousesModule ]:           warehousesReducer,
     [ brandsModule ]:               brandsReducer,
     [ vehicleTypesModule ]:         vehicleTypesReducer,
+    [ vehiclesModule ]:             vehiclesReducer,
 };
 
 const appReducer = combineReducers({ ...persistedState, ...appState });
