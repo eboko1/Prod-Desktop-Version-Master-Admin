@@ -270,6 +270,7 @@ class DetailsTable extends Component {
                             <QuickEditModal
                                 treeData={ this.props.detailsTreeData }
                                 brands={ this.props.allDetails.brands }
+                                allDetails={ this.props.allDetails.details }
                                 disabled={
                                     !elem.detailName || this.props.disabled || elem.reserved || stageDisabled
                                 }
@@ -402,7 +403,7 @@ class DetailsTable extends Component {
                 render:    (data, row) => {
                     let strVal = Number(data).toFixed(2);
                     let markup = row.price && row.purchasePrice 
-                                ? row.price * 100 / row.purchasePrice
+                                ? ((row.price / row.purchasePrice) - 1) * 100
                                 : 0;
 
                     return (
@@ -1289,6 +1290,7 @@ class DetailsTable extends Component {
                     pagination={ false }
                     rowSelection={rowSelection}
                     rowClassName={Styles.detailsTableRow}
+                    //scroll={{ x: 1980 }}
                 />
                 <DetailProductModal
                     labors={ labors }
@@ -1546,7 +1548,7 @@ class QuickEditModal extends React.Component {
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
                 width:     '10%',
-                render:    data => {
+                render:    (data, elem) => {
                     return (
                         <InputNumber
                             value={ data ? Math.round(data * 10) / 10 : 0 }
@@ -1559,7 +1561,9 @@ class QuickEditModal extends React.Component {
                                 `${value}`.replace(/\$\s?|(\s)/g, '')
                             }
                             onChange={ value => {
-                                this.state.dataSource[ 0 ].purchasePrice = value;
+                                const storeGroup = this.props.allDetails.find((detail)=>detail.id == elem.storeGroupId);
+                                elem.purchasePrice = value;
+                                elem.price = elem.purchasePrice * (storeGroup ? storeGroup.priceGroupMultiplier : 1);
                                 this.setState({
                                     update: true,
                                 });
