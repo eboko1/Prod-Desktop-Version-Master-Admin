@@ -153,6 +153,7 @@ export default class ComplexesModal extends React.Component{
                     storeGroupId: element.id,
                     count: element.count || 1,
                     comment: element.commentary,
+                    status: 'CALCULATE',
                 })
             }
         });
