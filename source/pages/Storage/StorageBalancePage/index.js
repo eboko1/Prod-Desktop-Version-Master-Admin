@@ -206,7 +206,7 @@ class PrintModal extends React.Component{
                 <Modal
                     width="460px"
                     visible={visible}
-                    title={<FormattedMessage id="Печать" />}
+                    title={<FormattedMessage id='navigation.print' />}              
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                     okButtonProps={{
