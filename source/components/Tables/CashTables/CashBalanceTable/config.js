@@ -156,15 +156,13 @@ export function columnsConfig(props) {
 		dataIndex: 'rst',
 		key:       'serviceInputCol',
 		render: (rst, obj) => {
-			return rst
-				? generateIcon(
-					images.cashboxIcon,
-					() => onOpenServiceInputModal(obj.id),
-					user,
-					(<FormattedMessage id="cash-table.hint_service_input"/>),
-					{disabled: !obj.isShiftOpen}
-				)
-				: null;
+			return generateIcon(
+				images.cashboxIcon,
+				() => onOpenServiceInputModal(obj.id),
+				user,
+				(<FormattedMessage id="cash-table.hint_service_input"/>),
+				{disabled: rst && !obj.isShiftOpen}
+			);
 		},
 	}
 
@@ -173,15 +171,13 @@ export function columnsConfig(props) {
 		dataIndex: 'rst',
 		key:       'serviceOutputCol',
 		render: (rst, obj) => {
-			return rst
-				? generateIcon(
-					images.cashboxIcon,
-					() => onOpenServiceOutputModal(obj.id),
-					user,
-					(<FormattedMessage id="cash-table.hint_service_output"/>),
-					{disabled: !obj.isShiftOpen}
-				)
-				: null;
+			return generateIcon(
+				images.cashboxIcon,
+				() => onOpenServiceOutputModal(obj.id),
+				user,
+				(<FormattedMessage id="cash-table.hint_service_output"/>),
+				{disabled: rst && !obj.isShiftOpen}
+			);
 		},
 	}
 
