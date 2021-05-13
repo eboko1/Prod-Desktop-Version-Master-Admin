@@ -573,6 +573,7 @@ class DetailProductModal extends React.Component{
                             comment: undefined,
                             positions: [],
                         },
+                        cellAddress: element.cellAddress,
                     })
                 }
             });
@@ -810,7 +811,7 @@ class DetailProductModal extends React.Component{
         currentDetail.isFromStock = isFromStock;
         currentDetail.reservedFromWarehouseId = defaultWarehouseId;
         currentDetail.productId = isFromStock ? productId : undefined;
-        currentDetail.cellAddress = isFromStock ? cellAddress : undefined;
+        currentDetail.cellAddress = cellAddress || undefined;
         if(brand) {
             currentDetail.brandId = brandId;
             currentDetail.brandName = brand && brand.brandName;
@@ -839,6 +840,7 @@ class DetailProductModal extends React.Component{
             currentDetail.supplierPartNumber = undefined;
             currentDetail.store = undefined;
             currentDetail.reservedFromWarehouseId = undefined;
+            currentDetail.cellAddress = undefined;
         }
 
         if(related) relatedDetails[key] = currentDetail;

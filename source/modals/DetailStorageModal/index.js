@@ -235,7 +235,7 @@ class DetailStorageModal extends React.Component{
                                     onSelect={async (cellAddress, warehouseId)=>{
                                         elem.cellAddress = cellAddress;
                                         await this.setState({});
-                                        this.handleOk(elem);
+                                        await this.handleOk(elem);
                                     }}
                                 /> :
                                 <DetailSupplierModal
