@@ -19,7 +19,6 @@ import { setCashOrdersFetchingState, emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 import {analyticsLevels} from 'core/forms/reportAnalyticsForm/duck'
 
-
 // own
 import {
     fetchCashboxes,
@@ -28,6 +27,7 @@ import {
     fetchAnalyticsSuccess,
     setAnalyticsFetchingState,
     fetchCashOrders,
+    registerCashOrderInCashdesk,
     fetchCashOrdersSuccess,
     fetchCashboxesBalanceSuccess,
     fetchCashboxesActivitySuccess,
@@ -124,20 +124,35 @@ export function* serviceInputSaga() {
 
             yield nprogress.start();
 
-            const requestPayload = {
-                cashboxId: cashboxId,
-                sum: serviceInputSum
-            }
+            //Get cashbox to register in cashdesk later
+            const cashBoxes = yield call(fetchAPI, 'GET', '/cash_boxes');
+            const cashBox = _.get(_.filter(cashBoxes, (obj) => obj.id == cashboxId), '[0]');
 
-            try {
-                yield call(fetchAPI, 'POST', '/cashdesk/service_input', null, requestPayload, { handleErrorInternally: true});
-            } catch(err) {
-                notification.error({message: err.response.message});
+            const isCashBoxRst =  Boolean(_.get(cashBox, 'rst'));
+
+            const cashOrderPayload = {
+                type: "INCOME",
+                cashBoxId: cashboxId,
+                increase: serviceInputSum,
+                otherCounterparty: "Service input"
+            };
+
+            //Create CashOrder in our system first
+            const {id: cashOrderId} = yield call(
+                fetchAPI, 'POST', '/cash_orders', null, cashOrderPayload, { handleErrorInternally: true }
+            );
+
+            //If cashbox contains rst it must be registred in cashdesk if possible 
+            if(isCashBoxRst) {
+                yield call(
+                    fetchAPI, 'POST', '/cashdesk/service_input_cash_order', null, {localNumber: cashOrderId}, { handleErrorInternally: true }
+                );
             }
 
             yield put(fetchCashboxesBalance());
         } catch (error) {
             yield put(emitError(error));
+            notification.error({ message: _.get(error, 'response.message')}); //Print special error message if it exists
         } finally {
             yield nprogress.done();
         }
@@ -151,20 +166,35 @@ export function* serviceOutputSaga() {
 
             yield nprogress.start();
 
-            const requestPayload = {
-                cashboxId: cashboxId,
-                sum: serviceOutputSum
-            }
+            //Get cashbox to register in cashdesk later
+            const cashBoxes = yield call(fetchAPI, 'GET', '/cash_boxes');
+            const cashBox = _.get(_.filter(cashBoxes, (obj) => obj.id == cashboxId), '[0]');
 
-            try {
-                yield call(fetchAPI, 'POST', '/cashdesk/service_output', null, requestPayload, { handleErrorInternally: true});
-            } catch(err) {
-                notification.error({message: err.response.message});
+            const isCashBoxRst =  Boolean(_.get(cashBox, 'rst'));
+
+            const cashOrderPayload = {
+                type: "EXPENSE",
+                cashBoxId: cashboxId,
+                decrease: serviceOutputSum,
+                otherCounterparty: "Service output"
+            };
+
+            //Create CashOrder in our system first
+            const {id: cashOrderId} = yield call(
+                fetchAPI, 'POST', '/cash_orders', null, cashOrderPayload, { handleErrorInternally: true }
+            );
+
+            //If cashbox contains rst it must be registred in cashdesk if possible 
+            if(isCashBoxRst) {
+                yield call(
+                    fetchAPI, 'POST', '/cashdesk/service_output_cash_order', null, {localNumber: cashOrderId}, { handleErrorInternally: true }
+                );
             }
 
             yield put(fetchCashboxesBalance());
         } catch (error) {
             yield put(emitError(error));
+            notification.error({ message: _.get(error, 'response.message')}); //Print special error message if it exists
         } finally {
             yield nprogress.done();
         }
