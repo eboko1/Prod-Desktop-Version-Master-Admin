@@ -126,6 +126,7 @@ import VehicleLocationModal from 'modals/VehicleLocationModal/messages';
 import ReportOrdersExportModal from 'modals/ReportModals/ReportOrdersExportModal/messages';
 import ReportAnalyticsModal from 'modals/ReportModals/ReportAnalyticsModal/messages';
 import ServiceInputModal from 'modals/Cashbox/ServiceInputModal/messages';
+import ServiceOutputModal from 'modals/Cashbox/ServiceOutputModal/messages';
 
 // components
 import StatusIcons from 'components/StatusIcons/messages';
@@ -271,6 +272,7 @@ const messages = merge.all([
     ReportOrdersExportModal,
     ReportAnalyticsModal,
     ServiceInputModal,
+    ServiceOutputModal,
 
     // components
     StatusIcons,

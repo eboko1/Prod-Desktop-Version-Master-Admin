@@ -13,7 +13,7 @@ import { BREAKPOINTS } from "utils";
 // import { BREAKPOINTS, linkTo } from "utils";
 import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
 import { setModal, resetModal, MODALS } from "core/modals/duck";
-import { ServiceInputModal, CashOrderModal } from 'modals';
+import { ServiceInputModal, ServiceOutputModal, CashOrderModal } from 'modals';
 import {
     fetchCashboxesBalance,
     setCashAccountingFilters,
@@ -58,12 +58,13 @@ export class CashBalanceTable extends Component {
         super(props);
 
         this.columns = columnsConfig({
-            onOpenServiceInputModal: this.onOpenServiceInputModal,
-            onOpenCashOrderModal: this.onOpenCashOrderModal,
-            openShift: props.openShift,
-            closeShift: props.closeShift,
+            onOpenServiceInputModal:  this.onOpenServiceInputModal,
+            onOpenServiceOutputModal: this.onOpenServiceOutputModal,
+            onOpenCashOrderModal:     this.onOpenCashOrderModal,
+            openShift:    props.openShift,
+            closeShift:   props.closeShift,
             fetchXReport: props.fetchXReport,
-            user: props.user,
+            user:         props.user,
         });
     }
 
@@ -77,6 +78,14 @@ export class CashBalanceTable extends Component {
      */
 	onOpenServiceInputModal = (cashboxId) => {
         this.props.setModal(MODALS.SERVICE_INPUT, {cashboxId});
+    }
+
+    /**
+     * Open modal to make service output from cashbox with RST
+     * @param {*} cashboxId 
+     */
+	onOpenServiceOutputModal = (cashboxId) => {
+        this.props.setModal(MODALS.SERVICE_OUTPUT, {cashboxId});
     }
 
     /**
@@ -155,6 +164,7 @@ export class CashBalanceTable extends Component {
                 />
 
 				<ServiceInputModal />
+                <ServiceOutputModal />
 
                 <CashOrderModal
                     resetModal={this.onCloseCashOrderModal}

@@ -48,6 +48,7 @@ import {
     OPEN_SHIFT,
     CLOSE_SHIFT,
     SERVICE_INPUT,
+    SERVICE_OUTPUT,
     FETCH_X_REPORT,
     REGISTER_CASH_ORDER_IN_CASHDESK,
     SEND_EMAIL_WITH_RECEIPT,
@@ -130,6 +131,33 @@ export function* serviceInputSaga() {
 
             try {
                 yield call(fetchAPI, 'POST', '/cashdesk/service_input', null, requestPayload, { handleErrorInternally: true});
+            } catch(err) {
+                notification.error({message: err.response.message});
+            }
+
+            yield put(fetchCashboxesBalance());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* serviceOutputSaga() {
+    while (true) {
+        try {
+            const {payload: {cashboxId, serviceOutputSum}} = yield take(SERVICE_OUTPUT);
+
+            yield nprogress.start();
+
+            const requestPayload = {
+                cashboxId: cashboxId,
+                sum: serviceOutputSum
+            }
+
+            try {
+                yield call(fetchAPI, 'POST', '/cashdesk/service_output', null, requestPayload, { handleErrorInternally: true});
             } catch(err) {
                 notification.error({message: err.response.message});
             }
@@ -450,6 +478,7 @@ export function* saga() {
         call(openShiftSaga),
         call(closeShiftSaga),
         call(serviceInputSaga),
+        call(serviceOutputSaga),
         call(xReportSaga),
         call(fetchCashboxesSaga),
         call(fetchCashboxesBalanceSaga),

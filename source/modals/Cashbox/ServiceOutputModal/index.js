@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 // proj
 import { MODALS, resetModal } from 'core/modals/duck';
-import { serviceInput } from 'core/cash/duck';
+import { serviceOutput } from 'core/cash/duck';
 
 
 const mapStateToProps = state => ({
@@ -17,7 +17,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     resetModal,
-    serviceInput,
+    serviceOutput,
 };
 
 const formItemLayout = {
@@ -33,30 +33,24 @@ const formItemLayout = {
 )
 @Form.create()
 /**
- * This modal is used to make service inputs, it is autonomous so the only thing you have to provide is cashboxId.
+ * This modal is used to make service outputs, it is autonomous so the only thing you have to provide is cashboxId.
  * 
  * @param props.modalProps.cashboxId
  */
-export default class ServiceInputModal extends Component {
-    constructor(props) {
-        super(props);
-
-        this.onOk = this.onOk.bind(this);
-    }
-
+export default class ServiceOutputModal extends Component {
     handleCancel = () => {
 		this.props.resetModal();
 	};
 
-    onOk(e) {
+    onOk = (e) => {
         e.preventDefault();
-        const { serviceInput, modalProps: {cashboxId}, form } = this.props;
+        const { serviceOutput, modalProps: {cashboxId}, form } = this.props;
 
         form.validateFields((err, values) => {
             if(!err) {
-                const {serviceInputSum} = values;
+                const {serviceOutputSum} = values;
 
-                serviceInput({cashboxId, serviceInputSum});
+                serviceOutput({cashboxId, serviceOutputSum});
 
                 this.props.resetModal();
             }
@@ -73,17 +67,17 @@ export default class ServiceInputModal extends Component {
         return (
             <Modal
                 destroyOnClose
-                visible={modal === MODALS.SERVICE_INPUT}
+                visible={modal === MODALS.SERVICE_OUTPUT}
                 maskClosable={false}
-                title={<FormattedMessage id="service_input_modal.service_input"/>}
+                title={<FormattedMessage id="service_output_modal.service_output"/>}
                 width={'70vh'}
                 onCancel={() => this.handleCancel()}
                 onOk={this.onOk}
             >
 
                 <Form layout="horizontal">
-                    <Form.Item label={intl.formatMessage({id: "service_input_modal.enter_service_input_sum"})} {...formItemLayout}>
-                        {getFieldDecorator('serviceInputSum', {
+                    <Form.Item label={intl.formatMessage({id: "service_output_modal.enter_service_output_sum"})} {...formItemLayout}>
+                        {getFieldDecorator('serviceOutputSum', {
                             rules: [
                                 {
                                     //Custom checker to see if value is valid or not(includes all types of check up)
@@ -91,7 +85,7 @@ export default class ServiceInputModal extends Component {
                                         const isNumber = !isNaN(str) && !isNaN(parseFloat(str)) // check if a string is a number and ensure strings of whitespace fail
                                         const isPositive = !isNaN(parseFloat(str))? (parseFloat(str) > 0): false;
 
-                                        if(!(isNumber && isPositive)) callback(intl.formatMessage({id: "service_input_modal.enter_any_positive_number"}));
+                                        if(!(isNumber && isPositive)) callback(intl.formatMessage({id: "service_output_modal.enter_any_positive_number"}));
                                         callback(); //Must be called!
                                     }
                                 }

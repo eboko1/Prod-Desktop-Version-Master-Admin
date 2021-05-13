@@ -47,6 +47,9 @@ export const CLOSE_SHIFT_SUCCESS = `${prefix}/CLOSE_SHIFT_SUCCESS`;
 export const SERVICE_INPUT = `${prefix}/SERVICE_INPUT`; //Внести гроші в касу
 export const SERVICE_INPUT_SUCCESS = `${prefix}/SERVICE_INPUT_SUCCESS`;
 
+export const SERVICE_OUTPUT = `${prefix}/SERVICE_OUTPUT`; //Видати гроші з каси
+export const SERVICE_OUTPUT_SUCCESS = `${prefix}/SERVICE_OUTPUT_SUCCESS`;
+
 export const FETCH_X_REPORT = `${prefix}/FETCH_X_REPORT`; //Отримати xReport
 export const FETCH_X_REPORT_SUCCESS = `${prefix}/FETCH_X_REPORT_SUCCESS`;
 
@@ -344,6 +347,19 @@ export const serviceInput = ({cashboxId, serviceInputSum}) => ({
 
 export const serviceInputSuccess = () => ({
     type: SERVICE_INPUT_SUCCESS,
+});
+
+/**
+ * Інкасація(видача) частини грошей з каси
+ * @returns 
+ */
+ export const serviceOutput = ({cashboxId, serviceOutputSum}) => ({
+    type: SERVICE_OUTPUT,
+    payload: {cashboxId, serviceOutputSum}
+});
+
+export const serviceOutputSuccess = () => ({
+    type: SERVICE_OUTPUT_SUCCESS,
 });
 
 export const fetchXReport = (cashboxId) => ({
