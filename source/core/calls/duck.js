@@ -41,7 +41,7 @@ export const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD';
  * */
 
 const ReducerState = {
-    tab:             tabs.callsChart,
+    tab:             tabs.callsTable,
     channels:        [],
     calls:           [],
     stats:           {},
@@ -52,7 +52,7 @@ const ReducerState = {
         startDate:  moment().format(DEFAULT_DATE_FORMAT),
         endDate:    moment().format(DEFAULT_DATE_FORMAT),
         period:     'month', //Default period for building chart
-        mode:       'answered',
+        mode:       'all',
         page:       1,
         chartModes: {},
         clientId:   undefined,
@@ -159,6 +159,7 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
+export const selectCurrentTab = state => state[ moduleName ].tab;
 export const selectCallsFilter = state => state[ moduleName ].filter;
 export const selectCallsStats = state => state[ moduleName ].stats;
 export const selectCallsLinksCache = state => state[ moduleName ].callsLinksCache;

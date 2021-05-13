@@ -1,6 +1,5 @@
 // vendor
 import { call, put, all, take, select } from 'redux-saga/effects';
-import moment from 'moment';
 import _ from 'lodash';
 
 //proj
@@ -32,9 +31,9 @@ export function* fetchCallsSaga() {
             const filter = yield select(selectCallsFilter);
 
             const queries = {
-                startDate: moment(filter.startDate).format('YYYY-MM-DD'),
-                endDate:   moment(filter.endDate).format('YYYY-MM-DD'),
-                statusIn:  config[ filter.mode ],
+                startDate: filter.startDate,
+                endDate:   filter.endDate,
+                statusIn:  config[ filter.mode ], //Fetch calls base on a selected mode(all calls, or answered types or missed...)
                 page:      filter.page,
                 channelId: filter.channelId,
                 clientId:  filter.clientId,
@@ -63,8 +62,8 @@ export function* fetchCallsChartSaga() {
             const filter = yield select(selectCallsFilter);
 
             const queries = {
-                startDate:   moment(filter.startDate).format('YYYY-MM-DD'),
-                endDate:     moment(filter.endDate).format('YYYY-MM-DD'),
+                startDate:   filter.startDate,
+                endDate:     filter.endDate,
                 channelId:   filter.channelId,
                 period:      filter.period,
                 statusNotIn: Object.keys(filter.chartModes)
