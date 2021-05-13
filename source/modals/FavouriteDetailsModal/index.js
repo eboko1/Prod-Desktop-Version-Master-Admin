@@ -606,7 +606,6 @@ class FavouriteDetailsModal extends React.Component{
         return (
             <>
                 <Button
-                    type="primary"
                     disabled={this.props.disabled}
                     onClick={()=>{
                         this.setState({
@@ -614,6 +613,9 @@ class FavouriteDetailsModal extends React.Component{
                         })
                     }}
                     title={this.props.intl.formatMessage({id: "details_table.favorite_details"})}
+                    style={{
+                        padding: '0px 8px',
+                    }}
                 >
                     <Icon 
                         type="star"
