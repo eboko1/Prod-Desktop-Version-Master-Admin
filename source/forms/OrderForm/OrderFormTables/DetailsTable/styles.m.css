@@ -13,9 +13,34 @@
     justify-content: space-evenly;
 }
 
+.rowActions {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.buttonsBlock {
+    &:hover .iconsRow {
+        opacity: 1;
+        margin-top: 3px;
+    }
+}
+
+.iconsRow {
+    transition-duration: 0.5s;
+    transition-delay: 0.25s;
+    padding-top: 3px;
+    margin-top: -20px;
+    border-top: 1px solid #d9d9d9;
+    opacity: 0;
+    z-index: 0;
+}
+
 
 .deleteIcon {
-    font-size: 18px;
+    font-size: 20px;
+    color: var(--text3);
 
     &:hover {
         color: var(--not_complete);
@@ -64,18 +89,26 @@
     font-weight: 400;
 }
 
-.positionArrows {
+.icon {
     font-size: 20px;
-    color: var(--primary);
+    color: var(--text3);
     cursor: pointer;
+    padding: 1px;
 
     &:hover {
-        color: var(--text)
+        color: var(--primary) !important;
     }
 }
 
 .detailsTableRow {
     & td {
         vertical-align: middle;
+    }
+}
+
+.ownIcon {
+    padding: 0px 8px;
+    &:hover > div {
+        background-color: var(--primary) !important;
     }
 }

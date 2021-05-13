@@ -211,7 +211,10 @@ class DetailStorageModal extends React.Component{
                 title:  ()=>{
                     return (
                         <div>
-                            <FormattedMessage id="order_form_table.supplier" />
+                            {!this.props.stockMode ?
+                                <FormattedMessage id="order_form_table.supplier" /> :
+                                <><FormattedMessage id="storage" /> / <FormattedMessage id="wms.cell" /></>
+                            }
                             <WarehouseSelect 
                                 onChange={ (warehouseId) => this.fetchData(warehouseId) }
                             />
@@ -225,7 +228,7 @@ class DetailStorageModal extends React.Component{
                         <div style={{display: "flex"}}>
                             <Input
                                 style={{maxWidth: 180, color: 'black'}}
-                                value={data}
+                                value={elem.cellAddress || data}
                                 disabled
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                             />
@@ -235,7 +238,7 @@ class DetailStorageModal extends React.Component{
                                     onSelect={async (cellAddress, warehouseId)=>{
                                         elem.cellAddress = cellAddress;
                                         await this.setState({});
-                                        this.handleOk(elem);
+                                        await this.handleOk(elem);
                                     }}
                                 /> :
                                 <DetailSupplierModal
@@ -405,7 +408,11 @@ class DetailStorageModal extends React.Component{
             );
         }
         if(this.props.selectProduct) {
-            this.props.selectProduct(elem.productId)
+            this.props.selectProduct({
+                warehouseId: elem.warehouseId,
+                productId: elem.productId,
+                cellAddress: elem.cellAddress
+            })
         }
         this.handleCancel();
     }
