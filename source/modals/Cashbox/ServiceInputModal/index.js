@@ -38,17 +38,11 @@ const formItemLayout = {
  * @param props.modalProps.cashboxId
  */
 export default class ServiceInputModal extends Component {
-    constructor(props) {
-        super(props);
-
-        this.onOk = this.onOk.bind(this);
-    }
-
     handleCancel = () => {
 		this.props.resetModal();
 	};
 
-    onOk(e) {
+    onOk = (e) => {
         e.preventDefault();
         const { serviceInput, modalProps: {cashboxId}, form } = this.props;
 
