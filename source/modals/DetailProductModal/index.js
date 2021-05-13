@@ -310,7 +310,7 @@ class DetailProductModal extends React.Component{
                                 <Select
                                     showSearch
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
-                                    value={elem.supplierId ? elem.supplierId : undefined}
+                                    value={elem.supplierId || undefined}
                                     style={{minWidth: 160, maxWidth: 200}}
                                     dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                                     filterOption={(input, option) => {
@@ -332,7 +332,7 @@ class DetailProductModal extends React.Component{
                                     style={{minWidth: 80, maxWidth: 180, color: 'black'}}
                                     disabled
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
-                                    value={data}
+                                    value={elem.cellAddress || data}
                                 />
                             }
                             <DetailSupplierModal
