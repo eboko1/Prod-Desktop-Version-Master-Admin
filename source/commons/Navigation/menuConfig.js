@@ -169,18 +169,18 @@ export default {
                     name: 'navigation.flow_of_money',
                 },
                 {
-                    key:      '/cash/clients-debts',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_FINANCE_RECEIVABLE),
-                    link: book.cashClientsDebtsPage,
-                    name: 'navigation.clients_debts',
-                },
-                {
                     key:      '/report/cash_orders_logs',
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_CASHBOX_RST_LOGS),
                     link: book.reportCashOrdersLogs,
                     name: 'navigation.report_cash_orders_logs',
+                },
+                {
+                    key:      '/cash/clients-debts',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_FINANCE_RECEIVABLE),
+                    link: book.cashClientsDebtsPage,
+                    name: 'navigation.clients_debts',
                 },
             ],
         },
