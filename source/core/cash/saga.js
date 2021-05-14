@@ -33,6 +33,8 @@ import {
     fetchCashboxesActivitySuccess,
     selectCashOrdersFilters,
     selectCashAccountingFilters,
+    registerServiceInputCashOrderInCashdesk,
+    registerServiceOutputCashOrderInCashdesk
 } from './duck';
 
 import {
@@ -53,7 +55,9 @@ import {
     REGISTER_CASH_ORDER_IN_CASHDESK,
     SEND_EMAIL_WITH_RECEIPT,
     SEND_SMS_WITH_RECEIPT,
-    DOWNLOAD_RECEIPT
+    DOWNLOAD_RECEIPT,
+    REGISTER_SERVICE_INPUT_CASH_ORDER_IN_CASHDESK,
+    REGISTER_SERVICE_OUTPUT_CASH_ORDER_IN_CASHDESK,
 } from './duck';
 
 export function* openShiftSaga() {
@@ -144,9 +148,7 @@ export function* serviceInputSaga() {
 
             //If cashbox contains rst it must be registred in cashdesk if possible 
             if(isCashBoxRst) {
-                yield call(
-                    fetchAPI, 'POST', '/cashdesk/service_input_cash_order', null, {localNumber: cashOrderId}, { handleErrorInternally: true }
-                );
+                yield put(registerServiceInputCashOrderInCashdesk({cashOrderId}));
             }
 
             yield put(fetchCashboxesBalance());
@@ -186,12 +188,60 @@ export function* serviceOutputSaga() {
 
             //If cashbox contains rst it must be registred in cashdesk if possible 
             if(isCashBoxRst) {
-                yield call(
-                    fetchAPI, 'POST', '/cashdesk/service_output_cash_order', null, {localNumber: cashOrderId}, { handleErrorInternally: true }
-                );
+                yield put(registerServiceOutputCashOrderInCashdesk({cashOrderId}));
             }
 
             yield put(fetchCashboxesBalance());
+        } catch (error) {
+            yield put(emitError(error));
+            notification.error({ message: _.get(error, 'response.message')}); //Print special error message if it exists
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+/**
+ * For cashboxes with rst we can register them in cashdesk
+ */
+export function* registerServiceInputSaga() {
+    while (true) {
+        try {
+            const {payload: {cashOrderId}} = yield take(REGISTER_SERVICE_INPUT_CASH_ORDER_IN_CASHDESK);
+
+            yield nprogress.start();
+
+            yield call(
+                fetchAPI, 'POST', '/cashdesk/service_input_cash_order', null, {localNumber: cashOrderId}, { handleErrorInternally: true }
+            );
+
+            yield put(fetchCashboxesBalance());
+            yield put(fetchCashOrders());
+        } catch (error) {
+            yield put(emitError(error));
+            notification.error({ message: _.get(error, 'response.message')}); //Print special error message if it exists
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+/**
+ * For cashboxes with rst we can register them in cashdesk
+ */
+export function* registerServiceOutputSaga() {
+    while (true) {
+        try {
+            const {payload: {cashOrderId}} = yield take(REGISTER_SERVICE_OUTPUT_CASH_ORDER_IN_CASHDESK);
+
+            yield nprogress.start();
+
+            yield call(
+                fetchAPI, 'POST', '/cashdesk/service_output_cash_order', null, {localNumber: cashOrderId}, { handleErrorInternally: true }
+            );
+
+            yield put(fetchCashboxesBalance());
+            yield put(fetchCashOrders());
         } catch (error) {
             yield put(emitError(error));
             notification.error({ message: _.get(error, 'response.message')}); //Print special error message if it exists
@@ -223,8 +273,6 @@ export function* xReportSaga() {
             } catch(err) {
                 notification.error({message: err.response.message});
             }
-
-            
 
             yield put(fetchCashboxesBalance());
         } catch (error) {
@@ -509,6 +557,8 @@ export function* saga() {
         call(closeShiftSaga),
         call(serviceInputSaga),
         call(serviceOutputSaga),
+        call(registerServiceInputSaga),
+        call(registerServiceOutputSaga),
         call(xReportSaga),
         call(fetchCashboxesSaga),
         call(fetchCashboxesBalanceSaga),

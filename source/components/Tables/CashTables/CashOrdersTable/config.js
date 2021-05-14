@@ -75,7 +75,7 @@ function renderCounterparty(cashOrder) {
 export function columnsConfig(props) {
 
     const {
-        onRegisterInCashdesk,
+        onRepeatRegistrationInCashdesk,
         openPrint,
         openEdit,
         onSendEmail,
@@ -258,7 +258,7 @@ export function columnsConfig(props) {
             const cashOrderWithFailedRST = (<span>
                 <Popconfirm
                     title={ <FormattedMessage id='cash-table.confirm' />}
-                    onConfirm={() => onRegisterInCashdesk(cashOrder.id)}
+                    onConfirm={() => onRepeatRegistrationInCashdesk({cashOrder})}
                     okText={ <FormattedMessage id='yes' /> }
                     cancelText={ <FormattedMessage id='no' />}
                 >

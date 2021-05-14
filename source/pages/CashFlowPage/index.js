@@ -11,7 +11,6 @@ import {
     fetchCashOrders,
     selectCashOrdersFilters,
     printCashOrder,
-    registerCashOrderInCashdesk,
 } from "core/cash/duck";
 import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
 import { setModal, resetModal, MODALS } from "core/modals/duck";
@@ -45,7 +44,6 @@ const mapDispatchToProps = {
     fetchCashOrders,
     clearCashOrderForm,
     printCashOrder,
-    registerCashOrderInCashdesk,
 };
 
 @connect(
@@ -55,8 +53,6 @@ const mapDispatchToProps = {
 export default class CashFlowPage extends Component {
     constructor(props) {
         super(props);
-
-        this._onRegisterInCashdesk = this._onRegisterInCashdesk.bind(this);
     }
 
     state = {
@@ -101,16 +97,6 @@ export default class CashFlowPage extends Component {
         });
         this.setState({ cashOrderModalMounted: true });
     };
-
-    /**
-     * This registers specific cash order in cashdesk
-     * @param {*} cashOrderId contains cashOrderId to register
-     */
-    _onRegisterInCashdesk(cashOrderId) {
-        const { registerCashOrderInCashdesk } = this.props;
-
-        registerCashOrderInCashdesk(cashOrderId);
-    }
 
     render() {
         const {
@@ -175,7 +161,6 @@ export default class CashFlowPage extends Component {
                         filters={filters}
                         openPrint={this._onOpenPrintCashOrderModal}
                         // eslint-disable-next-line no-empty-function
-                        onRegisterInCashdesk={this._onRegisterInCashdesk}
                         openEdit={
                             canEditCashOrders
                                 ? this._onOpenEditCashOrderModal

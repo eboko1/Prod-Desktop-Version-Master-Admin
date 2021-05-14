@@ -54,6 +54,8 @@ export const FETCH_X_REPORT = `${prefix}/FETCH_X_REPORT`; //Отримати xRe
 export const FETCH_X_REPORT_SUCCESS = `${prefix}/FETCH_X_REPORT_SUCCESS`;
 
 export const REGISTER_CASH_ORDER_IN_CASHDESK = `${prefix}/REGISTER_CASH_ORDER_IN_CASHDESK`;
+export const REGISTER_SERVICE_INPUT_CASH_ORDER_IN_CASHDESK = `${prefix}/REGISTER_SERVICE_INPUT_CASH_ORDER_IN_CASHDESK`;
+export const REGISTER_SERVICE_OUTPUT_CASH_ORDER_IN_CASHDESK = `${prefix}/REGISTER_SERVICE_OUTPUT_CASH_ORDER_IN_CASHDESK`;
 
 export const SEND_EMAIL_WITH_RECEIPT = `${prefix}/SEND_EMAIL_WITH_RECEIPT`;
 export const SEND_SMS_WITH_RECEIPT = `${prefix}/SEND_SMS_WITH_RECEIPT`;
@@ -371,16 +373,39 @@ export const fetchXReportSuccess = () => ({
     type: FETCH_X_REPORT_SUCCESS,
 });
 
+/**
+ * For cashboxes with rst we can register them in cashdesk,
+ * this action is used to register sale and return
+ * @param cashOrderId - cashOrder will be used to generate data and register int on cashdesk service
+ */
 export const registerCashOrderInCashdesk = (cashOrderId) => ({
     type: REGISTER_CASH_ORDER_IN_CASHDESK,
     payload: cashOrderId
 });
 
 /**
+ * Register cashOrder in cashdesk if it is service input(cashorder of type "INCOME" without clientId but with otherCounterparty)
+ * @param {*} params.cashOrderId
+ * @returns 
+ */
+export const registerServiceInputCashOrderInCashdesk = ({cashOrderId}) => ({
+    type: REGISTER_SERVICE_INPUT_CASH_ORDER_IN_CASHDESK,
+    payload: {cashOrderId}
+});
+
+/**
+ * Register cashOrder in cashdesk if it is service output(cashorder of type "EXPENSE")
+ * @param {*} params.cashOrderId
+ */
+export const registerServiceOutputCashOrderInCashdesk = ({cashOrderId}) => ({
+    type: REGISTER_SERVICE_OUTPUT_CASH_ORDER_IN_CASHDESK,
+    payload: {cashOrderId}
+});
+
+/**
  * Send email to a client from cash order, that email contains receipth
  * @param {Object} params
  * @param {String|Number} params.cashOrderId - Cash order to generate data from
- * @returns 
  */
 export const sendEmailWithReceipt = ({cashOrderId}) => ({
     type: SEND_EMAIL_WITH_RECEIPT,

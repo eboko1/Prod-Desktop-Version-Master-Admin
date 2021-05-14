@@ -2,13 +2,16 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from "react-redux";
-import { Table } from 'antd';
+import { Table, notification } from 'antd';
 
 // proj
 import {
     sendEmailWithReceipt,
     sendSmsWithReceipt,
-    downloadReceipt
+    downloadReceipt,
+    registerCashOrderInCashdesk,
+    registerServiceInputCashOrderInCashdesk,
+    registerServiceOutputCashOrderInCashdesk,
 } from "core/cash/duck";
 
 // own
@@ -23,6 +26,9 @@ const mapDispatchToProps = {
     sendEmailWithReceipt,
     sendSmsWithReceipt,
     downloadReceipt,
+    registerCashOrderInCashdesk,
+    registerServiceInputCashOrderInCashdesk,
+    registerServiceOutputCashOrderInCashdesk,
 };
 
 @connect( mapStateToProps, mapDispatchToProps )
@@ -61,6 +67,41 @@ export class CashOrdersTable extends Component {
         sendSmsWithReceipt({ cashOrderId});
     }
 
+    /**
+     * This registers specific cash order in cashdesk base on its type and parameters(sale/return/service input/service output/)
+     * @param {Object} params.cashOrder contains cashOrderId to register and necessary data about cashOrder
+     */
+    onRepeatRegistrationInCashdesk = ({cashOrder}) => {
+        const {
+            registerCashOrderInCashdesk,
+            registerServiceInputCashOrderInCashdesk,
+            registerServiceOutputCashOrderInCashdesk,
+        } = this.props
+
+        console.log("Cashorder: ", cashOrder);
+
+        if(cashOrder.rst && cashOrder.clientId) { //Sale or return contains client and is applied to RST cashboxes
+            // repeat registration
+            registerCashOrderInCashdesk(cashOrder.id);
+        } else if(cashOrder.otherCounterparty && cashOrder.type == "INCOME") {
+            //repeat service input
+            registerServiceInputCashOrderInCashdesk({cashOrderId: cashOrder.id});
+        } else if(cashOrder.otherCounterparty && cashOrder.type == "EXPENSE") {
+            //repeat service output
+            registerServiceOutputCashOrderInCashdesk({cashOrderId: cashOrder.id});
+        } else {
+            //Error
+            notification.error({
+                message: "Error",
+                description: `
+                    Invalid type of cashOrder, it cannot be registred in
+                    cashdesk because it was not detected as Service input,
+                    Service output, Sale or Return
+                `
+            });
+        }
+    }
+
     render() {
         const {
             cashOrders,
@@ -68,19 +109,18 @@ export class CashOrdersTable extends Component {
             openPrint,
             openEdit,
             isMobile,
-            onRegisterInCashdesk,
             downloadReceipt
         } = this.props;
 
         this.columns = columnsConfig({
-            openPrint: openPrint,
-            openEdit:  openEdit,
-            onRegisterInCashdesk,
-            isMobile:  isMobile,
+            onRepeatRegistrationInCashdesk: this.onRepeatRegistrationInCashdesk,
+            downloadReceipt:                downloadReceipt,
+            openPrint:   openPrint,
+            openEdit:    openEdit,
+            isMobile:    isMobile,
             onSendEmail: this.onSendEmail,
-            onSendSms: this.onSendSms,
-            downloadReceipt: downloadReceipt,
-            user: this.props.user
+            onSendSms:   this.onSendSms,
+            user:        this.props.user,
         });
 
         const pagination = {
