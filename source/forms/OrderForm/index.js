@@ -106,7 +106,6 @@ export class OrderForm extends React.PureComponent {
 				return response.json();
 			})
 			.then(function(data) {
-				console.log(data);
 				data.map((elem, index) => {
 					elem.key = index;
 				});
@@ -143,7 +142,6 @@ export class OrderForm extends React.PureComponent {
 				return response.json();
 			})
 			.then(function(data) {
-				console.log(data);
 				that.setState({
 					fetchedOrder: data,
 				});
@@ -320,9 +318,9 @@ export class OrderForm extends React.PureComponent {
 			allServices,
 			orderHistory,
 			orderId,
+			selectedClient,
 			searchClientsResult,
 			setClientSelection,
-			selectedClient,
 			cashSum,
 			cashFlowFilters,
 			setAddClientModal,
@@ -339,8 +337,6 @@ export class OrderForm extends React.PureComponent {
 			focusOnRef,
 			focusedRef,
 		} = this.props;
-
-		console.log(this);
 
 		const formFieldsValues = form.getFieldsValue();
 
@@ -500,7 +496,7 @@ export class OrderForm extends React.PureComponent {
 
 	_renderTabs = (formFieldsValues) => {
 		const fetchedOrder = this.state.fetchedOrder || this.props.fetchedOrder;
-		if (!fetchedOrder || !this.state.details) {
+		if (!fetchedOrder || !this.props.allDetails) {
 			return;
 		}
 		const { form, orderTasks, schedule, stationLoads, orderId } = this.props;
@@ -539,12 +535,12 @@ export class OrderForm extends React.PureComponent {
 			suggestionsFetching,
 
 			orderCalls,
+			selectedClient,
 			orderHistory,
 			orderDiagnostic,
 			allServices,
 			allDetails,
 			employees,
-			selectedClient,
 			detailsSuggestions,
 			suggestions,
 			user,
