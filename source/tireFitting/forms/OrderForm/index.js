@@ -107,7 +107,6 @@ export class OrderForm extends React.PureComponent {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             data.map((elem, index) => {
                 elem.key = index;
             });
@@ -141,7 +140,6 @@ export class OrderForm extends React.PureComponent {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 that.setState({
                     fetchedOrder: data,
                 })

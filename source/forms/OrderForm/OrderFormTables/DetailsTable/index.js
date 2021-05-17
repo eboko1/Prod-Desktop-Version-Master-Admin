@@ -497,15 +497,17 @@ class DetailsTable extends Component {
                                                     details:    [],
                                                 }
                                                 this.state.selectedRows.map((elem)=>{
-                                                    payload.details.push({
-                                                        id: elem.id,
-                                                        productCode: null,
-                                                        productId: null,
-                                                        cellAddress: null,
-                                                        warehouseId: null,
-                                                        supplierBrandId: null,
-                                                        supplierId: null,
-                                                    })
+                                                    if(!elem.reservedCount && elem.agreement == 'UNDEFINED') {
+                                                        payload.details.push({
+                                                            id: elem.id,
+                                                            productCode: null,
+                                                            productId: null,
+                                                            cellAddress: null,
+                                                            warehouseId: null,
+                                                            supplierBrandId: null,
+                                                            supplierId: null,
+                                                        })
+                                                    }
                                                 })
                                                 await fetchAPI('PUT', `orders/${this.props.orderId}`, undefined, payload)
                                                 this.updateDataSource();
@@ -602,13 +604,15 @@ class DetailsTable extends Component {
                                             details:    [],
                                         }
                                         this.state.selectedRows.map((elem)=>{
-                                            payload.details.push({
-                                                id: elem.id,
-                                                productId: null,
-                                                cellAddress: null,
-                                                warehouseId: null,
-                                                supplierId: null,
-                                            })
+                                            if(!elem.reservedCount && elem.agreement == 'UNDEFINED') {
+                                                payload.details.push({
+                                                    id: elem.id,
+                                                    productId: null,
+                                                    cellAddress: null,
+                                                    warehouseId: null,
+                                                    supplierId: null,
+                                                })
+                                            }
                                         })
                                         await fetchAPI('PUT', `orders/${this.props.orderId}`, undefined, payload)
                                         this.updateDataSource();

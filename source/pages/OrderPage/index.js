@@ -115,7 +115,6 @@ const mapStateToProps = state => {
         orderTasks:            state.forms.orderForm.orderTasks,
         priorityOptions:       state.forms.orderTaskForm.priorityOptions,
         progressStatusOptions: state.forms.orderTaskForm.progressStatusOptions,
-        requisites:            state.forms.orderForm.requisites,
         spinner:               state.ui.orderFetching,
         stations:              state.forms.orderForm.stations,
         businessLocations:     state.forms.orderForm.businessLocations,
@@ -984,15 +983,19 @@ class OrderPage extends Component {
             >
                 <MobileView>
                     <MobileRecordForm
+                        allDetails={allDetails}
+                        allServices={allServices}
+                        client={client}
+                        selectedClient={selectedClient}
+                        requisites={requisites}
+                        orderHistory={orderHistory}
                         orderStatus={ status }
                         wrappedComponentRef={ this.saveOrderFormRef }
                         onStatusChange={ this._onStatusChange }
                         user={ this.props.user }
                         orderTasks={ this.props.orderTasks }
-                        orderHistory={ orderHistory }
                         orderId={ id }
                         orderDiagnostic={ diagnosis }
-                        allDetails={ this.props.allDetails }
                         onClose={ this._close }
                     />
                 </MobileView>
