@@ -68,7 +68,7 @@
     "navigation.report_orders": "Orders report",
     "navigation.report_load_kpi": "Load KPI",
     "navigation.report_cash_flow": "Report for cash flow",
-    "navigation.report_cash_orders_logs": "Cash orders logs",
+    "navigation.report_cash_orders_logs": "RST logs",
     "navigation.locations": "Locations",
     "navigation.locations_settings": "Directory of Locations",
     "navigation.locations_document": "Locations Documents",
@@ -92,9 +92,8 @@
     "navigation.related_labors": "Related labors",
     "navigation.statuses": "Statuses",
     "navigation.posts": "Posts",
-    "navigation.cb24": "cb24"
-
-
+    "navigation.cb24": "cb24",
+    "navigation.print": "Print"
   },
   "ru": {
     "navigation.operations": "Операции",
@@ -165,7 +164,7 @@
     "navigation.report_orders": "Отчет по н/з",
     "navigation.report_load_kpi": "KPI по завантаженню",
     "navigation.report_cash_flow": "Отчет по движению денег",
-    "navigation.report_cash_orders_logs": "Журнал чеков РРО",
+    "navigation.report_cash_orders_logs": "Журнал РРО",
     "navigation.locations": "Локации",
     "navigation.locations_settings": "Справочник локаций",
     "navigation.locations_document": "Документы локаций",
@@ -189,7 +188,8 @@
     "navigation.related_labors": "Связанные работы",
     "navigation.statuses": "Статусы",
     "navigation.posts": "Посты",
-    "navigation.cb24": "cb24.eu"
+    "navigation.cb24": "cb24.eu",
+    "navigation.print": "Печать"
   },
   "uk": {
     "navigation.operations": "Операції",
@@ -260,7 +260,7 @@
     "navigation.report_orders": "Звіт по н/з",
     "navigation.report_load_kpi": "KPI по загрузке",
     "navigation.report_cash_flow": "Звіт по руху грошей",
-    "navigation.report_cash_orders_logs": "Журнал чеків РРО",
+    "navigation.report_cash_orders_logs": "Журнал РРО",
     "navigation.locations": "Локації",
     "navigation.locations_settings": "Довідник локацій",
     "navigation.locations_document": "Документи локацій",
@@ -284,6 +284,7 @@
     "navigation.related_labors": "Повязані роботи",
     "navigation.statuses": "Статуси",
     "navigation.posts": "Пости",
-    "navigation.cb24": "cb24.eu"
+    "navigation.cb24": "cb24.eu",
+    "navigation.print": "Друк"
   }
 }

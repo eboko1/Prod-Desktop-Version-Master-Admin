@@ -310,7 +310,7 @@ class DetailProductModal extends React.Component{
                                 <Select
                                     showSearch
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
-                                    value={elem.supplierId ? elem.supplierId : undefined}
+                                    value={elem.supplierId || undefined}
                                     style={{minWidth: 160, maxWidth: 200}}
                                     dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                                     filterOption={(input, option) => {
@@ -332,7 +332,7 @@ class DetailProductModal extends React.Component{
                                     style={{minWidth: 80, maxWidth: 180, color: 'black'}}
                                     disabled
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
-                                    value={data}
+                                    value={elem.cellAddress || data}
                                 />
                             }
                             <DetailSupplierModal
@@ -573,6 +573,7 @@ class DetailProductModal extends React.Component{
                             comment: undefined,
                             positions: [],
                         },
+                        cellAddress: element.cellAddress,
                     })
                 }
             });
@@ -597,6 +598,7 @@ class DetailProductModal extends React.Component{
                                     comment: undefined,
                                     positions: [],
                                 },
+                                status: 'CALCULATE',
                             })
                         } else {
                             data.details.push({
@@ -614,6 +616,7 @@ class DetailProductModal extends React.Component{
                                     comment: undefined,
                                     positions: [],
                                 },
+                                status: 'CALCULATE',
                             })
                         }
                     }
@@ -791,7 +794,7 @@ class DetailProductModal extends React.Component{
         this.setState({});
     }
 
-    setSupplier(related, supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, supplierPartNumber, key, isFromStock, defaultWarehouseId, productId, brandId) {
+    setSupplier(related, supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, supplierPartNumber, key, isFromStock, defaultWarehouseId, productId, brandId, cellAddress) {
         const { mainTableSource, relatedDetails } = this.state;
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         const currentDetail = related ? relatedDetails[key] : mainTableSource[key];
@@ -808,6 +811,7 @@ class DetailProductModal extends React.Component{
         currentDetail.isFromStock = isFromStock;
         currentDetail.reservedFromWarehouseId = defaultWarehouseId;
         currentDetail.productId = isFromStock ? productId : undefined;
+        currentDetail.cellAddress = cellAddress || undefined;
         if(brand) {
             currentDetail.brandId = brandId;
             currentDetail.brandName = brand && brand.brandName;
@@ -836,6 +840,7 @@ class DetailProductModal extends React.Component{
             currentDetail.supplierPartNumber = undefined;
             currentDetail.store = undefined;
             currentDetail.reservedFromWarehouseId = undefined;
+            currentDetail.cellAddress = undefined;
         }
 
         if(related) relatedDetails[key] = currentDetail;
@@ -992,7 +997,7 @@ class DetailProductModal extends React.Component{
 
     componentDidUpdate(prevProps) {
         const { user, visible, detail, allDetails, showOilModal } = this.props;
-        const editing = Boolean(detail.storeGroupId);
+        const editing = Boolean(detail && detail.storeGroupId);
         if(prevProps.visible == false && visible) {
             this.setState({
                 editing: editing,

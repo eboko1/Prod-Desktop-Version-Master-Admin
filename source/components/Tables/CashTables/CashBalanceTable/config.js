@@ -54,6 +54,7 @@ export function columnsConfig(props) {
 		onOpenCashOrderModal,
 		openShift,
 		onOpenServiceInputModal,
+		onOpenServiceOutputModal,
 		fetchXReport,
 		closeShift
 	} = props;
@@ -151,19 +152,32 @@ export function columnsConfig(props) {
 	}
 
 	const serviceInputCol = {
-		width: 'auto',
+		width:     'auto',
 		dataIndex: 'rst',
-		key: 'serviceInputCol',
+		key:       'serviceInputCol',
 		render: (rst, obj) => {
-			return rst
-				? generateIcon(
-					images.cashboxIcon,
-					() => onOpenServiceInputModal(obj.id),
-					user,
-					(<FormattedMessage id="cash-table.hint_service_input"/>),
-					{disabled: !obj.isShiftOpen}
-				)
-				: null;
+			return generateIcon(
+				images.cashboxIcon,
+				() => onOpenServiceInputModal(obj.id),
+				user,
+				(<FormattedMessage id="cash-table.hint_service_input"/>),
+				{disabled: rst && !obj.isShiftOpen}
+			);
+		},
+	}
+
+	const serviceOutputCol = {
+		width:     'auto',
+		dataIndex: 'rst',
+		key:       'serviceOutputCol',
+		render: (rst, obj) => {
+			return generateIcon(
+				images.cashboxIcon,
+				() => onOpenServiceOutputModal(obj.id),
+				user,
+				(<FormattedMessage id="cash-table.hint_service_output"/>),
+				{disabled: rst && !obj.isShiftOpen}
+			);
 		},
 	}
 
@@ -209,6 +223,7 @@ export function columnsConfig(props) {
 		addCashOrderCol,
 		openShiftCol,
 		serviceInputCol,
+		serviceOutputCol,
 		xReportCol,
 		zReportCol,
 	];

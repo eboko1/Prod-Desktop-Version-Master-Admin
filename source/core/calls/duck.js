@@ -3,9 +3,6 @@ import moment from 'moment';
 import { createSelector } from 'reselect';
 import _ from 'lodash';
 
-// own
-// import { config } from './config.js';
-
 /**
  * Constants
  * */
@@ -37,25 +34,25 @@ export const tabs = {
     callsTable: 'callsTable'
 }
 
+export const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD';
+
 /**
  * Reducer
  * */
 
 const ReducerState = {
-    tab:             tabs.callsChart,
+    tab:             tabs.callsTable,
     channels:        [],
     calls:           [],
     stats:           {},
     chart:           [],
     callsLinksCache: {}, //Contains key-value pairs which represents callId - recording link, it is required because Binotel does not provide long term links
     filter:     {
-        channelId: null,
-        startDate: moment()
-            .subtract(3, 'months')
-            .format('YYYY-MM-DD'),
-        endDate:    moment().format('YYYY-MM-DD'),
+        channelId:  null,
+        startDate:  moment().format(DEFAULT_DATE_FORMAT),
+        endDate:    moment().format(DEFAULT_DATE_FORMAT),
         period:     'month', //Default period for building chart
-        mode:       'answered',
+        mode:       'all',
         page:       1,
         chartModes: {},
         clientId:   undefined,
@@ -99,8 +96,8 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 filter: {
                     ...state.filter,
-                    startDate: payload[ 0 ].format('YYYY-MM-DD'),
-                    endDate:   payload[ 1 ].format('YYYY-MM-DD'),
+                    startDate: payload[ 0 ].format(DEFAULT_DATE_FORMAT),
+                    endDate:   payload[ 1 ].format(DEFAULT_DATE_FORMAT),
                     page:      1,
                 },
             };
@@ -162,6 +159,7 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
+export const selectCurrentTab = state => state[ moduleName ].tab;
 export const selectCallsFilter = state => state[ moduleName ].filter;
 export const selectCallsStats = state => state[ moduleName ].stats;
 export const selectCallsLinksCache = state => state[ moduleName ].callsLinksCache;

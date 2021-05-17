@@ -523,6 +523,7 @@ export default class OrderFormTabs extends React.PureComponent {
 							clearOilData={clearOilData}
 							activeKey={this.state.activeKey}
 							detailsTreeData={this.state.detailsTreeData}
+							discount={_.get(fetchedOrder, `order.detailsDiscount`, 0)}
 						/>
 						<DiscountPanel
 							orderDetails={orderDetails}

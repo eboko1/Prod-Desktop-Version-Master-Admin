@@ -1,17 +1,17 @@
 {
     "en": {
-        "service_input_modal.service input": "Service input",
+        "service_input_modal.service_input": "Service input",
         "service_input_modal.enter_service_input_sum": "Enter service input sum",
         "service_input_modal.enter_any_positive_number": "Enter any positive number"
         
     },
     "ru": {
-        "service_input_modal.service input": "Служебное внесение",
+        "service_input_modal.service_input": "Служебное внесение",
         "service_input_modal.enter_service_input_sum": "Сумма служебного внесения",
         "service_input_modal.enter_any_positive_number": "Введите любое положительное число"
     },
     "uk": {
-        "service_input_modal.service input": "Службове внесення",
+        "service_input_modal.service_input": "Службове внесення",
         "service_input_modal.enter_service_input_sum": "Сума службового внесення",
         "service_input_modal.enter_any_positive_number": "Введіть будь яке додатнє число"
     }
