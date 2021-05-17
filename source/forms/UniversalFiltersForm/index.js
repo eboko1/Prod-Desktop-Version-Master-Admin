@@ -300,7 +300,7 @@ export class UniversalFiltersForm extends Component {
                                     managers.map(({id, managerName, managerSurname}, key)=>{
                                         return (
                                             <Option key={key} value={id}>
-                                                {managerName} {managerSurname}
+                                                {managerSurname} {managerName}
                                             </Option>
                                         )
                                     })

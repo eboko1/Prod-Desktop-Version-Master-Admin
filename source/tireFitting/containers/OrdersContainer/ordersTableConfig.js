@@ -264,7 +264,7 @@ export function columnsConfig(
             if (order.managerName) {
                 return (
                     <div>
-                        {order.managerName} {order.managerSurname && order.managerSurname}
+                        {order.managerSurname} {order.managerName}
                     </div>
                 );
             }
