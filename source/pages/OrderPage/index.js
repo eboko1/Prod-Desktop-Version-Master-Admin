@@ -111,7 +111,6 @@ const mapStateToProps = state => {
         order:                 state.forms.orderForm.order,
         orderCalls:            state.forms.orderForm.calls,
         orderComments:         state.forms.orderForm.orderComments,
-        orderHistory:          state.forms.orderForm.history,
         orderTaskId:           state.forms.orderTaskForm.taskId,
         orderTasks:            state.forms.orderForm.orderTasks,
         priorityOptions:       state.forms.orderTaskForm.priorityOptions,
@@ -167,6 +166,10 @@ class OrderPage extends Component {
                 emails:     [],
                 vehicles:   [],
             },
+            requisites: [],
+            orderHistory: {
+                orders: []
+            },
         };
         this._fetchRepairMapData = this._fetchRepairMapData.bind(this);
     }
@@ -206,6 +209,7 @@ class OrderPage extends Component {
                     brands,
                     details,
                 },
+                requisites,
                 orderHistory,
             })
         }
@@ -698,7 +702,7 @@ class OrderPage extends Component {
 
     /* eslint-disable complexity*/
     render() {
-        const {showOilModal, oilModalData, repairMapData, focusedRef, client, allServices, allDetails, selectedClient, orderHistory } = this.state;
+        const {showOilModal, oilModalData, repairMapData, focusedRef, client, allServices, allDetails, selectedClient, orderHistory, requisites } = this.state;
         const {
             fetchOrderForm,
             fetchOrderTask,
@@ -985,7 +989,7 @@ class OrderPage extends Component {
                         onStatusChange={ this._onStatusChange }
                         user={ this.props.user }
                         orderTasks={ this.props.orderTasks }
-                        orderHistory={ this.props.orderHistory }
+                        orderHistory={ orderHistory }
                         orderId={ id }
                         orderDiagnostic={ diagnosis }
                         allDetails={ this.props.allDetails }
@@ -1000,12 +1004,13 @@ class OrderPage extends Component {
                         allServices={allServices}
                         client={client}
                         selectedClient={selectedClient}
+                        requisites={requisites}
+                        orderHistory={orderHistory}
                         errors={ this.state.errors }
                         user={ this.props.user }
                         orderId={ id }
                         wrappedComponentRef={ this.saveOrderFormRef }
                         orderTasks={ this.props.orderTasks }
-                        orderHistory={ this.props.orderHistory }
                         setAddClientModal={ this.setAddClientModal }
                         modal={ modal }
                         orderCalls={ this.props.orderCalls }
