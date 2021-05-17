@@ -1,14 +1,13 @@
 // vendor
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
 import { Icon, Button } from 'antd';
 import moment from 'moment';
 import { v4 } from 'uuid';
 
 // proj
 import { goTo } from "utils";
-import { answered, missed } from 'core/calls/config';
+import { answered } from 'core/calls/config';
 import { StyledButton } from 'commons';
 import book from 'routes/book';
 
@@ -157,12 +156,14 @@ export function columnsConfig({ fetchRecordingLink, callsLinksCache, onAddClient
                         <source src={callsLinksCache[call.id]} />
                     </audio>
                     : <FormattedMessage id='calls-table.no_record' />
-                : (!missed.includes(call.status))
-                    ?(<div>
+                : (answered.includes(call.status))
+                    ? (
+                        <div>
                             <StyledButton type="primary" onClick={() => fetchRecordingLink({ callId: call.id })}>
                                 <FormattedMessage id='calls-table.show_record' />
                             </StyledButton>
-                        </div>)
+                        </div>
+                    )
                     : <FormattedMessage id='calls-table.no_record' />
         }
     };
