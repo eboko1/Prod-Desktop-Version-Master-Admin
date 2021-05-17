@@ -2,4 +2,85 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+}
+
+.phoneLink {
+    color: var(--link);
+}
+
+.phoneLink:hover {
+    color: var(--primary);
+}
+
+.dataItem {
+    margin-left: 2em;
+}
+
+.block {
+    margin-top: 2em;
+}
+
+.button {
+    width: 100%;
+}
+
+.row {
+    margin-top: 0.5em;
+}
+
+.buttonsContainer {
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+}
+
+.barcodeIcon {
+    color: black;
+}
+
+.infoIcon {
+    color: var(--paletteColor7);
+}
+
+.editIcon {
+    color: var(--secondary);
+}
+
+.deleteIcon {
+    color: var(--disabled);
+}
+
+.changeVehicleOwnerIcon {
+    color: var(--link);
+}
+
+.sendSMSIcon {
+    color: var(--link);
+}
+
+.sendMailIcon {
+    color: black;
+}
+
+.copyIcon {
+    color: blue;
+}
+
+.plusIcon {
+    font-size: 16px;
+    color: white;
+}
+
+.barcodeIcon, .infoIcon, .editIcon, .deleteIcon, .changeVehicleOwnerIcon, .sendSMSIcon, .sendMailIcon, .copyIcon {
+    font-size: 24px;
+    margin-right: 0.25em;
+    margin-left: 0.25em;
+}
+
+.iconButton {
+    padding: 0.6em;
+    display: inline-flex;
+    border: 0;
+    justify-content: center;
+    align-items: center;
 }

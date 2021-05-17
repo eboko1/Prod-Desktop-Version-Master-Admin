@@ -16,10 +16,11 @@ export default class DataItem extends React.Component {
         const {
             children,
             label,
+            className
         } = this.props;
 
         return (
-            <div className={Styles.container}>
+            <div className={[Styles.container, className].join(" ")}>
                 <div className={Styles.label}>
                     {label}
                 </div>

@@ -16,11 +16,12 @@ export default class Block extends React.Component {
         const {
             children,
             title,
-            controls
+            controls,
+            className
         } = this.props;
 
         return (
-            <div className={Styles.block}>
+            <div className={[Styles.block, className].join(" ")}>
                 <div className={Styles.header}>
                     <div className={Styles.title}>{title}</div>
                     <div className={Styles.controls}>{controls}</div>

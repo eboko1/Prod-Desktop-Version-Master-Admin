@@ -20,9 +20,15 @@ export function* fetchVehicleSaga() {
             console.log("Here we are!");
             yield nprogress.start();
 
-            const vehicle = yield call(fetchAPI, 'GET', `clients/vehicles/${143957}`); //Replace here later
+            const vehicle = yield call(fetchAPI, 'GET', `clients/vehicles/${143912}`); //Replace here later
 
-            yield put(fetchVehicleSuccess({vehicle}));
+            const {
+                clientId
+            } = vehicle;
+
+            const client = yield call(fetchAPI, 'GET', `clients/${clientId}`);
+
+            yield put(fetchVehicleSuccess({vehicle, client}));
         } catch (error) {
             yield put(emitError(error));
         } finally {
