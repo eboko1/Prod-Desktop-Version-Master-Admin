@@ -105,7 +105,6 @@ const createDefaultState = () => ({
     },
     calls:      [],
     tasks:      [],
-    requisites:          [],
     searchClientsResult: {
         searching: true,
         clients:   [],
