@@ -4,16 +4,15 @@ import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { Table } from "antd";
 import _ from "lodash";
+import { v4 } from "uuid";
 
 // proj
-// import book from "routes/book";
 import { DatePickerField } from "forms/_formkit";
 import { ResponsiveView } from "commons";
 import { BREAKPOINTS } from "utils";
-// import { BREAKPOINTS, linkTo } from "utils";
 import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
 import { setModal, resetModal, MODALS } from "core/modals/duck";
-import { ServiceInputModal, CashOrderModal } from 'modals';
+import { ServiceInputModal, ServiceOutputModal, CashOrderModal } from 'modals';
 import {
     fetchCashboxesBalance,
     setCashAccountingFilters,
@@ -23,7 +22,6 @@ import {
     closeShift,
     fetchXReport,
 } from "core/cash/duck";
-
 
 // own
 import { columnsConfig } from "./config";
@@ -58,12 +56,13 @@ export class CashBalanceTable extends Component {
         super(props);
 
         this.columns = columnsConfig({
-            onOpenServiceInputModal: this.onOpenServiceInputModal,
-            onOpenCashOrderModal: this.onOpenCashOrderModal,
-            openShift: props.openShift,
-            closeShift: props.closeShift,
+            onOpenServiceInputModal:  this.onOpenServiceInputModal,
+            onOpenServiceOutputModal: this.onOpenServiceOutputModal,
+            onOpenCashOrderModal:     this.onOpenCashOrderModal,
+            openShift:    props.openShift,
+            closeShift:   props.closeShift,
             fetchXReport: props.fetchXReport,
-            user: props.user,
+            user:         props.user,
         });
     }
 
@@ -77,6 +76,14 @@ export class CashBalanceTable extends Component {
      */
 	onOpenServiceInputModal = (cashboxId) => {
         this.props.setModal(MODALS.SERVICE_INPUT, {cashboxId});
+    }
+
+    /**
+     * Open modal to make service output from cashbox with RST
+     * @param {*} cashboxId 
+     */
+	onOpenServiceOutputModal = (cashboxId) => {
+        this.props.setModal(MODALS.SERVICE_OUTPUT, {cashboxId});
     }
 
     /**
@@ -100,17 +107,6 @@ export class CashBalanceTable extends Component {
         this.props.setCashAccountingFilters({ date });
         this.props.fetchCashboxesBalance();
     };
-
-    //I commented it beacause it is very useful code to learn
-    // _onRowClick = data => {
-    //     const { filters, setCashOrdersFilters } = this.props;
-    //     linkTo(book.cashFlowPage);
-    //     setCashOrdersFilters({
-    //         cashBoxId: data.id,
-    //         startDate: "2019-01-01",
-    //         endDate: filters.date.format("YYYY-MM-DD"),
-    //     });
-    // };
 
     render() {
         const {
@@ -146,15 +142,14 @@ export class CashBalanceTable extends Component {
                     dataSource={data}
                     loading={cashboxesFetching}
                     pagination={false}
-                    // onRow={record => ({
-                    //     onClick: () => this._onRowClick(record),
-                    // })}
+                    rowKey={() => v4()}
                     locale={{
                         emptyText: <FormattedMessage id="no_data" />,
                     }}
                 />
 
 				<ServiceInputModal />
+                <ServiceOutputModal />
 
                 <CashOrderModal
                     resetModal={this.onCloseCashOrderModal}

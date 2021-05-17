@@ -11,6 +11,7 @@ import {
     fetchCallsChart,
     setCallsDaterange,
     setCallsChannelId,
+    tabs
 } from 'core/calls/duck';
 import { DateRangePicker } from 'components';
 import { Layout, Spinner } from 'commons';
@@ -56,12 +57,8 @@ export default class CallsPage extends Component {
 
         setCallsDaterange(daterange);
 
-        if (tab === 'callsTable') {
-            fetchCalls();
-        }
-        if (tab === 'callsChart') {
-            fetchCallsChart();
-        }
+        (tab === tabs.callsTable) && fetchCalls();
+        (tab === tabs.callsChart) && fetchCallsChart();
     };
 
     _setCallsChannelId = channelId => {
@@ -72,25 +69,13 @@ export default class CallsPage extends Component {
             fetchCallsChart,
         } = this.props;
 
-        if (channelId === 'ALL') {
+        if (channelId === 'ALL') 
             setCallsChannelId(null);
-            if (tab === 'callsTable') {
-                fetchCalls();
-            }
-            if (tab === 'callsChart') {
-                fetchCallsChart();
-            }
-        }
-
-        if (channelId !== 'ALL') {
+        else 
             setCallsChannelId(channelId);
-            if (tab === 'callsTable') {
-                fetchCalls();
-            }
-            if (tab === 'callsChart') {
-                fetchCallsChart();
-            }
-        }
+
+        (tab === tabs.callsTable) && fetchCalls();
+        (tab === tabs.callsChart) && fetchCallsChart();
     };
 
     render() {

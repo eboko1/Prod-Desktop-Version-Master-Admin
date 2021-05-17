@@ -108,11 +108,19 @@ export default class CallsTable extends Component {
         return (
             <RadioGroup value={filter.mode}>
                 <RadioButton
+                    value="all"
+                    onClick={() => this._setCallsTableFilterMode("all")}
+                >
+                    <FormattedMessage id="calls-table.all" />
+                </RadioButton>
+
+                <RadioButton
                     value="answered"
                     onClick={() => this._setCallsTableFilterMode("answered")}
                 >
                     <FormattedMessage id="calls-table.answered" />
                 </RadioButton>
+                
                 <RadioButton
                     value="missed"
                     onClick={() => this._setCallsTableFilterMode("missed")}

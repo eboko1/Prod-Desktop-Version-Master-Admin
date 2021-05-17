@@ -36,6 +36,7 @@ import WMSCellsModal from './WMSCellsModal';
 //cashbox
 import AddCashboxModal from './Cashbox/AddCashboxModal';
 import ServiceInputModal from './Cashbox/ServiceInputModal';
+import ServiceOutputModal from './Cashbox/ServiceOutputModal';
 
 //Report modals
 import ReportOrdersFilterModal from './ReportModals/ReportOrdersFilterModal';
@@ -72,6 +73,7 @@ export {
     AddServiceModal,
     AddCashboxModal,
     ServiceInputModal,
+    ServiceOutputModal,
     TecDocInfoModal,
     LaborsNormHourModal,
     OilModal,
