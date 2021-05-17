@@ -71,7 +71,7 @@ import {
     BarcodePage,
     ProductPage,
     WMSPage,
-    VehiclesPage,
+    VehiclePage,
     ProductsWithoutCellPage,
     DirectoriesPage,
 } from 'pages';
@@ -283,7 +283,7 @@ export default class Private extends Component {
                 <Route
                     exact
                     path={ book.vehicleId }
-                    render={ props => <VehiclesPage { ...props } /> }
+                    render={ props => <VehiclePage { ...props } /> }
                 />
                 <Route
                     exact

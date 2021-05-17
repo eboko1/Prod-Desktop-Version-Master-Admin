@@ -40,7 +40,7 @@ const mapDispatchToProps = {
 @withRouter
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
-export default class VehiclesPage extends Component {
+export default class VehiclePage extends Component {
     constructor(props) {
         super(props);
     }
