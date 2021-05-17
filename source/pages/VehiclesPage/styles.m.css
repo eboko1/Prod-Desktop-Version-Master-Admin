@@ -5,7 +5,7 @@
     flex-direction: column;
 }
 
-.phoneLink {
+.phoneLink, .orderLink {
     color: var(--link);
 }
 
@@ -30,10 +30,12 @@
 }
 
 .buttonsContainer {
-    margin-top: 0.5em;
+    margin-top: 1em;
     margin-bottom: 1em;
 }
 
+
+/* Icons ------------------------------------------------------------ */
 .barcodeIcon {
     color: black;
 }
@@ -84,3 +86,5 @@
     justify-content: center;
     align-items: center;
 }
+
+/* Icons ------------------------------------------------------------ */

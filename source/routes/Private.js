@@ -282,7 +282,7 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
-                    path={ book.vehicles }
+                    path={ book.vehicleId }
                     render={ props => <VehiclesPage { ...props } /> }
                 />
                 <Route

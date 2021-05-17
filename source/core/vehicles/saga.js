@@ -16,11 +16,11 @@ import {
 export function* fetchVehicleSaga() {
     while (true) {
         try {
-            yield take(FETCH_VEHICLE);
-            console.log("Here we are!");
+            const { payload: {vehicleId} } = yield take(FETCH_VEHICLE);
+
             yield nprogress.start();
 
-            const vehicle = yield call(fetchAPI, 'GET', `clients/vehicles/${143912}`); //Replace here later
+            const vehicle = yield call(fetchAPI, 'GET', `clients/vehicles/${vehicleId}`); //Replace here later
 
             const {
                 clientId
@@ -28,7 +28,9 @@ export function* fetchVehicleSaga() {
 
             const client = yield call(fetchAPI, 'GET', `clients/${clientId}`);
 
-            yield put(fetchVehicleSuccess({vehicle, client}));
+            const generalData = yield call(fetchAPI, 'GET', `order_latest_info`, {vehicleId: vehicleId});
+
+            yield put(fetchVehicleSuccess({vehicle, client, generalData}));
         } catch (error) {
             yield put(emitError(error));
         } finally {

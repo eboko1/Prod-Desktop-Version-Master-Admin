@@ -15,17 +15,19 @@ export const FETCH_VEHICLE_SUCCESS = `${prefix}/FETCH_VEHICLE_SUCCESS`;
 const ReducerState = {
     vehicle: {},
     client: {},
+    generalData: {}
 };
 
 export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
     switch (type) {
         case FETCH_VEHICLE_SUCCESS:
-            const {vehicle, client} = payload;
+            const {vehicle, client, generalData} = payload;
             return { 
                 ...state, 
                 vehicle: vehicle,
-                client: client
+                client: client,
+                generalData: generalData
             };
 
         default:
@@ -40,17 +42,19 @@ export default function reducer(state = ReducerState, action) {
 export const stateSelector = state => state[ moduleName ];
 export const selectVehicle = state => state[ moduleName ].vehicle;
 export const selectClient = state => state[ moduleName ].client;
+export const selectGeneralData = state => state[ moduleName ].generalData;
+
 
 /**
  * Action Creators
  **/
 
-export const fetchVehicle = () => ({
+export const fetchVehicle = ({vehicleId}) => ({
     type: FETCH_VEHICLE,
-    // payload: {vehicleId}
+    payload: {vehicleId}
 });
 
-export const fetchVehicleSuccess = ({vehicle, client}) => ({
+export const fetchVehicleSuccess = ({vehicle, client, generalData}) => ({
     type:    FETCH_VEHICLE_SUCCESS,
-    payload: {vehicle, client},
+    payload: {vehicle, client, generalData},
 });
