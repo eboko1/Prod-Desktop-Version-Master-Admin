@@ -364,7 +364,7 @@ class DetailsTable extends Component {
                                     treeData={ this.props.detailsTreeData }
                                     brands={ this.props.allDetails.brands }
                                     allDetails={ this.props.allDetails.details }
-                                    disabled={disabled}
+                                    disabled={this.props.disabled}
                                     confirmed={ confirmed != 'undefined' }
                                     detail={ row }
                                     onConfirm={ this.updateDetail }
@@ -471,7 +471,49 @@ class DetailsTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.detail_code' />,
+                title:     ()=>(
+                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                    <FormattedMessage id='order_form_table.detail_code' />
+                                    <div
+                                        className={Styles.headerActions}
+                                        style={{
+                                            paddingLeft: 6,
+                                            opacity: this.state.selectedRowKeys.length == 0 && 0,
+                                            marginTop: this.state.selectedRowKeys.length == 0 && '-20px',
+                                            transitionDuration: "0.5s",
+                                            pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
+                                            justifyContent: 'left'
+                                        }}
+                                    >
+                                        <Icon
+                                            type={'close-circle'}
+                                            style={{
+                                                fontSize: 24,
+                                                color: 'var(--disabled)'
+                                            }}
+                                            onClick={async ()=>{
+                                                const payload = {
+                                                    updateMode: true,
+                                                    details:    [],
+                                                }
+                                                this.state.selectedRows.map((elem)=>{
+                                                    payload.details.push({
+                                                        id: elem.id,
+                                                        productCode: null,
+                                                        productId: null,
+                                                        cellAddress: null,
+                                                        warehouseId: null,
+                                                        supplierBrandId: null,
+                                                        supplierId: null,
+                                                    })
+                                                })
+                                                await fetchAPI('PUT', `orders/${this.props.orderId}`, undefined, payload)
+                                                this.updateDataSource();
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            ),
                 key:       'code',
                 dataIndex: 'detailCode',
                 render:    (data, row) => {
@@ -534,9 +576,46 @@ class DetailsTable extends Component {
                 },
             },
             {
-                title:  <div style={{whiteSpace: 'pre', textAlign: 'left'}}>
+                title:  ()=>(
+                        <div style={{whiteSpace: 'pre', textAlign: 'left', display: 'flex', alignItems: 'center'}}>
                             <FormattedMessage id='storage' /> / <FormattedMessage id='order_form_table.supplier' />
-                        </div>,
+                            <div
+                                className={Styles.headerActions}
+                                style={{
+                                    paddingLeft: 6,
+                                    opacity: this.state.selectedRowKeys.length == 0 && 0,
+                                    marginTop: this.state.selectedRowKeys.length == 0 && '-20px',
+                                    transitionDuration: "0.5s",
+                                    pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
+                                    justifyContent: 'left'
+                                }}
+                            >
+                                <Icon
+                                    type={'close-circle'}
+                                    style={{
+                                        fontSize: 24,
+                                        color: 'var(--disabled)'
+                                    }}
+                                    onClick={async ()=>{
+                                        const payload = {
+                                            updateMode: true,
+                                            details:    [],
+                                        }
+                                        this.state.selectedRows.map((elem)=>{
+                                            payload.details.push({
+                                                id: elem.id,
+                                                productId: null,
+                                                cellAddress: null,
+                                                warehouseId: null,
+                                                supplierId: null,
+                                            })
+                                        })
+                                        await fetchAPI('PUT', `orders/${this.props.orderId}`, undefined, payload)
+                                        this.updateDataSource();
+                                    }}
+                                />
+                            </div>
+                        </div>),
                 key:       'supplierName',
                 render:    row => {
                     return (
@@ -694,15 +773,19 @@ class DetailsTable extends Component {
                 },
             },
             {
-                title: (
+                title: () => (
                     <div className={ Styles.numberColumn }>
                         <div>
                             <FormattedMessage id='storage.RESERVE' />
                         </div>
                         <div
+                            className={Styles.headerActions}
                             style={{
-                                display: 'flex',
-                                justifyContent: 'space-evenly'
+                                paddingTop: 6,
+                                opacity: this.state.selectedRowKeys.length == 0 && 0,
+                                marginTop: this.state.selectedRowKeys.length == 0 && '-20px',
+                                transitionDuration: "0.5s",
+                                pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
                             }}
                         >
                             <Icon
@@ -835,7 +918,101 @@ class DetailsTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.PD' />,
+                title:  ()=>{
+                            const updateAgreement = async (value) => {
+                                const payload = {
+                                    updateMode: true,
+                                    details:    [],
+                                }
+                                this.state.selectedRows.map((elem)=>{
+                                    payload.details.push({
+                                        id: elem.id,
+                                        agreement: value.toUpperCase(),
+                                    })
+                                })
+                                await fetchAPI('PUT', `orders/${this.props.orderId}`, undefined, payload)
+                                this.updateDataSource();
+                            }
+                            const menu = (
+                                <Menu onClick={this.handleMenuClick}>
+                                    <Menu.Item
+                                        key="undefined"
+                                        onClick={()=>{
+                                            updateAgreement('undefined')
+                                        }}
+                                    >
+                                        <Icon
+                                            type={'question-circle'}
+                                            style={{
+                                                fontSize: 18,
+                                                verticalAlign: 'sub',
+                                                marginRight: 8
+                                            }}
+                                        />
+                                        <FormattedMessage id='agreement.undefined' />
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        key="agreed"
+                                        style={{color: 'var(--green)'}}
+                                        onClick={()=>{
+                                            updateAgreement('agreed')
+                                        }}
+                                    >
+                                        <Icon
+                                            type={'check-circle'}
+                                            style={{
+                                                fontSize: 18,
+                                                verticalAlign: 'sub',
+                                                marginRight: 8,
+                                            }}
+                                        />
+                                        <FormattedMessage id='agreement.agreed' />
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        key="rejected"
+                                        style={{color: 'rgb(255, 126, 126)'}}
+                                        onClick={()=>{
+                                            updateAgreement('rejected')
+                                        }}
+                                    >
+                                        <Icon
+                                            type={'close-circle'}
+                                            style={{
+                                                fontSize: 18,
+                                                marginRight: 8,
+                                            }}
+                                        />
+                                        <FormattedMessage id='agreement.rejected' />
+                                    </Menu.Item>
+                                </Menu>
+                            );
+                            return (
+                                <div>
+                                    <FormattedMessage id='order_form_table.PD' />
+                                    <div
+                                        className={Styles.headerActions}
+                                        style={{
+                                            paddingTop: 6,
+                                            opacity: this.state.selectedRowKeys.length == 0 && 0,
+                                            marginTop: this.state.selectedRowKeys.length == 0 && '-20px',
+                                            transitionDuration: "0.5s",
+                                            pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
+                                        }}
+                                    >
+                                        <Dropdown
+                                            overlay={menu}
+                                        >
+                                            <Icon
+                                                type={'question-circle'}
+                                                style={{
+                                                    fontSize: 24,
+                                                }}
+                                            />
+                                        </Dropdown>
+                                    </div>
+                                </div>
+                            )
+                        },
                 key:        'agreement',
                 dataIndex:  'agreement',
                 render:     (data, row) => {
@@ -944,19 +1121,19 @@ class DetailsTable extends Component {
                 render:    (data, row) => {
                     let color;
                     switch (data) {
-                        case 'UNDEFINED':
+                        case 'ENTER_DATA':
                             color = 'var(--disabled)';
                             break;
-                        case 'SPECIFY':
-                            color = 'var(--db-comment)';
+                        case 'CHOOSE_SUPPLIER':
+                            color = 'var(--approve)';
                             break;
-                        case 'SUPPLIER_CONFIRMED':
+                        case 'ORDER':
                             color = 'var(--db_approve)';
                             break;
-                        case 'ORDERED':
+                        case 'RESERVE':
                             color = 'var(--db_progress)';
                             break;
-                        case 'RESERVE':
+                        case 'READY':
                             color = 'var(--db_success)';
                             break;
                         default:
@@ -1094,6 +1271,7 @@ class DetailsTable extends Component {
             supplierProductNumber: detail.supplierProductNumber,
             supplierPartNumber: detail.supplierPartNumber,
             cellAddress: detail.cellAddress,
+            warehouseId: detail.warehouseId,
             comment: detail.comment || {
                 comment: undefined,
                 positions: [],
@@ -1388,6 +1566,7 @@ class DetailsTable extends Component {
                     } }
                     onSelect={(address, warehouseId)=>{
                         warehousesModalSelectedRow.cellAddress = address;
+                        warehousesModalSelectedRow.warehouseId = warehouseId;
                         this.updateDetail(warehousesModalSelectedRow.key, warehousesModalSelectedRow);
                     }}
                 />
@@ -1520,6 +1699,7 @@ class QuickEditModal extends React.Component {
                             value={ data ? Math.round(data * 10) / 10 : 0 }
                             className={ Styles.detailNumberInput }
                             min={ 0 }
+                            disabled={ this.props.confirmed }
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }

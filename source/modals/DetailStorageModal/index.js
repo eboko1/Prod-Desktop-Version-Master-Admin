@@ -235,7 +235,7 @@ class DetailStorageModal extends React.Component{
                             {this.props.stockMode ?
                                 <DetailWarehousesCountModal
                                     productId={elem.id}
-                                    onSelect={async (cellAddress, warehouseId)=>{
+                                    onSelect={async (cellAddress, warehouseId, warehouseName)=>{
                                         elem.cellAddress = cellAddress;
                                         elem.warehouseId = warehouseId;
                                         await this.setState({});
@@ -982,34 +982,40 @@ export class DetailWarehousesCountModal extends React.Component {
     }
 
     fetchData = async () => {
+        let warehousesData = [];
+
         const product = await fetchAPI('GET', `store_products/${this.props.productId}`);
+
         const warehouses = await fetchAPI('GET', `warehouses`);
+        warehouses.map(({id, name})=>{
+            warehousesData.push({
+                id: id,
+                name: name,
+                count: 0,
+                childs: [],
+            })
+        })
+
         const productWarehouses = await fetchAPI('GET', `store_products/${this.props.productId}/warehouses`);
+
+        for (const [key, value] of Object.entries(productWarehouses)) {
+            const index = warehousesData.findIndex(({id})=>id==key);
+            warehousesData[index].count = Number(value);
+        }
+
         const payload = await fetchAPI('GET', 'wms/cells/statuses', {storeProductId: this.props.productId});
-        const warehousesData = [];
+        
         payload.list.map((elem)=>{
             if(elem.warehouse.id) {
                 const index = warehousesData.findIndex(({id})=>id==elem.warehouse.id);
-                if(index < 0) {
-                    warehousesData.push({
-                        id: elem.warehouse.id,
-                        name: elem.warehouse.name,
-                        childs: [
-                            {
-                                warehouseId: elem.warehouse.id,
-                                cellAddress: elem.wmsCellOptions.address,
-                                count: elem.sum,
-                            }
-                        ],
-                    })
-                } else {
-                    warehousesData[index].childs.push({
-                        cellAddress: elem.wmsCellOptions.address,
-                        count: elem.sum,
-                    })
-                }
+                warehousesData[index].childs.push({
+                    cellAddress: elem.wmsCellOptions.address,
+                    count: elem.sum,
+                })
+                
             }
         });
+        warehousesData = warehousesData.filter(({count})=>count>0);
         await this.setState({
             warehousesData,
             code: _.get(product, 'code'),
@@ -1072,15 +1078,63 @@ export class DetailWarehousesCountModal extends React.Component {
                         </p>
                     </div>
                     {warehousesData.map((warehouse, key)=>(
+                        warehouse.childs.length ?
                         <Table
                             key={key}
                             rowKey='cellAddress'
                             columns={this.columns}
                             dataSource={warehouse.childs}
+                            style={{
+                                marginBottom: 8
+                            }}
                             bordered
                             size={'small'}
-                            title={() => warehouse.name}
-                        />
+                            pagination={{
+                                hideOnSinglePage: true
+                            }}
+                            title={() => (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    {warehouse.name} ({warehouse.count})
+                                    <Button
+                                        type='primary'
+                                        onClick={()=>{
+                                            this.handleCancel();
+                                            if(this.props.onSelect) this.props.onSelect(undefined, warehouse.id, warehouse.name);
+                                        }}
+                                    >
+                                        <FormattedMessage id='select'/>
+                                    </Button>
+                                </div>
+                            )}
+                        /> :
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: 8,
+                                borderRadius: 4,
+                                border: '1px solid #e8e8e8',
+                                marginBottom: 8
+                            }}
+                        >
+                            {warehouse.name} ({warehouse.count})
+                            <Button
+                                type='primary'
+                                onClick={()=>{
+                                    this.handleCancel();
+                                    if(this.props.onSelect) this.props.onSelect(undefined, warehouse.id, warehouse.name);
+                                }}
+                            >
+                                <FormattedMessage id='select'/>
+                            </Button>
+                        </div>
                     ))}
                 </Modal>
             </div>
