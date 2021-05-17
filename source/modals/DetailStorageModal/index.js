@@ -237,6 +237,7 @@ class DetailStorageModal extends React.Component{
                                     productId={elem.id}
                                     onSelect={async (cellAddress, warehouseId)=>{
                                         elem.cellAddress = cellAddress;
+                                        elem.warehouseId = warehouseId;
                                         await this.setState({});
                                         await this.handleOk(elem);
                                     }}
@@ -405,6 +406,7 @@ class DetailStorageModal extends React.Component{
                 elem.productId,
                 brandId,
                 elem.cellAddress,
+                elem.warehouseId,
             );
         }
         if(this.props.selectProduct) {
@@ -981,6 +983,8 @@ export class DetailWarehousesCountModal extends React.Component {
 
     fetchData = async () => {
         const product = await fetchAPI('GET', `store_products/${this.props.productId}`);
+        const warehouses = await fetchAPI('GET', `warehouses`);
+        const productWarehouses = await fetchAPI('GET', `store_products/${this.props.productId}/warehouses`);
         const payload = await fetchAPI('GET', 'wms/cells/statuses', {storeProductId: this.props.productId});
         const warehousesData = [];
         payload.list.map((elem)=>{

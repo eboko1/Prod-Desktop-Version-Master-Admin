@@ -90,7 +90,6 @@ const createDefaultState = () => ({
         stationLoads: [],
     },
     createStatus:      'not_complete',
-    allServices:       [],
     managers:          [],
     employees:         [],
     stations:          [],
@@ -106,20 +105,10 @@ const createDefaultState = () => ({
     },
     calls:      [],
     tasks:      [],
-    allDetails: {
-        details: [],
-        brands:  [],
-    },
     requisites:          [],
     searchClientsResult: {
         searching: true,
         clients:   [],
-    },
-    selectedClient: {
-        requisites: [],
-        phones:     [],
-        emails:     [],
-        vehicles:   [],
     },
     order:                     {},
     invited:                   false,
@@ -141,8 +130,6 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 ...payload,
                 fetchedOrder: payload,
-                selectedClient:
-                    _.get(payload, "client") || state.selectedClient,
             };
 
         case SET_CREATE_STATUS:
@@ -190,7 +177,6 @@ export default function reducer(state = ReducerState, action) {
         case ON_CLIENT_SELECT:
             return {
                 ...state,
-                selectedClient: payload,
                 searchClientsResult: {
                     clients: [],
                     searching: false,
