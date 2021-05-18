@@ -191,7 +191,7 @@ class OrderPage extends Component {
 
     componentDidUpdate = async (prevProps) => {
         if(this.props.order.clientId && !this.state.selectedClient.clientId && this.props.spinner) {
-            const client = await fetchAPI('GET', `clients/${this.props.order.clientId}`);
+            const client = await fetchAPI('GET', `clients/${this.props.order.clientId}`, {cut: true, skipNotifications: true, skipReviews: true});
             this.setState({
                 client,
                 selectedClient: client,
