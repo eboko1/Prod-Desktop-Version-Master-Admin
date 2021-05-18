@@ -296,7 +296,7 @@ class DetailsTable extends Component {
                 dataIndex: 'key',
                 render:    (data, row) => {
                     const confirmed = row.agreement.toLowerCase();
-                    const disabled = confirmed != 'undefined' || this.props.disabled || row.reserved;
+                    const disabled = confirmed != 'undefined' || this.props.disabled || row.reservedCount;
                     const prewOrder = row.key-1 >= 0 && this.state.dataSource[row.key-1].order;
                     const nextOrder = row.key+1 < this.state.dataSource.length && this.state.dataSource[row.key+1].order;
                     return (
@@ -364,7 +364,7 @@ class DetailsTable extends Component {
                                     treeData={ this.props.detailsTreeData }
                                     brands={ this.props.allDetails.brands }
                                     allDetails={ this.props.allDetails.details }
-                                    disabled={this.props.disabled}
+                                    disabled={this.props.disabled || row.reservedCount}
                                     confirmed={ confirmed != 'undefined' }
                                     detail={ row }
                                     onConfirm={ this.updateDetail }
@@ -566,9 +566,11 @@ class DetailsTable extends Component {
                                 textDecoration: data && 'underline'
                             }}
                             onClick={()=>{
-                                this.setState({
-                                    storageModalSelectedRow: row,
-                                })
+                                if(!row.reservedCount) {
+                                    this.setState({
+                                        storageModalSelectedRow: row,
+                                    })
+                                }
                             }}
                             title={'Замены по каталогу'}
                         >
@@ -633,14 +635,16 @@ class DetailsTable extends Component {
                             <div
                                 style={{width: '50%', cursor: 'pointer', textDecoration: row.supplierName && 'underline'}}
                                 onClick={()=>{
-                                    if(row.supplierId !== 0) {
-                                        this.setState({
-                                            supplierModalSelectedRow: row,
-                                        })
-                                    } else {
-                                        this.setState({
-                                            warehousesModalSelectedRow: row,
-                                        })
+                                    if(!row.reservedCount) {
+                                        if(row.supplierId !== 0) {
+                                            this.setState({
+                                                supplierModalSelectedRow: row,
+                                            })
+                                        } else {
+                                            this.setState({
+                                                warehousesModalSelectedRow: row,
+                                            })
+                                        }
                                     }
                                 }}
                             >
