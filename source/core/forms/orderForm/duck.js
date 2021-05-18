@@ -176,6 +176,7 @@ export default function reducer(state = ReducerState, action) {
         case ON_CLIENT_SELECT:
             return {
                 ...state,
+                selectedClient: payload,
                 searchClientsResult: {
                     clients: [],
                     searching: false,

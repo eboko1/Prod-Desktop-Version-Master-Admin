@@ -276,7 +276,7 @@ export class MobileRecordForm extends Component {
                             value={manager.id}
                             key={v4()}
                         >
-                            {`${manager.managerName} ${manager.managerSurname}`}
+                            {`${manager.managerSurname} ${manager.managerName}`}
                         </Option>
                     ))}
                 </DecoratedSelect>
