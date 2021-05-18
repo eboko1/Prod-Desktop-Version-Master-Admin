@@ -109,7 +109,22 @@ export function columnsConfig(props) {
         key:        v4(),
         render: (client) => {
             return (
-                <div>{`${_.get(client, 'name')} ${_.get(client, 'surname')}`}</div>
+                <div>
+                    <div>{`${_.get(client, 'name')} ${_.get(client, 'surname')}`}</div>
+                    <div>
+                        {
+                            client.phones.map(phone => (
+                                <a
+                                    className={ Styles.clientPhone }
+                                    href={ `tel:${phone}` }
+                                    key={v4()}
+                                >
+                                    { phone }
+                                </a>
+                            ))
+                        }
+                    </div>
+                </div>
             );
         }
     };
