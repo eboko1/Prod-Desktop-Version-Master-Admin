@@ -1,0 +1,18 @@
+{
+    "en": {
+        "service_output_modal.service_output": "Service output",
+        "service_output_modal.enter_service_output_sum": "Enter service output sum",
+        "service_output_modal.enter_any_positive_number": "Enter any positive number"
+        
+    },
+    "ru": {
+        "service_output_modal.service_output": "Служебная выдача",
+        "service_output_modal.enter_service_output_sum": "Сумма служебной выдачи",
+        "service_output_modal.enter_any_positive_number": "Введите любое положительное число"
+    },
+    "uk": {
+        "service_output_modal.service_output": "Службова видача",
+        "service_output_modal.enter_service_output_sum": "Сума службової видачі",
+        "service_output_modal.enter_any_positive_number": "Введіть будь яке додатнє число"
+    }
+}

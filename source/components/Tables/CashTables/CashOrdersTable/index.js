@@ -2,13 +2,16 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from "react-redux";
-import { Table } from 'antd';
+import { Table, notification } from 'antd';
 
 // proj
 import {
     sendEmailWithReceipt,
     sendSmsWithReceipt,
-    downloadReceipt
+    downloadReceipt,
+    registerCashOrderInCashdesk,
+    registerServiceInputCashOrderInCashdesk,
+    registerServiceOutputCashOrderInCashdesk,
 } from "core/cash/duck";
 
 // own
@@ -23,6 +26,9 @@ const mapDispatchToProps = {
     sendEmailWithReceipt,
     sendSmsWithReceipt,
     downloadReceipt,
+    registerCashOrderInCashdesk,
+    registerServiceInputCashOrderInCashdesk,
+    registerServiceOutputCashOrderInCashdesk,
 };
 
 @connect( mapStateToProps, mapDispatchToProps )
@@ -34,31 +40,66 @@ export class CashOrdersTable extends Component {
     _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
 
     /**
-     * Called when user want to receive receipt on his email, email is taken from currently active manager(user).
+     * Called when user want to send receipt on client's email, email is taken from client for which cash order was created.
      * We can send emails for RST cashOrders only
-     * @param {*} param.cashOrderId - cash order to generate email from(contains data about its RST cashbox)
+     * @param {*} param.cashOrderId - cash order to generate email from(contains data about its RST cashbox and client)
      * @returns 
      */
     onSendEmail = ({cashOrderId}) => {
-        const { user, sendEmailWithReceipt } = this.props;
+        const { sendEmailWithReceipt } = this.props;
 
-        if(!user.email || !cashOrderId) return;
+        if(!cashOrderId) return;
 
-        sendEmailWithReceipt({receivers: [user.email], cashOrderId});
+        sendEmailWithReceipt({ cashOrderId});
     }
 
     /**
-     *  When user want to receive receipt on his modile via sms, phone number is taken from currently active manager(user).
+     *  When user want to send receipt on client's modile via sms, phone number is taken from client for which cash order was created.
      * We can send sms for RST cashOrders only.
-     * @param {*} param.cashOrderId - cash order to generate email from(contains data about its RST cashbox)
+     * @param {*} param.cashOrderId - cash order to generate email from(contains data about its RST cashbox and client)
      * @returns 
      */
     onSendSms = ({cashOrderId}) => {
-        const { user, sendSmsWithReceipt } = this.props;
+        const { sendSmsWithReceipt } = this.props;
 
-        if(!user.phone || !cashOrderId) return;
+        if(!cashOrderId) return;
 
-        sendSmsWithReceipt({receivers: [user.phone], cashOrderId});
+        sendSmsWithReceipt({ cashOrderId});
+    }
+
+    /**
+     * This registers specific cash order in cashdesk base on its type and parameters(sale/return/service input/service output/)
+     * @param {Object} params.cashOrder contains cashOrderId to register and necessary data about cashOrder
+     */
+    onRepeatRegistrationInCashdesk = ({cashOrder}) => {
+        const {
+            registerCashOrderInCashdesk,
+            registerServiceInputCashOrderInCashdesk,
+            registerServiceOutputCashOrderInCashdesk,
+        } = this.props
+
+        console.log("Cashorder: ", cashOrder);
+
+        if(cashOrder.rst && cashOrder.clientId) { //Sale or return contains client and is applied to RST cashboxes
+            // repeat registration
+            registerCashOrderInCashdesk(cashOrder.id);
+        } else if(cashOrder.otherCounterparty && cashOrder.type == "INCOME") {
+            //repeat service input
+            registerServiceInputCashOrderInCashdesk({cashOrderId: cashOrder.id});
+        } else if(cashOrder.otherCounterparty && cashOrder.type == "EXPENSE") {
+            //repeat service output
+            registerServiceOutputCashOrderInCashdesk({cashOrderId: cashOrder.id});
+        } else {
+            //Error
+            notification.error({
+                message: "Error",
+                description: `
+                    Invalid type of cashOrder, it cannot be registred in
+                    cashdesk because it was not detected as Service input,
+                    Service output, Sale or Return
+                `
+            });
+        }
     }
 
     render() {
@@ -68,18 +109,18 @@ export class CashOrdersTable extends Component {
             openPrint,
             openEdit,
             isMobile,
-            onRegisterInCashdesk,
             downloadReceipt
         } = this.props;
 
         this.columns = columnsConfig({
-            openPrint: openPrint,
-            openEdit:  openEdit,
-            onRegisterInCashdesk,
-            isMobile:  isMobile,
+            onRepeatRegistrationInCashdesk: this.onRepeatRegistrationInCashdesk,
+            downloadReceipt:                downloadReceipt,
+            openPrint:   openPrint,
+            openEdit:    openEdit,
+            isMobile:    isMobile,
             onSendEmail: this.onSendEmail,
-            onSendSms: this.onSendSms,
-            downloadReceipt: downloadReceipt
+            onSendSms:   this.onSendSms,
+            user:        this.props.user,
         });
 
         const pagination = {

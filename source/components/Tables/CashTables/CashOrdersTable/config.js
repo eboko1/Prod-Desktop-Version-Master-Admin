@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 // proj
+import { isForbidden, permissions } from "utils";
 import { Numeral } from 'commons';
 import { FormattedDatetime } from 'components';
 import book from 'routes/book';
@@ -74,13 +75,14 @@ function renderCounterparty(cashOrder) {
 export function columnsConfig(props) {
 
     const {
-        onRegisterInCashdesk,
+        onRepeatRegistrationInCashdesk,
         openPrint,
         openEdit,
         onSendEmail,
         onSendSms,
         downloadReceipt,
-        isMobile
+        isMobile,
+        user
     } = props;
 
     const numberCol = {
@@ -206,6 +208,8 @@ export function columnsConfig(props) {
         width:     defWidth.actionsCol,
         render: (key, cashOrder) => {
 
+            const rstActionsAccess = !isForbidden(user, permissions.ACCESS_OTHER_OPERATION_RST);
+
             /** Creates an icon with styles and popup.
              * @param popMessage - popup hint when hovered
              * @param options - Icon options (type, className ...)
@@ -223,17 +227,29 @@ export function columnsConfig(props) {
                 <span>
                     {iconWithPop({
                         popMessage: (<FormattedMessage id='cash-table.hint_send_sms' />),
-                        options: {type: "message", className: Styles.sendSMS, onClick: () => onSendSms({cashOrderId: cashOrder.id})}
+                        options: {
+                            type: "message",
+                            className: _.join([Styles.sendSMS, rstActionsAccess? "": Styles.disabled], ' '), //Disable access if no scope
+                            onClick: () => onSendSms({cashOrderId: cashOrder.id}),
+                        }
                     })}
                     
                     {iconWithPop({
                         popMessage: (<FormattedMessage id='cash-table.hint_send_email' />),
-                        options: {type: "mail", className: Styles.sendMailIcon, onClick: () => onSendEmail({cashOrderId: cashOrder.id})}
+                        options: {
+                            type: "mail",
+                            className: _.join([Styles.sendMailIcon, rstActionsAccess? "": Styles.disabled], ' '), //Disable access if no scope
+                            onClick: () => onSendEmail({cashOrderId: cashOrder.id})
+                        }
                     })}
 
                     {iconWithPop({
                         popMessage: (<FormattedMessage id='cash-table.hint_download_receipt' />),
-                        options: {type: "download", className: Styles.downloadIcon, onClick: () => downloadReceipt({cashOrderId: cashOrder.id})}
+                        options: {
+                            type: "download",
+                            className: _.join([Styles.downloadIcon, rstActionsAccess? "": Styles.disabled], ' '), //Disable access if no scope
+                            onClick: () => downloadReceipt({cashOrderId: cashOrder.id})
+                        }
                     })}
                 </span>
             );
@@ -242,13 +258,16 @@ export function columnsConfig(props) {
             const cashOrderWithFailedRST = (<span>
                 <Popconfirm
                     title={ <FormattedMessage id='cash-table.confirm' />}
-                    onConfirm={() => onRegisterInCashdesk(cashOrder.id)}
+                    onConfirm={() => onRepeatRegistrationInCashdesk({cashOrder})}
                     okText={ <FormattedMessage id='yes' /> }
                     cancelText={ <FormattedMessage id='no' />}
                 >
                     {iconWithPop({
                         popMessage: (<FormattedMessage id='cash-table.hint_repeat_registration' />),
-                        options: {type: "exclamation-circle", className: Styles.unregisteredIcon}
+                        options: {
+                            type: "exclamation-circle",
+                            className: _.join([Styles.unregisteredIcon, rstActionsAccess? "": Styles.disabled], ' '), //Disable access if no scope
+                        }
                     })}
                 </Popconfirm>
             </span>);

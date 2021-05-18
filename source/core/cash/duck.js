@@ -47,10 +47,15 @@ export const CLOSE_SHIFT_SUCCESS = `${prefix}/CLOSE_SHIFT_SUCCESS`;
 export const SERVICE_INPUT = `${prefix}/SERVICE_INPUT`; //Внести гроші в касу
 export const SERVICE_INPUT_SUCCESS = `${prefix}/SERVICE_INPUT_SUCCESS`;
 
+export const SERVICE_OUTPUT = `${prefix}/SERVICE_OUTPUT`; //Видати гроші з каси
+export const SERVICE_OUTPUT_SUCCESS = `${prefix}/SERVICE_OUTPUT_SUCCESS`;
+
 export const FETCH_X_REPORT = `${prefix}/FETCH_X_REPORT`; //Отримати xReport
 export const FETCH_X_REPORT_SUCCESS = `${prefix}/FETCH_X_REPORT_SUCCESS`;
 
 export const REGISTER_CASH_ORDER_IN_CASHDESK = `${prefix}/REGISTER_CASH_ORDER_IN_CASHDESK`;
+export const REGISTER_SERVICE_INPUT_CASH_ORDER_IN_CASHDESK = `${prefix}/REGISTER_SERVICE_INPUT_CASH_ORDER_IN_CASHDESK`;
+export const REGISTER_SERVICE_OUTPUT_CASH_ORDER_IN_CASHDESK = `${prefix}/REGISTER_SERVICE_OUTPUT_CASH_ORDER_IN_CASHDESK`;
 
 export const SEND_EMAIL_WITH_RECEIPT = `${prefix}/SEND_EMAIL_WITH_RECEIPT`;
 export const SEND_SMS_WITH_RECEIPT = `${prefix}/SEND_SMS_WITH_RECEIPT`;
@@ -346,6 +351,19 @@ export const serviceInputSuccess = () => ({
     type: SERVICE_INPUT_SUCCESS,
 });
 
+/**
+ * Інкасація(видача) частини грошей з каси
+ * @returns 
+ */
+ export const serviceOutput = ({cashboxId, serviceOutputSum}) => ({
+    type: SERVICE_OUTPUT,
+    payload: {cashboxId, serviceOutputSum}
+});
+
+export const serviceOutputSuccess = () => ({
+    type: SERVICE_OUTPUT_SUCCESS,
+});
+
 export const fetchXReport = (cashboxId) => ({
     type: FETCH_X_REPORT,
     payload: cashboxId
@@ -355,33 +373,54 @@ export const fetchXReportSuccess = () => ({
     type: FETCH_X_REPORT_SUCCESS,
 });
 
+/**
+ * For cashboxes with rst we can register them in cashdesk,
+ * this action is used to register sale and return
+ * @param cashOrderId - cashOrder will be used to generate data and register int on cashdesk service
+ */
 export const registerCashOrderInCashdesk = (cashOrderId) => ({
     type: REGISTER_CASH_ORDER_IN_CASHDESK,
     payload: cashOrderId
 });
 
 /**
- * Send email to receivers, that email contains informatin about order RTS transactions(sells with RST)
- * @param {Object} params
- * @param {String[]} params.receivers - Array of receivers, email strings like [test@test.com, ...]
- * @param {String|Number} params.cashOrderId - Cash order to generate data from
+ * Register cashOrder in cashdesk if it is service input(cashorder of type "INCOME" without clientId but with otherCounterparty)
+ * @param {*} params.cashOrderId
  * @returns 
  */
-export const sendEmailWithReceipt = ({receivers, cashOrderId}) => ({
-    type: SEND_EMAIL_WITH_RECEIPT,
-    payload: {receivers, cashOrderId}
+export const registerServiceInputCashOrderInCashdesk = ({cashOrderId}) => ({
+    type: REGISTER_SERVICE_INPUT_CASH_ORDER_IN_CASHDESK,
+    payload: {cashOrderId}
 });
 
 /**
- * Send sms to receivers, that sms contains informatin about order RTS transactions(sells with RST)
+ * Register cashOrder in cashdesk if it is service output(cashorder of type "EXPENSE")
+ * @param {*} params.cashOrderId
+ */
+export const registerServiceOutputCashOrderInCashdesk = ({cashOrderId}) => ({
+    type: REGISTER_SERVICE_OUTPUT_CASH_ORDER_IN_CASHDESK,
+    payload: {cashOrderId}
+});
+
+/**
+ * Send email to a client from cash order, that email contains receipth
  * @param {Object} params
- * @param {String[]} params.receivers - Array of receivers, phone numbers like [0958236712, ...]
+ * @param {String|Number} params.cashOrderId - Cash order to generate data from
+ */
+export const sendEmailWithReceipt = ({cashOrderId}) => ({
+    type: SEND_EMAIL_WITH_RECEIPT,
+    payload: {cashOrderId}
+});
+
+/**
+ * Send sms to a client from cashorder, that sms contains receipt info
+ * @param {Object} params
  * @param {String|Number} params.cashOrderId - Cash order to generate data from
  * @returns 
  */
- export const sendSmsWithReceipt = ({receivers, cashOrderId}) => ({
+ export const sendSmsWithReceipt = ({cashOrderId}) => ({
     type: SEND_SMS_WITH_RECEIPT,
-    payload: {receivers, cashOrderId}
+    payload: {cashOrderId}
 });
 
 /**

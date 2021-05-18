@@ -187,13 +187,15 @@ export class MobileAddOrderForm extends React.PureComponent {
 
         if (newClientVehicleId !== oldClientVehicleId && newClientVehicleId) {
             const newClientVehicle = this._getClientVehicle(newClientVehicleId);
-            if (!newClientVehicle.modificationId) {
-                this._openNotification(newClientVehicle);
-            } else if (
-                newClientVehicle.bodyType &&
-                !newClientVehicle.tecdocId
-            ) {
-                this._openNotification(newClientVehicle);
+            if(newClientVehicle) {
+                if (!newClientVehicle.modificationId) {
+                    this._openNotification(newClientVehicle);
+                } else if (
+                    newClientVehicle.bodyType &&
+                    !newClientVehicle.tecdocId
+                ) {
+                    this._openNotification(newClientVehicle);
+                }
             }
         }
 

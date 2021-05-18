@@ -1435,7 +1435,8 @@ class AddProductModal extends React.Component {
         
     }
 
-    selectProduct = (productId) => {
+    selectProduct = ({productId, cellAddress}) => {
+        console.log(cellAddress)
         const { cells, type, documentType } = this.props;
         const { storageBalance } = this.state;
         const product = this.state.storageProducts.find((product)=>product.id == productId);
@@ -1447,7 +1448,7 @@ class AddProductModal extends React.Component {
             if(type == INCOME || documentType == ORDERINCOME || type == TRANSFER) {
                 addToAddress = preferAddress;
             } else if(type == EXPENSE) {
-                getFromAddress = preferAddress;
+                getFromAddress = cellAddress || preferAddress;
             }
 
             storageBalance[0].count = product.countInWarehouses;

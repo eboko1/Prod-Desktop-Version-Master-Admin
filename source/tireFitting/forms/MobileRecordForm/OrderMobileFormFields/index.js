@@ -710,7 +710,7 @@ export class OrderMobileFormFields extends Component {
                             value={manager.id}
                             key={v4()}
                         >
-                            {`${manager.managerName} ${manager.managerSurname}`}
+                            {`${manager.managerSurname} ${manager.managerName}`}
                         </Option>
                     ))}
                 </DecoratedSelect>
@@ -739,7 +739,7 @@ export class OrderMobileFormFields extends Component {
                                     key={`employee-${employee.id}`}
                                     disabled={employee.disabled}
                                 >
-                                    {`${employee.name} ${employee.surname}`}
+                                    {`${employee.surname} ${employee.name}`}
                                 </Option>
                             );
                         }

@@ -16,3 +16,15 @@
 .tableHeadText {
     color: var(--primary);
 }
+
+.closedCashboxIcon {
+    color: red;
+}
+
+.openCashboxIcon {
+    color: green;
+}
+
+.createCashOrderIcon, .cashboxStatusIcon, .closedCashboxIcon, .openCashboxIcon {
+    font-size: 24px;
+}
