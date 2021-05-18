@@ -45,6 +45,7 @@ import BarcodePage from './BarcodePage';
 import ProductPage from './ProductPage';
 import WMSPage from './WMSPage';
 import VehiclePage from './VehiclePage';
+import VehiclesPage from './VehiclesPage';
 import DirectoriesPage from './DirectoriesPage';
 
 // re-exports (*) must be before ES6 other (default) exports
@@ -102,5 +103,6 @@ export {
     ProductPage,
     WMSPage,
     VehiclePage,
+    VehiclesPage,
     DirectoriesPage,
 };

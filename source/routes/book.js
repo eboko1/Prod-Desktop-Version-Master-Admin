@@ -52,6 +52,7 @@ const book = Object.freeze({
     clientHotOperations:      '/client-hot-operations',
 
     //Vehicles
+    vehicles:                 '/vehicles',
     vehicle:                 '/vehicle',
     vehicleId:               '/vehicle/:id',
 

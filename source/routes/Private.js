@@ -72,6 +72,7 @@ import {
     ProductPage,
     WMSPage,
     VehiclePage,
+    VehiclesPage,
     ProductsWithoutCellPage,
     DirectoriesPage,
 } from 'pages';
@@ -284,6 +285,11 @@ export default class Private extends Component {
                     exact
                     path={ book.vehicleId }
                     render={ props => <VehiclePage { ...props } /> }
+                />
+                <Route
+                    exact
+                    path={ book.vehicles }
+                    render={ props => <VehiclesPage { ...props } /> }
                 />
                 <Route
                     exact
