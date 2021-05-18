@@ -175,6 +175,7 @@ export default class Barcode extends Component {
                 });
                 if(onConfirm) {
                     onConfirm(scanedCode, fullPrefix, codeWithPrefix);
+                    this.handleCancel();
                 }
             } catch(e) {
                 notification.error({
