@@ -66,7 +66,13 @@ export function columnsConfig(props) {
         key:       v4(),
         render: (val, vehicle) => {
             return (
-                <div>{`${_.get(vehicle, 'make')} ${_.get(vehicle, 'model')}`}</div>
+                <div>
+                    <Link
+                        to={ `${book.vehicle}/${vehicle.clientVehicleId}` }
+                    >
+                        {`${_.get(vehicle, 'make')} ${_.get(vehicle, 'model')}`}
+                    </Link>
+                </div>
             );
         }
     };
