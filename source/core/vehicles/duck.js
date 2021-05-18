@@ -12,17 +12,21 @@ export const FETCH_VEHICLE = `${prefix}/FETCH_VEHICLE`;
 export const FETCH_VEHICLE_SUCCESS = `${prefix}/FETCH_VEHICLE_SUCCESS`;
 
 export const SET_PAGE = `${prefix}/SET_PAGE`;
+export const SET_SEARCH_QUERY = `${prefix}/SET_SEARCH_QUERY`;
 
 /**
  * Reducer
  **/
 
 const ReducerState = {
-    vehicles: [],   //All vehicles, array of the can be used in a table
-    stats: {},      // Vehicles stats
-    vehicle: {},    //One vehicle can be used on its page
-    client: {},     //Vehicle client
+    vehicles:    [],   //All vehicles, array of the can be used in a table
+    stats:       {},      // Vehicles stats
+    vehicle:     {},    //One vehicle can be used on its page
+    client:      {},     //Vehicle client
     generalData: {}, //Statisctics for fetched vehcile
+    filters: {
+        query: undefined,
+    },
     sort: {
         page: 1
     }
@@ -56,6 +60,16 @@ export default function reducer(state = ReducerState, action) {
                     page: page
                 }
             };
+            
+        case SET_SEARCH_QUERY:
+            const { query } = payload;
+            return {
+                ...state,
+                filters: {
+                    ...state.filters,
+                    query: query
+                }
+            };
         default:
             return state;
     }
@@ -72,6 +86,7 @@ export const selectVehiclesStats = state => state[ moduleName ].stats;
 export const selectClient = state => state[ moduleName ].client;
 export const selectGeneralData = state => state[ moduleName ].generalData;
 export const selectSort = state => state[ moduleName ].sort;
+export const selectFilters = state => state[ moduleName ].filters;
 
 
 /** Action Creators **/
@@ -93,7 +108,7 @@ export const fetchVehiclesSuccess = ({vehicles, stats}) => ({
  * @param {*} params.vehicleId Vehicle to fetch data for
  */
 export const fetchVehicle = ({vehicleId}) => ({
-    type: FETCH_VEHICLE,
+    type:    FETCH_VEHICLE,
     payload: {vehicleId}
 });
 
@@ -105,12 +120,25 @@ export const fetchVehicleSuccess = ({vehicle, client, generalData}) => ({
 /**
  * Set filtering page, automatically fetches vehicles
  */
- export const setPage = ({page}) => {
-     return (dispatch) => {
+export const setPage = ({page}) => {
+    return (dispatch) => {
         dispatch({
             type: SET_PAGE,
             payload: {page}
         });
         return dispatch(fetchVehicles());
-     }
- };
+    }
+};
+
+/**
+ * Set filtering query for vehicles, automatically fetches vehicles
+ */
+export const setSearchQuery = ({query}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_SEARCH_QUERY,
+            payload: {query}
+        });
+        return dispatch(fetchVehicles());
+    }
+};

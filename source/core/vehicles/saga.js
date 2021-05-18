@@ -12,6 +12,7 @@ import {
     fetchVehicleSuccess,
     fetchVehiclesSuccess,
     selectSort,
+    selectFilters,
 
     FETCH_VEHICLE,
     FETCH_VEHICLES,
@@ -49,10 +50,11 @@ export function* fetchVehiclesSaga() {
             yield take(FETCH_VEHICLES);
 
             const sort = yield select(selectSort);
+            const filters = yield select(selectFilters);
 
             yield nprogress.start();
 
-            const {clientsVehicles, clientsVehiclesStats} = yield call(fetchAPI, 'GET', `vehicles`, {sort});
+            const {clientsVehicles, clientsVehiclesStats} = yield call(fetchAPI, 'GET', `vehicles`, {sort, filters});
 
             yield put(fetchVehiclesSuccess({vehicles: clientsVehicles, stats: clientsVehiclesStats}));
         } catch (error) {

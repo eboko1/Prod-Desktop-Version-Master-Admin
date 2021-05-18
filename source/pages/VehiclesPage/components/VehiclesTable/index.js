@@ -15,6 +15,7 @@ import {
     selectVehiclesStats,
     selectSort,
     setPage,
+    setSearchQuery,
 } from 'core/vehicles/duck';
 
 
@@ -37,7 +38,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     fetchVehicles,
-    setPage
+    setPage,
+    setSearchQuery
 }
 
 @connect(
@@ -49,6 +51,17 @@ export default class VehiclesTable extends React.Component {
     constructor(props) {
         super(props);
 
+        this.handleSearch = _.debounce(value => {
+            this.props.setSearchQuery({
+                query: _.toLower(value.replace(/[+()]/g,''))
+            });
+        }, 1000).bind(this);
+
+    }
+
+    onSearch = e => {
+        const value = e.target.value;
+        this.handleSearch(value);
     }
 
     componentDidMount() {
@@ -86,11 +99,11 @@ export default class VehiclesTable extends React.Component {
 
         return (
             <div>
-                {/* <div className={Styles.filtersCont}>
-                    <div className={Styles.textCont}><FormattedMessage id={"client_hot_operations_page.search"} />: </div>
-                    <div className={Styles.inputCont}><Input defaultValue={this.initialSearchQuery} onChange={this.onSearch} allowClear/></div>
+                <div className={Styles.filtersCont}>
+                    <div className={Styles.textCont}>Search: </div>
+                    <div className={Styles.inputCont}><Input onChange={this.onSearch} allowClear/></div>
                     
-                </div> */}
+                </div>
                 
                 <div>
                     <Table
