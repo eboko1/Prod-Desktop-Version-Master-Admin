@@ -190,18 +190,17 @@ class OrderPage extends Component {
     }
 
     componentDidUpdate = async (prevProps) => {
+        if(this.props.order.clientId && !this.state.selectedClient.clientId && this.props.spinner) {
+            const client = await fetchAPI('GET', `clients/${this.props.order.clientId}`);
+            this.setState({
+                client,
+                selectedClient: client,
+            })  
+        }
         if(this.props.order.status && this.props.order != prevProps.order) {
             this._fetchRepairMapData();
         }
         if(!this.props.spinner && prevProps.spinner) {
-            if(this.props.order.clientId) {
-                const client = await fetchAPI('GET', `clients/${this.props.order.clientId}`);
-                await this.setState({
-                    client,
-                    selectedClient: client,
-                })  
-            }
-
             const allServices = await fetchAPI('GET', 'labors');
             const brands = await fetchAPI('GET', 'brands');
             const details = await fetchAPI('GET', 'store_groups', {keepFlat: true});
