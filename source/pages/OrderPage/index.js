@@ -119,7 +119,8 @@ const mapStateToProps = state => {
         stations:              state.forms.orderForm.stations,
         businessLocations:     state.forms.orderForm.businessLocations,
         user:                  state.auth,
-        vehicles:              state.forms.orderForm.vehicles,
+        vehicles:              state.forms.orderForm.vehicles,        
+        selectedClient:        state.forms.orderForm.selectedClient,
         ...selectInviteData(state),
     };
 };
@@ -191,26 +192,34 @@ class OrderPage extends Component {
             this._fetchRepairMapData();
         }
         if(!this.props.spinner && prevProps.spinner) {
-            const client = await fetchAPI('GET', `clients/${this.props.order.clientId}`);
-            await this.setState({
-                client,
-                selectedClient: client,
-            })
+            if(this.props.order.clientId) {
+                const client = await fetchAPI('GET', `clients/${this.props.order.clientId}`);
+                await this.setState({
+                    client,
+                    selectedClient: client,
+                })  
+            }
+
             const allServices = await fetchAPI('GET', 'labors');
             const brands = await fetchAPI('GET', 'brands');
             const details = await fetchAPI('GET', 'store_groups', {keepFlat: true});
             const requisites = await fetchAPI('GET', 'businesses/requisites');
-            const orderHistory = await fetchAPI('GET', `vehicle/${this.props.order.clientVehicleId}/history`);
 
-            this.setState({
+            await this.setState({
                 allServices: allServices.labors,
                 allDetails: {
                     brands,
                     details,
                 },
                 requisites,
-                orderHistory,
             })
+
+            if(this.props.order.clientVehicleId) {
+                const orderHistory = await fetchAPI('GET', `vehicle/${this.props.order.clientVehicleId}/history`);
+                this.setState({
+                    orderHistory,
+                })
+            }
         }
     }
 
@@ -305,8 +314,9 @@ class OrderPage extends Component {
     }
 
     _onStatusChange = (status, redirectStatus, options, redirectTo) => {
-        const { history} = this.props;
-        const {allServices, allDetails, selectedClient,} = this.state;
+        const { history, order } = this.props;
+        const {allServices, allDetails } = this.state;
+        const selectedClient = order.clientId ? this.state.selectedClient : this.props.selectedClient;
         const form = this.orderFormRef.props.form;
         const orderFormValues = form.getFieldsValue();
         const requiredFields = requiredFieldsOnStatuses(orderFormValues)[
