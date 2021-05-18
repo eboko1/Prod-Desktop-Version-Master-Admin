@@ -90,6 +90,7 @@ class DetailsTable extends Component {
                                                 padding: '0px 8px',
                                                 fontSize: 18,
                                             }}
+                                            title={this.props.intl.formatMessage({id: 'add'})}
                                         >
                                             <Icon type='plus'/>
                                         </Button>
@@ -188,10 +189,11 @@ class DetailsTable extends Component {
                                             transitionDuration: "0.5s",
                                             pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
                                         }}
-                                        >
+                                    >
                                         <Icon
                                             type="shopping"
                                             className={Styles.icon}
+                                            title={this.props.intl.formatMessage({id: 'details_table.order'})}
                                             onClick={async () => {
                                                 await fetchAPI(
                                                     'POST',
@@ -211,6 +213,7 @@ class DetailsTable extends Component {
                                         <Icon
                                             type="plus-square"
                                             className={Styles.icon}
+                                            title={this.props.intl.formatMessage({id: 'copy'})}
                                             onClick={async () => {
                                                 const payload = {
                                                     insertMode: true,
@@ -243,6 +246,7 @@ class DetailsTable extends Component {
                                             style={ { color: 'gold' } }
                                             className={Styles.icon}
                                             theme={ 'filled' }
+                                            title={this.props.intl.formatMessage({id: 'details_table.add_to_favorite'})}
                                             onClick={async () => {
                                                 await fetchAPI(
                                                     'POST',
@@ -285,6 +289,7 @@ class DetailsTable extends Component {
                                             <Icon
                                                 type="delete"
                                                 className={Styles.deleteIcon}
+                                                title={this.props.intl.formatMessage({id: 'delete'})}
                                             />
                                         </Popconfirm>
                                     </div>
@@ -375,6 +380,7 @@ class DetailsTable extends Component {
                                 <Icon
                                     className={Styles.icon}
                                     type="shopping"
+                                    title={this.props.intl.formatMessage({id: 'details_table.order'})}
                                     onClick={async () => {
                                         await fetchAPI(
                                             'POST',
@@ -392,6 +398,7 @@ class DetailsTable extends Component {
                                 <Icon
                                     type="plus-square"
                                     className={Styles.icon}
+                                    title={this.props.intl.formatMessage({id: 'copy'})}
                                     onClick={async () => {
                                         await fetchAPI(
                                             'PUT',
@@ -458,6 +465,7 @@ class DetailsTable extends Component {
                                 >
                                     <Icon
                                         type='delete'
+                                        title={this.props.intl.formatMessage({id: 'delete'})}
                                         className={
                                             disabled
                                                 ? Styles.disabledIcon
@@ -491,6 +499,7 @@ class DetailsTable extends Component {
                                                 fontSize: 24,
                                                 color: 'var(--disabled)'
                                             }}
+                                            title={this.props.intl.formatMessage({id: 'details_table.remove_code'})}
                                             onClick={async ()=>{
                                                 const payload = {
                                                     updateMode: true,
@@ -600,6 +609,7 @@ class DetailsTable extends Component {
                                         fontSize: 24,
                                         color: 'var(--disabled)'
                                     }}
+                                    title={this.props.intl.formatMessage({id: 'details_table.remove_supplier'})}
                                     onClick={async ()=>{
                                         const payload = {
                                             updateMode: true,
@@ -799,6 +809,7 @@ class DetailsTable extends Component {
                             <Icon
                                 type="lock"
                                 className={Styles.icon}
+                                title={this.props.intl.formatMessage({id: 'details_table.reserve'})}
                                 onClick={async () => {
                                     await fetchAPI(
                                         'POST',
@@ -818,6 +829,7 @@ class DetailsTable extends Component {
                             <Icon
                                 type="unlock"
                                 className={Styles.icon}
+                                title={this.props.intl.formatMessage({id: 'details_table.unreserve'})}
                                 onClick={async () => {
                                     await fetchAPI(
                                         'POST',

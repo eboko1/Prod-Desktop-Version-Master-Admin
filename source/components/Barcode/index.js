@@ -220,7 +220,7 @@ export default class Barcode extends Component {
         const disabled = propsDisabled || isForbidden(user, permissions.ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY);
 
         return !displayBarcode ? (
-            <div >
+            <div title={this.props.intl.formatMessage({id: 'navigation.barcode'})}>
                 {button ? 
                     <Button
                         //type={'primary'}
