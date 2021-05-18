@@ -172,6 +172,7 @@ class OrderPage extends Component {
             },
         };
         this._fetchRepairMapData = this._fetchRepairMapData.bind(this);
+        this._isMounted = false;
     }
 
     
@@ -185,6 +186,7 @@ class OrderPage extends Component {
             fetchOrderTask(id);
         }
         this._fetchRepairMapData();
+        this._isMounted = true;
     }
 
     componentDidUpdate = async (prevProps) => {
@@ -772,7 +774,7 @@ class OrderPage extends Component {
             });
         }
 
-        return spinner ? (
+        return spinner || !this._isMounted ? (
             <Spinner spin={ spinner }/>
         ) : (
             <Layout
