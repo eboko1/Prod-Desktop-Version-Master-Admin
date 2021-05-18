@@ -139,7 +139,7 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(this.state.labors != null && this.servicesOptions == null) {
+        if(this.props.labors && this.props.labors.length && !this.servicesOptions) {
             this.servicesOptions = this.getServicesOptions();
         }
         if(this.state.allDetails != null && this.detailsOptions == null) {
