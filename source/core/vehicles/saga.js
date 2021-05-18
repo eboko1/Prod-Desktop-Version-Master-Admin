@@ -10,7 +10,10 @@ import { fetchAPI } from 'utils';
 // own
 import {
     fetchVehicleSuccess,
+    fetchVehiclesSuccess,
+
     FETCH_VEHICLE,
+    FETCH_VEHICLES,
 } from './duck';
 
 export function* fetchVehicleSaga() {
@@ -20,7 +23,7 @@ export function* fetchVehicleSaga() {
 
             yield nprogress.start();
 
-            const vehicle = yield call(fetchAPI, 'GET', `clients/vehicles/${vehicleId}`); //Replace here later
+            const vehicle = yield call(fetchAPI, 'GET', `clients/vehicles/${vehicleId}`);
 
             const {
                 clientId
@@ -39,8 +42,27 @@ export function* fetchVehicleSaga() {
     }
 }
 
+export function* fetchVehiclesSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_VEHICLES);
+
+            yield nprogress.start();
+
+            const {clientsVehicles, clientsVehiclesStats} = yield call(fetchAPI, 'GET', `vehicles`);
+
+            yield put(fetchVehiclesSuccess({vehicles: clientsVehicles, stats: clientsVehiclesStats}));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
 export function* saga() {
     yield all([
         call(fetchVehicleSaga),
+        call(fetchVehiclesSaga),
     ]);
 }

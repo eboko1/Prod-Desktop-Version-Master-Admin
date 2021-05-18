@@ -20,6 +20,7 @@ import {
 
 // own
 import Styles from './styles.m.css';
+import VehiclesTable from './components/VehiclesTable';
 
 const DATE_FORMATT = "DD.MM.YYYY";
 
@@ -48,7 +49,7 @@ export default class VehiclePage extends Component {
                 description={"List of all vehicles on this business."}
                 controls={"Controls here"}
             >
-               Hello world
+               <VehiclesTable />
             </Layout>
         )
     }
