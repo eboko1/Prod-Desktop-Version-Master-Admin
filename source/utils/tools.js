@@ -20,8 +20,19 @@ export function getDisplayName(WrappedComponent) {
 // Routing utils
 export const linkBack = () => dispatch(goBack());
 
+/**
+ * Redirect to rhe page with pathname route with ability to go back
+ * @param {*} pathname Path to redirect
+ * @param {*} state 
+ * @returns 
+ */
 export const goTo = (pathname, state) => dispatch(push(pathname, state));
 
+/**
+ * Redirect to provided linkwithout ability to go back(replace current path)
+ * @param {*} link Link to replace current path with
+ * @returns 
+ */
 export const linkTo = link => dispatch(replace(link));
 
 // Style utils

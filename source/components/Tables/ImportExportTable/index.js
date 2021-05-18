@@ -88,7 +88,7 @@ export default class ImportExportTable extends Component {
                 key: "responsible",
                 render: (row)=>{
                     return (
-                        (row.managerName || "") + " " + (row.managerSurname || "")
+                        (row.managerSurname || "") + " " + (row.managerName || "")
                     )
                 }
             },

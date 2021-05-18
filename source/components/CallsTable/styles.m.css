@@ -18,12 +18,10 @@
 }
 
 .client {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 2em;
-    margin: 2px;
-    background-color: rgb(233, 231, 231);
-    border: 2px solid grey;
-    border-radius: 0.5em;
+    width: 100%;
+    margin: 2px 0 2px 0;
+}
+
+.createClient {
+    width: 100%;
 }

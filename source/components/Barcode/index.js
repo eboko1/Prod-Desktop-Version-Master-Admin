@@ -209,7 +209,7 @@ export default class Barcode extends Component {
     }
 
     render() {
-        const { zIndex, displayBarcode, iconStyle, button, disabled: propsDisabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon, multipleMode } = this.props;
+        const { zIndex, displayBarcode, iconStyle, buttonStyle, button, disabled: propsDisabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon, multipleMode } = this.props;
         const { visible, scanedCode, scanedInputValue } = this.state;
         const id = this.id;
         const iconType = enableScanIcon && !value
@@ -225,6 +225,7 @@ export default class Barcode extends Component {
                         //type={'primary'}
                         disabled={disabled}
                         onClick={this.showModal}
+                        style={buttonStyle}
                     >
                         <Icon
                             type={iconType}

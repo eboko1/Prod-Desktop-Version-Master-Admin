@@ -24,6 +24,8 @@ export default class WMSAddressSettings extends Component {
             addressSettings: [],
             setAllModalVisible: false,
             selectedRows: [],
+            page: 1,
+            totalCount: 0,
         };
 
         this.columns = [
@@ -288,8 +290,18 @@ export default class WMSAddressSettings extends Component {
         fetchCells();
     }
 
+    _fetchCellSettings = async () => {
+        const { page } = this.state;
+        const { warehouseId } = this.props;
+        const cells = await fetchAPI('GET', `wms/cells`, {warehouseId, page, count: 10});
+        this.setState({
+            addressSettings: cells.list,
+            totalCount: cells.stats.count,
+        })
+    }
 
     componentDidMount() {
+        this._fetchCellSettings();
         this.setState({
             addressSettings: this.props.cells,
         })
@@ -301,7 +313,7 @@ export default class WMSAddressSettings extends Component {
 
     render() {
         const { warehouseId, fetchCells } = this.props;
-        const { addressSettings, setAllModalVisible, tableFilter } = this.state;
+        const { addressSettings, setAllModalVisible, tableFilter, page, totalCount } = this.state;
 
         let tableData = addressSettings ? [...addressSettings] : [];
         if(tableFilter) {
@@ -391,6 +403,14 @@ export default class WMSAddressSettings extends Component {
                     rowKey={'address'}
                     pagination={{
                         hideOnSinglePage: true,
+                        current: page,
+                        total: totalCount,
+                        onChange: async (page)=>{
+                            await this.setState({
+                                page
+                            });
+                            this._fetchCellSettings();
+                        }
                     }}
                     rowSelection={rowSelection}
                 />

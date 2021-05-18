@@ -16,7 +16,7 @@ import StoreGroupModal from './StoreGroupModal';
 import StoreProductModal from './StoreProductModal';
 import ConfirmDiagnosticModal from './ConfirmDiagnosticModal';
 import DetailProductModal from './DetailProductModal';
-import DetailStorageModal from './DetailStorageModal';
+import DetailStorageModal, { DetailWarehousesCountModal } from './DetailStorageModal';
 import DetailSupplierModal from './DetailSupplierModal';
 import FavouriteDetailsModal from './FavouriteDetailsModal';
 import FavouriteServicesModal from './FavouriteServicesModal';
@@ -36,6 +36,7 @@ import WMSCellsModal from './WMSCellsModal';
 //cashbox
 import AddCashboxModal from './Cashbox/AddCashboxModal';
 import ServiceInputModal from './Cashbox/ServiceInputModal';
+import ServiceOutputModal from './Cashbox/ServiceOutputModal';
 
 //Report modals
 import ReportOrdersFilterModal from './ReportModals/ReportOrdersFilterModal';
@@ -65,12 +66,14 @@ export {
     ConfirmDiagnosticModal,
     DetailProductModal,
     DetailStorageModal,
+    DetailWarehousesCountModal,
     DetailSupplierModal,
     FavouriteDetailsModal,
     FavouriteServicesModal,
     AddServiceModal,
     AddCashboxModal,
     ServiceInputModal,
+    ServiceOutputModal,
     TecDocInfoModal,
     LaborsNormHourModal,
     OilModal,
