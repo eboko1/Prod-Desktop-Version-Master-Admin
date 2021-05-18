@@ -574,6 +574,7 @@ class DetailProductModal extends React.Component{
                             positions: [],
                         },
                         cellAddress: element.cellAddress,
+                        warehouseId:  element.warehouseId,
                     })
                 }
             });
@@ -794,7 +795,7 @@ class DetailProductModal extends React.Component{
         this.setState({});
     }
 
-    setSupplier(related, supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, supplierPartNumber, key, isFromStock, defaultWarehouseId, productId, brandId, cellAddress) {
+    setSupplier(related, supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, supplierPartNumber, key, isFromStock, defaultWarehouseId, productId, brandId, cellAddress, warehouseId) {
         const { mainTableSource, relatedDetails } = this.state;
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         const currentDetail = related ? relatedDetails[key] : mainTableSource[key];
@@ -812,6 +813,7 @@ class DetailProductModal extends React.Component{
         currentDetail.reservedFromWarehouseId = defaultWarehouseId;
         currentDetail.productId = isFromStock ? productId : undefined;
         currentDetail.cellAddress = cellAddress || undefined;
+        currentDetail.warehouseId = warehouseId || undefined;
         if(brand) {
             currentDetail.brandId = brandId;
             currentDetail.brandName = brand && brand.brandName;
@@ -841,6 +843,7 @@ class DetailProductModal extends React.Component{
             currentDetail.store = undefined;
             currentDetail.reservedFromWarehouseId = undefined;
             currentDetail.cellAddress = undefined;
+            currentDetail.warehouseId = undefined;
         }
 
         if(related) relatedDetails[key] = currentDetail;

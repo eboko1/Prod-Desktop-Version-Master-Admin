@@ -158,7 +158,7 @@ class ServicesTable extends Component {
                                     user={ this.props.user }
                                     laborsTreeData={ this.laborsTreeData }
                                     labors={ this.props.labors }
-                                    details={ this.props.details }
+                                    detailsTreeData={this.props.detailsTreeData}
                                 />
                             ) : (
                                 <QuickEditModal

@@ -41,7 +41,7 @@ import {
     TecDocInfoModal,
     CashOrderModal,
 } from 'modals';
-import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage, roundCurrentTime} from 'utils';
+import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage, roundCurrentTime, fetchAPI} from 'utils';
 import book from 'routes/book';
 import {
     confirmDiagnostic,
@@ -96,8 +96,6 @@ const mapStateToProps = state => {
     return {
         // orderTaskEntity:       state.forms.orderTaskForm.fields, 
         // addClientFormData:     state.forms.addClientForm.data,
-        allDetails:            state.forms.orderForm.allDetails,
-        allServices:           state.forms.orderForm.allServices,
         clients:               state.forms.orderForm.clients,
         employees:             state.forms.orderForm.employees,
         fetchedOrder:          state.forms.orderForm.fetchedOrder,
@@ -113,13 +111,11 @@ const mapStateToProps = state => {
         order:                 state.forms.orderForm.order,
         orderCalls:            state.forms.orderForm.calls,
         orderComments:         state.forms.orderForm.orderComments,
-        orderHistory:          state.forms.orderForm.history,
         orderTaskId:           state.forms.orderTaskForm.taskId,
         orderTasks:            state.forms.orderForm.orderTasks,
         priorityOptions:       state.forms.orderTaskForm.priorityOptions,
         progressStatusOptions: state.forms.orderTaskForm.progressStatusOptions,
         requisites:            state.forms.orderForm.requisites,
-        selectedClient:        state.forms.orderForm.selectedClient,
         spinner:               state.ui.orderFetching,
         stations:              state.forms.orderForm.stations,
         businessLocations:     state.forms.orderForm.businessLocations,
@@ -162,6 +158,18 @@ class OrderPage extends Component {
             scrollToMapId: undefined,
             repairMapData: [],
             focusedRef: undefined,
+            allServices: [],
+            allDetails: {brands: [], details: []},
+            selectedClient: {
+                requisites: [],
+                phones:     [],
+                emails:     [],
+                vehicles:   [],
+            },
+            requisites: [],
+            orderHistory: {
+                orders: []
+            },
         };
         this._fetchRepairMapData = this._fetchRepairMapData.bind(this);
     }
@@ -179,9 +187,31 @@ class OrderPage extends Component {
         this._fetchRepairMapData();
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate = async (prevProps) => {
         if(this.props.order.status && this.props.order != prevProps.order) {
             this._fetchRepairMapData();
+        }
+        if(!this.props.spinner && prevProps.spinner) {
+            const client = await fetchAPI('GET', `clients/${this.props.order.clientId}`);
+            await this.setState({
+                client,
+                selectedClient: client,
+            })
+            const allServices = await fetchAPI('GET', 'labors');
+            const brands = await fetchAPI('GET', 'brands');
+            const details = await fetchAPI('GET', 'store_groups', {keepFlat: true});
+            const requisites = await fetchAPI('GET', 'businesses/requisites');
+            const orderHistory = await fetchAPI('GET', `vehicle/${this.props.order.clientVehicleId}/history`);
+
+            this.setState({
+                allServices: allServices.labors,
+                allDetails: {
+                    brands,
+                    details,
+                },
+                requisites,
+                orderHistory,
+            })
         }
     }
 
@@ -276,7 +306,8 @@ class OrderPage extends Component {
     }
 
     _onStatusChange = (status, redirectStatus, options, redirectTo) => {
-        const {allServices, allDetails, selectedClient, history} = this.props;
+        const { history} = this.props;
+        const {allServices, allDetails, selectedClient,} = this.state;
         const form = this.orderFormRef.props.form;
         const orderFormValues = form.getFieldsValue();
         const requiredFields = requiredFieldsOnStatuses(orderFormValues)[
@@ -511,7 +542,7 @@ class OrderPage extends Component {
     }
 
     _createCopy = (services, details) => {
-        const {allServices, allDetails, selectedClient} = this.props;
+        const {allServices, allDetails, selectedClient} = this.state;
         const form = this.orderFormRef.props.form;
         const orderFormValues = form.getFieldsValue();
         const requiredFields = requiredFieldsOnStatuses(orderFormValues).success;
@@ -671,7 +702,7 @@ class OrderPage extends Component {
 
     /* eslint-disable complexity*/
     render() {
-        const {showOilModal, oilModalData, repairMapData, focusedRef } = this.state;
+        const {showOilModal, oilModalData, repairMapData, focusedRef, client, allServices, allDetails, selectedClient, orderHistory, requisites } = this.state;
         const {
             fetchOrderForm,
             fetchOrderTask,
@@ -693,7 +724,7 @@ class OrderPage extends Component {
             fetchedOrder,
         } = this.props;
         const {num, status, datetime, diagnosis, repairMapIndicator, totalSumWithTax} = this.props.order;
-        const { clientId, name, surname } = this.props.selectedClient;
+        const { clientId, name, surname } = selectedClient;
         const {id} = this.props.match.params;
 
         const {
@@ -708,6 +739,7 @@ class OrderPage extends Component {
         let remainSum = totalSumWithTax;
 
         if(fetchedOrder) {
+            fetchedOrder.client = client;
             fetchedOrder.cashOrders.map((elem)=>{
                 remainSum += elem.decrease || 0;
                 remainSum -= elem.increase || 0;
@@ -957,7 +989,7 @@ class OrderPage extends Component {
                         onStatusChange={ this._onStatusChange }
                         user={ this.props.user }
                         orderTasks={ this.props.orderTasks }
-                        orderHistory={ this.props.orderHistory }
+                        orderHistory={ orderHistory }
                         orderId={ id }
                         orderDiagnostic={ diagnosis }
                         allDetails={ this.props.allDetails }
@@ -968,17 +1000,21 @@ class OrderPage extends Component {
                     view={ {min: BREAKPOINTS.sm.max, max: BREAKPOINTS.xxl.max} }
                 >
                     <OrderForm
+                        allDetails={allDetails}
+                        allServices={allServices}
+                        client={client}
+                        selectedClient={selectedClient}
+                        requisites={requisites}
+                        orderHistory={orderHistory}
                         errors={ this.state.errors }
                         user={ this.props.user }
                         orderId={ id }
                         wrappedComponentRef={ this.saveOrderFormRef }
                         orderTasks={ this.props.orderTasks }
-                        orderHistory={ this.props.orderHistory }
                         setAddClientModal={ this.setAddClientModal }
                         modal={ modal }
                         orderCalls={ this.props.orderCalls }
                         orderDiagnostic = { diagnosis }
-                        allDetails={ this.props.allDetails }
                         employees={ this.props.employees }
                         filteredDetails={ this.props.filteredDetails }
                         setModal={ setModal }

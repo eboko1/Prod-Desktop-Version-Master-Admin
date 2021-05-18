@@ -629,7 +629,6 @@ class AddServiceModal extends React.Component{
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log(this);
         const { visible, labor } = this.props;
         const editing = Boolean(labor && labor.id);
         if(prevProps.visible == false && visible) {
