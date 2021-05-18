@@ -601,7 +601,7 @@ class AddServiceModal extends React.Component{
     }
 
     getOptions() {
-        this.servicesOptions = [...this.labors];
+        this.servicesOptions = [...this.props.labors];
         this.employeeOptions = this.props.employees.map((elem, i)=>(
             <Option key={i} value={elem.id}>
                 {elem.name} {elem.surname}
@@ -610,7 +610,7 @@ class AddServiceModal extends React.Component{
     };
 
     filterOptions(masterLaborId, storeGroupId, laborId) {
-        var servicesOptions = [...this.labors];
+        var servicesOptions = [...this.props.labors];
         if(masterLaborId) {
             servicesOptions = servicesOptions.filter((elem, index)=>elem.masterLaborId == masterLaborId);
         }
