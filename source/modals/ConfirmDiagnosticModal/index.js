@@ -100,7 +100,6 @@ class ConfirmDiagnosticModal extends React.Component{
                         positions: element.commentary && element.commentary.positions,
                     },
                     isCritical: element.status == 3,
-                    status: 'CALCULATE',
                 })
             }
         });

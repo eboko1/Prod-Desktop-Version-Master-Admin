@@ -599,7 +599,6 @@ class DetailProductModal extends React.Component{
                                     comment: undefined,
                                     positions: [],
                                 },
-                                status: 'CALCULATE',
                             })
                         } else {
                             data.details.push({
@@ -617,7 +616,6 @@ class DetailProductModal extends React.Component{
                                     comment: undefined,
                                     positions: [],
                                 },
-                                status: 'CALCULATE',
                             })
                         }
                     }

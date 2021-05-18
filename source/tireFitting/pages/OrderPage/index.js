@@ -729,7 +729,7 @@ class OrderPage extends Component {
             });
         }
 
-        return  orderFetching ? (
+        return  orderFetching || !this._isMounted ? (
             <Spinner spin={ orderFetching }/>
         ) : (
             <Layout
