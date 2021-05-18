@@ -275,7 +275,11 @@ class DetailsTable extends Component {
                                                     'DELETE',
                                                     `orders/${this.props.orderId}/details`,
                                                     {
-                                                        ids: `[${this.state.selectedRows.map(({id})=>id)}]`,
+                                                        ids: `[${
+                                                                this.state.selectedRows
+                                                                    .filter(({reservedCount, agreement}) => !reservedCount && agreement == 'UNDEFINED')
+                                                                    .map(({id})=>id)
+                                                        }]`,
                                                     },
                                                     undefined,
                                                     { handleErrorInternally: true }
