@@ -11,6 +11,8 @@ export const FETCH_VEHICLES_SUCCESS = `${prefix}/FETCH_VEHICLES_SUCCESS`;
 export const FETCH_VEHICLE = `${prefix}/FETCH_VEHICLE`;
 export const FETCH_VEHICLE_SUCCESS = `${prefix}/FETCH_VEHICLE_SUCCESS`;
 
+export const SET_PAGE = `${prefix}/SET_PAGE`;
+
 /**
  * Reducer
  **/
@@ -20,7 +22,10 @@ const ReducerState = {
     stats: {},      // Vehicles stats
     vehicle: {},    //One vehicle can be used on its page
     client: {},     //Vehicle client
-    generalData: {} //Statisctics for fetched vehcile
+    generalData: {}, //Statisctics for fetched vehcile
+    sort: {
+        page: 1
+    }
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -39,7 +44,17 @@ export default function reducer(state = ReducerState, action) {
             return { 
                 ...state, 
                 vehicles: vehicles,
-                stst: stats
+                stats: stats
+            };
+
+        case SET_PAGE:
+            const { page } = payload;
+            return {
+                ...state,
+                sort: {
+                    ...state.sort,
+                    page: page
+                }
             };
         default:
             return state;
@@ -56,6 +71,7 @@ export const selectVehicles = state => state[ moduleName ].vehicles;
 export const selectVehiclesStats = state => state[ moduleName ].stats;
 export const selectClient = state => state[ moduleName ].client;
 export const selectGeneralData = state => state[ moduleName ].generalData;
+export const selectSort = state => state[ moduleName ].sort;
 
 
 /** Action Creators **/
@@ -85,3 +101,16 @@ export const fetchVehicleSuccess = ({vehicle, client, generalData}) => ({
     type:    FETCH_VEHICLE_SUCCESS,
     payload: {vehicle, client, generalData},
 });
+
+/**
+ * Set filtering page, automatically fetches vehicles
+ */
+ export const setPage = ({page}) => {
+     return (dispatch) => {
+        dispatch({
+            type: SET_PAGE,
+            payload: {page}
+        });
+        return dispatch(fetchVehicles());
+     }
+ };

@@ -11,7 +11,10 @@ import { v4 } from 'uuid';
 //Proj
 import {
     fetchVehicles,
-    selectVehicles
+    selectVehicles,
+    selectVehiclesStats,
+    selectSort,
+    setPage,
 } from 'core/vehicles/duck';
 
 
@@ -22,16 +25,19 @@ import Styles from './styles.m.css';
 const mapStateToProps = state => ({
     user:                state.auth,
     vehicles:            selectVehicles(state),
-    clients:             state.clientHotOperations.clients,
-    stats:               state.clientHotOperations.stats,
-    clientsFetching:     state.clientHotOperations.clientsFetching,
-    sort:                state.clientHotOperations.sort,
-    expandedClientRow:   state.clientHotOperations.expandedClientRow,
-    searchQuery:         state.clientHotOperations.filters.query
+    stats:               selectVehiclesStats(state),
+    sort:                selectSort(state),
+    // clients:             state.clientHotOperations.clients,
+    // stats:               state.clientHotOperations.stats,
+    // clientsFetching:     state.clientHotOperations.clientsFetching,
+    // sort:                state.clientHotOperations.sort,
+    // expandedClientRow:   state.clientHotOperations.expandedClientRow,
+    // searchQuery:         state.clientHotOperations.filters.query
 });
 
 const mapDispatchToProps = {
-    fetchVehicles
+    fetchVehicles,
+    setPage
 }
 
 @connect(
@@ -53,6 +59,7 @@ export default class VehiclesTable extends React.Component {
         const {
             clients,
             stats,
+            setPage,
             clientsFetching,
             sort,
             setSortPage,
@@ -60,21 +67,21 @@ export default class VehiclesTable extends React.Component {
             setClientRowKey,
             expandedClientRow,
             user,
-
             vehicles
         } = this.props;
 
         console.log("Vehicles: ", vehicles);
+        console.log("Stats: ", stats);
 
         const pagination = {
             pageSize: 25,
             size: "large",
-            // total: Math.ceil(stats.countClients / 25) * 25,
+            total: Math.ceil(stats.totalRowsCount / 25) * 25,
             tital: 100,
-            // current: sort.page,
-            // onChange: page => {
-            //     setSortPage(page);
-            // },
+            current: sort.page,
+            onChange: page => {
+                setPage({page});
+            },
         };
 
         return (

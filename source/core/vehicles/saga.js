@@ -1,5 +1,5 @@
 // vendor
-import { call, put, all, take } from 'redux-saga/effects';
+import { call, put, all, take, select } from 'redux-saga/effects';
 import nprogress from 'nprogress';
 import _ from 'lodash';
 
@@ -11,6 +11,7 @@ import { fetchAPI } from 'utils';
 import {
     fetchVehicleSuccess,
     fetchVehiclesSuccess,
+    selectSort,
 
     FETCH_VEHICLE,
     FETCH_VEHICLES,
@@ -47,9 +48,11 @@ export function* fetchVehiclesSaga() {
         try {
             yield take(FETCH_VEHICLES);
 
+            const sort = yield select(selectSort);
+
             yield nprogress.start();
 
-            const {clientsVehicles, clientsVehiclesStats} = yield call(fetchAPI, 'GET', `vehicles`);
+            const {clientsVehicles, clientsVehiclesStats} = yield call(fetchAPI, 'GET', `vehicles`, {sort});
 
             yield put(fetchVehiclesSuccess({vehicles: clientsVehicles, stats: clientsVehiclesStats}));
         } catch (error) {
