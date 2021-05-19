@@ -24,6 +24,10 @@ import {
     GeneralInfoTab,
     VehicleOrdersTab,
     VehicleLaborsTab,
+    VehicleSparePartsTab,
+    VehicleNormHoursTab,
+    VehicleRecomendationsTab,
+    VehicleInspectionIntervalsTab,
 } from './components/Tabs';
 
 const TabPane = Tabs.TabPane;
@@ -64,8 +68,9 @@ export default class VehiclePage extends Component {
                         <GeneralInfoTab />
                     </TabPane>
 
-
-                    <TabPane tab="Norm hours" key="norm_hours">Content 2</TabPane>
+                    <TabPane tab="Norm hours" key="norm_hours">
+                        <VehicleNormHoursTab />
+                    </TabPane>
 
                     <TabPane tab="Orders" key="orders">
                         <VehicleOrdersTab />
@@ -76,10 +81,17 @@ export default class VehiclePage extends Component {
                     </TabPane>
 
 
-                    <TabPane tab="Spare parts" key="spare_parts">Content 5</TabPane>
-                    <TabPane tab="Recommendations" key="recommendations">Content 6</TabPane>
-                    {/* TODO: Change key */}
-                    <TabPane tab="ТО и Интервали" key="inspection_intervals">Content 7</TabPane>
+                    <TabPane tab="Spare parts" key="spare_parts">
+                        <VehicleSparePartsTab />
+                    </TabPane>
+
+                    <TabPane tab="Recommendations" key="recommendations">
+                        <VehicleRecomendationsTab />
+                    </TabPane>
+
+                    <TabPane tab="ТО и Интервали" key="inspection_intervals">
+                        <VehicleInspectionIntervalsTab />
+                    </TabPane>
                 </Tabs>
             </Layout>
         )
