@@ -15,6 +15,8 @@ export const FETCH_VEHICLE_ORDERS_SUCCESS = `${prefix}/FETCH_VEHICLE_ORDERS_SUCC
 export const FETCH_VEHICLE_LABORS = `${prefix}/FETCH_VEHICLE_LABORS`;
 export const FETCH_VEHICLE_LABORS_SUCCESS = `${prefix}/FETCH_VEHICLE_LABORS_SUCCESS`;
 
+export const CREATE_ORDER = `${prefix}/CREATE_ORDER`;
+
 export const SET_PAGE = `${prefix}/SET_PAGE`;
 export const SET_SEARCH_QUERY = `${prefix}/SET_SEARCH_QUERY`;
 export const SET_EXPANDED_VEHICLE_ID = `${prefix}/SET_EXPANDED_VEHICLE_ID`;
@@ -193,6 +195,16 @@ export const fetchVehicleLaborsSuccess = ({labors, stats}) => ({
     payload: {labors, stats},
 });
 
+/**
+ * Create new order(н/з) which will contain specific client and its vehicle.
+ * New client will be fetched by its id.
+ * @param {*} params.clientId - id of a client
+ * @param {*} params.managerId - id of a manager who created an order(current user)
+ */
+ export const createOrder = ({clientId, managerId, vehicleId}) => ({
+    type: CREATE_ORDER,
+    payload: {clientId, managerId, vehicleId}
+});
 
 /** Set filtering page, automatically fetches vehicles */
 export const setPage = ({page}) => {

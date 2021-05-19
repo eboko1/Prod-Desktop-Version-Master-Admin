@@ -14,6 +14,8 @@ import book from 'routes/book';
 import {
     fetchVehicle,
 
+    createOrder,
+
     selectVehicle,
     selectClient,
     selectGeneralData
@@ -28,13 +30,15 @@ const TabPane = Tabs.TabPane;
 const DATE_FORMATT = "DD.MM.YYYY";
 
 const mapStateToProps = state => ({
+    user:        state.auth,
     vehicle:     selectVehicle(state),
     client:      selectClient(state),
     generalData: selectGeneralData(state),
 });
 
 const mapDispatchToProps = {
-    fetchVehicle
+    fetchVehicle,
+    createOrder
 };
 
 @withRouter
@@ -48,6 +52,15 @@ export default class GeneralInfoTab extends Component {
     componentDidMount() {
         const { match: {params: {id}}} = this.props;
         this.props.fetchVehicle({vehicleId: id});
+    }
+
+    /**
+     * This event handler is used to create an order which will contain specific client and may contain vehicle if id was provided
+     * @param {*} param0 Contains clientId which is used to define client in order and vehicleId of this client
+     */
+    onCreateOrder = ({clientId, vehicleId}) => {
+        const {user} = this.props;
+        this.props.createOrder({clientId, managerId: user.id, vehicleId});
     }
 
     render() {
@@ -74,7 +87,13 @@ export default class GeneralInfoTab extends Component {
                             <Icon className={Styles.editIcon} type="edit" />
                             <Icon className={Styles.deleteIcon} type="delete" />
                             <Icon className={Styles.changeVehicleOwnerIcon} type="sync" />
-                            <Button className={Styles.iconButton} type="primary"><Icon className={Styles.plusIcon} type="plus" /></Button>
+                            <Button
+                                className={Styles.iconButton}
+                                type="primary"
+                                onClick={() => this.onCreateOrder({clientId: _.get(client, 'clientId'), vehicleId: _.get(vehicle, 'id')})}
+                            >
+                                <Icon className={Styles.plusIcon} type="plus" />
+                            </Button>
                         </div>
                     }
                 >

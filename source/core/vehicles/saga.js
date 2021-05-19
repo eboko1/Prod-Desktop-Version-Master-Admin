@@ -2,8 +2,12 @@
 import { call, put, all, take, select } from 'redux-saga/effects';
 import nprogress from 'nprogress';
 import _ from 'lodash';
+import moment from 'moment';
+import { notification } from 'antd';
+import history from 'store/history';
 
 //proj
+import book from 'routes/book';
 import { emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
@@ -22,6 +26,7 @@ import {
     FETCH_VEHICLES,
     FETCH_VEHICLE_ORDERS,
     FETCH_VEHICLE_LABORS,
+    CREATE_ORDER,
 } from './duck';
 
 export function* fetchVehicleSaga() {
@@ -111,11 +116,60 @@ export function* fetchVehicleLaborsSaga() {
     }
 }
 
+export function* createOrderSaga() {
+    while(true) {
+        const { payload: {clientId, managerId, vehicleId} } = yield take(CREATE_ORDER);
+        if(!clientId) continue;
+        
+        const client = yield call(fetchAPI, 'GET', `clients/${clientId}`);//Get client
+        
+        try {
+            //Create new order
+            const response = yield call(
+                fetchAPI,
+                'POST',
+                `orders`,
+                null,
+                {
+                    clientId: client.clientId,
+                    clientVehicleId: vehicleId ? vehicleId : void 0,
+                    duration: 0.5,
+                    clientPhone: client.phones[0],
+                    stationLoads: [{
+                        beginDatetime: moment().startOf('hour').toISOString(),
+                        duration: 0.5,
+                        status: "TO_DO",
+                    }],
+                    status: 'not_complete',
+                    managerId: managerId,
+                    beginDatetime: moment().startOf('hour').toISOString(),
+                }, 
+                {handleErrorInternally: true}
+            );
+
+            if(response && response.created) {
+                // If successfully created new order redirect on its page 
+                history.push({
+                    pathname: `${book.order}/${response.created[0].id}`
+                });
+            }
+
+        } catch(err) {
+            const { response } = err;
+            console.error(err);
+            response && notification.error({
+                message: response.message
+            })
+        }
+    }
+}
+
 export function* saga() {
     yield all([
         call(fetchVehicleSaga),
         call(fetchVehiclesSaga),
         call(fetchVehicleOrdersSaga),
         call(fetchVehicleLaborsSaga),
+        call(createOrderSaga),
     ]);
 }
