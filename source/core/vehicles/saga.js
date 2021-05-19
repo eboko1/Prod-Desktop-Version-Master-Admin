@@ -11,11 +11,15 @@ import { fetchAPI } from 'utils';
 import {
     fetchVehicleSuccess,
     fetchVehiclesSuccess,
+    fetchVehicleOrdersSuccess,
+
     selectSort,
     selectFilters,
+    selectExpandedVehicleId,
 
     FETCH_VEHICLE,
     FETCH_VEHICLES,
+    FETCH_VEHICLE_ORDERS,
 } from './duck';
 
 export function* fetchVehicleSaga() {
@@ -65,9 +69,30 @@ export function* fetchVehiclesSaga() {
     }
 }
 
+export function* fetchVehicleOrdersSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_VEHICLE_ORDERS);
+
+            const vehicleId = yield select(selectExpandedVehicleId);
+
+            yield nprogress.start();
+
+            const {orders, stats} = yield call(fetchAPI, 'GET', `orders/vehicle/${vehicleId}`);
+
+            yield put(fetchVehicleOrdersSuccess({orders, stats}));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
 export function* saga() {
     yield all([
         call(fetchVehicleSaga),
         call(fetchVehiclesSaga),
+        call(fetchVehicleOrdersSaga),
     ]);
 }

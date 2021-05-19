@@ -1,6 +1,3 @@
-/*
-Container used to show clients and perform basic search of them.
-*/
 //Vendor
 import React from 'react';
 import { connect } from "react-redux";
@@ -9,13 +6,18 @@ import { Table, Input } from 'antd';
 import { v4 } from 'uuid';
 
 //Proj
+import VehicleOrdersTable from '../VehicleOrdersTable';
 import {
     fetchVehicles,
+
     selectVehicles,
     selectVehiclesStats,
+    selectExpandedVehicleId,
     selectSort,
+
     setPage,
     setSearchQuery,
+    setExpandedVehicleId,
 } from 'core/vehicles/duck';
 
 
@@ -24,22 +26,18 @@ import { columnsConfig } from './config';
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
-    user:                state.auth,
-    vehicles:            selectVehicles(state),
-    stats:               selectVehiclesStats(state),
-    sort:                selectSort(state),
-    // clients:             state.clientHotOperations.clients,
-    // stats:               state.clientHotOperations.stats,
-    // clientsFetching:     state.clientHotOperations.clientsFetching,
-    // sort:                state.clientHotOperations.sort,
-    // expandedClientRow:   state.clientHotOperations.expandedClientRow,
-    // searchQuery:         state.clientHotOperations.filters.query
+    user:                 state.auth,
+    vehicles:             selectVehicles(state),
+    stats:                selectVehiclesStats(state),
+    sort:                 selectSort(state),
+    expandedVehicleId:    selectExpandedVehicleId(state),
 });
 
 const mapDispatchToProps = {
     fetchVehicles,
     setPage,
-    setSearchQuery
+    setSearchQuery,
+    setExpandedVehicleId
 }
 
 @connect(
@@ -70,17 +68,13 @@ export default class VehiclesTable extends React.Component {
 
     render() {
         const {
-            clients,
             stats,
             setPage,
-            clientsFetching,
             sort,
-            setSortPage,
-            fetchClientOrders,
-            setClientRowKey,
-            expandedClientRow,
+            expandedVehicleId,
             user,
-            vehicles
+            vehicles,
+            setExpandedVehicleId
         } = this.props;
 
         console.log("Vehicles: ", vehicles);
@@ -114,14 +108,15 @@ export default class VehiclesTable extends React.Component {
                         scroll={ { x: 1000, y: '70vh' } }
                         // loading={clientsFetching}
                         pagination={pagination}
-                        rowKey={() => v4()}
-                        // expandedRowKeys={[expandedClientRow]} //Only one row can be expanded at the time
-                        // expandedRowRender={() => (<ClientOrdersContainer />)}
-                        // onExpand={(expanded, client) => {
-                        //     expanded && fetchClientOrders({clientId: client.clientId})
-                        //     expanded && setClientRowKey(`${client.clientId}`)
-                        //     !expanded && setClientRowKey("")
-                        // }}
+                        rowKey={vehicle => vehicle.clientVehicleId}
+                        expandedRowKeys={[expandedVehicleId]} //Only one row can be expanded at the time
+                        expandedRowRender={() => (<VehicleOrdersTable />)}
+                        onExpand={(expanded, vehicle) => {
+                            console.log("Expanding: ", vehicle.clientVehicleId, expanded);
+                            setExpandedVehicleId({
+                                vehicleId: expanded ? vehicle.clientVehicleId: undefined
+                            })
+                        }}
                         bordered
                     />
                 </div>

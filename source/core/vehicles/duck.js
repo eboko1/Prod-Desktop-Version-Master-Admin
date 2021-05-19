@@ -1,6 +1,4 @@
-/**
- * Constants
- **/
+/** Constants **/
 
 export const moduleName = 'vehicles';
 const prefix = `cpb/${moduleName}`;
@@ -11,19 +9,28 @@ export const FETCH_VEHICLES_SUCCESS = `${prefix}/FETCH_VEHICLES_SUCCESS`;
 export const FETCH_VEHICLE = `${prefix}/FETCH_VEHICLE`;
 export const FETCH_VEHICLE_SUCCESS = `${prefix}/FETCH_VEHICLE_SUCCESS`;
 
+export const FETCH_VEHICLE_ORDERS = `${prefix}/FETCH_VEHICLE_ORDERS`;
+export const FETCH_VEHICLE_ORDERS_SUCCESS = `${prefix}/FETCH_VEHICLE_ORDERS_SUCCESS`;
+
 export const SET_PAGE = `${prefix}/SET_PAGE`;
 export const SET_SEARCH_QUERY = `${prefix}/SET_SEARCH_QUERY`;
+export const SET_EXPANDED_VEHICLE_ID = `${prefix}/SET_EXPANDED_VEHICLE_ID`;
 
-/**
- * Reducer
- **/
+/** Reducer **/
 
 const ReducerState = {
-    vehicles:    [],   //All vehicles, array of the can be used in a table
-    stats:       {},      // Vehicles stats
-    vehicle:     {},    //One vehicle can be used on its page
-    client:      {},     //Vehicle client
-    generalData: {}, //Statisctics for fetched vehcile
+    vehicles:      [],      // All vehicles, array of the can be used in a table
+    stats:         {},      // Vehicles stats
+    vehicle:       {},      // One vehicle can be used on its page
+    client:        {},      // Vehicle client
+    generalData:   {},      // Statisctics for fetched vehcile
+
+    vehicleOrdersData: { //Array of orders fetch for specific vehicle
+        orders: [],
+        stats: {},
+    },
+    expandedVehicleId: undefined, //Currently selected vehicle row
+
     filters: {
         query: undefined,
     },
@@ -70,14 +77,30 @@ export default function reducer(state = ReducerState, action) {
                     query: query
                 }
             };
+        
+        case SET_EXPANDED_VEHICLE_ID:
+            const { vehicleId } = payload;
+            return {
+                ...state,
+                expandedVehicleId: vehicleId
+            };
+
+        case FETCH_VEHICLE_ORDERS_SUCCESS:
+            const {orders, stats: vehicleOrdersStats} = payload;
+            return {
+                ...state,
+                vehicleOrdersData: {
+                    ...state.vehicleOrdersData,
+                    orders: orders,
+                    stats: vehicleOrdersStats
+                }
+            };
         default:
             return state;
     }
 }
 
-/**
- * Selectors
- **/
+/** Selectors **/
 
 export const stateSelector = state => state[ moduleName ];
 export const selectVehicle = state => state[ moduleName ].vehicle;
@@ -87,13 +110,16 @@ export const selectClient = state => state[ moduleName ].client;
 export const selectGeneralData = state => state[ moduleName ].generalData;
 export const selectSort = state => state[ moduleName ].sort;
 export const selectFilters = state => state[ moduleName ].filters;
+export const selectExpandedVehicleId = state => state[ moduleName ].expandedVehicleId;
+export const selectVehicleOrders = state => state[ moduleName ].vehicleOrdersData.orders;
+export const selectVehicleOrdersStats = state => state[ moduleName ].vehicleOrdersData.stats;
+
+
 
 
 /** Action Creators **/
 
-/**
- * Fetch all vehicles
- */
+/** Fetch all vehicles */
 export const fetchVehicles = () => ({
     type: FETCH_VEHICLES,
 });
@@ -118,8 +144,19 @@ export const fetchVehicleSuccess = ({vehicle, client, generalData}) => ({
 });
 
 /**
- * Set filtering page, automatically fetches vehicles
+ * Fetches orders where vehicle was participating
+ * @param {*} params.vehicleId Vehicle to fetch data for
  */
+ export const fetchVehicleOrders = () => ({
+    type:    FETCH_VEHICLE_ORDERS
+});
+
+export const fetchVehicleOrdersSuccess = ({orders, stats}) => ({
+    type:    FETCH_VEHICLE_ORDERS_SUCCESS,
+    payload: {orders, stats},
+});
+
+/** Set filtering page, automatically fetches vehicles */
 export const setPage = ({page}) => {
     return (dispatch) => {
         dispatch({
@@ -130,15 +167,25 @@ export const setPage = ({page}) => {
     }
 };
 
-/**
- * Set filtering query for vehicles, automatically fetches vehicles
- */
-export const setSearchQuery = ({query}) => {
+/** Set filtering query for vehicles, automatically fetches vehicles */
+export const setSearchQuery = ({rowId}) => {
     return (dispatch) => {
         dispatch({
             type: SET_SEARCH_QUERY,
-            payload: {query}
+            payload: {rowId}
         });
         return dispatch(fetchVehicles());
+    }
+};
+
+/** Set expanded vehicle id to load data for it(all the orders for that vehicle), automatically fetches orders */
+export const setExpandedVehicleId = ({vehicleId}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_EXPANDED_VEHICLE_ID,
+            payload: {vehicleId}
+        });
+
+        vehicleId && (vehicleId != "") && dispatch(fetchVehicleOrders()); //Fetch only if Id is valid
     }
 };

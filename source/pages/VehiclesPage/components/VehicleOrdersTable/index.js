@@ -1,6 +1,3 @@
-/*
-Container used to show clients and perform basic search of them.
-*/
 //Vendor
 import React from 'react';
 import { connect } from "react-redux";
@@ -8,14 +5,19 @@ import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
 import { v4 } from 'uuid';
 
+//proj
+import {
+    selectVehicleOrders,
+    selectVehicleOrdersStats,
+} from 'core/vehicles/duck';
+
 //Own
 import { columnsConfig } from './config';
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
     user: state.auth,
-    orders: state.clientHotOperations.clientOrdersData.orders,
-    clientOrdersFetching: state.clientHotOperations.clientOrdersFetching
+    orders: selectVehicleOrders(state),
 });
 
 @connect(
@@ -23,16 +25,11 @@ const mapStateToProps = state => ({
     void 0,
 )
 @injectIntl
-export default class ClientOrdersContainer extends React.Component {
-    constructor(props) {
-        super(props);
-
-    }
+export default class VehicleOrdersTable extends React.Component {
 
     render() {
         const {
             orders,
-            clientOrdersFetching,
             intl: {formatMessage},
         } = this.props;
 
@@ -45,7 +42,7 @@ export default class ClientOrdersContainer extends React.Component {
                     dataSource={orders}
                     columns={columnsConfig({formatMessage})}
                     scroll={ { x: 1000, y: '30vh' } }
-                    loading={clientOrdersFetching}
+                    // loading={clientOrdersFetching}
                     rowKey={() => v4()}
                     bordered
                 />
