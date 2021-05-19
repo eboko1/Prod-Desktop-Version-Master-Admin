@@ -12,6 +12,7 @@ import {
     fetchVehicleSuccess,
     fetchVehiclesSuccess,
     fetchVehicleOrdersSuccess,
+    fetchVehicleLaborsSuccess,
 
     selectSort,
     selectFilters,
@@ -20,6 +21,7 @@ import {
     FETCH_VEHICLE,
     FETCH_VEHICLES,
     FETCH_VEHICLE_ORDERS,
+    FETCH_VEHICLE_LABORS,
 } from './duck';
 
 export function* fetchVehicleSaga() {
@@ -89,10 +91,31 @@ export function* fetchVehicleOrdersSaga() {
     }
 }
 
+export function* fetchVehicleLaborsSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_VEHICLE_LABORS);
+
+            const vehicleId = yield select(selectExpandedVehicleId);
+
+            yield nprogress.start();
+
+            const {labors, laborsStats} = yield call(fetchAPI, 'GET', `orders/labors/${vehicleId}`);
+
+            yield put(fetchVehicleLaborsSuccess({labors, stats: laborsStats}));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
 export function* saga() {
     yield all([
         call(fetchVehicleSaga),
         call(fetchVehiclesSaga),
         call(fetchVehicleOrdersSaga),
+        call(fetchVehicleLaborsSaga),
     ]);
 }

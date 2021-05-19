@@ -12,6 +12,9 @@ export const FETCH_VEHICLE_SUCCESS = `${prefix}/FETCH_VEHICLE_SUCCESS`;
 export const FETCH_VEHICLE_ORDERS = `${prefix}/FETCH_VEHICLE_ORDERS`;
 export const FETCH_VEHICLE_ORDERS_SUCCESS = `${prefix}/FETCH_VEHICLE_ORDERS_SUCCESS`;
 
+export const FETCH_VEHICLE_LABORS = `${prefix}/FETCH_VEHICLE_LABORS`;
+export const FETCH_VEHICLE_LABORS_SUCCESS = `${prefix}/FETCH_VEHICLE_LABORS_SUCCESS`;
+
 export const SET_PAGE = `${prefix}/SET_PAGE`;
 export const SET_SEARCH_QUERY = `${prefix}/SET_SEARCH_QUERY`;
 export const SET_EXPANDED_VEHICLE_ID = `${prefix}/SET_EXPANDED_VEHICLE_ID`;
@@ -29,6 +32,12 @@ const ReducerState = {
         orders: [],
         stats: {},
     },
+
+    vehicleLaborsData: { //Array of labors made for vehicle in different orders
+        labors: [],
+        stats: {},
+    },
+
     expandedVehicleId: undefined, //Currently selected vehicle row
 
     filters: {
@@ -95,6 +104,17 @@ export default function reducer(state = ReducerState, action) {
                     stats: vehicleOrdersStats
                 }
             };
+
+        case FETCH_VEHICLE_LABORS_SUCCESS:
+            const {labors, stats: vehicleLaborsStats} = payload;
+            return {
+                ...state,
+                vehicleLaborsData: {
+                    ...state.vehicleLaborsData,
+                    labors: labors,
+                    stats: vehicleLaborsStats
+                }
+            };
         default:
             return state;
     }
@@ -113,6 +133,8 @@ export const selectFilters = state => state[ moduleName ].filters;
 export const selectExpandedVehicleId = state => state[ moduleName ].expandedVehicleId;
 export const selectVehicleOrders = state => state[ moduleName ].vehicleOrdersData.orders;
 export const selectVehicleOrdersStats = state => state[ moduleName ].vehicleOrdersData.stats;
+export const selectVehicleLabors = state => state[ moduleName ].vehicleLaborsData.labors;
+export const selectVehicleLaborsStats = state => state[ moduleName ].vehicleLaborsData.stats;
 
 
 
@@ -145,7 +167,7 @@ export const fetchVehicleSuccess = ({vehicle, client, generalData}) => ({
 
 /**
  * Fetches orders where vehicle was participating.
- * Vehicle is is taken from "expandedVehicleId"
+ * Vehicle is taken from "expandedVehicleId"
  * @param {*} params.vehicleId Vehicle to fetch data for
  */
  export const fetchVehicleOrders = () => ({
@@ -156,6 +178,21 @@ export const fetchVehicleOrdersSuccess = ({orders, stats}) => ({
     type:    FETCH_VEHICLE_ORDERS_SUCCESS,
     payload: {orders, stats},
 });
+
+/**
+ * Fetches vehicle labors which vere made in different orders
+ * Vehicle is taken from "expandedVehicleId"
+ * @param {*} params.vehicleId Vehicle to fetch data for
+ */
+ export const fetchVehicleLabors = () => ({
+    type:    FETCH_VEHICLE_LABORS
+});
+
+export const fetchVehicleLaborsSuccess = ({labors, stats}) => ({
+    type:    FETCH_VEHICLE_LABORS_SUCCESS,
+    payload: {labors, stats},
+});
+
 
 /** Set filtering page, automatically fetches vehicles */
 export const setPage = ({page}) => {
