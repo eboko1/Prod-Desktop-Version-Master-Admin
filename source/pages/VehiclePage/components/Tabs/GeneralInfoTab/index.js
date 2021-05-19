@@ -4,6 +4,7 @@ import {FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {Button, Tabs, Icon, Row, Col, Input} from 'antd';
+import history from 'store/history';
 import _ from 'lodash';
 import { v4 } from 'uuid';
 
@@ -13,13 +14,16 @@ import { FormattedDatetime } from "components";
 import book from 'routes/book';
 import {
     fetchVehicle,
-
     createOrder,
-
     selectVehicle,
     selectClient,
     selectGeneralData
 } from 'core/vehicles/duck';
+import {
+    createClientVehicle,
+    updateClientVehicle,
+    deleteClientVehicle,
+} from "core/client/duck";
 
 // own
 import Styles from './styles.m.css';
@@ -38,7 +42,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     fetchVehicle,
-    createOrder
+    createOrder,
+    deleteClientVehicle
 };
 
 @withRouter
@@ -85,8 +90,18 @@ export default class GeneralInfoTab extends Component {
                             <Icon className={Styles.barcodeIcon} type="barcode" />
                             <Icon className={Styles.infoIcon} type="question-circle" />
                             <Icon className={Styles.editIcon} type="edit" />
-                            <Icon className={Styles.deleteIcon} type="delete" />
+                            <Icon
+                                className={Styles.deleteIcon}
+                                type="delete"
+                                onClick={() => {
+                                    deleteClientVehicle(_.get(client, 'clientId'), _.get(vehicle, 'id'));
+                                    history.push({
+                                        pathname: `${book.vehicles}`
+                                    });
+                                }}
+                            />
                             <Icon className={Styles.changeVehicleOwnerIcon} type="sync" />
+
                             <Button
                                 className={Styles.iconButton}
                                 type="primary"
