@@ -36,7 +36,7 @@ const mapDispatchToProps = {
 
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
-export default class VehiclePage extends Component {
+export default class VehiclesPage extends Component {
     constructor(props) {
         super(props);
     }
