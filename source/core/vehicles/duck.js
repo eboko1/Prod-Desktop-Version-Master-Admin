@@ -144,7 +144,8 @@ export const fetchVehicleSuccess = ({vehicle, client, generalData}) => ({
 });
 
 /**
- * Fetches orders where vehicle was participating
+ * Fetches orders where vehicle was participating.
+ * Vehicle is is taken from "expandedVehicleId"
  * @param {*} params.vehicleId Vehicle to fetch data for
  */
  export const fetchVehicleOrders = () => ({
@@ -178,7 +179,7 @@ export const setSearchQuery = ({rowId}) => {
     }
 };
 
-/** Set expanded vehicle id to load data for it(all the orders for that vehicle), automatically fetches orders */
+/** Set expanded vehicle id to load data for it(all the orders for that vehicle), automatically fetches orders. Use this to load data for any car by its is. */
 export const setExpandedVehicleId = ({vehicleId}) => {
     return (dispatch) => {
         dispatch({

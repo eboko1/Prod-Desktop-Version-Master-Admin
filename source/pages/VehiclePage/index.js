@@ -21,7 +21,8 @@ import {
 
 // own
 import {
-    GeneralInfoTab
+    GeneralInfoTab,
+    VehicleOrdersTab
 } from './components/Tabs';
 
 const TabPane = Tabs.TabPane;
@@ -64,7 +65,9 @@ export default class VehiclePage extends Component {
 
 
                     <TabPane tab="Norm hours" key="norm_hours">Content 2</TabPane>
-                    <TabPane tab="Orders" key="orders">Content 3</TabPane>
+                    <TabPane tab="Orders" key="orders">
+                        <VehicleOrdersTab />
+                    </TabPane>
                     <TabPane tab="Labors" key="labors">Content 4</TabPane>
                     <TabPane tab="Spare parts" key="spare_parts">Content 5</TabPane>
                     <TabPane tab="Recommendations" key="recommendations">Content 6</TabPane>
