@@ -1,7 +1,7 @@
 // vendor
 import React, {Component} from 'react';
 import {FormattedMessage, injectIntl } from 'react-intl';
-import { withRouter} from 'react-router-dom';
+import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {Button, Tabs, Icon, Row, Col, Input} from 'antd';
 import _ from 'lodash';
@@ -129,7 +129,10 @@ export default class GeneralInfoTab extends Component {
                     }
                 >
                     <div>
-                        <DataItem label="Name">{`${client.name} ${client.surname}`}</DataItem>
+                        <DataItem label="Name">
+                            <Link to={ `${book.client}/${_.get(client, 'clientId')}` }>{`${client.name} ${client.surname}`}</Link>
+                        </DataItem>
+                        
                         <DataItem className={Styles.dataItem} label="Phone">
                             {
                                 _.map(
