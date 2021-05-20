@@ -63,6 +63,7 @@ class DetailStorageModal extends React.Component{
                             {this.state.storeOptions.length ? 
                                 <Select
                                     showSearch
+                                    style={{maxWidth: 280}}
                                     value={this.state.storeFilter}
                                     dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 380 }}
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
@@ -87,6 +88,7 @@ class DetailStorageModal extends React.Component{
                             }
                             <Input
                                 allowClear
+                                style={{maxWidth: 280}}
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={this.state.codeFilter}
                                 onChange={(event)=>{
@@ -936,33 +938,6 @@ export class DetailWarehousesCountModal extends React.Component {
             visible: false,
             warehousesData: [],
         };
-
-        this.columns = [
-            {
-                title: <FormattedMessage id='wms.cell' />,
-                dataIndex: 'cellAddress',
-            },
-            {
-                title: <FormattedMessage id='order_form_table.count' />,
-                dataIndex: 'count',
-            },
-            {
-                with: 'fit-content',
-                render: row => {
-                    return (
-                        <Button
-                            type='primary'
-                            onClick={()=>{
-                                this.handleCancel();
-                                if(this.props.onSelect) this.props.onSelect(row.cellAddress, row.warehouseId);
-                            }}
-                        >
-                            <FormattedMessage id='select'/>
-                        </Button>
-                    )
-                }
-            }
-        ];
     }
 
     handleCancel = () => {
@@ -992,7 +967,12 @@ export class DetailWarehousesCountModal extends React.Component {
                 id: id,
                 name: name,
                 count: 0,
-                childs: [],
+                childs: [
+                    {
+                        cellAddress: `${id}.`,
+                        count: 0,
+                    }
+                ],
             })
         })
 
@@ -1001,6 +981,7 @@ export class DetailWarehousesCountModal extends React.Component {
         for (const [key, value] of Object.entries(productWarehouses)) {
             const index = warehousesData.findIndex(({id})=>id==key);
             warehousesData[index].count = Number(value);
+            warehousesData[index].childs[0].count = Number(value);
         }
 
         const payload = await fetchAPI('GET', 'wms/cells/statuses', {storeProductId: this.props.productId});
@@ -1012,7 +993,8 @@ export class DetailWarehousesCountModal extends React.Component {
                     cellAddress: elem.wmsCellOptions.address,
                     count: elem.sum,
                 })
-                
+
+                warehousesData[index].childs[0].count -= Number(elem.sum);
             }
         });
         warehousesData = warehousesData.filter(({count})=>count>0);
@@ -1055,54 +1037,39 @@ export class DetailWarehousesCountModal extends React.Component {
                     title={<FormattedMessage id="storage.in_stock" />}
                     onCancel={this.handleCancel}
                     style={{
-                        maxWidth: 680,
+                        maxWidth: 480,
                         fontSize: 16,
                     }}
                     maskClosable={false}
                 >
                     <div
                         style={{
-                            padding: '0px 4px 14px'
+                            padding: '0px 4px 14px',
+                            fontSize: 16,
+                            fontWeight: 500,
                         }}
                     >
-                        <p
-                            style={{
-                                fontSize: 16,
-                                fontWeight: 500,
-                            }}
-                        >
-                            {brandName} {code}
-                        </p>
-                        <p>
-                            {name}
-                        </p>
+                        <p>{brandName}</p>
+                        <p>{code}</p>
                     </div>
-                    {warehousesData.map((warehouse, key)=>(
-                        warehouse.childs.length ?
-                        <Table
-                            key={key}
-                            rowKey='cellAddress'
-                            columns={this.columns}
-                            dataSource={warehouse.childs}
-                            style={{
-                                marginBottom: 8
-                            }}
-                            bordered
-                            size={'small'}
-                            pagination={{
-                                hideOnSinglePage: true
-                            }}
-                            title={() => (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    {warehouse.name} ({warehouse.count})
+                    <div style={{display: 'flex', fontWeight: 500, padding: 8}}>
+                        <div style={{width: '25%'}}><FormattedMessage id='storage'/></div>
+                        <div style={{width: '25%'}}><FormattedMessage id='wms.cell'/></div>
+                        <div style={{width: '25%'}}><FormattedMessage id='count'/></div>
+                    </div>
+                    {warehousesData.map((warehouse, key)=>{
+                        return (
+                            <>
+                                <div key={warehouse.id} style={{display: 'flex', borderTop: '1px solid gray', padding: '2px 8px', fontWeight: 500, alignItems: 'center'}}>
+                                    <div style={{width: '25%'}}>{warehouse.name}</div>
+                                    <div style={{width: '25%'}}></div>
+                                    <div style={{width: '25%'}}>{Number(warehouse.count).toFixed(1)}</div>
                                     <Button
                                         type='primary'
+                                        style={{
+                                            opacity: 0,
+                                            pointerEvents: 'none'
+                                        }}
                                         onClick={()=>{
                                             this.handleCancel();
                                             if(this.props.onSelect) this.props.onSelect(undefined, warehouse.id, warehouse.name);
@@ -1111,31 +1078,26 @@ export class DetailWarehousesCountModal extends React.Component {
                                         <FormattedMessage id='select'/>
                                     </Button>
                                 </div>
-                            )}
-                        /> :
-                        <div
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                padding: 8,
-                                borderRadius: 4,
-                                border: '1px solid #e8e8e8',
-                                marginBottom: 8
-                            }}
-                        >
-                            {warehouse.name} ({warehouse.count})
-                            <Button
-                                type='primary'
-                                onClick={()=>{
-                                    this.handleCancel();
-                                    if(this.props.onSelect) this.props.onSelect(undefined, warehouse.id, warehouse.name);
-                                }}
-                            >
-                                <FormattedMessage id='select'/>
-                            </Button>
-                        </div>
-                    ))}
+                                {warehouse.childs.map((elem)=>(
+                                    <div key={elem.cellAddress} style={{display: 'flex', padding: '2px 8px', alignItems: 'center'}}>
+                                        <div style={{width: '25%'}}>{warehouse.name}</div>
+                                        <div style={{width: '25%'}}>{elem.cellAddress}</div>
+                                        <div style={{width: '25%'}}>{Number(elem.count).toFixed(1)}</div>
+                                        <Button
+                                            type='primary'
+                                            onClick={()=>{
+                                                this.handleCancel();
+                                                if(this.props.onSelect) this.props.onSelect(elem.cellAddress, warehouse.id, warehouse.name);
+                                            }}
+                                        >
+                                            <FormattedMessage id='select'/>
+                                        </Button>
+                                    </div>
+                                ))}
+                            </>
+                        )
+                    })}
+                    
                 </Modal>
             </div>
         )
