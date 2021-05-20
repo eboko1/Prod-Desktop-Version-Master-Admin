@@ -218,11 +218,11 @@ export const setPage = ({page}) => {
 };
 
 /** Set filtering query for vehicles, automatically fetches vehicles */
-export const setSearchQuery = ({rowId}) => {
+export const setSearchQuery = ({query}) => {
     return (dispatch) => {
         dispatch({
             type: SET_SEARCH_QUERY,
-            payload: {rowId}
+            payload: {query}
         });
         return dispatch(fetchVehicles());
     }
