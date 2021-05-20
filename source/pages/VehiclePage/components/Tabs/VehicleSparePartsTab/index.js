@@ -7,14 +7,14 @@ import _ from 'lodash';
 
 // proj
 import { Spinner} from 'commons';
-import VehicleLaborsTable from '../../VehicleLaborsTable';
+import VehicleAppurtenancesTable from '../../VehicleAppurtenancesTable';
 import {
     fetchVehicle,
 
     selectVehicle,
     selectClient,
-    selectGeneralData,
-    setExpandedVehicleId
+    setExpandedVehicleId,
+    fetchVehicleAppurtenances
 } from 'core/vehicles/duck';
 
 // own
@@ -23,18 +23,18 @@ import Styles from './styles.m.css';
 const mapStateToProps = state => ({
     vehicle:     selectVehicle(state),
     client:      selectClient(state),
-    generalData: selectGeneralData(state),
 });
 
 const mapDispatchToProps = {
     fetchVehicle,
-    setExpandedVehicleId
+    setExpandedVehicleId,
+    fetchVehicleAppurtenances
 };
 
 @withRouter
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
-export default class GeneralInfoTab extends Component {
+export default class VehicleSparePartsTab extends Component {
     constructor(props) {
         super(props);
     }
@@ -42,6 +42,7 @@ export default class GeneralInfoTab extends Component {
     componentDidMount() {
         const { match: {params: {id}}} = this.props;
         this.props.setExpandedVehicleId({vehicleId: id});
+        this.props.fetchVehicleAppurtenances();
     }
 
     render() {
@@ -51,7 +52,7 @@ export default class GeneralInfoTab extends Component {
 
         return (
             <div className={Styles.tabContent}>
-                Table here, use your imagination!(will be soon)
+                <VehicleAppurtenancesTable />
             </div>
         )
     }

@@ -17,6 +17,8 @@ import {
     fetchVehiclesSuccess,
     fetchVehicleOrdersSuccess,
     fetchVehicleLaborsSuccess,
+    fetchVehicleAppurtenancesSuccess,
+    fetchVehicleRecommendationsSuccess,
 
     selectSort,
     selectFilters,
@@ -27,6 +29,8 @@ import {
     FETCH_VEHICLE_ORDERS,
     FETCH_VEHICLE_LABORS,
     CREATE_ORDER,
+    FETCH_VEHICLE_APPURTENANCES,
+    FETCH_VEHICLE_RECOMMENDATIONS,
 } from './duck';
 
 export function* fetchVehicleSaga() {
@@ -116,6 +120,46 @@ export function* fetchVehicleLaborsSaga() {
     }
 }
 
+export function* fetchVehicleAppurtenancesSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_VEHICLE_APPURTENANCES);
+
+            const vehicleId = yield select(selectExpandedVehicleId);
+
+            yield nprogress.start();
+
+            const {appurtenances, appurtenancesStats} = yield call(fetchAPI, 'GET', `orders/appurtenances/${vehicleId}`);
+
+            yield put(fetchVehicleAppurtenancesSuccess({appurtenances, stats: appurtenancesStats}));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* fetchVehicleRecommendationsSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_VEHICLE_RECOMMENDATIONS);
+
+            const vehicleId = yield select(selectExpandedVehicleId);
+
+            yield nprogress.start();
+
+            const {recommendations, recommendationsStats} = yield call(fetchAPI, 'GET', `orders/recommendations/${vehicleId}`);
+
+            yield put(fetchVehicleRecommendationsSuccess({recommendations, stats: recommendationsStats}));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
 export function* createOrderSaga() {
     while(true) {
         const { payload: {clientId, managerId, vehicleId} } = yield take(CREATE_ORDER);
@@ -170,6 +214,8 @@ export function* saga() {
         call(fetchVehiclesSaga),
         call(fetchVehicleOrdersSaga),
         call(fetchVehicleLaborsSaga),
+        call(fetchVehicleAppurtenancesSaga),
+        call(fetchVehicleRecommendationsSaga),
         call(createOrderSaga),
     ]);
 }

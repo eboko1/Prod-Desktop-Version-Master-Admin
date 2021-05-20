@@ -20,17 +20,14 @@ const DEFAULT_DATETIME = 'DD.MM.YYYY HH:mm';
 const defWidth = {
     order:               'auto',
     datetime:            '10%',
-    labor:                '10%',
-    storeGroupName:       '10%',
-    mechanic:             '10%',
-    normHours:         '10%',
+    name:                '10%',
+    supplierName:       '10%',
+    purchasePrice:         '10%',
     price:         '10%',
     count:         '10%',
     sum:         '10%',
     
 }
-
-const DATETIME_FORMAT = 'DD.MM.YYYY HH:mm';
 
 export function columnsConfig() {
 
@@ -59,32 +56,26 @@ export function columnsConfig() {
     };
 
 
-    const laborCol = {
+    const nameCol = {
         title:     <FormattedMessage id='orders.order' />,
-        width:     defWidth.labor,
+        width:     defWidth.name,
         dataIndex: 'serviceName',
         key:       'serviceName',
     };
 
-    const storeGroupNameCol = {
+    const supplierNameCol = {
         title:     <FormattedMessage id='orders.begin_date' />,
-        width:     defWidth.begin_datetime,
-        dataIndex: 'storeGroupName',
-        key:       'storeGroupName',
+        width:     defWidth.supplierName,
+        dataIndex: 'supplierName',
+        key:       'supplierName',
     };
 
-    const mechanicCol = {
-        title:     <FormattedMessage id='orders.sum_without_VAT' /> ,
-        width:     defWidth.mechanic,
-        dataIndex: 'employeeFullName',
-        key:       'employeeFullName',
-    };
 
-    const normHoursCol = {
+    const purchasePriceCol = {
         title:     <FormattedMessage id='orders.remaining_sum' />,
-        width:     defWidth.normHours,
-        dataIndex: 'hours',
-        key:       'hours',
+        width:     defWidth.purchasePrice,
+        dataIndex: 'purchasePrice',
+        key:       'purchasePrice',
     };
 
     const priceCol = {
@@ -112,10 +103,9 @@ export function columnsConfig() {
     return [,
         orderCol,
         datetimeCol,
-        laborCol,
-        storeGroupNameCol,
-        mechanicCol,
-        normHoursCol,
+        nameCol,
+        supplierNameCol,
+        purchasePriceCol,
         priceCol,
         countCol,
         sumCol

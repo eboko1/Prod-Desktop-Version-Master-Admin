@@ -80,7 +80,6 @@ export default class VehiclePage extends Component {
                         <VehicleLaborsTab />
                     </TabPane>
 
-
                     <TabPane tab="Spare parts" key="spare_parts">
                         <VehicleSparePartsTab />
                     </TabPane>

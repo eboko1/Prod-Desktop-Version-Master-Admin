@@ -15,6 +15,12 @@ export const FETCH_VEHICLE_ORDERS_SUCCESS = `${prefix}/FETCH_VEHICLE_ORDERS_SUCC
 export const FETCH_VEHICLE_LABORS = `${prefix}/FETCH_VEHICLE_LABORS`;
 export const FETCH_VEHICLE_LABORS_SUCCESS = `${prefix}/FETCH_VEHICLE_LABORS_SUCCESS`;
 
+export const FETCH_VEHICLE_APPURTENANCES = `${prefix}/FETCH_VEHICLE_APPURTENANCES`;
+export const FETCH_VEHICLE_APPURTENANCES_SUCCESS = `${prefix}/FETCH_VEHICLE_APPURTENANCES_SUCCESS`;
+
+export const FETCH_VEHICLE_RECOMMENDATIONS = `${prefix}/FETCH_VEHICLE_RECOMMENDATIONS`;
+export const FETCH_VEHICLE_RECOMMENDATIONS_SUCCESS = `${prefix}/FETCH_VEHICLE_RECOMMENDATIONS_SUCCESS`;
+
 export const CREATE_ORDER = `${prefix}/CREATE_ORDER`;
 
 export const SET_PAGE = `${prefix}/SET_PAGE`;
@@ -30,13 +36,23 @@ const ReducerState = {
     client:        {},      // Vehicle client
     generalData:   {},      // Statisctics for fetched vehcile
 
-    vehicleOrdersData: { //Array of orders fetch for specific vehicle
-        orders: [],
+    vehicleOrdersData: {
+        orders: [], //Array of orders fetched for specific vehicle
         stats: {},
     },
 
-    vehicleLaborsData: { //Array of labors made for vehicle in different orders
-        labors: [],
+    vehicleLaborsData: { 
+        labors: [], //Array of labors made for vehicle in different orders
+        stats: {},
+    },
+
+    vehicleAppurtenancesData: { 
+        appurtenances: [], //Array of appurtenances made for vehicle in different orders
+        stats: {},
+    },
+
+    vehicleRecommendationsData: { 
+        recommendations: [], //Array of recommendations made for vehicle in different orders
         stats: {},
     },
 
@@ -117,6 +133,28 @@ export default function reducer(state = ReducerState, action) {
                     stats: vehicleLaborsStats
                 }
             };
+
+        case FETCH_VEHICLE_APPURTENANCES_SUCCESS:
+            const {appurtenances, stats: vehicleAppurtenancesStats} = payload;
+            return {
+                ...state,
+                vehicleAppurtenancesData: {
+                    ...state.vehicleAppurtenancesData,
+                    appurtenances: appurtenances,
+                    stats: vehicleAppurtenancesStats
+                }
+            };
+
+        case FETCH_VEHICLE_RECOMMENDATIONS_SUCCESS:
+            const {recommendations, stats: vehicleRecommendationsStats} = payload;
+            return {
+                ...state,
+                vehicleRecommendationsData: {
+                    ...state.vehicleRecommendationsData,
+                    recommendations: recommendations,
+                    stats: vehicleRecommendationsStats
+                }
+            };
         default:
             return state;
     }
@@ -137,6 +175,10 @@ export const selectVehicleOrders = state => state[ moduleName ].vehicleOrdersDat
 export const selectVehicleOrdersStats = state => state[ moduleName ].vehicleOrdersData.stats;
 export const selectVehicleLabors = state => state[ moduleName ].vehicleLaborsData.labors;
 export const selectVehicleLaborsStats = state => state[ moduleName ].vehicleLaborsData.stats;
+export const selectVehicleAppurtenances = state => state[ moduleName ].vehicleAppurtenancesData.appurtenances;
+export const selectVehicleAppurtenancesStats = state => state[ moduleName ].vehicleAppurtenancesData.stats;
+export const selectVehicleRecommendations = state => state[ moduleName ].vehicleRecommendationsData.recommendations;
+export const selectVehicleRecommendationsStats = state => state[ moduleName ].vehicleRecommendationsData.stats;
 
 
 
@@ -182,7 +224,7 @@ export const fetchVehicleOrdersSuccess = ({orders, stats}) => ({
 });
 
 /**
- * Fetches vehicle labors which vere made in different orders
+ * Fetches vehicle labors which were made in different orders
  * Vehicle is taken from "expandedVehicleId"
  * @param {*} params.vehicleId Vehicle to fetch data for
  */
@@ -193,6 +235,33 @@ export const fetchVehicleOrdersSuccess = ({orders, stats}) => ({
 export const fetchVehicleLaborsSuccess = ({labors, stats}) => ({
     type:    FETCH_VEHICLE_LABORS_SUCCESS,
     payload: {labors, stats},
+});
+
+/**
+ * Fetches vehicle appurtenances which were used in different orders
+ * Vehicle is taken from "expandedVehicleId"
+ * @param {*} params.vehicleId Vehicle to fetch data for
+ */
+ export const fetchVehicleAppurtenances = () => ({
+    type:    FETCH_VEHICLE_APPURTENANCES
+});
+
+export const fetchVehicleAppurtenancesSuccess = ({appurtenances, stats}) => ({
+    type:    FETCH_VEHICLE_APPURTENANCES_SUCCESS,
+    payload: {appurtenances, stats},
+});
+/**
+ * Fetches vehicle recommendations which were used in different orders
+ * Vehicle is taken from "expandedVehicleId"
+ * @param {*} params.vehicleId Vehicle to fetch data for
+ */
+ export const fetchVehicleRecommendations = () => ({
+    type:    FETCH_VEHICLE_RECOMMENDATIONS
+});
+
+export const fetchVehicleRecommendationsSuccess = ({recommendations, stats}) => ({
+    type:    FETCH_VEHICLE_RECOMMENDATIONS_SUCCESS,
+    payload: {recommendations, stats},
 });
 
 /**
