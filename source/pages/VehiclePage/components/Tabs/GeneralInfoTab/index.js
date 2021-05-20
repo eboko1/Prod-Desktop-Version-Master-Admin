@@ -12,6 +12,8 @@ import { v4 } from 'uuid';
 import {Layout, Spinner} from 'commons';
 import { FormattedDatetime } from "components";
 import book from 'routes/book';
+import { VehicleModal } from 'modals';
+import {setModal, MODALS} from 'core/modals/duck';
 import {
     fetchVehicle,
     createOrder,
@@ -41,6 +43,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+    setModal,
     fetchVehicle,
     createOrder,
     deleteClientVehicle
@@ -68,6 +71,10 @@ export default class GeneralInfoTab extends Component {
         this.props.createOrder({clientId, managerId: user.id, vehicleId});
     }
 
+    onEditVehicle = ({vehicleId}) => {
+        this.props.setModal(MODALS.VEHICLE, {vehicleId});
+    }
+
     render() {
 
         const {
@@ -89,7 +96,12 @@ export default class GeneralInfoTab extends Component {
                         <div>
                             <Icon className={Styles.barcodeIcon} type="barcode" />
                             <Icon className={Styles.infoIcon} type="question-circle" />
-                            <Icon className={Styles.editIcon} type="edit" />
+                            <Icon
+                                className={Styles.editIcon}
+                                type="edit"
+                                onClick={() => this.onEditVehicle({vehicleId: _.get(vehicle, 'id')})}
+                            />
+
                             <Icon
                                 className={Styles.deleteIcon}
                                 type="delete"
@@ -196,6 +208,8 @@ export default class GeneralInfoTab extends Component {
                         </Row>
                     </div>
                 </Block>
+
+                <VehicleModal />
             </div>
         )
     }

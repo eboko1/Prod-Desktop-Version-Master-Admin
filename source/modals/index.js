@@ -26,6 +26,7 @@ import LaborsNormHourModal from './LaborsNormHourModal';
 import OilModal from './OilModal';
 import ComplexesModal from './ComplexesModal';
 import VehicleLocationModal from './VehicleLocationModal';
+import VehicleModal from './VehicleModal';
 import LocationHistoryModal from './LocationHistoryModal';
 import StoreProductTrackingModal from './StoreProductTrackingModal';
 import SyncImportExportModal from './SyncImportExportModal';
@@ -79,6 +80,7 @@ export {
     OilModal,
     ComplexesModal,
     VehicleLocationModal,
+    VehicleModal,
     LocationHistoryModal,
     ReportOrdersFilterModal,
     ReportOrdersExportModal,

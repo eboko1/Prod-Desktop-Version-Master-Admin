@@ -30,6 +30,7 @@ export const MODALS = {
     STORE_PRODUCT:          'STORE_PRODUCT',
     SERVICE_INPUT:          'SERVICE_INPUT',
     SERVICE_OUTPUT:         'SERVICE_OUTPUT',
+    VEHICLE:                'VEHICLE',
 
     //Report modals
     REPORT_ORDERS_FILTER:   'REPORT_ORDERS_FILTER',

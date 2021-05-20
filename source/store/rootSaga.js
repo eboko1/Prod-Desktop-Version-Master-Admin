@@ -71,6 +71,7 @@ import { saga as brandsFormSaga } from 'core/forms/brandsForm/saga';
 import { saga as setDetailProductSaga } from 'core/forms/setDetailProduct/saga';
 import { saga as spreadBusinessSaga } from 'core/forms/spreadBusinessBrands/saga';
 import { saga as cashOrderFormSaga } from 'core/forms/cashOrderForm/saga';
+import { saga as vehicleFormSaga } from 'core/forms/vehicleForm/saga';
 
 
 // storage
@@ -148,6 +149,7 @@ export default function* rootSaga() {
         // cash
         cashSaga(),
         cashOrderFormSaga(),
+        vehicleFormSaga(),
         // statistics
         chartSaga(),
         reviewsSaga(),
