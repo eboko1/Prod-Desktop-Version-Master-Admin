@@ -711,9 +711,9 @@ class ConfirmDiagnosticModal extends React.Component{
                     value={ String(data.id) }
                     key={index}
                     detail_id={data.id}
-                    detail_name={data.name}
+                    detail_name={data.singleName}
                 >
-                    { data.name }
+                    { data.singleName }
                 </Option>
             ),
         );

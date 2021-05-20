@@ -505,6 +505,7 @@ export default class ComplexesModal extends React.Component{
                                         });
                                         const details = triggerNode.props.details.map((elem)=>{
                                             elem.checked = true;
+                                            elem.name = elem.singleName;
                                             elem.count = 1;
                                             elem.commentary = {
                                                 comment: undefined,
