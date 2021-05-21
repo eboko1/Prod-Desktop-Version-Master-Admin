@@ -2,6 +2,7 @@
 import React from 'react';
 import { FormattedMessage, injectIntl } from "react-intl";
 import { Form, Col, Row, Input, Button } from 'antd';
+import { v4 } from 'uuid';
 
 //proj
 import {
@@ -11,10 +12,10 @@ import {
 //own
 import Styles from './styles.m.css'
 import {
-    DecoratedCheckbox,
-    DecoratedSelect
+    DecoratedSelect,
+    DecoratedInput,
+    DecoratedDatePicker,
 } from "forms/DecoratedFields";
-
 const FItem = Form.Item;
 
 @injectIntl
@@ -109,18 +110,53 @@ class VehicleFormClass extends React.Component {
                 <Row className={Styles.row}>
                     <Col span={6}>vehicleMake: </Col>
                     <Col span={12}>
-                        <FItem>
-                            {
-                                getFieldDecorator('vehicleMake', {
-                                    rules: [{ required: true, whitespace: true, message: formatMessage({id: 'report_analytics_form.catalog_name_is_required_message'}) }],
-                                    // initialValue: initValues.catalogName
-                                })(
-                                    <Input
-                                        disabled={fieldsDisabled}
-                                    />
-                                )
-                            }
-                        </FItem>
+                        <DecoratedSelect
+                                field="makeId"
+                                showSearch
+                                hasFeedback
+                                formItem
+                                getFieldDecorator={getFieldDecorator}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: this.props.intl.formatMessage({
+                                            id: "required_field",
+                                        }),
+                                    },
+                                ]}
+                                placeholder={"Enter here"}
+                                // disabled={
+                                //     ![
+                                //         YEAR_VEHICLES_INFO_FILTER_TYPE,
+                                //         MAKE_VEHICLES_INFO_FILTER_TYPE,
+                                //         MODEL_VEHICLES_INFO_FILTER_TYPE,
+                                //     ].includes(lastFilterAction)
+                                // }
+                                onSelect={value => {
+                                    // const filters = _.pick(
+                                    //     { ...vehicle, makeId: value },
+                                    //     ["year", "makeId"],
+                                    // );
+                                    // this.props.fetchVehiclesInfo(
+                                    //     MAKE_VEHICLES_INFO_FILTER_TYPE,
+                                    //     filters,
+                                    // );
+                                    console.log("Select performed. Fetch next field data!");
+                                }}
+                                getPopupContainer={trigger => trigger.parentNode}
+                            >
+                                <Option value={1} key={v4()}>
+                                    Test 1
+                                </Option>
+                                <Option value={2} key={v4()}>
+                                    1945
+                                </Option>
+                                {/* {makes.map(({ id, name }) => (
+                                    <Option value={id} key={v4()}>
+                                        {name}
+                                    </Option>
+                                ))} */}
+                            </DecoratedSelect>
                     </Col>
                     <Col span={6}></Col>
                 </Row>

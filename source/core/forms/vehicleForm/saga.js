@@ -6,11 +6,21 @@ import { fetchAPI } from 'utils';
 
 // own
 import {
-    fetchVehicleSuccess
+    selectFields,
+
+    fetchVehicleSuccess,
+    fetchVehicleYearsSuccess,
+    fetchVehicleMakesSuccess,
+    fetchVehicleModelsSuccess,
+    fetchVehicleModificationsSuccess
 } from './duck';
 
 import {
-    FETCH_VEHICLE
+    FETCH_VEHICLE,
+    FETCH_VEHICLE_YEARS,
+    FETCH_VEHICLE_MAKES,
+    FETCH_VEHICLE_MODELS,
+    FETCH_VEHICLE_MODIFICATIONS,
 } from './duck';
 
 export function* fetchVehicleSaga() {
@@ -21,18 +31,52 @@ export function* fetchVehicleSaga() {
     }
 }
 
-// export function* fetchVehiclesInfoSaga() {
-//     while (true) {
-//         const {
-//             payload: { type, filters },
-//         } = yield take(FETCH_VEHICLES_INFO);
-//         const data = yield call(fetchAPI, 'GET', 'vehicles_info', filters);
-//         yield put(fetchVehiclesInfoSuccess(type, data));
-//     }
-// }
+export function* fetchVehiclesYearsSaga() {
+    while (true) {
+        yield take(FETCH_VEHICLE_YEARS);
+        const { years } = yield call(fetchAPI, 'GET', 'vehicles_info');
+        yield put(fetchVehicleYearsSuccess({years}));
+    }
+}
 
+export function* fetchVehiclesMakesSaga() {
+    while (true) {
+        yield take(FETCH_VEHICLE_MAKES);
+
+        const { year } = yield select(selectFields);
+
+        const { makes } = yield call(fetchAPI, 'GET', 'vehicles_info', {year});
+        yield put(fetchVehiclesInfoSuccess({makes}));
+    }
+}
+
+export function* fetchVehiclesModelsSaga() {
+    while (true) {
+        yield take(FETCH_VEHICLE_MAKES);
+
+        const { year, makeId } = yield select(selectFields);
+        
+        const {models} = yield call(fetchAPI, 'GET', 'vehicles_info', {year, makeId});
+        yield put(fetchVehiclesInfoSuccess({models}));
+    }
+}
+
+export function* fetchVehiclesModificationsSaga() {
+    while (true) {
+        yield take(FETCH_VEHICLE_MAKES);
+
+        const { year, makeId, modelId } = yield select(selectFields);
+        
+        const {modifications} = yield call(fetchAPI, 'GET', 'vehicles_info', {year, makeId, modelId});
+        yield put(fetchVehiclesInfoSuccess({modifications}));
+    }
+}
 export function* saga() {
     yield all([
-        call(fetchVehicleSaga)
+        call(fetchVehicleSaga),
+        call(fetchVehiclesYearsSaga),
+        call(fetchVehiclesMakesSaga),
+        call(fetchVehiclesModelsSaga),
+        call(fetchVehiclesModificationsSaga),
     ]);
 }
