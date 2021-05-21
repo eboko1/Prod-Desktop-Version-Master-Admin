@@ -90,7 +90,8 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 models: models,
-                modifications: [], //Clear other old data
+                //Clear other old data
+                modifications: [],
             };
         case FETCH_VEHICLE_MODIFICATIONS_SUCCESS:
             const { modifications } = payload;
@@ -125,7 +126,10 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 fields: {
                     ...state.fields,
-                    year
+                    year,
+                    makeId: undefined,
+                    modelId: undefined,
+                    modificationId: undefined,
                 }
             };
 
@@ -135,7 +139,9 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 fields: {
                     ...state.fields,
-                    makeId
+                    makeId,
+                    modelId: undefined,
+                    modificationId: undefined,
                 }
             };
 
@@ -145,7 +151,8 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 fields: {
                     ...state.fields,
-                    modelId
+                    modelId,
+                    modificationId: undefined,
                 }
             };
 
@@ -230,20 +237,35 @@ export const setVehicleNumber = ({number}) => ({
     payload: { number },
 });
 
-export const setVehicleYear = ({year}) => ({
-    type:    SET_YEAR,
-    payload: { year },
-});
+export const setVehicleYear = ({year}) => {
+    return function (dispatch) {
+        dispatch({
+            type:    SET_YEAR,
+            payload: { year },
+        });
+        dispatch(fetchVehicleMakes());
+    }
+}
 
-export const setVehicleMakeId = ({makeId}) => ({
-    type:    SET_MAKE_ID,
-    payload: { makeId },
-});
+export const setVehicleMakeId = ({makeId}) => {
+    return function (dispatch) {
+        dispatch({
+            type:    SET_MAKE_ID,
+            payload: { makeId },
+        });
+        dispatch(fetchVehicleModels());
+    }
+}
 
-export const setVehicleModelId = ({modelId}) => ({
-    type:    SET_MODEL_ID,
-    payload: { modelId },
-});
+export const setVehicleModelId = ({modelId}) => {
+    return function (dispatch) {
+        dispatch({
+            type:    SET_MODEL_ID,
+            payload: { modelId },
+        });
+        dispatch(fetchVehicleModifications());
+    }
+}
 
 export const setVehicleModificationId = ({modificationId}) => ({
     type:    SET_MODIFICATION_ID,

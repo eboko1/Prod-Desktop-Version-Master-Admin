@@ -86,13 +86,18 @@ class VehicleFormClass extends React.Component {
             intl: {formatMessage}
         } = this.props;
         
-        const { getFieldDecorator} = form;
+        const { getFieldDecorator, resetFields} = form;
         //------------------
 
 
-        // const initValues = {
-        //     catalogName: analyticsEntity.analyticsName
-        // }
+        const initValues = {
+            number: fields.number,
+            vin: fields.vin,
+            year: fields.year,
+            makeId: fields.makeId,
+            modelId: fields.modelId,
+            modificationId: fields.modificationId,
+        }
         
         const fieldsDisabled = false;//(mode == formModes.VIEW);
 
@@ -101,18 +106,22 @@ class VehicleFormClass extends React.Component {
                 <Row className={Styles.row}>
                     <Col span={6}>vehicleNumber: </Col>
                     <Col span={12}>
-                        <FItem>
-                            {
-                                getFieldDecorator('vehicleNumber', {
-                                    rules: [{ required: true, whitespace: true, message: formatMessage({id: 'report_analytics_form.catalog_name_is_required_message'}) }],
-                                    // initialValue: initValues.catalogName
-                                })(
-                                    <Input
-                                        disabled={fieldsDisabled}
-                                    />
-                                )
-                            }
-                        </FItem>
+                        <DecoratedInput
+                            field="number"
+                            initialValue={initValues.number}
+                            hasFeedback
+                            formItem
+                            rules={[
+                                {
+                                    required: true,
+                                    message: this.props.intl.formatMessage({
+                                        id: "required_field",
+                                    }),
+                                },
+                            ]}
+                            onChange={(e) => setVehicleNumber({number: e.target.value})}
+                            getFieldDecorator={getFieldDecorator}
+                        />
                     </Col>
                     <Col span={6}> <Button type="primary" >Get vin</Button> </Col>
                 </Row>
@@ -120,18 +129,22 @@ class VehicleFormClass extends React.Component {
                 <Row className={Styles.row}>
                     <Col span={6}>vehicleVin: </Col>
                     <Col span={12}>
-                        <FItem>
-                            {
-                                getFieldDecorator('vehicleVin', {
-                                    rules: [{ required: true, whitespace: true, message: formatMessage({id: 'report_analytics_form.catalog_name_is_required_message'}) }],
-                                    // initialValue: initValues.catalogName
-                                })(
-                                    <Input
-                                        disabled={fieldsDisabled}
-                                    />
-                                )
-                            }
-                        </FItem>
+                        <DecoratedInput
+                            field="vin"
+                            initialValue={initValues.vin}
+                            hasFeedback
+                            formItem
+                            rules={[
+                                {
+                                    required: true,
+                                    message: this.props.intl.formatMessage({
+                                        id: "required_field",
+                                    }),
+                                },
+                            ]}
+                            onChange={(e) => setVehicleVin({number: e.target.value})}
+                            getFieldDecorator={getFieldDecorator}
+                        />
                     </Col>
                     <Col span={6}> <Button type="primary" >Get car</Button> </Col>
                 </Row>
@@ -154,9 +167,11 @@ class VehicleFormClass extends React.Component {
                                     },
                                 ]}
                                 placeholder={"Enter here"}
+                                initialValue={initValues.year}
                                 disabled={false}
                                 onSelect={value => {
                                     setVehicleYear({year: value});
+                                    resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
                             >
@@ -188,9 +203,11 @@ class VehicleFormClass extends React.Component {
                                     },
                                 ]}
                                 placeholder={"Enter here"}
+                                initialValue={initValues.makeId}
                                 disabled={!_.get(fields, 'year')}
                                 onSelect={value => {
                                     setVehicleMakeId({makeId: value});
+                                    resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
                             >
@@ -222,9 +239,11 @@ class VehicleFormClass extends React.Component {
                                     },
                                 ]}
                                 placeholder={"Enter here"}
+                                initialValue={initValues.modelId}
                                 disabled={!_.get(fields, 'makeId')}
                                 onSelect={value => {
                                     setVehicleModelId({modelId: value});
+                                    resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
                             >
@@ -256,13 +275,15 @@ class VehicleFormClass extends React.Component {
                                     },
                                 ]}
                                 placeholder={"Enter here"}
+                                initialValue={initValues.modificationId}
                                 disabled={!_.get(fields, 'modelId')}
                                 onSelect={value => {
                                     setVehicleModificationId({modificationId: value});
+                                    resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
                             >
-                                {makes.map(({ id, name }) => (
+                                {modifications.map(({ id, name }) => (
                                     <Option value={id} key={v4()}>
                                         {name}
                                     </Option>

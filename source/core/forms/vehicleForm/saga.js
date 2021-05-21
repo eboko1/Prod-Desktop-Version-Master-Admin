@@ -1,5 +1,5 @@
 // vendor
-import { call, put, all, take } from 'redux-saga/effects';
+import { call, put, all, take, select } from 'redux-saga/effects';
 
 //proj
 import { fetchAPI } from 'utils';
@@ -46,29 +46,29 @@ export function* fetchVehiclesMakesSaga() {
         const { year } = yield select(selectFields);
 
         const { makes } = yield call(fetchAPI, 'GET', 'vehicles_info', {year});
-        yield put(fetchVehiclesInfoSuccess({makes}));
+        yield put(fetchVehicleMakesSuccess({makes}));
     }
 }
 
 export function* fetchVehiclesModelsSaga() {
     while (true) {
-        yield take(FETCH_VEHICLE_MAKES);
+        yield take(FETCH_VEHICLE_MODELS);
 
         const { year, makeId } = yield select(selectFields);
         
         const {models} = yield call(fetchAPI, 'GET', 'vehicles_info', {year, makeId});
-        yield put(fetchVehiclesInfoSuccess({models}));
+        yield put(fetchVehicleModelsSuccess({models}));
     }
 }
 
 export function* fetchVehiclesModificationsSaga() {
     while (true) {
-        yield take(FETCH_VEHICLE_MAKES);
+        yield take(FETCH_VEHICLE_MODIFICATIONS);
 
         const { year, makeId, modelId } = yield select(selectFields);
         
         const {modifications} = yield call(fetchAPI, 'GET', 'vehicles_info', {year, makeId, modelId});
-        yield put(fetchVehiclesInfoSuccess({modifications}));
+        yield put(fetchVehicleModificationsSuccess({modifications}));
     }
 }
 export function* saga() {
