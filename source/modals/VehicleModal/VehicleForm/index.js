@@ -2,12 +2,26 @@
 import React from 'react';
 import { FormattedMessage, injectIntl } from "react-intl";
 import { Form, Col, Row, Input, Button } from 'antd';
+import { connect } from 'react-redux';
 import { v4 } from 'uuid';
 
 //proj
 import {
-    formModes,
-} from 'core/forms/reportAnalyticsForm/duck';
+    fetchVehicleYears,
+
+    selectFields,
+    selectYears,
+    selectMakes,
+    selectModels,
+    selectModifications,
+
+    setVehicleNumber,
+    setVehicleVin,
+    setVehicleYear,
+    setVehicleMakeId,
+    setVehicleModelId,
+    setVehicleModificationId,
+} from 'core/forms/vehicleForm/duck';
 
 //own
 import Styles from './styles.m.css'
@@ -18,22 +32,56 @@ import {
 } from "forms/DecoratedFields";
 const FItem = Form.Item;
 
+const mapStateToProps = state => ({
+    user: state.auth,
+    fields: selectFields(state),
+    years: selectYears(state),
+    makes: selectMakes(state),
+    models:selectModels(state),
+    modifications: selectModifications(state),
+});
+
+const mapDispatchToProps = {
+    fetchVehicleYears,
+
+    setVehicleNumber,
+    setVehicleVin,
+    setVehicleYear,
+    setVehicleMakeId,
+    setVehicleModelId,
+    setVehicleModificationId,
+};
+
 @injectIntl
+@connect(mapStateToProps, mapDispatchToProps)
 class VehicleFormClass extends React.Component {
     constructor(props) {
         super(props);
 
         const {getFormRefCB} = this.props;
 
-        //Callback to get form instance (warppedComponentRef does not work)
-        getFormRefCB && getFormRefCB(this.props.form);
+        getFormRefCB && getFormRefCB(this.props.form); //Callback to get form instance (warppedComponentRef does not work)
 
+    }
+
+    componentDidMount() {
+        this.props.fetchVehicleYears();
     }
 
     render() {
         const {
-            mode,
-            analyticsEntity,
+            fields,
+            years,
+            makes,
+            models,
+            modifications,
+
+            setVehicleNumber,
+            setVehicleVin,
+            setVehicleYear,
+            setVehicleMakeId,
+            setVehicleModelId,
+            setVehicleModificationId,
             form,
             intl: {formatMessage}
         } = this.props;
@@ -90,19 +138,34 @@ class VehicleFormClass extends React.Component {
 
                 <Row className={Styles.row}>
                     <Col span={6}>vehicleYear: </Col>
-                    <Col span={12}>                        
-                        <FItem>
-                            {
-                                getFieldDecorator('vehicleYear', {
-                                    rules: [{ required: true, whitespace: true, message: formatMessage({id: 'report_analytics_form.catalog_name_is_required_message'}) }],
-                                    // initialValue: initValues.catalogName
-                                })(
-                                    <Input
-                                        disabled={fieldsDisabled}
-                                    />
-                                )
-                            }
-                        </FItem>
+                    <Col span={12}>
+                        <DecoratedSelect
+                                field="year"
+                                showSearch
+                                hasFeedback
+                                formItem
+                                getFieldDecorator={getFieldDecorator}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: this.props.intl.formatMessage({
+                                            id: "required_field",
+                                        }),
+                                    },
+                                ]}
+                                placeholder={"Enter here"}
+                                disabled={false}
+                                onSelect={value => {
+                                    setVehicleYear({year: value});
+                                }}
+                                getPopupContainer={trigger => trigger.parentNode}
+                            >
+                                {years.map((year) => (
+                                    <Option value={year} key={v4()}>
+                                        {year}
+                                    </Option>
+                                ))}
+                            </DecoratedSelect>
                     </Col>
                     <Col span={6}></Col>
                 </Row>
@@ -125,37 +188,17 @@ class VehicleFormClass extends React.Component {
                                     },
                                 ]}
                                 placeholder={"Enter here"}
-                                // disabled={
-                                //     ![
-                                //         YEAR_VEHICLES_INFO_FILTER_TYPE,
-                                //         MAKE_VEHICLES_INFO_FILTER_TYPE,
-                                //         MODEL_VEHICLES_INFO_FILTER_TYPE,
-                                //     ].includes(lastFilterAction)
-                                // }
+                                disabled={!_.get(fields, 'year')}
                                 onSelect={value => {
-                                    // const filters = _.pick(
-                                    //     { ...vehicle, makeId: value },
-                                    //     ["year", "makeId"],
-                                    // );
-                                    // this.props.fetchVehiclesInfo(
-                                    //     MAKE_VEHICLES_INFO_FILTER_TYPE,
-                                    //     filters,
-                                    // );
-                                    console.log("Select performed. Fetch next field data!");
+                                    setVehicleMakeId({makeId: value});
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
                             >
-                                <Option value={1} key={v4()}>
-                                    Test 1
-                                </Option>
-                                <Option value={2} key={v4()}>
-                                    1945
-                                </Option>
-                                {/* {makes.map(({ id, name }) => (
+                                {makes.map(({ id, name }) => (
                                     <Option value={id} key={v4()}>
                                         {name}
                                     </Option>
-                                ))} */}
+                                ))}
                             </DecoratedSelect>
                     </Col>
                     <Col span={6}></Col>
@@ -164,18 +207,33 @@ class VehicleFormClass extends React.Component {
                 <Row className={Styles.row}>
                     <Col span={6}>vehicleModel: </Col>
                     <Col span={12}>
-                        <FItem>
-                            {
-                                getFieldDecorator('vehicleModel', {
-                                    rules: [{ required: true, whitespace: true, message: formatMessage({id: 'report_analytics_form.catalog_name_is_required_message'}) }],
-                                    // initialValue: initValues.catalogName
-                                })(
-                                    <Input
-                                        disabled={fieldsDisabled}
-                                    />
-                                )
-                            }
-                        </FItem>
+                        <DecoratedSelect
+                                field="modelId"
+                                showSearch
+                                hasFeedback
+                                formItem
+                                getFieldDecorator={getFieldDecorator}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: this.props.intl.formatMessage({
+                                            id: "required_field",
+                                        }),
+                                    },
+                                ]}
+                                placeholder={"Enter here"}
+                                disabled={!_.get(fields, 'makeId')}
+                                onSelect={value => {
+                                    setVehicleModelId({modelId: value});
+                                }}
+                                getPopupContainer={trigger => trigger.parentNode}
+                            >
+                                {models.map(({ id, name }) => (
+                                    <Option value={id} key={v4()}>
+                                        {name}
+                                    </Option>
+                                ))}
+                            </DecoratedSelect>
                     </Col>
                     <Col span={6}></Col>
                 </Row>
@@ -183,18 +241,33 @@ class VehicleFormClass extends React.Component {
                 <Row className={Styles.row}>
                     <Col span={6}>vehicleModification: </Col>
                     <Col span={12}>
-                        <FItem>
-                            {
-                                getFieldDecorator('vehicleModification', {
-                                    rules: [{ required: true, whitespace: true, message: formatMessage({id: 'report_analytics_form.catalog_name_is_required_message'}) }],
-                                    // initialValue: initValues.catalogName
-                                })(
-                                    <Input
-                                        disabled={fieldsDisabled}
-                                    />
-                                )
-                            }
-                        </FItem>
+                        <DecoratedSelect
+                                field="modificationId"
+                                showSearch
+                                hasFeedback
+                                formItem
+                                getFieldDecorator={getFieldDecorator}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: this.props.intl.formatMessage({
+                                            id: "required_field",
+                                        }),
+                                    },
+                                ]}
+                                placeholder={"Enter here"}
+                                disabled={!_.get(fields, 'modelId')}
+                                onSelect={value => {
+                                    setVehicleModificationId({modificationId: value});
+                                }}
+                                getPopupContainer={trigger => trigger.parentNode}
+                            >
+                                {makes.map(({ id, name }) => (
+                                    <Option value={id} key={v4()}>
+                                        {name}
+                                    </Option>
+                                ))}
+                            </DecoratedSelect>
                     </Col>
                     <Col span={6}></Col>
                 </Row>

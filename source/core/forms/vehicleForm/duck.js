@@ -166,7 +166,11 @@ export default function reducer(state = ReducerState, action) {
 
 /* Selectors */
 
-export const selectFields = state => state[ moduleName ].fields;
+export const selectFields = state => state.forms[ moduleName ].fields;
+export const selectYears = state => state.forms[ moduleName ].years;
+export const selectMakes = state => state.forms[ moduleName ].makes;
+export const selectModels = state => state.forms[ moduleName ].models;
+export const selectModifications = state => state.forms[ moduleName ].modifications;
 
 /* Actions */
 
