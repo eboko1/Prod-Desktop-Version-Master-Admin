@@ -17,7 +17,10 @@ export const FETCH_VEHICLE_MODELS_SUCCESS = `${prefix}/FETCH_VEHICLE_MODELS_SUCC
 export const FETCH_VEHICLE_MODIFICATIONS = `${prefix}/FETCH_VEHICLE_MODIFICATIONS`;
 export const FETCH_VEHICLE_MODIFICATIONS_SUCCESS = `${prefix}/FETCH_VEHICLE_MODIFICATIONS_SUCCESS`;
 
+export const CREATE_VEHICLE = `${prefix}/CREATE_VEHICLE`;
 
+
+export const SET_CLIENT_ID = `${prefix}/SET_CLIENT_ID`;
 export const SET_VIN = `${prefix}/SET_VIN`;
 export const SET_NUMBER = `${prefix}/SET_NUMBER`;
 export const SET_YEAR = `${prefix}/SET_YEAR`;
@@ -40,6 +43,7 @@ export const modes = Object.freeze({
 
 const ReducerState = {
     fields:           { // There are contained field values, we use them to fetch data and create vehicle
+        clientId: undefined,
         vin: undefined,
         number: undefined,
         year: undefined,
@@ -165,7 +169,16 @@ export default function reducer(state = ReducerState, action) {
                     modificationId
                 }
             };
-
+        
+        case SET_CLIENT_ID:
+            const {clientId} = payload;
+            return {
+                ...state,
+                fields: {
+                    ...state.fields,
+                    clientId
+                }
+            };
         default:
             return state;
     }
@@ -270,4 +283,13 @@ export const setVehicleModelId = ({modelId}) => {
 export const setVehicleModificationId = ({modificationId}) => ({
     type:    SET_MODIFICATION_ID,
     payload: { modificationId },
+});
+
+export const setClientId = ({clientId}) => ({
+    type:    SET_CLIENT_ID,
+    payload: { clientId },
+});
+
+export const createVehicle = () => ({
+    type: CREATE_VEHICLE,
 });

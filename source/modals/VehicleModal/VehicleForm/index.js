@@ -9,6 +9,7 @@ import { v4 } from 'uuid';
 import {
     fetchVehicleYears,
 
+    setClientId,
     selectFields,
     selectYears,
     selectMakes,
@@ -34,6 +35,7 @@ const FItem = Form.Item;
 
 const mapStateToProps = state => ({
     user: state.auth,
+    modalProps: state.modals.modalProps,
     fields: selectFields(state),
     years: selectYears(state),
     makes: selectMakes(state),
@@ -44,6 +46,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchVehicleYears,
 
+    setClientId,
     setVehicleNumber,
     setVehicleVin,
     setVehicleYear,
@@ -65,7 +68,9 @@ class VehicleFormClass extends React.Component {
     }
 
     componentDidMount() {
+        const {clientId} = this.props.modalProps;
         this.props.fetchVehicleYears();
+        this.props.setClientId({clientId});
     }
 
     render() {

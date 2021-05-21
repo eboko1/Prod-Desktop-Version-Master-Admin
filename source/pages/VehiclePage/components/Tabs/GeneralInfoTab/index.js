@@ -71,8 +71,8 @@ export default class GeneralInfoTab extends Component {
         this.props.createOrder({clientId, managerId: user.id, vehicleId});
     }
 
-    onEditVehicle = ({vehicleId}) => {
-        this.props.setModal(MODALS.VEHICLE, {vehicleId});
+    onEditVehicle = ({vehicleId, clientId}) => {
+        this.props.setModal(MODALS.VEHICLE, {vehicleId, clientId});
     }
 
     render() {
@@ -99,7 +99,7 @@ export default class GeneralInfoTab extends Component {
                             <Icon
                                 className={Styles.editIcon}
                                 type="edit"
-                                onClick={() => this.onEditVehicle({vehicleId: _.get(vehicle, 'id')})}
+                                onClick={() => this.onEditVehicle({vehicleId: _.get(vehicle, 'id'), clientId: _.get(client, 'clientId')})}
                             />
 
                             <Icon

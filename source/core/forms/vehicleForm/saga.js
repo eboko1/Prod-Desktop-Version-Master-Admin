@@ -16,6 +16,7 @@ import {
 } from './duck';
 
 import {
+    CREATE_VEHICLE,
     FETCH_VEHICLE,
     FETCH_VEHICLE_YEARS,
     FETCH_VEHICLE_MAKES,
@@ -71,6 +72,42 @@ export function* fetchVehiclesModificationsSaga() {
         yield put(fetchVehicleModificationsSuccess({modifications}));
     }
 }
+
+export function* createVehicleSaga() {
+    while (true) {
+        yield take(CREATE_VEHICLE);
+
+        const {
+            clientId,
+            modificationId: vehicleModificationId,
+            number: vehicleNumber,
+            vin: vehicleVin,
+            modelId: vehicleModelId,
+            year: vehicleYear,
+            // vehicleTypeId: vehicleTypeId,
+            // wheelRadius: wheelRadius,
+        } = yield select(selectFields);
+
+        const payload = {
+            vehicleModelId,
+            vehicleModificationId,
+            vehicleVin,
+            vehicleNumber,
+            vehicleYear,
+            // vehicleTypeId,
+            // wheelRadius,
+        };
+
+        yield call(
+            fetchAPI,
+            'POST',
+            `clients/${clientId}/vehicles`,
+            null,
+            payload,
+        );
+    }
+}
+
 export function* saga() {
     yield all([
         call(fetchVehicleSaga),
@@ -78,5 +115,6 @@ export function* saga() {
         call(fetchVehiclesMakesSaga),
         call(fetchVehiclesModelsSaga),
         call(fetchVehiclesModificationsSaga),
+        call(createVehicleSaga),
     ]);
 }
