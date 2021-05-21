@@ -968,7 +968,7 @@ export class DetailWarehousesCountModal extends React.Component {
                 count: 0,
                 childs: [
                     {
-                        cellAddress: `${id}.`,
+                        //cellAddress: `${id}.`,
                         count: 0,
                     }
                 ],
