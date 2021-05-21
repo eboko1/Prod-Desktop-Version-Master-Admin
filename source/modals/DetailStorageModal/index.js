@@ -331,13 +331,13 @@ class DetailStorageModal extends React.Component{
                 },
                 sortDirections: ['descend', 'ascend'],
                 render: (store, elem) => {
+                    console.log(elem.id)
                     return this.props.stockMode ? 
                     (
                         <span
                             style={{color: 'var(--link)', textDecoration: 'underline', cursor: 'pointer'}}
                             onClick={()=>this.setState({
-                                reserveModalVisible: true,
-                                reserveModalId: elem.id,
+                                reserveModalVisible: elem.id,
                             })}
                         >
                             {elem.countInWarehouses} / {elem.available}
@@ -786,7 +786,7 @@ class DetailStorageModal extends React.Component{
     }
 
     render() {
-        const { dataSource, storeFilter, brandFilter, codeFilter, inStock, reserveModalVisible, reserveModalData } = this.state;
+        const { dataSource, storeFilter, brandFilter, codeFilter, inStock, reserveModalVisible } = this.state;
         const disabled = this.props.disabled || this.props.stockMode && isForbidden(this.props.user, permissions.ACCESS_STOCK) || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
         let tblData = [...dataSource];
 
@@ -848,12 +848,11 @@ class DetailStorageModal extends React.Component{
                 </Modal>
                 {this.props.stockMode && 
                     <StoreProductTrackingModal
-                        visible={reserveModalVisible}
-                        productId={reserveModalData}
+                        visible={Boolean(reserveModalVisible)}
+                        productId={reserveModalVisible}
                         hideModal={()=>{
                             this.setState({
-                                reserveModalVisible: false,
-                                reserveModalData: undefined,
+                                reserveModalVisible: undefined,
                             })
                         }}
                     />
