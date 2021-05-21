@@ -153,7 +153,6 @@ export default class ComplexesModal extends React.Component{
                     storeGroupId: element.id,
                     count: element.count || 1,
                     comment: element.commentary,
-                    status: 'CALCULATE',
                 })
             }
         });
@@ -506,6 +505,7 @@ export default class ComplexesModal extends React.Component{
                                         });
                                         const details = triggerNode.props.details.map((elem)=>{
                                             elem.checked = true;
+                                            elem.name = elem.singleName;
                                             elem.count = 1;
                                             elem.commentary = {
                                                 comment: undefined,
