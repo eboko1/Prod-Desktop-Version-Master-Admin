@@ -371,7 +371,7 @@ class DetailStorageModal extends React.Component{
     handleOk(elem) {
         var supplierBrandId = elem.supplierBrandId ? elem.supplierBrandId : (elem.price ? elem.price.supplierBrandId : undefined);
         var brandId = elem.brandId ? elem.brandId : (elem.price ? elem.price.brandId : undefined);
-        var name = elem.storeGroupId == 1000000 ? elem.description : elem.storeGroupName;
+        var name = elem.description || elem.storeGroupName;
         var supplierOriginalCode = elem.price ? elem.price.supplierOriginalCode : undefined;
         var supplierProductNumber = elem.price ? elem.price.supplierProductNumber : undefined;
         var supplierPartNumber = elem.price ? elem.price.supplierPartNumber : undefined;
