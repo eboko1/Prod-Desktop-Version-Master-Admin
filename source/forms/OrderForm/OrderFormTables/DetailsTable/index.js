@@ -420,6 +420,7 @@ class DetailsTable extends Component {
                                                         purchasePrice: row.purchasePrice,
                                                         count: row.count,
                                                         price: row.price,
+                                                        putAfter: row.order,
                                                     }
                                                 ],
                                             }
