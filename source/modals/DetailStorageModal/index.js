@@ -529,7 +529,7 @@ class DetailStorageModal extends React.Component{
                     elem.businessSupplierId = 0;
                     elem.businessSupplierName = that.props.intl.formatMessage({id: 'navigation.storage'});
                     elem.purchasePrice = elem.stockPrice;
-                    elem.salePrice = elem.stockPrice * (elem.priceGroup ? elem.priceGroup.multiplier : 1.4);
+                    elem.salePrice = elem.sellingPrice || elem.stockPrice * (elem.priceGroup ? elem.priceGroup.multiplier : 1.4);
                     elem.partNumber = elem.code;
                     elem.description = elem.name;
                     elem.storeGroupId = elem.groupId;
@@ -603,7 +603,7 @@ class DetailStorageModal extends React.Component{
                         elem.purchasePrice = elem.price.purchasePrice;
                         elem.businessSupplierId = elem.price.businessSupplierId;
                         elem.businessSupplierName = elem.price.businessSupplierName;
-                        elem.salePrice = elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
+                        elem.salePrice = elem.sellingPrice || elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
                     }
                     if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1) {
                         if(that.state.brandFilter.length == 0 && that.props.brandFilter == elem.supplierName) {
@@ -689,7 +689,7 @@ class DetailStorageModal extends React.Component{
                     elem.purchasePrice = elem.price.purchasePrice;
                     elem.businessSupplierId = elem.price.businessSupplierId;
                     elem.businessSupplierName = elem.price.businessSupplierName;
-                    elem.salePrice = elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
+                    elem.salePrice = elem.sellingPrice || elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
                 }
                 if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1) {
                     if(that.state.brandFilter.length == 0 && that.props.brandFilter == elem.supplierName) {
