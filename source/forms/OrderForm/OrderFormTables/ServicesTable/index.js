@@ -730,9 +730,6 @@ class ServicesTable extends Component {
         });
     }
     hideServicelProductModal() {
-        const { dataSource } = this.state;
-        const lastService = dataSource[dataSource.length - 1];
-        lastService.barcode = undefined;
         this.setState({
             serviceModalVisible: false,
         });
