@@ -205,7 +205,7 @@ class DetailsTable extends Component {
                                                     { handleErrorInternally: true }
                                                 );
                                                 await notification.success({
-                                                    message: `Заказано`,
+                                                    message: this.props.intl.formatMessage({id: 'details_table.ordered'}),
                                                 });
                                                 await this.updateDataSource();
                                             }}
@@ -261,7 +261,7 @@ class DetailsTable extends Component {
                                                     { handleErrorInternally: true }
                                                 );
                                                 await notification.success({
-                                                    message: `Добавлено`,
+                                                    message: this.props.intl.formatMessage({id: 'details_table.added'}),
                                                 });
                                                 await this.updateDataSource();
                                             }}
@@ -285,7 +285,7 @@ class DetailsTable extends Component {
                                                     { handleErrorInternally: true }
                                                 );
                                                 await notification.success({
-                                                    message: `Удалено`,
+                                                    message: this.props.intl.formatMessage({id: 'details_table.deleted'}),
                                                 });
                                                 await this.updateDataSource();
                                             } }
@@ -394,7 +394,7 @@ class DetailsTable extends Component {
                                             }
                                         );
                                         await notification.success({
-                                            message: `Заказано`,
+                                            message: this.props.intl.formatMessage({id: 'details_table.ordered'}),
                                         });
                                         await this.updateDataSource();
                                     }}
@@ -420,6 +420,7 @@ class DetailsTable extends Component {
                                                         purchasePrice: row.purchasePrice,
                                                         count: row.count,
                                                         price: row.price,
+                                                        putAfter: row.order,
                                                     }
                                                 ],
                                             }
@@ -534,7 +535,7 @@ class DetailsTable extends Component {
                 render:    (data, row) => {
                     return (
                         <div>
-                            <div style={{fontWeight: 700, textDecoration: row.detailCode && 'underline'}} title={'Карточка товара'}>
+                            <div style={{fontWeight: 700, textDecoration: row.detailCode && 'underline'}} title={this.props.intl.formatMessage({id: 'details_table.product_card'})}>
                                 {row.productId 
                                     ? <Link to={ `${book.product}/${row.productId}` }>
                                         { row.detailCode }
@@ -585,7 +586,7 @@ class DetailsTable extends Component {
                                     })
                                 }
                             }}
-                            title={'Замены по каталогу'}
+                            title={this.props.intl.formatMessage({id: 'details_table.catalog_modal_title'})}
                         >
                             {data}
                         </div> :
@@ -644,7 +645,10 @@ class DetailsTable extends Component {
                                 display: 'flex',
                                 justifyContent: 'space-around'
                             }}
-                            title={row.supplierId === 0 ? 'Наличие на складах' : 'Наличие у поставщиков'}
+                            title={row.supplierId === 0
+                                ? this.props.intl.formatMessage({id: 'details_table.stock_availability'})
+                                : this.props.intl.formatMessage({id: 'details_table.suppliers_availability'})
+                            }
                         >
                             <div
                                 style={{width: '50%', cursor: 'pointer', textDecoration: row.supplierName && 'underline'}}
@@ -825,7 +829,7 @@ class DetailsTable extends Component {
                                         { handleErrorInternally: true }
                                     );
                                     await notification.success({
-                                        message: `Зарезервировано`,
+                                        message: this.props.intl.formatMessage({id: 'details_table.reserved'}),
                                     });
                                     await this.updateDataSource();
                                 }}
@@ -845,7 +849,7 @@ class DetailsTable extends Component {
                                         { handleErrorInternally: true }
                                     );
                                     await notification.success({
-                                        message: `Резерв снят`,
+                                        message: this.props.intl.formatMessage({id: 'details_table.unreserved'}),
                                     });
                                     await this.updateDataSource();
                                 }}
@@ -1174,6 +1178,7 @@ class DetailsTable extends Component {
                                 // textTransform: 'uppercase',
                                 // border: '1px solid black',
                             } }
+                            title={this.props.intl.formatMessage({id: `status.${data}.title`})}
                         >
                             <FormattedMessage id={`status.${data}`}/>
                         </div>
@@ -1988,7 +1993,7 @@ export class ReserveButton extends React.Component {
                 { handleErrorInternally: true }
             );
             await notification.success({
-                message: `Зарезервировано`,
+                message: this.props.intl.formatMessage({id: 'details_table.reserved'}),
             });
         } else {
             await fetchAPI(
@@ -2001,7 +2006,7 @@ export class ReserveButton extends React.Component {
                 { handleErrorInternally: true }
             );
             await notification.success({
-                message: `Резерв снят`,
+                message: this.props.intl.formatMessage({id: 'details_table.unreserved'}),
             });
         }
 

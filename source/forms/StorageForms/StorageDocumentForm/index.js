@@ -1120,7 +1120,7 @@ class AddProductModal extends React.Component {
             const parentGroup = data[ i ];
             treeData.push({
                 title:      `${parentGroup.name} (#${parentGroup.id})`,
-                name:       parentGroup.name,
+                name:       parentGroup.singleName,
                 value:      parentGroup.id,
                 className:  Styles.groupTreeOption,
                 key:        `${i}`,
@@ -1131,7 +1131,7 @@ class AddProductModal extends React.Component {
                 const childGroup = parentGroup.childGroups[ j ];
                 treeData[ i ].children.push({
                     title:      `${childGroup.name} (#${childGroup.id})`,
-                    name:       childGroup.name,
+                    name:       childGroup.singleName,
                     value:      childGroup.id,
                     className:  Styles.groupTreeOption,
                     key:        `${i}-${j}`,
@@ -1142,7 +1142,7 @@ class AddProductModal extends React.Component {
                     const lastNode = childGroup.childGroups[ k ];
                     treeData[ i ].children[ j ].children.push({
                         title:     `${lastNode.name} (#${lastNode.id})`,
-                        name:      lastNode.name,
+                        name:      lastNode.singleName,
                         value:     lastNode.id,
                         className: Styles.groupTreeOption,
                         priceGroup: lastNode.priceGroupNumber,
@@ -1153,7 +1153,7 @@ class AddProductModal extends React.Component {
                         const elem = lastNode.childGroups[ l ];
                         treeData[ i ].children[ j ].children[ k ].children.push({
                             title:     `${elem.name} (#${elem.id})`,
-                            name:      elem.name,
+                            name:      elem.singleName,
                             value:     elem.id,
                             className: Styles.groupTreeOption,
                             priceGroup: elem.priceGroupNumber,

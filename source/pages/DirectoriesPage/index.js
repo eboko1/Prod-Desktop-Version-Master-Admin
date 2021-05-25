@@ -204,7 +204,8 @@ const struct = [
                 itemName:  'navigation.main_settings',
                 disabled:  false,
                 link:      book.oldApp.settings,
-                color:     'var(--db-comment)'
+                color:     'var(--db-comment)',
+                oldApp:    true,
             },
             {
                 itemName:  'navigation.posts',
@@ -216,7 +217,8 @@ const struct = [
                 itemName:  'navigation.cb24',
                 disabled:  false,
                 link:      book.oldApp.link,
-                color:     'var(--db-comment)'
+                color:     'var(--db-comment)',
+                oldApp:    true,
             },
             {
                 itemName:  'navigation.availabilities',
@@ -258,17 +260,25 @@ export default class DirectoriesPage extends Component {
         )
     };
 
-    _renderItem = (blockTitle, {itemName, link, disabled, color}, key) => {
+    _renderItem = (blockTitle, {itemName, link, disabled, color, oldApp}, key) => {
         return (
             <div key={ key } className={ disabled ? Styles.disabledItem + " " + Styles.item : Styles.item }>
-                <a
-                    className={Styles.buttonLink}
-                    href={link}
-                >
-                    <Button className={Styles.itemButton} disabled={disabled} style={{background: color, fontWeight: 500}}>
-                        <FormattedMessage id={itemName} />
-                    </Button>
-                </a>
+                {oldApp ?
+                    <a
+                        className={Styles.buttonLink}
+                        href={link}
+                    >
+                        <Button className={Styles.itemButton} disabled={disabled} style={{background: color, fontWeight: 500}}>
+                            <FormattedMessage id={itemName} />
+                        </Button>
+                    </a>
+                    :
+                    <Link to={link} className={Styles.buttonLink}>
+                        <Button className={Styles.itemButton} disabled={disabled} style={{background: color, fontWeight: 500}}>
+                            <FormattedMessage id={itemName} />
+                        </Button>
+                    </Link>
+                }
             </div>
         )
     };

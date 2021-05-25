@@ -385,7 +385,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 let detailObjCopy = Object.assign({}, {
                     key: that.state.detailsList.length+index+1,
                     id: elem.storeGroup.id,
-                    name: elem.storeGroup.name,
+                    name: elem.storeGroup.singleName,
                     count: 1,
                     checked: true,
                     commentary: elem.comment,
@@ -711,9 +711,9 @@ class ConfirmDiagnosticModal extends React.Component{
                     value={ String(data.id) }
                     key={index}
                     detail_id={data.id}
-                    detail_name={data.name}
+                    detail_name={data.singleName}
                 >
-                    { data.name }
+                    { data.singleName }
                 </Option>
             ),
         );
