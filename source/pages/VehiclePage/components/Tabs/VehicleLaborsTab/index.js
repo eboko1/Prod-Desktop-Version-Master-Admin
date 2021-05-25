@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 // proj
 import { Spinner} from 'commons';
-import VehicleLaborsTable from '../../VehicleLaborsTable';
+import VehicleLaborsTable from './VehicleLaborsTable';
 import {
     fetchVehicle,
 

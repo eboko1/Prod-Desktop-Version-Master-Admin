@@ -11,7 +11,7 @@ import { v4 } from 'uuid';
 import {Layout, Spinner} from 'commons';
 import { FormattedDatetime } from "components";
 import book from 'routes/book';
-import VehicleOrdersTable from '../../VehicleOrdersTable';
+import VehicleOrdersTable from './VehicleOrdersTable';
 import {
     fetchVehicle,
 
