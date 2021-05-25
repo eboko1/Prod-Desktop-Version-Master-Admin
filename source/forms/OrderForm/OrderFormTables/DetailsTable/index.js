@@ -90,6 +90,7 @@ class DetailsTable extends Component {
                                                 padding: '0px 8px',
                                                 fontSize: 18,
                                             }}
+                                            title={this.props.intl.formatMessage({id: 'add'})}
                                         >
                                             <Icon type='plus'/>
                                         </Button>
@@ -188,10 +189,11 @@ class DetailsTable extends Component {
                                             transitionDuration: "0.5s",
                                             pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
                                         }}
-                                        >
+                                    >
                                         <Icon
                                             type="shopping"
                                             className={Styles.icon}
+                                            title={this.props.intl.formatMessage({id: 'details_table.order'})}
                                             onClick={async () => {
                                                 await fetchAPI(
                                                     'POST',
@@ -203,7 +205,7 @@ class DetailsTable extends Component {
                                                     { handleErrorInternally: true }
                                                 );
                                                 await notification.success({
-                                                    message: `Заказано`,
+                                                    message: this.props.intl.formatMessage({id: 'details_table.ordered'}),
                                                 });
                                                 await this.updateDataSource();
                                             }}
@@ -211,6 +213,7 @@ class DetailsTable extends Component {
                                         <Icon
                                             type="plus-square"
                                             className={Styles.icon}
+                                            title={this.props.intl.formatMessage({id: 'copy'})}
                                             onClick={async () => {
                                                 const payload = {
                                                     insertMode: true,
@@ -243,6 +246,7 @@ class DetailsTable extends Component {
                                             style={ { color: 'gold' } }
                                             className={Styles.icon}
                                             theme={ 'filled' }
+                                            title={this.props.intl.formatMessage({id: 'details_table.add_to_favorite'})}
                                             onClick={async () => {
                                                 await fetchAPI(
                                                     'POST',
@@ -257,7 +261,7 @@ class DetailsTable extends Component {
                                                     { handleErrorInternally: true }
                                                 );
                                                 await notification.success({
-                                                    message: `Добавлено`,
+                                                    message: this.props.intl.formatMessage({id: 'details_table.added'}),
                                                 });
                                                 await this.updateDataSource();
                                             }}
@@ -271,13 +275,17 @@ class DetailsTable extends Component {
                                                     'DELETE',
                                                     `orders/${this.props.orderId}/details`,
                                                     {
-                                                        ids: `[${this.state.selectedRows.map(({id})=>id)}]`,
+                                                        ids: `[${
+                                                                this.state.selectedRows
+                                                                    .filter(({reservedCount, agreement}) => !reservedCount && agreement == 'UNDEFINED')
+                                                                    .map(({id})=>id)
+                                                        }]`,
                                                     },
                                                     undefined,
                                                     { handleErrorInternally: true }
                                                 );
                                                 await notification.success({
-                                                    message: `Удалено`,
+                                                    message: this.props.intl.formatMessage({id: 'details_table.deleted'}),
                                                 });
                                                 await this.updateDataSource();
                                             } }
@@ -285,6 +293,7 @@ class DetailsTable extends Component {
                                             <Icon
                                                 type="delete"
                                                 className={Styles.deleteIcon}
+                                                title={this.props.intl.formatMessage({id: 'delete'})}
                                             />
                                         </Popconfirm>
                                     </div>
@@ -296,7 +305,7 @@ class DetailsTable extends Component {
                 dataIndex: 'key',
                 render:    (data, row) => {
                     const confirmed = row.agreement.toLowerCase();
-                    const disabled = confirmed != 'undefined' || this.props.disabled || row.reserved;
+                    const disabled = confirmed != 'undefined' || this.props.disabled || row.reservedCount;
                     const prewOrder = row.key-1 >= 0 && this.state.dataSource[row.key-1].order;
                     const nextOrder = row.key+1 < this.state.dataSource.length && this.state.dataSource[row.key+1].order;
                     return (
@@ -364,7 +373,7 @@ class DetailsTable extends Component {
                                     treeData={ this.props.detailsTreeData }
                                     brands={ this.props.allDetails.brands }
                                     allDetails={ this.props.allDetails.details }
-                                    disabled={this.props.disabled}
+                                    disabled={this.props.disabled || row.reservedCount}
                                     confirmed={ confirmed != 'undefined' }
                                     detail={ row }
                                     onConfirm={ this.updateDetail }
@@ -375,6 +384,7 @@ class DetailsTable extends Component {
                                 <Icon
                                     className={Styles.icon}
                                     type="shopping"
+                                    title={this.props.intl.formatMessage({id: 'details_table.order'})}
                                     onClick={async () => {
                                         await fetchAPI(
                                             'POST',
@@ -384,7 +394,7 @@ class DetailsTable extends Component {
                                             }
                                         );
                                         await notification.success({
-                                            message: `Заказано`,
+                                            message: this.props.intl.formatMessage({id: 'details_table.ordered'}),
                                         });
                                         await this.updateDataSource();
                                     }}
@@ -392,6 +402,7 @@ class DetailsTable extends Component {
                                 <Icon
                                     type="plus-square"
                                     className={Styles.icon}
+                                    title={this.props.intl.formatMessage({id: 'copy'})}
                                     onClick={async () => {
                                         await fetchAPI(
                                             'PUT',
@@ -409,6 +420,7 @@ class DetailsTable extends Component {
                                                         purchasePrice: row.purchasePrice,
                                                         count: row.count,
                                                         price: row.price,
+                                                        putAfter: row.order,
                                                     }
                                                 ],
                                             }
@@ -458,6 +470,7 @@ class DetailsTable extends Component {
                                 >
                                     <Icon
                                         type='delete'
+                                        title={this.props.intl.formatMessage({id: 'delete'})}
                                         className={
                                             disabled
                                                 ? Styles.disabledIcon
@@ -491,6 +504,7 @@ class DetailsTable extends Component {
                                                 fontSize: 24,
                                                 color: 'var(--disabled)'
                                             }}
+                                            title={this.props.intl.formatMessage({id: 'details_table.remove_code'})}
                                             onClick={async ()=>{
                                                 const payload = {
                                                     updateMode: true,
@@ -521,7 +535,7 @@ class DetailsTable extends Component {
                 render:    (data, row) => {
                     return (
                         <div>
-                            <div style={{fontWeight: 700, textDecoration: row.detailCode && 'underline'}} title={'Карточка товара'}>
+                            <div style={{fontWeight: 700, textDecoration: row.detailCode && 'underline'}} title={this.props.intl.formatMessage({id: 'details_table.product_card'})}>
                                 {row.productId 
                                     ? <Link to={ `${book.product}/${row.productId}` }>
                                         { row.detailCode }
@@ -566,11 +580,13 @@ class DetailsTable extends Component {
                                 textDecoration: data && 'underline'
                             }}
                             onClick={()=>{
-                                this.setState({
-                                    storageModalSelectedRow: row,
-                                })
+                                if(!row.reservedCount) {
+                                    this.setState({
+                                        storageModalSelectedRow: row,
+                                    })
+                                }
                             }}
-                            title={'Замены по каталогу'}
+                            title={this.props.intl.formatMessage({id: 'details_table.catalog_modal_title'})}
                         >
                             {data}
                         </div> :
@@ -598,6 +614,7 @@ class DetailsTable extends Component {
                                         fontSize: 24,
                                         color: 'var(--disabled)'
                                     }}
+                                    title={this.props.intl.formatMessage({id: 'details_table.remove_supplier'})}
                                     onClick={async ()=>{
                                         const payload = {
                                             updateMode: true,
@@ -628,19 +645,24 @@ class DetailsTable extends Component {
                                 display: 'flex',
                                 justifyContent: 'space-around'
                             }}
-                            title={row.supplierId === 0 ? 'Наличие на складах' : 'Наличие у поставщиков'}
+                            title={row.supplierId === 0
+                                ? this.props.intl.formatMessage({id: 'details_table.stock_availability'})
+                                : this.props.intl.formatMessage({id: 'details_table.suppliers_availability'})
+                            }
                         >
                             <div
                                 style={{width: '50%', cursor: 'pointer', textDecoration: row.supplierName && 'underline'}}
                                 onClick={()=>{
-                                    if(row.supplierId !== 0) {
-                                        this.setState({
-                                            supplierModalSelectedRow: row,
-                                        })
-                                    } else {
-                                        this.setState({
-                                            warehousesModalSelectedRow: row,
-                                        })
+                                    if(!row.reservedCount) {
+                                        if(row.supplierId !== 0) {
+                                            this.setState({
+                                                supplierModalSelectedRow: row,
+                                            })
+                                        } else {
+                                            this.setState({
+                                                warehousesModalSelectedRow: row,
+                                            })
+                                        }
                                     }
                                 }}
                             >
@@ -795,6 +817,7 @@ class DetailsTable extends Component {
                             <Icon
                                 type="lock"
                                 className={Styles.icon}
+                                title={this.props.intl.formatMessage({id: 'details_table.reserve'})}
                                 onClick={async () => {
                                     await fetchAPI(
                                         'POST',
@@ -806,7 +829,7 @@ class DetailsTable extends Component {
                                         { handleErrorInternally: true }
                                     );
                                     await notification.success({
-                                        message: `Зарезервировано`,
+                                        message: this.props.intl.formatMessage({id: 'details_table.reserved'}),
                                     });
                                     await this.updateDataSource();
                                 }}
@@ -814,6 +837,7 @@ class DetailsTable extends Component {
                             <Icon
                                 type="unlock"
                                 className={Styles.icon}
+                                title={this.props.intl.formatMessage({id: 'details_table.unreserve'})}
                                 onClick={async () => {
                                     await fetchAPI(
                                         'POST',
@@ -825,7 +849,7 @@ class DetailsTable extends Component {
                                         { handleErrorInternally: true }
                                     );
                                     await notification.success({
-                                        message: `Резерв снят`,
+                                        message: this.props.intl.formatMessage({id: 'details_table.unreserved'}),
                                     });
                                     await this.updateDataSource();
                                 }}
@@ -1154,6 +1178,7 @@ class DetailsTable extends Component {
                                 // textTransform: 'uppercase',
                                 // border: '1px solid black',
                             } }
+                            title={this.props.intl.formatMessage({id: `status.${data}.title`})}
                         >
                             <FormattedMessage id={`status.${data}`}/>
                         </div>
@@ -1968,7 +1993,7 @@ export class ReserveButton extends React.Component {
                 { handleErrorInternally: true }
             );
             await notification.success({
-                message: `Зарезервировано`,
+                message: this.props.intl.formatMessage({id: 'details_table.reserved'}),
             });
         } else {
             await fetchAPI(
@@ -1981,7 +2006,7 @@ export class ReserveButton extends React.Component {
                 { handleErrorInternally: true }
             );
             await notification.success({
-                message: `Резерв снят`,
+                message: this.props.intl.formatMessage({id: 'details_table.unreserved'}),
             });
         }
 

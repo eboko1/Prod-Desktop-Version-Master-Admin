@@ -172,6 +172,7 @@ class OrderPage extends Component {
             },
         };
         this._fetchRepairMapData = this._fetchRepairMapData.bind(this);
+        this._isMounted = false;
     }
 
     
@@ -185,21 +186,21 @@ class OrderPage extends Component {
             fetchOrderTask(id);
         }
         this._fetchRepairMapData();
+        this._isMounted = true;
     }
 
     componentDidUpdate = async (prevProps) => {
+        if(this.props.order.clientId && !this.state.selectedClient.clientId && this.props.spinner) {
+            const client = await fetchAPI('GET', `clients/${this.props.order.clientId}`, {cut: true, skipNotifications: true, skipReviews: true});
+            this.setState({
+                client,
+                selectedClient: client,
+            })  
+        }
         if(this.props.order.status && this.props.order != prevProps.order) {
             this._fetchRepairMapData();
         }
         if(!this.props.spinner && prevProps.spinner) {
-            if(this.props.order.clientId) {
-                const client = await fetchAPI('GET', `clients/${this.props.order.clientId}`);
-                await this.setState({
-                    client,
-                    selectedClient: client,
-                })  
-            }
-
             const allServices = await fetchAPI('GET', 'labors');
             const brands = await fetchAPI('GET', 'brands');
             const details = await fetchAPI('GET', 'store_groups', {keepFlat: true});
@@ -732,9 +733,11 @@ class OrderPage extends Component {
             initialOrderTask,
             fetchedOrder,
         } = this.props;
-        const {num, status, datetime, diagnosis, repairMapIndicator, totalSumWithTax} = this.props.order;
-        const { clientId, name, surname } = selectedClient;
+        const {num, status, datetime, diagnosis, clientVehicleId, totalSumWithTax} = this.props.order;
+        const { clientId, name, surname, vehicles } = selectedClient;
         const {id} = this.props.match.params;
+
+        const selectedVehicle = vehicles.find(({id})=>id==clientVehicleId);
 
         const {
             isClosedStatus,
@@ -772,7 +775,7 @@ class OrderPage extends Component {
             });
         }
 
-        return spinner ? (
+        return spinner || !this._isMounted ? (
             <Spinner spin={ spinner }/>
         ) : (
             <Layout
@@ -807,7 +810,7 @@ class OrderPage extends Component {
                                     showOilModal={this._showOilModal}
                                     isMobile={isMobile}
                                     orderId={ id }
-                                    modificationId={this.props.order.clientVehicleTecdocId}
+                                    modificationId={selectedVehicle && selectedVehicle.tecdocId}
                                 />
                             </div>
                             :

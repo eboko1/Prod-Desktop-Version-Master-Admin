@@ -599,7 +599,6 @@ class DetailProductModal extends React.Component{
                                     comment: undefined,
                                     positions: [],
                                 },
-                                status: 'CALCULATE',
                             })
                         } else {
                             data.details.push({
@@ -617,7 +616,6 @@ class DetailProductModal extends React.Component{
                                     comment: undefined,
                                     positions: [],
                                 },
-                                status: 'CALCULATE',
                             })
                         }
                     }
@@ -669,6 +667,7 @@ class DetailProductModal extends React.Component{
                         detailName: detail.name,
                         storeGroupId: detail.id,
                         detailCode: detail.partNumber,
+                        price: Math.round(detail.sellingPrice*10)/10,
                         comment: {
                             comment: undefined,
                             positions: [],
@@ -693,7 +692,7 @@ class DetailProductModal extends React.Component{
                             productId: businessSupplierId == 0 ? id : undefined,
                             store: store,
                             purchasePrice: Math.round(purchasePrice*10)/10,
-                            price: Math.round(purchasePrice * markup*10)/10,
+                            price: Math.round(detail.sellingPrice*10)/10 || Math.round(purchasePrice * markup*10)/10,
                             supplierOriginalCode: supplierOriginalCode,
                             supplierProductNumber: supplierProductNumber,
                             supplierPartNumber: supplierPartNumber,
@@ -741,6 +740,7 @@ class DetailProductModal extends React.Component{
                             brandId: result.brandId,
                             brandName: result.brandName,
                             detailCode: result.partNumber,
+                            price: Math.round(result.sellingPrice*10)/10,
                             count: 1,
                         };
                     if(result.price) {
@@ -755,7 +755,7 @@ class DetailProductModal extends React.Component{
                             productId: businessSupplierId == 0 ? id : undefined,
                             store: store,
                             purchasePrice: Math.round(purchasePrice*10)/10,
-                            price: Math.round(purchasePrice * markup*10)/10,
+                            price: Math.round(result.sellingPrice*10)/10 || Math.round(purchasePrice * markup*10)/10,
                             supplierOriginalCode: supplierOriginalCode,
                             supplierProductNumber: supplierProductNumber,
                             supplierPartNumber: supplierPartNumber,
