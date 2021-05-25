@@ -733,9 +733,11 @@ class OrderPage extends Component {
             initialOrderTask,
             fetchedOrder,
         } = this.props;
-        const {num, status, datetime, diagnosis, repairMapIndicator, totalSumWithTax} = this.props.order;
-        const { clientId, name, surname } = selectedClient;
+        const {num, status, datetime, diagnosis, clientVehicleId, totalSumWithTax} = this.props.order;
+        const { clientId, name, surname, vehicles } = selectedClient;
         const {id} = this.props.match.params;
+
+        const selectedVehicle = vehicles.find(({id})=>id==clientVehicleId);
 
         const {
             isClosedStatus,
@@ -808,7 +810,7 @@ class OrderPage extends Component {
                                     showOilModal={this._showOilModal}
                                     isMobile={isMobile}
                                     orderId={ id }
-                                    modificationId={this.props.order.clientVehicleTecdocId}
+                                    modificationId={selectedVehicle && selectedVehicle.tecdocId}
                                 />
                             </div>
                             :

@@ -98,7 +98,7 @@ const ProductForm = props => {
 
         data.forEach(item => {
             if (item.id === groupId) {
-                groupName = item.name;
+                groupName = item.singleName;
             }
 
             if (!_.isEmpty(item.childGroups)) {
