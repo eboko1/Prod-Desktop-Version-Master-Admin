@@ -7,13 +7,15 @@ import _ from 'lodash';
 
 // proj
 import { Spinner} from 'commons';
+import VehicleNormHoursTable from "./VehicleNormHoursTable";
 import {
     fetchVehicle,
 
     selectVehicle,
     selectClient,
     selectGeneralData,
-    setExpandedVehicleId
+    setExpandedVehicleId,
+    fetchVehicleNormHours
 } from 'core/vehicles/duck';
 
 // own
@@ -27,7 +29,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     fetchVehicle,
-    setExpandedVehicleId
+    setExpandedVehicleId,
+    fetchVehicleNormHours,
 };
 
 @withRouter
@@ -41,6 +44,7 @@ export default class GeneralInfoTab extends Component {
     componentDidMount() {
         const { match: {params: {id}}} = this.props;
         this.props.setExpandedVehicleId({vehicleId: id});
+        this.props.fetchVehicleNormHours();
     }
 
     render() {
@@ -50,7 +54,7 @@ export default class GeneralInfoTab extends Component {
 
         return (
             <div className={Styles.tabContent}>
-                Table here, use your imagination!(will be soon)
+                <VehicleNormHoursTable/>
             </div>
         )
     }

@@ -12,6 +12,9 @@ export const FETCH_VEHICLE_SUCCESS = `${prefix}/FETCH_VEHICLE_SUCCESS`;
 export const FETCH_VEHICLE_ORDERS = `${prefix}/FETCH_VEHICLE_ORDERS`;
 export const FETCH_VEHICLE_ORDERS_SUCCESS = `${prefix}/FETCH_VEHICLE_ORDERS_SUCCESS`;
 
+export const FETCH_VEHICLE_NORM_HOURS = `${prefix}/FETCH_VEHICLE_NORM_HOURS`;
+export const FETCH_VEHICLE_NORM_HOURS_SUCCESS = `${prefix}/FETCH_VEHICLE_NORM_HOURS_SUCCESS`;
+
 export const FETCH_VEHICLE_LABORS = `${prefix}/FETCH_VEHICLE_LABORS`;
 export const FETCH_VEHICLE_LABORS_SUCCESS = `${prefix}/FETCH_VEHICLE_LABORS_SUCCESS`;
 
@@ -39,6 +42,12 @@ const ReducerState = {
     vehicleOrdersData: {
         orders: [], //Array of orders fetched for specific vehicle
         stats: {},
+    },
+
+    vehicleNormHoursData: {
+        normHours: [], // Array of norm hours standard data
+        stats: {},
+        // here filters sorts, etc..
     },
 
     vehicleLaborsData: { 
@@ -123,6 +132,17 @@ export default function reducer(state = ReducerState, action) {
                 }
             };
 
+        case FETCH_VEHICLE_NORM_HOURS_SUCCESS:
+            const {normHours, stats: vehicleNormHoursStats} = payload;
+            return {
+                ...state,
+                vehicleNormHoursData: {
+                    ...state.vehicleNormHoursData,
+                    normHours: normHours,
+                    stats: vehicleNormHoursStats
+                }
+            };
+
         case FETCH_VEHICLE_LABORS_SUCCESS:
             const {labors, stats: vehicleLaborsStats} = payload;
             return {
@@ -175,12 +195,12 @@ export const selectVehicleOrders = state => state[ moduleName ].vehicleOrdersDat
 export const selectVehicleOrdersStats = state => state[ moduleName ].vehicleOrdersData.stats;
 export const selectVehicleLabors = state => state[ moduleName ].vehicleLaborsData.labors;
 export const selectVehicleLaborsStats = state => state[ moduleName ].vehicleLaborsData.stats;
+export const selectVehicleNormHours = state => state[ moduleName ].vehicleNormHoursData.normHours;
+export const selectVehicleNormHoursStats = state => state[ moduleName ].vehicleNormHoursData.stats;
 export const selectVehicleAppurtenances = state => state[ moduleName ].vehicleAppurtenancesData.appurtenances;
 export const selectVehicleAppurtenancesStats = state => state[ moduleName ].vehicleAppurtenancesData.stats;
 export const selectVehicleRecommendations = state => state[ moduleName ].vehicleRecommendationsData.recommendations;
 export const selectVehicleRecommendationsStats = state => state[ moduleName ].vehicleRecommendationsData.stats;
-
-
 
 
 /** Action Creators **/
@@ -235,6 +255,16 @@ export const fetchVehicleOrdersSuccess = ({orders, stats}) => ({
 export const fetchVehicleLaborsSuccess = ({labors, stats}) => ({
     type:    FETCH_VEHICLE_LABORS_SUCCESS,
     payload: {labors, stats},
+});
+
+
+export const fetchVehicleNormHours = () => ({
+    type:    FETCH_VEHICLE_NORM_HOURS
+});
+
+export const fetchVehicleNormHoursSuccess = ({normHours, stats}) => ({
+    type:    FETCH_VEHICLE_NORM_HOURS_SUCCESS,
+    payload: {normHours, stats},
 });
 
 /**
