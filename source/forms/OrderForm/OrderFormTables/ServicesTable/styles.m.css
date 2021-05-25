@@ -21,6 +21,24 @@
     }
 }
 
+.icon {
+    font-size: 20px;
+    color: var(--text3);
+    cursor: pointer;
+    padding: 1px;
+
+    &:hover {
+        color: var(--primary) !important;
+    }
+}
+
+.ownIcon {
+    padding: 0px 8px;
+    &:hover > div {
+        background-color: var(--primary) !important;
+    }
+}
+
 .durationPanel {
     display: flex;
     justify-content: flex-end;
