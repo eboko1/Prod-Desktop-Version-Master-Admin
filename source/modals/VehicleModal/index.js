@@ -9,6 +9,7 @@ import _ from "lodash";
 import { resetModal, MODALS, selectModal, selectModalProps } from 'core/modals/duck';
 import {
     createVehicle,
+    updateVehicle,
     modes,
 } from 'core/forms/vehicleForm/duck';
 
@@ -29,6 +30,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     createVehicle,
+    updateVehicle,
     resetModal,
 };
 
@@ -74,10 +76,22 @@ export default class VehicleModal extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
 
+        const {modalProps} = this.props;
+        const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
+        
         this.vehicleForm.validateFields((err, values) => {
             if (!err) {
                 console.log("OK: ", values);
-                this.props.createVehicle();
+
+                if(mode == modes.ADD) {
+                    this.props.createVehicle();
+                } else if(mode == modes.EDIT) {
+                    const vehicleId = _.get(modalProps, "vehicleId");
+                    vehicleId && this.props.updateVehicle({vehicleId});
+                }
+                
+                this.vehicleForm && this.vehicleForm.resetFields();
+                this.props.resetModal();
             } 
         });
         

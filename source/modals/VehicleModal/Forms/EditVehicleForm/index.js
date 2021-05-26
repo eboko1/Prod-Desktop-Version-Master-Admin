@@ -159,7 +159,7 @@ class VehicleFormClass extends React.Component {
                                     }),
                                 },
                             ]}
-                            onChange={(e) => setVehicleVin({number: e.target.value})}
+                            onChange={(e) => setVehicleVin({vin: e.target.value})}
                             getFieldDecorator={getFieldDecorator}
                         />
                     </Col>
@@ -185,7 +185,7 @@ class VehicleFormClass extends React.Component {
                                 ]}
                                 placeholder={"Enter here"}
                                 initialValue={initValues.year}
-                                disabled={false}
+                                disabled={true}
                                 onSelect={value => {
                                     setVehicleYear({year: value});
                                     resetFields();
@@ -225,7 +225,7 @@ class VehicleFormClass extends React.Component {
                                 ]}
                                 placeholder={"Enter here"}
                                 initialValue={initValues.makeId}
-                                disabled={!_.get(fields, 'year')}
+                                disabled={true || !_.get(fields, 'year')}
                                 onSelect={value => {
                                     setVehicleMakeId({makeId: value});
                                     resetFields();
@@ -265,6 +265,7 @@ class VehicleFormClass extends React.Component {
                                 ]}
                                 placeholder={"Enter here"}
                                 initialValue={initValues.modelId}
+                                disabled={!_.get(fields, 'makeId')}
                                 disabled={!_.get(fields, 'makeId')}
                                 onSelect={value => {
                                     setVehicleModelId({modelId: value});

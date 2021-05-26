@@ -29,6 +29,7 @@ import {
 
 import {
     CREATE_VEHICLE,
+    UPDATE_VEHICLE,
     FETCH_VEHICLE,
     FETCH_VEHICLE_YEARS,
     FETCH_VEHICLE_MAKES,
@@ -171,6 +172,39 @@ export function* createVehicleSaga() {
     }
 }
 
+export function* updateVehicleSaga() {
+    while (true) {
+        const { payload: { vehicleId } } = yield take(UPDATE_VEHICLE);
+
+        const {
+            number,
+            vin,
+            year,
+            makeId,
+            modelId,
+            modificationId,
+        } = yield select(selectFields);
+
+        const payload = {
+            vehicleNumber: number,
+            vehicleVin: vin,
+            vehicleYear: year,
+            vehicleModelId: modelId,
+            vehicleModificationId: modificationId,
+        };
+
+        console.log("payload: ", payload);
+
+        yield call(
+            fetchAPI,
+            'PUT',
+            `clients/vehicles/${vehicleId}`,
+            null,
+            payload,
+        );
+    }
+}
+
 export function* saga() {
     yield all([
         call(fetchVehicleSaga),
@@ -180,5 +214,6 @@ export function* saga() {
         call(fetchVehiclesModelsSaga),
         call(fetchVehiclesModificationsSaga),
         call(createVehicleSaga),
+        call(updateVehicleSaga),
     ]);
 }

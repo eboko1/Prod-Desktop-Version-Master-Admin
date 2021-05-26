@@ -20,6 +20,7 @@ export const FETCH_VEHICLE_MODIFICATIONS_SUCCESS = `${prefix}/FETCH_VEHICLE_MODI
 export const FETCH_ALL_VEHICLE_DATA = `${prefix}/FETCH_ALL_VEHICLE_DATA`;
 
 export const CREATE_VEHICLE = `${prefix}/CREATE_VEHICLE`;
+export const UPDATE_VEHICLE = `${prefix}/UPDATE_VEHICLE`;
 
 
 export const SET_FETCHING_ALL_VEHICLE_DATA = `${prefix}/SET_FETCHING_ALL_VEHICLE_DATA`;
@@ -316,4 +317,9 @@ export const setFetchingAllVehicleData = (velue) => ({
 
 export const createVehicle = () => ({
     type: CREATE_VEHICLE,
+});
+
+export const updateVehicle = ({vehicleId}) => ({
+    type:    UPDATE_VEHICLE,
+    payload: { vehicleId },
 });
