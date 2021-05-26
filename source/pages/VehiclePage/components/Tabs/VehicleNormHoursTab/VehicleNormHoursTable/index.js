@@ -7,11 +7,11 @@ import { v4 } from 'uuid';
 
 //proj
 import {
-    // TODO get selectors
-    // selectVehicleLabors,
-    // selectVehicleLaborsStats,
     selectVehicleNormHours,
     selectVehicleNormHoursStats,
+    selectVehicleNormHoursSort,
+
+    setPageNormHours,
 } from 'core/vehicles/duck';
 
 //Own
@@ -21,11 +21,17 @@ import Styles from './styles.m.css';
 const mapStateToProps = state => ({
     user: state.auth,
     normHours: selectVehicleNormHours(state),
+    stats: selectVehicleNormHoursStats(state),
+    sort: selectVehicleNormHoursSort(state)
 });
+
+const mapDispatchToProps = {
+    setPageNormHours,
+}
 
 @connect(
     mapStateToProps,
-    void 0,
+    mapDispatchToProps,
 )
 @injectIntl
 export default class VehicleNormHoursTable extends React.Component {
@@ -33,9 +39,21 @@ export default class VehicleNormHoursTable extends React.Component {
     render() {
         const {
             normHours,
+            stats,
+            sort,
             intl: {formatMessage},
+            setPageNormHours,
         } = this.props;
 
+        const pagination = {
+            pageSize: 25,
+            size: "large",
+            total: Math.ceil(stats.totalRowsCount / 25) * 25,
+            current: sort.page,
+            onChange: page => {
+                setPageNormHours({page})
+            },
+        }
 
         return (
             <div className={Styles.tableCont}>
@@ -43,6 +61,7 @@ export default class VehicleNormHoursTable extends React.Component {
                     rowClassName={() => Styles.tableRow}
                     className={Styles.table}
                     dataSource={normHours}
+                    pagination={pagination}
                     columns={columnsConfig({formatMessage})}
                     scroll={ { x: 'auto', y: '80vh' } }
                     rowKey={() => v4()}

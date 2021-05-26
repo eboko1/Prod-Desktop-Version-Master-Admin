@@ -14,15 +14,14 @@ import { OrderStatusIcon, RepairMapIndicator, FormattedDatetime } from 'componen
 import Styles from './styles.m.css';
 
 
-//Choose width for each col
-//It must be 100% of width in total!
+//Choose width for each column
 const defWidth = {
     korText:            '20%',
-    itemmpText:       '20%',
-    qualColText:         '15%',
-    price:         '15%',
-    workTime:         '15%',
-    sum:         '15%',
+    itemmpText:         '25%',
+    qualColText:        '15%',
+    price:              '10%',
+    workTime:           '15%',
+    sum:                '15%',
 }
 
 export function columnsConfig() {
@@ -32,12 +31,6 @@ export function columnsConfig() {
         width:     defWidth.korText,
         dataIndex: 'korText',
         key:       'korText',
-        render:    (korText) => (
-            <>
-                {korText}
-                {/*<FormattedDatetime datetime={orderDatetime} format={DEFAULT_DATETIME}/>*/}
-            </>
-        ),
     };
 
     const itemmpTextCol = {
@@ -67,7 +60,7 @@ export function columnsConfig() {
     };
 
     const sumCol = {
-        title:     <FormattedMessage id='orders.price' />, // should be translation
+        title:     <FormattedMessage id='orders.sum' />, // should be translation
         width:     defWidth.sum,
         dataIndex: 'sum',
         key:       'sum',

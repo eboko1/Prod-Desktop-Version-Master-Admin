@@ -29,6 +29,7 @@ export const CREATE_ORDER = `${prefix}/CREATE_ORDER`;
 export const SET_PAGE = `${prefix}/SET_PAGE`;
 export const SET_SEARCH_QUERY = `${prefix}/SET_SEARCH_QUERY`;
 export const SET_EXPANDED_VEHICLE_ID = `${prefix}/SET_EXPANDED_VEHICLE_ID`;
+export const SET_PAGE_NORM_HOURS = `${prefix}/SET_PAGE_NORM_HOURS`;
 
 /** Reducer **/
 
@@ -47,6 +48,12 @@ const ReducerState = {
     vehicleNormHoursData: {
         normHours: [], // Array of norm hours standard data
         stats: {},
+        sort: {
+            page: 1
+        },
+        filters: {
+            query: undefined
+        }
         // here filters sorts, etc..
     },
 
@@ -101,6 +108,16 @@ export default function reducer(state = ReducerState, action) {
                 sort: {
                     ...state.sort,
                     page: page
+                }
+            };
+
+        case SET_PAGE_NORM_HOURS:
+            const { page: pageNormHours } = payload;
+            return {
+                ...state,
+                sort: {
+                    ...state.sort,
+                    page: pageNormHours
                 }
             };
             
@@ -197,6 +214,9 @@ export const selectVehicleLabors = state => state[ moduleName ].vehicleLaborsDat
 export const selectVehicleLaborsStats = state => state[ moduleName ].vehicleLaborsData.stats;
 export const selectVehicleNormHours = state => state[ moduleName ].vehicleNormHoursData.normHours;
 export const selectVehicleNormHoursStats = state => state[ moduleName ].vehicleNormHoursData.stats;
+export const selectVehicleNormHoursSort = state => state[ moduleName ].sort;
+export const selectVehicleNormHoursFilters = state => state[ moduleName ].filters;
+
 export const selectVehicleAppurtenances = state => state[ moduleName ].vehicleAppurtenancesData.appurtenances;
 export const selectVehicleAppurtenancesStats = state => state[ moduleName ].vehicleAppurtenancesData.stats;
 export const selectVehicleRecommendations = state => state[ moduleName ].vehicleRecommendationsData.recommendations;
@@ -257,7 +277,11 @@ export const fetchVehicleLaborsSuccess = ({labors, stats}) => ({
     payload: {labors, stats},
 });
 
-
+/**
+ * Fetches vehicle norm hours
+ * Vehicle is taken from "expandedVehicleId"
+ * @returns {*} params.vehicleId Vehicle to fetch data for
+ */
 export const fetchVehicleNormHours = () => ({
     type:    FETCH_VEHICLE_NORM_HOURS
 });
@@ -313,6 +337,18 @@ export const setPage = ({page}) => {
             payload: {page}
         });
         return dispatch(fetchVehicles());
+    }
+};
+
+/** Set filtering page, automatically fetches vehicle norm hours */
+export const setPageNormHours = ({page}) => {
+    // console.log("In action: ", page)
+    return (dispatch) => {
+        dispatch({
+            type: SET_PAGE_NORM_HOURS,
+            payload: {page}
+        });
+        return dispatch(fetchVehicleNormHours());
     }
 };
 

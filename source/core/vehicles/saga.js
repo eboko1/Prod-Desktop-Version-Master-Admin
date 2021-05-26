@@ -22,6 +22,8 @@ import {
     fetchVehicleRecommendationsSuccess,
 
     selectSort,
+    selectVehicleNormHoursSort,
+
     selectFilters,
     selectExpandedVehicleId,
 
@@ -108,13 +110,13 @@ export function* fetchVehicleNormHoursSaga() {
         try {
             yield take(FETCH_VEHICLE_NORM_HOURS);
 
+            const sort = yield select(selectVehicleNormHoursSort)
+
             const vehicleId = yield select(selectExpandedVehicleId);
 
             yield nprogress.start();
 
-            // TODO pagination
-            const {standardHours: normHours, statsStandardHours: normHoursStats} = yield call(fetchAPI, 'GET', `standard_hours`, {vehicleId});
-            // console.log("Yepp: ", normHours, normHoursStats)
+            const {standardHours: normHours, statsStandardHours: normHoursStats} = yield call(fetchAPI, 'GET', `standard_hours`, {vehicleId, page: sort.page});
 
             yield put(fetchVehicleNormHoursSuccess({normHours, stats: normHoursStats}));
         } catch (error) {
