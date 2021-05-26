@@ -8,6 +8,10 @@ import { v4 } from 'uuid';
 //proj
 import {
     selectVehicleAppurtenances,
+    selectVehicleAppurtenancesStats,
+    selectVehicleAppurtenancesSort,
+
+    setPageAppurtenances
 } from 'core/vehicles/duck';
 
 //Own
@@ -17,11 +21,17 @@ import Styles from './styles.m.css';
 const mapStateToProps = state => ({
     user: state.auth,
     appurtenances: selectVehicleAppurtenances(state),
+    stats: selectVehicleAppurtenancesStats(state),
+    sort: selectVehicleAppurtenancesSort(state)
 });
+
+const mapDispatchToProps = {
+    setPageAppurtenances,
+}
 
 @connect(
     mapStateToProps,
-    void 0,
+    mapDispatchToProps
 )
 @injectIntl
 export default class VehicleAppurtenancesTable extends React.Component {
@@ -29,11 +39,21 @@ export default class VehicleAppurtenancesTable extends React.Component {
     render() {
         const {
             appurtenances,
+            stats,
+            sort,
             intl: {formatMessage},
+            setPageAppurtenances,
         } = this.props;
 
-        console.log("appurtenances: ", appurtenances);
-
+        const pagination = {
+            pageSize: 25,
+            size: "large",
+            total: Math.ceil(stats.totalRowsCount / 25) * 25,
+            current: sort.page,
+            onChange: page => {
+                setPageAppurtenances({page})
+            },
+        }
 
         return (
             <div className={Styles.tableCont}>
@@ -41,6 +61,7 @@ export default class VehicleAppurtenancesTable extends React.Component {
                     rowClassName={() => Styles.tableRow}
                     className={Styles.table}
                     dataSource={appurtenances}
+                    pagination={pagination}
                     columns={columnsConfig({formatMessage})}
                     scroll={ { x: 'auto', y: '80vh' } }
                     rowKey={() => v4()}

@@ -29,6 +29,7 @@ export const CREATE_ORDER = `${prefix}/CREATE_ORDER`;
 export const SET_PAGE = `${prefix}/SET_PAGE`;
 export const SET_PAGE_NORM_HOURS = `${prefix}/SET_PAGE_NORM_HOURS`;
 export const SET_PAGE_LABORS = `${prefix}/SET_PAGE_LABORS`;
+export const SET_PAGE_APPURTENANCES = `${prefix}/SET_PAGE_APPURTENANCES`;
 
 
 export const SET_SEARCH_QUERY = `${prefix}/SET_SEARCH_QUERY`;
@@ -42,7 +43,7 @@ const ReducerState = {
     stats:         {},      // Vehicles stats
     vehicle:       {},      // One vehicle can be used on its page
     client:        {},      // Vehicle client
-    generalData:   {},      // Statisctics for fetched vehcile
+    generalData:   {},      // Statistics for fetched vehicle
 
     vehicleOrdersData: {
         orders: [], //Array of orders fetched for specific vehicle
@@ -74,6 +75,12 @@ const ReducerState = {
     vehicleAppurtenancesData: { 
         appurtenances: [], //Array of appurtenances made for vehicle in different orders
         stats: {},
+        sort: {
+            page: 1
+        },
+        filters: {
+            query: undefined,
+        }
     },
 
     vehicleRecommendationsData: { 
@@ -138,6 +145,16 @@ export default function reducer(state = ReducerState, action) {
                 sort: {
                     ...state.sort,
                     page: pageLabors
+                }
+            };
+
+        case SET_PAGE_APPURTENANCES:
+            const { page: pageAppurtenances } = payload;
+            return {
+                ...state,
+                sort: {
+                    ...state.sort,
+                    page: pageAppurtenances
                 }
             };
             
@@ -243,8 +260,13 @@ export const selectVehicleNormHoursStats = state => state[ moduleName ].vehicleN
 export const selectVehicleNormHoursSort = state => state[ moduleName ].sort;
 export const selectVehicleNormHoursFilters = state => state[ moduleName ].filters;
 
+/*----------------------Appurtenances--------------------------------------------------*/
 export const selectVehicleAppurtenances = state => state[ moduleName ].vehicleAppurtenancesData.appurtenances;
 export const selectVehicleAppurtenancesStats = state => state[ moduleName ].vehicleAppurtenancesData.stats;
+export const selectVehicleAppurtenancesSort = state => state[ moduleName ].sort;
+export const selectVehicleAppurtenancesFilters = state => state[ moduleName ].filters;
+
+/*------------------------Recommendations-----------------------------------------*/
 export const selectVehicleRecommendations = state => state[ moduleName ].vehicleRecommendationsData.recommendations;
 export const selectVehicleRecommendationsStats = state => state[ moduleName ].vehicleRecommendationsData.stats;
 
@@ -378,7 +400,7 @@ export const setPageNormHours = ({page}) => {
     }
 };
 
-/** Set filtering page, automatically fetches vehicle norm hours */
+/** Set filtering page, automatically fetches vehicle labors */
 export const setPageLabors = ({page}) => {
     return (dispatch) => {
         dispatch({
@@ -386,6 +408,17 @@ export const setPageLabors = ({page}) => {
             payload: {page}
         });
         return dispatch(fetchVehicleLabors());
+    }
+};
+
+/** Set filtering page, automatically fetches vehicle appurtenances */
+export const setPageAppurtenances = ({page}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_PAGE_APPURTENANCES,
+            payload: {page}
+        });
+        return dispatch(fetchVehicleAppurtenances());
     }
 };
 

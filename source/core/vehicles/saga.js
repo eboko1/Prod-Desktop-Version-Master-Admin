@@ -35,7 +35,7 @@ import {
     FETCH_VEHICLE_LABORS,
     CREATE_ORDER,
     FETCH_VEHICLE_APPURTENANCES,
-    FETCH_VEHICLE_RECOMMENDATIONS,
+    FETCH_VEHICLE_RECOMMENDATIONS, selectVehicleAppurtenancesSort,
 } from './duck';
 
 export function* fetchVehicleSaga() {
@@ -137,8 +137,6 @@ export function* fetchVehicleLaborsSaga() {
 
             const sort = yield select(selectVehicleLaborsSort);
 
-            console.log("Yep in sort", sort)
-
             yield nprogress.start();
 
             const {labors, laborsStats} = yield call(fetchAPI, 'GET', `orders/labors/${vehicleId}`, {page: sort.page});
@@ -159,9 +157,11 @@ export function* fetchVehicleAppurtenancesSaga() {
 
             const vehicleId = yield select(selectExpandedVehicleId);
 
+            const sort = yield select(selectVehicleAppurtenancesSort);
+
             yield nprogress.start();
 
-            const {appurtenances, appurtenancesStats} = yield call(fetchAPI, 'GET', `orders/appurtenances/${vehicleId}`);
+            const {appurtenances, appurtenancesStats} = yield call(fetchAPI, 'GET', `orders/appurtenances/${vehicleId}`, { page: sort.page });
 
             yield put(fetchVehicleAppurtenancesSuccess({appurtenances, stats: appurtenancesStats}));
         } catch (error) {
