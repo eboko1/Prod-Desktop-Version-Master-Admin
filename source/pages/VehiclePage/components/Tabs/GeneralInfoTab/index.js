@@ -214,7 +214,12 @@ export default class GeneralInfoTab extends Component {
                     </div>
                 </Block>
 
-                <VehicleModal />
+                <VehicleModal
+                    onClose={() => {
+                        const { match: {params: {id}}} = this.props;
+                        this.props.fetchVehicle({vehicleId: id});
+                    }}
+                />
             </div>
         )
     }

@@ -91,7 +91,8 @@ export default class VehicleModal extends Component {
                     const vehicleId = _.get(modalProps, "vehicleId");
                     vehicleId && this.props.updateVehicle({vehicleId});
                 }
-                resetAllFormsAndCloseModal();
+                
+                this.resetAllFormsAndCloseModal();
                 
             } 
         });
@@ -102,6 +103,8 @@ export default class VehicleModal extends Component {
         this.props.clearVehicleData();
         this.vehicleForm && this.vehicleForm.resetFields();
         this.props.resetModal();
+
+        this.props.onClose && this.props.onClose();//Callback
     }
 
     saveVehicleFormRef = (ref) => {
