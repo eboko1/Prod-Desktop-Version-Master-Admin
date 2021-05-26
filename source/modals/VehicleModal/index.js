@@ -14,7 +14,7 @@ import {
 
 // own
 import Styles from './styles.m.css';
-import VehicleForm from './VehicleForm';
+import { AddVehicleForm} from './Forms';
 
 const TPane = Tabs.TabPane;
 
@@ -100,7 +100,7 @@ export default class VehicleModal extends Component {
                     }
                 >
                     <div style={{minHeight: '50vh'}}>
-                        <VehicleForm
+                        <AddVehicleForm
                             getFormRefCB={this.saveVehicleFormRef}//Get form refference
                             mode={mode}
                         />
