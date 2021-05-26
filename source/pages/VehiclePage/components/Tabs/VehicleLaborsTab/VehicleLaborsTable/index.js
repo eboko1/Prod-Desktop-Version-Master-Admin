@@ -9,6 +9,8 @@ import { v4 } from 'uuid';
 import {
     selectVehicleLabors,
     selectVehicleLaborsStats,
+    selectVehicleLaborsSort,
+    setPageLabors,
 } from 'core/vehicles/duck';
 
 //Own
@@ -18,11 +20,17 @@ import Styles from './styles.m.css';
 const mapStateToProps = state => ({
     user: state.auth,
     labors: selectVehicleLabors(state),
+    stats: selectVehicleLaborsStats(state),
+    sort: selectVehicleLaborsSort(state)
 });
+
+const mapDispatchToProps = {
+    setPageLabors,
+}
 
 @connect(
     mapStateToProps,
-    void 0,
+    mapDispatchToProps,
 )
 @injectIntl
 export default class VehicleLaborsTable extends React.Component {
@@ -30,9 +38,21 @@ export default class VehicleLaborsTable extends React.Component {
     render() {
         const {
             labors,
+            stats,
+            sort,
             intl: {formatMessage},
+            setPageLabors,
         } = this.props;
 
+        const pagination = {
+            pageSize: 25,
+            size: "large",
+            total: Math.ceil(stats.totalRowsCount / 25) * 25,
+            current: sort.page,
+            onChange: page => {
+                setPageLabors({ page })
+            },
+        }
 
         return (
             <div className={Styles.tableCont}>
@@ -40,6 +60,7 @@ export default class VehicleLaborsTable extends React.Component {
                     rowClassName={() => Styles.tableRow}
                     className={Styles.table}
                     dataSource={labors}
+                    pagination={pagination}
                     columns={columnsConfig({formatMessage})}
                     scroll={ { x: 'auto', y: '80vh' } }
                     rowKey={() => v4()}

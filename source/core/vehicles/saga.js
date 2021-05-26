@@ -23,6 +23,7 @@ import {
 
     selectSort,
     selectVehicleNormHoursSort,
+    selectVehicleLaborsSort,
 
     selectFilters,
     selectExpandedVehicleId,
@@ -134,9 +135,13 @@ export function* fetchVehicleLaborsSaga() {
 
             const vehicleId = yield select(selectExpandedVehicleId);
 
+            const sort = yield select(selectVehicleLaborsSort);
+
+            console.log("Yep in sort", sort)
+
             yield nprogress.start();
 
-            const {labors, laborsStats} = yield call(fetchAPI, 'GET', `orders/labors/${vehicleId}`);
+            const {labors, laborsStats} = yield call(fetchAPI, 'GET', `orders/labors/${vehicleId}`, {page: sort.page});
 
             yield put(fetchVehicleLaborsSuccess({labors, stats: laborsStats}));
         } catch (error) {
