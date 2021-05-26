@@ -197,6 +197,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 fields:           {
+                    ...state.fields,
                     vin: undefined,
                     number: undefined,
                     year: undefined,
@@ -288,35 +289,20 @@ export const setVehicleNumber = ({number}) => ({
     payload: { number },
 });
 
-export const setVehicleYear = ({year}) => {
-    return function (dispatch) {
-        dispatch({
-            type:    SET_YEAR,
-            payload: { year },
-        });
-        // dispatch(fetchVehicleMakes());
-    }
-}
+export const setVehicleYear = ({year}) => ({
+    type:    SET_YEAR,
+    payload: { year },
+});
 
-export const setVehicleMakeId = ({makeId}) => {
-    return function (dispatch) {
-        dispatch({
-            type:    SET_MAKE_ID,
-            payload: { makeId },
-        });
-        // dispatch(fetchVehicleModels());
-    }
-}
+export const setVehicleMakeId = ({makeId}) => ({
+    type:    SET_MAKE_ID,
+    payload: { makeId },
+});
 
-export const setVehicleModelId = ({modelId}) => {
-    return function (dispatch) {
-        dispatch({
-            type:    SET_MODEL_ID,
-            payload: { modelId },
-        });
-        // dispatch(fetchVehicleModifications());
-    }
-}
+export const setVehicleModelId = ({modelId}) => ({
+    type:    SET_MODEL_ID,
+    payload: { modelId },
+});
 
 export const setVehicleModificationId = ({modificationId}) => ({
     type:    SET_MODIFICATION_ID,

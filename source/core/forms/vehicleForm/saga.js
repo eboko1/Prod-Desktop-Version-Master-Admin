@@ -15,13 +15,7 @@ import {
     setFetchingAllVehicleData,
 
     selectFields,
-    selectVehicle,
-
-    fetchVehicle,
-    fetchVehicleYears,
-    fetchVehicleMakes,
-    fetchVehicleModels,
-    fetchVehicleModifications,
+   
     fetchVehicleSuccess,
     fetchVehicleYearsSuccess,
     fetchVehicleMakesSuccess,
@@ -52,7 +46,6 @@ export function* fetchAllVehicleDataSaga() {
     while (true) {
         const { payload: { vehicleId } } = yield take(FETCH_ALL_VEHICLE_DATA);
         yield put(setFetchingAllVehicleData(true));
-        // yield put(fetchVehicle({vehicleId}));
 
         console.log("Before selecting vehicle");
 
@@ -70,11 +63,6 @@ export function* fetchAllVehicleDataSaga() {
             vehicleModificationId: modificationId,
         } = vehicle;
 
-        // fetchVehicleYears,
-        // fetchVehicleMakes,
-        // fetchVehicleModels,
-        // fetchVehicleModifications,
-        // yield put(fetchVehicleYears());
         yield put(setVehicleNumber({number}));
         yield put(setVehicleVin({vin}));
         yield put(setVehicleMakeId({makeId}));
@@ -88,21 +76,14 @@ export function* fetchAllVehicleDataSaga() {
         const { years } = yield call(fetchAPI, 'GET', 'vehicles_info');
         yield put(fetchVehicleYearsSuccess({years}));
 
-        // const { year } = yield select(selectFields);
         const { makes } = yield call(fetchAPI, 'GET', 'vehicles_info', {year});
         yield put(fetchVehicleMakesSuccess({makes}));
 
-        // const { year, makeId } = yield select(selectFields);
         const {models} = yield call(fetchAPI, 'GET', 'vehicles_info', {year, makeId});
         yield put(fetchVehicleModelsSuccess({models}));
 
-        // const { year, makeId, modelId } = yield select(selectFields);
         const {modifications} = yield call(fetchAPI, 'GET', 'vehicles_info', {year, makeId, modelId});
         yield put(fetchVehicleModificationsSuccess({modifications}));
-
-        // yield put(fetchVehicleMakes());
-        // yield put(fetchVehicleModels());
-        // yield put(fetchVehicleModifications());
     }
 }
 
@@ -155,8 +136,6 @@ export function* createVehicleSaga() {
             vin: vehicleVin,
             modelId: vehicleModelId,
             year: vehicleYear,
-            // vehicleTypeId: vehicleTypeId,
-            // wheelRadius: wheelRadius,
         } = yield select(selectFields);
 
         const payload = {
@@ -165,8 +144,6 @@ export function* createVehicleSaga() {
             vehicleVin,
             vehicleNumber,
             vehicleYear,
-            // vehicleTypeId,
-            // wheelRadius,
         };
 
         yield call(
