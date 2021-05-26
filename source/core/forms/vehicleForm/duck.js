@@ -22,6 +22,7 @@ export const FETCH_ALL_VEHICLE_DATA = `${prefix}/FETCH_ALL_VEHICLE_DATA`;
 export const CREATE_VEHICLE = `${prefix}/CREATE_VEHICLE`;
 export const UPDATE_VEHICLE = `${prefix}/UPDATE_VEHICLE`;
 
+export const CLEAR_VEHICLE_DATA = `${prefix}/CLEAR_VEHICLE_DATA`;
 
 export const SET_FETCHING_ALL_VEHICLE_DATA = `${prefix}/SET_FETCHING_ALL_VEHICLE_DATA`;
 export const SET_CLIENT_ID = `${prefix}/SET_CLIENT_ID`;
@@ -192,6 +193,23 @@ export default function reducer(state = ReducerState, action) {
                 fetchingAllVehicleData: payload
             };
 
+        case CLEAR_VEHICLE_DATA:
+            return {
+                ...state,
+                fields:           {
+                    vin: undefined,
+                    number: undefined,
+                    year: undefined,
+                    makeId: undefined,
+                    modelId: undefined,
+                    modificationId: undefined,
+                },
+                years:            [], 
+                makes:            [],
+                models:           [],
+                modifications:    []
+            };
+
         default:
             return state;
     }
@@ -322,4 +340,8 @@ export const createVehicle = () => ({
 export const updateVehicle = ({vehicleId}) => ({
     type:    UPDATE_VEHICLE,
     payload: { vehicleId },
+});
+
+export const clearVehicleData = () => ({
+    type:    CLEAR_VEHICLE_DATA,
 });

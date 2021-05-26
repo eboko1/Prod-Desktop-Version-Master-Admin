@@ -10,6 +10,7 @@ import { resetModal, MODALS, selectModal, selectModalProps } from 'core/modals/d
 import {
     createVehicle,
     updateVehicle,
+    clearVehicleData,
     modes,
 } from 'core/forms/vehicleForm/duck';
 
@@ -31,6 +32,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     createVehicle,
     updateVehicle,
+    clearVehicleData,
     resetModal,
 };
 
@@ -89,15 +91,16 @@ export default class VehicleModal extends Component {
                     const vehicleId = _.get(modalProps, "vehicleId");
                     vehicleId && this.props.updateVehicle({vehicleId});
                 }
+                resetAllFormsAndCloseModal();
                 
-                this.vehicleForm && this.vehicleForm.resetFields();
-                this.props.resetModal();
             } 
         });
         
     };
 
-    onCancel = () => {
+    resetAllFormsAndCloseModal = () => {
+        this.props.clearVehicleData();
+        this.vehicleForm && this.vehicleForm.resetFields();
         this.props.resetModal();
     }
 
@@ -114,18 +117,15 @@ export default class VehicleModal extends Component {
 
         const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
         const vehicleId = _.get(modalProps, "vehicleId");
-        // console.log("Modal props: ", modalProps);
-        // console.log("this props: ", this.props);
 
         return (
             <div>
-                Hello
                 <Modal
                     destroyOnClose={true}
                     width={ '80%' }
                     visible={ visible === MODALS.VEHICLE }
                     onOk={ this.handleSubmit }
-                    onCancel={ this.onCancel }
+                    onCancel={ this.resetAllFormsAndCloseModal }
                     title={
                         <div className={Styles.title}>
                             Title here
