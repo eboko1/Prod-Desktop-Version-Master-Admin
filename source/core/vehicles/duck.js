@@ -151,9 +151,12 @@ export default function reducer(state = ReducerState, action) {
             const { page: pageNormHours } = payload;
             return {
                 ...state,
-                sort: {
-                    ...state.sort,
-                    page: pageNormHours
+                vehicleNormHoursData: {
+                    ...state.vehicleNormHoursData,
+                    sort: {
+                        ...state.vehicleNormHoursData.sort,
+                        page: pageNormHours
+                    }
                 }
             };
 
@@ -162,9 +165,12 @@ export default function reducer(state = ReducerState, action) {
             const { page: pageLabors } = payload;
             return {
                 ...state,
-                sort: {
-                    ...state.sort,
-                    page: pageLabors
+                vehicleLaborsData: {
+                    ...state.vehicleLaborsData,
+                    sort: {
+                        ...state.vehicleLaborsData.sort,
+                        page: pageLabors
+                    }
                 }
             };
 
@@ -172,9 +178,12 @@ export default function reducer(state = ReducerState, action) {
             const { page: pageAppurtenances } = payload;
             return {
                 ...state,
-                sort: {
-                    ...state.sort,
-                    page: pageAppurtenances
+                vehicleAppurtenancesData: {
+                    ...state.vehicleAppurtenancesData,
+                    sort: {
+                        ...state.vehicleAppurtenancesData.sort,
+                        page: pageAppurtenances
+                    }
                 }
             };
             

@@ -46,9 +46,9 @@ export default class VehicleOrdersTable extends React.Component {
         } = this.props;
 
         const pagination = {
-            pageSize: 5,
+            pageSize: 25,
             size: "large",
-            total: Math.ceil(stats.countOrders / 5) * 5,
+            total: Math.ceil(stats.countOrders / 25) * 25,
             current: sort.page,
             onChange: page => {
                 setPageOrders({page})
