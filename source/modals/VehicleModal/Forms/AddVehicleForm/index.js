@@ -158,7 +158,7 @@ class VehicleFormClass extends React.Component {
                                     }),
                                 },
                             ]}
-                            onChange={(e) => setVehicleVin({number: e.target.value})}
+                            onChange={(e) => setVehicleVin({vin: e.target.value})}
                             getFieldDecorator={getFieldDecorator}
                         />
                     </Col>
