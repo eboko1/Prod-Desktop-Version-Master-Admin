@@ -46,26 +46,26 @@ export default class VehicleModal extends Component {
         mode: modes.ADD,
     }
 
-    updateVehicleData() {
-        const {modalProps} = this.props;
-        const {mode} = _.get(modalProps, "mode", this.defaultModalProps.mode);
-        const vehicleId = _.get(modalProps, "vehicleId");
+    // updateVehicleData() {
+    //     const {modalProps} = this.props;
+    //     const {mode} = _.get(modalProps, "mode", this.defaultModalProps.mode);
+    //     const vehicleId = _.get(modalProps, "vehicleId");
 
-        if(mode == modes.EDIT) {
-            this.props.fetchVehicle({vehicleId});
-        }
+    //     if(mode == modes.EDIT) {
+    //         this.props.fetchVehicle({vehicleId});
+    //     }
         
-    }
+    // }
     
-    componentDidUpdate(prevProps) {
-        const prevModal = prevProps.visible;
-        const currModal = this.props.visisble;
+    // componentDidUpdate(prevProps) {
+    //     const prevModal = prevProps.visible;
+    //     const currModal = this.props.visisble;
 
-        //If modal was opened or reopened
-        if(prevModal != currModal && currModal == MODALS.VEHICLE) {
-            this.updateVehicleData();
-        }
-    }
+    //     //If modal was opened or reopened
+    //     if(prevModal != currModal && currModal == MODALS.VEHICLE) {
+    //         this.updateVehicleData();
+    //     }
+    // }
 
     /**
      * Handle submit depending on mode is currently used
@@ -99,8 +99,9 @@ export default class VehicleModal extends Component {
         } = this.props;
 
         const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
-        console.log("Modal props: ", modalProps);
-        console.log("this props: ", this.props);
+        const vehicleId = _.get(modalProps, "vehicleId");
+        // console.log("Modal props: ", modalProps);
+        // console.log("this props: ", this.props);
 
         return (
             <div>
@@ -132,6 +133,7 @@ export default class VehicleModal extends Component {
                                         <EditVehicleForm
                                             getFormRefCB={this.saveVehicleFormRef}//Get form refference
                                             mode={mode}
+                                            vehicleId={vehicleId}
                                         />
                                     );
                                 

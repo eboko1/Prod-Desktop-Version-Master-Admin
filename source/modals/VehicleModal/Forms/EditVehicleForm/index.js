@@ -72,9 +72,11 @@ class VehicleFormClass extends React.Component {
     }
 
     componentDidMount() {
-        const {clientId} = this.props.modalProps;
-        this.props.fetchVehicleYears();
-        this.props.setClientId({clientId});
+        // const {clientId} = this.props.modalProps;
+        // this.props.fetchVehicleYears();
+        // this.props.setClientId({clientId});
+        const {vehicleId} = this.props;
+        this.props.fetchVehicle({vehicleId});
     }
 
     render() {
@@ -103,12 +105,12 @@ class VehicleFormClass extends React.Component {
 
 
         const initValues = {
-            number: fields.number,
-            vin: fields.vin,
-            year: fields.year,
-            makeId: fields.makeId,
-            modelId: fields.modelId,
-            modificationId: fields.modificationId,
+            number: vehicle.vehicleNumber,
+            vin: vehicle.vehicleVin,
+            year: vehicle.year,
+            makeId: vehicle.makeId,
+            modelId: vehicle.vehicleModelId,
+            modificationId: vehicle.vehicleModificationId,
         }
         
         const fieldsDisabled = false;//(mode == formModes.VIEW);
