@@ -8,6 +8,7 @@ import { v4 } from 'uuid';
 //proj
 import {
     fetchVehicleYears,
+    fetchVehicle,
 
     setClientId,
     selectFields,
@@ -15,6 +16,7 @@ import {
     selectMakes,
     selectModels,
     selectModifications,
+    selectVehicle,
 
     setVehicleNumber,
     setVehicleVin,
@@ -41,10 +43,12 @@ const mapStateToProps = state => ({
     makes: selectMakes(state),
     models:selectModels(state),
     modifications: selectModifications(state),
+    vehicle: selectVehicle(state),
 });
 
 const mapDispatchToProps = {
     fetchVehicleYears,
+    fetchVehicle,
 
     setClientId,
     setVehicleNumber,
@@ -80,6 +84,7 @@ class VehicleFormClass extends React.Component {
             makes,
             models,
             modifications,
+            vehicle,
 
             setVehicleNumber,
             setVehicleVin,
@@ -93,6 +98,8 @@ class VehicleFormClass extends React.Component {
         
         const { getFieldDecorator, resetFields} = form;
         //------------------
+
+        console.log("Edit form, vehicle: ", vehicle);
 
 
         const initValues = {
@@ -108,6 +115,7 @@ class VehicleFormClass extends React.Component {
 
         return (
             <Form>
+                This is edit form
                 <Row className={Styles.row}>
                     <Col span={6}>vehicleNumber: </Col>
                     <Col span={12}>

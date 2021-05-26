@@ -56,9 +56,9 @@ export default class GeneralInfoTab extends Component {
             generalData,
         } = this.props;
 
-        console.log("Vehicle: ", this.props.vehicle);
-        console.log("Client: ", this.props.client);
-        console.log("generalData: ", generalData);
+        // console.log("Vehicle: ", this.props.vehicle);
+        // console.log("Client: ", this.props.client);
+        // console.log("generalData: ", generalData);
 
         return (
             <div className={Styles.tabContent}>

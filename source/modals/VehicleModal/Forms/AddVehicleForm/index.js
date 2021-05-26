@@ -108,6 +108,7 @@ class VehicleFormClass extends React.Component {
 
         return (
             <Form>
+                This is Add form
                 <Row className={Styles.row}>
                     <Col span={6}>vehicleNumber: </Col>
                     <Col span={12}>

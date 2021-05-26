@@ -34,9 +34,9 @@ export const SET_MODIFICATION_ID = `${prefix}/SET_MODIFICATION_ID`;
  * represent, show data, and what to do with it.
  */
 export const modes = Object.freeze({
-    ADD: "ADD_VEHICLE",
-    EDIT: "EDIT_VEHICLE",
-    VIEW: "VIEW_VEHICLE"
+    ADD: "ADD",
+    EDIT: "EDIT",
+    VIEW: "VIEW"
 });
 
 /* Reducer */
@@ -186,6 +186,7 @@ export default function reducer(state = ReducerState, action) {
 
 /* Selectors */
 
+export const selectVehicle = state => state.forms[ moduleName ].vehicle;
 export const selectFields = state => state.forms[ moduleName ].fields;
 export const selectYears = state => state.forms[ moduleName ].years;
 export const selectMakes = state => state.forms[ moduleName ].makes;

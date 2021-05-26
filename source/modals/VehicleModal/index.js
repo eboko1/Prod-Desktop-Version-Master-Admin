@@ -14,7 +14,7 @@ import {
 
 // own
 import Styles from './styles.m.css';
-import { AddVehicleForm} from './Forms';
+import { AddVehicleForm, EditVehicleForm} from './Forms';
 
 const TPane = Tabs.TabPane;
 
@@ -46,8 +46,26 @@ export default class VehicleModal extends Component {
         mode: modes.ADD,
     }
 
-    componentDidMount() {
-    }    
+    updateVehicleData() {
+        const {modalProps} = this.props;
+        const {mode} = _.get(modalProps, "mode", this.defaultModalProps.mode);
+        const vehicleId = _.get(modalProps, "vehicleId");
+
+        if(mode == modes.EDIT) {
+            this.props.fetchVehicle({vehicleId});
+        }
+        
+    }
+    
+    componentDidUpdate(prevProps) {
+        const prevModal = prevProps.visible;
+        const currModal = this.props.visisble;
+
+        //If modal was opened or reopened
+        if(prevModal != currModal && currModal == MODALS.VEHICLE) {
+            this.updateVehicleData();
+        }
+    }
 
     /**
      * Handle submit depending on mode is currently used
@@ -100,10 +118,28 @@ export default class VehicleModal extends Component {
                     }
                 >
                     <div style={{minHeight: '50vh'}}>
-                        <AddVehicleForm
-                            getFormRefCB={this.saveVehicleFormRef}//Get form refference
-                            mode={mode}
-                        />
+                        {
+                            (() => {
+                                switch (mode) {
+                                    case modes.ADD: return (
+                                        <AddVehicleForm
+                                            getFormRefCB={this.saveVehicleFormRef}//Get form refference
+                                            mode={mode}
+                                        />
+                                    );
+
+                                    case modes.EDIT: return (
+                                        <EditVehicleForm
+                                            getFormRefCB={this.saveVehicleFormRef}//Get form refference
+                                            mode={mode}
+                                        />
+                                    );
+                                
+                                    default: return "Invalid mode provided, available";
+                                }
+                            })()
+                        }
+                        
                     </div>
                 </Modal>
             </div>
