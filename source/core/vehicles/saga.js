@@ -16,17 +16,21 @@ import {
     fetchVehicleSuccess,
     fetchVehiclesSuccess,
     fetchVehicleOrdersSuccess,
+    fetchVehicleNormHoursSuccess,
     fetchVehicleLaborsSuccess,
     fetchVehicleAppurtenancesSuccess,
     fetchVehicleRecommendationsSuccess,
 
     selectSort,
+    selectVehicleNormHoursSort,
+
     selectFilters,
     selectExpandedVehicleId,
 
     FETCH_VEHICLE,
     FETCH_VEHICLES,
     FETCH_VEHICLE_ORDERS,
+    FETCH_VEHICLE_NORM_HOURS,
     FETCH_VEHICLE_LABORS,
     CREATE_ORDER,
     FETCH_VEHICLE_APPURTENANCES,
@@ -92,6 +96,29 @@ export function* fetchVehicleOrdersSaga() {
             const {orders, stats} = yield call(fetchAPI, 'GET', `orders/vehicle/${vehicleId}`);
 
             yield put(fetchVehicleOrdersSuccess({orders, stats}));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+
+export function* fetchVehicleNormHoursSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_VEHICLE_NORM_HOURS);
+
+            const sort = yield select(selectVehicleNormHoursSort)
+
+            const vehicleId = yield select(selectExpandedVehicleId);
+
+            yield nprogress.start();
+
+            const {standardHours: normHours, statsStandardHours: normHoursStats} = yield call(fetchAPI, 'GET', `standard_hours`, {vehicleId, page: sort.page});
+
+            yield put(fetchVehicleNormHoursSuccess({normHours, stats: normHoursStats}));
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -213,6 +240,7 @@ export function* saga() {
         call(fetchVehicleSaga),
         call(fetchVehiclesSaga),
         call(fetchVehicleOrdersSaga),
+        call(fetchVehicleNormHoursSaga),
         call(fetchVehicleLaborsSaga),
         call(fetchVehicleAppurtenancesSaga),
         call(fetchVehicleRecommendationsSaga),

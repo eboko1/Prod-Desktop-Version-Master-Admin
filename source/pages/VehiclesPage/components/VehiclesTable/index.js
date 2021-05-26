@@ -84,7 +84,6 @@ export default class VehiclesTable extends React.Component {
             pageSize: 25,
             size: "large",
             total: Math.ceil(stats.totalRowsCount / 25) * 25,
-            tital: 100,
             current: sort.page,
             onChange: page => {
                 setPage({page});
