@@ -8,6 +8,9 @@ import { v4 } from 'uuid';
 //proj
 import {
     fetchVehicleYears,
+    fetchVehicleMakes,
+    fetchVehicleModels,
+    fetchVehicleModifications,
 
     setClientId,
     selectFields,
@@ -45,6 +48,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     fetchVehicleYears,
+    fetchVehicleMakes,
+    fetchVehicleModels,
+    fetchVehicleModifications,
 
     setClientId,
     setVehicleNumber,
@@ -80,6 +86,10 @@ class VehicleFormClass extends React.Component {
             makes,
             models,
             modifications,
+
+            fetchVehicleMakes,
+            fetchVehicleModels,
+            fetchVehicleModifications,
 
             setVehicleNumber,
             setVehicleVin,
@@ -177,6 +187,7 @@ class VehicleFormClass extends React.Component {
                                 disabled={false}
                                 onSelect={value => {
                                     setVehicleYear({year: value});
+                                    fetchVehicleMakes();
                                     resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
@@ -213,6 +224,8 @@ class VehicleFormClass extends React.Component {
                                 disabled={!_.get(fields, 'year')}
                                 onSelect={value => {
                                     setVehicleMakeId({makeId: value});
+                                    fetchVehicleModels();
+
                                     resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
@@ -249,6 +262,7 @@ class VehicleFormClass extends React.Component {
                                 disabled={!_.get(fields, 'makeId')}
                                 onSelect={value => {
                                     setVehicleModelId({modelId: value});
+                                    fetchVehicleModifications();
                                     resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
