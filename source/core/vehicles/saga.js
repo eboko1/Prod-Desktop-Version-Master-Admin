@@ -23,6 +23,7 @@ import {
 
     selectSort,
     selectVehicleNormHoursSort,
+    selectVehicleLaborsSort,
 
     selectFilters,
     selectExpandedVehicleId,
@@ -34,7 +35,7 @@ import {
     FETCH_VEHICLE_LABORS,
     CREATE_ORDER,
     FETCH_VEHICLE_APPURTENANCES,
-    FETCH_VEHICLE_RECOMMENDATIONS,
+    FETCH_VEHICLE_RECOMMENDATIONS, selectVehicleAppurtenancesSort, selectVehicleOrdersSort,
 } from './duck';
 
 export function* fetchVehicleSaga() {
@@ -91,9 +92,12 @@ export function* fetchVehicleOrdersSaga() {
 
             const vehicleId = yield select(selectExpandedVehicleId);
 
+            const sort = yield select(selectVehicleOrdersSort);
+            console.log("SS: ", sort)
+
             yield nprogress.start();
 
-            const {orders, stats} = yield call(fetchAPI, 'GET', `orders/vehicle/${vehicleId}`);
+            const {orders, stats} = yield call(fetchAPI, 'GET', `orders/vehicle/${vehicleId}`, {page: sort.page});
 
             yield put(fetchVehicleOrdersSuccess({orders, stats}));
         } catch (error) {
@@ -134,9 +138,11 @@ export function* fetchVehicleLaborsSaga() {
 
             const vehicleId = yield select(selectExpandedVehicleId);
 
+            const sort = yield select(selectVehicleLaborsSort);
+
             yield nprogress.start();
 
-            const {labors, laborsStats} = yield call(fetchAPI, 'GET', `orders/labors/${vehicleId}`);
+            const {labors, laborsStats} = yield call(fetchAPI, 'GET', `orders/labors/${vehicleId}`, {page: sort.page});
 
             yield put(fetchVehicleLaborsSuccess({labors, stats: laborsStats}));
         } catch (error) {
@@ -154,9 +160,11 @@ export function* fetchVehicleAppurtenancesSaga() {
 
             const vehicleId = yield select(selectExpandedVehicleId);
 
+            const sort = yield select(selectVehicleAppurtenancesSort);
+
             yield nprogress.start();
 
-            const {appurtenances, appurtenancesStats} = yield call(fetchAPI, 'GET', `orders/appurtenances/${vehicleId}`);
+            const {appurtenances, appurtenancesStats} = yield call(fetchAPI, 'GET', `orders/appurtenances/${vehicleId}`, { page: sort.page });
 
             yield put(fetchVehicleAppurtenancesSuccess({appurtenances, stats: appurtenancesStats}));
         } catch (error) {
