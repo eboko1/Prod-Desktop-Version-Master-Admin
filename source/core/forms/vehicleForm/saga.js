@@ -6,6 +6,8 @@ import { fetchAPI } from 'utils';
 
 // own
 import {
+    setVehicleVin,
+    setVehicleNumber,
     setVehicleYear,
     setVehicleMakeId,
     setVehicleModelId,
@@ -60,6 +62,8 @@ export function* fetchAllVehicleDataSaga() {
         console.log("Fetched vehicle in saga: ", vehicle);
 
         const {
+            vehicleNumber: number,
+            vehicleVin: vin,
             year,
             makeId,
             vehicleModelId: modelId,
@@ -71,6 +75,9 @@ export function* fetchAllVehicleDataSaga() {
         // fetchVehicleModels,
         // fetchVehicleModifications,
         // yield put(fetchVehicleYears());
+        yield put(setVehicleNumber({number}));
+        yield put(setVehicleVin({vin}));
+        yield put(setVehicleMakeId({makeId}));
         yield put(setVehicleYear({year}));
         yield put(setVehicleMakeId({makeId}));
         yield put(setVehicleModelId({modelId}));
@@ -180,7 +187,7 @@ export function* updateVehicleSaga() {
             number,
             vin,
             year,
-            makeId,
+            makeId,//This is not needed as it is fetched from modificationId by default
             modelId,
             modificationId,
         } = yield select(selectFields);

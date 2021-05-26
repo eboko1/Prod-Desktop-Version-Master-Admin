@@ -9,6 +9,9 @@ import { v4 } from 'uuid';
 import {
     fetchVehicleYears,
     fetchAllVehicleData,
+    fetchVehicleMakes,
+    fetchVehicleModels,
+    fetchVehicleModifications,
 
     setClientId,
     selectFields,
@@ -51,6 +54,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchVehicleYears,
     fetchAllVehicleData,
+    fetchVehicleMakes,
+    fetchVehicleModels,
+    fetchVehicleModifications,
 
     setClientId,
     setVehicleNumber,
@@ -79,6 +85,8 @@ class VehicleFormClass extends React.Component {
         // this.props.setClientId({clientId});
         const {vehicleId} = this.props;
         this.props.fetchAllVehicleData({vehicleId});
+
+        console.log("Edit vehicle form did mount!");
     }
 
     render() {
@@ -89,6 +97,10 @@ class VehicleFormClass extends React.Component {
             models,
             modifications,
             vehicle,
+
+            fetchVehicleMakes,
+            fetchVehicleModels,
+            fetchVehicleModifications,
 
             setVehicleNumber,
             setVehicleVin,
@@ -107,13 +119,22 @@ class VehicleFormClass extends React.Component {
 
 
         const initValues = {
-            number: vehicle.vehicleNumber,
-            vin: vehicle.vehicleVin,
-            year: vehicle.year,
-            makeId: vehicle.makeId,
-            modelId: vehicle.vehicleModelId,
-            modificationId: vehicle.vehicleModificationId,
+            number: fields.number,
+            vin: fields.vin,
+            year: fields.year,
+            makeId: fields.makeId,
+            modelId: fields.modelId,
+            modificationId: fields.modificationId,
         }
+        
+        // const initValues = {
+        //     number: vehicle.vehicleNumber,
+        //     vin: vehicle.vehicleVin,
+        //     year: vehicle.year,
+        //     makeId: vehicle.makeId,
+        //     modelId: vehicle.vehicleModelId,
+        //     modificationId: vehicle.vehicleModificationId,
+        // }
         
         const fieldsDisabled = false;//(mode == formModes.VIEW);
 
@@ -185,9 +206,10 @@ class VehicleFormClass extends React.Component {
                                 ]}
                                 placeholder={"Enter here"}
                                 initialValue={initValues.year}
-                                disabled={true}
+                                disabled={false}
                                 onSelect={value => {
                                     setVehicleYear({year: value});
+                                    fetchVehicleMakes();
                                     resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
@@ -225,9 +247,10 @@ class VehicleFormClass extends React.Component {
                                 ]}
                                 placeholder={"Enter here"}
                                 initialValue={initValues.makeId}
-                                disabled={true || !_.get(fields, 'year')}
+                                disabled={!_.get(fields, 'year')}
                                 onSelect={value => {
                                     setVehicleMakeId({makeId: value});
+                                    fetchVehicleModels();
                                     resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
@@ -269,6 +292,7 @@ class VehicleFormClass extends React.Component {
                                 disabled={!_.get(fields, 'makeId')}
                                 onSelect={value => {
                                     setVehicleModelId({modelId: value});
+                                    fetchVehicleModifications();
                                     resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
