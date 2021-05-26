@@ -17,9 +17,12 @@ export const FETCH_VEHICLE_MODELS_SUCCESS = `${prefix}/FETCH_VEHICLE_MODELS_SUCC
 export const FETCH_VEHICLE_MODIFICATIONS = `${prefix}/FETCH_VEHICLE_MODIFICATIONS`;
 export const FETCH_VEHICLE_MODIFICATIONS_SUCCESS = `${prefix}/FETCH_VEHICLE_MODIFICATIONS_SUCCESS`;
 
+export const FETCH_ALL_VEHICLE_DATA = `${prefix}/FETCH_ALL_VEHICLE_DATA`;
+
 export const CREATE_VEHICLE = `${prefix}/CREATE_VEHICLE`;
 
 
+export const SET_FETCHING_ALL_VEHICLE_DATA = `${prefix}/SET_FETCHING_ALL_VEHICLE_DATA`;
 export const SET_CLIENT_ID = `${prefix}/SET_CLIENT_ID`;
 export const SET_VIN = `${prefix}/SET_VIN`;
 export const SET_NUMBER = `${prefix}/SET_NUMBER`;
@@ -51,6 +54,8 @@ const ReducerState = {
         modelId: undefined,
         modificationId: undefined,
     },
+
+    fetchingAllVehicleData: false, //Years, makes, modifications, ....
 
     vehicle:          {}, // In a case we work in edit or view mode we have fetched vehicle there
 
@@ -179,6 +184,13 @@ export default function reducer(state = ReducerState, action) {
                     clientId
                 }
             };
+        
+        case SET_FETCHING_ALL_VEHICLE_DATA:
+            return {
+                ...state,
+                fetchingAllVehicleData: payload
+            };
+
         default:
             return state;
     }
@@ -192,6 +204,7 @@ export const selectYears = state => state.forms[ moduleName ].years;
 export const selectMakes = state => state.forms[ moduleName ].makes;
 export const selectModels = state => state.forms[ moduleName ].models;
 export const selectModifications = state => state.forms[ moduleName ].modifications;
+export const selectFetchingAllVehicleData = state => state.forms[ moduleName ].fetchingAllVehicleData;
 
 /* Actions */
 
@@ -203,6 +216,11 @@ export const fetchVehicle = ({vehicleId}) => ({
 export const fetchVehicleSuccess = ({vehicle}) => ({
     type:    FETCH_VEHICLE_SUCCESS,
     payload: { vehicle },
+});
+
+export const fetchAllVehicleData = ({vehicleId}) => ({
+    type:    FETCH_ALL_VEHICLE_DATA,
+    payload: { vehicleId },
 });
 
 export const fetchVehicleYears = () => ({
@@ -257,7 +275,7 @@ export const setVehicleYear = ({year}) => {
             type:    SET_YEAR,
             payload: { year },
         });
-        dispatch(fetchVehicleMakes());
+        // dispatch(fetchVehicleMakes());
     }
 }
 
@@ -267,7 +285,7 @@ export const setVehicleMakeId = ({makeId}) => {
             type:    SET_MAKE_ID,
             payload: { makeId },
         });
-        dispatch(fetchVehicleModels());
+        // dispatch(fetchVehicleModels());
     }
 }
 
@@ -277,7 +295,7 @@ export const setVehicleModelId = ({modelId}) => {
             type:    SET_MODEL_ID,
             payload: { modelId },
         });
-        dispatch(fetchVehicleModifications());
+        // dispatch(fetchVehicleModifications());
     }
 }
 
@@ -289,6 +307,11 @@ export const setVehicleModificationId = ({modificationId}) => ({
 export const setClientId = ({clientId}) => ({
     type:    SET_CLIENT_ID,
     payload: { clientId },
+});
+
+export const setFetchingAllVehicleData = (velue) => ({
+    type:    SET_FETCHING_ALL_VEHICLE_DATA,
+    payload: velue,
 });
 
 export const createVehicle = () => ({

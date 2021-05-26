@@ -8,7 +8,7 @@ import { v4 } from 'uuid';
 //proj
 import {
     fetchVehicleYears,
-    fetchVehicle,
+    fetchAllVehicleData,
 
     setClientId,
     selectFields,
@@ -17,6 +17,7 @@ import {
     selectModels,
     selectModifications,
     selectVehicle,
+    selectFetchingAllVehicleData,
 
     setVehicleNumber,
     setVehicleVin,
@@ -44,11 +45,12 @@ const mapStateToProps = state => ({
     models:selectModels(state),
     modifications: selectModifications(state),
     vehicle: selectVehicle(state),
+    fetchAllVehicleData: selectFetchingAllVehicleData(state,)
 });
 
 const mapDispatchToProps = {
     fetchVehicleYears,
-    fetchVehicle,
+    fetchAllVehicleData,
 
     setClientId,
     setVehicleNumber,
@@ -76,7 +78,7 @@ class VehicleFormClass extends React.Component {
         // this.props.fetchVehicleYears();
         // this.props.setClientId({clientId});
         const {vehicleId} = this.props;
-        this.props.fetchVehicle({vehicleId});
+        this.props.fetchAllVehicleData({vehicleId});
     }
 
     render() {
@@ -190,11 +192,15 @@ class VehicleFormClass extends React.Component {
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
                             >
-                                {years.map((year) => (
-                                    <Option value={year} key={v4()}>
-                                        {year}
-                                    </Option>
-                                ))}
+                                {
+                                    years
+                                        ? years.map((year) => (
+                                            <Option value={year} key={v4()}>
+                                                {year}
+                                            </Option>
+                                        ))
+                                        : <Option value={123} key={v4()}>Empty</Option>
+                                }
                             </DecoratedSelect>
                     </Col>
                     <Col span={6}></Col>
@@ -226,11 +232,15 @@ class VehicleFormClass extends React.Component {
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
                             >
-                                {makes.map(({ id, name }) => (
-                                    <Option value={id} key={v4()}>
-                                        {name}
-                                    </Option>
-                                ))}
+                                {
+                                    makes
+                                        ? makes.map(({ id, name }) => (
+                                            <Option value={id} key={v4()}>
+                                                {name}
+                                            </Option>
+                                        ))
+                                        : <Option value={123} key={v4()}>Empty</Option>
+                                }
                             </DecoratedSelect>
                     </Col>
                     <Col span={6}></Col>
@@ -262,11 +272,15 @@ class VehicleFormClass extends React.Component {
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
                             >
-                                {models.map(({ id, name }) => (
-                                    <Option value={id} key={v4()}>
-                                        {name}
-                                    </Option>
-                                ))}
+                                {
+                                    models
+                                        ? models.map(({ id, name }) => (
+                                            <Option value={id} key={v4()}>
+                                                {name}
+                                            </Option>
+                                        ))
+                                        : <Option value={123} key={v4()}>Empty</Option>
+                                }
                             </DecoratedSelect>
                     </Col>
                     <Col span={6}></Col>
@@ -298,11 +312,15 @@ class VehicleFormClass extends React.Component {
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
                             >
-                                {modifications.map(({ id, name }) => (
-                                    <Option value={id} key={v4()}>
-                                        {name}
-                                    </Option>
-                                ))}
+                                {
+                                    modifications
+                                        ? modifications.map(({ id, name }) => (
+                                            <Option value={id} key={v4()}>
+                                                {name}
+                                            </Option>
+                                        ))
+                                        : <Option value={123} key={v4()}>Empty</Option>
+                                }
                             </DecoratedSelect>
                     </Col>
                     <Col span={6}></Col>
