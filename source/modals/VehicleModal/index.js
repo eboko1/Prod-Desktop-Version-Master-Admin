@@ -16,7 +16,7 @@ import {
 
 // own
 import Styles from './styles.m.css';
-import { AddVehicleForm, EditVehicleForm} from './Forms';
+import { AddVehicleForm, EditVehicleForm, ViewVehicleForm} from './Forms';
 
 const mapStateToProps = state => ({
     modalProps:    selectModalProps(state),
@@ -93,7 +93,7 @@ export default class VehicleModal extends Component {
             <div>
                 <Modal
                     destroyOnClose={true}
-                    width={ '80%' }
+                    width={ (mode == modes.VIEW)? '50%': '80%' }
                     visible={ visible === MODALS.VEHICLE }
                     onOk={ this.handleSubmit }
                     onCancel={ this.resetAllFormsAndCloseModal }
@@ -119,8 +119,15 @@ export default class VehicleModal extends Component {
                                             vehicleId={vehicleId}
                                         />
                                     );
+
+                                    case modes.VIEW: return (
+                                        <ViewVehicleForm
+                                            getFormRefCB={this.saveVehicleFormRef}//Get form refference
+                                            vehicleId={vehicleId}
+                                        />
+                                    );
                                 
-                                    default: return "Invalid mode provided, available";
+                                    default: return "Invalid mode provided, available: EDIT, ADD, VIEW";
                                 }
                             })()
                         }

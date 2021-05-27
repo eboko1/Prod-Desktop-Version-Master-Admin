@@ -1,0 +1,50 @@
+.formContent {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+}
+
+
+/* Fix "DecoratedSelect" positioning */
+.formContent :global(.ant-form-item-control-wrapper) {
+    display: block !important;
+    width: 100% !important;
+}
+
+.filterBlock {
+    padding: 10px 0 10px 0;
+    min-width: 30%;
+}
+
+.row {
+    min-height: 4em;
+}
+
+.col {
+    padding: 5px;
+    display: block !important;
+}
+
+.colText {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px;
+}
+
+.formItemStyle {
+    margin: 0 !important;
+    display: block !important;
+    width: 100% !important;
+}
+
+.field {
+    box-sizing: border-box;
+    padding: 0.15em;
+    height: 2em;
+    border: 0.1em solid rgb(199, 199, 199);
+    border-radius: 0.3em;
+    color: rgb(85, 85, 85);
+}
