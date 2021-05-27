@@ -26,6 +26,7 @@ export const FETCH_VEHICLE_RECOMMENDATIONS_SUCCESS = `${prefix}/FETCH_VEHICLE_RE
 
 export const CREATE_ORDER = `${prefix}/CREATE_ORDER`;
 
+export const SET_FETCHING_VEHICLE = `${prefix}/SET_FETCHING_VEHICLE`;
 export const SET_PAGE = `${prefix}/SET_PAGE`;
 export const SET_PAGE_ORDERS = `${prefix}/SET_PAGE_ORDERS`;
 export const SET_PAGE_NORM_HOURS = `${prefix}/SET_PAGE_NORM_HOURS`;
@@ -46,6 +47,8 @@ const ReducerState = {
     client:        {},      // Vehicle client
     generalData:   {},      // Statistics for fetched vehicle
     vehicleAttributes: {},  // Vehicle attributes
+
+    fetchingVehicle: false,
 
     vehicleOrdersData: {
         orders: [], //Array of orders fetched for specific vehicle
@@ -136,6 +139,13 @@ export default function reducer(state = ReducerState, action) {
                     page: page
                 }
             };
+
+        case SET_FETCHING_VEHICLE:
+            return {
+                ...state,
+                fetchingVehicle: payload
+            };
+
         case SET_PAGE_ORDERS:
             const { page: pageOrders } = payload;
 
@@ -270,6 +280,7 @@ export default function reducer(state = ReducerState, action) {
 
 export const stateSelector = state => state[ moduleName ];
 export const selectVehicle = state => state[ moduleName ].vehicle;
+export const selectFethingVehicle = state => state[ moduleName ].fetchingVehicle;
 export const selectVehicles = state => state[ moduleName ].vehicles;
 export const selectVehicleAttributes = state => state[ moduleName ].vehicleAttributes
 export const selectVehiclesStats = state => state[ moduleName ].stats;
@@ -424,6 +435,11 @@ export const setPage = ({page}) => {
         return dispatch(fetchVehicles());
     }
 };
+
+export const setFetchingVehilce = (value) => ({
+    type: SET_FETCHING_VEHICLE,
+    payload: value
+});
 
 /** Set filtering page, automatically fetches orders */
 export const setPageOrders = ({ page }) => {

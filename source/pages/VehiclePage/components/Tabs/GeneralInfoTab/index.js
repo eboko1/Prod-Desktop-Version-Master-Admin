@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Button, Tabs, Icon, Row, Col, Input} from 'antd';
+import {Button, Tabs, Icon, Row, Col, Spin} from 'antd';
 import history from 'store/history';
 import _ from 'lodash';
 import { v4 } from 'uuid';
@@ -21,12 +21,9 @@ import {
     selectClient,
     selectGeneralData,
     selectVehicleAttributes,
+    selectFethingVehicle,
 } from 'core/vehicles/duck';
-import {
-    createClientVehicle,
-    updateClientVehicle,
-    deleteClientVehicle,
-} from "core/client/duck";
+import { deleteClientVehicle } from "core/client/duck";
 
 // own
 import Styles from './styles.m.css';
@@ -41,7 +38,8 @@ const mapStateToProps = state => ({
     vehicle:            selectVehicle(state),
     client:             selectClient(state),
     generalData:        selectGeneralData(state),
-    vehicleAttributes:  selectVehicleAttributes(state)
+    vehicleAttributes:  selectVehicleAttributes(state),
+    fetchingVehicle:    selectFethingVehicle(state),
 });
 
 const mapDispatchToProps = {
@@ -91,86 +89,93 @@ export default class GeneralInfoTab extends Component {
             client,
             vehicle,
             generalData,
-            vehicleAttributes
+            vehicleAttributes,
+            fetchingVehicle
         } = this.props;
 
         return (
             <div className={Styles.tabContent}>
-                <Block
-                    title="Vehicle"
-                    className={Styles.block}
-                    controls={
-                        <div>
-                            <Icon className={Styles.barcodeIcon} type="barcode" />
-                            <Icon className={Styles.infoIcon} type="question-circle" />
-                            <Icon
-                                className={Styles.editIcon}
-                                type="eye"
-                                onClick={() => this.onViewVehicle({vehicleId: _.get(vehicle, 'id')})}
-                            />
-                            <Icon
-                                className={Styles.editIcon}
-                                type="edit"
-                                onClick={() => this.onEditVehicle({vehicleId: _.get(vehicle, 'id')})}
-                            />
-                            <Icon
-                                className={Styles.editIcon}
-                                type="folder-add"
-                                onClick={() => this.onAddVehicle({clientId: _.get(client, 'clientId')})}
-                            />
+                {
+                    (fetchingVehicle)
+                    ? <Spin />
+                    : (
+                        <Block
+                            title="Vehicle"
+                            className={Styles.block}
+                            controls={
+                                <div>
+                                    <Icon className={Styles.barcodeIcon} type="barcode" />
+                                    <Icon className={Styles.infoIcon} type="question-circle" />
+                                    <Icon
+                                        className={Styles.editIcon}
+                                        type="eye"
+                                        onClick={() => this.onViewVehicle({vehicleId: _.get(vehicle, 'id')})}
+                                    />
+                                    <Icon
+                                        className={Styles.editIcon}
+                                        type="edit"
+                                        onClick={() => this.onEditVehicle({vehicleId: _.get(vehicle, 'id')})}
+                                    />
+                                    <Icon
+                                        className={Styles.editIcon}
+                                        type="folder-add"
+                                        onClick={() => this.onAddVehicle({clientId: _.get(client, 'clientId')})}
+                                    />
 
-                            <Icon
-                                className={Styles.deleteIcon}
-                                type="delete"
-                                onClick={() => {
-                                    deleteClientVehicle(_.get(client, 'clientId'), _.get(vehicle, 'id'));
-                                    history.push({
-                                        pathname: `${book.vehicles}`
-                                    });
-                                }}
-                            />
-                            <Icon className={Styles.changeVehicleOwnerIcon} type="sync" />
+                                    <Icon
+                                        className={Styles.deleteIcon}
+                                        type="delete"
+                                        onClick={() => {
+                                            deleteClientVehicle(_.get(client, 'clientId'), _.get(vehicle, 'id'));
+                                            history.push({
+                                                pathname: `${book.vehicles}`
+                                            });
+                                        }}
+                                    />
+                                    <Icon className={Styles.changeVehicleOwnerIcon} type="sync" />
 
-                            <Button
-                                className={Styles.iconButton}
-                                type="primary"
-                                onClick={() => this.onCreateOrder({clientId: _.get(client, 'clientId'), vehicleId: _.get(vehicle, 'id')})}
-                            >
-                                <Icon className={Styles.plusIcon} type="plus" />
-                            </Button>
-                        </div>
-                    }
-                >
-                    <div>
-                        <DataItem label="Number">{vehicle.vehicleNumber}</DataItem>
-                        <DataItem className={Styles.dataItem} label="VIN">{vehicle.vehicleVin}</DataItem>
-                        <DataItem className={Styles.dataItem} label="Make">{vehicle.make}</DataItem>
-                        <DataItem className={Styles.dataItem} label="Model">{vehicle.model}</DataItem>
-                        <DataItem className={Styles.dataItem} label="Modification">{vehicle.modification}</DataItem>
+                                    <Button
+                                        className={Styles.iconButton}
+                                        type="primary"
+                                        onClick={() => this.onCreateOrder({clientId: _.get(client, 'clientId'), vehicleId: _.get(vehicle, 'id')})}
+                                    >
+                                        <Icon className={Styles.plusIcon} type="plus" />
+                                    </Button>
+                                </div>
+                            }
+                        >
+                            <div>
+                                <DataItem label="Number">{vehicle.vehicleNumber}</DataItem>
+                                <DataItem className={Styles.dataItem} label="VIN">{vehicle.vehicleVin}</DataItem>
+                                <DataItem className={Styles.dataItem} label="Make">{vehicle.make}</DataItem>
+                                <DataItem className={Styles.dataItem} label="Model">{vehicle.model}</DataItem>
+                                <DataItem className={Styles.dataItem} label="Modification">{vehicle.modification}</DataItem>
 
-                    </div>
+                            </div>
 
-                    <div>
-                        <DataItem label="Engine">{vehicleAttributes.engineCode}</DataItem>
-                        <DataItem className={Styles.dataItem} label="Capacity">{vehicleAttributes.capacity}</DataItem>
-                        <DataItem className={Styles.dataItem} label="BodyType">{vehicleAttributes.bodyType}</DataItem>
-                        <DataItem className={Styles.dataItem} label="FuelType">{vehicleAttributes.fuelType}</DataItem>
-                        <DataItem className={Styles.dataItem} label="Power">{vehicleAttributes.power}</DataItem>
-                        <DataItem className={Styles.dataItem} label="DriveType">{vehicleAttributes.driveType}</DataItem>
+                            <div>
+                                <DataItem label="Engine">{vehicleAttributes.engineCode}</DataItem>
+                                <DataItem className={Styles.dataItem} label="Capacity">{vehicleAttributes.capacity}</DataItem>
+                                <DataItem className={Styles.dataItem} label="BodyType">{vehicleAttributes.bodyType}</DataItem>
+                                <DataItem className={Styles.dataItem} label="FuelType">{vehicleAttributes.fuelType}</DataItem>
+                                <DataItem className={Styles.dataItem} label="Power">{vehicleAttributes.power}</DataItem>
+                                <DataItem className={Styles.dataItem} label="DriveType">{vehicleAttributes.driveType}</DataItem>
 
-                    </div>
+                            </div>
 
-                    <div className={Styles.buttonsContainer}>
-                        <Row className={Styles.row}>
-                            <Col span={6}><Button className={Styles.button} type="primary">Service book</Button></Col>
-                            <Col span={18}>
-                                <Icon className={Styles.sendSMSIcon} type="message" />
-                                <Icon className={Styles.sendMailIcon} type="mail" />
-                                <Icon className={Styles.copyIcon} type="copy" />
-                            </Col>
-                        </Row>
-                    </div>
-                </Block>
+                            <div className={Styles.buttonsContainer}>
+                                <Row className={Styles.row}>
+                                    <Col span={6}><Button className={Styles.button} type="primary">Service book</Button></Col>
+                                    <Col span={18}>
+                                        <Icon className={Styles.sendSMSIcon} type="message" />
+                                        <Icon className={Styles.sendMailIcon} type="mail" />
+                                        <Icon className={Styles.copyIcon} type="copy" />
+                                    </Col>
+                                </Row>
+                            </div>
+                        </Block>
+                    )
+                }
 
                 {/* --------------------------------------------------------------------------- */}
 

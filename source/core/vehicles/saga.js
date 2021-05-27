@@ -21,10 +21,11 @@ import {
     fetchVehicleAppurtenancesSuccess,
     fetchVehicleRecommendationsSuccess,
 
+    setFetchingVehilce,
+
     selectSort,
     selectVehicleNormHoursSort,
     selectVehicleLaborsSort,
-
     selectFilters,
     selectExpandedVehicleId,
 
@@ -44,6 +45,7 @@ export function* fetchVehicleSaga() {
             const { payload: {vehicleId} } = yield take(FETCH_VEHICLE);
 
             yield nprogress.start();
+            yield put(setFetchingVehilce(true));
 
             const vehicle = yield call(fetchAPI, 'GET', `clients/vehicles/${vehicleId}`);
 
@@ -62,6 +64,7 @@ export function* fetchVehicleSaga() {
             yield put(emitError(error));
         } finally {
             yield nprogress.done();
+            yield put(setFetchingVehilce(false));
         }
     }
 }
