@@ -28,11 +28,14 @@ const mapDispatchToProps = {
 
 /**
  * This form is used to show vehicle without editing it.
+ * 
+ * @param {Function} getFormRefCB - callback, takes one argument(form refference)
+ * @param {number} vehicleId - Id of a vehicle you wnat to view
  */
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({name: 'vehilce_view_form'})
-export default class VehicleFormClass extends React.Component {
+export default class ViewVehicleForm extends React.Component {
     constructor(props) {
         super(props);
 

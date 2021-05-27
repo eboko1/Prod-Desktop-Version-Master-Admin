@@ -61,6 +61,9 @@ const mapDispatchToProps = {
 
 /**
  * This form is used to edit vehicle. It contains all needed logic to edit vehicle.
+ * 
+ * @param {Function} getFormRefCB - callback, takes one argument(form refference)
+ * @param {number} vehicleId - Id of a vehicle you wnat to edit
  */
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
