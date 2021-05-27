@@ -157,14 +157,6 @@ export default class VehicleEditFormClass extends React.Component {
                                 initialValue={initValues.vin}
                                 hasFeedback
                                 formItem
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: this.props.intl.formatMessage({
-                                            id: "required_field",
-                                        }),
-                                    },
-                                ]}
                                 onChange={(e) => setVehicleVin({vin: e.target.value})}
                                 getFieldDecorator={getFieldDecorator}
                             />
