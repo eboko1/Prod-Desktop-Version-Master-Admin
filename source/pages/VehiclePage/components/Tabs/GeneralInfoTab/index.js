@@ -19,7 +19,8 @@ import {
     createOrder,
     selectVehicle,
     selectClient,
-    selectGeneralData
+    selectGeneralData,
+    selectVehicleAttributes,
 } from 'core/vehicles/duck';
 import {
     createClientVehicle,
@@ -36,10 +37,11 @@ const TabPane = Tabs.TabPane;
 const DATE_FORMATT = "DD.MM.YYYY";
 
 const mapStateToProps = state => ({
-    user:        state.auth,
-    vehicle:     selectVehicle(state),
-    client:      selectClient(state),
-    generalData: selectGeneralData(state),
+    user:               state.auth,
+    vehicle:            selectVehicle(state),
+    client:             selectClient(state),
+    generalData:        selectGeneralData(state),
+    vehicleAttributes:  selectVehicleAttributes(state)
 });
 
 const mapDispatchToProps = {
@@ -85,6 +87,7 @@ export default class GeneralInfoTab extends Component {
             client,
             vehicle,
             generalData,
+            vehicleAttributes
         } = this.props;
 
         return (
@@ -135,6 +138,17 @@ export default class GeneralInfoTab extends Component {
                         <DataItem className={Styles.dataItem} label="Make">{vehicle.make}</DataItem>
                         <DataItem className={Styles.dataItem} label="Model">{vehicle.model}</DataItem>
                         <DataItem className={Styles.dataItem} label="Modification">{vehicle.modification}</DataItem>
+
+                    </div>
+
+                    <div>
+                        <DataItem label="Engine">{vehicleAttributes.engineCode}</DataItem>
+                        <DataItem className={Styles.dataItem} label="Capacity">{vehicleAttributes.capacity}</DataItem>
+                        <DataItem className={Styles.dataItem} label="BodyType">{vehicleAttributes.bodyType}</DataItem>
+                        <DataItem className={Styles.dataItem} label="FuelType">{vehicleAttributes.fuelType}</DataItem>
+                        <DataItem className={Styles.dataItem} label="Power">{vehicleAttributes.power}</DataItem>
+                        <DataItem className={Styles.dataItem} label="DriveType">{vehicleAttributes.driveType}</DataItem>
+
                     </div>
 
                     <div className={Styles.buttonsContainer}>

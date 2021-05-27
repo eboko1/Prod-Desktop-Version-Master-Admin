@@ -45,6 +45,7 @@ const ReducerState = {
     vehicle:       {},      // One vehicle can be used on its page
     client:        {},      // Vehicle client
     generalData:   {},      // Statistics for fetched vehicle
+    vehicleAttributes: {},  // Vehicle attributes
 
     vehicleOrdersData: {
         orders: [], //Array of orders fetched for specific vehicle
@@ -109,13 +110,15 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
     switch (type) {
         case FETCH_VEHICLE_SUCCESS:
-            const {vehicle, client, generalData} = payload;
+            const {vehicle, client, generalData, vehicleAttributes} = payload;
             return { 
                 ...state, 
                 vehicle: vehicle,
                 client: client,
-                generalData: generalData
+                generalData: generalData,
+                vehicleAttributes: vehicleAttributes,
             };
+
         case FETCH_VEHICLES_SUCCESS:
             const {vehicles, stats} = payload;
             return { 
@@ -268,6 +271,7 @@ export default function reducer(state = ReducerState, action) {
 export const stateSelector = state => state[ moduleName ];
 export const selectVehicle = state => state[ moduleName ].vehicle;
 export const selectVehicles = state => state[ moduleName ].vehicles;
+export const selectVehicleAttributes = state => state[ moduleName ].vehicleAttributes
 export const selectVehiclesStats = state => state[ moduleName ].stats;
 export const selectClient = state => state[ moduleName ].client;
 export const selectGeneralData = state => state[ moduleName ].generalData;
@@ -325,9 +329,9 @@ export const fetchVehicle = ({vehicleId}) => ({
     payload: {vehicleId}
 });
 
-export const fetchVehicleSuccess = ({vehicle, client, generalData}) => ({
+export const fetchVehicleSuccess = ({vehicle, client, generalData, vehicleAttributes}) => ({
     type:    FETCH_VEHICLE_SUCCESS,
-    payload: {vehicle, client, generalData},
+    payload: {vehicle, client, generalData, vehicleAttributes},
 });
 
 /**
