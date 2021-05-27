@@ -1,32 +1,5 @@
-.formContent {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    height: 100%;
-    width: 100%;
-}
-
-
-/* Fix "DecoratedSelect" positioning */
-.formContent :global(.ant-form-item-control-wrapper) {
-    display: block !important;
-    width: 100% !important;
-}
-
-.filterBlock {
-    padding: 10px 0 10px 0;
-    min-width: 30%;
-}
-
 .row {
     min-height: 6em;
-    /* display: flex;
-    align-items: center; */
-}
-
-.col {
-    padding: 5px;
-    display: block !important;
 }
 
 .colText {
@@ -34,10 +7,6 @@
     justify-content: flex-start;
     align-items: center;
     padding: 5px;
-}
-
-.formItemStyle {
-    margin: 0 !important;
-    display: block !important;
-    width: 100% !important;
+    size: 1.2em;
+    color: black
 }

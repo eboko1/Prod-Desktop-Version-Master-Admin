@@ -81,6 +81,10 @@ export default class GeneralInfoTab extends Component {
         this.props.setModal(MODALS.VEHICLE, {mode: "ADD", clientId});
     }
 
+    onViewVehicle = ({vehicleId}) => {
+        this.props.setModal(MODALS.VEHICLE, {mode: "VIEW", vehicleId});
+    }
+
     render() {
 
         const {
@@ -99,6 +103,11 @@ export default class GeneralInfoTab extends Component {
                         <div>
                             <Icon className={Styles.barcodeIcon} type="barcode" />
                             <Icon className={Styles.infoIcon} type="question-circle" />
+                            <Icon
+                                className={Styles.editIcon}
+                                type="eye"
+                                onClick={() => this.onViewVehicle({vehicleId: _.get(vehicle, 'id')})}
+                            />
                             <Icon
                                 className={Styles.editIcon}
                                 type="edit"

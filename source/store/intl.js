@@ -60,6 +60,8 @@ import SyncImportExport from 'pages/SyncImportExport/messages';
 import ProductPage from 'pages/ProductPage/messages';
 import WMSPage from 'pages/WMSPage/messages';
 import DirectoriesPage from 'pages/DirectoriesPage/messages';
+import VehiclePage from 'pages/VehiclePage/messages';
+import VehiclesPage from 'pages/VehiclesPage/messages';
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
@@ -212,6 +214,8 @@ const messages = merge.all([
     ProductPage,
     WMSPage,
     DirectoriesPage,
+    VehiclePage,
+    VehiclesPage,
 
     // containers
     OrdersContainer,

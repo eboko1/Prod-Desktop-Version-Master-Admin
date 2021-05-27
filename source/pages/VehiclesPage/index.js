@@ -45,9 +45,9 @@ export default class VehiclesPage extends Component {
 
         return (
             <Layout
-                title={"Vehicles"}
-                description={"List of all vehicles on this business."}
-                controls={"Controls here"}
+                title={<FormattedMessage id={ 'vehicles_page.title' }/>}
+                description={<FormattedMessage id={'vehicles_page.description'}/>}
+                controls={<FormattedMessage id={ 'vehicles_page.controls'}/>}
             >
                <VehiclesTable />
             </Layout>

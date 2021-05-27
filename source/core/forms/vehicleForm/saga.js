@@ -42,17 +42,18 @@ export function* fetchVehicleSaga() {
     }
 }
 
+/**
+ * This saga is used to initialize all vehicle data and setup all fields.
+ * For example: it fetches vehicle, takes its values and puts them intu "fields" object vie setters,
+ * then it fetches all data for vehicle of that type, yer, model etc.(models, makes, modifications)
+ */
 export function* fetchAllVehicleDataSaga() {
     while (true) {
         const { payload: { vehicleId } } = yield take(FETCH_ALL_VEHICLE_DATA);
         yield put(setFetchingAllVehicleData(true));
 
-        console.log("Before selecting vehicle");
-
         const vehicle = yield call(fetchAPI, 'GET', `clients/vehicles/${vehicleId}`);
         yield put(fetchVehicleSuccess({vehicle}));
-
-        console.log("Fetched vehicle in saga: ", vehicle);
 
         const {
             vehicleNumber: number,
@@ -71,8 +72,6 @@ export function* fetchAllVehicleDataSaga() {
         yield put(setVehicleModelId({modelId}));
         yield put(setVehicleModificationId({modificationId}));
         
-        yield put(setFetchingAllVehicleData(false));
-
         const { years } = yield call(fetchAPI, 'GET', 'vehicles_info');
         yield put(fetchVehicleYearsSuccess({years}));
 
@@ -84,6 +83,8 @@ export function* fetchAllVehicleDataSaga() {
 
         const {modifications} = yield call(fetchAPI, 'GET', 'vehicles_info', {year, makeId, modelId});
         yield put(fetchVehicleModificationsSuccess({modifications}));
+
+        yield put(setFetchingAllVehicleData(false));
     }
 }
 
