@@ -1,26 +1,23 @@
 //vendor
 import React from 'react';
 import { FormattedMessage, injectIntl } from "react-intl";
-import { Form, Col, Row, Input, Button } from 'antd';
+import { Form, Col, Row, Button } from 'antd';
 import { connect } from 'react-redux';
 import { v4 } from 'uuid';
 
 //proj
 import { Spinner } from 'commons';
 import {
-    fetchVehicleYears,
     fetchAllVehicleData,
     fetchVehicleMakes,
     fetchVehicleModels,
     fetchVehicleModifications,
 
-    setClientId,
     selectFields,
     selectYears,
     selectMakes,
     selectModels,
     selectModifications,
-    selectVehicle,
     selectFetchingAllVehicleData,
 
     setVehicleNumber,
@@ -62,17 +59,18 @@ const mapDispatchToProps = {
     setVehicleModificationId,
 };
 
+/**
+ * This form is used to edit vehicle. It contains all needed logic to edit vehicle.
+ */
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
-@Form.create({name: 'report_analytics_catalog_form'})
-export default class VehicleFormClass extends React.Component {
+@Form.create({name: 'vehicle_edit_from'})
+export default class VehicleEditFormClass extends React.Component {
     constructor(props) {
         super(props);
 
         const {getFormRefCB} = this.props;
-
         getFormRefCB && getFormRefCB(this.props.form); //Callback to get form instance (warppedComponentRef does not work)
-
     }
 
     componentDidMount() {
@@ -100,7 +98,6 @@ export default class VehicleFormClass extends React.Component {
             setVehicleModelId,
             setVehicleModificationId,
             form,
-            intl: {formatMessage}
         } = this.props;
         
         const { getFieldDecorator, resetFields} = form;
@@ -113,16 +110,17 @@ export default class VehicleFormClass extends React.Component {
             modelId: fields.modelId,
             modificationId: fields.modificationId,
         }
-
-
         
         return fetchingAllVehicleData
             ? (<Spinner />)
             : (
                 <Form>
-                    This is edit form
                     <Row className={Styles.row}>
-                        <Col span={6}>vehicleNumber: </Col>
+                        <Col span={6}>
+                            <div className={Styles.colText}>
+                                vehicleNumber: 
+                            </div>
+                        </Col>
                         <Col span={12}>
                             <DecoratedInput
                                 field="number"
@@ -145,7 +143,11 @@ export default class VehicleFormClass extends React.Component {
                     </Row>
 
                     <Row className={Styles.row}>
-                        <Col span={6}>vehicleVin: </Col>
+                        <Col span={6}>
+                            <div className={Styles.colText}>
+                                vehicleVin: 
+                            </div>
+                        </Col>
                         <Col span={12}>
                             <DecoratedInput
                                 field="vin"
@@ -168,7 +170,11 @@ export default class VehicleFormClass extends React.Component {
                     </Row>
 
                     <Row className={Styles.row}>
-                        <Col span={6}>vehicleYear: </Col>
+                        <Col span={6}>
+                            <div className={Styles.colText}>
+                                vehicleYear: 
+                            </div>
+                        </Col>
                         <Col span={12}>
                             <DecoratedSelect
                                     field="year"
@@ -209,7 +215,11 @@ export default class VehicleFormClass extends React.Component {
                     </Row>
 
                     <Row className={Styles.row}>
-                        <Col span={6}>vehicleMake: </Col>
+                        <Col span={6}>
+                            <div className={Styles.colText}>
+                                vehicleMake: 
+                            </div>
+                        </Col>
                         <Col span={12}>
                             <DecoratedSelect
                                     field="makeId"
@@ -250,7 +260,11 @@ export default class VehicleFormClass extends React.Component {
                     </Row>
 
                     <Row className={Styles.row}>
-                        <Col span={6}>vehicleModel: </Col>
+                        <Col span={6}>
+                            <div className={Styles.colText}>
+                                vehicleModel: 
+                            </div>
+                        </Col>
                         <Col span={12}>
                             <DecoratedSelect
                                     field="modelId"
@@ -292,7 +306,11 @@ export default class VehicleFormClass extends React.Component {
                     </Row>
 
                     <Row className={Styles.row}>
-                        <Col span={6}>vehicleModification: </Col>
+                        <Col span={6}>
+                            <div className={Styles.colText}>
+                                vehicleModification: 
+                            </div>
+                        </Col>
                         <Col span={12}>
                             <DecoratedSelect
                                     field="modificationId"
