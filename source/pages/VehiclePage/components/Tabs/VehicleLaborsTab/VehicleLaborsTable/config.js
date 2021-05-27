@@ -21,6 +21,7 @@ const defWidth = {
     order:               'auto',
     datetime:            '10%',
     labor:                '10%',
+    type:                  '10%',
     storeGroupName:       '10%',
     mechanic:             '10%',
     normHours:         '10%',
@@ -47,7 +48,7 @@ export function columnsConfig() {
     };
 
     const datetimeCol = {
-        title:     <FormattedMessage id='orders.order' />,
+        title:     <FormattedMessage id='orders.datetime' />,
         width:     defWidth.datetime,
         dataIndex: 'orderDatetime',
         key:       'orderDatetime',
@@ -60,49 +61,56 @@ export function columnsConfig() {
 
 
     const laborCol = {
-        title:     <FormattedMessage id='orders.order' />,
+        title:     <FormattedMessage id='labor.name' />,
         width:     defWidth.labor,
         dataIndex: 'serviceName',
         key:       'serviceName',
     };
 
+   const typeCol = {
+        title:     <FormattedMessage id='labors.type' />,
+        width:     defWidth.type,
+        dataIndex: 'defaultName',
+        key:       'defaultName',
+    };
+
     const storeGroupNameCol = {
-        title:     <FormattedMessage id='orders.begin_date' />,
+        title:     <FormattedMessage id='store_group.name' />,
         width:     defWidth.begin_datetime,
         dataIndex: 'storeGroupName',
         key:       'storeGroupName',
     };
 
     const mechanicCol = {
-        title:     <FormattedMessage id='orders.sum_without_VAT' /> ,
+        title:     <FormattedMessage id='employee.mechanic' /> ,
         width:     defWidth.mechanic,
         dataIndex: 'employeeFullName',
         key:       'employeeFullName',
     };
 
     const normHoursCol = {
-        title:     <FormattedMessage id='orders.remaining_sum' />,
+        title:     <FormattedMessage id='labor.norm_hours' />,
         width:     defWidth.normHours,
         dataIndex: 'hours',
         key:       'hours',
     };
 
     const priceCol = {
-        title:     <FormattedMessage id='orders.remaining_sum' />,
+        title:     <FormattedMessage id='labors.price' />,
         width:     defWidth.price,
         dataIndex: 'price',
         key:       'price',
     };
 
     const countCol = {
-        title:     <FormattedMessage id='orders.remaining_sum' />,
+        title:     <FormattedMessage id='labors.count' />,
         width:     defWidth.count,
         dataIndex: 'count',
         key:       'count',
     };
 
     const sumCol = {
-        title:     <FormattedMessage id='orders.remaining_sum' />,
+        title:     <FormattedMessage id='labors.sum' />,
         width:     defWidth.sum,
         dataIndex: 'sum',
         key:       'sum',
@@ -113,6 +121,7 @@ export function columnsConfig() {
         orderCol,
         datetimeCol,
         laborCol,
+        typeCol,
         storeGroupNameCol,
         mechanicCol,
         normHoursCol,

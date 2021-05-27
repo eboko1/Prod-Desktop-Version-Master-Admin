@@ -21,6 +21,8 @@ const defWidth = {
     order:               'auto',
     datetime:            '10%',
     name:                '10%',
+    brandName:             '10%',
+    code:                    '10%',
     supplierName:       '10%',
     purchasePrice:         '10%',
     price:         '10%',
@@ -44,7 +46,7 @@ export function columnsConfig() {
     };
 
     const datetimeCol = {
-        title:     <FormattedMessage id='orders.order' />,
+        title:     <FormattedMessage id='orders.datetime' />,
         width:     defWidth.datetime,
         dataIndex: 'orderDatetime',
         key:       'orderDatetime',
@@ -56,15 +58,29 @@ export function columnsConfig() {
     };
 
 
+    const codeCol = {
+        title:     <FormattedMessage id='appurtenance.code' />,
+        width:     defWidth.code,
+        dataIndex: 'code',
+        key:       'code',
+    };
+
+   const brandNameCol = {
+        title:     <FormattedMessage id='appurtenance.brand' />,
+        width:     defWidth.brandName,
+        dataIndex: 'supplierBrandName',
+        key:       'supplierBrandName',
+    };
+
     const nameCol = {
-        title:     <FormattedMessage id='orders.order' />,
+        title:     <FormattedMessage id='appurtenance.name' />,
         width:     defWidth.name,
-        dataIndex: 'serviceName',
-        key:       'serviceName',
+        dataIndex: 'name',
+        key:       'name',
     };
 
     const supplierNameCol = {
-        title:     <FormattedMessage id='orders.begin_date' />,
+        title:     <FormattedMessage id='appurtenance.supplier' />,
         width:     defWidth.supplierName,
         dataIndex: 'supplierName',
         key:       'supplierName',
@@ -72,28 +88,28 @@ export function columnsConfig() {
 
 
     const purchasePriceCol = {
-        title:     <FormattedMessage id='orders.remaining_sum' />,
+        title:     <FormattedMessage id='appurtenance.purchase_price' />,
         width:     defWidth.purchasePrice,
         dataIndex: 'purchasePrice',
         key:       'purchasePrice',
     };
 
     const priceCol = {
-        title:     <FormattedMessage id='orders.remaining_sum' />,
+        title:     <FormattedMessage id='appurtenance.price' />,
         width:     defWidth.price,
         dataIndex: 'price',
         key:       'price',
     };
 
     const countCol = {
-        title:     <FormattedMessage id='orders.remaining_sum' />,
+        title:     <FormattedMessage id='appurtenance.price' />,
         width:     defWidth.count,
         dataIndex: 'count',
         key:       'count',
     };
 
     const sumCol = {
-        title:     <FormattedMessage id='orders.remaining_sum' />,
+        title:     <FormattedMessage id='appurtenance.sum' />,
         width:     defWidth.sum,
         dataIndex: 'sum',
         key:       'sum',
@@ -103,6 +119,8 @@ export function columnsConfig() {
     return [,
         orderCol,
         datetimeCol,
+        codeCol,
+        brandNameCol,
         nameCol,
         supplierNameCol,
         purchasePriceCol,
