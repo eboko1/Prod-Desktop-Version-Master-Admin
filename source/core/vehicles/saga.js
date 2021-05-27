@@ -93,7 +93,6 @@ export function* fetchVehicleOrdersSaga() {
             const vehicleId = yield select(selectExpandedVehicleId);
 
             const sort = yield select(selectVehicleOrdersSort);
-            console.log("SS: ", sort)
 
             yield nprogress.start();
 

@@ -284,20 +284,20 @@ export const selectVehicleOrdersFilters = state => state[ moduleName ].vehicleOr
 /*------------------Labors----------------------------------------*/
 export const selectVehicleLabors = state => state[ moduleName ].vehicleLaborsData.labors;
 export const selectVehicleLaborsStats = state => state[ moduleName ].vehicleLaborsData.stats;
-export const selectVehicleLaborsSort = state => state[ moduleName ].sort;
-export const selectVehicleLaborsFilters = state => state[ moduleName ].filters;
+export const selectVehicleLaborsSort = state => state[ moduleName ].vehicleLaborsData.sort;
+export const selectVehicleLaborsFilters = state => state[ moduleName ].vehicleLaborsData.filters;
 
 /*---------------------Norm hours-------------------------------------- */
 export const selectVehicleNormHours = state => state[ moduleName ].vehicleNormHoursData.normHours;
 export const selectVehicleNormHoursStats = state => state[ moduleName ].vehicleNormHoursData.stats;
-export const selectVehicleNormHoursSort = state => state[ moduleName ].sort;
-export const selectVehicleNormHoursFilters = state => state[ moduleName ].filters;
+export const selectVehicleNormHoursSort = state => state[ moduleName ].vehicleNormHoursData.sort;
+export const selectVehicleNormHoursFilters = state => state[ moduleName ].vehicleNormHoursData.filters;
 
 /*----------------------Appurtenances--------------------------------------------------*/
 export const selectVehicleAppurtenances = state => state[ moduleName ].vehicleAppurtenancesData.appurtenances;
 export const selectVehicleAppurtenancesStats = state => state[ moduleName ].vehicleAppurtenancesData.stats;
-export const selectVehicleAppurtenancesSort = state => state[ moduleName ].sort;
-export const selectVehicleAppurtenancesFilters = state => state[ moduleName ].filters;
+export const selectVehicleAppurtenancesSort = state => state[ moduleName ].vehicleAppurtenancesData.sort;
+export const selectVehicleAppurtenancesFilters = state => state[ moduleName ].vehicleAppurtenancesData.filters;
 
 /*------------------------Recommendations-----------------------------------------*/
 export const selectVehicleRecommendations = state => state[ moduleName ].vehicleRecommendationsData.recommendations;
