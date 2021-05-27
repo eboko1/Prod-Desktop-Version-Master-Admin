@@ -1,7 +1,7 @@
 //vendor
 import React from 'react';
 import { FormattedMessage, injectIntl } from "react-intl";
-import { Form, Col, Row, Button } from 'antd';
+import { Form, Col, Row, Button, Spin } from 'antd';
 import { connect } from 'react-redux';
 import { v4 } from 'uuid';
 
@@ -115,7 +115,7 @@ export default class VehicleEditFormClass extends React.Component {
         }
         
         return fetchingAllVehicleData
-            ? (<Spinner />)
+            ? (<Spin />)
             : (
                 <Form>
                     <Row className={Styles.row}>
