@@ -61,7 +61,7 @@ export function columnsConfig(props) {
     } = props;
 
     const vehicleCol = {
-        title:     <FormattedMessage id='name' />,
+        title:     <FormattedMessage id='vehicle' />,
         width:     defWidth.vehicle,
         key:       v4(),
         render: (val, vehicle) => {
@@ -78,7 +78,7 @@ export function columnsConfig(props) {
     };
 
     const vehicleNumberCol = {
-        title:     <FormattedMessage id='name' />,
+        title:     <FormattedMessage id='add_client_form.number' />,
         width:     defWidth.vehicleNumber,
         align:     'center',
         dataIndex: 'number',
@@ -91,7 +91,7 @@ export function columnsConfig(props) {
     };
     
     const vehicleVINCol = {
-        title:      <FormattedMessage id='add_order_form.phone' />,
+        title:      <FormattedMessage id='add_order_form.vin' />,
         width:      defWidth.vehicleVin,
         dataIndex: 'vin',
         key:        v4(),
@@ -103,7 +103,7 @@ export function columnsConfig(props) {
     };
 
     const clientCol = {
-        title:      <FormattedMessage id='add_order_form.phone' />,
+        title:      <FormattedMessage id='name' />,
         width:      defWidth.client,
         dataIndex: 'client',
         key:        v4(),

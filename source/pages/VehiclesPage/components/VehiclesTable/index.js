@@ -93,7 +93,7 @@ export default class VehiclesTable extends React.Component {
         return (
             <div>
                 <div className={Styles.filtersCont}>
-                    <div className={Styles.textCont}>Search: </div>
+                    <div className={Styles.textCont}>{<FormattedMessage id={ 'vehicles_page.search' }/>}</div>
                     <div className={Styles.inputCont}><Input onChange={this.onSearch} allowClear/></div>
                     
                 </div>
