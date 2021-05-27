@@ -1,3 +1,8 @@
+/**
+ * This duck/saga is suposed to execute vehicle specific operations like, create, update and fetch.
+ * It also has its logic for specific forms(because it is originaly created for it).
+ */
+
 /* Constants */
 export const moduleName = 'vehicleForm';
 const prefix = `cpb/${moduleName}`;
@@ -17,15 +22,15 @@ export const FETCH_VEHICLE_MODELS_SUCCESS = `${prefix}/FETCH_VEHICLE_MODELS_SUCC
 export const FETCH_VEHICLE_MODIFICATIONS = `${prefix}/FETCH_VEHICLE_MODIFICATIONS`;
 export const FETCH_VEHICLE_MODIFICATIONS_SUCCESS = `${prefix}/FETCH_VEHICLE_MODIFICATIONS_SUCCESS`;
 
-export const FETCH_ALL_VEHICLE_DATA = `${prefix}/FETCH_ALL_VEHICLE_DATA`;
+export const FETCH_ALL_VEHICLE_DATA = `${prefix}/FETCH_ALL_VEHICLE_DATA`; // Fetch makes, modifications, models, tec.
 
 export const CREATE_VEHICLE = `${prefix}/CREATE_VEHICLE`;
 export const UPDATE_VEHICLE = `${prefix}/UPDATE_VEHICLE`;
 
-export const CLEAR_VEHICLE_DATA = `${prefix}/CLEAR_VEHICLE_DATA`;
+export const CLEAR_VEHICLE_DATA = `${prefix}/CLEAR_VEHICLE_DATA`; //Delete from stage all makes, models, modifications and fields data
 
 export const SET_FETCHING_ALL_VEHICLE_DATA = `${prefix}/SET_FETCHING_ALL_VEHICLE_DATA`;
-export const SET_CLIENT_ID = `${prefix}/SET_CLIENT_ID`;
+export const SET_CLIENT_ID = `${prefix}/SET_CLIENT_ID`; //Required to create new a vehicle
 export const SET_VIN = `${prefix}/SET_VIN`;
 export const SET_NUMBER = `${prefix}/SET_NUMBER`;
 export const SET_YEAR = `${prefix}/SET_YEAR`;
@@ -35,7 +40,7 @@ export const SET_MODIFICATION_ID = `${prefix}/SET_MODIFICATION_ID`;
 
 
 /**
- * Modes of the modal(or form) wich are supported. Each modes is used to define how to fetch,
+ * Modes of the modal(or form) wich are supported. Each mode is used to define how to fetch,
  * represent, show data, and what to do with it.
  */
 export const modes = Object.freeze({
@@ -47,8 +52,8 @@ export const modes = Object.freeze({
 /* Reducer */
 
 const ReducerState = {
-    fields:           { // There are contained field values, we use them to fetch data and create vehicle
-        clientId: undefined,
+    fields:           { // There are contained field values, used to fetch and store data or to create vehicle
+        clientId: undefined, //Required to create new a vehicle
         vin: undefined,
         number: undefined,
         year: undefined,
@@ -59,7 +64,7 @@ const ReducerState = {
 
     fetchingAllVehicleData: false, //Years, makes, modifications, ....
 
-    vehicle:          {}, // In a case we work in edit or view mode we have fetched vehicle there
+    vehicle:          {}, // In a case we work in edit or view mode we have fetched vehicle here
 
     years:            [], // All years which are availabel for adding a new vehicle.
     makes:            [], // All makes which are availabel for adding a new vehicle, depends on selected "years"
@@ -228,6 +233,8 @@ export const selectFetchingAllVehicleData = state => state.forms[ moduleName ].f
 
 /* Actions */
 
+//Fetchers ---------------------------------------------------------------------------
+
 export const fetchVehicle = ({vehicleId}) => ({
     type:    FETCH_VEHICLE,
     payload: { vehicleId },
@@ -238,6 +245,10 @@ export const fetchVehicleSuccess = ({vehicle}) => ({
     payload: { vehicle },
 });
 
+/**
+ * Fetch makes, modifications, models, tec. Alse this actions initialized vehicle "fields" object where is stored data for creating or editing a vehicle
+ * @param {*} params.vehicleId - id of a vehicle to fetch data for
+ */
 export const fetchAllVehicleData = ({vehicleId}) => ({
     type:    FETCH_ALL_VEHICLE_DATA,
     payload: { vehicleId },
@@ -279,6 +290,8 @@ export const fetchVehicleModificationsSuccess = ({modifications}) => ({
     payload: { modifications },
 });
 
+//Setters ---------------------------------------------------------------------------
+
 export const setVehicleVin = ({vin}) => ({
     type:    SET_VIN,
     payload: { vin },
@@ -309,6 +322,11 @@ export const setVehicleModificationId = ({modificationId}) => ({
     payload: { modificationId },
 });
 
+/**
+ * Set client id, a new vehicle can then be created with that client
+ * @param {*} params.clientId - client for wich vehicle have to be created
+ * @returns 
+ */
 export const setClientId = ({clientId}) => ({
     type:    SET_CLIENT_ID,
     payload: { clientId },
@@ -319,6 +337,8 @@ export const setFetchingAllVehicleData = (velue) => ({
     payload: velue,
 });
 
+//Other ---------------------------------------------------------------------------
+
 export const createVehicle = () => ({
     type: CREATE_VEHICLE,
 });
@@ -328,6 +348,10 @@ export const updateVehicle = ({vehicleId}) => ({
     payload: { vehicleId },
 });
 
+/**
+ * Delete from stage all makes, models, modifications, years fetched form the server.
+ * Also delete "fields" data.
+ */
 export const clearVehicleData = () => ({
     type:    CLEAR_VEHICLE_DATA,
 });
