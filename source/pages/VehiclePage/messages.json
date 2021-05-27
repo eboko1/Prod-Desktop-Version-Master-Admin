@@ -1,11 +1,52 @@
 {
   "en": {
-    "vehicle_page.": ""
+    "vehicle_page.title": "Vehicle",
+    "vehicle_page.description": "General information about the car",
+    "vehicle_page.controls": "Controls",
+    "vehicle_page.general_info": "General info",
+    "vehicle_page.norm_hours": "Norm hours",
+    "vehicle_page.orders": "Orders",
+    "vehicle_page.labors": "Labors",
+    "vehicle_page.spare_parts": "Spare parts",
+    "vehicle_page.recommendations": "Recommendations",
+    "vehicle_page.inspection_intervals": "Inspection and intervals",
+    "vehicle_page.service_book": "Service book",
+    "vehicle_page.clients": "Clients",
+    "vehicle_page.last_data": "Last data and action",
+    "vehicle_page.record": "Record 21.04.2021",
+    "vehicle_page.calculation": "Calculation"
   },
   "ru": {
-    "vehicle_page.": ""
+    "vehicle_page.title": "Автомобиль",
+    "vehicle_page.description": "Общая информация об автомобиле",
+    "vehicle_page.controls": "Элементы управления",
+    "vehicle_page.general_info": "Общая информация",
+    "vehicle_page.norm_hours": "Нормо-часы",
+    "vehicle_page.orders": "Ремонты",
+    "vehicle_page.labors": "Роботы",
+    "vehicle_page.spare_parts": "Запчасти",
+    "vehicle_page.recommendations": "Рекомендации",
+    "vehicle_page.inspection_intervals": "ТО и интервалы",
+    "vehicle_page.service_book": "Сервисная книжка",
+    "vehicle_page.clients": "Клиенты",
+    "vehicle_page.last_data": "Последние данные и действия",
+    "vehicle_page.record": "Запись 21.04.2021",
+    "vehicle_page.calculation": "Калькуляция"
   },
   "uk": {
-    "vehicle_page.": ""
-  }
-}
+    "vehicle_page.title": "Автомобіль",
+    "vehicle_page.description": "Загальна інформація по автомобілю",
+    "vehicle_page.controls": "Елементи управління",
+    "vehicle_page.general_info": "Загальна інформація",
+    "vehicle_page.norm_hours": "Нормо-години",
+    "vehicle_page.orders": "Ремонти",
+    "vehicle_page.labors": "Роботи",
+    "vehicle_page.spare_parts": "Запчастини",
+    "vehicle_page.recommendations": "Рекомендації",
+    "vehicle_page.inspection_intervals": "ТО та інтервали",
+    "vehicle_page.service_book": "Сервісна книжка",
+    "vehicle_page.clients": "Клієнти",
+    "vehicle_page.last_data": "Останні дані та дії",
+    "vehicle_page.record": "Запис 21.04.2021",
+    "vehicle_page.calculation": "Розрахунок"
+  }}

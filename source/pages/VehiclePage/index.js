@@ -59,36 +59,36 @@ export default class VehiclePage extends Component {
 
         return (
             <Layout
-                title={"Title here"}
-                description={"Description"}
-                controls={"Controls"}
+                title={<FormattedMessage id={ 'vehicle_page.title'}/>}
+                description={<FormattedMessage id={ 'vehicle_page.description'}/>}
+                controls={<FormattedMessage id={ 'vehicle_page.controls'}/>}
             >
                 <Tabs type="card" tabPosition="right" tabBarGutter={15}>
-                    <TabPane tab="General info" key="general_info">
+                    <TabPane tab={<FormattedMessage id={ 'vehicle_page.general_info'}/>} key="general_info">
                         <GeneralInfoTab />
                     </TabPane>
 
-                    <TabPane tab="Norm hours" key="norm_hours">
+                    <TabPane tab={<FormattedMessage id={ 'vehicle_page.norm_hours'}/>} key="norm_hours">
                         <VehicleNormHoursTab />
                     </TabPane>
 
-                    <TabPane tab="Orders" key="orders">
+                    <TabPane tab={<FormattedMessage id={ 'vehicle_page.orders'}/>} key="orders">
                         <VehicleOrdersTab />
                     </TabPane>
 
-                    <TabPane tab="Labors" key="labors">
+                    <TabPane tab={<FormattedMessage id={ 'vehicle_page.labors'}/>} key="labors">
                         <VehicleLaborsTab />
                     </TabPane>
 
-                    <TabPane tab="Spare parts" key="spare_parts">
+                    <TabPane tab={<FormattedMessage id={ 'vehicle_page.spare_parts'}/>} key="spare_parts">
                         <VehicleSparePartsTab />
                     </TabPane>
 
-                    <TabPane tab="Recommendations" key="recommendations">
+                    <TabPane tab={<FormattedMessage id={ 'vehicle_page.recommendations'}/>} key="recommendations">
                         <VehicleRecomendationsTab />
                     </TabPane>
 
-                    <TabPane tab="ТО и Интервали" key="inspection_intervals">
+                    <TabPane tab={<FormattedMessage id={ 'vehicle_page.inspection_intervals'}/>} key="inspection_intervals">
                         <VehicleInspectionIntervalsTab />
                     </TabPane>
                 </Tabs>

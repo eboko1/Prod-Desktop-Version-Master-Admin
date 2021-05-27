@@ -100,7 +100,7 @@ export default class GeneralInfoTab extends Component {
                     ? <Spin />
                     : (
                         <Block
-                            title="Vehicle"
+                            title={<FormattedMessage id='orders.vehicle' />}
                             className={Styles.block}
                             controls={
                                 <div>
@@ -145,8 +145,8 @@ export default class GeneralInfoTab extends Component {
                             }
                         >
                             <div>
-                                <DataItem label="Number">{vehicle.vehicleNumber}</DataItem>
-                                <DataItem className={Styles.dataItem} label="VIN">{vehicle.vehicleVin}</DataItem>
+                                <DataItem label={<FormattedMessage id='add_client_form.number' />}>{vehicle.vehicleNumber}</DataItem>
+                                <DataItem className={Styles.dataItem} label={<FormattedMessage id='add_order_form.vin' />}>{vehicle.vehicleVin}</DataItem>
                                 <DataItem className={Styles.dataItem} label="Make">{vehicle.make}</DataItem>
                                 <DataItem className={Styles.dataItem} label="Model">{vehicle.model}</DataItem>
                                 <DataItem className={Styles.dataItem} label="Modification">{vehicle.modification}</DataItem>
@@ -165,7 +165,7 @@ export default class GeneralInfoTab extends Component {
 
                             <div className={Styles.buttonsContainer}>
                                 <Row className={Styles.row}>
-                                    <Col span={6}><Button className={Styles.button} type="primary">Service book</Button></Col>
+                                    <Col span={6}><Button className={Styles.button} type="primary">{<FormattedMessage id='vehicle_page.service_book' />}</Button></Col>
                                     <Col span={18}>
                                         <Icon className={Styles.sendSMSIcon} type="message" />
                                         <Icon className={Styles.sendMailIcon} type="mail" />
@@ -180,7 +180,7 @@ export default class GeneralInfoTab extends Component {
                 {/* --------------------------------------------------------------------------- */}
 
                 <Block
-                    title="Client"
+                    title={<FormattedMessage id='vehicle_page.clients' />}
                     className={Styles.block}
                     controls={
                         <div>
@@ -189,11 +189,11 @@ export default class GeneralInfoTab extends Component {
                     }
                 >
                     <div>
-                        <DataItem label="Name">
+                        <DataItem label={<FormattedMessage id='name' />}>
                             <Link to={ `${book.client}/${_.get(client, 'clientId')}` }>{`${client.name} ${client.surname}`}</Link>
                         </DataItem>
                         
-                        <DataItem className={Styles.dataItem} label="Phone">
+                        <DataItem className={Styles.dataItem} label={<FormattedMessage id='add_client_form.phones' />}>
                             {
                                 _.map(
                                     _.get(client, 'phones', []),
@@ -207,23 +207,23 @@ export default class GeneralInfoTab extends Component {
                 {/* --------------------------------------------------------------------------- */}
 
                 <Block
-                    title="Last data and actions"
+                    title={<FormattedMessage id='vehicle_page.last_data' />}
                     className={Styles.block}
                 >
                     <div>
-                        <DataItem label="Order">
+                        <DataItem label={<FormattedMessage id={<FormattedMessage id='order-status.order' />} />}>
                             <a className={Styles.orderLink} href={ `${book.order}/${_.get(generalData, 'latestOrderData.orderId')}` }>
                                 <FormattedDatetime format={DATE_FORMATT} datetime={_.get(generalData, 'latestOrderData.datetime')} />
                             </a>
                         </DataItem>
-                        <DataItem className={Styles.dataItem} label="Call">
+                        <DataItem className={Styles.dataItem} label={<FormattedMessage id='order-status.call' />}>
                             <FormattedDatetime format={DATE_FORMATT} datetime={_.get(generalData, 'callData.datetime')} />
                         </DataItem>
                     </div>
 
                     <div className={Styles.buttonsContainer}>
                         <Row className={Styles.row}>
-                            <Col span={6}><Button className={Styles.button} type="primary">Reocord 21.04.2021</Button></Col>
+                            <Col span={6}><Button className={Styles.button} type="primary">{<FormattedMessage id='vehicle_page.record' />}</Button></Col>
                             <Col span={18}>
                                 <Icon className={Styles.sendSMSIcon} type="message" />
                                 <Icon className={Styles.sendMailIcon} type="mail" />
@@ -232,7 +232,7 @@ export default class GeneralInfoTab extends Component {
                         </Row>
 
                         <Row className={Styles.row}>
-                            <Col span={6}><Button className={Styles.button} type="primary">Calculation</Button></Col>
+                            <Col span={6}><Button className={Styles.button} type="primary">{<FormattedMessage id='vehicle_page.calculation' />}</Button></Col>
                             <Col span={18}>
                                 <Icon className={Styles.sendSMSIcon} type="message" />
                                 <Icon className={Styles.sendMailIcon} type="mail" />
