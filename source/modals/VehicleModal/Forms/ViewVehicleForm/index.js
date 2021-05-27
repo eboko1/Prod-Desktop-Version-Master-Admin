@@ -53,8 +53,8 @@ export default class VehicleFormClass extends React.Component {
         } = this.props;
         
         const vehicleValues = {
-            number: vehicle.number,
-            vin: vehicle.vin,
+            number: vehicle.vehicleNumber,
+            vin: vehicle.vehicleVin,
             year: vehicle.year,
             make: vehicle.make,
             model: vehicle.model,
