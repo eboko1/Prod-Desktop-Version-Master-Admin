@@ -26,6 +26,9 @@ const mapDispatchToProps = {
     fetchVehicle,
 };
 
+/**
+ * This form is used to show vehicle without editing it.
+ */
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({name: 'vehilce_view_form'})
@@ -63,7 +66,11 @@ export default class VehicleFormClass extends React.Component {
             : (
                 <Form>
                     <Row className={Styles.row}>
-                        <Col span={10}>vehicleNumber: </Col>
+                        <Col span={10}>
+                            <div className={Styles.colText}>
+                                vehicleNumber: 
+                            </div>
+                        </Col>
                         <Col span={14}>
                             <div className={Styles.field}>
                                 {vehicleValues.number}
@@ -72,7 +79,11 @@ export default class VehicleFormClass extends React.Component {
                     </Row>
 
                     <Row className={Styles.row}>
-                        <Col span={10}>vehicleVin: </Col>
+                        <Col span={10}>
+                            <div className={Styles.colText}>
+                                vehicleVin: 
+                            </div>
+                        </Col>
                         <Col span={14}>
                             <div className={Styles.field}>
                                 {vehicleValues.vin}
@@ -81,7 +92,11 @@ export default class VehicleFormClass extends React.Component {
                     </Row>
 
                     <Row className={Styles.row}>
-                        <Col span={10}>vehicleYear: </Col>
+                        <Col span={10}>
+                            <div className={Styles.colText}>
+                                vehicleYear: 
+                            </div>
+                        </Col>
                         <Col span={14}>
                             <div className={Styles.field}>
                                 {vehicleValues.year}
@@ -90,7 +105,11 @@ export default class VehicleFormClass extends React.Component {
                     </Row>
 
                     <Row className={Styles.row}>
-                        <Col span={10}>vehicleMake: </Col>
+                        <Col span={10}>
+                            <div className={Styles.colText}>
+                                vehicleMake: 
+                            </div>
+                        </Col>
                         <Col span={14}>
                             <div className={Styles.field}>
                                 {vehicleValues.make}
@@ -99,7 +118,11 @@ export default class VehicleFormClass extends React.Component {
                     </Row>
 
                     <Row className={Styles.row}>
-                        <Col span={10}>vehicleModel: </Col>
+                        <Col span={10}>
+                            <div className={Styles.colText}>
+                                vehicleModel: 
+                            </div>
+                        </Col>
                         <Col span={14}>
                             <div className={Styles.field}>
                                 {vehicleValues.model}
@@ -108,7 +131,11 @@ export default class VehicleFormClass extends React.Component {
                     </Row>
 
                     <Row className={Styles.row}>
-                        <Col span={10}>vehicleModification: </Col>
+                        <Col span={10}>
+                            <div className={Styles.colText}>
+                                vehicleModification: 
+                            </div>
+                        </Col>
                         <Col span={14}>
                             <div className={Styles.field}>
                                 {vehicleValues.modification}
