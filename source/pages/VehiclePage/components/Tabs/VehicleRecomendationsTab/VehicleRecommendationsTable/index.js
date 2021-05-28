@@ -8,8 +8,10 @@ import { v4 } from 'uuid';
 //proj
 import {
     selectVehicleRecommendations,
+    selectVehicleRecommendationsQuery,
+    selectVehicleRecommendationsStats,
 
-    // setPageAppurtenances
+    setPageRecommendations,
 } from 'core/vehicles/duck';
 
 //Own
@@ -18,10 +20,12 @@ import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
     recomendations: selectVehicleRecommendations(state),
+    stats:          selectVehicleRecommendationsStats(state),
+    query:          selectVehicleRecommendationsQuery(state),
 });
 
 const mapDispatchToProps = {
-    // setPageAppurtenances,
+    setPageRecommendations,
 }
 
 @injectIntl
@@ -31,21 +35,22 @@ export default class VehicleAppurtenancesTable extends React.Component {
     render() {
         const {
             recomendations,
-            // stats,
-            // sort,
-            // intl: {formatMessage},
-            // setPageAppurtenances,
+            stats,
+            query,
+            setPageRecommendations,
         } = this.props;
 
         const pagination = {
             pageSize: 25,
             size: "large",
-            // total: Math.ceil(stats.totalRowsCount / 25) * 25,
-            // current: sort.page,
-            // onChange: page => {
-            //     setPageAppurtenances({page})
-            // },
+            total: Math.ceil(stats.totalRowsCount / 25) * 25,
+            current: query.page,
+            onChange: page => {
+                setPageRecommendations({page})
+            },
         }
+
+        console.log("RecomendationsStats: ", stats);
 
         return (
             <div className={Styles.tableCont}>

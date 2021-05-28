@@ -32,6 +32,7 @@ export const SET_PAGE_ORDERS = `${prefix}/SET_PAGE_ORDERS`;
 export const SET_PAGE_NORM_HOURS = `${prefix}/SET_PAGE_NORM_HOURS`;
 export const SET_PAGE_LABORS = `${prefix}/SET_PAGE_LABORS`;
 export const SET_PAGE_APPURTENANCES = `${prefix}/SET_PAGE_APPURTENANCES`;
+export const SET_PAGE_RECOMMENDATIONS = `${prefix}/SET_PAGE_RECOMMENDATIONS`;
 
 
 export const SET_SEARCH_QUERY = `${prefix}/SET_SEARCH_QUERY`;
@@ -97,6 +98,9 @@ const ReducerState = {
     vehicleRecommendationsData: { 
         recommendations: [], //Array of recommendations made for vehicle in different orders
         stats: {},
+        query: { // Query params
+            page: 1
+        },
     },
 
     expandedVehicleId: undefined, //Currently selected vehicle row
@@ -196,6 +200,19 @@ export default function reducer(state = ReducerState, action) {
                     sort: {
                         ...state.vehicleAppurtenancesData.sort,
                         page: pageAppurtenances
+                    }
+                }
+            };
+
+        case SET_PAGE_RECOMMENDATIONS:
+            const { page: pageRecomendations } = payload;
+            return {
+                ...state,
+                vehicleRecommendationsData: {
+                    ...state.vehicleRecommendationsData,
+                    query: {
+                        ...state.vehicleRecommendationsData.query,
+                        page: pageRecomendations
                     }
                 }
             };
@@ -317,6 +334,7 @@ export const selectVehicleAppurtenancesFilters = state => state[ moduleName ].ve
 /*------------------------Recommendations-----------------------------------------*/
 export const selectVehicleRecommendations = state => state[ moduleName ].vehicleRecommendationsData.recommendations;
 export const selectVehicleRecommendationsStats = state => state[ moduleName ].vehicleRecommendationsData.stats;
+export const selectVehicleRecommendationsQuery = state => state[ moduleName ].vehicleRecommendationsData.query;
 
 
 /** Action Creators **/
@@ -482,6 +500,17 @@ export const setPageAppurtenances = ({page}) => {
             payload: {page}
         });
         return dispatch(fetchVehicleAppurtenances());
+    }
+};
+
+/** Set filtering page, automatically fetches vehicle recomendations */
+export const setPageRecommendations = ({page}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_PAGE_RECOMMENDATIONS,
+            payload: {page}
+        });
+        return dispatch(fetchVehicleRecommendations());
     }
 };
 

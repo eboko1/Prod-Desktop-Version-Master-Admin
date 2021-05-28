@@ -25,6 +25,7 @@ import {
 
     selectSort,
     selectVehicleNormHoursSort,
+    selectVehicleRecommendationsQuery,
     selectVehicleLaborsSort,
     selectFilters,
     selectExpandedVehicleId,
@@ -185,10 +186,11 @@ export function* fetchVehicleRecommendationsSaga() {
             yield take(FETCH_VEHICLE_RECOMMENDATIONS);
 
             const vehicleId = yield select(selectExpandedVehicleId);
+            const queryParams = yield select(selectVehicleRecommendationsQuery);
 
             yield nprogress.start();
 
-            const {recommendations, recommendationsStats} = yield call(fetchAPI, 'GET', `orders/recommendations/${vehicleId}`);
+            const {recommendations, recommendationsStats} = yield call(fetchAPI, 'GET', `orders/recommendations/${vehicleId}`, queryParams);
 
             yield put(fetchVehicleRecommendationsSuccess({recommendations, stats: recommendationsStats}));
         } catch (error) {
