@@ -103,7 +103,7 @@ const ReducerState = {
         },
     },
 
-    expandedVehicleId: undefined, //Currently selected vehicle row
+    expandedVehicleId: undefined, //Currently selected vehicle
 
     filters: {
         query: undefined,

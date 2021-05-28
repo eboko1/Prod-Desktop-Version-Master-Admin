@@ -16,7 +16,9 @@ import {
 
     selectVehicle,
     selectClient,
-    selectGeneralData
+    selectGeneralData,
+
+    setExpandedVehicleId,
 } from 'core/vehicles/duck';
 
 // own
@@ -39,7 +41,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    fetchVehicle
+    fetchVehicle,
+    setExpandedVehicleId,
 };
 
 @withRouter
@@ -53,6 +56,7 @@ export default class VehiclePage extends Component {
     componentDidMount() {
         const { match: {params: {id}}} = this.props;
         this.props.fetchVehicle({vehicleId: id});
+        this.props.setExpandedVehicleId({vehicleId: id});
     }
 
     render() {
