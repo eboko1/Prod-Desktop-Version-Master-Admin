@@ -16,6 +16,9 @@ import { VehicleModal } from 'modals';
 import {setModal, MODALS} from 'core/modals/duck';
 import {
     fetchVehicle,
+    fetchVehicleOrdersLatest,
+    fetchVehicleAttributes,
+
     createOrder,
     selectVehicle,
     selectClient,
@@ -51,6 +54,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     setModal,
     fetchVehicle,
+    fetchVehicleAttributes,
+    fetchVehicleOrdersLatest,
+
     createOrder,
     deleteClientVehicle
 };
@@ -66,6 +72,8 @@ export default class GeneralInfoTab extends Component {
     componentDidMount() {
         const { match: {params: {id}}} = this.props;
         this.props.fetchVehicle({vehicleId: id});
+        this.props.fetchVehicleAttributes({vehicleId: id});
+        this.props.fetchVehicleOrdersLatest({vehicleId: id});
     }
 
     /**
@@ -101,11 +109,6 @@ export default class GeneralInfoTab extends Component {
             fetchingOrdersLatest,
             fetchingVehicleAttributes
         } = this.props;
-
-        console.log("TT: ",   fetchingVehicle,
-            fetchingVehicleClient,
-            fetchingOrdersLatest,
-            fetchingVehicleAttributes)
 
         return (
             <div className={Styles.tabContent}>
@@ -199,7 +202,7 @@ export default class GeneralInfoTab extends Component {
                     className={Styles.block}
                     controls={
                         <div>
-                            <Icon className={Styles.changeVehicleOwnerIcon} type="sync" />
+                            {!fetchingVehicleClient && <Icon className={Styles.changeVehicleOwnerIcon} type="sync" /> }
                         </div>
                     }
                 >

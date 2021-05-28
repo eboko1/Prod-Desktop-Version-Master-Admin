@@ -9,6 +9,13 @@ export const FETCH_VEHICLES_SUCCESS = `${prefix}/FETCH_VEHICLES_SUCCESS`;
 export const FETCH_VEHICLE = `${prefix}/FETCH_VEHICLE`;
 export const FETCH_VEHICLE_SUCCESS = `${prefix}/FETCH_VEHICLE_SUCCESS`;
 
+export const FETCH_VEHICLE_ATTRIBUTES = `${prefix}/FETCH_VEHICLE_ATTRIBUTES`;
+export const FETCH_VEHICLE_ATTRIBUTES_SUCCESS = `${prefix}/FETCH_VEHICLE_ATTRIBUTES_SUCCESS`;
+
+export const FETCH_VEHICLE_ORDERS_LATEST = `${prefix}/FETCH_VEHICLE_ORDERS_LATEST`;
+export const FETCH_VEHICLE_ORDERS_LATEST_SUCCESS = `${prefix}/FETCH_VEHICLE_ORDERS_LATEST_SUCCESS`;
+
+
 export const FETCH_VEHICLE_ORDERS = `${prefix}/FETCH_VEHICLE_ORDERS`;
 export const FETCH_VEHICLE_ORDERS_SUCCESS = `${prefix}/FETCH_VEHICLE_ORDERS_SUCCESS`;
 
@@ -126,13 +133,24 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
     switch (type) {
         case FETCH_VEHICLE_SUCCESS:
-            const {vehicle, client, generalData, vehicleAttributes} = payload;
+            const {vehicle, client} = payload;
             return { 
                 ...state, 
-                vehicle: vehicle? vehicle: state.vehicle,
-                client: client? client: state.client,
-                generalData: generalData? generalData: state.generalData,
-                vehicleAttributes: vehicleAttributes? vehicleAttributes: state.vehicleAttributes,
+                vehicle: vehicle ? vehicle : state.vehicle,
+                client: client ? client : state.client,
+            };
+
+        case FETCH_VEHICLE_ORDERS_LATEST_SUCCESS:
+            const { generalData } = payload;
+            return {
+                ...state,
+                generalData: generalData
+            };
+        case FETCH_VEHICLE_ATTRIBUTES_SUCCESS:
+            const { vehicleAttributes } = payload;
+            return {
+                ...state,
+                vehicleAttributes: vehicleAttributes
             };
 
         case FETCH_VEHICLES_SUCCESS:
@@ -388,9 +406,37 @@ export const fetchVehicle = ({vehicleId}) => ({
     payload: {vehicleId}
 });
 
-export const fetchVehicleSuccess = ({vehicle, client, generalData, vehicleAttributes}) => ({
+export const fetchVehicleSuccess = ({vehicle, client }) => ({
     type:    FETCH_VEHICLE_SUCCESS,
-    payload: {vehicle, client, generalData, vehicleAttributes},
+    payload: {vehicle, client },
+});
+
+/**
+ * Fetches data about one vehicle
+ * @param {*} params.vehicleId Vehicle to fetch data for
+ */
+export const fetchVehicleAttributes = ({vehicleId}) => ({
+    type:    FETCH_VEHICLE_ATTRIBUTES,
+    payload: { vehicleId }
+});
+
+export const fetchVehicleAttributesSuccess = ({ vehicleAttributes }) => ({
+    type:    FETCH_VEHICLE_ATTRIBUTES_SUCCESS,
+    payload: { vehicleAttributes },
+});
+
+/**
+ * Fetches data about one vehicle
+ * @param {*} params.vehicleId Vehicle to fetch data for
+ */
+export const fetchVehicleOrdersLatest = ({vehicleId}) => ({
+    type:    FETCH_VEHICLE_ORDERS_LATEST,
+    payload: { vehicleId }
+});
+
+export const fetchVehicleOrdersLatestSuccess = ({ generalData }) => ({
+    type:    FETCH_VEHICLE_ORDERS_LATEST_SUCCESS,
+    payload: { generalData },
 });
 
 /**

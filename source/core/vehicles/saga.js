@@ -42,8 +42,12 @@ import {
     CREATE_ORDER,
     FETCH_VEHICLE_APPURTENANCES,
     FETCH_VEHICLE_RECOMMENDATIONS,
+    FETCH_VEHICLE_ATTRIBUTES,
+    FETCH_VEHICLE_ORDERS_LATEST,
     selectVehicleAppurtenancesSort,
     selectVehicleOrdersSort,
+    fetchVehicleAttributesSuccess,
+    fetchVehicleOrdersLatestSuccess,
 } from './duck';
 
 export function* fetchVehicleSaga() {
@@ -55,8 +59,6 @@ export function* fetchVehicleSaga() {
 
             yield put(setFetchingVehicle(true));
             yield put(setFetchingVehicleClient(true));
-            yield put(setFetchingVehicleAttributes(true));
-            yield put(setFetchingOrdersLatest(true));
 
             const vehicle = yield call(fetchAPI, 'GET', `clients/vehicles/${vehicleId}`);
 
@@ -71,16 +73,6 @@ export function* fetchVehicleSaga() {
             yield put(fetchVehicleSuccess({client}));
 
 
-            const generalData = yield call(fetchAPI, 'GET', `order_latest_info`, {vehicleId: vehicleId});
-
-            yield put(setFetchingOrdersLatest(false));
-            yield put(fetchVehicleSuccess({generalData}));
-
-
-            const vehicleAttributes = yield call(fetchAPI, 'GET', `tecdoc/vehicle/attributes`, {vehicleId: vehicleId});
-
-            yield put(setFetchingVehicleAttributes(false));
-            yield put(fetchVehicleSuccess({vehicleAttributes}));
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -88,7 +80,54 @@ export function* fetchVehicleSaga() {
 
             yield put(setFetchingVehicle(false));
             yield put(setFetchingVehicleClient(false));
+        }
+    }
+}
+
+export function* fetchVehicleAttributesSaga() {
+    while (true) {
+        try {
+            const { payload: {vehicleId} } = yield take(FETCH_VEHICLE_ATTRIBUTES);
+
+            yield nprogress.start();
+
+            yield put(setFetchingVehicleAttributes(true));
+
+            const vehicleAttributes = yield call(fetchAPI, 'GET', `tecdoc/vehicle/attributes`, {vehicleId: vehicleId});
+
             yield put(setFetchingVehicleAttributes(false));
+
+            yield put(fetchVehicleAttributesSuccess({vehicleAttributes}));
+
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+
+            yield put(setFetchingVehicleAttributes(false));
+        }
+    }
+}
+
+export function* fetchVehicleOrdersLatestSaga() {
+    while (true) {
+        try {
+            const { payload: {vehicleId} } = yield take(FETCH_VEHICLE_ORDERS_LATEST);
+
+            yield nprogress.start();
+
+            yield put(setFetchingOrdersLatest(true));
+
+            const generalData = yield call(fetchAPI, 'GET', `order_latest_info`, {vehicleId: vehicleId});
+            yield put(setFetchingOrdersLatest(false));
+
+            yield put(fetchVehicleOrdersLatestSuccess({generalData}));
+
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+
             yield put(setFetchingOrdersLatest(false));
         }
     }
@@ -277,6 +316,8 @@ export function* saga() {
     yield all([
         call(fetchVehicleSaga),
         call(fetchVehiclesSaga),
+        call(fetchVehicleOrdersLatestSaga),
+        call(fetchVehicleAttributesSaga),
         call(fetchVehicleOrdersSaga),
         call(fetchVehicleNormHoursSaga),
         call(fetchVehicleLaborsSaga),
