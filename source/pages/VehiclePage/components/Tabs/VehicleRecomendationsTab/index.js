@@ -22,6 +22,7 @@ import {
 
 // own
 import Styles from './styles.m.css';
+import VehicleRecommendationsTable from './VehicleRecommendationsTable';
 
 const DEFAULT_DATETIME = 'DD.MM.YYYY HH:mm';
 
@@ -81,7 +82,8 @@ export default class GeneralInfoTab extends Component {
 
         return (
             <div className={Styles.tabContent}>
-                {_.map(recomendations, this.generateRecoemndationBlock)}
+                {/* {_.map(recomendations, this.generateRecoemndationBlock)} */}
+                <VehicleRecommendationsTable />
             </div>
         )
     }
