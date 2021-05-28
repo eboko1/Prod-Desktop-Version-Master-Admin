@@ -129,10 +129,10 @@ export default function reducer(state = ReducerState, action) {
             const {vehicle, client, generalData, vehicleAttributes} = payload;
             return { 
                 ...state, 
-                vehicle: vehicle,
-                client: client,
-                generalData: generalData,
-                vehicleAttributes: vehicleAttributes,
+                vehicle: vehicle? vehicle: state.vehicle,
+                client: client? client: state.client,
+                generalData: generalData? generalData: state.generalData,
+                vehicleAttributes: vehicleAttributes? vehicleAttributes: state.vehicleAttributes,
             };
 
         case FETCH_VEHICLES_SUCCESS:

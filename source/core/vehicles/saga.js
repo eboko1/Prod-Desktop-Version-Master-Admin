@@ -61,27 +61,26 @@ export function* fetchVehicleSaga() {
             const vehicle = yield call(fetchAPI, 'GET', `clients/vehicles/${vehicleId}`);
 
             yield put(setFetchingVehicle(false));
+            yield put(fetchVehicleSuccess({vehicle}));
 
-            const {
-                clientId
-            } = vehicle;
+            const { clientId } = vehicle;
 
             const client = yield call(fetchAPI, 'GET', `clients/${clientId}`);
 
             yield put(setFetchingVehicleClient(false));
+            yield put(fetchVehicleSuccess({client}));
 
 
             const generalData = yield call(fetchAPI, 'GET', `order_latest_info`, {vehicleId: vehicleId});
 
             yield put(setFetchingOrdersLatest(false));
+            yield put(fetchVehicleSuccess({generalData}));
 
 
             const vehicleAttributes = yield call(fetchAPI, 'GET', `tecdoc/vehicle/attributes`, {vehicleId: vehicleId});
 
             yield put(setFetchingVehicleAttributes(false));
-
-
-            yield put(fetchVehicleSuccess({vehicle, client, generalData, vehicleAttributes}));
+            yield put(fetchVehicleSuccess({vehicleAttributes}));
         } catch (error) {
             yield put(emitError(error));
         } finally {
