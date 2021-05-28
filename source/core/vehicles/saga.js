@@ -21,7 +21,11 @@ import {
     fetchVehicleAppurtenancesSuccess,
     fetchVehicleRecommendationsSuccess,
 
-    setFetchingVehilce,
+    setFetchingVehicle,
+    setFetchingVehicleClient,
+    setFetchingVehicleAttributes,
+    setFetchingOrdersLatest,
+
 
     selectSort,
     selectVehicleNormHoursSort,
@@ -36,7 +40,9 @@ import {
     FETCH_VEHICLE_LABORS,
     CREATE_ORDER,
     FETCH_VEHICLE_APPURTENANCES,
-    FETCH_VEHICLE_RECOMMENDATIONS, selectVehicleAppurtenancesSort, selectVehicleOrdersSort,
+    FETCH_VEHICLE_RECOMMENDATIONS,
+    selectVehicleAppurtenancesSort,
+    selectVehicleOrdersSort,
 } from './duck';
 
 export function* fetchVehicleSaga() {
@@ -45,9 +51,15 @@ export function* fetchVehicleSaga() {
             const { payload: {vehicleId} } = yield take(FETCH_VEHICLE);
 
             yield nprogress.start();
-            yield put(setFetchingVehilce(true));
+
+            yield put(setFetchingVehicle(true));
+            yield put(setFetchingVehicleClient(true));
+            yield put(setFetchingVehicleAttributes(true));
+            yield put(setFetchingOrdersLatest(true));
 
             const vehicle = yield call(fetchAPI, 'GET', `clients/vehicles/${vehicleId}`);
+
+            yield put(setFetchingVehicle(false));
 
             const {
                 clientId
@@ -55,16 +67,29 @@ export function* fetchVehicleSaga() {
 
             const client = yield call(fetchAPI, 'GET', `clients/${clientId}`);
 
+            yield put(setFetchingVehicleClient(false));
+
+
             const generalData = yield call(fetchAPI, 'GET', `order_latest_info`, {vehicleId: vehicleId});
 
+            yield put(setFetchingOrdersLatest(false));
+
+
             const vehicleAttributes = yield call(fetchAPI, 'GET', `tecdoc/vehicle/attributes`, {vehicleId: vehicleId});
+
+            yield put(setFetchingVehicleAttributes(false));
+
 
             yield put(fetchVehicleSuccess({vehicle, client, generalData, vehicleAttributes}));
         } catch (error) {
             yield put(emitError(error));
         } finally {
             yield nprogress.done();
-            yield put(setFetchingVehilce(false));
+
+            yield put(setFetchingVehicle(false));
+            yield put(setFetchingVehicleClient(false));
+            yield put(setFetchingVehicleAttributes(false));
+            yield put(setFetchingOrdersLatest(false));
         }
     }
 }
