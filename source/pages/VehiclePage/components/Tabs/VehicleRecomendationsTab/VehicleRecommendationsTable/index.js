@@ -30,7 +30,7 @@ const mapDispatchToProps = {
 
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
-export default class VehicleAppurtenancesTable extends React.Component {
+export default class VehicleRecommendationsTable extends React.Component {
 
     render() {
         const {

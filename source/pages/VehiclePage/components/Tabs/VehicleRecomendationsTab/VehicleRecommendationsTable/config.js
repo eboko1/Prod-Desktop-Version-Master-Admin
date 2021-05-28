@@ -3,15 +3,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
-import moment from 'moment';
 
 //Proj
 import book from 'routes/book';
-import { Numeral, OrdersStatusesMapper } from "commons";
-import { OrderStatusIcon, RepairMapIndicator, FormattedDatetime } from 'components';
-
-//Own
-import Styles from './styles.m.css';
+import { FormattedDatetime } from 'components';
 
 const DEFAULT_DATETIME = 'DD.MM.YYYY HH:mm';
 
@@ -31,9 +26,12 @@ export function columnsConfig() {
         width:     defWidth.order,
         dataIndex: 'orderNum',
         key:       'orderNum',
-        render:    (orderNum) => (
+        render:    (orderNum, recommendation) => (
             <>
-                {orderNum}
+                <Link to={ `${book.order}/${recommendation.orderId}` }>
+                    {orderNum}
+                </Link>
+                
             </>
         ),
     };
