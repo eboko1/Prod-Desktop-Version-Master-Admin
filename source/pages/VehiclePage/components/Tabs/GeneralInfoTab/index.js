@@ -21,7 +21,10 @@ import {
     selectClient,
     selectGeneralData,
     selectVehicleAttributes,
-    selectFethingVehicle,
+    selectFetchingOrdersLatest,
+    selectFetchingVehicleAttributes,
+    selectFetchingVehicleClient,
+    selectFetchingVehicle,
 } from 'core/vehicles/duck';
 import { deleteClientVehicle } from "core/client/duck";
 
@@ -39,7 +42,10 @@ const mapStateToProps = state => ({
     client:             selectClient(state),
     generalData:        selectGeneralData(state),
     vehicleAttributes:  selectVehicleAttributes(state),
-    fetchingVehicle:    selectFethingVehicle(state),
+    fetchingVehicle:    selectFetchingVehicle(state),
+    fetchingVehicleClient: selectFetchingVehicleClient(state),
+    fetchingOrdersLatest: selectFetchingOrdersLatest(state),
+    fetchingVehicleAttributes: selectFetchingVehicleAttributes(state)
 });
 
 const mapDispatchToProps = {
@@ -90,8 +96,16 @@ export default class GeneralInfoTab extends Component {
             vehicle,
             generalData,
             vehicleAttributes,
-            fetchingVehicle
+            fetchingVehicle,
+            fetchingVehicleClient,
+            fetchingOrdersLatest,
+            fetchingVehicleAttributes
         } = this.props;
+
+        console.log("TT: ",   fetchingVehicle,
+            fetchingVehicleClient,
+            fetchingOrdersLatest,
+            fetchingVehicleAttributes)
 
         return (
             <div className={Styles.tabContent}>
@@ -150,18 +164,19 @@ export default class GeneralInfoTab extends Component {
                                 <DataItem className={Styles.dataItem} label="Make">{vehicle.make}</DataItem>
                                 <DataItem className={Styles.dataItem} label="Model">{vehicle.model}</DataItem>
                                 <DataItem className={Styles.dataItem} label="Modification">{vehicle.modification}</DataItem>
-
                             </div>
 
-                            <div>
-                                <DataItem label="Engine">{vehicleAttributes.engineCode}</DataItem>
-                                <DataItem className={Styles.dataItem} label="Capacity">{vehicleAttributes.capacity}</DataItem>
-                                <DataItem className={Styles.dataItem} label="BodyType">{vehicleAttributes.bodyType}</DataItem>
-                                <DataItem className={Styles.dataItem} label="FuelType">{vehicleAttributes.fuelType}</DataItem>
-                                <DataItem className={Styles.dataItem} label="Power">{vehicleAttributes.power}</DataItem>
-                                <DataItem className={Styles.dataItem} label="DriveType">{vehicleAttributes.driveType}</DataItem>
+                            {fetchingVehicleAttributes ? <Spin/> : (
+                                <div>
+                                    <DataItem label="Engine">{vehicleAttributes.engineCode}</DataItem>
+                                    <DataItem className={Styles.dataItem} label="Capacity">{vehicleAttributes.capacity}</DataItem>
+                                    <DataItem className={Styles.dataItem} label="BodyType">{vehicleAttributes.bodyType}</DataItem>
+                                    <DataItem className={Styles.dataItem} label="FuelType">{vehicleAttributes.fuelType}</DataItem>
+                                    <DataItem className={Styles.dataItem} label="Power">{vehicleAttributes.power}</DataItem>
+                                    <DataItem className={Styles.dataItem} label="DriveType">{vehicleAttributes.driveType}</DataItem>
+                                </div>
+                            )}
 
-                            </div>
 
                             <div className={Styles.buttonsContainer}>
                                 <Row className={Styles.row}>
@@ -188,20 +203,22 @@ export default class GeneralInfoTab extends Component {
                         </div>
                     }
                 >
-                    <div>
-                        <DataItem label={<FormattedMessage id='name' />}>
-                            <Link to={ `${book.client}/${_.get(client, 'clientId')}` }>{`${client.name} ${client.surname}`}</Link>
-                        </DataItem>
-                        
-                        <DataItem className={Styles.dataItem} label={<FormattedMessage id='add_client_form.phones' />}>
-                            {
-                                _.map(
-                                    _.get(client, 'phones', []),
-                                    (phone) => (<a key={v4()} className={Styles.phoneLink} href={`tel:${phone}`}>{phone}</a>)
-                                )
-                            }
-                        </DataItem>
-                    </div>
+                    {fetchingVehicleClient ? <Spin/> : (
+                        <div>
+                            <DataItem label={<FormattedMessage id='name' />}>
+                                <Link to={ `${book.client}/${_.get(client, 'clientId')}` }>{`${client.name} ${client.surname}`}</Link>
+                            </DataItem>
+
+                            <DataItem className={Styles.dataItem} label={<FormattedMessage id='add_client_form.phones' />}>
+                                {
+                                    _.map(
+                                        _.get(client, 'phones', []),
+                                        (phone) => (<a key={v4()} className={Styles.phoneLink} href={`tel:${phone}`}>{phone}</a>)
+                                    )
+                                }
+                            </DataItem>
+                        </div>
+                    )}
                 </Block>
 
                 {/* --------------------------------------------------------------------------- */}
@@ -210,36 +227,44 @@ export default class GeneralInfoTab extends Component {
                     title={<FormattedMessage id='vehicle_page.last_data' />}
                     className={Styles.block}
                 >
-                    <div>
-                        <DataItem label={<FormattedMessage id={<FormattedMessage id='order-status.order' />} />}>
-                            <a className={Styles.orderLink} href={ `${book.order}/${_.get(generalData, 'latestOrderData.orderId')}` }>
-                                <FormattedDatetime format={DATE_FORMATT} datetime={_.get(generalData, 'latestOrderData.datetime')} />
-                            </a>
-                        </DataItem>
-                        <DataItem className={Styles.dataItem} label={<FormattedMessage id='order-status.call' />}>
-                            <FormattedDatetime format={DATE_FORMATT} datetime={_.get(generalData, 'callData.datetime')} />
-                        </DataItem>
-                    </div>
+                    {fetchingOrdersLatest ? <Spin/> : (
+                        <div>
+                            <div>
+                                <DataItem label={<FormattedMessage id={<FormattedMessage id='order-status.order' />} />}>
+                                    <a className={Styles.orderLink} href={ `${book.order}/${_.get(generalData, 'latestOrderData.orderId')}` }>
+                                        <FormattedDatetime format={DATE_FORMATT} datetime={_.get(generalData, 'latestOrderData.datetime')} />
+                                    </a>
+                                </DataItem>
+                                <DataItem className={Styles.dataItem} label={<FormattedMessage id='order-status.call' />}>
+                                    <FormattedDatetime format={DATE_FORMATT} datetime={_.get(generalData, 'callData.datetime')} />
+                                </DataItem>
+                            </div>
 
-                    <div className={Styles.buttonsContainer}>
-                        <Row className={Styles.row}>
-                            <Col span={6}><Button className={Styles.button} type="primary">{<FormattedMessage id='vehicle_page.record' />}</Button></Col>
-                            <Col span={18}>
-                                <Icon className={Styles.sendSMSIcon} type="message" />
-                                <Icon className={Styles.sendMailIcon} type="mail" />
-                                <Icon className={Styles.copyIcon} type="copy" />
-                            </Col>
-                        </Row>
+                            <div className={Styles.buttonsContainer}>
+                                <Row className={Styles.row}>
+                                    <Col span={6}><Button className={Styles.button} type="primary">{<FormattedMessage id='vehicle_page.record' />}</Button></Col>
+                                    <Col span={18}>
+                                        <Icon className={Styles.sendSMSIcon} type="message" />
+                                        <Icon className={Styles.sendMailIcon} type="mail" />
+                                        <Icon className={Styles.copyIcon} type="copy" />
+                                    </Col>
+                                </Row>
 
-                        <Row className={Styles.row}>
-                            <Col span={6}><Button className={Styles.button} type="primary">{<FormattedMessage id='vehicle_page.calculation' />}</Button></Col>
-                            <Col span={18}>
-                                <Icon className={Styles.sendSMSIcon} type="message" />
-                                <Icon className={Styles.sendMailIcon} type="mail" />
-                                <Icon className={Styles.copyIcon} type="copy" />
-                            </Col>
-                        </Row>
-                    </div>
+                                <Row className={Styles.row}>
+                                    <Col span={6}><Button className={Styles.button} type="primary">{<FormattedMessage id='vehicle_page.calculation' />}</Button></Col>
+                                    <Col span={18}>
+                                        <Icon className={Styles.sendSMSIcon} type="message" />
+                                        <Icon className={Styles.sendMailIcon} type="mail" />
+                                        <Icon className={Styles.copyIcon} type="copy" />
+                                    </Col>
+                                </Row>
+                            </div>
+
+                        </div>
+                    )}
+
+
+
                 </Block>
 
                 <VehicleModal

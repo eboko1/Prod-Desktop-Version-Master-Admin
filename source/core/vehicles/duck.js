@@ -27,6 +27,12 @@ export const FETCH_VEHICLE_RECOMMENDATIONS_SUCCESS = `${prefix}/FETCH_VEHICLE_RE
 export const CREATE_ORDER = `${prefix}/CREATE_ORDER`;
 
 export const SET_FETCHING_VEHICLE = `${prefix}/SET_FETCHING_VEHICLE`;
+export const SET_FETCHING_VEHICLE_ATTRIBUTES = `${prefix}/SET_FETCHING_VEHICLE_ATTRIBUTES`;
+export const SET_FETCHING_VEHICLE_CLIENT = `${prefix}/SET_FETCHING_VEHICLE_CLIENT`;
+export const SET_FETCHING_ORDERS_LATEST = `${prefix}/SET_FETCHING_ORDERS_LATEST`;
+
+
+
 export const SET_PAGE = `${prefix}/SET_PAGE`;
 export const SET_PAGE_ORDERS = `${prefix}/SET_PAGE_ORDERS`;
 export const SET_PAGE_NORM_HOURS = `${prefix}/SET_PAGE_NORM_HOURS`;
@@ -50,6 +56,9 @@ const ReducerState = {
     vehicleAttributes: {},  // Vehicle attributes
 
     fetchingVehicle: false,
+    fetchingVehicleAttributes: false,
+    fetchingVehicleClient: false,
+    fetchingOrdersLatest: false,
 
     vehicleOrdersData: {
         orders: [], //Array of orders fetched for specific vehicle
@@ -147,7 +156,22 @@ export default function reducer(state = ReducerState, action) {
         case SET_FETCHING_VEHICLE:
             return {
                 ...state,
-                fetchingVehicle: payload
+                fetchingVehicle: payload,
+            };
+        case SET_FETCHING_VEHICLE_CLIENT:
+            return {
+                ...state,
+                fetchingVehicleClient: payload
+            };
+        case SET_FETCHING_VEHICLE_ATTRIBUTES:
+            return {
+                ...state,
+                fetchingVehicleAttributes: payload
+            };
+        case SET_FETCHING_ORDERS_LATEST:
+            return {
+                ...state,
+                fetchingOrdersLatest: payload,
             };
 
         case SET_PAGE_ORDERS:
@@ -297,7 +321,13 @@ export default function reducer(state = ReducerState, action) {
 
 export const stateSelector = state => state[ moduleName ];
 export const selectVehicle = state => state[ moduleName ].vehicle;
-export const selectFethingVehicle = state => state[ moduleName ].fetchingVehicle;
+
+/*-------------Fetchers------------------------*/
+export const selectFetchingVehicle = state => state[ moduleName ].fetchingVehicle;
+export const selectFetchingVehicleAttributes = state => state[ moduleName ].fetchingVehicleAttributes;
+export const selectFetchingVehicleClient = state => state[ moduleName ].fetchingVehicleClient;
+export const selectFetchingOrdersLatest = state => state[ moduleName ].fetchingOrdersLatest;
+
 export const selectVehicles = state => state[ moduleName ].vehicles;
 export const selectVehicleAttributes = state => state[ moduleName ].vehicleAttributes
 export const selectVehiclesStats = state => state[ moduleName ].stats;
@@ -454,8 +484,23 @@ export const setPage = ({page}) => {
     }
 };
 
-export const setFetchingVehilce = (value) => ({
+export const setFetchingVehicle = (value) => ({
     type: SET_FETCHING_VEHICLE,
+    payload: value
+});
+
+export const setFetchingVehicleClient = (value) => ({
+    type: SET_FETCHING_VEHICLE_CLIENT,
+    payload: value
+});
+
+export const setFetchingVehicleAttributes = (value) => ({
+    type: SET_FETCHING_VEHICLE_ATTRIBUTES,
+    payload: value
+});
+
+export const setFetchingOrdersLatest = (value) => ({
+    type: SET_FETCHING_ORDERS_LATEST,
     payload: value
 });
 
