@@ -88,7 +88,7 @@ export default class VehiclePage extends Component {
                         <VehicleRecomendationsTab />
                     </TabPane>
 
-                    <TabPane tab={<FormattedMessage id={ 'vehicle_page.inspection_intervals'}/>} key="inspection_intervals">
+                    <TabPane disabled={true} tab={<FormattedMessage id={ 'vehicle_page.inspection_intervals'}/>} key="inspection_intervals">
                         <VehicleInspectionIntervalsTab />
                     </TabPane>
                 </Tabs>
