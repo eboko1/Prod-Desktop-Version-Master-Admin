@@ -147,9 +147,9 @@ export default class GeneralInfoTab extends Component {
                             <div>
                                 <DataItem label={<FormattedMessage id='add_client_form.number' />}>{vehicle.vehicleNumber}</DataItem>
                                 <DataItem className={Styles.dataItem} label={<FormattedMessage id='add_order_form.vin' />}>{vehicle.vehicleVin}</DataItem>
-                                <DataItem className={Styles.dataItem} label="Make">{vehicle.make}</DataItem>
-                                <DataItem className={Styles.dataItem} label="Model">{vehicle.model}</DataItem>
-                                <DataItem className={Styles.dataItem} label="Modification">{vehicle.modification}</DataItem>
+                                <DataItem className={Styles.dataItem} label={<FormattedMessage id='add_client_form.make' />}>{vehicle.make}</DataItem>
+                                <DataItem className={Styles.dataItem} label={<FormattedMessage id='add_client_form.model' />}>{vehicle.model}</DataItem>
+                                <DataItem className={Styles.dataItem} label={<FormattedMessage id='add_client_form.modification' />}>{vehicle.modification}</DataItem>
 
                             </div>
 
