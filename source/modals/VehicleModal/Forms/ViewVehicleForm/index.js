@@ -71,7 +71,7 @@ export default class ViewVehicleForm extends React.Component {
                     <Row className={Styles.row}>
                         <Col span={10}>
                             <div className={Styles.colText}>
-                                vehicleNumber: 
+                            {<FormattedMessage id='add_client_form.number' />}
                             </div>
                         </Col>
                         <Col span={14}>
@@ -84,7 +84,7 @@ export default class ViewVehicleForm extends React.Component {
                     <Row className={Styles.row}>
                         <Col span={10}>
                             <div className={Styles.colText}>
-                                vehicleVin: 
+                            {<FormattedMessage id='add_order_form.vin' />}
                             </div>
                         </Col>
                         <Col span={14}>
@@ -97,7 +97,7 @@ export default class ViewVehicleForm extends React.Component {
                     <Row className={Styles.row}>
                         <Col span={10}>
                             <div className={Styles.colText}>
-                                vehicleYear: 
+                            {<FormattedMessage id='add_client_form.year' />}
                             </div>
                         </Col>
                         <Col span={14}>
@@ -110,7 +110,7 @@ export default class ViewVehicleForm extends React.Component {
                     <Row className={Styles.row}>
                         <Col span={10}>
                             <div className={Styles.colText}>
-                                vehicleMake: 
+                            {<FormattedMessage id='add_client_form.make' />}
                             </div>
                         </Col>
                         <Col span={14}>
@@ -123,7 +123,7 @@ export default class ViewVehicleForm extends React.Component {
                     <Row className={Styles.row}>
                         <Col span={10}>
                             <div className={Styles.colText}>
-                                vehicleModel: 
+                            {<FormattedMessage id='add_client_form.model' />}
                             </div>
                         </Col>
                         <Col span={14}>
@@ -136,7 +136,7 @@ export default class ViewVehicleForm extends React.Component {
                     <Row className={Styles.row}>
                         <Col span={10}>
                             <div className={Styles.colText}>
-                                vehicleModification: 
+                            {<FormattedMessage id='add_client_form.modification' />}
                             </div>
                         </Col>
                         <Col span={14}>

@@ -118,7 +118,7 @@ export default class VehicleModal extends Component {
                     onCancel={ this.resetAllFormsAndCloseModal }
                     title={
                         <div className={Styles.title}>
-                            Title here
+                           {<FormattedMessage id='vehicle_page.title' />}   
                         </div>
                     }
                 >

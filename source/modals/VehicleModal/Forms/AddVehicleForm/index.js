@@ -120,7 +120,7 @@ export default class AddVehicleFormClass extends React.Component {
                 <Row className={Styles.row}>
                     <Col span={6}>
                         <div className={Styles.colText}>
-                            vehicleNumber: 
+                            {<FormattedMessage id='add_client_form.number' />}
                         </div>
                     </Col>
                     <Col span={12}>
@@ -147,7 +147,7 @@ export default class AddVehicleFormClass extends React.Component {
                 <Row className={Styles.row}>
                     <Col span={6}>
                         <div className={Styles.colText}>
-                            vehicleVin: 
+                            {<FormattedMessage id='add_order_form.vin' />}
                         </div>
                     </Col>
                     <Col span={12}>
@@ -166,7 +166,7 @@ export default class AddVehicleFormClass extends React.Component {
                 <Row className={Styles.row}>
                     <Col span={6}>
                         <div className={Styles.colText}>
-                            vehicleYear: 
+                            {<FormattedMessage id='add_client_form.year' />}
                         </div>
                     </Col>
                     <Col span={12}>
@@ -184,7 +184,7 @@ export default class AddVehicleFormClass extends React.Component {
                                         }),
                                     },
                                 ]}
-                                placeholder={"Enter here"}
+                                placeholder={<FormattedMessage id='add_client_form.year_placeholder' />}
                                 initialValue={initValues.year}
                                 disabled={false}
                                 onSelect={value => {
@@ -207,7 +207,7 @@ export default class AddVehicleFormClass extends React.Component {
                 <Row className={Styles.row}>
                     <Col span={6}>
                         <div className={Styles.colText}>
-                            vehicleMake: 
+                          {<FormattedMessage id='add_client_form.make' />}
                         </div>
                     </Col>
                     <Col span={12}>
@@ -225,7 +225,7 @@ export default class AddVehicleFormClass extends React.Component {
                                         }),
                                     },
                                 ]}
-                                placeholder={"Enter here"}
+                                placeholder={<FormattedMessage id='add_client_form.make_placeholder' />}
                                 initialValue={initValues.makeId}
                                 disabled={!_.get(fields, 'year')}
                                 onSelect={value => {
@@ -249,7 +249,7 @@ export default class AddVehicleFormClass extends React.Component {
                 <Row className={Styles.row}>
                     <Col span={6}>
                         <div className={Styles.colText}>
-                            vehicleModel: 
+                            {<FormattedMessage id='add_client_form.model' />}
                         </div>
                     </Col>
                     <Col span={12}>
@@ -267,7 +267,7 @@ export default class AddVehicleFormClass extends React.Component {
                                         }),
                                     },
                                 ]}
-                                placeholder={"Enter here"}
+                                placeholder={<FormattedMessage id='add_client_form.model_placeholder' />}
                                 initialValue={initValues.modelId}
                                 disabled={!_.get(fields, 'makeId')}
                                 onSelect={value => {
@@ -290,7 +290,7 @@ export default class AddVehicleFormClass extends React.Component {
                 <Row className={Styles.row}>
                     <Col span={6}>
                         <div className={Styles.colText}>
-                            vehicleModification: 
+                            {<FormattedMessage id='add_client_form.modification' />}
                         </div>
                     </Col>
                     <Col span={12}>
@@ -308,7 +308,7 @@ export default class AddVehicleFormClass extends React.Component {
                                         }),
                                     },
                                 ]}
-                                placeholder={"Enter here"}
+                                placeholder={<FormattedMessage id='add_client_form.modification_placeholder' />}
                                 initialValue={initValues.modificationId}
                                 disabled={!_.get(fields, 'modelId')}
                                 onSelect={value => {
