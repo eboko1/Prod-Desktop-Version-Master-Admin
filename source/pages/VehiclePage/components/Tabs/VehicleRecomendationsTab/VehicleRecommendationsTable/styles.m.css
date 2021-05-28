@@ -31,39 +31,6 @@
     width: 100%;
 }
 
-.orderLink {
-    margin-right: 5px;
-}
-
-.datetime {
-    display: flex;
-    flex-direction: column;
-    width: 75px;
-}
-
-.clientVehicle {
-    color: var(--text4);
-}
-
-.serviceNames,
-.recommendation,
-.cancelReason {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.serviceNames {
-    color: var(--text2);
-}
-
-.recommendation {
-    color: var(--secondary);
-}
-
-.cancelReason {
-    color: var(--not_complete);
-}
-
 .tableRow {
     background-color: rgb(240, 240, 240);
 }

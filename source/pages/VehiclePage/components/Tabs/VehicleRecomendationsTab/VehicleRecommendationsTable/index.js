@@ -50,8 +50,6 @@ export default class VehicleRecommendationsTable extends React.Component {
             },
         }
 
-        console.log("RecomendationsStats: ", stats);
-
         return (
             <div className={Styles.tableCont}>
                 <Table
