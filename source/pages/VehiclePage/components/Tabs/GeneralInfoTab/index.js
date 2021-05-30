@@ -172,12 +172,12 @@ export default class GeneralInfoTab extends Component {
 
                             {fetchingVehicleAttributes ? <Spin/> : (
                                 <div>
-                                    <DataItem label="Engine">{vehicleAttributes.engineCode}</DataItem>
-                                    <DataItem className={Styles.dataItem} label="Capacity">{vehicleAttributes.capacity}</DataItem>
-                                    <DataItem className={Styles.dataItem} label="BodyType">{vehicleAttributes.bodyType}</DataItem>
-                                    <DataItem className={Styles.dataItem} label="FuelType">{vehicleAttributes.fuelType}</DataItem>
-                                    <DataItem className={Styles.dataItem} label="Power">{vehicleAttributes.power}</DataItem>
-                                    <DataItem className={Styles.dataItem} label="DriveType">{vehicleAttributes.driveType}</DataItem>
+                                    <DataItem label={<FormattedMessage id='vehicle_page.engine' />}>{vehicleAttributes.engineCode}</DataItem>
+                                    <DataItem className={Styles.dataItem} label={<FormattedMessage id='vehicle_page.capacity' />}>{vehicleAttributes.capacity}</DataItem>
+                                    <DataItem className={Styles.dataItem} label={<FormattedMessage id='vehicle_page.body_type' />}>{vehicleAttributes.bodyType}</DataItem>
+                                    <DataItem className={Styles.dataItem} label={<FormattedMessage id='vehicle_page.fuel_type' />}>{vehicleAttributes.fuelType}</DataItem>
+                                    <DataItem className={Styles.dataItem} label={<FormattedMessage id='vehicle_page.power' />}>{vehicleAttributes.power}</DataItem>
+                                    <DataItem className={Styles.dataItem} label={<FormattedMessage id='vehicle_page.drive_type' />}>{vehicleAttributes.driveType}</DataItem>
                                 </div>
                             )}
 
