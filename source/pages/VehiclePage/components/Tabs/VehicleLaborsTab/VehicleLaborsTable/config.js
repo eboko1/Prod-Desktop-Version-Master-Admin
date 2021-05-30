@@ -48,7 +48,7 @@ export function columnsConfig() {
     };
 
     const datetimeCol = {
-        title:     <FormattedMessage id='orders.datetime' />,
+        title:     <FormattedMessage id='orders.creation_date' />,
         width:     defWidth.datetime,
         dataIndex: 'orderDatetime',
         key:       'orderDatetime',
@@ -61,56 +61,56 @@ export function columnsConfig() {
 
 
     const laborCol = {
-        title:     <FormattedMessage id='labor.name' />,
+        title:     <FormattedMessage id="order_form_table.detail_name" />,
         width:     defWidth.labor,
         dataIndex: 'serviceName',
         key:       'serviceName',
     };
 
    const typeCol = {
-        title:     <FormattedMessage id='labors.type' />,
+        title:     <FormattedMessage id="order_form_table.service_type" />,
         width:     defWidth.type,
         dataIndex: 'defaultName',
         key:       'defaultName',
     };
 
     const storeGroupNameCol = {
-        title:     <FormattedMessage id='store_group.name' />,
+        title:     <FormattedMessage id='order_form_table.store_group' />,
         width:     defWidth.begin_datetime,
         dataIndex: 'storeGroupName',
         key:       'storeGroupName',
     };
 
     const mechanicCol = {
-        title:     <FormattedMessage id='employee.mechanic' /> ,
+        title:     <FormattedMessage id='employee.is_mechanic' /> ,
         width:     defWidth.mechanic,
         dataIndex: 'employeeFullName',
         key:       'employeeFullName',
     };
 
     const normHoursCol = {
-        title:     <FormattedMessage id='labor.norm_hours' />,
+        title:     <FormattedMessage id="hours" />,
         width:     defWidth.normHours,
         dataIndex: 'hours',
         key:       'hours',
     };
 
     const priceCol = {
-        title:     <FormattedMessage id='labors.price' />,
+        title:     <FormattedMessage id="order_form_table.price" />,
         width:     defWidth.price,
         dataIndex: 'price',
         key:       'price',
     };
 
     const countCol = {
-        title:     <FormattedMessage id='labors.count' />,
+        title:     <FormattedMessage id='order_form_table.count' />,
         width:     defWidth.count,
         dataIndex: 'count',
         key:       'count',
     };
 
     const sumCol = {
-        title:     <FormattedMessage id='labors.sum' />,
+        title:     <FormattedMessage id='order_form_table.sum' />,
         width:     defWidth.sum,
         dataIndex: 'sum',
         key:       'sum',

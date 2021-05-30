@@ -46,7 +46,7 @@ export function columnsConfig() {
     };
 
     const datetimeCol = {
-        title:     <FormattedMessage id='orders.datetime' />,
+        title:     <FormattedMessage id='orders.creation_date' />,
         width:     defWidth.datetime,
         dataIndex: 'orderDatetime',
         key:       'orderDatetime',
@@ -59,28 +59,28 @@ export function columnsConfig() {
 
 
     const codeCol = {
-        title:     <FormattedMessage id='appurtenance.code' />,
+        title:     <FormattedMessage id='order_form_table.product_code' />,
         width:     defWidth.code,
         dataIndex: 'code',
         key:       'code',
     };
 
    const brandNameCol = {
-        title:     <FormattedMessage id='appurtenance.brand' />,
+        title:     <FormattedMessage id='order_form_table.brand' />,
         width:     defWidth.brandName,
         dataIndex: 'supplierBrandName',
         key:       'supplierBrandName',
     };
 
     const nameCol = {
-        title:     <FormattedMessage id='appurtenance.name' />,
+        title:     <FormattedMessage id='storage.product_name' />,
         width:     defWidth.name,
         dataIndex: 'name',
         key:       'name',
     };
 
     const supplierNameCol = {
-        title:     <FormattedMessage id='appurtenance.supplier' />,
+        title:     <FormattedMessage id='storage.business_supplier' />,
         width:     defWidth.supplierName,
         dataIndex: 'supplierName',
         key:       'supplierName',
@@ -88,28 +88,28 @@ export function columnsConfig() {
 
 
     const purchasePriceCol = {
-        title:     <FormattedMessage id='appurtenance.purchase_price' />,
+        title:     <FormattedMessage id='storage.purchase_price' />,
         width:     defWidth.purchasePrice,
         dataIndex: 'purchasePrice',
         key:       'purchasePrice',
     };
 
     const priceCol = {
-        title:     <FormattedMessage id='appurtenance.price' />,
+        title:     <FormattedMessage id='storage.selling_price' />,
         width:     defWidth.price,
         dataIndex: 'price',
         key:       'price',
     };
 
     const countCol = {
-        title:     <FormattedMessage id='appurtenance.price' />,
+        title:     <FormattedMessage id='order_form_table.count' />,
         width:     defWidth.count,
         dataIndex: 'count',
         key:       'count',
     };
 
     const sumCol = {
-        title:     <FormattedMessage id='appurtenance.sum' />,
+        title:     <FormattedMessage id='order_form_table.sum' />,
         width:     defWidth.sum,
         dataIndex: 'sum',
         key:       'sum',
