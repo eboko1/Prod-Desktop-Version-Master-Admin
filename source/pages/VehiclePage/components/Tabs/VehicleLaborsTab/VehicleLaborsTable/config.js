@@ -89,7 +89,7 @@ export function columnsConfig() {
     };
 
     const normHoursCol = {
-        title:     <FormattedMessage id="hours" />,
+        title:     <FormattedMessage id="services_table.norm_hours" />,
         width:     defWidth.normHours,
         dataIndex: 'hours',
         key:       'hours',
