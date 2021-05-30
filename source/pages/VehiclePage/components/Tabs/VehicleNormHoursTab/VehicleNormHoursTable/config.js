@@ -27,33 +27,33 @@ const defWidth = {
 export function columnsConfig() {
 
     const korTextCol = {
-        title:     <FormattedMessage id='orders.korText' />,
+        title:     <FormattedMessage id="order_form_table.service_type" />,
         width:     defWidth.korText,
         dataIndex: 'korText',
         key:       'korText',
     };
 
     const itemmpTextCol = {
-        title:     <FormattedMessage id='orders.itemmpText' />,
+        title:     <FormattedMessage id='services_table.service_type' />,
         width:     defWidth.itemmpText,
         dataIndex: 'itemmpText',
         key:       'itemmpText',
     };
     const qualColTextCol = {
-        title:     <FormattedMessage id='orders.qualColText' />,
+        title:     <FormattedMessage id='array-break-schedule.comment' />,
         width:     defWidth.qualColText,
         dataIndex: 'qualColText',
         key:       'qualColText',
     };
     const workTimCol = {
-        title:     <FormattedMessage id='orders.workTime' />,
+        title:     <FormattedMessage id='services_table.norm_hours' />,
         width:     defWidth.workTime,
         dataIndex: 'workTime',
         key:       'workTime',
     };
 
     const priceCol = {
-        title:     <FormattedMessage id='orders.price' />, // should be translation
+        title:     <FormattedMessage id='order_form_table.price' />, // should be translation
         width:     defWidth.price,
         dataIndex: 'price',
         key:       'price',
