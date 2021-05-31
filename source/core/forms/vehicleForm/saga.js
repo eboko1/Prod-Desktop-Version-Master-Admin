@@ -13,17 +13,22 @@ import {
     setVehicleModelId,
     setVehicleModificationId,
     setFetchingAllVehicleData,
+    setFetchingClients,
 
     selectFields,
+    selectClientsFilters,
+    selectClientsSort,
    
     fetchVehicleSuccess,
+    fetchClientsSuccess,
     fetchVehicleYearsSuccess,
     fetchVehicleMakesSuccess,
     fetchVehicleModelsSuccess,
-    fetchVehicleModificationsSuccess
+    fetchVehicleModificationsSuccess,
 } from './duck';
 
 import {
+    FETCH_CLIENTS,
     CREATE_VEHICLE,
     UPDATE_VEHICLE,
     FETCH_VEHICLE,
@@ -178,8 +183,6 @@ export function* updateVehicleSaga() {
             vehicleModificationId: modificationId,
         };
 
-        console.log("payload: ", payload);
-
         yield call(
             fetchAPI,
             'PUT',
@@ -187,6 +190,24 @@ export function* updateVehicleSaga() {
             null,
             payload,
         );
+    }
+}
+
+export function* fetchClientsSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_CLIENTS);
+            yield put(setFetchingClients(true));
+
+            const filters = yield select(selectClientsFilters);
+            const sort = yield select(selectClientsSort);
+
+            const {clients, stats} = yield call(fetchAPI, 'GET', `clients`, {filters, sort});
+
+            yield put(fetchClientsSuccess({clients, stats}));
+        } finally {
+            yield put(setFetchingClients(false));
+        }
     }
 }
 
@@ -200,5 +221,6 @@ export function* saga() {
         call(fetchVehiclesModificationsSaga),
         call(createVehicleSaga),
         call(updateVehicleSaga),
+        call(fetchClientsSaga),
     ]);
 }

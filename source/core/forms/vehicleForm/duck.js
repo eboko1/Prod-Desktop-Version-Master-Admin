@@ -10,6 +10,9 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_VEHICLE = `${prefix}/FETCH_VEHICLE`;
 export const FETCH_VEHICLE_SUCCESS = `${prefix}/FETCH_VEHICLE_SUCCESS`;
 
+export const FETCH_CLIENTS = `${prefix}/FETCH_CLIENTS`;
+export const FETCH_CLIENTS_SUCCESS = `${prefix}/FETCH_CLIENTS_SUCCESS`;
+
 export const FETCH_VEHICLE_YEARS = `${prefix}/FETCH_VEHICLE_YEARS`;
 export const FETCH_VEHICLE_YEARS_SUCCESS = `${prefix}/FETCH_VEHICLE_YEARS_SUCCESS`;
 
@@ -30,7 +33,10 @@ export const UPDATE_VEHICLE = `${prefix}/UPDATE_VEHICLE`;
 export const CLEAR_VEHICLE_DATA = `${prefix}/CLEAR_VEHICLE_DATA`; //Delete from stage all makes, models, modifications and fields data
 
 export const SET_FETCHING_ALL_VEHICLE_DATA = `${prefix}/SET_FETCHING_ALL_VEHICLE_DATA`;
-export const SET_CLIENT_ID = `${prefix}/SET_CLIENT_ID`; //Required to create new a vehicle
+export const SET_CLIENT_ID = `${prefix}/SET_CLIENT_ID`; //Required to create a new vehicle
+export const SET_FETCHING_CLIENTS = `${prefix}/SET_FETCHING_CLIENTS`; //Required to create a new vehicle
+export const SET_CLIETS_PAGE = `${prefix}/SET_CLIETS_PAGE`;
+export const SET_CLIETS_SEARCH_QUERY = `${prefix}/SET_CLIETS_SEARCH_QUERY`;
 export const SET_VIN = `${prefix}/SET_VIN`;
 export const SET_NUMBER = `${prefix}/SET_NUMBER`;
 export const SET_YEAR = `${prefix}/SET_YEAR`;
@@ -63,8 +69,19 @@ const ReducerState = {
     },
 
     fetchingAllVehicleData: false, //Years, makes, modifications, ....
+    fetchingClients: false,
 
     vehicle:          {}, // In a case we work in edit or view mode we have fetched vehicle here
+    clientsData:      { //Used to attach vehicle to a client
+        clients: [],
+        stats:   {},
+        filters: {
+            query: undefined
+        },
+        sort:    {
+            page: 1,
+        },
+    },
 
     years:            [], // All years which are availabel for adding a new vehicle.
     makes:            [], // All makes which are availabel for adding a new vehicle, depends on selected "years"
@@ -81,6 +98,16 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 vehicle: vehicle,
+            };
+        case FETCH_CLIENTS_SUCCESS:
+            const { clients, stats: clientsStats } = payload;
+            return {
+                ...state,
+                clientsData: {
+                    ...state.clientsData,
+                    clients: clients,
+                    stats: clientsStats,
+                },
             };
         case FETCH_VEHICLE_YEARS_SUCCESS:
             const { years } = payload;
@@ -197,6 +224,38 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 fetchingAllVehicleData: payload
             };
+        
+        case SET_FETCHING_CLIENTS:
+            return {
+                ...state,
+                fetchingClients: payload
+            };
+        
+        case SET_CLIETS_PAGE:
+            const {page} = payload;
+            return {
+                ...state,
+                clientsData: {
+                    ...state.clientsData,
+                    sort: {
+                        ...state.clientsData.sort,
+                        page: page
+                    }
+                }
+            };
+        
+        case SET_CLIETS_SEARCH_QUERY:
+            const {query} = payload;
+            return {
+                ...state,
+                clientsData: {
+                    ...state.clientsData,
+                    filters: {
+                        ...state.clientsData.filters,
+                        query: query
+                    }
+                }
+            };
 
         case CLEAR_VEHICLE_DATA:
             return {
@@ -231,6 +290,13 @@ export const selectModels = state => state.forms[ moduleName ].models;
 export const selectModifications = state => state.forms[ moduleName ].modifications;
 export const selectFetchingAllVehicleData = state => state.forms[ moduleName ].fetchingAllVehicleData;
 
+/** -----------------Clients -------------------------- */
+export const selectFetchingClients = state => state.forms[ moduleName ].fetchingClients;
+export const selectClients = state => state.forms[ moduleName ].clientsData.clients;
+export const selectClientsStats = state => state.forms[ moduleName ].clientsData.stats;
+export const selectClientsFilters = state => state.forms[ moduleName ].clientsData.filters;
+export const selectClientsSort = state => state.forms[ moduleName ].clientsData.sort;
+
 /* Actions */
 
 //Fetchers ---------------------------------------------------------------------------
@@ -243,6 +309,15 @@ export const fetchVehicle = ({vehicleId}) => ({
 export const fetchVehicleSuccess = ({vehicle}) => ({
     type:    FETCH_VEHICLE_SUCCESS,
     payload: { vehicle },
+});
+
+export const fetchClients = () => ({
+    type:    FETCH_CLIENTS,
+});
+
+export const fetchClientsSuccess = ({clients, stats}) => ({
+    type:    FETCH_CLIENTS_SUCCESS,
+    payload: { clients, stats },
 });
 
 /**
@@ -336,6 +411,26 @@ export const setFetchingAllVehicleData = (velue) => ({
     type:    SET_FETCHING_ALL_VEHICLE_DATA,
     payload: velue,
 });
+
+export const setFetchingClients = (velue) => ({
+    type:    SET_FETCHING_CLIENTS,
+    payload: velue,
+});
+
+export const setClientsPage = ({page}) => ({
+    type:    SET_CLIETS_PAGE,
+    payload: {page},
+});
+
+export const setClientsSearchQuery = ({query}) => {
+    return function(dispatch) {
+        dispatch({
+            type:    SET_CLIETS_SEARCH_QUERY,
+            payload: {query},
+        });
+        dispatch(fetchClients());
+    }
+};
 
 //Other ---------------------------------------------------------------------------
 

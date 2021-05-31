@@ -12,6 +12,7 @@ import { createVehicle, updateVehicle, clearVehicleData, modes } from 'core/form
 // own
 import Styles from './styles.m.css';
 import { AddVehicleForm, EditVehicleForm, ViewVehicleForm} from './Forms';
+import { ClientsTable } from './components';
 
 const mapStateToProps = state => ({
     modalProps:    selectModalProps(state),
@@ -124,6 +125,7 @@ export default class VehicleModal extends Component {
                     }
                 >
                     <div style={{minHeight: '50vh'}}>
+                        <ClientsTable />
                         {
                             (() => {
                                 switch (mode) {
