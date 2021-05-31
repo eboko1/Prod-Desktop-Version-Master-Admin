@@ -194,17 +194,10 @@ export default class VehicleEditFormClass extends React.Component {
                                         resetFields();
                                     }}
                                     getPopupContainer={trigger => trigger.parentNode}
-                                >
-                                    {
-                                        years
-                                            ? years.map((year) => (
-                                                <Option value={year} key={v4()}>
-                                                    {String(year)} {/* Must be a string else error will occur */}
-                                                </Option>
-                                            ))
-                                            : <Option value={123} key={v4()}>Empty</Option>
-                                    }
-                                </DecoratedSelect>
+                                    options={_.map(years, year => ({year: String(year)})) || {}} //Convert array of years into array of objects each of them contains "year" field of type String(else error will be thrown)
+                                    optionValue={'year'}
+                                    optionLabel={'year'}
+                                />
                         </Col>
                         <Col span={6}></Col>
                     </Row>
@@ -239,17 +232,10 @@ export default class VehicleEditFormClass extends React.Component {
                                         resetFields();
                                     }}
                                     getPopupContainer={trigger => trigger.parentNode}
-                                >
-                                    {
-                                        makes
-                                            ? makes.map(({ id, name }) => (
-                                                <Option value={id} key={v4()}>
-                                                    {String(name)}
-                                                </Option>
-                                            ))
-                                            : <Option value={123} key={v4()}>Empty</Option>
-                                    }
-                                </DecoratedSelect>
+                                    options={makes || {}}
+                                    optionValue={'id'}
+                                    optionLabel={'name'}
+                                />
                         </Col>
                         <Col span={6}></Col>
                     </Row>
@@ -285,17 +271,10 @@ export default class VehicleEditFormClass extends React.Component {
                                         resetFields();
                                     }}
                                     getPopupContainer={trigger => trigger.parentNode}
-                                >
-                                    {
-                                        models
-                                            ? models.map(({ id, name }) => (
-                                                <Option value={id} key={v4()}>
-                                                    {String(name)}
-                                                </Option>
-                                            ))
-                                            : <Option value={123} key={v4()}>Empty</Option>
-                                    }
-                                </DecoratedSelect>
+                                    options={models || {}}
+                                    optionValue={'id'}
+                                    optionLabel={'name'}
+                                />
                         </Col>
                         <Col span={6}></Col>
                     </Row>
@@ -329,17 +308,10 @@ export default class VehicleEditFormClass extends React.Component {
                                         resetFields();
                                     }}
                                     getPopupContainer={trigger => trigger.parentNode}
-                                >
-                                    {
-                                        modifications
-                                            ? modifications.map(({ id, name }) => (
-                                                <Option value={id} key={v4()}>
-                                                    {String(name)}
-                                                </Option>
-                                            ))
-                                            : <Option value={123} key={v4()}>Empty</Option>
-                                    }
-                                </DecoratedSelect>
+                                    options={modifications || {}}
+                                    optionValue={'id'}
+                                    optionLabel={'name'}
+                                />
                         </Col>
                         <Col span={6}></Col>
                     </Row>

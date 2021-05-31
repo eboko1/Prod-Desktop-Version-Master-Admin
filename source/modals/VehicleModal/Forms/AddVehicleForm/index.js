@@ -193,13 +193,10 @@ export default class AddVehicleFormClass extends React.Component {
                                     resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
-                            >
-                                {years.map((year) => (
-                                    <Option value={year} key={v4()}>
-                                        {String(year)} {/* Must be a string else error will occur */}
-                                    </Option>
-                                ))}
-                            </DecoratedSelect>
+                                options={_.map(years, year => ({year: String(year)})) || {}} //Convert array of years into array of objects each of them contains "year" field of type String(else error will be thrown)
+                                optionValue={'year'}
+                                optionLabel={'year'}
+                            />
                     </Col>
                     <Col span={6}></Col>
                 </Row>
@@ -235,13 +232,10 @@ export default class AddVehicleFormClass extends React.Component {
                                     resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
-                            >
-                                {makes.map(({ id, name }) => (
-                                    <Option value={id} key={v4()}>
-                                        {String(name)}
-                                    </Option>
-                                ))}
-                            </DecoratedSelect>
+                                options={makes || {}}
+                                optionValue={'id'}
+                                optionLabel={'name'}
+                            />
                     </Col>
                     <Col span={6}></Col>
                 </Row>
@@ -276,13 +270,10 @@ export default class AddVehicleFormClass extends React.Component {
                                     resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
-                            >
-                                {models.map(({ id, name }) => (
-                                    <Option value={id} key={v4()}>
-                                        {String(name)}
-                                    </Option>
-                                ))}
-                            </DecoratedSelect>
+                                options={models || {}}
+                                optionValue={'id'}
+                                optionLabel={'name'}
+                            />
                     </Col>
                     <Col span={6}></Col>
                 </Row>
@@ -316,13 +307,10 @@ export default class AddVehicleFormClass extends React.Component {
                                     resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
-                            >
-                                {modifications.map(({ id, name }) => (
-                                    <Option value={id} key={v4()}>
-                                        {String(name)}
-                                    </Option>
-                                ))}
-                            </DecoratedSelect>
+                                options={modifications || {}}
+                                optionValue={'id'}
+                                optionLabel={'name'}
+                            />
                     </Col>
                     <Col span={6}></Col>
                 </Row>
