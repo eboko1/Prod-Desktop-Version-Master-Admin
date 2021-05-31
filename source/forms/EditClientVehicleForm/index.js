@@ -24,7 +24,8 @@ import {
 
 // own
 import Styles from "./styles.m.css";
-import ClientVehicleTransfer from "modals/ClientVehicleTransfer";
+import { ClientVehicleTransfer } from "modals";
+
 const Option = Select.Option;
 const { confirm } = Modal;
 

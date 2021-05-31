@@ -36,7 +36,7 @@ import Styles from './styles.m.css';
 import Block from '../../Block';
 import DataItem from '../../DataItem';
 import {isForbidden, linkTo, permissions} from "utils";
-import ClientVehicleTransfer from "modals/ClientVehicleTransfer";
+import { ClientVehicleTransfer } from "modals";
 
 const TabPane = Tabs.TabPane;
 const DATE_FORMATT = "DD.MM.YYYY";
@@ -211,16 +211,11 @@ export default class GeneralInfoTab extends Component {
                         <div>
                             {!fetchingVehicleClient && (
 
-                                // <Icon className={Styles.changeVehicleOwnerIcon} type="sync" />
-                            //
-                            // {!isForbidden(user, permissions.ACCESS_CLIENTS_VEHICLE_TRANSFER) && !isEditForbidden ? (
                                 <ClientVehicleTransfer
-                                clientId={client.clientId}
-                                vehicleId={vehicle.id}
-                                vehicles={client.vehicles}
+                                    clientId={client.clientId}
+                                    vehicleId={vehicle.id}
+                                    vehicles={client.vehicles}
                                 />
-                                // ) : null}
-
                             ) }
                         </div>
                     }

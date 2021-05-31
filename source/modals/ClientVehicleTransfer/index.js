@@ -17,6 +17,10 @@ const openNotificationWithIcon = (type, message, description) => {
     });
 };
 
+/**
+ * This modal is used to transfer car between clients 
+ */
+
 
 @injectIntl
 export default class ClientVehicleTransfer extends Component {
