@@ -35,6 +35,7 @@ import { deleteClientVehicle } from "core/client/duck";
 import Styles from './styles.m.css';
 import Block from '../../Block';
 import DataItem from '../../DataItem';
+import {linkTo} from "utils";
 
 const TabPane = Tabs.TabPane;
 const DATE_FORMATT = "DD.MM.YYYY";
@@ -95,6 +96,10 @@ export default class GeneralInfoTab extends Component {
 
     onViewVehicle = ({vehicleId}) => {
         this.props.setModal(MODALS.VEHICLE, {mode: "VIEW", vehicleId});
+    }
+
+    handleCopy = (url) => {
+        navigator.clipboard.writeText(url).then();
     }
 
     render() {
@@ -246,20 +251,32 @@ export default class GeneralInfoTab extends Component {
 
                             <div className={Styles.buttonsContainer}>
                                 <Row className={Styles.row}>
-                                    <Col span={6}><Button className={Styles.button} type="primary">{<FormattedMessage id='vehicle_page.record' />}</Button></Col>
+                                    <Col span={6}>
+                                        <Button className={Styles.button} type="primary" onClick={() => linkTo(`${book.order}/${_.get(generalData, 'latestOrderData.orderId')}`)}>
+                                            <FormattedMessage id='vehicle_page.record' />
+                                            <FormattedDatetime format={DATE_FORMATT} datetime={_.get(generalData, 'latestOrderData.datetime')} />
+                                        </Button>
+                                    </Col>
                                     <Col span={18}>
                                         <Icon className={Styles.sendSMSIcon} type="message" />
                                         <Icon className={Styles.sendMailIcon} type="mail" />
-                                        <Icon className={Styles.copyIcon} type="copy" />
+                                        <Icon className={Styles.copyIcon} type="copy" onClick={() => this.handleCopy(`${book.order}/${_.get(generalData, 'latestOrderData.orderId')}`)}/>
                                     </Col>
                                 </Row>
 
                                 <Row className={Styles.row}>
-                                    <Col span={6}><Button className={Styles.button} type="primary">{<FormattedMessage id='vehicle_page.calculation' />}</Button></Col>
+                                    <Col span={6}>
+                                        <a href={`${_.get(generalData, 'linkData.link')}`}>
+                                            <Button className={Styles.button} type="primary" >
+                                                {<FormattedMessage id='vehicle_page.calculation' />}
+                                            </Button>
+                                        </a>
+
+                                    </Col>
                                     <Col span={18}>
                                         <Icon className={Styles.sendSMSIcon} type="message" />
                                         <Icon className={Styles.sendMailIcon} type="mail" />
-                                        <Icon className={Styles.copyIcon} type="copy" />
+                                        <Icon className={Styles.copyIcon} type="copy" onClick={() => this.handleCopy(`${_.get(generalData, 'linkData.link')}`)}/>
                                     </Col>
                                 </Row>
                             </div>
