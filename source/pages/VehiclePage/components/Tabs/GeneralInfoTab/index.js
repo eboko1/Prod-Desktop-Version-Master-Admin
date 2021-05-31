@@ -35,7 +35,8 @@ import { deleteClientVehicle } from "core/client/duck";
 import Styles from './styles.m.css';
 import Block from '../../Block';
 import DataItem from '../../DataItem';
-import {linkTo} from "utils";
+import {isForbidden, linkTo, permissions} from "utils";
+import ClientVehicleTransfer from "modals/ClientVehicleTransfer";
 
 const TabPane = Tabs.TabPane;
 const DATE_FORMATT = "DD.MM.YYYY";
@@ -208,7 +209,19 @@ export default class GeneralInfoTab extends Component {
                     className={Styles.block}
                     controls={
                         <div>
-                            {!fetchingVehicleClient && <Icon className={Styles.changeVehicleOwnerIcon} type="sync" /> }
+                            {!fetchingVehicleClient && (
+
+                                // <Icon className={Styles.changeVehicleOwnerIcon} type="sync" />
+                            //
+                            // {!isForbidden(user, permissions.ACCESS_CLIENTS_VEHICLE_TRANSFER) && !isEditForbidden ? (
+                                <ClientVehicleTransfer
+                                clientId={client.clientId}
+                                vehicleId={vehicle.id}
+                                vehicles={client.vehicles}
+                                />
+                                // ) : null}
+
+                            ) }
                         </div>
                     }
                 >
