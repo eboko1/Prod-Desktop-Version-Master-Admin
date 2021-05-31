@@ -195,7 +195,7 @@ export default class VehicleEditFormClass extends React.Component {
                                         resetFields();
                                     }}
                                     getPopupContainer={trigger => trigger.parentNode}
-                                    options={_.map(years, year => ({year: String(year)})) || {}} //Convert array of years into array of objects each of them contains "year" field of type String(else error will be thrown)
+                                    options={_.map((years || []).reverse(), year => ({year: String(year)}))} //Convert array of years into array of objects each of them contains "year" field of type String(else error will be thrown)
                                     optionValue={'year'}
                                     optionLabel={'year'}
                                 />
