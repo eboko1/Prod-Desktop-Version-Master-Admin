@@ -1,4 +1,5 @@
 // vendor
+import { notification } from 'antd';
 import { call, put, all, take, select } from 'redux-saga/effects';
 
 //proj
@@ -167,6 +168,7 @@ export function* updateVehicleSaga() {
         const { payload: { vehicleId } } = yield take(UPDATE_VEHICLE);
 
         const {
+            clientId,
             number,
             vin,
             year,
@@ -176,6 +178,7 @@ export function* updateVehicleSaga() {
         } = yield select(selectFields);
 
         const payload = {
+            clientId: clientId,
             vehicleNumber: number,
             vehicleVin: vin,
             vehicleYear: year,
@@ -183,13 +186,22 @@ export function* updateVehicleSaga() {
             vehicleModificationId: modificationId,
         };
 
-        yield call(
-            fetchAPI,
-            'PUT',
-            `clients/vehicles/${vehicleId}`,
-            null,
-            payload,
-        );
+        try{
+            yield call(
+                fetchAPI,
+                'PUT',
+                `clients/vehicles/${vehicleId}`,
+                null,
+                payload,
+                {handleErrorInternally: true}
+            );
+        } catch(err) {
+            notification.error({
+                message: "Error"
+            });
+        }
+
+        
     }
 }
 

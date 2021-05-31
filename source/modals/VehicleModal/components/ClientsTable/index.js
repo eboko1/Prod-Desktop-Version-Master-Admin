@@ -20,6 +20,7 @@ import {
 
     setClientsPage,
     setClientsSearchQuery,
+    setClientId,
 } from 'core/forms/vehicleForm/duck';
 
 //Own
@@ -39,6 +40,7 @@ const mapDispatchToProps = {
     fetchClients,
     setClientsPage,
     setClientsSearchQuery,
+    setClientId,
 }
 
 @connect(
@@ -74,6 +76,7 @@ export default class ClientsContainer extends React.Component {
             stats,
             sort,
             setClientsPage,
+            setClientId,
         } = this.props;
 
         const pagination = {
@@ -103,14 +106,12 @@ export default class ClientsContainer extends React.Component {
                         scroll={ { x: 1000, y: '30vh' } }
                         loading={fetchingClients}
                         pagination={pagination}
-                        // rowKey={(client) => `${client.clientId}`}
-                        // expandedRowKeys={[expandedClientRow]} //Only one row can be expanded at the time
-                        // expandedRowRender={() => (<ClientOrdersContainer />)}
-                        // onExpand={(expanded, client) => {
-                        //     expanded && fetchClientOrders({clientId: client.clientId})
-                        //     expanded && setClientRowKey(`${client.clientId}`)
-                        //     !expanded && setClientRowKey("")
-                        // }}
+                        rowSelection={{
+                            hideDefaultSelections: true,
+                            onSelect: client => {
+                                setClientId({clientId: _.get(client, 'clientId')});
+                            }
+                        }}
                         bordered
                     />
                 </div>
