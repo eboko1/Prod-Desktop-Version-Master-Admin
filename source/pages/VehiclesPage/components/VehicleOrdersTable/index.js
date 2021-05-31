@@ -9,6 +9,8 @@ import { v4 } from 'uuid';
 import {
     selectVehicleOrders,
     selectVehicleOrdersStats,
+    selectVehicleOrdersSort,
+    setPageOrders,
 } from 'core/vehicles/duck';
 
 //Own
@@ -18,27 +20,43 @@ import Styles from './styles.m.css';
 const mapStateToProps = state => ({
     user: state.auth,
     orders: selectVehicleOrders(state),
+    stats:  selectVehicleOrdersStats(state),
+    sort:   selectVehicleOrdersSort(state),
 });
 
-@connect(
-    mapStateToProps,
-    void 0,
-)
+const mapDispatchToProps = {
+    setPageOrders,
+};
+
 @injectIntl
+@connect(mapStateToProps, mapDispatchToProps)
 export default class VehicleOrdersTable extends React.Component {
 
     render() {
         const {
             orders,
+            stats,
+            setPageOrders,
+            sort,
             intl: {formatMessage},
         } = this.props;
 
+        const pagination = {
+            pageSize: 25,
+            size: "small",
+            total: Math.ceil(stats.countOrders / 25) * 25,
+            current: sort.page,
+            onChange: page => {
+                setPageOrders({page})
+            },
+        }
 
         return (
             <div className={Styles.tableCont}>
                 <Table
                     rowClassName={() => Styles.tableRow}
                     className={Styles.table}
+                    pagination={pagination}
                     dataSource={orders}
                     columns={columnsConfig({formatMessage})}
                     scroll={ { x: 1000, y: '30vh' } }
