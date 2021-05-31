@@ -196,7 +196,7 @@ export default class AddVehicleFormClass extends React.Component {
                             >
                                 {years.map((year) => (
                                     <Option value={year} key={v4()}>
-                                        {year}
+                                        {String(year)} {/* Must be a string else error will occur */}
                                     </Option>
                                 ))}
                             </DecoratedSelect>
@@ -238,7 +238,7 @@ export default class AddVehicleFormClass extends React.Component {
                             >
                                 {makes.map(({ id, name }) => (
                                     <Option value={id} key={v4()}>
-                                        {name}
+                                        {String(name)}
                                     </Option>
                                 ))}
                             </DecoratedSelect>
@@ -279,7 +279,7 @@ export default class AddVehicleFormClass extends React.Component {
                             >
                                 {models.map(({ id, name }) => (
                                     <Option value={id} key={v4()}>
-                                        {name}
+                                        {String(name)}
                                     </Option>
                                 ))}
                             </DecoratedSelect>
@@ -319,7 +319,7 @@ export default class AddVehicleFormClass extends React.Component {
                             >
                                 {modifications.map(({ id, name }) => (
                                     <Option value={id} key={v4()}>
-                                        {name}
+                                        {String(name)}
                                     </Option>
                                 ))}
                             </DecoratedSelect>

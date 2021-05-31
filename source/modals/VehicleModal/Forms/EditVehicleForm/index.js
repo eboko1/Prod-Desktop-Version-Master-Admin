@@ -199,7 +199,7 @@ export default class VehicleEditFormClass extends React.Component {
                                         years
                                             ? years.map((year) => (
                                                 <Option value={year} key={v4()}>
-                                                    {year}
+                                                    {String(year)} {/* Must be a string else error will occur */}
                                                 </Option>
                                             ))
                                             : <Option value={123} key={v4()}>Empty</Option>
@@ -244,7 +244,7 @@ export default class VehicleEditFormClass extends React.Component {
                                         makes
                                             ? makes.map(({ id, name }) => (
                                                 <Option value={id} key={v4()}>
-                                                    {name}
+                                                    {String(name)}
                                                 </Option>
                                             ))
                                             : <Option value={123} key={v4()}>Empty</Option>
@@ -290,7 +290,7 @@ export default class VehicleEditFormClass extends React.Component {
                                         models
                                             ? models.map(({ id, name }) => (
                                                 <Option value={id} key={v4()}>
-                                                    {name}
+                                                    {String(name)}
                                                 </Option>
                                             ))
                                             : <Option value={123} key={v4()}>Empty</Option>
@@ -334,7 +334,7 @@ export default class VehicleEditFormClass extends React.Component {
                                         modifications
                                             ? modifications.map(({ id, name }) => (
                                                 <Option value={id} key={v4()}>
-                                                    {name}
+                                                    {String(name)}
                                                 </Option>
                                             ))
                                             : <Option value={123} key={v4()}>Empty</Option>
