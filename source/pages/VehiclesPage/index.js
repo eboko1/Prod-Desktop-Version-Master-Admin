@@ -2,7 +2,6 @@
 import React, {Component} from 'react';
 import {FormattedMessage, injectIntl } from 'react-intl';
 import {connect} from 'react-redux';
-import {Button, Tabs, Icon, Row, Col, Input} from 'antd';
 import _ from 'lodash';
 import { v4 } from 'uuid';
 

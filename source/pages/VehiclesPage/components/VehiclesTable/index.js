@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Table, Input } from 'antd';
+import { Table, Input, Spin } from 'antd';
 import { v4 } from 'uuid';
 
 //Proj
@@ -14,6 +14,8 @@ import {
     selectVehiclesStats,
     selectExpandedVehicleId,
     selectSort,
+    selectFetchingVehicles,
+    
 
     setPage,
     setSearchQuery,
@@ -31,6 +33,7 @@ const mapStateToProps = state => ({
     stats:                selectVehiclesStats(state),
     sort:                 selectSort(state),
     expandedVehicleId:    selectExpandedVehicleId(state),
+    fetchingVehicles:     selectFetchingVehicles(state),
 });
 
 const mapDispatchToProps = {
@@ -74,7 +77,8 @@ export default class VehiclesTable extends React.Component {
             expandedVehicleId,
             user,
             vehicles,
-            setExpandedVehicleId
+            setExpandedVehicleId,
+            fetchingVehicles
         } = this.props;
 
         console.log("Vehicles: ", vehicles);
@@ -98,27 +102,33 @@ export default class VehiclesTable extends React.Component {
                     
                 </div>
                 
-                <div>
-                    <Table
-                        className={Styles.table}
-                        // dataSource={clients}
-                        dataSource={vehicles}
-                        columns={columnsConfig({user})}
-                        scroll={ { x: 1000, y: '70vh' } }
-                        // loading={clientsFetching}
-                        pagination={pagination}
-                        rowKey={vehicle => vehicle.clientVehicleId}
-                        expandedRowKeys={[expandedVehicleId]} //Only one row can be expanded at the time
-                        expandedRowRender={() => (<VehicleOrdersTable />)}
-                        onExpand={(expanded, vehicle) => {
-                            console.log("Expanding: ", vehicle.clientVehicleId, expanded);
-                            setExpandedVehicleId({
-                                vehicleId: expanded ? vehicle.clientVehicleId: undefined
-                            })
-                        }}
-                        bordered
-                    />
-                </div>
+                {
+                    fetchingVehicles
+                        ? (<Spin />)
+                        : (
+                            <div>
+                                <Table
+                                    className={Styles.table}
+                                    // dataSource={clients}
+                                    dataSource={vehicles}
+                                    columns={columnsConfig({user})}
+                                    scroll={ { x: 1000, y: '70vh' } }
+                                    // loading={clientsFetching}
+                                    pagination={pagination}
+                                    rowKey={vehicle => vehicle.clientVehicleId}
+                                    expandedRowKeys={[expandedVehicleId]} //Only one row can be expanded at the time
+                                    expandedRowRender={() => (<VehicleOrdersTable />)}
+                                    onExpand={(expanded, vehicle) => {
+                                        console.log("Expanding: ", vehicle.clientVehicleId, expanded);
+                                        setExpandedVehicleId({
+                                            vehicleId: expanded ? vehicle.clientVehicleId: undefined
+                                        })
+                                    }}
+                                    bordered
+                                />
+                            </div>
+                        )
+                }
             </div>
         );
     }
