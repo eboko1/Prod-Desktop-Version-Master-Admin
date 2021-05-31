@@ -22,6 +22,7 @@ import {
     fetchVehicleRecommendationsSuccess,
 
     setFetchingVehicle,
+    setFetchingVehicleOrders,
     setFetchingVehicles,
     setFetchingVehicleClient,
     setFetchingVehicleAttributes,
@@ -163,6 +164,8 @@ export function* fetchVehicleOrdersSaga() {
         try {
             yield take(FETCH_VEHICLE_ORDERS);
 
+            yield put(setFetchingVehicleOrders(true));
+
             const vehicleId = yield select(selectExpandedVehicleId);
 
             const sort = yield select(selectVehicleOrdersSort);
@@ -176,6 +179,7 @@ export function* fetchVehicleOrdersSaga() {
             yield put(emitError(error));
         } finally {
             yield nprogress.done();
+            yield put(setFetchingVehicleOrders(false));
         }
     }
 }

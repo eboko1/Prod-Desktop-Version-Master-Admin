@@ -10,6 +10,7 @@ import {
     selectVehicleOrders,
     selectVehicleOrdersStats,
     selectVehicleOrdersSort,
+    selectFetchingVehicleOrders,
     setPageOrders,
 } from 'core/vehicles/duck';
 
@@ -22,6 +23,7 @@ const mapStateToProps = state => ({
     orders: selectVehicleOrders(state),
     stats:  selectVehicleOrdersStats(state),
     sort:   selectVehicleOrdersSort(state),
+    fetchingVehicleOrders: selectFetchingVehicleOrders(state),
 });
 
 const mapDispatchToProps = {
@@ -38,6 +40,7 @@ export default class VehicleOrdersTable extends React.Component {
             stats,
             setPageOrders,
             sort,
+            fetchingVehicleOrders,
             intl: {formatMessage},
         } = this.props;
 
@@ -60,7 +63,7 @@ export default class VehicleOrdersTable extends React.Component {
                     dataSource={orders}
                     columns={columnsConfig({formatMessage})}
                     scroll={ { x: 1000, y: '30vh' } }
-                    // loading={clientOrdersFetching}
+                    loading={fetchingVehicleOrders}
                     rowKey={() => v4()}
                     bordered
                 />
