@@ -110,7 +110,14 @@ export function columnsConfig(props) {
         render: (client) => {
             return (
                 <div>
-                    <div>{`${_.get(client, 'name')} ${_.get(client, 'surname')}`}</div>
+                    <div>
+                        <Link
+                            to={ `${book.client}/${_.get(client, 'clientId')}` }
+                        >
+                            {`${_.get(client, 'name')} ${_.get(client, 'surname')}`}
+                        </Link>
+                    </div>
+
                     <div>
                         {
                             client.phones.map(phone => (
