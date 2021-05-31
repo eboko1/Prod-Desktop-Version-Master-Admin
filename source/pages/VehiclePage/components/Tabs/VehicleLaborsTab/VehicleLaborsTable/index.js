@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { injectIntl } from 'react-intl';
-import { Table } from 'antd';
+import {Spin, Table} from 'antd';
 import { v4 } from 'uuid';
 
 //proj
@@ -10,7 +10,7 @@ import {
     selectVehicleLabors,
     selectVehicleLaborsStats,
     selectVehicleLaborsSort,
-    setPageLabors,
+    setPageLabors, selectVehicleLaborsFetching,
 } from 'core/vehicles/duck';
 
 //Own
@@ -21,7 +21,8 @@ const mapStateToProps = state => ({
     user: state.auth,
     labors: selectVehicleLabors(state),
     stats: selectVehicleLaborsStats(state),
-    sort: selectVehicleLaborsSort(state)
+    sort: selectVehicleLaborsSort(state),
+    fetching: selectVehicleLaborsFetching(state),
 });
 
 const mapDispatchToProps = {
@@ -42,6 +43,7 @@ export default class VehicleLaborsTable extends React.Component {
             sort,
             intl: {formatMessage},
             setPageLabors,
+            fetching
         } = this.props;
 
         const pagination = {
@@ -55,18 +57,20 @@ export default class VehicleLaborsTable extends React.Component {
         }
 
         return (
-            <div className={Styles.tableCont}>
-                <Table
-                    rowClassName={() => Styles.tableRow}
-                    className={Styles.table}
-                    dataSource={labors}
-                    pagination={pagination}
-                    columns={columnsConfig({formatMessage})}
-                    scroll={ { x: 'auto', y: '80vh' } }
-                    rowKey={() => v4()}
-                    bordered
-                />
-            </div>
+            fetching ? <Spin/> : (
+                    <div className={Styles.tableCont}>
+                        <Table
+                            rowClassName={() => Styles.tableRow}
+                            className={Styles.table}
+                            dataSource={labors}
+                            pagination={pagination}
+                            columns={columnsConfig({formatMessage})}
+                            scroll={ { x: 'auto', y: '80vh' } }
+                            rowKey={() => v4()}
+                            bordered
+                        />
+                    </div>
+                )
         );
     }
 }

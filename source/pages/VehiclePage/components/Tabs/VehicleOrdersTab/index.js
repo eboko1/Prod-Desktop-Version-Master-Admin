@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Button, Tabs, Icon, Row, Col, Input} from 'antd';
+import {Button, Tabs, Icon, Row, Col, Input, Spin} from 'antd';
 import _ from 'lodash';
 import { v4 } from 'uuid';
 
@@ -18,7 +18,8 @@ import {
     selectVehicle,
     selectClient,
     selectGeneralData,
-    setExpandedVehicleId
+    setExpandedVehicleId,
+    selectFetchingVehicleOrders
 } from 'core/vehicles/duck';
 
 // own
@@ -28,6 +29,7 @@ const mapStateToProps = state => ({
     vehicle:     selectVehicle(state),
     client:      selectClient(state),
     generalData: selectGeneralData(state),
+    fetching:    selectFetchingVehicleOrders(state)
 });
 
 const mapDispatchToProps = {
@@ -54,6 +56,7 @@ export default class GeneralInfoTab extends Component {
             client,
             vehicle,
             generalData,
+            fetching,
         } = this.props;
 
         // console.log("Vehicle: ", this.props.vehicle);
@@ -61,9 +64,11 @@ export default class GeneralInfoTab extends Component {
         // console.log("generalData: ", generalData);
 
         return (
-            <div className={Styles.tabContent}>
-                <VehicleOrdersTable />
-            </div>
+            fetching ? <Spin/> : (
+                    <div className={Styles.tabContent}>
+                        <VehicleOrdersTable />
+                    </div>
+                )
         )
     }
 }

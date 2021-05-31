@@ -18,16 +18,16 @@ const DEFAULT_DATETIME = 'DD.MM.YYYY HH:mm';
 //Choose width for each col
 //It must be 100% of width in total!
 const defWidth = {
-    order:               'auto',
-    datetime:            '10%',
-    labor:                '10%',
-    type:                  '10%',
-    storeGroupName:       '10%',
-    mechanic:             '10%',
-    normHours:         '10%',
-    price:         '10%',
-    count:         '10%',
-    sum:         '10%',
+    order:                  '10%',
+    datetime:               '10%',
+    labor:                  '10%',
+    type:                   '10%',
+    storeGroupName:         '10%',
+    mechanic:               '10%',
+    normHours:              '10%',
+    price:                  '10%',
+    count:                  '10%',
+    sum:                    '10%',
     
 }
 

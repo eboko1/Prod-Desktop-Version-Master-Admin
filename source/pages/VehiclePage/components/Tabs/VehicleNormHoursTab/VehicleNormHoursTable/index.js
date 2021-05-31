@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { injectIntl } from 'react-intl';
-import { Table } from 'antd';
+import { Table, Spin } from 'antd';
 import { v4 } from 'uuid';
 
 //proj
@@ -11,7 +11,7 @@ import {
     selectVehicleNormHoursStats,
     selectVehicleNormHoursSort,
 
-    setPageNormHours,
+    setPageNormHours, selectVehicleNormHoursFetching,
 } from 'core/vehicles/duck';
 
 //Own
@@ -22,7 +22,8 @@ const mapStateToProps = state => ({
     user: state.auth,
     normHours: selectVehicleNormHours(state),
     stats: selectVehicleNormHoursStats(state),
-    sort: selectVehicleNormHoursSort(state)
+    sort: selectVehicleNormHoursSort(state),
+    fetching: selectVehicleNormHoursFetching(state)
 });
 
 const mapDispatchToProps = {
@@ -43,6 +44,7 @@ export default class VehicleNormHoursTable extends React.Component {
             sort,
             intl: {formatMessage},
             setPageNormHours,
+            fetching
         } = this.props;
 
         const pagination = {
@@ -56,18 +58,21 @@ export default class VehicleNormHoursTable extends React.Component {
         }
 
         return (
-            <div className={Styles.tableCont}>
-                <Table
-                    rowClassName={() => Styles.tableRow}
-                    className={Styles.table}
-                    dataSource={normHours}
-                    pagination={pagination}
-                    columns={columnsConfig({formatMessage})}
-                    scroll={ { x: 'auto', y: '80vh' } }
-                    rowKey={() => v4()}
-                    bordered
-                />
-            </div>
+
+            fetching ? <Spin/> :
+                         (<div className={Styles.tableCont}>
+                             <Table
+                                 rowClassName={() => Styles.tableRow}
+                                 className={Styles.table}
+                                 dataSource={normHours}
+                                 pagination={pagination}
+                                 columns={columnsConfig({formatMessage})}
+                                 scroll={{x: 'auto', y: '80vh'}}
+                                 rowKey={() => v4()}
+                                 bordered
+                             />
+                         </div>)
+
         );
     }
 }

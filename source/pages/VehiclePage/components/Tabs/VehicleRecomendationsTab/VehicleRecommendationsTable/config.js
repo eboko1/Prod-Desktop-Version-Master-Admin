@@ -22,7 +22,7 @@ const defWidth = {
 export function columnsConfig() {
 
     const orderCol = {
-        title:     "Test",//<FormattedMessage id='orders.order' />,
+        title:     <FormattedMessage id='vehicle_page.order_id' />,
         width:     defWidth.order,
         dataIndex: 'orderNum',
         key:       'orderNum',
@@ -37,7 +37,7 @@ export function columnsConfig() {
     };
 
     const datetimeCol = {
-        title:     "Test",//<FormattedMessage id='orders.datetime' />,
+        title:     <FormattedMessage id='vehicle_page.order_datetime' />,
         width:     defWidth.datetime,
         dataIndex: 'orderDatetime',
         key:       'orderDatetime',
@@ -50,7 +50,7 @@ export function columnsConfig() {
 
 
     const recommendationCol = {
-        title:     "Test",//<FormattedMessage id='appurtenance.code' />,
+        title:     <FormattedMessage id='vehicle_page.order_recommendation' />,
         width:     defWidth.recommendation,
         dataIndex: 'recommendation',
         key:       'recommendation',
