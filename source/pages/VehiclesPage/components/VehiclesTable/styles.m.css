@@ -26,15 +26,6 @@
     padding: 4px;
 }
 
-.clientLink {
-    display: flex;
-    align-items: center;
-    min-height: 1.5em;
-    margin-left: 15px;
-    color: rgb(68, 68, 68);
-    font-size: 1.2em;
-}
-
 .filtersCont {
     display: flex;
     justify-content: center;
@@ -52,32 +43,4 @@
 
 .inputCont {
     width: 70%;
-}
-
-.vehicle {
-    display: flex;
-    justify-content: space-between;
-    padding: 4px;
-}
-
-.vin {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.vin, .vehicle {
-    height: 3em;
-}
-
-.newOrderIcon {
-    font-size: 16px;
-}
-
-.debt {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid var(--lightGray);
-    font-weight: bold;
 }

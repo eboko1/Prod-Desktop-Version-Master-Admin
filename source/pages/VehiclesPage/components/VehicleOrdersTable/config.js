@@ -17,7 +17,7 @@ import Styles from './styles.m.css';
 //It must be 100% of width in total!
 const defWidth = {
     order:               'auto',
-    order_status:               '10%',
+    order_status:        '10%',
     begin_datetime:      '10%',
     sum:                 '10%',
     remaining_sum:       '10%',

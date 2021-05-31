@@ -8,15 +8,12 @@ import { v4 } from "uuid";
 
 //Proj
 import book from 'routes/book';
-import { Numeral, StyledButton } from "commons";
 import { permissions, isForbidden } from 'utils';
 
 //Own
 import Styles from './styles.m.css';
 
-
-//Choose width for each col
-//It must be 100% of width in total!
+//Width for each col, it must be 100% of width in total or less than 100% with auto keywords somewhere
 const defWidth = {
     vehicle: '20%',
     vehicleNumber: '10%',
@@ -24,41 +21,7 @@ const defWidth = {
     client: 'auto',
 }
 
-/**
- * Creates specificly styled button with popup hint
- * @property onClick - event handler
- * @property user - user to make permissin validations for
- * @property popMessage - message to show when hovered
- * @returns Styled button with handler, popMessage and permisions setup
- */
-const CreateOrderBtn = (props) => {
-    const {
-        onClick,
-        user,
-        popMessage
-    } = props;
-
-    const content = (<div>{popMessage}</div>);
-
-    return (
-        <Popover content={content}>
-            <Button
-                type='primary'
-                onClick={onClick}
-                disabled={ isForbidden(user, permissions.CREATE_ORDER) }
-            >
-                <Icon type="plus" className={Styles.newOrderIcon}/>
-            </Button>
-        </Popover>
-    );
-}
-
-export function columnsConfig(props) {
-
-    const {
-        user,
-        onCreateOrderForClient
-    } = props;
+export function columnsConfig() {
 
     const vehicleCol = {
         title:     <FormattedMessage id='vehicle' />,
