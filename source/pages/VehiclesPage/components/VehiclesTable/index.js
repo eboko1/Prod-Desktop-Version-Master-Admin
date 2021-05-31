@@ -22,7 +22,6 @@ import {
     setExpandedVehicleId,
 } from 'core/vehicles/duck';
 
-
 //Own
 import { columnsConfig } from './config';
 import Styles from './styles.m.css';
@@ -43,15 +42,17 @@ const mapDispatchToProps = {
     setExpandedVehicleId
 }
 
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+/**
+ * This table contains vehicles, each vehicle row can be expanded and its orders will appear
+ */
 @injectIntl
+@connect(mapStateToProps, mapDispatchToProps)
 export default class VehiclesTable extends React.Component {
     constructor(props) {
         super(props);
 
+
+        /** When user want to search just pass here its input, if no mere was provided in a second it will perform a search action */
         this.handleSearch = _.debounce(value => {
             this.props.setSearchQuery({
                 query: _.toLower(value.replace(/[+()]/g,''))
@@ -60,15 +61,14 @@ export default class VehiclesTable extends React.Component {
 
     }
 
+    componentDidMount() {
+        this.props.fetchVehicles();
+    }
+    
     onSearch = e => {
         const value = e.target.value;
         this.handleSearch(value);
     }
-
-    componentDidMount() {
-        this.props.fetchVehicles();
-    }
-
     render() {
         const {
             stats,
@@ -81,17 +81,12 @@ export default class VehiclesTable extends React.Component {
             fetchingVehicles
         } = this.props;
 
-        console.log("Vehicles: ", vehicles);
-        console.log("Stats: ", stats);
-
         const pagination = {
             pageSize: 25,
             size: "large",
             total: Math.ceil(stats.totalRowsCount / 25) * 25,
             current: sort.page,
-            onChange: page => {
-                setPage({page});
-            },
+            onChange: page => setPage({page}),
         };
 
         return (
@@ -102,33 +97,26 @@ export default class VehiclesTable extends React.Component {
                     
                 </div>
                 
-                {
-                    fetchingVehicles
-                        ? (<Spin />)
-                        : (
-                            <div>
-                                <Table
-                                    className={Styles.table}
-                                    // dataSource={clients}
-                                    dataSource={vehicles}
-                                    columns={columnsConfig({user})}
-                                    scroll={ { x: 1000, y: '70vh' } }
-                                    // loading={clientsFetching}
-                                    pagination={pagination}
-                                    rowKey={vehicle => vehicle.clientVehicleId}
-                                    expandedRowKeys={[expandedVehicleId]} //Only one row can be expanded at the time
-                                    expandedRowRender={() => (<VehicleOrdersTable />)}
-                                    onExpand={(expanded, vehicle) => {
-                                        console.log("Expanding: ", vehicle.clientVehicleId, expanded);
-                                        setExpandedVehicleId({
-                                            vehicleId: expanded ? vehicle.clientVehicleId: undefined
-                                        })
-                                    }}
-                                    bordered
-                                />
-                            </div>
-                        )
-                }
+                <div>
+                    <Table
+                        className={Styles.table}
+                        dataSource={vehicles}
+                        columns={columnsConfig({user})}
+                        scroll={ { x: 1000, y: '70vh' } }
+                        loading={fetchingVehicles}
+                        pagination={pagination}
+                        rowKey={vehicle => vehicle.clientVehicleId}
+                        expandedRowKeys={[expandedVehicleId]} //Only one row can be expanded at the time
+                        expandedRowRender={() => (<VehicleOrdersTable />)}
+                        onExpand={(expanded, vehicle) => {
+                            console.log("Expanding: ", vehicle.clientVehicleId, expanded);
+                            setExpandedVehicleId({
+                                vehicleId: expanded ? vehicle.clientVehicleId: undefined
+                            })
+                        }}
+                        bordered
+                    />
+                </div>
             </div>
         );
     }

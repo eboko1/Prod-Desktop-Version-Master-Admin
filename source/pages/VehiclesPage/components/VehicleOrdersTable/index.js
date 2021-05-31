@@ -30,6 +30,9 @@ const mapDispatchToProps = {
     setPageOrders,
 };
 
+/**
+ * This table contains all vehicle's orders.
+ */
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class VehicleOrdersTable extends React.Component {
