@@ -26,6 +26,7 @@ import {
     setVehicleMakeId,
     setVehicleModelId,
     setVehicleModificationId,
+    fetchVehicleDataByVin,
 } from 'core/forms/vehicleForm/duck';
 
 //own
@@ -50,6 +51,7 @@ const mapDispatchToProps = {
     fetchVehicleMakes,
     fetchVehicleModels,
     fetchVehicleModifications,
+    fetchVehicleDataByVin,
 
     setVehicleNumber,
     setVehicleVin,
@@ -93,6 +95,7 @@ export default class VehicleEditFormClass extends React.Component {
             fetchVehicleMakes,
             fetchVehicleModels,
             fetchVehicleModifications,
+            fetchVehicleDataByVin,
 
             setVehicleNumber,
             setVehicleVin,
@@ -162,7 +165,7 @@ export default class VehicleEditFormClass extends React.Component {
                                 getFieldDecorator={getFieldDecorator}
                             />
                         </Col>
-                        <Col span={6}> <Button type="primary" >Get car</Button> </Col>
+                        <Col span={6}> <Button type="primary" onClick={() => fetchVehicleDataByVin()}>Get car</Button> </Col>
                     </Row>
 
                     <Row className={Styles.row}>
