@@ -50,6 +50,13 @@ import {
     selectVehicleOrdersSort,
     fetchVehicleAttributesSuccess,
     fetchVehicleOrdersLatestSuccess,
+
+    setFetchingVehicleOrdersData,
+    setFetchingVehicleNormHours,
+    setFetchingVehicleLabors,
+    setFetchingVehicleAppurtenances,
+    setFetchingVehicleRecommendations,
+
 } from './duck';
 
 export function* fetchVehicleSaga() {
@@ -190,6 +197,8 @@ export function* fetchVehicleNormHoursSaga() {
         try {
             yield take(FETCH_VEHICLE_NORM_HOURS);
 
+            yield put(setFetchingVehicleNormHours(true));
+
             const sort = yield select(selectVehicleNormHoursSort)
 
             const vehicleId = yield select(selectExpandedVehicleId);
@@ -203,6 +212,7 @@ export function* fetchVehicleNormHoursSaga() {
             yield put(emitError(error));
         } finally {
             yield nprogress.done();
+            yield put(setFetchingVehicleNormHours(false));
         }
     }
 }
@@ -211,6 +221,8 @@ export function* fetchVehicleLaborsSaga() {
     while (true) {
         try {
             yield take(FETCH_VEHICLE_LABORS);
+
+            yield put(setFetchingVehicleLabors(true));
 
             const vehicleId = yield select(selectExpandedVehicleId);
 
@@ -225,6 +237,7 @@ export function* fetchVehicleLaborsSaga() {
             yield put(emitError(error));
         } finally {
             yield nprogress.done();
+            yield put(setFetchingVehicleLabors(false));
         }
     }
 }
@@ -233,6 +246,8 @@ export function* fetchVehicleAppurtenancesSaga() {
     while (true) {
         try {
             yield take(FETCH_VEHICLE_APPURTENANCES);
+
+            yield put(setFetchingVehicleAppurtenances(true));
 
             const vehicleId = yield select(selectExpandedVehicleId);
 
@@ -247,6 +262,7 @@ export function* fetchVehicleAppurtenancesSaga() {
             yield put(emitError(error));
         } finally {
             yield nprogress.done();
+            yield put(setFetchingVehicleAppurtenances(false));
         }
     }
 }
@@ -255,6 +271,8 @@ export function* fetchVehicleRecommendationsSaga() {
     while (true) {
         try {
             yield take(FETCH_VEHICLE_RECOMMENDATIONS);
+
+            yield put(setFetchingVehicleRecommendations(true));
 
             const vehicleId = yield select(selectExpandedVehicleId);
             const queryParams = yield select(selectVehicleRecommendationsQuery);
@@ -268,6 +286,7 @@ export function* fetchVehicleRecommendationsSaga() {
             yield put(emitError(error));
         } finally {
             yield nprogress.done();
+            yield put(setFetchingVehicleRecommendations(false));
         }
     }
 }

@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { injectIntl } from 'react-intl';
-import { Table } from 'antd';
+import {Spin, Table} from 'antd';
 import { v4 } from 'uuid';
 
 //proj
@@ -11,7 +11,7 @@ import {
     selectVehicleAppurtenancesStats,
     selectVehicleAppurtenancesSort,
 
-    setPageAppurtenances
+    setPageAppurtenances, selectVehicleLaborsFetching, selectVehicleAppurtenancesFetching
 } from 'core/vehicles/duck';
 
 //Own
@@ -22,7 +22,8 @@ const mapStateToProps = state => ({
     user: state.auth,
     appurtenances: selectVehicleAppurtenances(state),
     stats: selectVehicleAppurtenancesStats(state),
-    sort: selectVehicleAppurtenancesSort(state)
+    sort: selectVehicleAppurtenancesSort(state),
+    fetching: selectVehicleAppurtenancesFetching(state)
 });
 
 const mapDispatchToProps = {
@@ -43,6 +44,7 @@ export default class VehicleAppurtenancesTable extends React.Component {
             sort,
             intl: {formatMessage},
             setPageAppurtenances,
+            fetching,
         } = this.props;
 
         const pagination = {
@@ -56,18 +58,20 @@ export default class VehicleAppurtenancesTable extends React.Component {
         }
 
         return (
-            <div className={Styles.tableCont}>
-                <Table
-                    rowClassName={() => Styles.tableRow}
-                    className={Styles.table}
-                    dataSource={appurtenances}
-                    pagination={pagination}
-                    columns={columnsConfig({formatMessage})}
-                    scroll={ { x: 'auto', y: '80vh' } }
-                    rowKey={() => v4()}
-                    bordered
-                />
-            </div>
+            fetching ? <Spin/> : (
+                    <div className={Styles.tableCont}>
+                        <Table
+                            rowClassName={() => Styles.tableRow}
+                            className={Styles.table}
+                            dataSource={appurtenances}
+                            pagination={pagination}
+                            columns={columnsConfig({formatMessage})}
+                            scroll={ { x: 'auto', y: '80vh' } }
+                            rowKey={() => v4()}
+                            bordered
+                        />
+                    </div>
+                )
         );
     }
 }

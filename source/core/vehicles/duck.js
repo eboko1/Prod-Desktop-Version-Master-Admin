@@ -15,7 +15,6 @@ export const FETCH_VEHICLE_ATTRIBUTES_SUCCESS = `${prefix}/FETCH_VEHICLE_ATTRIBU
 export const FETCH_VEHICLE_ORDERS_LATEST = `${prefix}/FETCH_VEHICLE_ORDERS_LATEST`;
 export const FETCH_VEHICLE_ORDERS_LATEST_SUCCESS = `${prefix}/FETCH_VEHICLE_ORDERS_LATEST_SUCCESS`;
 
-
 export const FETCH_VEHICLE_ORDERS = `${prefix}/FETCH_VEHICLE_ORDERS`;
 export const FETCH_VEHICLE_ORDERS_SUCCESS = `${prefix}/FETCH_VEHICLE_ORDERS_SUCCESS`;
 
@@ -39,7 +38,11 @@ export const SET_FETCHING_VEHICLES = `${prefix}/SET_FETCHING_VEHICLES`;
 export const SET_FETCHING_VEHICLE_ATTRIBUTES = `${prefix}/SET_FETCHING_VEHICLE_ATTRIBUTES`;
 export const SET_FETCHING_VEHICLE_CLIENT = `${prefix}/SET_FETCHING_VEHICLE_CLIENT`;
 export const SET_FETCHING_ORDERS_LATEST = `${prefix}/SET_FETCHING_ORDERS_LATEST`;
-
+export const SET_FETCHING_ORDERS = `${prefix}/SET_FETCHING_ORDERS`;
+export const SET_FETCHING_NORM_HOURS = `${prefix}/SET_FETCHING_NORM_HOURS`;
+export const SET_FETCHING_LABORS = `${prefix}/SET_FETCHING_LABORS`;
+export const SET_FETCHING_APPURTENANCES = `${prefix}/SET_FETCHING_APPURTENANCES`;
+export const SET_FETCHING_RECOMMENDATION = `${prefix}/SET_FETCHING_RECOMMENDATION`;
 
 
 export const SET_PAGE = `${prefix}/SET_PAGE`;
@@ -90,7 +93,8 @@ const ReducerState = {
         },
         filters: {
             query: undefined
-        }
+        },
+        fetching: false,
     },
 
     vehicleLaborsData: { 
@@ -101,7 +105,8 @@ const ReducerState = {
         },
         filters: {
             query: undefined
-        }
+        },
+        fetching: false,
     },
 
     vehicleAppurtenancesData: { 
@@ -112,7 +117,8 @@ const ReducerState = {
         },
         filters: {
             query: undefined,
-        }
+        },
+        fetching: false,
     },
 
     vehicleRecommendationsData: { 
@@ -121,6 +127,7 @@ const ReducerState = {
         query: { // Query params
             page: 1
         },
+        fetching: false,
     },
 
     expandedVehicleId: undefined, //Currently selected vehicle
@@ -175,6 +182,8 @@ export default function reducer(state = ReducerState, action) {
                 }
             };
 
+            /*---------Fetchers-----------------*/
+
         case SET_FETCHING_VEHICLE:
             return {
                 ...state,
@@ -210,6 +219,50 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 fetchingOrdersLatest: payload,
             };
+
+        case SET_FETCHING_ORDERS:
+            return {
+                ...state,
+                vehicleOrdersData: {
+                    ...state.vehicleOrdersData,
+                    fetching: payload
+                }
+            };
+        case SET_FETCHING_NORM_HOURS:
+            return {
+                ...state,
+                vehicleNormHoursData: {
+                    ...state.vehicleNormHoursData,
+                    fetching: payload
+                }
+            };
+        case SET_FETCHING_LABORS:
+            return {
+                ...state,
+                vehicleLaborsData: {
+                    ...state.vehicleLaborsData,
+                    fetching: payload
+                }
+            };
+        case SET_FETCHING_APPURTENANCES:
+            return {
+                ...state,
+                vehicleAppurtenancesData: {
+                    ...state.vehicleAppurtenancesData,
+                    fetching: payload
+                }
+            };
+        case SET_FETCHING_RECOMMENDATION:
+            return {
+                ...state,
+                vehicleRecommendationsData: {
+                    ...state.vehicleRecommendationsData,
+                    fetching: payload
+                }
+            };
+
+        /*---------Fetchers end-----------------*/
+
 
         case SET_PAGE_ORDERS:
             const { page: pageOrders } = payload;
@@ -382,29 +435,34 @@ export const selectVehicleOrders = state => state[ moduleName ].vehicleOrdersDat
 export const selectVehicleOrdersStats = state => state[ moduleName ].vehicleOrdersData.stats;
 export const selectVehicleOrdersSort = state => state[ moduleName ].vehicleOrdersData.sort;
 export const selectVehicleOrdersFilters = state => state[ moduleName ].vehicleOrdersData.filters;
+export const selectVehicleOrdersFetching = state => state[ moduleName ].vehicleOrdersData.fetching;
 
 /*------------------Labors----------------------------------------*/
 export const selectVehicleLabors = state => state[ moduleName ].vehicleLaborsData.labors;
 export const selectVehicleLaborsStats = state => state[ moduleName ].vehicleLaborsData.stats;
 export const selectVehicleLaborsSort = state => state[ moduleName ].vehicleLaborsData.sort;
 export const selectVehicleLaborsFilters = state => state[ moduleName ].vehicleLaborsData.filters;
+export const selectVehicleLaborsFetching = state => state[ moduleName ].vehicleLaborsData.fetching;
 
 /*---------------------Norm hours-------------------------------------- */
 export const selectVehicleNormHours = state => state[ moduleName ].vehicleNormHoursData.normHours;
 export const selectVehicleNormHoursStats = state => state[ moduleName ].vehicleNormHoursData.stats;
 export const selectVehicleNormHoursSort = state => state[ moduleName ].vehicleNormHoursData.sort;
 export const selectVehicleNormHoursFilters = state => state[ moduleName ].vehicleNormHoursData.filters;
+export const selectVehicleNormHoursFetching = state => state[ moduleName ].vehicleNormHoursData.fetching;
 
 /*----------------------Appurtenances--------------------------------------------------*/
 export const selectVehicleAppurtenances = state => state[ moduleName ].vehicleAppurtenancesData.appurtenances;
 export const selectVehicleAppurtenancesStats = state => state[ moduleName ].vehicleAppurtenancesData.stats;
 export const selectVehicleAppurtenancesSort = state => state[ moduleName ].vehicleAppurtenancesData.sort;
 export const selectVehicleAppurtenancesFilters = state => state[ moduleName ].vehicleAppurtenancesData.filters;
+export const selectVehicleAppurtenancesFetching = state => state[ moduleName ].vehicleAppurtenancesData.fetching;
 
 /*------------------------Recommendations-----------------------------------------*/
 export const selectVehicleRecommendations = state => state[ moduleName ].vehicleRecommendationsData.recommendations;
 export const selectVehicleRecommendationsStats = state => state[ moduleName ].vehicleRecommendationsData.stats;
 export const selectVehicleRecommendationsQuery = state => state[ moduleName ].vehicleRecommendationsData.query;
+export const selectVehicleRecommendationsFetching = state => state[ moduleName ].vehicleRecommendationsData.fetching;
 
 
 /** Action Creators **/
@@ -576,6 +634,33 @@ export const setFetchingVehicleAttributes = (value) => ({
     type: SET_FETCHING_VEHICLE_ATTRIBUTES,
     payload: value
 });
+
+
+export const setFetchingVehicleOrdersData = (value) => ({
+    type: SET_FETCHING_ORDERS,
+    payload: value
+});
+
+export const setFetchingVehicleNormHours = (value) => ({
+    type: SET_FETCHING_NORM_HOURS,
+    payload: value
+});
+
+export const setFetchingVehicleLabors = (value) => ({
+    type: SET_FETCHING_LABORS,
+    payload: value
+});
+
+export const setFetchingVehicleAppurtenances = (value) => ({
+    type: SET_FETCHING_APPURTENANCES,
+    payload: value
+});
+
+export const setFetchingVehicleRecommendations = (value) => ({
+        type: SET_FETCHING_RECOMMENDATION,
+            payload: value
+});
+
 
 /** State of fetcing lates information about vehicle's orders */
 export const setFetchingOrdersLatest = (value) => ({
