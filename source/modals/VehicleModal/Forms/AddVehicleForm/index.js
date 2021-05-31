@@ -102,6 +102,7 @@ export default class AddVehicleFormClass extends React.Component {
             setVehicleModelId,
             setVehicleModificationId,
             form,
+            intl: {formatMessage},
         } = this.props;
         
         const { getFieldDecorator, resetFields} = form;
@@ -132,7 +133,7 @@ export default class AddVehicleFormClass extends React.Component {
                             rules={[
                                 {
                                     required: true,
-                                    message: this.props.intl.formatMessage({
+                                    message: formatMessage({
                                         id: "required_field",
                                     }),
                                 },
@@ -179,12 +180,12 @@ export default class AddVehicleFormClass extends React.Component {
                                 rules={[
                                     {
                                         required: true,
-                                        message: this.props.intl.formatMessage({
+                                        message: formatMessage({
                                             id: "required_field",
                                         }),
                                     },
                                 ]}
-                                placeholder={<FormattedMessage id='add_client_form.year_placeholder' />}
+                                placeholder={formatMessage({id:'add_client_form.year_placeholder'})}
                                 initialValue={initValues.year}
                                 disabled={false}
                                 onSelect={value => {
@@ -217,12 +218,12 @@ export default class AddVehicleFormClass extends React.Component {
                                 rules={[
                                     {
                                         required: true,
-                                        message: this.props.intl.formatMessage({
+                                        message: formatMessage({
                                             id: "required_field",
                                         }),
                                     },
                                 ]}
-                                placeholder={<FormattedMessage id='add_client_form.make_placeholder' />}
+                                placeholder={formatMessage({id:'add_client_form.make_placeholder'})}
                                 initialValue={initValues.makeId}
                                 disabled={!_.get(fields, 'year')}
                                 onSelect={value => {
@@ -256,12 +257,12 @@ export default class AddVehicleFormClass extends React.Component {
                                 rules={[
                                     {
                                         required: true,
-                                        message: this.props.intl.formatMessage({
+                                        message: formatMessage({
                                             id: "required_field",
                                         }),
                                     },
                                 ]}
-                                placeholder={<FormattedMessage id='add_client_form.model_placeholder' />}
+                                placeholder={formatMessage({id:'add_client_form.model_placeholder'})}
                                 initialValue={initValues.modelId}
                                 disabled={!_.get(fields, 'makeId')}
                                 onSelect={value => {
@@ -294,12 +295,12 @@ export default class AddVehicleFormClass extends React.Component {
                                 rules={[
                                     {
                                         required: true,
-                                        message: this.props.intl.formatMessage({
+                                        message: formatMessage({
                                             id: "required_field",
                                         }),
                                     },
                                 ]}
-                                placeholder={<FormattedMessage id='add_client_form.modification_placeholder' />}
+                                placeholder={formatMessage({id:'add_client_form.modification_placeholder'})}
                                 initialValue={initValues.modificationId}
                                 disabled={!_.get(fields, 'modelId')}
                                 onSelect={value => {

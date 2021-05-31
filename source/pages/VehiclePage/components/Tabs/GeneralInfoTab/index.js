@@ -234,7 +234,7 @@ export default class GeneralInfoTab extends Component {
                     {fetchingOrdersLatest ? <Spin/> : (
                         <div>
                             <div>
-                                <DataItem label={<FormattedMessage id={<FormattedMessage id='order-status.order' />} />}>
+                                <DataItem label={<FormattedMessage id={'order-status.order'} />}>
                                     <a className={Styles.orderLink} href={ `${book.order}/${_.get(generalData, 'latestOrderData.orderId')}` }>
                                         <FormattedDatetime format={DATE_FORMATT} datetime={_.get(generalData, 'latestOrderData.datetime')} />
                                     </a>
