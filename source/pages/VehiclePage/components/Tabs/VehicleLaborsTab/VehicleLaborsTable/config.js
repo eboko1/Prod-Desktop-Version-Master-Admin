@@ -30,7 +30,12 @@ const defWidth = {
     
 }
 
-export function columnsConfig() {
+export function columnsConfig(props) {
+
+    const {
+        formatMessage,
+        onAddLaborOrDetailToOrder
+    } = props;
 
     const orderCol = {
         title:     <FormattedMessage id='orders.order' />,
@@ -117,7 +122,7 @@ export function columnsConfig() {
         width:     defWidth.actions,
         key:       v4(),
         render:    (labor) => (
-            <Button  onClick={()=>console.log("Here: ", labor)}/>
+            <Button  onClick={()=>onAddLaborOrDetailToOrder({labor})}/>
         )
     };
 

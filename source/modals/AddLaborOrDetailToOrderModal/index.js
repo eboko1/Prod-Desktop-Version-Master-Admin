@@ -89,6 +89,7 @@ export default class AddLaborOrDetailToOrderModal extends Component {
         } = this.props;
 
         console.log("Orders: ", orders);
+        console.log("modalProps", modalProps);
 
         // const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
         // const vehicleId = _.get(modalProps, "vehicleId");

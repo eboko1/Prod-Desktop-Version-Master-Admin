@@ -39,8 +39,8 @@ const mapDispatchToProps = {
 @injectIntl
 export default class VehicleLaborsTable extends React.Component {
 
-    onAddLaborOrDetailToOrder = () => {
-        this.props.setModal(MODALS.ADD_LABOR_OR_DETAIL_TO_ORDER);
+    onAddLaborOrDetailToOrder = ({labor}) => {
+        this.props.setModal(MODALS.ADD_LABOR_OR_DETAIL_TO_ORDER, {labors: [labor]});
     }
 
     render() {
@@ -68,13 +68,12 @@ export default class VehicleLaborsTable extends React.Component {
         return (
             fetching ? <Spin/> : (
                     <div className={Styles.tableCont}>
-                        <button onClick={() => this.onAddLaborOrDetailToOrder()}>Open modal</button>
                         <Table
                             rowClassName={() => Styles.tableRow}
                             className={Styles.table}
                             dataSource={labors}
                             pagination={pagination}
-                            columns={columnsConfig({formatMessage})}
+                            columns={columnsConfig({formatMessage, onAddLaborOrDetailToOrder: this.onAddLaborOrDetailToOrder})}
                             scroll={ { x: 'auto', y: '80vh' } }
                             rowKey={() => v4()}
                             bordered
