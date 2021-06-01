@@ -31,14 +31,16 @@ export const MODALS = {
     SERVICE_INPUT:          'SERVICE_INPUT',
     SERVICE_OUTPUT:         'SERVICE_OUTPUT',
     VEHICLE:                'VEHICLE',
-
+    
     //Report modals
     REPORT_ORDERS_FILTER:   'REPORT_ORDERS_FILTER',
     REPORT_ORDERS_EXPORT:   'REPORT_ORDERS_EXPORT',
     REPORT_ANALYTICS:       'REPORT_ANALYTICS',
-
+    
     //Common modals
-    CONFIRM:                'CONFIRM'
+    CONFIRM:                'CONFIRM',
+    
+    ADD_LABOR_OR_DETAIL_TO_ORDER: 'ADD_LABOR_OR_DETAIL_TO_ORDER',
 };
 
 //
