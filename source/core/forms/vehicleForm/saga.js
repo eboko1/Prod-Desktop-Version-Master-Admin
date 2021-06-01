@@ -107,7 +107,9 @@ export function* fetchVehicleDataByVinSaga() {
 
         vin = String(vin).trim();
 
-        const { brand, model: carModel, manufacturedYear } = yield call(fetchAPI, 'GET', `vin/get_list_vehicle_attributes`, {vin: vin});
+        const { brand, name: carModel, manufacturedYear } = yield call(fetchAPI, 'GET', `vin/get_list_vehicle_attributes`, {vin: vin});
+
+        console.log("S: ", brand, carModel, manufacturedYear )
 
         if (manufacturedYear && manufacturedYear.length == 4) {
             yield put(setVehicleYear({ year: manufacturedYear}));

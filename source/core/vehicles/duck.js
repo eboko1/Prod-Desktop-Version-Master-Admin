@@ -44,7 +44,7 @@ export const SET_FETCHING_LABORS = `${prefix}/SET_FETCHING_LABORS`;
 export const SET_FETCHING_APPURTENANCES = `${prefix}/SET_FETCHING_APPURTENANCES`;
 export const SET_FETCHING_RECOMMENDATION = `${prefix}/SET_FETCHING_RECOMMENDATION`;
 
-
+/*--------------Pages----------------------*/
 export const SET_PAGE = `${prefix}/SET_PAGE`;
 export const SET_PAGE_ORDERS = `${prefix}/SET_PAGE_ORDERS`;
 export const SET_PAGE_NORM_HOURS = `${prefix}/SET_PAGE_NORM_HOURS`;
@@ -52,8 +52,10 @@ export const SET_PAGE_LABORS = `${prefix}/SET_PAGE_LABORS`;
 export const SET_PAGE_APPURTENANCES = `${prefix}/SET_PAGE_APPURTENANCES`;
 export const SET_PAGE_RECOMMENDATIONS = `${prefix}/SET_PAGE_RECOMMENDATIONS`;
 
-
+/*------------Search fields-------------------------------------------*/
 export const SET_SEARCH_QUERY = `${prefix}/SET_SEARCH_QUERY`;
+export const SET_NORM_HOURS_SEARCH_QUERY = `${prefix}/SET_NORM_HOURS_SEARCH_QUERY`;
+
 export const SET_EXPANDED_VEHICLE_ID = `${prefix}/SET_EXPANDED_VEHICLE_ID`;
 
 
@@ -339,6 +341,19 @@ export default function reducer(state = ReducerState, action) {
                     ...state.filters,
                     query: query
                 }
+            };
+        case SET_NORM_HOURS_SEARCH_QUERY:
+            const { query: queryNormHours } = payload;
+            return {
+                ...state,
+                vehicleNormHoursData: {
+                    ...state.vehicleNormHoursData,
+                    filters: {
+                        ...state.filters,
+                        query: queryNormHours
+                    }
+                }
+
             };
         
         case SET_EXPANDED_VEHICLE_ID:
@@ -732,6 +747,17 @@ export const setSearchQuery = ({query}) => {
             payload: {query}
         });
         return dispatch(fetchVehicles());
+    }
+};
+
+/** Set filtering query for norm hours, automatically fetches norm hours */
+export const setNormHoursSearchQuery = ({query}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_NORM_HOURS_SEARCH_QUERY, // TODO
+            payload: {query}
+        });
+        return dispatch(fetchVehicleNormHours());
     }
 };
 
