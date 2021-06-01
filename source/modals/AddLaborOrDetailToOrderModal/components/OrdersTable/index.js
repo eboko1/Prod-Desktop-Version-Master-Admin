@@ -12,6 +12,7 @@ import {
     selectOrdersQuery,
 
     setOrdersPage,
+    setSelectedOrderId,
 } from '../../redux/duck';
 
 //Own
@@ -27,6 +28,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     setOrdersPage,
+    setSelectedOrderId,
 }
 
 @connect( mapStateToProps, mapDispatchToProps)
@@ -40,6 +42,7 @@ export default class VehicleOrdersTable extends React.Component {
             query,
             intl: {formatMessage},
             setOrdersPage,
+            setSelectedOrderId,
         } = this.props;
 
         const pagination = {
@@ -61,6 +64,11 @@ export default class VehicleOrdersTable extends React.Component {
                     columns={columnsConfig({formatMessage})}
                     pagination={pagination}
                     scroll={ { x: 'auto', y: '30vh' } }
+                    rowSelection={{
+                        onSelect: (record) => {
+                            setSelectedOrderId({orderId: record.id});
+                        }
+                    }}
                     // loading={clientOrdersFetching}
                     rowKey={() => v4()}
                     bordered

@@ -5,11 +5,13 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_ORDERS = `${prefix}/FETCH_ORDERS`;
 export const FETCH_ORDERS_SUCCESS = `${prefix}/FETCH_ORDERS_SUCCESS`;
 
+export const ADD_LABOR_TO_ORDER = `${prefix}/ADD_LABOR_TO_ORDER`;
 
 export const SET_ORDERS_PAGE = `${prefix}/SET_ORDERS_PAGE`;
 export const SET_ORDERS_SEARCH_QUERY = `${prefix}/SET_ORDERS_SEARCH_QUERY`;
 export const SET_DETAILS = `${prefix}/SET_DETAILS`;
 export const SET_SERVICES = `${prefix}/SET_SERVICES`;
+export const SET_SELECTED_ORDER_ID = `${prefix}/SET_SELECTED_ORDER_ID`;
 
 
 /**
@@ -24,6 +26,9 @@ export const modes = Object.freeze({
 /* Reducer */
 
 const ReducerState = {
+
+    selectedOrderId: undefined,
+
     ordersData: {
         orders: [],
         stats: {},
@@ -92,6 +97,13 @@ export default function reducer(state = ReducerState, action) {
                 services: services
             };
 
+        case SET_SELECTED_ORDER_ID:
+            const { orderId } = payload;
+            return {
+                ...state,
+                selectedOrderId: orderId
+            };
+
         default: return state;
     }
 }
@@ -106,12 +118,17 @@ export const selectOrdersQuery = state => state[ moduleName ].ordersData.query;
 
 export const selectDetails = state => state[ moduleName ].details;
 export const selectservices = state => state[ moduleName ].services;
+export const selectSelectedOrderId = state => state[ moduleName ].selectedOrderId;
 
 
 /* Actions */
 
 export const fetchOrders = () => ({
     type:    FETCH_ORDERS,
+});
+
+export const addLaborToOrder = () => ({
+    type:    ADD_LABOR_TO_ORDER,
 });
 
 export const fetchOrdersSuccess = ({orders, stats}) => ({
@@ -137,4 +154,9 @@ export const setDetails = ({details}) => ({
 export const setServices = ({services}) => ({
     type:    SET_SERVICES,
     payload: {services},
+});
+
+export const setSelectedOrderId = ({orderId}) => ({
+    type:    SET_SELECTED_ORDER_ID,
+    payload: {orderId},
 });

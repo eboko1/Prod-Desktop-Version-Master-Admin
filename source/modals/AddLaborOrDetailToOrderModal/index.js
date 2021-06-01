@@ -11,6 +11,8 @@ import {
     modes,
     fetchOrders,
     selectOrders,
+    setServices,
+    addLaborToOrder,
 } from './redux/duck';
 
 // own
@@ -26,6 +28,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchOrders,
     resetModal,
+    setServices,
+    addLaborToOrder,
 };
 
 @injectIntl
@@ -39,6 +43,10 @@ export default class AddLaborOrDetailToOrderModal extends Component {
 
     componentDidMount() {
         this.props.fetchOrders();
+
+        // const { modalProps: {labors}, setServices } = this.props;
+        // setServices({services: labors});
+        // console.log("labors: ", labors);
     }
 
     /**
@@ -46,6 +54,8 @@ export default class AddLaborOrDetailToOrderModal extends Component {
      */
     handleSubmit = (e) => {
         e.preventDefault();
+
+        this.props.addLaborToOrder();
 
         console.log("OK");
 
@@ -90,6 +100,10 @@ export default class AddLaborOrDetailToOrderModal extends Component {
 
         console.log("Orders: ", orders);
         console.log("modalProps", modalProps);
+
+        const { modalProps: {labors}, setServices } = this.props;
+        setServices({services: labors});
+        console.log("labors: ", labors);
 
         // const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
         // const vehicleId = _.get(modalProps, "vehicleId");
