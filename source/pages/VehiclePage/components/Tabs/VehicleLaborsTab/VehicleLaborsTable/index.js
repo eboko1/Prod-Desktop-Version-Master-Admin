@@ -56,6 +56,8 @@ export default class VehicleLaborsTable extends React.Component {
             },
         }
 
+        console.log("Labors: ", labors);
+
         return (
             fetching ? <Spin/> : (
                     <div className={Styles.tableCont}>

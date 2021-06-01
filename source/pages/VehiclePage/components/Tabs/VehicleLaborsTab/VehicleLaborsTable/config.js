@@ -1,14 +1,12 @@
 // vendor
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import { Button } from 'antd';
+import { v4 } from 'uuid';
 import _ from 'lodash';
-import moment from 'moment';
 
 //Proj
-import book from 'routes/book';
-import { Numeral, OrdersStatusesMapper } from "commons";
-import { OrderStatusIcon, RepairMapIndicator, FormattedDatetime } from 'components';
+import { FormattedDatetime } from 'components';
 
 //Own
 import Styles from './styles.m.css';
@@ -26,12 +24,11 @@ const defWidth = {
     mechanic:               '10%',
     normHours:              '10%',
     price:                  '10%',
-    count:                  '10%',
+    count:                  '5%',
     sum:                    '10%',
+    actions:                '5%',
     
 }
-
-const DATETIME_FORMAT = 'DD.MM.YYYY HH:mm';
 
 export function columnsConfig() {
 
@@ -116,6 +113,14 @@ export function columnsConfig() {
         key:       'sum',
     };
 
+    const actionsCol = {
+        width:     defWidth.actions,
+        key:       v4(),
+        render:    (labor) => (
+            <Button  onClick={()=>console.log("Here: ", labor)}/>
+        )
+    };
+
 
     return [,
         orderCol,
@@ -127,6 +132,7 @@ export function columnsConfig() {
         normHoursCol,
         priceCol,
         countCol,
-        sumCol
+        sumCol,
+        actionsCol
     ];
 }

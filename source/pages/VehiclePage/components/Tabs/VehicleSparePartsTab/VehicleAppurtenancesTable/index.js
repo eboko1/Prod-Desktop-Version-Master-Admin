@@ -57,6 +57,8 @@ export default class VehicleAppurtenancesTable extends React.Component {
             },
         }
 
+        console.log("Details: ", appurtenances);
+
         return (
             fetching ? <Spin/> : (
                     <div className={Styles.tableCont}>
