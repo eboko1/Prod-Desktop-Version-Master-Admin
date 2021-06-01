@@ -53,7 +53,7 @@ export default class GeneralInfoTab extends Component {
         } = this.props;
 
         return (
-            <div className={Styles.tabContent}>
+            <div>
                 <VehicleNormHoursTable/>
             </div>
         )
