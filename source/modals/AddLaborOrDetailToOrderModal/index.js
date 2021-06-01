@@ -15,6 +15,7 @@ import {
 
 // own
 import Styles from './styles.m.css';
+import { OrdersTable } from './components';
 
 const mapStateToProps = state => ({
     modalProps:    selectModalProps(state),
@@ -106,38 +107,9 @@ export default class AddLaborOrDetailToOrderModal extends Component {
                         </div>
                     }
                 >
-                    Hello worlds
-                    {/* <div style={{minHeight: '50vh'}}>
-                        <ClientsTable />
-                        {
-                            (() => {
-                                switch (mode) {
-                                    case modes.ADD: return (
-                                        <AddVehicleForm
-                                            getFormRefCB={this.saveVehicleFormRef}//Get form refference
-                                        />
-                                    );
-
-                                    case modes.EDIT: return (
-                                        <EditVehicleForm
-                                            getFormRefCB={this.saveVehicleFormRef}//Get form refference
-                                            vehicleId={vehicleId}
-                                        />
-                                    );
-
-                                    case modes.VIEW: return (
-                                        <ViewVehicleForm
-                                            getFormRefCB={this.saveVehicleFormRef}//Get form refference
-                                            vehicleId={vehicleId}
-                                        />
-                                    );
-                                
-                                    default: return "Invalid mode provided, available modes are: EDIT, ADD, VIEW";
-                                }
-                            })()
-                        }
-                        
-                    </div> */}
+                    <div style={{minHeight: '30vh'}}>
+                        <OrdersTable />                        
+                    </div>
                 </Modal>
             </div>
         );

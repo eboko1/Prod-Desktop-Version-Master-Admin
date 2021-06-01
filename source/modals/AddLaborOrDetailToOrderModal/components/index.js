@@ -1,1 +1,1 @@
-export {default as ClientsTable} from './ClientsTable';
+export {default as OrdersTable} from './OrdersTable';
