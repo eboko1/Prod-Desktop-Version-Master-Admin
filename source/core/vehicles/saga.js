@@ -55,7 +55,7 @@ import {
     setFetchingVehicleNormHours,
     setFetchingVehicleLabors,
     setFetchingVehicleAppurtenances,
-    setFetchingVehicleRecommendations,
+    setFetchingVehicleRecommendations, selectVehicleNormHoursFilters,
 
 } from './duck';
 
@@ -199,13 +199,15 @@ export function* fetchVehicleNormHoursSaga() {
 
             yield put(setFetchingVehicleNormHours(true));
 
-            const sort = yield select(selectVehicleNormHoursSort)
+            const sort = yield select(selectVehicleNormHoursSort);
+
+            const filters = yield select(selectVehicleNormHoursFilters);
 
             const vehicleId = yield select(selectExpandedVehicleId);
 
             yield nprogress.start();
 
-            const {standardHours: normHours, statsStandardHours: normHoursStats} = yield call(fetchAPI, 'GET', `standard_hours`, {vehicleId, page: sort.page});
+            const {standardHours: normHours, statsStandardHours: normHoursStats} = yield call(fetchAPI, 'GET', `standard_hours`, {vehicleId, page: sort.page, query: filters.query});
 
             yield put(fetchVehicleNormHoursSuccess({normHours, stats: normHoursStats}));
         } catch (error) {

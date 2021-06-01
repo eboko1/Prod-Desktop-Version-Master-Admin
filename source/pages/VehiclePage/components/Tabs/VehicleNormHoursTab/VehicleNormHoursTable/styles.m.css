@@ -67,3 +67,22 @@
 .tableRow {
     background-color: rgb(240, 240, 240);
 }
+
+.filtersCont {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: rgb(209, 209, 209);
+}
+
+.textCont {
+    display: flex;
+    justify-content: flex-end;
+    padding: 5px;
+    align-items: center;
+}
+
+.inputCont {
+    width: 70%;
+}

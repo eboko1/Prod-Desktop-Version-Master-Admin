@@ -18,10 +18,11 @@ import Styles from './styles.m.css';
 const defWidth = {
     korText:            '20%',
     itemmpText:         '25%',
-    qualColText:        '15%',
+    qualColText:        '10%',
+    storeGroupName:      '18%',
     price:              '10%',
-    workTime:           '15%',
-    sum:                '15%',
+    workTime:           '7%',
+    sum:                '10%',
 }
 
 export function columnsConfig() {
@@ -45,6 +46,14 @@ export function columnsConfig() {
         dataIndex: 'qualColText',
         key:       'qualColText',
     };
+
+    const storeGroupNameCol = {
+        title:     <FormattedMessage id='array-break-schedule.store_group' />,
+        width:     defWidth.storeGroupName,
+        dataIndex: 'storeGroupName',
+        key:       'storeGroupName',
+    };
+
     const workTimCol = {
         title:     <FormattedMessage id='services_table.norm_hours' />,
         width:     defWidth.workTime,
@@ -71,6 +80,7 @@ export function columnsConfig() {
         korTextCol,
         itemmpTextCol,
         qualColTextCol,
+        storeGroupNameCol,
         priceCol,
         workTimCol,
         sumCol,
