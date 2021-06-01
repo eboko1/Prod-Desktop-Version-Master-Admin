@@ -1,465 +1,140 @@
-/**
- * This duck/saga is suposed to execute vehicle specific operations like, create, update and fetch.
- * It also has its logic for specific forms(because it is originaly created for it).
- */
-
 /* Constants */
-export const moduleName = 'vehicleForm';
+export const moduleName = 'addLaborOrDetailToOrderModal';
 const prefix = `cpb/${moduleName}`;
 
-export const FETCH_VEHICLE = `${prefix}/FETCH_VEHICLE`;
-export const FETCH_VEHICLE_SUCCESS = `${prefix}/FETCH_VEHICLE_SUCCESS`;
+export const FETCH_ORDERS = `${prefix}/FETCH_ORDERS`;
+export const FETCH_ORDERS_SUCCESS = `${prefix}/FETCH_ORDERS_SUCCESS`;
 
-export const FETCH_VEHICLE_DATA_BY_VIN = `${prefix}/FETCH_VEHICLE_DATA_BY_VIN`;
-// export const FETCH_VEHICLE_DATA_BY_VIN_SUCCESS = `${prefix}/FETCH_VEHICLE_DATA_BY_VIN_SUCCESS`;
 
-export const FETCH_CLIENTS = `${prefix}/FETCH_CLIENTS`;
-export const FETCH_CLIENTS_SUCCESS = `${prefix}/FETCH_CLIENTS_SUCCESS`;
-
-export const FETCH_VEHICLE_YEARS = `${prefix}/FETCH_VEHICLE_YEARS`;
-export const FETCH_VEHICLE_YEARS_SUCCESS = `${prefix}/FETCH_VEHICLE_YEARS_SUCCESS`;
-
-export const FETCH_VEHICLE_MAKES = `${prefix}/FETCH_VEHICLE_MAKES`;
-export const FETCH_VEHICLE_MAKES_SUCCESS = `${prefix}/FETCH_VEHICLE_MAKES_SUCCESS`;
-
-export const FETCH_VEHICLE_MODELS = `${prefix}/FETCH_VEHICLE_MODELS`;
-export const FETCH_VEHICLE_MODELS_SUCCESS = `${prefix}/FETCH_VEHICLE_MODELS_SUCCESS`;
-
-export const FETCH_VEHICLE_MODIFICATIONS = `${prefix}/FETCH_VEHICLE_MODIFICATIONS`;
-export const FETCH_VEHICLE_MODIFICATIONS_SUCCESS = `${prefix}/FETCH_VEHICLE_MODIFICATIONS_SUCCESS`;
-
-export const FETCH_ALL_VEHICLE_DATA = `${prefix}/FETCH_ALL_VEHICLE_DATA`; // Fetch makes, modifications, models, tec.
-
-export const CREATE_VEHICLE = `${prefix}/CREATE_VEHICLE`;
-export const UPDATE_VEHICLE = `${prefix}/UPDATE_VEHICLE`;
-
-export const CLEAR_VEHICLE_DATA = `${prefix}/CLEAR_VEHICLE_DATA`; //Delete from stage all makes, models, modifications and fields data
-
-export const SET_FETCHING_ALL_VEHICLE_DATA = `${prefix}/SET_FETCHING_ALL_VEHICLE_DATA`;
-export const SET_CLIENT_ID = `${prefix}/SET_CLIENT_ID`; //Required to create a new vehicle
-export const SET_FETCHING_CLIENTS = `${prefix}/SET_FETCHING_CLIENTS`; //Required to create a new vehicle
-export const SET_CLIETS_PAGE = `${prefix}/SET_CLIETS_PAGE`;
-export const SET_CLIETS_SEARCH_QUERY = `${prefix}/SET_CLIETS_SEARCH_QUERY`;
-export const SET_VIN = `${prefix}/SET_VIN`;
-export const SET_NUMBER = `${prefix}/SET_NUMBER`;
-export const SET_YEAR = `${prefix}/SET_YEAR`;
-export const SET_MAKE_ID = `${prefix}/SET_MAKE_ID`;
-export const SET_MODEL_ID = `${prefix}/SET_MODEL_ID`;
-export const SET_MODIFICATION_ID = `${prefix}/SET_MODIFICATION_ID`;
+export const SET_ORDERS_PAGE = `${prefix}/SET_ORDERS_PAGE`;
+export const SET_ORDERS_SEARCH_QUERY = `${prefix}/SET_ORDERS_SEARCH_QUERY`;
+export const SET_DETAILS = `${prefix}/SET_DETAILS`;
+export const SET_SERVICES = `${prefix}/SET_SERVICES`;
 
 
 /**
- * Modes of the modal(or form) wich are supported. Each mode is used to define how to fetch,
+ * Modes of the modal that are supported. Each mode is used to define how to fetch,
  * represent, show data, and what to do with it.
  */
 export const modes = Object.freeze({
-    ADD: "ADD",
-    EDIT: "EDIT",
-    VIEW: "VIEW"
+    ADD_LABOR: "ADD_LABOR",
+    ADD_DETAIL: "ADD_DETAIL",
 });
 
 /* Reducer */
 
 const ReducerState = {
-    fields:           { // There are contained field values, used to fetch and store data or to create vehicle
-        clientId: undefined, //Required to create new a vehicle
-        vin: undefined,
-        number: undefined,
-        year: undefined,
-        makeId: undefined,
-        modelId: undefined,
-        modificationId: undefined,
-    },
-
-    fetchingAllVehicleData: false, //Years, makes, modifications, ....
-    fetchingClients: false,
-
-    vehicle:          {}, // In a case we work in edit or view mode we have fetched vehicle here
-    clientsData:      { //Used to attach vehicle to a client
-        clients: [],
-        stats:   {},
-        filters: {
-            query: undefined
-        },
-        sort:    {
+    ordersData: {
+        orders: [],
+        stats: {},
+        query: { //Filters
             page: 1,
+            query: undefined,
         },
     },
 
-    years:            [], // All years which are available for adding a new vehicle.
-    makes:            [], // All makes which are available for adding a new vehicle, depends on selected "years"
-    models:           [], // All models which are available for adding a new vehicle, depends on selected "makes"
-    modifications:    [], // All modifications which are available for adding a new vehicle, depends on selected "modifications"
+    details: [],
+    services: [],
 };
 
 export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
-        case FETCH_VEHICLE_SUCCESS:
-            const { vehicle } = payload;
+        case FETCH_ORDERS_SUCCESS:
+            const { orders, stats: ordersStats } = payload;
             return {
                 ...state,
-                vehicle: vehicle,
-            };
-        case FETCH_CLIENTS_SUCCESS:
-            const { clients, stats: clientsStats } = payload;
-            return {
-                ...state,
-                clientsData: {
-                    ...state.clientsData,
-                    clients: clients,
-                    stats: clientsStats,
-                },
-            };
-        // case FETCH_VEHICLE_DATA_BY_VIN_SUCCESS:
-        //     const { vehicle } = payload;
-        //     return {
-        //         ...state,
-        //         vehicle: vehicle,
-        //     };
-        case FETCH_VEHICLE_YEARS_SUCCESS:
-            const { years } = payload;
-            return {
-                ...state,
-                years: years,
-                //Clear old data
-                makes: [],
-                models: [],
-                modifications: [],
-            };
-        case FETCH_VEHICLE_MAKES_SUCCESS:
-            const { makes } = payload;
-            return {
-                ...state,
-                makes: makes,
-                //Clear old data
-                models: [],
-                modifications: [],
-            };
-        case FETCH_VEHICLE_MODELS_SUCCESS:
-            const { models } = payload;
-            return {
-                ...state,
-                models: models,
-                //Clear other old data
-                modifications: [],
-            };
-        case FETCH_VEHICLE_MODIFICATIONS_SUCCESS:
-            const { modifications } = payload;
-            return {
-                ...state,
-                modifications: modifications,
-            };
-
-        case SET_VIN:
-            const {vin} = payload;
-            return {
-                ...state,
-                fields: {
-                    ...state.fields,
-                    vin
+                ordersData: {
+                    ...state.ordersData,
+                    orders: orders,
+                    stats: ordersStats,
                 }
             };
 
-        case SET_NUMBER:
-            const {number} = payload;
+        case SET_ORDERS_PAGE:
+            const { page } = payload;
             return {
                 ...state,
-                fields: {
-                    ...state.fields,
-                    number
-                }
-            };
-
-        case SET_YEAR:
-            const {year} = payload;
-            return {
-                ...state,
-                fields: {
-                    ...state.fields,
-                    year,
-                    makeId: undefined,
-                    modelId: undefined,
-                    modificationId: undefined,
-                }
-            };
-
-        case SET_MAKE_ID:
-            const {makeId} = payload;
-            return {
-                ...state,
-                fields: {
-                    ...state.fields,
-                    makeId,
-                    modelId: undefined,
-                    modificationId: undefined,
-                }
-            };
-
-        case SET_MODEL_ID:
-            const {modelId} = payload;
-            return {
-                ...state,
-                fields: {
-                    ...state.fields,
-                    modelId,
-                    modificationId: undefined,
-                }
-            };
-
-        case SET_MODIFICATION_ID:
-            const {modificationId} = payload;
-            return {
-                ...state,
-                fields: {
-                    ...state.fields,
-                    modificationId
-                }
-            };
-        
-        case SET_CLIENT_ID:
-            const {clientId} = payload;
-            return {
-                ...state,
-                fields: {
-                    ...state.fields,
-                    clientId
-                }
-            };
-        
-        case SET_FETCHING_ALL_VEHICLE_DATA:
-            return {
-                ...state,
-                fetchingAllVehicleData: payload
-            };
-        
-        case SET_FETCHING_CLIENTS:
-            return {
-                ...state,
-                fetchingClients: payload
-            };
-        
-        case SET_CLIETS_PAGE:
-            const {page} = payload;
-            return {
-                ...state,
-                clientsData: {
-                    ...state.clientsData,
-                    sort: {
-                        ...state.clientsData.sort,
-                        page: page
-                    }
-                }
-            };
-        
-        case SET_CLIETS_SEARCH_QUERY:
-            const {query} = payload;
-            return {
-                ...state,
-                clientsData: {
-                    ...state.clientsData,
-                    filters: {
-                        ...state.clientsData.filters,
-                        query: query
+                ordersData: {
+                    ...state.ordersData,
+                    query: {
+                        ...state.ordersData.query,
+                        page: page,
                     }
                 }
             };
 
-        case CLEAR_VEHICLE_DATA:
+        case SET_ORDERS_SEARCH_QUERY:
+            const { query } = payload;
             return {
                 ...state,
-                fields:           {
-                    ...state.fields,
-                    vin: undefined,
-                    number: undefined,
-                    year: undefined,
-                    makeId: undefined,
-                    modelId: undefined,
-                    modificationId: undefined,
-                },
-                years:            [], 
-                makes:            [],
-                models:           [],
-                modifications:    []
+                ordersData: {
+                    ...state.ordersData,
+                    query: {
+                        ...state.ordersData.query,
+                        query: query,
+                    }
+                }
             };
 
-        default:
-            return state;
+        case SET_DETAILS:
+            const { details } = payload;
+            return {
+                ...state,
+                details: details,
+            };
+
+        case SET_SERVICES:
+            const { services } = payload;
+            return {
+                ...state,
+                services: services
+            };
+
+        default: return state;
     }
 }
 
 /* Selectors */
 
-export const selectVehicle = state => state.forms[ moduleName ].vehicle;
-export const selectFields = state => state.forms[ moduleName ].fields;
-export const selectYears = state => state.forms[ moduleName ].years;
-export const selectMakes = state => state.forms[ moduleName ].makes;
-export const selectModels = state => state.forms[ moduleName ].models;
-export const selectModifications = state => state.forms[ moduleName ].modifications;
-export const selectFetchingAllVehicleData = state => state.forms[ moduleName ].fetchingAllVehicleData;
+// ----------------- Orders --------------------------------
+export const selectOrders = state => state[ moduleName ].ordersData.orders;
+export const selectOrdersStats = state => state[ moduleName ].ordersData.stats;
+export const selectOrdersQuery = state => state[ moduleName ].ordersData.query;
 
-/** -----------------Clients -------------------------- */
-export const selectFetchingClients = state => state.forms[ moduleName ].fetchingClients;
-export const selectClients = state => state.forms[ moduleName ].clientsData.clients;
-export const selectClientsStats = state => state.forms[ moduleName ].clientsData.stats;
-export const selectClientsFilters = state => state.forms[ moduleName ].clientsData.filters;
-export const selectClientsSort = state => state.forms[ moduleName ].clientsData.sort;
+
+export const selectDetails = state => state[ moduleName ].details;
+export const selectservices = state => state[ moduleName ].services;
+
 
 /* Actions */
 
-//Fetchers ---------------------------------------------------------------------------
-
-export const fetchVehicle = ({vehicleId}) => ({
-    type:    FETCH_VEHICLE,
-    payload: { vehicleId },
+export const fetchOrders = () => ({
+    type:    FETCH_ORDERS,
 });
 
-export const fetchVehicleDataByVin = () => ({
-    type:    FETCH_VEHICLE_DATA_BY_VIN,
+export const fetchOrdersSuccess = ({orders, stats}) => ({
+    type:    FETCH_ORDERS_SUCCESS,
+    payload: { orders, stats },
 });
 
-export const fetchVehicleSuccess = ({vehicle}) => ({
-    type:    FETCH_VEHICLE_SUCCESS,
-    payload: { vehicle },
-});
-
-export const fetchClients = () => ({
-    type:    FETCH_CLIENTS,
-});
-
-export const fetchClientsSuccess = ({clients, stats}) => ({
-    type:    FETCH_CLIENTS_SUCCESS,
-    payload: { clients, stats },
-});
-
-/**
- * Fetch makes, modifications, models, tec. Also this actions initialized vehicle "fields" object where is stored data for creating or editing a vehicle
- * @param {*} params.vehicleId - id of a vehicle to fetch data for
- */
-export const fetchAllVehicleData = ({vehicleId}) => ({
-    type:    FETCH_ALL_VEHICLE_DATA,
-    payload: { vehicleId },
-});
-
-export const fetchVehicleYears = () => ({
-    type:    FETCH_VEHICLE_YEARS,
-});
-
-export const fetchVehicleYearsSuccess = ({years}) => ({
-    type:    FETCH_VEHICLE_YEARS_SUCCESS,
-    payload: { years },
-});
-
-export const fetchVehicleMakes = () => ({
-    type:    FETCH_VEHICLE_MAKES,
-});
-
-export const fetchVehicleMakesSuccess = ({makes}) => ({
-    type:    FETCH_VEHICLE_MAKES_SUCCESS,
-    payload: { makes },
-});
-
-export const fetchVehicleModels = () => ({
-    type:    FETCH_VEHICLE_MODELS,
-});
-
-export const fetchVehicleModelsSuccess = ({models}) => ({
-    type:    FETCH_VEHICLE_MODELS_SUCCESS,
-    payload: { models },
-});
-
-export const fetchVehicleModifications = () => ({
-    type:    FETCH_VEHICLE_MODIFICATIONS,
-});
-
-export const fetchVehicleModificationsSuccess = ({modifications}) => ({
-    type:    FETCH_VEHICLE_MODIFICATIONS_SUCCESS,
-    payload: { modifications },
-});
-
-//Setters ---------------------------------------------------------------------------
-
-export const setVehicleVin = ({vin}) => ({
-    type:    SET_VIN,
-    payload: { vin },
-});
-
-export const setVehicleNumber = ({number}) => ({
-    type:    SET_NUMBER,
-    payload: { number },
-});
-
-export const setVehicleYear = ({year}) => ({
-    type:    SET_YEAR,
-    payload: { year },
-});
-
-export const setVehicleMakeId = ({makeId}) => ({
-    type:    SET_MAKE_ID,
-    payload: { makeId },
-});
-
-export const setVehicleModelId = ({modelId}) => ({
-    type:    SET_MODEL_ID,
-    payload: { modelId },
-});
-
-export const setVehicleModificationId = ({modificationId}) => ({
-    type:    SET_MODIFICATION_ID,
-    payload: { modificationId },
-});
-
-/**
- * Set client id, a new vehicle can then be created with that client
- * @param {*} params.clientId - client for wich vehicle have to be created
- * @returns 
- */
-export const setClientId = ({clientId}) => ({
-    type:    SET_CLIENT_ID,
-    payload: { clientId },
-});
-
-export const setFetchingAllVehicleData = (velue) => ({
-    type:    SET_FETCHING_ALL_VEHICLE_DATA,
-    payload: velue,
-});
-
-export const setFetchingClients = (velue) => ({
-    type:    SET_FETCHING_CLIENTS,
-    payload: velue,
-});
-
-export const setClientsPage = ({page}) => ({
-    type:    SET_CLIETS_PAGE,
+export const setOrdersPage = ({page}) => ({
+    type:    SET_ORDERS_PAGE,
     payload: {page},
 });
 
-export const setClientsSearchQuery = ({query}) => {
-    return function(dispatch) {
-        dispatch({
-            type:    SET_CLIETS_SEARCH_QUERY,
-            payload: {query},
-        });
-        dispatch(fetchClients());
-    }
-};
-
-//Other ---------------------------------------------------------------------------
-
-export const createVehicle = () => ({
-    type: CREATE_VEHICLE,
+export const setOrdersSearchQuery = ({query}) => ({
+    type:    SET_ORDERS_SEARCH_QUERY,
+    payload: {query},
 });
 
-export const updateVehicle = ({vehicleId}) => ({
-    type:    UPDATE_VEHICLE,
-    payload: { vehicleId },
+export const setDetails = ({details}) => ({
+    type:    SET_DETAILS,
+    payload: {details},
 });
 
-/**
- * Delete from stage all makes, models, modifications, years fetched form the server.
- * Also delete "fields" data.
- */
-export const clearVehicleData = () => ({
-    type:    CLEAR_VEHICLE_DATA,
+export const setServices = ({services}) => ({
+    type:    SET_SERVICES,
+    payload: {services},
 });

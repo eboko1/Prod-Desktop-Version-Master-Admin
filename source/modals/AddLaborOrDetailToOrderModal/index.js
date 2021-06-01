@@ -7,20 +7,23 @@ import _ from "lodash";
 
 // proj
 import { resetModal, MODALS, selectModal, selectModalProps } from 'core/modals/duck';
-import { createVehicle, updateVehicle, clearVehicleData, modes } from 'core/forms/vehicleForm/duck';
+import {
+    modes,
+    fetchOrders,
+    selectOrders,
+} from './redux/duck';
 
 // own
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
     modalProps:    selectModalProps(state),
-    visible:       selectModal(state)
+    visible:       selectModal(state),
+    orders:        selectOrders(state),
 });
 
 const mapDispatchToProps = {
-    createVehicle,
-    updateVehicle,
-    clearVehicleData,
+    fetchOrders,
     resetModal,
 };
 
@@ -31,6 +34,10 @@ export default class AddLaborOrDetailToOrderModal extends Component {
     /** Use this if some modalProps are not initialized */
     defaultModalProps = {
         mode: modes.ADD,
+    }
+
+    componentDidMount() {
+        this.props.fetchOrders();
     }
 
     /**
@@ -77,16 +84,19 @@ export default class AddLaborOrDetailToOrderModal extends Component {
         const {
             visible,
             modalProps,
+            orders,
         } = this.props;
 
-        const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
-        const vehicleId = _.get(modalProps, "vehicleId");
+        console.log("Orders: ", orders);
+
+        // const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
+        // const vehicleId = _.get(modalProps, "vehicleId");
 
         return (
             <div>
                 <Modal
                     destroyOnClose={true}
-                    width={ (mode == modes.VIEW)? '50%': '80%' }
+                    width={ '60%' }
                     visible={ visible === MODALS.ADD_LABOR_OR_DETAIL_TO_ORDER }
                     onOk={ this.handleSubmit }
                     onCancel={ this.onClose }

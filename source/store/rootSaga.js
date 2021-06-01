@@ -84,6 +84,9 @@ import { saga as storageTrackingSaga } from 'core/storage/tracking';
 import { saga as storageBalanceSaga } from 'core/storage/storeBalance';
 import { saga as storageMovementSaga } from 'core/storage/storeMovement';
 
+//Sagas of components structured by "feature first structure": https://reactjs.org/docs/faq-structure.html
+import { saga as addLaborOrDetailToOrderSaga } from 'modals/AddLaborOrDetailToOrderModal/redux/saga';
+
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
     yield all([
@@ -170,6 +173,9 @@ export default function* rootSaga() {
         vehicleNumberHistorySaga(),
         setDetailProductSaga(),
         spreadBusinessSaga(),
+
+        // Feature-first structured components
+        addLaborOrDetailToOrderSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

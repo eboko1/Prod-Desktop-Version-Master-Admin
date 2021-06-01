@@ -68,7 +68,7 @@ export default class VehicleLaborsTable extends React.Component {
         return (
             fetching ? <Spin/> : (
                     <div className={Styles.tableCont}>
-                        <button onClick={() => this.onAddLaborOrDetailToOrder()}/>
+                        <button onClick={() => this.onAddLaborOrDetailToOrder()}>Open modal</button>
                         <Table
                             rowClassName={() => Styles.tableRow}
                             className={Styles.table}
