@@ -18,7 +18,7 @@ const openNotificationWithIcon = (type, message, description) => {
 };
 
 /**
- * This modal is used to transfer car between clients 
+ * This modal is used to transfer car between clients
  */
 
 

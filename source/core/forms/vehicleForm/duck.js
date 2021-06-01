@@ -10,6 +10,9 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_VEHICLE = `${prefix}/FETCH_VEHICLE`;
 export const FETCH_VEHICLE_SUCCESS = `${prefix}/FETCH_VEHICLE_SUCCESS`;
 
+export const FETCH_VEHICLE_DATA_BY_VIN = `${prefix}/FETCH_VEHICLE_DATA_BY_VIN`;
+// export const FETCH_VEHICLE_DATA_BY_VIN_SUCCESS = `${prefix}/FETCH_VEHICLE_DATA_BY_VIN_SUCCESS`;
+
 export const FETCH_CLIENTS = `${prefix}/FETCH_CLIENTS`;
 export const FETCH_CLIENTS_SUCCESS = `${prefix}/FETCH_CLIENTS_SUCCESS`;
 
@@ -83,10 +86,10 @@ const ReducerState = {
         },
     },
 
-    years:            [], // All years which are availabel for adding a new vehicle.
-    makes:            [], // All makes which are availabel for adding a new vehicle, depends on selected "years"
-    models:           [], // All models which are availabel for adding a new vehicle, depends on selected "makes"
-    modifications:    [], // All modifications which are availabel for adding a new vehicle, depends on selected "modifications"
+    years:            [], // All years which are available for adding a new vehicle.
+    makes:            [], // All makes which are available for adding a new vehicle, depends on selected "years"
+    models:           [], // All models which are available for adding a new vehicle, depends on selected "makes"
+    modifications:    [], // All modifications which are available for adding a new vehicle, depends on selected "modifications"
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -109,6 +112,12 @@ export default function reducer(state = ReducerState, action) {
                     stats: clientsStats,
                 },
             };
+        // case FETCH_VEHICLE_DATA_BY_VIN_SUCCESS:
+        //     const { vehicle } = payload;
+        //     return {
+        //         ...state,
+        //         vehicle: vehicle,
+        //     };
         case FETCH_VEHICLE_YEARS_SUCCESS:
             const { years } = payload;
             return {
@@ -306,6 +315,10 @@ export const fetchVehicle = ({vehicleId}) => ({
     payload: { vehicleId },
 });
 
+export const fetchVehicleDataByVin = () => ({
+    type:    FETCH_VEHICLE_DATA_BY_VIN,
+});
+
 export const fetchVehicleSuccess = ({vehicle}) => ({
     type:    FETCH_VEHICLE_SUCCESS,
     payload: { vehicle },
@@ -321,7 +334,7 @@ export const fetchClientsSuccess = ({clients, stats}) => ({
 });
 
 /**
- * Fetch makes, modifications, models, tec. Alse this actions initialized vehicle "fields" object where is stored data for creating or editing a vehicle
+ * Fetch makes, modifications, models, tec. Also this actions initialized vehicle "fields" object where is stored data for creating or editing a vehicle
  * @param {*} params.vehicleId - id of a vehicle to fetch data for
  */
 export const fetchAllVehicleData = ({vehicleId}) => ({
