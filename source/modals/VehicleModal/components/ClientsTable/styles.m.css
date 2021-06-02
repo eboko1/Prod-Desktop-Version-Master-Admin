@@ -26,6 +26,12 @@
     background-color: rgb(240, 240, 240);
 }
 
+.selectedRow {
+    background-color: var(--db_reserve);    
+    color: var(--text);
+    font-weight: 400;
+}
+
 .tableCont {
     border-radius: 0.8em;
     padding: 0.2em;

@@ -293,6 +293,7 @@ export default function reducer(state = ReducerState, action) {
 
 export const selectVehicle = state => state.forms[ moduleName ].vehicle;
 export const selectFields = state => state.forms[ moduleName ].fields;
+export const selectClientId = state => state.forms[ moduleName ].fields.clientId;
 export const selectYears = state => state.forms[ moduleName ].years;
 export const selectMakes = state => state.forms[ moduleName ].makes;
 export const selectModels = state => state.forms[ moduleName ].models;

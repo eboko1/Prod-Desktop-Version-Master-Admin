@@ -7,7 +7,14 @@ import _ from "lodash";
 
 // proj
 import { resetModal, MODALS, selectModal, selectModalProps } from 'core/modals/duck';
-import { createVehicle, updateVehicle, clearVehicleData, modes } from 'core/forms/vehicleForm/duck';
+import {
+    modes,
+    createVehicle,
+    updateVehicle,
+    clearVehicleData,
+    selectClientId,
+    setClientId,
+} from 'core/forms/vehicleForm/duck';
 
 // own
 import Styles from './styles.m.css';
@@ -16,13 +23,15 @@ import { ClientsTable } from './components';
 
 const mapStateToProps = state => ({
     modalProps:    selectModalProps(state),
-    visible:       selectModal(state)
+    visible:       selectModal(state),
+    selectedClientId:    selectClientId(state),
 });
 
 const mapDispatchToProps = {
     createVehicle,
     updateVehicle,
     clearVehicleData,
+    setClientId,
     resetModal,
 };
 
@@ -91,6 +100,7 @@ export default class VehicleModal extends Component {
         this.props.clearVehicleData();
         this.vehicleForm && this.vehicleForm.resetFields();
         this.props.resetModal();
+        this.props.setClientId({clientId: undefined}); //Reset
 
         this.props.onClose && this.props.onClose();//Callback
     }
@@ -105,6 +115,7 @@ export default class VehicleModal extends Component {
         const {
             visible,
             modalProps,
+            selectedClientId,
         } = this.props;
 
         const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
@@ -114,10 +125,13 @@ export default class VehicleModal extends Component {
             <div>
                 <Modal
                     destroyOnClose={true}
-                    width={ (mode == modes.VIEW)? '50%': '80%' }
+                    width={ (mode == modes.VIEW)? '50%': '70%' }
                     visible={ visible === MODALS.VEHICLE }
                     onOk={ this.handleSubmit }
                     onCancel={ this.resetAllFormsAndCloseModal }
+                    okButtonProps={{
+						disabled: !selectedClientId,
+					}}
                     title={
                         <div className={Styles.title}>
                            {<FormattedMessage id='vehicle_page.title' />}   

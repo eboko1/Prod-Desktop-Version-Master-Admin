@@ -16,6 +16,7 @@ import {
     selectClientsStats,
     selectFetchingClients,
     selectClientsSort,
+    selectClientId,
 
     setClientsPage,
     setClientsSearchQuery,
@@ -32,6 +33,7 @@ const mapStateToProps = state => ({
     fetchingClients:     selectFetchingClients(state),
     stats:               selectClientsStats(state),
     sort:                selectClientsSort(state),
+    selectedClientId:    selectClientId(state),
 
 });
 
@@ -76,6 +78,7 @@ export default class ClientsContainer extends React.Component {
             sort,
             setClientsPage,
             setClientId,
+            selectedClientId,
         } = this.props;
 
         const pagination = {
@@ -105,12 +108,13 @@ export default class ClientsContainer extends React.Component {
                     loading={fetchingClients}
                     rowKey={() => v4()}
                     pagination={pagination}
-                    rowClassName={Styles.tableRow}
-                    rowSelection={{
-                        hideDefaultSelections: true,
-                        onSelect: client => {
-                            setClientId({clientId: _.get(client, 'clientId')});
-                        }
+                    rowClassName={(client)=>{
+                        return (client.clientId == selectedClientId) ? Styles.selectedRow: Styles.tableRow
+                    }}
+                    onRow={(client) => {
+                        return {
+                            onClick: (event) => setClientId({clientId: _.get(client, 'clientId')})
+                        };
                     }}
                 />
             </div>
