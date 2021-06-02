@@ -4,9 +4,9 @@ import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import {v4} from 'uuid';
 import {Button} from 'antd';
+import { images } from 'utils';
 
 //Proj
-import book from 'routes/book';
 import { FormattedDatetime } from 'components';
 
 //Own
@@ -25,8 +25,9 @@ const defWidth = {
     supplierName:       '10%',
     purchasePrice:         '10%',
     price:         '10%',
-    count:         '10%',
+    count:         '5%',
     sum:         '10%',
+    actions:     '5%',
     
 }
 
@@ -122,7 +123,18 @@ export function columnsConfig(props) {
         width:     defWidth.actions,
         key:       v4(),
         render:    (detail) => (
-            <Button  onClick={()=>onAddDetailToOrder({detail})}/>
+            <Button  onClick={()=>onAddDetailToOrder({detail})}>
+                <div
+                    style={ {
+                        width:           18,
+                        height:          18,
+                        backgroundColor: 'var(--text3)',
+                        mask:       `url(${images.pistonIcon}) no-repeat center / contain`,
+                        WebkitMask: `url(${images.pistonIcon}) no-repeat center / contain`,
+                        transform:  'scale(-1, 1)',
+                    } }
+                />
+            </Button>
         )
     };
 

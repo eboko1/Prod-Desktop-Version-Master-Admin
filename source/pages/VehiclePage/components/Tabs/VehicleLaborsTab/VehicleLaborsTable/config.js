@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { Button } from 'antd';
 import { v4 } from 'uuid';
 import _ from 'lodash';
+import { images } from 'utils';
 
 //Proj
 import { FormattedDatetime } from 'components';
@@ -121,7 +122,18 @@ export function columnsConfig(props) {
         width:     defWidth.actions,
         key:       v4(),
         render:    (labor) => (
-            <Button  onClick={()=>onAddLaborToOrder({labor})}/>
+            <Button  onClick={()=>onAddLaborToOrder({labor})}>
+                <div
+                    style={ {
+                        width:           18,
+                        height:          18,
+                        backgroundColor: 'var(--text3)',
+                        mask:       `url(${images.wrenchIcon}) no-repeat center / contain`,
+                        WebkitMask: `url(${images.wrenchIcon}) no-repeat center / contain`,
+                        transform:  'scale(-1, 1)',
+                    } }
+                />
+            </Button>
         )
     };
 
