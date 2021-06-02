@@ -26,7 +26,6 @@
     border-radius: 0.8em;
     padding: 5px;
     background-color: rgb(216, 216, 216);
-    box-shadow: 5px 5px 0.8em rgb(107, 107, 107);
     margin: 10px;
     width: 100%;
 }
@@ -80,6 +79,7 @@
     padding: 10px;
     margin-bottom: 5px;
     background-color: rgb(209, 209, 209);
+    border-radius: 0.4em;
 }
 
 .textCont {

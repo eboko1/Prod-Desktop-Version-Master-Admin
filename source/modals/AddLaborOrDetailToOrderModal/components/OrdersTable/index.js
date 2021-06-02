@@ -98,7 +98,6 @@ export default class VehicleOrdersTable extends React.Component {
                     }}
                     loading={ordersFetching}
                     rowKey={() => v4()}
-                    bordered
                 />
             </div>
         );
