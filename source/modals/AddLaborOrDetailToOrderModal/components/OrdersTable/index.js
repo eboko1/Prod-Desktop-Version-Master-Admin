@@ -11,6 +11,7 @@ import {
     selectOrdersStats,
     selectOrdersQuery,
     selectSelectedOrderId,
+    selectOrdersFetching,
 
     setOrdersPage,
     setSelectedOrderId,
@@ -27,6 +28,7 @@ const mapStateToProps = state => ({
     stats: selectOrdersStats(state),
     query: selectOrdersQuery(state),
     selectedOrderId: selectSelectedOrderId(state),
+    ordersFetching: selectOrdersFetching(state),
 });
 
 const mapDispatchToProps = {
@@ -60,6 +62,7 @@ export default class VehicleOrdersTable extends React.Component {
             setOrdersPage,
             setSelectedOrderId,
             selectedOrderId,
+            ordersFetching,
         } = this.props;
 
         const pagination = {
@@ -93,7 +96,7 @@ export default class VehicleOrdersTable extends React.Component {
                             onClick: (event) => setSelectedOrderId({orderId: order.id})
                         };
                     }}
-                    // loading={clientOrdersFetching}
+                    loading={ordersFetching}
                     rowKey={() => v4()}
                     bordered
                 />

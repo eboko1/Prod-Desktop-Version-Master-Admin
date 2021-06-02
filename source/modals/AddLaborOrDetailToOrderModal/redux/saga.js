@@ -14,6 +14,7 @@ import {
     selectservices,
     selectDetails,
     selectSelectedOrderId,
+    setOrdersFetching,
 } from './duck';
 
 import {
@@ -26,6 +27,8 @@ export function* fetchOrdersSaga() {
     while (true) {
         yield take(FETCH_ORDERS);
 
+        yield put(setOrdersFetching(true));
+
         const query = yield select(selectOrdersQuery);
 
         try{
@@ -33,8 +36,9 @@ export function* fetchOrdersSaga() {
             yield put(fetchOrdersSuccess({ orders, stats }));
         } catch(err) {
             console.log(err, query);
-        }
-        
+        } finally {
+            yield put(setOrdersFetching(false));
+        }        
     }
 }
 
@@ -73,16 +77,6 @@ export function* addLaborToOrderSaga() {
         } catch(err) {
             console.log(err, query);
         }
-        
-
-
-        // try{
-        //     const { orders, stats } = yield call(fetchAPI, 'GET', `orders`, { ...query }, null, {handleErrorInternally: true});
-        //     yield put(fetchOrdersSuccess({ orders, stats }));
-        // } catch(err) {
-        //     console.log(err, query);
-        // }
-        
     }
 }
 
@@ -121,16 +115,6 @@ export function* addDetailsToOrderSaga() {
         } catch(err) {
             console.log(err, query);
         }
-        
-
-
-        // try{
-        //     const { orders, stats } = yield call(fetchAPI, 'GET', `orders`, { ...query }, null, {handleErrorInternally: true});
-        //     yield put(fetchOrdersSuccess({ orders, stats }));
-        // } catch(err) {
-        //     console.log(err, query);
-        // }
-        
     }
 }
 
