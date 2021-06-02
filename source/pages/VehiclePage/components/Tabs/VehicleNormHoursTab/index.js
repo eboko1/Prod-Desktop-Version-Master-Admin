@@ -1,9 +1,7 @@
 // vendor
 import React, {Component} from 'react';
 import { injectIntl } from 'react-intl';
-import { withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import _ from 'lodash';
 
 // proj
 import { Spinner} from 'commons';
@@ -33,19 +31,9 @@ const mapDispatchToProps = {
     fetchVehicleNormHours,
 };
 
-@withRouter
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class GeneralInfoTab extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    componentDidMount() {
-        const { match: {params: {id}}} = this.props;
-        this.props.setExpandedVehicleId({vehicleId: id});
-        this.props.fetchVehicleNormHours();
-    }
 
     render() {
 

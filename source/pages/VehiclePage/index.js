@@ -12,12 +12,25 @@ import {Layout, Spinner} from 'commons';
 import { FormattedDatetime } from "components";
 import book from 'routes/book';
 import {
+    /*-------Fetchers----*/
     fetchVehicle,
+    fetchVehicleNormHours,
+    fetchVehicleOrders,
+    fetchVehicleLabors,
+    fetchVehicleRecommendations,
+    fetchVehicleAppurtenances,
 
+    /*-------Selectors----*/
     selectVehicle,
     selectClient,
     selectGeneralData,
+    selectVehicleNormHoursStats,
+    selectVehicleLaborsStats,
+    selectVehicleAppurtenancesStats,
+    selectVehicleOrdersStats,
+    selectVehicleRecommendationsStats,
 
+    /*-------Setters----*/
     setExpandedVehicleId,
 } from 'core/vehicles/duck';
 
@@ -38,11 +51,29 @@ const mapStateToProps = state => ({
     vehicle:     selectVehicle(state),
     client:      selectClient(state),
     generalData: selectGeneralData(state),
+
+    // stats
+    ordersStats: selectVehicleOrdersStats(state),
+    normHoursStats: selectVehicleNormHoursStats(state),
+    laborsStats: selectVehicleLaborsStats(state),
+    appurtenancesStats: selectVehicleAppurtenancesStats(state),
+    recommendationsStats: selectVehicleRecommendationsStats(state),
+
+    // fetchers for loader
+
 });
 
 const mapDispatchToProps = {
     fetchVehicle,
+    fetchVehicleOrders,
+    fetchVehicleNormHours,
+    fetchVehicleLabors,
+    fetchVehicleAppurtenances,
+    fetchVehicleRecommendations,
+
+
     setExpandedVehicleId,
+
 };
 
 @withRouter
@@ -57,9 +88,29 @@ export default class VehiclePage extends Component {
         const { match: {params: {id}}} = this.props;
         this.props.fetchVehicle({vehicleId: id});
         this.props.setExpandedVehicleId({vehicleId: id});
+        this.props.fetchVehicleOrders();
+        this.props.fetchVehicleNormHours();
+        this.props.fetchVehicleLabors();
+        this.props.fetchVehicleAppurtenances();
+        this.props.fetchVehicleRecommendations();
+
     }
 
     render() {
+
+        const {
+            ordersStats,
+            normHoursStats,
+            laborsStats,
+            appurtenancesStats,
+            recommendationsStats,
+        } = this.props;
+
+        console.log("S: ",  ordersStats,
+            normHoursStats,
+            laborsStats,
+            appurtenancesStats,
+            recommendationsStats)
 
         return (
             <Layout
@@ -72,23 +123,49 @@ export default class VehiclePage extends Component {
                         <GeneralInfoTab />
                     </TabPane>
 
-                    <TabPane tab={<FormattedMessage id={ 'vehicle_page.norm_hours'}/>} key="norm_hours">
+                    <TabPane tab={
+                        <div>
+                            <FormattedMessage id={ 'vehicle_page.norm_hours'}/>
+                            ({normHoursStats.totalRowsCount})
+                        </div>
+                    } key="norm_hours">
                         <VehicleNormHoursTab />
                     </TabPane>
 
-                    <TabPane tab={<FormattedMessage id={ 'vehicle_page.orders'}/>} key="orders">
+                    <TabPane tab={
+                        <div>
+                            <FormattedMessage id={ 'vehicle_page.orders'}/>
+                            ({ordersStats.countOrders})
+                        </div>
+                    } key="orders">
                         <VehicleOrdersTab />
                     </TabPane>
 
-                    <TabPane tab={<FormattedMessage id={ 'vehicle_page.labors'}/>} key="labors">
+                    <TabPane tab={
+                        <div>
+                            <FormattedMessage id={ 'vehicle_page.labors'}/>
+                             ({laborsStats.totalRowsCount})
+                        </div>
+
+                    } key="labors">
                         <VehicleLaborsTab />
                     </TabPane>
 
-                    <TabPane tab={<FormattedMessage id={ 'vehicle_page.spare_parts'}/>} key="spare_parts">
+                    <TabPane tab={
+                        <div>
+                            <FormattedMessage id={ 'vehicle_page.spare_parts'}/>
+                            ({appurtenancesStats.totalRowsCount})
+                        </div>
+                    } key="spare_parts">
                         <VehicleSparePartsTab />
                     </TabPane>
 
-                    <TabPane tab={<FormattedMessage id={ 'vehicle_page.recommendations'}/>} key="recommendations">
+                    <TabPane tab={
+                        <div>
+                            <FormattedMessage id={ 'vehicle_page.recommendations'}/>
+                            ({recommendationsStats.totalRowsCount})
+                        </div>
+                    } key="recommendations">
                         <VehicleRecomendationsTab />
                     </TabPane>
 

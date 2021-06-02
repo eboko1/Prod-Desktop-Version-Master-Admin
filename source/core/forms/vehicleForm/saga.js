@@ -114,19 +114,19 @@ export function* fetchVehicleDataByVinSaga() {
         if (manufacturedYear && manufacturedYear.length == 4) {
             yield put(setVehicleYear({ year: manufacturedYear}));
 
-            // console.log("Year: ", manufacturedYear);
+            console.log("Year: ", manufacturedYear);
 
             const { years } = yield call(fetchAPI, 'GET', 'vehicles_info');
             yield put(fetchVehicleYearsSuccess({ years }));
 
-            // console.log("Years: ", years)
+            console.log("Years: ", years)
 
 
             if (brand && String(brand).length > 0) {
                 const { makes } = yield call(fetchAPI, 'GET', 'vehicles_info', { year: manufacturedYear });
                 yield put(fetchVehicleMakesSuccess({ makes }));
 
-                // console.log("Makes: ", makes)
+                console.log("Makes: ", makes)
 
                 const filteredMakes = _.filter(makes, (make) => {
                     const makeName = String(make.name).toLowerCase();
@@ -137,7 +137,7 @@ export function* fetchVehicleDataByVinSaga() {
 
                 const firstMakeId = _.get(filteredMakes, '[0].id');
 
-                // console.log("F: ", firstMakeId)
+                console.log("F: ", firstMakeId)
 
                 if (firstMakeId) {
                     yield put(setVehicleMakeId({ makeId: firstMakeId }));
@@ -145,6 +145,8 @@ export function* fetchVehicleDataByVinSaga() {
 
                         const {models} = yield call(fetchAPI, 'GET', 'vehicles_info', {year: manufacturedYear, makeId: firstMakeId});
                         yield put(fetchVehicleModelsSuccess({models}));
+
+                        console.log("M: ", models)
 
                         const filteredModels = _.filter(models, (model) => {
                             const modelName = String(model.name).toLowerCase();
@@ -154,6 +156,8 @@ export function* fetchVehicleDataByVinSaga() {
                         });
 
                         const firstModelId = _.get(filteredModels, '[0].id');
+
+                        console.log("FMID: ", firstMakeId)
 
                         if (firstModelId) {
                             yield put(setVehicleModelId({ modelId: firstModelId }));
