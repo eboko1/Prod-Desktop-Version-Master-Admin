@@ -11,7 +11,7 @@ import { fetchAPI } from 'utils';
 import {
     fetchOrdersSuccess,
     selectOrdersQuery,
-    selectservices,
+    selectServices,
     selectDetails,
     selectSelectedOrderId,
     setOrdersFetching,
@@ -19,7 +19,7 @@ import {
 
 import {
     FETCH_ORDERS,
-    ADD_LABOR_TO_ORDER,
+    ADD_LABORS_TO_ORDER,
     ADD_DETAILS_TO_ORDER,
 } from './duck';
 
@@ -42,12 +42,12 @@ export function* fetchOrdersSaga() {
     }
 }
 
-export function* addLaborToOrderSaga() {
+export function* addLaborsToOrderSaga() {
     while (true) {
-        yield take(ADD_LABOR_TO_ORDER);
+        yield take(ADD_LABORS_TO_ORDER);
 
         const selectedOrderId = yield select(selectSelectedOrderId);
-        const services = yield select(selectservices);
+        const services = yield select(selectServices);
 
         console.log("Data: ", services, selectedOrderId);
 
@@ -121,7 +121,7 @@ export function* addDetailsToOrderSaga() {
 export function* saga() {
     yield all([
         call(fetchOrdersSaga),
-        call(addLaborToOrderSaga),
+        call(addLaborsToOrderSaga),
         call(addDetailsToOrderSaga),
     ]);
 }

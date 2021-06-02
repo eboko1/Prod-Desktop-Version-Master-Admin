@@ -5,7 +5,7 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_ORDERS = `${prefix}/FETCH_ORDERS`;
 export const FETCH_ORDERS_SUCCESS = `${prefix}/FETCH_ORDERS_SUCCESS`;
 
-export const ADD_LABOR_TO_ORDER = `${prefix}/ADD_LABOR_TO_ORDER`;
+export const ADD_LABORS_TO_ORDER = `${prefix}/ADD_LABORS_TO_ORDER`;
 export const ADD_DETAILS_TO_ORDER = `${prefix}/ADD_DETAILS_TO_ORDER`;
 
 export const SET_ORDERS_PAGE = `${prefix}/SET_ORDERS_PAGE`;
@@ -127,7 +127,7 @@ export const selectOrdersFetching = state => state[ moduleName ].ordersFetching;
 
 
 export const selectDetails = state => state[ moduleName ].details;
-export const selectservices = state => state[ moduleName ].services;
+export const selectServices = state => state[ moduleName ].services;
 export const selectSelectedOrderId = state => state[ moduleName ].selectedOrderId;
 
 
@@ -137,8 +137,8 @@ export const fetchOrders = () => ({
     type:    FETCH_ORDERS,
 });
 
-export const addLaborToOrder = () => ({
-    type:    ADD_LABOR_TO_ORDER,
+export const addLaborsToOrder = () => ({
+    type:    ADD_LABORS_TO_ORDER,
 });
 
 export const addDetailsToOrder = () => ({

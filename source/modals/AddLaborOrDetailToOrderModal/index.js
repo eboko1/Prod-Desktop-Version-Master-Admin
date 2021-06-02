@@ -13,7 +13,7 @@ import {
     selectOrders,
     setServices,
     setDetails,
-    addLaborToOrder,
+    addLaborsToOrder,
     addDetailsToOrder,
     selectSelectedOrderId,
     setSelectedOrderId,
@@ -35,7 +35,7 @@ const mapDispatchToProps = {
     resetModal,
     setServices,
     setDetails,
-    addLaborToOrder,
+    addLaborsToOrder,
     addDetailsToOrder,
     setSelectedOrderId,
 };
@@ -61,7 +61,7 @@ export default class AddLaborOrDetailToOrderModal extends Component {
             const { modalProps: {labors}, setServices } = this.props;
             setServices({services: labors});
             console.log("labors: ", labors);
-            this.props.addLaborToOrder();
+            this.props.addLaborsToOrder();
         } else if(mode == modes.ADD_DETAIL) {
             const { modalProps: {details}, setDetails } = this.props;
             setDetails({details: details});
