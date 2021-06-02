@@ -1,0 +1,12 @@
+.row {
+    min-height: 6em;
+}
+
+.colText {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px;
+    size: 1.2em;
+    color: black
+}

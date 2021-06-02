@@ -816,7 +816,7 @@ export default class BarcodeContainer extends Component {
 								})
 							}
 						/>
-						{table == 'STORE_PRODUCTS' && 
+						{table == 'STORE_PRODUCTS' &&
 							<Icon
 								type='plus'
 								style={{

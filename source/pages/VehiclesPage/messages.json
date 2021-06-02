@@ -1,11 +1,20 @@
 {
   "en": {
-    "vehicles_page.": ""
+    "vehicles_page.title": "Vehicles",
+    "vehicles_page.description": "List of all vehicles on this business",
+    "vehicles_page.controls": "Controls",
+    "vehicles_page.search": "Search:"
   },
   "ru": {
-    "vehicles_page.": ""
+    "vehicles_page.title": "Автомобили",
+    "vehicles_page.description": "Список всех автомобилей етого бизнеса",
+    "vehicles_page.controls": "Элементы управления ",
+    "vehicles_page.search": "Поиск:"
   },
   "uk": {
-    "vehicles_page.": ""
+    "vehicles_page.title": "Автомобілі",
+    "vehicles_page.description": "Список всіх автомобілів цього бізнеса",
+    "vehicles_page.controls": "Елементи управління",
+    "vehicles_page.search": "Пошук:"
   }
 }

@@ -89,11 +89,6 @@ export default {
                 //     name:     'navigation.cash_settings',
                 // },
                 // {
-                //     key:      'vehicles',
-                //     link:     book.vehicles,
-                //     name:     'navigation.vehicles',
-                // },
-                // {
                 //     key:      '/warehouses',
                 //     link:     book.warehouses,
                 //     disabled: user => isForbidden(user, permissions.ACCESS_CATALOGUE_STOCK),

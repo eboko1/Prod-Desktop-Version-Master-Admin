@@ -21,6 +21,7 @@ import { saga as clientMRDsSaga } from 'core/clientMRDs/saga';
 import { saga as clientHotOperationsSaga } from 'core/clientHotOperations/saga';
 import { saga as employeesSaga } from 'core/employees/saga';
 import { saga as vehicleTypesSaga } from 'core/vehicleTypes/saga';
+import { saga as vehiclesSaga } from 'core/vehicles/saga';
 
 // Reports
 import { saga as reportOrdersSaga } from 'core/reports/reportOrders/saga';
@@ -70,6 +71,7 @@ import { saga as brandsFormSaga } from 'core/forms/brandsForm/saga';
 import { saga as setDetailProductSaga } from 'core/forms/setDetailProduct/saga';
 import { saga as spreadBusinessSaga } from 'core/forms/spreadBusinessBrands/saga';
 import { saga as cashOrderFormSaga } from 'core/forms/cashOrderForm/saga';
+import { saga as vehicleFormSaga } from 'core/forms/vehicleForm/saga';
 
 
 // storage
@@ -81,6 +83,9 @@ import { saga as storageExpensesSaga } from 'core/storage/expenses';
 import { saga as storageTrackingSaga } from 'core/storage/tracking';
 import { saga as storageBalanceSaga } from 'core/storage/storeBalance';
 import { saga as storageMovementSaga } from 'core/storage/storeMovement';
+
+//Sagas of components structured by "feature first structure": https://reactjs.org/docs/faq-structure.html
+import { saga as addLaborOrDetailToOrderSaga } from 'modals/AddLaborOrDetailToOrderModal/redux/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -114,6 +119,7 @@ export default function* rootSaga() {
         clientMRDsSaga(),
         clientHotOperationsSaga(),
         vehicleTypesSaga(),
+        vehiclesSaga(),
 
         // Reports
         reportOrdersSaga(),
@@ -146,6 +152,7 @@ export default function* rootSaga() {
         // cash
         cashSaga(),
         cashOrderFormSaga(),
+        vehicleFormSaga(),
         // statistics
         chartSaga(),
         reviewsSaga(),
@@ -166,6 +173,9 @@ export default function* rootSaga() {
         vehicleNumberHistorySaga(),
         setDetailProductSaga(),
         spreadBusinessSaga(),
+
+        // Feature-first structured components
+        addLaborOrDetailToOrderSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */
