@@ -43,18 +43,14 @@ const mapDispatchToProps = {
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class AddLaborOrDetailToOrderModal extends Component {
-
-    /** Use this if some modalProps are not initialized */
-    defaultModalProps = {
-        mode: modes.ADD,
-    }
-
     componentDidMount() {
         this.props.fetchOrders();
     }
 
     /**
-     * Handle submit depending on mode that is currently used
+     * Handle submit depending on mode that is currently used.
+     * labors and details are provided via modalProps, so we put this data into state only before processing
+     * other operations.
      */
     handleSubmit = (e) => {
         e.preventDefault();
@@ -73,13 +69,12 @@ export default class AddLaborOrDetailToOrderModal extends Component {
             this.props.addDetailsToOrder();
         }
 
-
         this.onClose();
     };
 
     onClose = () => {
         this.props.resetModal();
-        this.props.setSelectedOrderId({orderId: undefined});
+        this.props.setSelectedOrderId({orderId: undefined}); //Reset
     }
 
     render() {
@@ -93,13 +88,6 @@ export default class AddLaborOrDetailToOrderModal extends Component {
 
         console.log("Orders: ", orders);
         console.log("modalProps", modalProps);
-
-        const { modalProps: {labors}, setServices } = this.props;
-        setServices({services: labors});
-        console.log("labors: ", labors);
-
-        // const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
-        // const vehicleId = _.get(modalProps, "vehicleId");
 
         return (
             <div>
