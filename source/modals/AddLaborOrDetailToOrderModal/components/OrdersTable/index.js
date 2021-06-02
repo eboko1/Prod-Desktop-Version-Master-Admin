@@ -33,8 +33,8 @@ const mapDispatchToProps = {
     setSelectedOrderId,
 }
 
-@connect( mapStateToProps, mapDispatchToProps)
 @injectIntl
+@connect( mapStateToProps, mapDispatchToProps)
 export default class VehicleOrdersTable extends React.Component {
 
     render() {

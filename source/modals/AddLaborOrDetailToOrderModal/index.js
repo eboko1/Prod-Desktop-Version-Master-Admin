@@ -14,6 +14,7 @@ import {
     setServices,
     addLaborToOrder,
     selectSelectedOrderId,
+    setSelectedOrderId,
 } from './redux/duck';
 
 // own
@@ -32,6 +33,7 @@ const mapDispatchToProps = {
     resetModal,
     setServices,
     addLaborToOrder,
+    setSelectedOrderId,
 };
 
 @injectIntl
@@ -58,8 +60,7 @@ export default class AddLaborOrDetailToOrderModal extends Component {
         e.preventDefault();
 
         this.props.addLaborToOrder();
-
-        console.log("OK");
+        this.onClose();
 
         // const {modalProps} = this.props;
         // const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
@@ -80,17 +81,9 @@ export default class AddLaborOrDetailToOrderModal extends Component {
     };
 
     onClose = () => {
-        // this.props.clearVehicleData();
-        // this.vehicleForm && this.vehicleForm.resetFields();
         this.props.resetModal();
-
-        // this.props.onClose && this.props.onClose();//Callback
+        this.props.setSelectedOrderId({orderId: undefined});
     }
-
-    /** Save ref to currently rendered form */
-    // saveVehicleFormRef = (ref) => {
-    //     this.vehicleForm = ref;
-    // }
 
     render() {
 

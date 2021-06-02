@@ -1,6 +1,8 @@
 // vendor
 import { call, put, all, take, select } from 'redux-saga/effects';
 import _ from 'lodash';
+import history from 'store/history';
+import book from 'routes/book';
 
 //proj
 import { fetchAPI } from 'utils';
@@ -36,18 +38,6 @@ export function* fetchOrdersSaga() {
 
 export function* addLaborToOrderSaga() {
     while (true) {
-
-        // const labor = await fetchAPI('GET', `labors/${barcodeData.referenceId}`);
-		// 		activeTab = 'services';
-		// 		payload.services.push({
-		// 			serviceId: labor.id,
-		// 			serviceName: labor.name || labor.defaultName,
-		// 			employeeId: this.props.defaultEmployeeId,
-		// 			serviceHours: 0,
-		// 			purchasePrice: 0,
-		// 			count: Number(labor.laborPrice.normHours) || 0,
-		// 			servicePrice: Number(labor.laborPrice.price) || this.props.normHourPrice,
-		// 		})
         yield take(ADD_LABOR_TO_ORDER);
 
         const selectedOrderId = yield select(selectSelectedOrderId);
@@ -74,7 +64,10 @@ export function* addLaborToOrderSaga() {
         });
 
         try{
-            const { orders, stats } = yield call(fetchAPI, 'PUT', `orders/${selectedOrderId}`, null, payload, {handleErrorInternally: true});
+            yield call(fetchAPI, 'PUT', `orders/${selectedOrderId}`, null, payload, {handleErrorInternally: true});
+            history.push({
+                pathname: `${book.order}/${selectedOrderId}`,
+            });
         } catch(err) {
             console.log(err, query);
         }
