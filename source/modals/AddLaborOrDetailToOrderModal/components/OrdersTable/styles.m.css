@@ -67,3 +67,9 @@
 .tableRow {
     background-color: rgb(240, 240, 240);
 }
+
+.selectedRow {
+    background-color: var(--db_reserve);    
+    color: var(--text);
+    font-weight: 400;
+}

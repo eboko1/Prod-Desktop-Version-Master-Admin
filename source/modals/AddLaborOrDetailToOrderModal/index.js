@@ -13,6 +13,7 @@ import {
     selectOrders,
     setServices,
     addLaborToOrder,
+    selectSelectedOrderId,
 } from './redux/duck';
 
 // own
@@ -23,6 +24,7 @@ const mapStateToProps = state => ({
     modalProps:    selectModalProps(state),
     visible:       selectModal(state),
     orders:        selectOrders(state),
+    selectedOrderId: selectSelectedOrderId(state),
 });
 
 const mapDispatchToProps = {
@@ -96,6 +98,7 @@ export default class AddLaborOrDetailToOrderModal extends Component {
             visible,
             modalProps,
             orders,
+            selectedOrderId,
         } = this.props;
 
         console.log("Orders: ", orders);
@@ -116,6 +119,9 @@ export default class AddLaborOrDetailToOrderModal extends Component {
                     visible={ visible === MODALS.ADD_LABOR_OR_DETAIL_TO_ORDER }
                     onOk={ this.handleSubmit }
                     onCancel={ this.onClose }
+                    okButtonProps={{
+						disabled: !selectedOrderId,
+					}}
                     title={
                         <div className={Styles.title}>
                            AddLaborOrDetailToOrderModal   
