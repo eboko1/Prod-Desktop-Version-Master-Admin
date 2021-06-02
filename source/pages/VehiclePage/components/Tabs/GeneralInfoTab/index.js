@@ -75,7 +75,6 @@ export default class GeneralInfoTab extends Component {
 
     componentDidMount() {
         const { match: {params: {id}}} = this.props;
-        this.props.fetchVehicle({vehicleId: id});
         this.props.fetchVehicleAttributes({vehicleId: id});
         this.props.fetchVehicleOrdersLatest({vehicleId: id});
     }

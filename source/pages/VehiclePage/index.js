@@ -59,6 +59,8 @@ const mapStateToProps = state => ({
     appurtenancesStats: selectVehicleAppurtenancesStats(state),
     recommendationsStats: selectVehicleRecommendationsStats(state),
 
+    // fetchers for loader
+
 });
 
 const mapDispatchToProps = {

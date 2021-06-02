@@ -1,7 +1,6 @@
 // vendor
 import React, {Component} from 'react';
 import { injectIntl } from 'react-intl';
-import { withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 
 // proj
@@ -26,17 +25,9 @@ const mapDispatchToProps = {
     fetchVehicleRecommendations
 };
 
-@withRouter
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class GeneralInfoTab extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    componentDidMount() {
-        this.props.fetchVehicleRecommendations();
-    }
 
     render() {
         return (
