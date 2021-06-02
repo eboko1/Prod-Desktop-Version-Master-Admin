@@ -1,6 +1,8 @@
 // vendor
 import { call, put, all, take, select } from 'redux-saga/effects';
 import _ from 'lodash';
+import history from 'store/history';
+import book from 'routes/book';
 
 //proj
 import { fetchAPI } from 'utils';
@@ -10,12 +12,14 @@ import {
     fetchOrdersSuccess,
     selectOrdersQuery,
     selectservices,
+    selectDetails,
     selectSelectedOrderId,
 } from './duck';
 
 import {
     FETCH_ORDERS,
     ADD_LABOR_TO_ORDER,
+    ADD_DETAILS_TO_ORDER,
 } from './duck';
 
 export function* fetchOrdersSaga() {
@@ -36,18 +40,6 @@ export function* fetchOrdersSaga() {
 
 export function* addLaborToOrderSaga() {
     while (true) {
-
-        // const labor = await fetchAPI('GET', `labors/${barcodeData.referenceId}`);
-		// 		activeTab = 'services';
-		// 		payload.services.push({
-		// 			serviceId: labor.id,
-		// 			serviceName: labor.name || labor.defaultName,
-		// 			employeeId: this.props.defaultEmployeeId,
-		// 			serviceHours: 0,
-		// 			purchasePrice: 0,
-		// 			count: Number(labor.laborPrice.normHours) || 0,
-		// 			servicePrice: Number(labor.laborPrice.price) || this.props.normHourPrice,
-		// 		})
         yield take(ADD_LABOR_TO_ORDER);
 
         const selectedOrderId = yield select(selectSelectedOrderId);
@@ -74,7 +66,58 @@ export function* addLaborToOrderSaga() {
         });
 
         try{
-            const { orders, stats } = yield call(fetchAPI, 'PUT', `orders/${selectedOrderId}`, null, payload, {handleErrorInternally: true});
+            yield call(fetchAPI, 'PUT', `orders/${selectedOrderId}`, null, payload, {handleErrorInternally: true});
+            history.push({
+                pathname: `${book.order}/${selectedOrderId}`,
+            });
+        } catch(err) {
+            console.log(err, query);
+        }
+        
+
+
+        // try{
+        //     const { orders, stats } = yield call(fetchAPI, 'GET', `orders`, { ...query }, null, {handleErrorInternally: true});
+        //     yield put(fetchOrdersSuccess({ orders, stats }));
+        // } catch(err) {
+        //     console.log(err, query);
+        // }
+        
+    }
+}
+
+export function* addDetailsToOrderSaga() {
+    while (true) {
+        yield take(ADD_DETAILS_TO_ORDER);
+
+        const selectedOrderId = yield select(selectSelectedOrderId);
+        const details = yield select(selectDetails);
+
+        console.log("Data: ", details, selectedOrderId);
+
+        if(!details || !selectedOrderId) continue;
+
+        const payload = {
+			insertMode: true,
+			details: [],
+			services: [],
+		};
+
+        payload.details.push({
+            storeGroupId: details[0].storeGroupId,
+            name: details[0].name,
+            productCode: details[0].productCode,
+            supplierBrandId: details[0].supplierBrandId,
+            count: 1,
+            price: 0,
+            purchasePrice: 0,
+        })
+
+        try{
+            yield call(fetchAPI, 'PUT', `orders/${selectedOrderId}`, null, payload, {handleErrorInternally: true});
+            history.push({
+                pathname: `${book.order}/${selectedOrderId}`,
+            });
         } catch(err) {
             console.log(err, query);
         }
@@ -95,5 +138,6 @@ export function* saga() {
     yield all([
         call(fetchOrdersSaga),
         call(addLaborToOrderSaga),
+        call(addDetailsToOrderSaga),
     ]);
 }

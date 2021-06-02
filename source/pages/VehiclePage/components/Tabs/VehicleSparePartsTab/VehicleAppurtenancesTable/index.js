@@ -6,6 +6,8 @@ import {Spin, Table} from 'antd';
 import { v4 } from 'uuid';
 
 //proj
+import { MODALS, setModal } from 'core/modals/duck';
+import { AddLaborOrDetailToOrderModal } from 'modals';
 import {
     selectVehicleAppurtenances,
     selectVehicleAppurtenancesStats,
@@ -28,6 +30,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     setPageAppurtenances,
+    setModal,
 }
 
 @connect(
@@ -36,6 +39,10 @@ const mapDispatchToProps = {
 )
 @injectIntl
 export default class VehicleAppurtenancesTable extends React.Component {
+
+    onAddDetailToOrder = ({detail}) => {
+        this.props.setModal(MODALS.ADD_LABOR_OR_DETAIL_TO_ORDER, {details: [detail], mode: "ADD_DETAIL"});
+    }
 
     render() {
         const {
@@ -60,20 +67,21 @@ export default class VehicleAppurtenancesTable extends React.Component {
         console.log("Details: ", appurtenances);
 
         return (
-            fetching ? <Spin/> : (
-                    <div className={Styles.tableCont}>
-                        <Table
-                            rowClassName={() => Styles.tableRow}
-                            className={Styles.table}
-                            dataSource={appurtenances}
-                            pagination={pagination}
-                            columns={columnsConfig({formatMessage})}
-                            scroll={ { x: 'auto', y: '80vh' } }
-                            rowKey={() => v4()}
-                            bordered
-                        />
-                    </div>
-                )
+            <div className={Styles.tableCont}>
+                <Table
+                    rowClassName={() => Styles.tableRow}
+                    loading={fetching}
+                    className={Styles.table}
+                    dataSource={appurtenances}
+                    pagination={pagination}
+                    columns={columnsConfig({onAddDetailToOrder: this.onAddDetailToOrder})}
+                    scroll={ { x: 'auto', y: '80vh' } }
+                    rowKey={() => v4()}
+                    bordered
+                />
+
+                <AddLaborOrDetailToOrderModal />
+            </div>
         );
     }
 }

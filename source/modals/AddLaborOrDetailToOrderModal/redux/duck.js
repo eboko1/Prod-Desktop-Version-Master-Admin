@@ -6,6 +6,7 @@ export const FETCH_ORDERS = `${prefix}/FETCH_ORDERS`;
 export const FETCH_ORDERS_SUCCESS = `${prefix}/FETCH_ORDERS_SUCCESS`;
 
 export const ADD_LABOR_TO_ORDER = `${prefix}/ADD_LABOR_TO_ORDER`;
+export const ADD_DETAILS_TO_ORDER = `${prefix}/ADD_DETAILS_TO_ORDER`;
 
 export const SET_ORDERS_PAGE = `${prefix}/SET_ORDERS_PAGE`;
 export const SET_ORDERS_SEARCH_QUERY = `${prefix}/SET_ORDERS_SEARCH_QUERY`;
@@ -131,6 +132,10 @@ export const addLaborToOrder = () => ({
     type:    ADD_LABOR_TO_ORDER,
 });
 
+export const addDetailsToOrder = () => ({
+    type:    ADD_DETAILS_TO_ORDER,
+});
+
 export const fetchOrdersSuccess = ({orders, stats}) => ({
     type:    FETCH_ORDERS_SUCCESS,
     payload: { orders, stats },
@@ -141,10 +146,15 @@ export const setOrdersPage = ({page}) => ({
     payload: {page},
 });
 
-export const setOrdersSearchQuery = ({query}) => ({
-    type:    SET_ORDERS_SEARCH_QUERY,
-    payload: {query},
-});
+export const setOrdersSearchQuery = ({query}) => {
+    return function(dispatch) {
+        dispatch({
+            type:    SET_ORDERS_SEARCH_QUERY,
+            payload: {query},
+        });
+        dispatch(fetchOrders());
+    }
+};
 
 export const setDetails = ({details}) => ({
     type:    SET_DETAILS,

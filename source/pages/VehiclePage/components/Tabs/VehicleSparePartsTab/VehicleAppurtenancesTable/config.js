@@ -1,14 +1,13 @@
 // vendor
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
-import moment from 'moment';
+import {v4} from 'uuid';
+import {Button} from 'antd';
 
 //Proj
 import book from 'routes/book';
-import { Numeral, OrdersStatusesMapper } from "commons";
-import { OrderStatusIcon, RepairMapIndicator, FormattedDatetime } from 'components';
+import { FormattedDatetime } from 'components';
 
 //Own
 import Styles from './styles.m.css';
@@ -31,7 +30,11 @@ const defWidth = {
     
 }
 
-export function columnsConfig() {
+export function columnsConfig(props) {
+
+    const {
+        onAddDetailToOrder
+    } = props;
 
     const orderCol = {
         title:     <FormattedMessage id='orders.order' />,
@@ -115,6 +118,13 @@ export function columnsConfig() {
         key:       'sum',
     };
 
+    const actionsCol = {
+        width:     defWidth.actions,
+        key:       v4(),
+        render:    (detail) => (
+            <Button  onClick={()=>onAddDetailToOrder({detail})}/>
+        )
+    };
 
     return [,
         orderCol,
@@ -126,6 +136,7 @@ export function columnsConfig() {
         purchasePriceCol,
         priceCol,
         countCol,
-        sumCol
+        sumCol,
+        actionsCol
     ];
 }

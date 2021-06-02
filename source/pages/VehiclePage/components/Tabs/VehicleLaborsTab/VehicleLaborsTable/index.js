@@ -39,8 +39,8 @@ const mapDispatchToProps = {
 @injectIntl
 export default class VehicleLaborsTable extends React.Component {
 
-    onAddLaborOrDetailToOrder = ({labor}) => {
-        this.props.setModal(MODALS.ADD_LABOR_OR_DETAIL_TO_ORDER, {labors: [labor]});
+    onAddLaborToOrder = ({labor}) => {
+        this.props.setModal(MODALS.ADD_LABOR_OR_DETAIL_TO_ORDER, {labors: [labor], mode: "ADD_LABOR"});
     }
 
     render() {
@@ -48,7 +48,6 @@ export default class VehicleLaborsTable extends React.Component {
             labors,
             stats,
             sort,
-            intl: {formatMessage},
             setPageLabors,
             fetching
         } = this.props;
@@ -66,22 +65,21 @@ export default class VehicleLaborsTable extends React.Component {
         console.log("Labors: ", labors);
 
         return (
-            fetching ? <Spin/> : (
-                    <div className={Styles.tableCont}>
-                        <Table
-                            rowClassName={() => Styles.tableRow}
-                            className={Styles.table}
-                            dataSource={labors}
-                            pagination={pagination}
-                            columns={columnsConfig({formatMessage, onAddLaborOrDetailToOrder: this.onAddLaborOrDetailToOrder})}
-                            scroll={ { x: 'auto', y: '80vh' } }
-                            rowKey={() => v4()}
-                            bordered
-                        />
+            <div className={Styles.tableCont}>
+                <Table
+                    rowClassName={() => Styles.tableRow}
+                    loading={fetching}
+                    className={Styles.table}
+                    dataSource={labors}
+                    pagination={pagination}
+                    columns={columnsConfig({onAddLaborToOrder: this.onAddLaborToOrder})}
+                    scroll={ { x: 'auto', y: '80vh' } }
+                    rowKey={() => v4()}
+                    bordered
+                />
 
-                        <AddLaborOrDetailToOrderModal />
-                    </div>
-                )
+                <AddLaborOrDetailToOrderModal />
+            </div>
         );
     }
 }

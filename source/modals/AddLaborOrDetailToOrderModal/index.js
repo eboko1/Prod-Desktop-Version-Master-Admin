@@ -12,7 +12,11 @@ import {
     fetchOrders,
     selectOrders,
     setServices,
+    setDetails,
     addLaborToOrder,
+    addDetailsToOrder,
+    selectSelectedOrderId,
+    setSelectedOrderId,
 } from './redux/duck';
 
 // own
@@ -23,13 +27,17 @@ const mapStateToProps = state => ({
     modalProps:    selectModalProps(state),
     visible:       selectModal(state),
     orders:        selectOrders(state),
+    selectedOrderId: selectSelectedOrderId(state),
 });
 
 const mapDispatchToProps = {
     fetchOrders,
     resetModal,
     setServices,
+    setDetails,
     addLaborToOrder,
+    addDetailsToOrder,
+    setSelectedOrderId,
 };
 
 @injectIntl
@@ -43,10 +51,6 @@ export default class AddLaborOrDetailToOrderModal extends Component {
 
     componentDidMount() {
         this.props.fetchOrders();
-
-        // const { modalProps: {labors}, setServices } = this.props;
-        // setServices({services: labors});
-        // console.log("labors: ", labors);
     }
 
     /**
@@ -55,40 +59,28 @@ export default class AddLaborOrDetailToOrderModal extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
 
-        this.props.addLaborToOrder();
+        const {modalProps: {mode}} = this.props;
 
-        console.log("OK");
+        if(mode == modes.ADD_LABOR) {
+            const { modalProps: {labors}, setServices } = this.props;
+            setServices({services: labors});
+            console.log("labors: ", labors);
+            this.props.addLaborToOrder();
+        } else if(mode == modes.ADD_DETAIL) {
+            const { modalProps: {details}, setDetails } = this.props;
+            setDetails({details: details});
+            console.log("details: ", details);
+            this.props.addDetailsToOrder();
+        }
 
-        // const {modalProps} = this.props;
-        // const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
-        
-        // this.vehicleForm.validateFields((err) => {
-        //     if (!err) {
-        //         if(mode == modes.ADD) {
-        //             this.props.createVehicle();
-        //         } else if(mode == modes.EDIT) {
-        //             const vehicleId = _.get(modalProps, "vehicleId");
-        //             vehicleId && this.props.updateVehicle({vehicleId});
-        //         }
 
-        //         this.resetAllFormsAndCloseModal();
-        //     } 
-        // });
-        
+        this.onClose();
     };
 
     onClose = () => {
-        // this.props.clearVehicleData();
-        // this.vehicleForm && this.vehicleForm.resetFields();
         this.props.resetModal();
-
-        // this.props.onClose && this.props.onClose();//Callback
+        this.props.setSelectedOrderId({orderId: undefined});
     }
-
-    /** Save ref to currently rendered form */
-    // saveVehicleFormRef = (ref) => {
-    //     this.vehicleForm = ref;
-    // }
 
     render() {
 
@@ -96,6 +88,7 @@ export default class AddLaborOrDetailToOrderModal extends Component {
             visible,
             modalProps,
             orders,
+            selectedOrderId,
         } = this.props;
 
         console.log("Orders: ", orders);
@@ -116,6 +109,9 @@ export default class AddLaborOrDetailToOrderModal extends Component {
                     visible={ visible === MODALS.ADD_LABOR_OR_DETAIL_TO_ORDER }
                     onOk={ this.handleSubmit }
                     onCancel={ this.onClose }
+                    okButtonProps={{
+						disabled: !selectedOrderId,
+					}}
                     title={
                         <div className={Styles.title}>
                            AddLaborOrDetailToOrderModal   
