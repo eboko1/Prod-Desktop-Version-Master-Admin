@@ -1,6 +1,7 @@
 .table {
-    background-color: white;
     min-width: 0 !important;
+    padding: 5px;
+    width: 100%;
 }
 
 .table :global(.ant-table-header) {
@@ -19,6 +20,18 @@
 
 .table :global(th) {
     padding: 6px 4px 6px 4px !important; /*Remove bug: when text overflows, header shifts left*/
+}
+
+.tableRow {
+    background-color: rgb(240, 240, 240);
+}
+
+.tableCont {
+    border-radius: 0.8em;
+    padding: 5px;
+    background-color: rgb(216, 216, 216);
+    margin: 10px;
+    width: 100%;
 }
 
 .clientPhone {
@@ -41,6 +54,7 @@
     padding: 10px;
     margin-bottom: 5px;
     background-color: rgb(209, 209, 209);
+    border-radius: 0.4em;
 }
 
 .textCont {

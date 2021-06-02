@@ -85,6 +85,7 @@ export default class VehicleOrdersTable extends React.Component {
                 <Table
                     className={Styles.table}
                     dataSource={orders}
+                    size={"small"}
                     columns={columnsConfig({formatMessage})}
                     pagination={pagination}
                     scroll={ { x: 'auto', y: '30vh' } }

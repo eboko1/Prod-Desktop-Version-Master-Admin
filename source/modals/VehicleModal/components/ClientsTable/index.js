@@ -91,30 +91,28 @@ export default class ClientsContainer extends React.Component {
         console.log("Clients: ", clients, fetchingClients, stats);
 
         return (
-            <div>
+            <div className={Styles.tableCont}>
                 <div className={Styles.filtersCont}>
                     <div className={Styles.textCont}><FormattedMessage id={"client_hot_operations_page.search"} />: </div>
                     <div className={Styles.inputCont}><Input onChange={this.onSearch} allowClear/></div>
                 </div>
                 
-                <div>
-                    <Table
-                        className={Styles.table}
-                        dataSource={clients}
-                        size="small"
-                        columns={columnsConfig({user})}
-                        scroll={ { x: 1000, y: '30vh' } }
-                        loading={fetchingClients}
-                        pagination={pagination}
-                        rowSelection={{
-                            hideDefaultSelections: true,
-                            onSelect: client => {
-                                setClientId({clientId: _.get(client, 'clientId')});
-                            }
-                        }}
-                        bordered
-                    />
-                </div>
+                <Table
+                    className={Styles.table}
+                    dataSource={clients}
+                    size="small"
+                    columns={columnsConfig({user})}
+                    scroll={ { x: 1000, y: '30vh' } }
+                    loading={fetchingClients}
+                    pagination={pagination}
+                    rowClassName={Styles.tableRow}
+                    rowSelection={{
+                        hideDefaultSelections: true,
+                        onSelect: client => {
+                            setClientId({clientId: _.get(client, 'clientId')});
+                        }
+                    }}
+                />
             </div>
         );
     }
