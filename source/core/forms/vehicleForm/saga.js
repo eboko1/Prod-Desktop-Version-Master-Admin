@@ -114,13 +114,19 @@ export function* fetchVehicleDataByVinSaga() {
         if (manufacturedYear && manufacturedYear.length == 4) {
             yield put(setVehicleYear({ year: manufacturedYear}));
 
+            // console.log("Year: ", manufacturedYear);
+
             const { years } = yield call(fetchAPI, 'GET', 'vehicles_info');
             yield put(fetchVehicleYearsSuccess({ years }));
+
+            // console.log("Years: ", years)
 
 
             if (brand && String(brand).length > 0) {
                 const { makes } = yield call(fetchAPI, 'GET', 'vehicles_info', { year: manufacturedYear });
                 yield put(fetchVehicleMakesSuccess({ makes }));
+
+                // console.log("Makes: ", makes)
 
                 const filteredMakes = _.filter(makes, (make) => {
                     const makeName = String(make.name).toLowerCase();
@@ -131,29 +137,31 @@ export function* fetchVehicleDataByVinSaga() {
 
                 const firstMakeId = _.get(filteredMakes, '[0].id');
 
-                if (firstMakeId)
+                // console.log("F: ", firstMakeId)
+
+                if (firstMakeId) {
                     yield put(setVehicleMakeId({ makeId: firstMakeId }));
+                    if (String(carModel).length > 0) {
 
-                if (String(carModel).length > 0) {
+                        const {models} = yield call(fetchAPI, 'GET', 'vehicles_info', {year: manufacturedYear, makeId: firstMakeId});
+                        yield put(fetchVehicleModelsSuccess({models}));
 
-                    const {models} = yield call(fetchAPI, 'GET', 'vehicles_info', {year: manufacturedYear, makeId: firstMakeId});
-                    yield put(fetchVehicleModelsSuccess({models}));
+                        const filteredModels = _.filter(models, (model) => {
+                            const modelName = String(model.name).toLowerCase();
+                            const carModelName = String(carModel);
 
-                    const filteredModels = _.filter(models, (model) => {
-                        const modelName = String(model.name).toLowerCase();
-                        const carModelName = String(carModel);
+                            return modelName.includes(carModelName.toLowerCase()) || carModelName.includes(modelName.toLowerCase());
+                        });
 
-                        return modelName.includes(carModelName.toLowerCase()) || carModelName.includes(modelName.toLowerCase());
-                    });
+                        const firstModelId = _.get(filteredModels, '[0].id');
 
-                    const firstModelId = _.get(filteredModels, '[0].id');
+                        if (firstModelId) {
+                            yield put(setVehicleModelId({ modelId: firstModelId }));
 
-                    if (firstModelId) {
-                        yield put(setVehicleModelId({ modelId: firstModelId }));
+                            const { modifications } = yield call(fetchAPI, 'GET', 'vehicles_info', {year: manufacturedYear, makeId: firstMakeId, modelId: firstModelId});
 
-                        const { modifications } = yield call(fetchAPI, 'GET', 'vehicles_info', {year: manufacturedYear, makeId: firstMakeId, modelId: firstModelId});
-
-                        yield put(fetchVehicleModificationsSuccess({modifications}));
+                            yield put(fetchVehicleModificationsSuccess({modifications}));
+                        }
                     }
                 }
             }
