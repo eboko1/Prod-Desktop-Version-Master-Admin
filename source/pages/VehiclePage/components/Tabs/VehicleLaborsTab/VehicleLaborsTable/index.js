@@ -6,6 +6,8 @@ import {Spin, Table} from 'antd';
 import { v4 } from 'uuid';
 
 //proj
+import { MODALS, setModal } from 'core/modals/duck';
+import { AddLaborOrDetailToOrderModal } from 'modals';
 import {
     selectVehicleLabors,
     selectVehicleLaborsStats,
@@ -27,6 +29,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     setPageLabors,
+    setModal,
 }
 
 @connect(
@@ -35,6 +38,10 @@ const mapDispatchToProps = {
 )
 @injectIntl
 export default class VehicleLaborsTable extends React.Component {
+
+    onAddLaborOrDetailToOrder = ({labor}) => {
+        this.props.setModal(MODALS.ADD_LABOR_OR_DETAIL_TO_ORDER, {labors: [labor]});
+    }
 
     render() {
         const {
@@ -56,6 +63,8 @@ export default class VehicleLaborsTable extends React.Component {
             },
         }
 
+        console.log("Labors: ", labors);
+
         return (
             fetching ? <Spin/> : (
                     <div className={Styles.tableCont}>
@@ -64,11 +73,13 @@ export default class VehicleLaborsTable extends React.Component {
                             className={Styles.table}
                             dataSource={labors}
                             pagination={pagination}
-                            columns={columnsConfig({formatMessage})}
+                            columns={columnsConfig({formatMessage, onAddLaborOrDetailToOrder: this.onAddLaborOrDetailToOrder})}
                             scroll={ { x: 'auto', y: '80vh' } }
                             rowKey={() => v4()}
                             bordered
                         />
+
+                        <AddLaborOrDetailToOrderModal />
                     </div>
                 )
         );

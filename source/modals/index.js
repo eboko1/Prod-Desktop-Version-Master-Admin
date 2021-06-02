@@ -34,6 +34,7 @@ import SyncConflictsModal from './SyncConflictsModal';
 import SetBarcodeModal from './SetBarcodeModal';
 import WMSCellsModal from './WMSCellsModal';
 import ClientVehicleTransfer from "modals/ClientVehicleTransfer";
+import AddLaborOrDetailToOrderModal from './AddLaborOrDetailToOrderModal';
 
 //cashbox
 import AddCashboxModal from './Cashbox/AddCashboxModal';
@@ -93,4 +94,5 @@ export {
     SetBarcodeModal,
     WMSCellsModal,
     ClientVehicleTransfer,
+    AddLaborOrDetailToOrderModal,
 };

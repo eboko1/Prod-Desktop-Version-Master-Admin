@@ -9,16 +9,12 @@ import _ from 'lodash';
 // proj
 import intl from 'core/intl/reducer';
 import uiReducer, { moduleName as uiModule } from 'core/ui/duck';
-import subscriptionReducer, {
-    moduleName as subscriptionModule,
-} from 'core/subscription/duck';
-import errorMessageReducer, {
-    moduleName as errorMessageModule,
-} from 'core/errorMessage/duck';
+import subscriptionReducer, { moduleName as subscriptionModule } from 'core/subscription/duck';
+import errorMessageReducer, { moduleName as errorMessageModule } from 'core/errorMessage/duck';
 import authReducer, { moduleName as authModule } from 'core/auth/duck';
-
 import { formsReducer as forms } from 'core/forms';
 import { storageReducer as storage } from 'core/storage';
+
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import clientsReducer, { moduleName as clientsModule } from 'core/clients/duck';
 import clientHotOperationsReducer, { moduleName as clientHotOperationsModule } from 'core/clientHotOperations/duck';
@@ -30,14 +26,29 @@ import modalsReducer, { moduleName as modalsModule } from 'core/modals/duck';
 import packageReducer, { moduleName as packageModule } from 'core/package/duck';
 import businessPackageReducer, {moduleName as businessPackageModule} from 'core/businessPackage/duck';
 import managerRoleReducer, { moduleName as managerRoleModule} from 'core/managerRole/duck';
-
 import employeeScheduleReducer, {moduleName as employeeScheduleModule} from 'core/employeeSchedule/duck';
 import roleReducer, { moduleName as roleModule } from 'core/role/duck';
 import clientReducer, { moduleName as clientModule } from 'core/client/duck';
 import clientOrdersReducer, { moduleName as clientOrdersModule } from 'core/clientOrders/duck';
 import clientMRDsReducer, { moduleName as clientMRDsModule } from 'core/clientMRDs/duck';
+import clientRequisiteReducer, { moduleName as clientRequisiteModule } from 'core/clientRequisite/duck';
+import chartReducer, { moduleName as chartModule } from 'core/chart/duck';
+import reviewsReducer, { moduleName as reviewsModule } from 'core/reviews/duck';
+import reviewReducer, { moduleName as reviewModule } from 'core/review/duck';
+import callsReducer, { moduleName as callsModule } from 'core/calls/duck';
+import tecDocActionsReducer, { moduleName as tecDocActionsModule } from 'core/tecDocActions/duck';
+import dashboardReducer, { moduleName as dashboardModule } from 'core/dashboard/duck';
+import searchReducer, { moduleName as searchModule } from 'core/search/duck';
+import servicesSuggestionsReducer, { moduleName as servicesSuggestionsModule } from 'core/servicesSuggestions/duck';
+import vehicleNumberHistoryReducer, { moduleName as vehicleNumberHistoryModule } from 'core/vehicleNumberHistory/duck';
+import cashReducer, { moduleName as cashModule } from 'core/cash/duck';
+import suppliersReducer, { moduleName as suppliersModule } from 'core/suppliers/duck';
+import paymentsReducer, { moduleName as paymentsModule } from 'core/payments/duck';
+import warehousesReducer, { moduleName as warehousesModule } from 'core/warehouses/duck';
+import brandsReducer, { moduleName as brandsModule } from 'core/brands/duck';
+import vehicleTypesReducer, { moduleName as vehicleTypesModule } from 'core/vehicleTypes/duck';
 
-// Report
+// Reports
 import reportOrdersReducer, { moduleName as reportOrdersModule } from 'core/reports/reportOrders/duck';
 import reportClientDebtsReducer, { moduleName as reportClientDebtsModule } from 'core/reports/reportClientDebts/duck';
 import reportLoadKPIReducer, { moduleName as reportLoadKPIModule } from 'core/reports/reportLoadKPI/duck';
@@ -45,42 +56,9 @@ import reportAnalyticsReducer, {moduleName as reportAnalyticsModule} from 'core/
 import reportCashFlowReducer, {moduleName as reportCashFlowModule} from 'core/reports/reportCashFlow/duck';
 import reportCashOrdersLogsReducer, {moduleName as reportCashOrdersLogsModule} from 'core/reports/reportCashOrdersLogs/duck';
 
-import clientRequisiteReducer, { moduleName as clientRequisiteModule } from 'core/clientRequisite/duck';
-import chartReducer, { moduleName as chartModule } from 'core/chart/duck';
-import reviewsReducer, { moduleName as reviewsModule } from 'core/reviews/duck';
-import reviewReducer, { moduleName as reviewModule } from 'core/review/duck';
-import callsReducer, { moduleName as callsModule } from 'core/calls/duck';
-import tecDocActionsReducer, {
-    moduleName as tecDocActionsModule,
-} from 'core/tecDocActions/duck';
+//Reducers of components structured by "feature first structure": https://reactjs.org/docs/faq-structure.html
+import addLaborOrDetailToOrderReducer, {moduleName as addLaborOrDetailToOrderModule} from 'modals/AddLaborOrDetailToOrderModal/redux/duck';
 
-import dashboardReducer, {
-    moduleName as dashboardModule,
-} from 'core/dashboard/duck';
-import searchReducer, { moduleName as searchModule } from 'core/search/duck';
-
-import servicesSuggestionsReducer, {
-    moduleName as servicesSuggestionsModule,
-} from 'core/servicesSuggestions/duck';
-import vehicleNumberHistoryReducer, {
-    moduleName as vehicleNumberHistoryModule,
-} from 'core/vehicleNumberHistory/duck';
-import cashReducer, { moduleName as cashModule } from 'core/cash/duck';
-import suppliersReducer, {
-    moduleName as suppliersModule,
-} from 'core/suppliers/duck';
-import paymentsReducer, {
-    moduleName as paymentsModule,
-} from 'core/payments/duck';
-import warehousesReducer, {
-    moduleName as warehousesModule,
-} from 'core/warehouses/duck';
-import brandsReducer, {
-    moduleName as brandsModule,
-} from 'core/brands/duck';
-import vehicleTypesReducer, {
-    moduleName as vehicleTypesModule,
-} from 'core/vehicleTypes/duck';
 // own
 import history from './history';
 
@@ -140,6 +118,8 @@ const appState = {
     [ brandsModule ]:               brandsReducer,
     [ vehicleTypesModule ]:         vehicleTypesReducer,
     [ vehiclesModule ]:             vehiclesReducer,
+
+    [ addLaborOrDetailToOrderModule ]: addLaborOrDetailToOrderReducer,
 };
 
 const appReducer = combineReducers({ ...persistedState, ...appState });
