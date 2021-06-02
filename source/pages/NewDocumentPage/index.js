@@ -365,8 +365,8 @@ const struct = [
         items: [
             {
                 itemName:         'client',
-                formLink:  book.clients,
-                catalogueLink: book.clients,
+                formLink:  book.clientHotOperations,
+                catalogueLink: book.clientHotOperations,
                 formLinkState : { showForm: true },
                 permission: 'GET_CLIENTS',
                 permissionCRUD: 'CREATE_EDIT_DELETE_CLIENTS',
