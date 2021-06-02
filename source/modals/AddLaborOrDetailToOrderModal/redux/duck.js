@@ -6,6 +6,7 @@ export const FETCH_ORDERS = `${prefix}/FETCH_ORDERS`;
 export const FETCH_ORDERS_SUCCESS = `${prefix}/FETCH_ORDERS_SUCCESS`;
 
 export const ADD_LABOR_TO_ORDER = `${prefix}/ADD_LABOR_TO_ORDER`;
+export const ADD_DETAILS_TO_ORDER = `${prefix}/ADD_DETAILS_TO_ORDER`;
 
 export const SET_ORDERS_PAGE = `${prefix}/SET_ORDERS_PAGE`;
 export const SET_ORDERS_SEARCH_QUERY = `${prefix}/SET_ORDERS_SEARCH_QUERY`;
@@ -129,6 +130,10 @@ export const fetchOrders = () => ({
 
 export const addLaborToOrder = () => ({
     type:    ADD_LABOR_TO_ORDER,
+});
+
+export const addDetailsToOrder = () => ({
+    type:    ADD_DETAILS_TO_ORDER,
 });
 
 export const fetchOrdersSuccess = ({orders, stats}) => ({

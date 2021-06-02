@@ -12,7 +12,9 @@ import {
     fetchOrders,
     selectOrders,
     setServices,
+    setDetails,
     addLaborToOrder,
+    addDetailsToOrder,
     selectSelectedOrderId,
     setSelectedOrderId,
 } from './redux/duck';
@@ -32,7 +34,9 @@ const mapDispatchToProps = {
     fetchOrders,
     resetModal,
     setServices,
+    setDetails,
     addLaborToOrder,
+    addDetailsToOrder,
     setSelectedOrderId,
 };
 
@@ -47,10 +51,6 @@ export default class AddLaborOrDetailToOrderModal extends Component {
 
     componentDidMount() {
         this.props.fetchOrders();
-
-        // const { modalProps: {labors}, setServices } = this.props;
-        // setServices({services: labors});
-        // console.log("labors: ", labors);
     }
 
     /**
@@ -59,25 +59,22 @@ export default class AddLaborOrDetailToOrderModal extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
 
-        this.props.addLaborToOrder();
+        const {modalProps: {mode}} = this.props;
+
+        if(mode == modes.ADD_LABOR) {
+            const { modalProps: {labors}, setServices } = this.props;
+            setServices({services: labors});
+            console.log("labors: ", labors);
+            this.props.addLaborToOrder();
+        } else if(mode == modes.ADD_DETAIL) {
+            const { modalProps: {details}, setDetails } = this.props;
+            setDetails({details: details});
+            console.log("details: ", details);
+            this.props.addDetailsToOrder();
+        }
+
+
         this.onClose();
-
-        // const {modalProps} = this.props;
-        // const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
-        
-        // this.vehicleForm.validateFields((err) => {
-        //     if (!err) {
-        //         if(mode == modes.ADD) {
-        //             this.props.createVehicle();
-        //         } else if(mode == modes.EDIT) {
-        //             const vehicleId = _.get(modalProps, "vehicleId");
-        //             vehicleId && this.props.updateVehicle({vehicleId});
-        //         }
-
-        //         this.resetAllFormsAndCloseModal();
-        //     } 
-        // });
-        
     };
 
     onClose = () => {

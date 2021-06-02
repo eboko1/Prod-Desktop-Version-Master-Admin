@@ -33,8 +33,7 @@ const defWidth = {
 export function columnsConfig(props) {
 
     const {
-        formatMessage,
-        onAddLaborOrDetailToOrder
+        onAddLaborToOrder
     } = props;
 
     const orderCol = {
@@ -122,7 +121,7 @@ export function columnsConfig(props) {
         width:     defWidth.actions,
         key:       v4(),
         render:    (labor) => (
-            <Button  onClick={()=>onAddLaborOrDetailToOrder({labor})}/>
+            <Button  onClick={()=>onAddLaborToOrder({labor})}/>
         )
     };
 
