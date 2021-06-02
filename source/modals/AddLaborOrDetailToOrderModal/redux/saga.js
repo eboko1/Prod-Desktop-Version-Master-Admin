@@ -59,15 +59,17 @@ export function* addLaborsToOrderSaga() {
 			services: [],
 		};
 
-        payload.services.push({
-            serviceId: labors[0].laborId,
-            serviceName: labors[0].serviceName || labors[0].defaultName,
-            employeeId: labors[0].employeeId,
-            serviceHours: 0,
-            purchasePrice: 0,
-            count: Number(labors[0].hours) || 0,
-            servicePrice: Number(labors[0].price),
-        });
+        _.each(labors, labor => {
+            payload.services.push({
+                serviceId: labor.laborId,
+                serviceName: labor.serviceName || labor.defaultName,
+                employeeId: labor.employeeId,
+                serviceHours: 0,
+                purchasePrice: 0,
+                count: Number(labor.hours) || 0,
+                servicePrice: Number(labor.price),
+            });
+        });        
 
         try{
             yield call(fetchAPI, 'PUT', `orders/${selectedOrderId}`, null, payload, {handleErrorInternally: true});
@@ -97,15 +99,17 @@ export function* addDetailsToOrderSaga() {
 			services: [],
 		};
 
-        payload.details.push({
-            storeGroupId: details[0].storeGroupId,
-            name: details[0].name,
-            productCode: details[0].productCode,
-            supplierBrandId: details[0].supplierBrandId,
-            count: 1,
-            price: 0,
-            purchasePrice: 0,
-        })
+        _.each(details, product => {
+            payload.details.push({
+                storeGroupId: product.storeGroupId,
+                name: product.name,
+                productCode: product.productCode,
+                supplierBrandId: product.supplierBrandId,
+                count: 1,
+                price: 0,
+                purchasePrice: 0,
+            })
+        });
 
         try{
             yield call(fetchAPI, 'PUT', `orders/${selectedOrderId}`, null, payload, {handleErrorInternally: true});
