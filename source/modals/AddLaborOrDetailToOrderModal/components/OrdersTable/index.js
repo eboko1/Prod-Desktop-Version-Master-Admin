@@ -1,8 +1,8 @@
 //Vendor
 import React from 'react';
 import { connect } from "react-redux";
-import { injectIntl } from 'react-intl';
-import { Table } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Table, Input } from 'antd';
 import { v4 } from 'uuid';
 
 //proj
@@ -14,6 +14,7 @@ import {
 
     setOrdersPage,
     setSelectedOrderId,
+    setOrdersSearchQuery,
 } from '../../redux/duck';
 
 //Own
@@ -31,11 +32,24 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     setOrdersPage,
     setSelectedOrderId,
+    setOrdersSearchQuery,
 }
 
 @injectIntl
 @connect( mapStateToProps, mapDispatchToProps)
 export default class VehicleOrdersTable extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.handleSearch = _.debounce(value => {
+            this.props.setOrdersSearchQuery({query: value.replace(/[+()]/g,'')});
+        }, 1000).bind(this);
+    }
+
+    onSearch = e => {
+        const value = e.target.value;
+        this.handleSearch(value);
+    }
 
     render() {
         const {
@@ -60,6 +74,11 @@ export default class VehicleOrdersTable extends React.Component {
 
         return (
             <div className={Styles.tableCont}>
+                <div className={Styles.filtersCont}>
+                    <div className={Styles.textCont}><FormattedMessage id={"client_hot_operations_page.search"} />: </div>
+                    <div className={Styles.inputCont}><Input onChange={this.onSearch} allowClear/></div>
+                </div>
+
                 <Table
                     className={Styles.table}
                     dataSource={orders}

@@ -146,10 +146,15 @@ export const setOrdersPage = ({page}) => ({
     payload: {page},
 });
 
-export const setOrdersSearchQuery = ({query}) => ({
-    type:    SET_ORDERS_SEARCH_QUERY,
-    payload: {query},
-});
+export const setOrdersSearchQuery = ({query}) => {
+    return function(dispatch) {
+        dispatch({
+            type:    SET_ORDERS_SEARCH_QUERY,
+            payload: {query},
+        });
+        dispatch(fetchOrders());
+    }
+};
 
 export const setDetails = ({details}) => ({
     type:    SET_DETAILS,
