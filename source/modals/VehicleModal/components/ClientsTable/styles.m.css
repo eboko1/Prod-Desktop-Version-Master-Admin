@@ -28,9 +28,9 @@
 
 .tableCont {
     border-radius: 0.8em;
-    padding: 5px;
+    padding: 0.2em;
     background-color: rgb(216, 216, 216);
-    margin: 10px;
+    margin: 0.4em;
     width: 100%;
 }
 
@@ -51,8 +51,8 @@
 .filtersCont {
     display: flex;
     justify-content: center;
-    padding: 10px;
-    margin-bottom: 5px;
+    padding: 0.1em 0.4em 0.1em 0.4em;
+    margin-bottom: 0.2em;
     background-color: rgb(209, 209, 209);
     border-radius: 0.4em;
 }

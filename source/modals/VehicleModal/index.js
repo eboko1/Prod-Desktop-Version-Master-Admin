@@ -125,35 +125,45 @@ export default class VehicleModal extends Component {
                     }
                 >
                     <div style={{minHeight: '50vh'}}>
-                        <ClientsTable />
-                        {
-                            (() => {
-                                switch (mode) {
-                                    case modes.ADD: return (
-                                        <AddVehicleForm
-                                            getFormRefCB={this.saveVehicleFormRef}//Get form refference
-                                        />
-                                    );
+                            {
+                                (() => {
+                                    switch (mode) {
+                                        case modes.ADD: return (
+                                            <div>
+                                                <ClientsTable />
+                                                <div className={Styles.formContainer}>
+                                                    <AddVehicleForm
+                                                        getFormRefCB={this.saveVehicleFormRef}//Get form refference
+                                                    />
+                                                </div>
+                                            </div>
+                                        );
 
-                                    case modes.EDIT: return (
-                                        <EditVehicleForm
-                                            getFormRefCB={this.saveVehicleFormRef}//Get form refference
-                                            vehicleId={vehicleId}
-                                        />
-                                    );
+                                        case modes.EDIT: return (
+                                            <div>
+                                                <ClientsTable />
+                                                <div className={Styles.formContainer}>
+                                                    <EditVehicleForm
+                                                        getFormRefCB={this.saveVehicleFormRef}//Get form refference
+                                                        vehicleId={vehicleId}
+                                                    />
+                                                </div>
+                                            </div>
+                                        );
 
-                                    case modes.VIEW: return (
-                                        <ViewVehicleForm
-                                            getFormRefCB={this.saveVehicleFormRef}//Get form refference
-                                            vehicleId={vehicleId}
-                                        />
-                                    );
-                                
-                                    default: return "Invalid mode provided, available modes are: EDIT, ADD, VIEW";
-                                }
-                            })()
-                        }
-                        
+                                        case modes.VIEW: return (
+                                            <div className={Styles.formContainer}>
+                                                <ViewVehicleForm
+                                                    getFormRefCB={this.saveVehicleFormRef}//Get form refference
+                                                    vehicleId={vehicleId}
+                                                />
+                                            </div>
+                                        );
+                                    
+                                        default: return "Invalid mode provided, available modes are: EDIT, ADD, VIEW";
+                                    }
+                                })()
+                            }
                     </div>
                 </Modal>
             </div>

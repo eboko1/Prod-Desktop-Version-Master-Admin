@@ -5,7 +5,6 @@ Container used to show clients and perform basic search of them.
 import React from 'react';
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { withRouter } from "react-router";
 import { Table, Input } from 'antd';
 import { v4 } from 'uuid';
 
@@ -104,6 +103,7 @@ export default class ClientsContainer extends React.Component {
                     columns={columnsConfig({user})}
                     scroll={ { x: 1000, y: '30vh' } }
                     loading={fetchingClients}
+                    rowKey={() => v4()}
                     pagination={pagination}
                     rowClassName={Styles.tableRow}
                     rowSelection={{
