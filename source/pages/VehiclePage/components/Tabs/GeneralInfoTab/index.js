@@ -20,6 +20,8 @@ import {
     fetchVehicleAttributes,
 
     createOrder,
+
+    /*-------Selectors----*/
     selectVehicle,
     selectClient,
     selectGeneralData,
@@ -115,7 +117,6 @@ export default class GeneralInfoTab extends Component {
             fetchingOrdersLatest,
             fetchingVehicleAttributes
         } = this.props;
-
         return (
             <div className={Styles.tabContent}>
                 {
