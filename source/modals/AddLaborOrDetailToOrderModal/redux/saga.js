@@ -11,7 +11,7 @@ import { fetchAPI } from 'utils';
 import {
     fetchOrdersSuccess,
     selectOrdersQuery,
-    selectServices,
+    selectLabors,
     selectDetails,
     selectSelectedOrderId,
     setOrdersFetching,
@@ -47,11 +47,11 @@ export function* addLaborsToOrderSaga() {
         yield take(ADD_LABORS_TO_ORDER);
 
         const selectedOrderId = yield select(selectSelectedOrderId);
-        const services = yield select(selectServices);
+        const labors = yield select(selectLabors);
 
-        console.log("Data: ", services, selectedOrderId);
+        console.log("Data: ", labors, selectedOrderId);
 
-        if(!services || !selectedOrderId) continue;
+        if(!labors || !selectedOrderId) continue;
 
         const payload = {
 			insertMode: true,
@@ -60,13 +60,13 @@ export function* addLaborsToOrderSaga() {
 		};
 
         payload.services.push({
-            serviceId: services[0].laborId,
-            serviceName: services[0].serviceName || services[0].defaultName,
-            employeeId: services[0].employeeId,
+            serviceId: labors[0].laborId,
+            serviceName: labors[0].serviceName || labors[0].defaultName,
+            employeeId: labors[0].employeeId,
             serviceHours: 0,
             purchasePrice: 0,
-            count: Number(services[0].hours) || 0,
-            servicePrice: Number(services[0].price),
+            count: Number(labors[0].hours) || 0,
+            servicePrice: Number(labors[0].price),
         });
 
         try{

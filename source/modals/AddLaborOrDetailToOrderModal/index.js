@@ -11,7 +11,7 @@ import {
     modes,
     fetchOrders,
     selectOrders,
-    setServices,
+    setLabors,
     setDetails,
     addLaborsToOrder,
     addDetailsToOrder,
@@ -33,7 +33,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchOrders,
     resetModal,
-    setServices,
+    setLabors,
     setDetails,
     addLaborsToOrder,
     addDetailsToOrder,
@@ -58,8 +58,8 @@ export default class AddLaborOrDetailToOrderModal extends Component {
         const {modalProps: {mode}} = this.props;
 
         if(mode == modes.ADD_LABOR) {
-            const { modalProps: {labors}, setServices } = this.props;
-            setServices({services: labors});
+            const { modalProps: {labors}, setLabors } = this.props;
+            setLabors({services: labors});
             console.log("labors: ", labors);
             this.props.addLaborsToOrder();
         } else if(mode == modes.ADD_DETAIL) {

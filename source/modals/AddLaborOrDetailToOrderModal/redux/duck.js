@@ -12,7 +12,7 @@ export const SET_ORDERS_PAGE = `${prefix}/SET_ORDERS_PAGE`;
 export const SET_ORDERS_FETCHING = `${prefix}/SET_ORDERS_FETCHING`;
 export const SET_ORDERS_SEARCH_QUERY = `${prefix}/SET_ORDERS_SEARCH_QUERY`;
 export const SET_DETAILS = `${prefix}/SET_DETAILS`;
-export const SET_SERVICES = `${prefix}/SET_SERVICES`;
+export const SET_LABORS = `${prefix}/SET_LABORS`;
 export const SET_SELECTED_ORDER_ID = `${prefix}/SET_SELECTED_ORDER_ID`;
 
 
@@ -93,11 +93,11 @@ export default function reducer(state = ReducerState, action) {
                 details: details,
             };
 
-        case SET_SERVICES:
-            const { services } = payload;
+        case SET_LABORS:
+            const { labors } = payload;
             return {
                 ...state,
-                services: services
+                services: labors
             };
 
         case SET_ORDERS_FETCHING:
@@ -127,7 +127,7 @@ export const selectOrdersFetching = state => state[ moduleName ].ordersFetching;
 
 
 export const selectDetails = state => state[ moduleName ].details;
-export const selectServices = state => state[ moduleName ].services;
+export const selectLabors = state => state[ moduleName ].services;
 export const selectSelectedOrderId = state => state[ moduleName ].selectedOrderId;
 
 
@@ -175,9 +175,9 @@ export const setDetails = ({details}) => ({
     payload: {details},
 });
 
-export const setServices = ({services}) => ({
-    type:    SET_SERVICES,
-    payload: {services},
+export const setLabors = ({labors}) => ({
+    type:    SET_LABORS,
+    payload: {labors},
 });
 
 export const setSelectedOrderId = ({orderId}) => ({
