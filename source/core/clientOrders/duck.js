@@ -47,6 +47,14 @@ export default function reducer(state = ReducerState, action) {
     }
 }
 
+/**
+ * Selectors
+ * */
+
+export const stateSelector = state => state[ moduleName ];
+export const selectClientOrders = state => state[ moduleName ].ordersData;
+export const selectClientOrdersFilter = state => state[ moduleName ].filter;
+
 export const fetchClientOrders = ({ clientId, filter }) => ({
     type:    FETCH_CLIENT_ORDERS,
     payload: { clientId, filter },

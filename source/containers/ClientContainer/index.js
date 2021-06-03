@@ -26,8 +26,8 @@ import {
     ClientCallsTab
 } from 'components';
 
-import { fetchClientOrders } from "core/clientOrders/duck";
-import { fetchClientMRDs } from "core/clientMRDs/duck";
+import {fetchClientOrders, selectClientOrders, selectClientOrdersFilter} from "core/clientOrders/duck";
+import {fetchClientMRDs, selectClientMRDsStats} from "core/clientMRDs/duck";
 import { fetchCalls, selectCallsStats } from "core/calls/duck";
 
 // own
@@ -36,9 +36,9 @@ const { TabPane } = Tabs;
 const mapStateToProps = state => ({
     user: state.auth,
     isMobile: state.ui.views.isMobile,
-    ordersData: state.clientOrders.ordersData,
-    filterOrders: state.clientOrders.filter,
-    mrdsStats: state.clientMRDs.stats,
+    ordersData: selectClientOrders(state),
+    filterOrders: selectClientOrdersFilter(state),
+    mrdsStats: selectClientMRDsStats(state),
     callStats: selectCallsStats(state)
 });
 
@@ -57,7 +57,6 @@ const mapDispatchToProps = {
 export default class ClientContainer extends Component {
     componentDidMount() {
         const { clientId, filterOrders } = this.props;
-        // console.log("F: ", clientId, filter)
         this.props.fetchClientOrders({ clientId, filterOrders });
         this.props.fetchClientMRDs({ clientId });
         this.props.fetchCalls();
