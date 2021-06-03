@@ -26,31 +26,54 @@ import {
     ClientCallsTab
 } from 'components';
 
+import { fetchClientOrders } from "core/clientOrders/duck";
+import { fetchClientMRDs } from "core/clientMRDs/duck";
+import { fetchCalls, selectCallsStats } from "core/calls/duck";
+
 // own
 const { TabPane } = Tabs;
 
 const mapStateToProps = state => ({
     user: state.auth,
     isMobile: state.ui.views.isMobile,
+    ordersData: state.clientOrders.ordersData,
+    filterOrders: state.clientOrders.filter,
+    mrdsStats: state.clientMRDs.stats,
+    callStats: selectCallsStats(state)
 });
 
 const mapDispatchToProps = {
     createClientVehicle,
     updateClientVehicle,
     deleteClientVehicle,
+
+    fetchClientOrders,
+    fetchClientMRDs,
+    fetchCalls
 };
 
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class ClientContainer extends Component {
+    componentDidMount() {
+        const { clientId, filterOrders } = this.props;
+        // console.log("F: ", clientId, filter)
+        this.props.fetchClientOrders({ clientId, filterOrders });
+        this.props.fetchClientMRDs({ clientId });
+        this.props.fetchCalls();
+    }
+
     render() {
-        const { clientEntity, clientId, user, specificTab, isMobile, fetchClient } = this.props;
+        const { clientEntity, clientId, user, specificTab, isMobile, fetchClient,
+                ordersData, mrdsStats, callStats } = this.props;
         const {
             CREATE_EDIT_DELETE_CLIENTS,
             GET_CLIENTS_ADDITIONAL_INFORMATION,
             ACCESS_CLIENTS_REQUISITES,
             ACCESS_RECEIVABLES_GET,
         } = permissions;
+
+        console.log("OR: ", callStats)
 
         return (
             <Catcher>
@@ -89,7 +112,10 @@ export default class ClientContainer extends Component {
                     </TabPane>
                     <TabPane
                         tab={
-                            <FormattedMessage id={"client_container.orders"} />
+                            <div>
+                                <FormattedMessage id={"client_container.orders"} />
+                                ({ordersData && ordersData.count})
+                            </div>
                         }
                         key="orders"
                         disabled={isForbidden(
@@ -101,9 +127,13 @@ export default class ClientContainer extends Component {
                     </TabPane>
                     <TabPane
                         tab={
-                            <FormattedMessage
-                                id={"client_container.feedback"}
-                            />
+                            <div>
+                                <FormattedMessage
+                                    id={"client_container.feedback"}
+                                />
+                                ({clientEntity.reviews && clientEntity.reviews.length})
+                            </div>
+
                         }
                         key="feedback"
                         disabled={isForbidden(
@@ -116,9 +146,13 @@ export default class ClientContainer extends Component {
                     <TabPane
                         disabled={isForbidden(user, ACCESS_CLIENTS_REQUISITES)}
                         tab={
-                            <FormattedMessage
-                                id={"client_container.requisites"}
-                            />
+                            <div>
+                                <FormattedMessage
+                                    id={"client_container.requisites"}
+                                />
+                                ({clientEntity.requisites && clientEntity.requisites.length})
+                            </div>
+
                         }
                         key="clientRequisites"
                     >
@@ -129,13 +163,23 @@ export default class ClientContainer extends Component {
                     </TabPane>
                     <TabPane
                         disabled={ isForbidden(user, ACCESS_RECEIVABLES_GET) }
-                        tab={<FormattedMessage id={ 'client_container.debt'}/>}
+                        tab={
+                            <div>
+                                <FormattedMessage id={ 'client_container.debt'}/>
+                                ({mrdsStats && mrdsStats.countMRDs})
+                            </div>
+                        }
                         key='clientDebt'
                     >
                         <ClientMRDsTab clientId={clientId} client={clientEntity}/>
                     </TabPane>
                     <TabPane
-                        tab={<FormattedMessage id={ 'client_container.calls'}/>}
+                        tab={
+                            <div>
+                                <FormattedMessage id={ 'client_container.calls'}/>
+                                ({callStats && callStats.total})
+                            </div>
+                        }
                         key='calls'
                     >
                         <ClientCallsTab/>
