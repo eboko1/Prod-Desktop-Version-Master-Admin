@@ -3,7 +3,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import {v4} from 'uuid';
-import {Button} from 'antd';
+import { Button, Popover } from 'antd';
 import { images } from 'utils';
 
 //Proj
@@ -137,18 +137,21 @@ export function columnsConfig(props) {
         width:     defWidth.actions,
         key:       v4(),
         render:    (detail) => (
-            <Button  onClick={()=>onAddDetailToOrder({detail})}>
-                <div
-                    style={ {
-                        width:           18,
-                        height:          18,
-                        backgroundColor: 'var(--text3)',
-                        mask:       `url(${images.pistonIcon}) no-repeat center / contain`,
-                        WebkitMask: `url(${images.pistonIcon}) no-repeat center / contain`,
-                        transform:  'scale(-1, 1)',
-                    } }
-                />
-            </Button>
+            <Popover content={<FormattedMessage id="vehicle_page.hint_add_detail_to_order"/>}>
+                <Button  onClick={()=>onAddDetailToOrder({detail})}>
+                    <div
+                        style={ {
+                            width:           18,
+                            height:          18,
+                            backgroundColor: 'var(--text3)',
+                            mask:       `url(${images.pistonIcon}) no-repeat center / contain`,
+                            WebkitMask: `url(${images.pistonIcon}) no-repeat center / contain`,
+                            transform:  'scale(-1, 1)',
+                        } }
+                    />
+                </Button>                   
+            </Popover>
+            
         )
     };
 
