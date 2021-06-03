@@ -70,7 +70,7 @@ export default class OrderFormTabs extends React.PureComponent {
 			const parentGroup = this.props.details[i];
 			treeData.push({
 				title: `${parentGroup.name} (#${parentGroup.id})`,
-				name: parentGroup.name,
+				name: parentGroup.singleName,
 				value: parentGroup.id,
 				className: Styles.groupTreeOption,
 				key: `${i}`,
@@ -82,7 +82,7 @@ export default class OrderFormTabs extends React.PureComponent {
 				const childGroup = parentGroup.childGroups[j];
 				treeData[i].children.push({
 					title: `${childGroup.name} (#${childGroup.id})`,
-					name: childGroup.name,
+					name: childGroup.singleName,
 					value: childGroup.id,
 					className: Styles.groupTreeOption,
 					key: `${i}-${j}`,
@@ -94,7 +94,7 @@ export default class OrderFormTabs extends React.PureComponent {
 					const lastNode = childGroup.childGroups[k];
 					treeData[i].children[j].children.push({
 						title: `${lastNode.name} (#${lastNode.id})`,
-						name: lastNode.name,
+						name: lastNode.singleName,
 						value: lastNode.id,
 						className: Styles.groupTreeOption,
 						key: `${i}-${j}-${k}`,
@@ -105,7 +105,7 @@ export default class OrderFormTabs extends React.PureComponent {
 						const elem = lastNode.childGroups[l];
 						treeData[i].children[j].children[k].children.push({
 							title: `${elem.name} (#${elem.id})`,
-							name: elem.name,
+							name: elem.singleName,
 							value: elem.id,
 							className: Styles.groupTreeOption,
 							key: `${i}-${j}-${k}-${l}`,
@@ -523,6 +523,7 @@ export default class OrderFormTabs extends React.PureComponent {
 							clearOilData={clearOilData}
 							activeKey={this.state.activeKey}
 							detailsTreeData={this.state.detailsTreeData}
+							discount={_.get(fetchedOrder, `order.detailsDiscount`, 0)}
 						/>
 						<DiscountPanel
 							orderDetails={orderDetails}

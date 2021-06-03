@@ -87,7 +87,7 @@ export default props => {
         render:    (manager, data) =>
             manager ? (
                 <Link to={ `${book.employeesPage}/${data.managerEmployeeId}` }>
-                    { data.managerName } { data.managerSurname }
+                    { data.managerSurname } { data.managerName }
                 </Link>
             ) : null,
     };

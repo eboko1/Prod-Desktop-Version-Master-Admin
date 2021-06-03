@@ -115,18 +115,22 @@ export function columnsConfig({fetchRecordingLink, callsLinksCache}) {
         title:     <FormattedMessage id='calls-table.record' />,
         width:     defWidth.record,
         dataIndex: 'recordingLink',
-        render:    (val, call) => {
+        render: (val, call) => {
             return String(call.id) in callsLinksCache//Check if that key exists in cash memory
-                ?   Boolean(callsLinksCache[call.id]) //False for empty rows(but we key exists)
-                    ?   <audio controls>
-                            <source src={ callsLinksCache[call.id] } />
-                        </audio>
-                    :   <FormattedMessage id='calls-table.no_record' />
-                :   (<div>
-                        <StyledButton type="primary" onClick={() => fetchRecordingLink({callId: call.id})}>
-                            <FormattedMessage id='calls-table.show_record' />
-                        </StyledButton>
-                    </div>);
+                ? Boolean(callsLinksCache[call.id]) //False for empty rows where key exists in the cash memory or if call was not accepted
+                    ? <audio controls>
+                        <source src={callsLinksCache[call.id]} />
+                    </audio>
+                    : <FormattedMessage id='calls-table.no_record' />
+                : (answered.includes(call.status))
+                    ? (
+                        <div>
+                            <StyledButton type="primary" onClick={() => fetchRecordingLink({ callId: call.id })}>
+                                <FormattedMessage id='calls-table.show_record' />
+                            </StyledButton>
+                        </div>
+                    )
+                    : <FormattedMessage id='calls-table.no_record' />
         }
     };
 

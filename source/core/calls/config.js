@@ -1,4 +1,7 @@
-// ringostat constants
+/**
+ * ringostat constants
+ * Call statuses
+ */
 const callsStatuses = Object.freeze({
     VOICEMAIL:        'VOICEMAIL',
     ANSWERED:         'ANSWERED',
@@ -13,7 +16,7 @@ const callsStatuses = Object.freeze({
 });
 
 const answered = [ callsStatuses.ANSWERED, callsStatuses.PROPER, callsStatuses.REPEATED ];
-const missed = [ callsStatuses.NO_ANSWER ];
+const missed = [ callsStatuses.NO_ANSWER, callsStatuses.BUSY ]; //Busy calls are missed too
 const busy = [ callsStatuses.BUSY ];
 
 const all = [ ...answered, ...missed, ...busy ];
