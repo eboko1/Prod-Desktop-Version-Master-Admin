@@ -240,6 +240,7 @@ export default class VehicleEditFormClass extends React.Component {
                                     optionValue={'id'}
                                     optionLabel={'name'}
                                 />
+                            <h1 className={Styles.vehicleDataHint}>{fields.makeId ? null : fields.makeName}</h1>
                         </Col>
                         <Col span={6}></Col>
                     </Row>
@@ -279,6 +280,7 @@ export default class VehicleEditFormClass extends React.Component {
                                     optionValue={'id'}
                                     optionLabel={'name'}
                                 />
+                            <h1 className={Styles.vehicleDataHint}> {fields.modelName}</h1>
                         </Col>
                         <Col span={6}></Col>
                     </Row>

@@ -71,7 +71,6 @@ const mapDispatchToProps = {
     fetchVehicleAppurtenances,
     fetchVehicleRecommendations,
 
-
     setExpandedVehicleId,
 
 };
@@ -105,12 +104,6 @@ export default class VehiclePage extends Component {
             appurtenancesStats,
             recommendationsStats,
         } = this.props;
-
-        console.log("S: ",  ordersStats,
-            normHoursStats,
-            laborsStats,
-            appurtenancesStats,
-            recommendationsStats)
 
         return (
             <Layout
