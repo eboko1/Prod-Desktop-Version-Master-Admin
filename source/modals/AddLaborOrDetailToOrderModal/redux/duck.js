@@ -14,6 +14,7 @@ export const SET_ORDERS_SEARCH_QUERY = `${prefix}/SET_ORDERS_SEARCH_QUERY`;
 export const SET_DETAILS = `${prefix}/SET_DETAILS`;
 export const SET_LABORS = `${prefix}/SET_LABORS`;
 export const SET_SELECTED_ORDER_ID = `${prefix}/SET_SELECTED_ORDER_ID`;
+export const SET_VEHICLE_ID = `${prefix}/SET_VEHICLE_ID`;
 
 
 /**
@@ -38,6 +39,7 @@ const ReducerState = {
         query: { //Filters
             page: 1,
             query: undefined,
+            vehicleId: undefined,
         },
     },
 
@@ -86,6 +88,19 @@ export default function reducer(state = ReducerState, action) {
                 }
             };
 
+        case SET_VEHICLE_ID:
+            const { vehicleId } = payload;
+            return {
+                ...state,
+                ordersData: {
+                    ...state.ordersData,
+                    query: {
+                        ...state.ordersData.query,
+                        vehicleId: vehicleId,
+                    }
+                }
+            };
+
         case SET_DETAILS:
             const { details } = payload;
             return {
@@ -129,7 +144,7 @@ export const selectOrdersFetching = state => state[ moduleName ].ordersFetching;
 export const selectDetails = state => state[ moduleName ].details;
 export const selectLabors = state => state[ moduleName ].services;
 export const selectSelectedOrderId = state => state[ moduleName ].selectedOrderId;
-
+export const selectVehicleId = state => state[ moduleName ].ordersData.query.vehicleId;
 
 /* Actions */
 
@@ -184,3 +199,17 @@ export const setSelectedOrderId = ({orderId}) => ({
     type:    SET_SELECTED_ORDER_ID,
     payload: {orderId},
 });
+
+/**
+ * Automatically fetches orders
+ * @param {*} params.vehicleId - Id of a vehicle will be used to filetr orders
+ */
+export const setVehicleId = ({vehicleId}) => {
+    return function(dispatch) {
+        dispatch({
+            type:    SET_VEHICLE_ID,
+            payload: {vehicleId},
+        });
+        dispatch(fetchOrders());
+    }
+};

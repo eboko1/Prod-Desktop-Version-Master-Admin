@@ -3,13 +3,12 @@ import React, {Component} from 'react';
 import {FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Button, Tabs, Icon, Row, Col, Spin} from 'antd';
+import {Button, Tabs, Icon, Row, Col, Spin, Popover} from 'antd';
 import history from 'store/history';
 import _ from 'lodash';
 import { v4 } from 'uuid';
 
 // proj
-import {Layout, Spinner} from 'commons';
 import { FormattedDatetime } from "components";
 import book from 'routes/book';
 import { VehicleModal } from 'modals';
@@ -116,6 +115,7 @@ export default class GeneralInfoTab extends Component {
             fetchingOrdersLatest,
             fetchingVehicleAttributes
         } = this.props;
+
         return (
             <div className={Styles.tabContent}>
                 {
@@ -127,43 +127,75 @@ export default class GeneralInfoTab extends Component {
                             className={Styles.block}
                             controls={
                                 <div>
-                                    <Icon className={Styles.barcodeIcon} type="barcode" />
-                                    <Icon className={Styles.infoIcon} type="question-circle" />
-                                    <Icon
-                                        className={Styles.editIcon}
-                                        type="eye"
-                                        onClick={() => this.onViewVehicle({vehicleId: _.get(vehicle, 'id')})}
-                                    />
-                                    <Icon
-                                        className={Styles.editIcon}
-                                        type="edit"
-                                        onClick={() => this.onEditVehicle({vehicleId: _.get(vehicle, 'id')})}
-                                    />
-                                    <Icon
-                                        className={Styles.editIcon}
-                                        type="folder-add"
-                                        onClick={() => this.onAddVehicle({clientId: _.get(client, 'clientId')})}
-                                    />
+                                    <Popover content={<FormattedMessage id="vehicle_page.hint_barcode_modal"/>}>
+                                        <Icon className={Styles.barcodeIcon} type="barcode" />
+                                    </Popover>
+                                    
+                                    <Popover content={<FormattedMessage id="vehicle_page.hint_vehicle_info_modal"/>}>
+                                        <Icon className={Styles.infoIcon} type="question-circle" />
+                                    </Popover>
 
-                                    <Icon
-                                        className={Styles.deleteIcon}
-                                        type="delete"
-                                        onClick={() => {
-                                            deleteClientVehicle(_.get(client, 'clientId'), _.get(vehicle, 'id'));
-                                            history.push({
-                                                pathname: `${book.vehicles}`
-                                            });
-                                        }}
-                                    />
-                                    <Icon className={Styles.changeVehicleOwnerIcon} type="sync" />
+                                    <Popover content={<FormattedMessage id="vehicle_page.hint_view_vehicle_modal"/>}>
+                                        <Icon
+                                            className={Styles.editIcon}
+                                            type="eye"
+                                            onClick={() => this.onViewVehicle({vehicleId: _.get(vehicle, 'id')})}
+                                        />
+                                    </Popover>
 
-                                    <Button
-                                        className={Styles.iconButton}
-                                        type="primary"
-                                        onClick={() => this.onCreateOrder({clientId: _.get(client, 'clientId'), vehicleId: _.get(vehicle, 'id')})}
-                                    >
-                                        <Icon className={Styles.plusIcon} type="plus" />
-                                    </Button>
+                                    <Popover content={<FormattedMessage id="vehicle_page.hint_edit_vehicle_modal"/>}>
+                                        <Icon
+                                            className={Styles.editIcon}
+                                            type="edit"
+                                            onClick={() => this.onEditVehicle({vehicleId: _.get(vehicle, 'id')})}
+                                        />
+                                    </Popover>
+
+                                    <Popover content={<FormattedMessage id="vehicle_page.hint_add_vehicle_modal"/>}>
+                                        <Icon
+                                            className={Styles.editIcon}
+                                            type="folder-add"
+                                            onClick={() => this.onAddVehicle({clientId: _.get(client, 'clientId')})}
+                                        />
+                                    </Popover>
+
+                                    <Popover content={<FormattedMessage id="vehicle_page.hint_delete_vehicle"/>}>
+                                        <Icon
+                                            className={Styles.deleteIcon}
+                                            type="delete"
+                                            onClick={() => {
+                                                deleteClientVehicle(_.get(client, 'clientId'), _.get(vehicle, 'id'));
+                                                history.push({
+                                                    pathname: `${book.vehicles}`
+                                                });
+                                            }}
+                                        />
+                                    </Popover>
+
+                                    <Popover content={<FormattedMessage id="vehicle_page.hint_change_vehicle_owner"/>}>
+                                        {fetchingVehicleClient 
+                                            ? (<Spin />)
+                                            :(
+                                                <span className={Styles.changeVehicleOwnerIcon}>
+                                                    <ClientVehicleTransfer
+                                                        clientId={client.clientId}
+                                                        vehicleId={vehicle.id}
+                                                        vehicles={client.vehicles}
+                                                    />
+                                                </span>
+                                            )
+                                        }
+                                    </Popover>
+
+                                    <Popover content={<FormattedMessage id="vehicle_page.hint_create_order_for_this_vehicle"/>}>
+                                        <Button
+                                            className={Styles.iconButton}
+                                            type="primary"
+                                            onClick={() => this.onCreateOrder({clientId: _.get(client, 'clientId'), vehicleId: _.get(vehicle, 'id')})}
+                                        >
+                                            <Icon className={Styles.plusIcon} type="plus" />
+                                        </Button>
+                                    </Popover>
                                 </div>
                             }
                         >
@@ -192,9 +224,15 @@ export default class GeneralInfoTab extends Component {
                                 <Row className={Styles.row}>
                                     <Col span={6}><Button className={Styles.button} type="primary">{<FormattedMessage id='vehicle_page.service_book' />}</Button></Col>
                                     <Col span={18}>
-                                        <Icon className={Styles.sendSMSIcon} type="message" />
-                                        <Icon className={Styles.sendMailIcon} type="mail" />
-                                        <Icon className={Styles.copyIcon} type="copy" />
+                                        <Popover content={<FormattedMessage id="vehicle_page.hint_send_via_sms"/>}>
+                                            <Icon className={Styles.sendSMSIcon} type="message" />
+                                        </Popover>
+                                        <Popover content={<FormattedMessage id="vehicle_page.hint_send_via_email"/>}>
+                                            <Icon className={Styles.sendMailIcon} type="mail" />
+                                        </Popover>
+                                        <Popover content={<FormattedMessage id="vehicle_page.hint_copy_to_clipboard"/>}>
+                                            <Icon className={Styles.copyIcon} type="copy" />
+                                        </Popover>
                                     </Col>
                                 </Row>
                             </div>
@@ -209,14 +247,20 @@ export default class GeneralInfoTab extends Component {
                     className={Styles.block}
                     controls={
                         <div>
-                            {!fetchingVehicleClient && (
-
-                                <ClientVehicleTransfer
-                                    clientId={client.clientId}
-                                    vehicleId={vehicle.id}
-                                    vehicles={client.vehicles}
-                                />
-                            ) }
+                            <Popover content={<FormattedMessage id="vehicle_page.hint_change_vehicle_owner"/>}>
+                                {fetchingVehicleClient 
+                                    ? (<Spin />)
+                                    :(
+                                        <span className={Styles.changeVehicleOwnerIcon}>
+                                            <ClientVehicleTransfer
+                                                clientId={client.clientId}
+                                                vehicleId={vehicle.id}
+                                                vehicles={client.vehicles}
+                                            />
+                                        </span>
+                                    )
+                                }
+                            </Popover>
                         </div>
                     }
                 >
@@ -266,9 +310,15 @@ export default class GeneralInfoTab extends Component {
                                         </Button>
                                     </Col>
                                     <Col span={18}>
-                                        <Icon className={Styles.sendSMSIcon} type="message" />
-                                        <Icon className={Styles.sendMailIcon} type="mail" />
-                                        <Icon className={Styles.copyIcon} type="copy" onClick={() => this.handleCopy(`${book.order}/${_.get(generalData, 'latestOrderData.orderId')}`)}/>
+                                        <Popover content={<FormattedMessage id="vehicle_page.hint_send_via_sms"/>}>
+                                            <Icon className={Styles.sendSMSIcon} type="message" />
+                                        </Popover>
+                                        <Popover content={<FormattedMessage id="vehicle_page.hint_send_via_email"/>}>
+                                            <Icon className={Styles.sendMailIcon} type="mail" />
+                                        </Popover>
+                                        <Popover content={<FormattedMessage id="vehicle_page.hint_copy_to_clipboard"/>}>
+                                            <Icon className={Styles.copyIcon} type="copy" onClick={() => this.handleCopy(`${book.order}/${_.get(generalData, 'latestOrderData.orderId')}`)} />
+                                        </Popover>
                                     </Col>
                                 </Row>
 
@@ -282,9 +332,15 @@ export default class GeneralInfoTab extends Component {
 
                                     </Col>
                                     <Col span={18}>
-                                        <Icon className={Styles.sendSMSIcon} type="message" />
-                                        <Icon className={Styles.sendMailIcon} type="mail" />
-                                        <Icon className={Styles.copyIcon} type="copy" onClick={() => this.handleCopy(`${_.get(generalData, 'linkData.link')}`)}/>
+                                        <Popover content={<FormattedMessage id="vehicle_page.hint_send_via_sms"/>}>
+                                            <Icon className={Styles.sendSMSIcon} type="message" />
+                                        </Popover>
+                                        <Popover content={<FormattedMessage id="vehicle_page.hint_send_via_email"/>}>
+                                            <Icon className={Styles.sendMailIcon} type="mail" />
+                                        </Popover>
+                                        <Popover content={<FormattedMessage id="vehicle_page.hint_copy_to_clipboard"/>}>
+                                            <Icon className={Styles.copyIcon} type="copy" onClick={() => this.handleCopy(`${_.get(generalData, 'linkData.link')}`)} />
+                                        </Popover>
                                     </Col>
                                 </Row>
                             </div>

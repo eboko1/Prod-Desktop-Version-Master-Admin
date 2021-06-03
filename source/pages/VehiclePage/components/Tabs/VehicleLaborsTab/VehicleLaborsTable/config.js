@@ -1,13 +1,14 @@
 // vendor
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Button } from 'antd';
+import { Button, Popover } from 'antd';
 import { v4 } from 'uuid';
 import _ from 'lodash';
 import { images } from 'utils';
 
 //Proj
 import { FormattedDatetime } from 'components';
+import { Numeral } from 'commons';
 
 //Own
 import Styles from './styles.m.css';
@@ -93,6 +94,7 @@ export function columnsConfig(props) {
     const normHoursCol = {
         title:     <FormattedMessage id="services_table.norm_hours" />,
         width:     defWidth.normHours,
+        align:     'right',
         dataIndex: 'hours',
         key:       'hours',
     };
@@ -100,13 +102,18 @@ export function columnsConfig(props) {
     const priceCol = {
         title:     <FormattedMessage id="order_form_table.price" />,
         width:     defWidth.price,
+        align:     'right',
         dataIndex: 'price',
         key:       'price',
+        render: (price) => {
+            return (<Numeral mask={"0,00.00"}>{price}</Numeral>);
+        }
     };
 
     const countCol = {
         title:     <FormattedMessage id='order_form_table.count' />,
         width:     defWidth.count,
+        align:     'right',
         dataIndex: 'count',
         key:       'count',
     };
@@ -114,26 +121,32 @@ export function columnsConfig(props) {
     const sumCol = {
         title:     <FormattedMessage id='order_form_table.sum' />,
         width:     defWidth.sum,
+        align:     'right',
         dataIndex: 'sum',
         key:       'sum',
+        render: (sum) => {
+            return (<Numeral mask={"0,00.00"}>{sum}</Numeral>);
+        }
     };
 
     const actionsCol = {
         width:     defWidth.actions,
         key:       v4(),
         render:    (labor) => (
-            <Button  onClick={()=>onAddLaborToOrder({labor})}>
-                <div
-                    style={ {
-                        width:           18,
-                        height:          18,
-                        backgroundColor: 'var(--text3)',
-                        mask:       `url(${images.wrenchIcon}) no-repeat center / contain`,
-                        WebkitMask: `url(${images.wrenchIcon}) no-repeat center / contain`,
-                        transform:  'scale(-1, 1)',
-                    } }
-                />
-            </Button>
+            <Popover content={<FormattedMessage id="vehicle_page.hint_add_labor_to_order"/>}>
+                <Button  onClick={()=>onAddLaborToOrder({labor})}>
+                    <div
+                        style={ {
+                            width:           18,
+                            height:          18,
+                            backgroundColor: 'var(--text3)',
+                            mask:       `url(${images.wrenchIcon}) no-repeat center / contain`,
+                            WebkitMask: `url(${images.wrenchIcon}) no-repeat center / contain`,
+                            transform:  'scale(-1, 1)',
+                        } }
+                    />
+                </Button>                     
+            </Popover>
         )
     };
 
