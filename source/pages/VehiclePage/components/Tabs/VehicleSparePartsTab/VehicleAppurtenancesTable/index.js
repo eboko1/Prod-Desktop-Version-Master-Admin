@@ -2,7 +2,8 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { injectIntl } from 'react-intl';
-import {Spin, Table} from 'antd';
+import { withRouter } from 'react-router-dom';
+import { Table} from 'antd';
 import { v4 } from 'uuid';
 
 //proj
@@ -12,8 +13,9 @@ import {
     selectVehicleAppurtenances,
     selectVehicleAppurtenancesStats,
     selectVehicleAppurtenancesSort,
+    selectVehicleAppurtenancesFetching,
 
-    setPageAppurtenances, selectVehicleLaborsFetching, selectVehicleAppurtenancesFetching
+    setPageAppurtenances,
 } from 'core/vehicles/duck';
 
 //Own
@@ -33,15 +35,14 @@ const mapDispatchToProps = {
     setModal,
 }
 
-@connect(
-    mapStateToProps,
-    mapDispatchToProps
-)
+@withRouter
 @injectIntl
+@connect( mapStateToProps, mapDispatchToProps)
 export default class VehicleAppurtenancesTable extends React.Component {
 
     onAddDetailToOrder = ({detail}) => {
-        this.props.setModal(MODALS.ADD_LABOR_OR_DETAIL_TO_ORDER, {details: [detail], mode: "ADD_DETAIL"});
+        const { match: {params: {id}}} = this.props;
+        this.props.setModal(MODALS.ADD_LABOR_OR_DETAIL_TO_ORDER, {details: [detail], mode: "ADD_DETAIL", vehicleId: id});
     }
 
     render() {

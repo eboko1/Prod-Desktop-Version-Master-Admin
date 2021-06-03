@@ -23,8 +23,21 @@
     "vehicle_page.drive_type": "Drive Type",
     "vehicle_page.order_id": " № order",
     "vehicle_page.order_datetime": "Date of recording",
-    "vehicle_page.order_recommendation": "Recommendations for the client"
-
+    "vehicle_page.order_recommendation": "Recommendations for the client",
+    "vehicle_page.hint_barcode_modal": "Barcode modal",
+    "vehicle_page.hint_vehicle_info_modal": "Vehicle info modal",
+    "vehicle_page.hint_view_vehicle_modal": "View vehicle",
+    "vehicle_page.hint_edit_vehicle_modal": "Edit vehicle",
+    "vehicle_page.hint_add_vehicle_modal": "Add vehicle",
+    "vehicle_page.hint_delete_vehicle": "Delete vehicle",
+    "vehicle_page.hint_change_vehicle_owner": "Change vehicle owner",
+    "vehicle_page.hint_create_order_for_this_vehicle": "Create order for this vehicle",
+    "vehicle_page.hint_send_via_sms": "Send to the client via sms",
+    "vehicle_page.hint_send_via_email": "Send to the client via email",
+    "vehicle_page.hint_copy_to_clipboard": "Copy to clipboard",
+    "vehicle_page.hint_add_labor_to_order": "Add labor to order",
+    "vehicle_page.hint_add_detail_to_order": "Add detail to order"
+    
   },
   "ru": {
     "vehicle_page.title": "Автомобиль",
@@ -50,7 +63,20 @@
     "vehicle_page.drive_type": "Привод",
     "vehicle_page.order_id": " № н/з",
     "vehicle_page.order_datetime": "Дата записи",
-    "vehicle_page.order_recommendation": "Рекомендации для клиента"
+    "vehicle_page.order_recommendation": "Рекомендации для клиента",
+    "vehicle_page.hint_barcode_modal": "Barcode modal",
+    "vehicle_page.hint_vehicle_info_modal": "Vehicle info modal",
+    "vehicle_page.hint_view_vehicle_modal": "View vehicle",
+    "vehicle_page.hint_edit_vehicle_modal": "Edit vehicle",
+    "vehicle_page.hint_add_vehicle_modal": "Add vehicle",
+    "vehicle_page.hint_delete_vehicle": "Delete vehicle",
+    "vehicle_page.hint_change_vehicle_owner": "Change vehicle owner",
+    "vehicle_page.hint_create_order_for_this_vehicle": "Create order for this vehicle",
+    "vehicle_page.hint_send_via_sms": "Send to the client via sms",
+    "vehicle_page.hint_send_via_email": "Send to the client via email",
+    "vehicle_page.hint_copy_to_clipboard": "Copy to clipboard",
+    "vehicle_page.hint_add_labor_to_order": "Add labor to order",
+    "vehicle_page.hint_add_detail_to_order": "Add detail to order"
   },
   "uk": {
     "vehicle_page.title": "Автомобіль",
@@ -76,5 +102,18 @@
     "vehicle_page.drive_type": "Привод",
     "vehicle_page.order_id": " № н/з",
     "vehicle_page.order_datetime": "Дата запису",
-    "vehicle_page.order_recommendation": "Рекомендації для клієнта"
+    "vehicle_page.order_recommendation": "Рекомендації для клієнта",
+    "vehicle_page.hint_barcode_modal": "Barcode modal",
+    "vehicle_page.hint_vehicle_info_modal": "Vehicle info modal",
+    "vehicle_page.hint_view_vehicle_modal": "View vehicle",
+    "vehicle_page.hint_edit_vehicle_modal": "Edit vehicle",
+    "vehicle_page.hint_add_vehicle_modal": "Add vehicle",
+    "vehicle_page.hint_delete_vehicle": "Delete vehicle",
+    "vehicle_page.hint_change_vehicle_owner": "Change vehicle owner",
+    "vehicle_page.hint_create_order_for_this_vehicle": "Create order for this vehicle",
+    "vehicle_page.hint_send_via_sms": "Send to the client via sms",
+    "vehicle_page.hint_send_via_email": "Send to the client via email",
+    "vehicle_page.hint_copy_to_clipboard": "Copy to clipboard",
+    "vehicle_page.hint_add_labor_to_order": "Add labor to order",
+    "vehicle_page.hint_add_detail_to_order": "Add detail to order"
   }}

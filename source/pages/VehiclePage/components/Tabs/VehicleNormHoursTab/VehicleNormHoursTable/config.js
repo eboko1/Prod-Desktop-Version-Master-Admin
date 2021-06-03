@@ -1,14 +1,10 @@
 // vendor
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
-import moment from 'moment';
 
 //Proj
-import book from 'routes/book';
-import { Numeral, OrdersStatusesMapper } from "commons";
-import { OrderStatusIcon, RepairMapIndicator, FormattedDatetime } from 'components';
+import { Numeral } from "commons";
 
 //Own
 import Styles from './styles.m.css';
@@ -54,25 +50,34 @@ export function columnsConfig() {
         key:       'storeGroupName',
     };
 
-    const workTimCol = {
-        title:     <FormattedMessage id='services_table.norm_hours' />,
-        width:     defWidth.workTime,
-        dataIndex: 'workTime',
-        key:       'workTime',
-    };
-
     const priceCol = {
         title:     <FormattedMessage id='order_form_table.price' />, // should be translation
         width:     defWidth.price,
+        align:     'right',
         dataIndex: 'price',
         key:       'price',
+        render: (price) => {
+            return (<Numeral mask={"0,00.00"}>{price}</Numeral>);
+        }
+    };
+    
+    const workTimCol = {
+        title:     <FormattedMessage id='services_table.norm_hours' />,
+        width:     defWidth.workTime,
+        align:     'right',
+        dataIndex: 'workTime',
+        key:       'workTime',
     };
 
     const sumCol = {
         title:     <FormattedMessage id='orders.sum' />, // should be translation
         width:     defWidth.sum,
+        align:     'right',
         dataIndex: 'sum',
         key:       'sum',
+        render: (sum) => {
+            return (<Numeral mask={"0,00.00"}>{sum}</Numeral>);
+        }
     };
 
 

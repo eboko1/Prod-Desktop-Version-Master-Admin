@@ -95,6 +95,7 @@ export function columnsConfig() {
     const sumCol = {
         title:     <FormattedMessage id='orders.sum_without_VAT' /> ,
         width:     defWidth.sum,
+        align:     'right',
         dataIndex: 'totalSum',
         key:       'totalSum',
         render:    (_, order) => (
@@ -112,6 +113,7 @@ export function columnsConfig() {
     const remainingSumCol = {
         title:     <FormattedMessage id='orders.remaining_sum' />,
         width:     defWidth.remaining_sum,
+        align:     'right',
         dataIndex: 'remainingSum',
         key:       'remainingSum',
         render:    remainingSum => (
