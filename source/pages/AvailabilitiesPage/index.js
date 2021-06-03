@@ -27,6 +27,8 @@ class AvailabilitiesPage extends Component {
         super(props);
         this.state = {
             dataSource: [],
+            availOptions: [],
+            supplierOptions: [],
         };
         this.supplierOptions = [];
         this.availOptions = [];
@@ -54,7 +56,7 @@ class AvailabilitiesPage extends Component {
                                 this.addOrEditAvail(elem.key);
                             }}
                         >
-                            {this.supplierOptions}
+                            {this.state.supplierOptions}
                         </Select>
                     )
                 }
@@ -107,7 +109,7 @@ class AvailabilitiesPage extends Component {
                                 this.addOrEditAvail(elem.key);
                             }}
                         >
-                           {this.availOptions}
+                           {this.state.availOptions}
                         </Select>
                     )
                 }
@@ -129,7 +131,7 @@ class AvailabilitiesPage extends Component {
                                 this.addOrEditAvail(elem.key);
                             }}
                         >
-                            {this.availOptions}
+                            {this.state.availOptions}
                         </Select>
                     )
                 }
@@ -151,7 +153,7 @@ class AvailabilitiesPage extends Component {
                                 this.addOrEditAvail(elem.key);
                             }}
                         >
-                            {this.availOptions}
+                            {this.state.availOptions}
                         </Select>
                     )
                 }
@@ -173,7 +175,7 @@ class AvailabilitiesPage extends Component {
                                 this.addOrEditAvail(elem.key);
                             }}
                         >
-                            {this.availOptions}
+                            {this.state.availOptions}
                         </Select>
                     )
                 }
@@ -356,11 +358,11 @@ class AvailabilitiesPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            that.availOptions = data.map((elem, i)=>
+            const availOptions = data.map((elem, i)=>
                     <Option key={i} value={elem.id}>
                         {`${elem.code} (${elem.name})`}
                     </Option>);
-            that.setState();
+            that.setState({availOptions});
         })
         .catch(function (error) {
             console.log('error', error)
@@ -385,11 +387,11 @@ class AvailabilitiesPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            that.supplierOptions = data.map((elem, i)=>
+            const supplierOptions = data.map((elem, i)=>
                     <Option key={i} value={elem.id}>
                         {elem.name}
                     </Option>);
-            that.setState();
+            that.setState({supplierOptions});
         })
         .catch(function (error) {
             console.log('error', error)
