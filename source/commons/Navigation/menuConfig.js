@@ -187,6 +187,8 @@ export default {
             items:    [
                 {
                     key:  '/wms',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_WMS),
                     link: book.wms,
                     name: 'navigation.wms',
                 },
@@ -234,6 +236,8 @@ export default {
                 },
                 {
                     key:  '/products-without-cell',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_STORE_PRODUCTS),
                     link: book.productsWithoutCell,
                     name: 'navigation.products_without_cell',
                 }
