@@ -68,7 +68,7 @@ export function* addLaborsToOrderSaga() {
                     servicePrice: Number(labor.price),
                 });
             });
-        
+
             yield call(fetchAPI, 'PUT', `orders/${selectedOrderId}`, null, payload, {handleErrorInternally: true});
 
             history.push({
@@ -106,7 +106,6 @@ export function* addDetailsToOrderSaga() {
                 })
             });
 
-        
             yield call(fetchAPI, 'PUT', `orders/${selectedOrderId}`, null, payload, {handleErrorInternally: true});
             history.push({
                 pathname: `${book.order}/${selectedOrderId}`,

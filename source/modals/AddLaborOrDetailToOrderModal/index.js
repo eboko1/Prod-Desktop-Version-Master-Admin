@@ -81,7 +81,7 @@ export default class AddLaborOrDetailToOrderModal extends Component {
 
         switch (mode) {
             case modes.ADD_LABOR:
-                setLabors({services: labors});
+                setLabors({labors: labors});
                 this.props.addLaborsToOrder();
                 break;
             case modes.ADD_DETAIL:
