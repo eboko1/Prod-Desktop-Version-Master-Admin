@@ -8,7 +8,8 @@
         "diagnostic-page.code": "Code",
         "diagnostic-page.change_code": "Change linked code",
         "diagnostic-page.name": "Name",
-        "diagnostic-page.action": "Action"
+        "diagnostic-page.action": "Action",
+        "diagnostic-page.import_default": "Reset settings"
     },
     "ru": {
         "diagnostic-page.title": "Шаблоны диагностики",
@@ -19,7 +20,8 @@
         "diagnostic-page.code": "Код",
         "diagnostic-page.change_code": "Изменить код привязки",
         "diagnostic-page.name": "Наименование",
-        "diagnostic-page.action": "Действие"
+        "diagnostic-page.action": "Действие",
+        "diagnostic-page.import_default": "Cбросить настройки"
     },
     "uk": {
         "diagnostic-page.title": "Шаблони діагностики",
@@ -30,6 +32,8 @@
         "diagnostic-page.code": "Код",
         "diagnostic-page.change_code": "Змінити код прив'язки",
         "diagnostic-page.name": "Назва",
-        "diagnostic-page.action": "Дія"
+        "diagnostic-page.action": "Дія",
+        "diagnostic-page.import_default": "Скинути налаштування"
+        
     }
 }

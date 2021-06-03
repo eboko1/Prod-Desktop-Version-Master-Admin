@@ -8,6 +8,9 @@ import { v4 } from 'uuid';
 const Option = Select.Option;
 const FormItem = Form.Item;
 
+/**
+ * @param {function(option) | String} props.optionLabel - calls for each option to make label in a dropdown
+ */
 export const DecoratedSelect = memo(
     forwardRef((props, ref) => {
         const {
@@ -108,7 +111,12 @@ export const DecoratedSelect = memo(
                             key={ v4() }
                             disabled={ option[ optionDisabled ] }
                         >
-                            { option[ optionLabel ] }
+                            {
+                                // Call function with option as first argument or just place a text
+                                _.isFunction(optionLabel)
+                                    ? optionLabel(option)
+                                    : option[optionLabel]
+                            }
                         </Option>
                     )) }
             </Select>

@@ -3,19 +3,19 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Select } from 'antd';
+import moment from "moment";
 
 // proj
 import {
     fetchCalls,
     fetchCallsChart,
     setCallsDaterange,
-    setCallsPeriod,
     setCallsChannelId,
+    tabs
 } from 'core/calls/duck';
-
+import { DateRangePicker } from 'components';
 import { Layout, Spinner } from 'commons';
 import { CallsContainer } from 'containers';
-import { DatePickerGroup } from 'components';
 
 // own
 import Styles from './styles.m.css';
@@ -34,7 +34,6 @@ const mapDispatchToProps = {
     fetchCalls,
     fetchCallsChart,
     setCallsDaterange,
-    setCallsPeriod,
     setCallsChannelId,
 };
 
@@ -58,17 +57,8 @@ export default class CallsPage extends Component {
 
         setCallsDaterange(daterange);
 
-        if (tab === 'callsTable') {
-            fetchCalls();
-        }
-        if (tab === 'callsChart') {
-            fetchCallsChart();
-        }
-    };
-
-    _setCallsPeriod = period => {
-        this.props.setCallsPeriod(period);
-        this.props.fetchCallsChart();
+        (tab === tabs.callsTable) && fetchCalls();
+        (tab === tabs.callsChart) && fetchCallsChart();
     };
 
     _setCallsChannelId = channelId => {
@@ -79,34 +69,21 @@ export default class CallsPage extends Component {
             fetchCallsChart,
         } = this.props;
 
-        if (channelId === 'ALL') {
+        if (channelId === 'ALL') 
             setCallsChannelId(null);
-            if (tab === 'callsTable') {
-                fetchCalls();
-            }
-            if (tab === 'callsChart') {
-                fetchCallsChart();
-            }
-        }
-
-        if (channelId !== 'ALL') {
+        else 
             setCallsChannelId(channelId);
-            if (tab === 'callsTable') {
-                fetchCalls();
-            }
-            if (tab === 'callsChart') {
-                fetchCallsChart();
-            }
-        }
+
+        (tab === tabs.callsTable) && fetchCalls();
+        (tab === tabs.callsChart) && fetchCallsChart();
     };
 
     render() {
         const {
-            tab,
             channels,
             callsInitializing,
             callsFetching,
-            filter: { startDate, endDate, period },
+            filter: { startDate, endDate },
         } = this.props;
 
         return callsInitializing ? (
@@ -117,15 +94,17 @@ export default class CallsPage extends Component {
                 description={ <FormattedMessage id='calls-page.description' /> }
                 controls={
                     <>
-                        <DatePickerGroup
-                            startDate={ startDate }
-                            endDate={ endDate }
-                            loading={ callsInitializing || callsFetching }
-                            period={ period }
-                            onDaterangeChange={ this._setCallsDaterange }
-                            onPeriodChange={ this._setCallsPeriod }
-                            periodGroup={ tab !== 'callsTable' }
-                        />
+                        {
+                            callsFetching
+                                ? ""
+                                : <DateRangePicker
+                                    minimize
+                                    dateRange={[moment(startDate), moment(endDate)]}
+                                    style={{margin: '0 0 0 8px'}}//prevent default space
+                                    onDateChange={this._setCallsDaterange}
+                                />
+                        }
+
                         {channels && (
                             <Select
                                 defaultValue='ALL'

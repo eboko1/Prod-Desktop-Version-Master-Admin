@@ -295,7 +295,7 @@ export class OrderTaskForm extends Component {
                                 ({ managerName, managerSurname, id }) => {
                                     return (
                                         <Option value={id} key={String(id)}>
-                                            {`${managerName} ${managerSurname}`}
+                                            {`${managerSurname} ${managerName}`}
                                         </Option>
                                     );
                                 },

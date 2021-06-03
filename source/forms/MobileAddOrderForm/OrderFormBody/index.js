@@ -340,7 +340,7 @@ export default class OrderFormBody extends Component {
                 value={manager.id}
                 key={`manager-${manager.id}`}
             >
-                {`${manager.managerName} ${manager.managerSurname}`}
+                {`${manager.managerSurname} ${manager.managerName}`}
             </Option>
         ));
     };
@@ -354,7 +354,7 @@ export default class OrderFormBody extends Component {
                         key={`employee-${employee.id}`}
                         disabled={employee.disabled}
                     >
-                        {`${employee.name} ${employee.surname}`}
+                        {`${employee.surname} ${employee.name}`}
                     </Option>
                 );
             }

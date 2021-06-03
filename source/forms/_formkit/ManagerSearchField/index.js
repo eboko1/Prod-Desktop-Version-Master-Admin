@@ -70,7 +70,7 @@ export default class ManagerSearchField extends Component {
                     : managers.map(
                           ({ managerId, managerName, managerSurname }) => (
                               <Option key={managerId} value={managerId}>
-                                  {managerName} {managerSurname}
+                                  {managerSurname} {managerName}
                               </Option>
                           ),
                       )}
