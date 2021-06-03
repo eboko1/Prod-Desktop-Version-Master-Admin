@@ -139,7 +139,7 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.labors && this.props.labors.length && !this.servicesOptions) {
+        if(this.state.labors != null && this.servicesOptions == null) {
             this.servicesOptions = this.getServicesOptions();
         }
         if(this.state.allDetails != null && this.detailsOptions == null) {
@@ -385,7 +385,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 let detailObjCopy = Object.assign({}, {
                     key: that.state.detailsList.length+index+1,
                     id: elem.storeGroup.id,
-                    name: elem.storeGroup.singleName,
+                    name: elem.storeGroup.name,
                     count: 1,
                     checked: true,
                     commentary: elem.comment,
@@ -711,9 +711,9 @@ class ConfirmDiagnosticModal extends React.Component{
                     value={ String(data.id) }
                     key={index}
                     detail_id={data.id}
-                    detail_name={data.singleName}
+                    detail_name={data.name}
                 >
-                    { data.singleName }
+                    { data.name }
                 </Option>
             ),
         );

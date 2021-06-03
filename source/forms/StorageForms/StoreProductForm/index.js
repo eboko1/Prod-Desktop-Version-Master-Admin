@@ -85,12 +85,6 @@ const ProductForm = props => {
         if(_.get(props, 'modalProps.barcode')) {
             props.form.setFieldsValue({barcode: _.get(props, 'modalProps.barcode')})
         }
-        if(_.get(props, 'modalProps.name')) {
-            props.form.setFieldsValue({name: _.get(props, 'modalProps.name')})
-        }
-        if(_.get(props, 'modalProps.groupId')) {
-            props.form.setFieldsValue({groupId: _.get(props, 'modalProps.groupId')})
-        }
     }, []);
 
     const findGroupNameById = (data, groupId) => {
@@ -98,7 +92,7 @@ const ProductForm = props => {
 
         data.forEach(item => {
             if (item.id === groupId) {
-                groupName = item.singleName;
+                groupName = item.name;
             }
 
             if (!_.isEmpty(item.childGroups)) {

@@ -70,7 +70,7 @@ export const StorageBalanceTotals = connect(mapStateToProps, {
                     <DetailStorageModal
                         stockMode={true}
                         user={props.user}
-                        selectProduct={({productId})=>{
+                        selectProduct={(productId)=>{
                             props.setStoreBalanceFilters({
                                 productId: productId,
                                 page: 1

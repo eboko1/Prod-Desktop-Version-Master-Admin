@@ -6,7 +6,6 @@ import { Tabs } from "antd";
 
 // proj
 import {
-    tabs,
     fetchCalls,
     fetchCallsChart,
     setCallsTab,
@@ -17,7 +16,6 @@ import {
     selectCallsPieData,
     selectCallsData,
     selectCallsFilter,
-    selectCurrentTab,
     selectCallsStats,
     fetchRecordingLink,
     selectCallsLinksCache
@@ -36,10 +34,9 @@ const mapStateToProps = state => {
         stats: selectCallsStats(state),
         pieStats: [...selectCallsPieData(state)],
         chart: [...selectCallsChartData(state)],
-        filter:             selectCallsFilter(state),
-        currentTab:         selectCurrentTab(state),
+        filter: { ...selectCallsFilter(state) },
         callsChartFetching: state.ui.callsChartFetching,
-        callsLinksCache:    selectCallsLinksCache(state),
+        callsLinksCache: selectCallsLinksCache(state),
     };
 };
 
@@ -57,12 +54,12 @@ const mapDispatchToProps = {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class CallsContainer extends Component {
     _handleTab = tab => {
-        if (tab === tabs.callsTable) {
-            this.props.setCallsTab(tabs.callsTable);
+        if (tab === "callsTable") {
+            this.props.setCallsTab("callsTable");
             this.props.fetchCalls();
         }
-        if (tab === tabs.callsChart) {
-            this.props.setCallsTab(tabs.callsChart);
+        if (tab === "callsChart") {
+            this.props.setCallsTab("callsChart");
             this.props.fetchCallsChart();
         }
     };
@@ -75,7 +72,6 @@ export default class CallsContainer extends Component {
             stats,
             pieStats,
             filter,
-            currentTab,
             intl: { formatMessage },
             fetchCalls,
             setCallsChartMode,
@@ -90,12 +86,27 @@ export default class CallsContainer extends Component {
 
         return (
             <Catcher>
-                <Tabs activeKey={currentTab} type="cards" onTabClick={tab => this._handleTab(tab)}>
-                <TabPane
+                <Tabs type="cards" onTabClick={tab => this._handleTab(tab)}>
+                    <TabPane
+                        tab={formatMessage({
+                            id: "calls-page.statistics",
+                        })}
+                        key="callsChart"
+                    >
+                        <CallsStatistics
+                            stats={stats}
+                            chart={chart}
+                            pieStats={pieStats}
+                            setCallsChartMode={setCallsChartMode}
+                            fetchCallsChart={fetchCallsChart}
+                            callsChartFetching={callsChartFetching}
+                        />
+                    </TabPane>
+                    <TabPane
                         tab={formatMessage({
                             id: "calls-page.calls",
                         })}
-                        key={tabs.callsTable}
+                        key="callsTable"
                     >
                         <CallsTable
                             calls={calls}
@@ -107,22 +118,6 @@ export default class CallsContainer extends Component {
                             callsFetching={callsFetching}
                             fetchRecordingLink={fetchRecordingLink}
                             callsLinksCache={callsLinksCache}
-                        />
-                    </TabPane>
-
-                    <TabPane
-                        tab={formatMessage({
-                            id: "calls-page.statistics",
-                        })}
-                        key={tabs.callsChart}
-                    >
-                        <CallsStatistics
-                            stats={stats}
-                            chart={chart}
-                            pieStats={pieStats}
-                            setCallsChartMode={setCallsChartMode}
-                            fetchCallsChart={fetchCallsChart}
-                            callsChartFetching={callsChartFetching}
                         />
                     </TabPane>
                 </Tabs>

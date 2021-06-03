@@ -43,21 +43,16 @@ const book = Object.freeze({
     barcodePage:              '/barcode',
 
     // Reference book
-    directoriesPage:          '/directories',
-
     // Clients
     clients:                  '/clients',
     client:                   '/client',
     clientId:                 '/client/:id',
     clientHotOperations:      '/client-hot-operations',
 
-    //Vehicles
-    vehicles:                 '/vehicles',
-
     // Employees
     employeesPage:            '/employees',
     addEmployee:              '/employees/add',
-
+    // TODO: employeeId
     editEmployee:             '/employees/:id',
 
     // Suppliers
@@ -138,7 +133,6 @@ const book = Object.freeze({
 
     oldApp: {
         // link to my.cb24.eu
-        link:                   `${OLD_APP_URL}`,
         // dashboard:              `${OLD_APP_URL}/dashboard`,
         tasks:                  `${OLD_APP_URL}/tasks`,
         // clients:                `${OLD_APP_URL}/clients`,

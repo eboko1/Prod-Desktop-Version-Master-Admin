@@ -8,8 +8,7 @@
         "completedWorkReport": "Purchase order",
         "invoiceReport": "Invoice",
         "diagnosticResult": "Diagnostic result",
-        "diagnosticAct": "Diagnostic act",
-        "packingListWithAddressesReport": "Packing list with addresses"
+        "diagnosticAct": "Diagnostic act"
     },
     "ru": {
         "calculationReport": "Калькуляция",
@@ -20,8 +19,7 @@
         "completedWorkReport": "Акт выполненых работ",
         "invoiceReport": "Счет-фактура",
         "diagnosticResult": "Результат диагностики",
-        "diagnosticAct": "Акт диагностики",
-        "packingListWithAddressesReport": "Сборочный список по з/ч"
+        "diagnosticAct": "Акт диагностики"
     },
     "uk": {
         "calculationReport": "Калькуляція",
@@ -32,7 +30,6 @@
         "completedWorkReport": "Акт виконаних робіт",
         "invoiceReport": "Рахунок-фактура",
         "diagnosticResult": "Результат діагностики",
-        "diagnosticAct": "Акт діагностики",
-        "packingListWithAddressesReport": "Збірний список по з/ч"
+        "diagnosticAct": "Акт діагностики"
     }
 }

@@ -1,40 +1,29 @@
 /*
-The purpose of this module is to provide logts for rst and its orders.
+The purpose of this module is to provide report about all orders.
 */
 // vendor
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
 import _ from "lodash";
-import moment from 'moment';
+
 
 // proj
-import {
-    DEFAULT_DATE_FORMAT,
-    fetchCashOrdersLogs,
-    setCashOrdersLogsFilterDateRange,
-    selectFilter,
-} from 'core/reports/reportCashOrdersLogs/duck';
+import { fetchCashOrdersLogs } from 'core/reports/reportCashOrdersLogs/duck';
 import { ReportCashOrdersLogsTable } from 'components';
 
 import { Layout } from "commons";
-import { DateRangePicker } from 'components';
-
-const mapStateToProps = state => ({
-    filter: selectFilter(state)
-});
 
 const mapDispatchToProps = {
-    fetchCashOrdersLogs,
-    setCashOrdersLogsFilterDateRange
+    fetchCashOrdersLogs
 };
 
 @connect(
-    mapStateToProps,
+    void 0,
     mapDispatchToProps,
 )
 @injectIntl
-export default class ReportCashOrdersLogsPage extends Component {
+export default class ReportOrdersPage extends Component {
     constructor(props) {
         super(props);
     }
@@ -43,17 +32,8 @@ export default class ReportCashOrdersLogsPage extends Component {
         this.props.fetchCashOrdersLogs();
     }
 
-    onChangeDataRangeFilter = daterange => {
-        const [ startDate, endDate ] = daterange;
-
-        this.props.setCashOrdersLogsFilterDateRange({
-            startDate: startDate? startDate.format(DEFAULT_DATE_FORMAT): undefined,
-            endDate: endDate? endDate.format(DEFAULT_DATE_FORMAT): undefined
-        });
-    };
 
     render() {
-        const { filter } = this.props;
         
         return (
             <Layout
@@ -63,16 +43,6 @@ export default class ReportCashOrdersLogsPage extends Component {
                     </div>
                 }
                 paper={false}
-                controls={
-                    <div>
-                        <DateRangePicker
-                            minimize
-                            style={{margin: 0}}//prevent default space
-                            dateRange={[moment(filter.startDate), moment(filter.endDate)]}
-                            onDateChange={ this.onChangeDataRangeFilter }
-                        />
-                    </div>
-                }
             >
                 <ReportCashOrdersLogsTable/>
             </Layout>

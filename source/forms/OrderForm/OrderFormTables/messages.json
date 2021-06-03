@@ -70,11 +70,7 @@
     "order_form_table.COMPLETED": "Closed",
     "order_form_table.AI": "AI",
     "order_form_table.AI_title": "Availability indicator",
-    "photo": "photo",
-    "order_form_table.markup": "Markup",
-    "order_form_table.marge": "Marge",
-    "order_form_table.PD": "PD",
-    "order_form_table.actions": "Actions"
+    "photo": "photo"
   },
   "ru": {
     "order_form_table.confirm_exit": "Хотите сохранить изменения?",
@@ -147,11 +143,7 @@
     "order_form_table.COMPLETED": "Закрыто",
     "order_form_table.AI": "ИН",
     "order_form_table.AI_title": "Индикатор наличия",
-    "photo": "Фото",
-    "order_form_table.markup": "Наценка",
-    "order_form_table.marge": "Маржа",
-    "order_form_table.PD": "ПД",
-    "order_form_table.actions": "Операции"
+    "photo": "Фото"
   },
   "uk": {
     "order_form_table.confirm_exit": "Бажаєте зберегти зміни?",
@@ -224,10 +216,6 @@
     "order_form_table.COMPLETED": "Закрито",
     "order_form_table.AI": "ІН",
     "order_form_table.AI_title": "Індикатор наявності",
-    "photo": "Фото",
-    "order_form_table.markup": "Націнка",
-    "order_form_table.marge": "Маржа",
-    "order_form_table.PD": "ПД",
-    "order_form_table.actions": "Дії"
+    "photo": "Фото"
   }
 }

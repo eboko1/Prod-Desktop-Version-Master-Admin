@@ -8,9 +8,8 @@ import book from 'routes/book';
 import {
     getDiagnosticsReport,
     getDiagnosticsAct,
-    getPackingListWithAddressesReport,
 } from 'core/forms/orderDiagnosticForm/saga';
-import { permissions, isForbidden , fetchAPI} from 'utils';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -90,7 +89,7 @@ class ReportsDropdown extends React.Component {
                     </Menu.Item>
                 )) }
                 <Menu.Item
-                    key={ `${this.reports.length} diagnosticAct` }
+                    key={ `${this.reports.length}` }
                     className={ `${Styles.itemDisabled}` }
                     onClick={ () => {
                         getDiagnosticsAct(orderId);
@@ -99,22 +98,13 @@ class ReportsDropdown extends React.Component {
                     <FormattedMessage id='diagnosticAct' />
                 </Menu.Item>
                 <Menu.Item
-                    key={ `${this.reports.length} diagnosticResult` }
+                    key={ `${this.reports.length}` }
                     className={ `${Styles.itemDisabled}` }
                     onClick={ () => {
                         getDiagnosticsReport(orderId);
                     } }
                 >
                     <FormattedMessage id='diagnosticResult' />
-                </Menu.Item>
-                <Menu.Item
-                    key={ `${this.reports.length} packingListWithAddressesReport` }
-                    className={ `${Styles.itemDisabled}` }
-                    onClick={ async () => {
-                        getPackingListWithAddressesReport(orderId);
-                    } }
-                >
-                    <FormattedMessage id='packingListWithAddressesReport' />
                 </Menu.Item>
             </Menu>
         );

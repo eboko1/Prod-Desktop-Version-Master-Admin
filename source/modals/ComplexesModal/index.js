@@ -450,23 +450,18 @@ export default class ComplexesModal extends React.Component{
         return (
             <>
                 <Button
+                    type={'primary'}
                     disabled={disabled}
                     style={{verticalAlign: 'bottom'}}
                     onClick={()=>{
                         this.setState({visible: true})
                     }}
-                    style={{
-                        padding: '0px 8px'
-                    }}
-                    className={!disabled && Styles.ownIcon}
                 >
                     <div
                         style={ {
                             width:           18,
                             height:          18,
-                            backgroundColor: disabled
-                                            ? 'var(--text2)'
-                                            : 'var(--text3)',
+                            backgroundColor: disabled ? 'black' : 'white',
                             mask:       `url(${images.complexesIcon}) no-repeat center / contain`,
                             WebkitMask: `url(${images.complexesIcon}) no-repeat center / contain`,
                             transform:  'scale(-1, 1)',
@@ -510,7 +505,6 @@ export default class ComplexesModal extends React.Component{
                                         });
                                         const details = triggerNode.props.details.map((elem)=>{
                                             elem.checked = true;
-                                            elem.name = elem.singleName;
                                             elem.count = 1;
                                             elem.commentary = {
                                                 comment: undefined,

@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Button, Icon, InputNumber, Table, Select, Popover, Input, notification, Menu, Dropdown } from 'antd';
+import { Button, Icon, InputNumber, Table, Select, Popover, Input, notification } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -84,110 +84,58 @@ export default class WorkshopTable extends Component {
                 },
             },
             {
-                title: <FormattedMessage id='order_form_table.PD' />,
+                title: <FormattedMessage id='order_form_table.status' />,
                 key:       'agreement',
                 dataIndex: 'agreement',
-                render:     (data, row) => {
-                    const key = row.key;
+                 render:    (data, elem) => {
+                    const key = elem.key;
                     const confirmed = data.toLowerCase();
-                    let color, icon;
+                    let color;
                     switch (confirmed) {
                         case 'rejected':
                             color = 'rgb(255, 126, 126)';
-                            icon = 'close-circle';
                             break;
                         case 'agreed':
                             color = 'var(--green)';
-                            icon = 'check-circle';
                             break;
                         default:
                             color = null;
-                            icon = 'question-circle';
                     }
-                    const updateAgreement = (value) => {
-                        row.agreement = value.toUpperCase();
-                        this.updateLabor(key, row);
-                    }
-                    const menu = (
-                        <Menu onClick={this.handleMenuClick}>
-                            <Menu.Item
-                                key="undefined"
-                                onClick={()=>{
-                                    updateAgreement('undefined')
-                                }}
+
+                    return (
+                        <Select
+                            disabled
+                            style={ { color: color } }
+                            value={ confirmed }
+                            onChange={ value => {
+                                elem.agreement = value.toUpperCase();
+                                //elem.stage = value == 'rejected' ? CANCELED : INACTIVE;
+                                this.updateLabor(key, elem);
+                            } }
+                        >
+                            <Option key={ 0 } value={ 'undefined' }>
+                                <FormattedMessage id='status.undefined' />
+                            </Option>
+                            <Option
+                                key={ 1 }
+                                value={ 'agreed' }
+                                style={ { color: 'var(--green)' } }
                             >
-                                <Icon
-                                    type={'question-circle'}
-                                    style={{
-                                        fontSize: 18,
-                                        verticalAlign: 'sub',
-                                        marginRight: 8
-                                    }}
-                                />
-                                <FormattedMessage id='agreement.undefined' />
-                            </Menu.Item>
-                            <Menu.Item
-                                key="agreed"
-                                style={{color: 'var(--green)'}}
-                                onClick={()=>{
-                                    updateAgreement('agreed')
-                                }}
+                                <FormattedMessage id='status.agreed' />
+                            </Option>
+                            <Option
+                                key={ 2 }
+                                value={ 'rejected' }
+                                style={ { color: 'rgb(255, 126, 126)' } }
                             >
-                                <Icon
-                                    type={'check-circle'}
-                                    style={{
-                                        fontSize: 18,
-                                        verticalAlign: 'sub',
-                                        marginRight: 8,
-                                    }}
-                                />
-                                <FormattedMessage id='agreement.agreed' />
-                            </Menu.Item>
-                            <Menu.Item
-                                key="rejected"
-                                style={{color: 'rgb(255, 126, 126)'}}
-                                onClick={()=>{
-                                    updateAgreement('rejected')
-                                }}
-                            >
-                                <Icon
-                                    type={'close-circle'}
-                                    style={{
-                                        fontSize: 18,
-                                        marginRight: 8,
-                                    }}
-                                />
-                                <FormattedMessage id='agreement.rejected' />
-                            </Menu.Item>
-                        </Menu>
+                                <FormattedMessage id='status.rejected' />
+                            </Option>
+                        </Select>
                     );
-                    return isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS) ? (
-                        <Icon
-                            type={icon}
-                            style={{
-                                fontSize: 24,
-                                color,
-                            }}
-                        />
-                    ) : (
-                        <div>
-                            <Dropdown
-                                overlay={menu}
-                            >
-                                <Icon
-                                    type={icon}
-                                    style={{
-                                        fontSize: 24,
-                                        color,
-                                    }}
-                                />
-                            </Dropdown>
-                        </div>
-                    )
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.status' />,
+                title:     <FormattedMessage id='order_form_table.stage' />,
                 key:       'stage',
                 dataIndex: 'stage',
                 render:    (data) => {

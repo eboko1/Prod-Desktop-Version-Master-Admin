@@ -74,10 +74,3 @@
     width: 30%;
     margin-bottom: 5px;
 }
-
-.ownIcon {
-    padding: 0px 8px;
-    &:hover > div {
-        background-color: var(--primary) !important;
-    }
-}

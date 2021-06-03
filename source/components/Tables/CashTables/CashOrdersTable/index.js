@@ -1,37 +1,15 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { connect } from "react-redux";
-import { Table, notification } from 'antd';
+import { Table } from 'antd';
 
 // proj
-import {
-    sendEmailWithReceipt,
-    sendSmsWithReceipt,
-    downloadReceipt,
-    registerCashOrderInCashdesk,
-    registerServiceInputCashOrderInCashdesk,
-    registerServiceOutputCashOrderInCashdesk,
-} from "core/cash/duck";
+import { Loader } from 'commons';
 
 // own
 import { columnsConfig } from './config';
 import Styles from './styles.m.css';
 
-const mapStateToProps = state => ({
-    user: state.auth
-});
-
-const mapDispatchToProps = {
-    sendEmailWithReceipt,
-    sendSmsWithReceipt,
-    downloadReceipt,
-    registerCashOrderInCashdesk,
-    registerServiceInputCashOrderInCashdesk,
-    registerServiceOutputCashOrderInCashdesk,
-};
-
-@connect( mapStateToProps, mapDispatchToProps )
 export class CashOrdersTable extends Component {
     constructor(props) {
         super(props);
@@ -39,88 +17,14 @@ export class CashOrdersTable extends Component {
 
     _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
 
-    /**
-     * Called when user want to send receipt on client's email, email is taken from client for which cash order was created.
-     * We can send emails for RST cashOrders only
-     * @param {*} param.cashOrderId - cash order to generate email from(contains data about its RST cashbox and client)
-     * @returns 
-     */
-    onSendEmail = ({cashOrderId}) => {
-        const { sendEmailWithReceipt } = this.props;
-
-        if(!cashOrderId) return;
-
-        sendEmailWithReceipt({ cashOrderId});
-    }
-
-    /**
-     *  When user want to send receipt on client's modile via sms, phone number is taken from client for which cash order was created.
-     * We can send sms for RST cashOrders only.
-     * @param {*} param.cashOrderId - cash order to generate email from(contains data about its RST cashbox and client)
-     * @returns 
-     */
-    onSendSms = ({cashOrderId}) => {
-        const { sendSmsWithReceipt } = this.props;
-
-        if(!cashOrderId) return;
-
-        sendSmsWithReceipt({ cashOrderId});
-    }
-
-    /**
-     * This registers specific cash order in cashdesk base on its type and parameters(sale/return/service input/service output/)
-     * @param {Object} params.cashOrder contains cashOrderId to register and necessary data about cashOrder
-     */
-    onRepeatRegistrationInCashdesk = ({cashOrder}) => {
-        const {
-            registerCashOrderInCashdesk,
-            registerServiceInputCashOrderInCashdesk,
-            registerServiceOutputCashOrderInCashdesk,
-        } = this.props
-
-        console.log("Cashorder: ", cashOrder);
-
-        if(cashOrder.rst && cashOrder.clientId) { //Sale or return contains client and is applied to RST cashboxes
-            // repeat registration
-            registerCashOrderInCashdesk(cashOrder.id);
-        } else if(cashOrder.otherCounterparty && cashOrder.type == "INCOME") {
-            //repeat service input
-            registerServiceInputCashOrderInCashdesk({cashOrderId: cashOrder.id});
-        } else if(cashOrder.otherCounterparty && cashOrder.type == "EXPENSE") {
-            //repeat service output
-            registerServiceOutputCashOrderInCashdesk({cashOrderId: cashOrder.id});
-        } else {
-            //Error
-            notification.error({
-                message: "Error",
-                description: `
-                    Invalid type of cashOrder, it cannot be registred in
-                    cashdesk because it was not detected as Service input,
-                    Service output, Sale or Return
-                `
-            });
-        }
-    }
-
     render() {
-        const {
-            cashOrders,
-            cashOrdersFetching,
-            openPrint,
-            openEdit,
-            isMobile,
-            downloadReceipt
-        } = this.props;
+        const { cashOrders, cashOrdersFetching, totalCount, openPrint, openEdit, isMobile, onRegisterInCashdesk } = this.props;
 
         this.columns = columnsConfig({
-            onRepeatRegistrationInCashdesk: this.onRepeatRegistrationInCashdesk,
-            downloadReceipt:                downloadReceipt,
-            openPrint:   openPrint,
-            openEdit:    openEdit,
-            isMobile:    isMobile,
-            onSendEmail: this.onSendEmail,
-            onSendSms:   this.onSendSms,
-            user:        this.props.user,
+            openPrint: openPrint,
+            openEdit:  openEdit,
+            onRegisterInCashdesk,
+            isMobile:  isMobile,
         });
 
         const pagination = {

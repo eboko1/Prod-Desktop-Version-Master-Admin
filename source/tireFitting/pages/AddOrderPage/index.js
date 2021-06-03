@@ -230,13 +230,6 @@ class AddOrderPage extends Component {
             >
                 <MobileView>
                     <MobileAddOrderForm
-                        selectedClient={{
-                            requisites: [],
-                            phones:     [],
-                            emails:     [],
-                            vehicles:   [],
-                        }}
-                        requisites={[]}
                         allService={ this.props.allServices }
                         allDetails={ this.props.allDetails }
                         errors={ this.state.errors }
@@ -254,13 +247,6 @@ class AddOrderPage extends Component {
                     view={ {min: BREAKPOINTS.sm.max, max: BREAKPOINTS.xxl.max} }
                 >
                     <OrderForm
-                        selectedClient={{
-                            requisites: [],
-                            phones:     [],
-                            emails:     [],
-                            vehicles:   [],
-                        }}
-                        requisites={[]}
                         allService={ this.props.allServices }
                         allDetails={ this.props.allDetails }
                         errors={ this.state.errors }

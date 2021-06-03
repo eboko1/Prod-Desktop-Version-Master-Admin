@@ -121,18 +121,6 @@ const SYNC_ORDERS = [
 		priority: CARBOOK,
 		table: 'ORDERS_LABORS',
 	},
-	{
-		name: 'stations',
-		checked: true,
-		sync: NONE,
-		priority: CARBOOK,
-		table: 'STATIONS',
-	},
-	{
-		sync: NONE,
-		priority: NONE,
-		table: NONE,
-	},
 ];
 
 const SYNC_STOCK = [
@@ -157,18 +145,6 @@ const SYNC_STOCK = [
 		priority: CARBOOK,
 		table: 'STORE_DOC_PRODUCTS',
 	},
-	{
-		name: 'analytics',
-		checked: true,
-		sync: NONE,
-		priority: CARBOOK,
-		table: 'ANALYTICS',
-	},
-	{
-		sync: NONE,
-		priority: NONE,
-		table: NONE,
-	},
 ];
 
 const SYNC_CASH_ORDERS = [
@@ -178,13 +154,6 @@ const SYNC_CASH_ORDERS = [
 		sync: NONE,
 		priority: CARBOOK,
 		table: 'CASH_ORDERS',
-	},
-	{
-		name: 'cash_boxes',
-		checked: true,
-		sync: NONE,
-		priority: CARBOOK,
-		table: 'CASH_BOXES',
 	},
 	{
 		name: 'requisites',

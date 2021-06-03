@@ -16,12 +16,3 @@
     flex-direction: column;
     width: 75px;
 }
-
-.client {
-    width: 100%;
-    margin: 2px 0 2px 0;
-}
-
-.createClient {
-    width: 100%;
-}

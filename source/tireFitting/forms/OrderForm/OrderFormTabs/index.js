@@ -61,7 +61,7 @@ export default class OrderFormTabs extends React.PureComponent {
 			const parentGroup = this.props.details[i];
 			treeData.push({
 				title: `${parentGroup.name} (#${parentGroup.id})`,
-				name: parentGroup.singleName,
+				name: parentGroup.name,
 				value: parentGroup.id,
 				className: Styles.groupTreeOption,
 				key: `${i}`,
@@ -72,7 +72,7 @@ export default class OrderFormTabs extends React.PureComponent {
 				const childGroup = parentGroup.childGroups[j];
 				treeData[i].children.push({
 					title: `${childGroup.name} (#${childGroup.id})`,
-					name: childGroup.singleName,
+					name: childGroup.name,
 					value: childGroup.id,
 					className: Styles.groupTreeOption,
 					key: `${i}-${j}`,
@@ -83,7 +83,7 @@ export default class OrderFormTabs extends React.PureComponent {
 					const lastNode = childGroup.childGroups[k];
 					treeData[i].children[j].children.push({
 						title: `${lastNode.name} (#${lastNode.id})`,
-						name: lastNode.singleName,
+						name: lastNode.name,
 						value: lastNode.id,
 						className: Styles.groupTreeOption,
 						key: `${i}-${j}-${k}`,
@@ -94,7 +94,7 @@ export default class OrderFormTabs extends React.PureComponent {
 						const elem = lastNode.childGroups[l];
 						treeData[i].children[j].children[k].children.push({
 							title: `${elem.name} (#${elem.id})`,
-							name: elem.singleName,
+							name: elem.name,
 							value: elem.id,
 							className: Styles.groupTreeOption,
 							key: `${i}-${j}-${k}-${l}`,

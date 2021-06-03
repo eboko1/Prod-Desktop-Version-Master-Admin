@@ -16,10 +16,9 @@ import ClientsContainer from './ClientsContainer';
 import Styles from "./styles.m.css";
 
 const mapStateToProps = state => ({
-    user:            state.auth,
-    clients:         state.clientHotOperations.clients,
-    modal:           state.modals.modal,
-    searchQuery:     state.clientHotOperations.filters.query
+    user: state.auth,
+    clients: state.clientHotOperations.clients,
+    modal: state.modals.modal,
 });
 
 const mapDispatchToProps = {
@@ -37,7 +36,7 @@ const mapDispatchToProps = {
  * For now this page replaces ordinar clients page.
  * 
  * User on this page can select some operations for client:
- *     1. Create a new client - will be redirected to the page where user can create a new client(or open client modal)
+ *     1. Create a new client - will be redirected to the page where user can create a new client
  *     2. Open client page - Redirect to a page with client's information(client page)
  *     3. Create order with that client
  *     4. Create a new order with a client and its car
@@ -54,11 +53,10 @@ export default class ClientHotOperationsPage extends Component {
     }
 
     /**
-     * When "Create new client" button is pressed we have to open creating modal
-     * If there is a value in input we pass this search value as phone number(it will be validated)
+     * When "Create new client" button is pressed we have to open creating modal 
      */
     onAddClientModal = () => {
-        this.props.setModal(MODALS.ADD_CLIENT, {initialPhoneNumber: this.props.searchQuery});
+        this.props.setModal(MODALS.ADD_CLIENT);
     } 
 
     render() {  
@@ -78,7 +76,6 @@ export default class ClientHotOperationsPage extends Component {
                 </div>)}
             >
                 <ClientsContainer />
-
                 <AddClientModal
                     visible={this.props.modal}
                     resetModal={this.props.resetModal}

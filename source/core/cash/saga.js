@@ -19,22 +19,24 @@ import { setCashOrdersFetchingState, emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 import {analyticsLevels} from 'core/forms/reportAnalyticsForm/duck'
 
+
 // own
 import {
     fetchCashboxes,
-    fetchCashboxesBalance,
     fetchCashboxesSuccess,
     fetchAnalyticsSuccess,
     setAnalyticsFetchingState,
+    createCashboxSuccess,
+    deleteCashboxSuccess,
     fetchCashOrders,
-    registerCashOrderInCashdesk,
     fetchCashOrdersSuccess,
     fetchCashboxesBalanceSuccess,
     fetchCashboxesActivitySuccess,
     selectCashOrdersFilters,
     selectCashAccountingFilters,
-    registerServiceInputCashOrderInCashdesk,
-    registerServiceOutputCashOrderInCashdesk
+    printCashOrderSuccess,
+
+    
 } from './duck';
 
 import {
@@ -50,14 +52,8 @@ import {
     OPEN_SHIFT,
     CLOSE_SHIFT,
     SERVICE_INPUT,
-    SERVICE_OUTPUT,
     FETCH_X_REPORT,
-    REGISTER_CASH_ORDER_IN_CASHDESK,
-    SEND_EMAIL_WITH_RECEIPT,
-    SEND_SMS_WITH_RECEIPT,
-    DOWNLOAD_RECEIPT,
-    REGISTER_SERVICE_INPUT_CASH_ORDER_IN_CASHDESK,
-    REGISTER_SERVICE_OUTPUT_CASH_ORDER_IN_CASHDESK,
+    REGISTER_CASH_ORDER_IN_CASHDESK
 } from './duck';
 
 export function* openShiftSaga() {
@@ -78,7 +74,7 @@ export function* openShiftSaga() {
             }
             
 
-            yield put(fetchCashboxesBalance());
+            yield put(fetchCashboxes());
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -112,7 +108,7 @@ export function* closeShiftSaga() {
 
             
 
-            yield put(fetchCashboxesBalance());
+            yield put(fetchCashboxes());
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -128,123 +124,20 @@ export function* serviceInputSaga() {
 
             yield nprogress.start();
 
-            //Get cashbox to register in cashdesk later
-            const cashBoxes = yield call(fetchAPI, 'GET', '/cash_boxes');
-            const cashBox = _.get(_.filter(cashBoxes, (obj) => obj.id == cashboxId), '[0]');
-
-            const isCashBoxRst =  Boolean(_.get(cashBox, 'rst'));
-
-            const cashOrderPayload = {
-                type: "INCOME",
-                cashBoxId: cashboxId,
-                increase: serviceInputSum,
-                otherCounterparty: "Service input"
-            };
-
-            //Create CashOrder in our system first
-            const {id: cashOrderId} = yield call(
-                fetchAPI, 'POST', '/cash_orders', null, cashOrderPayload, { handleErrorInternally: true }
-            );
-
-            //If cashbox contains rst it must be registred in cashdesk if possible 
-            if(isCashBoxRst) {
-                yield put(registerServiceInputCashOrderInCashdesk({cashOrderId}));
+            const requestPayload = {
+                cashboxId: cashboxId,
+                sum: serviceInputSum
             }
 
-            yield put(fetchCashboxesBalance());
-        } catch (error) {
-            yield put(emitError(error));
-            notification.error({ message: _.get(error, 'response.message')}); //Print special error message if it exists
-        } finally {
-            yield nprogress.done();
-        }
-    }
-}
-
-export function* serviceOutputSaga() {
-    while (true) {
-        try {
-            const {payload: {cashboxId, serviceOutputSum}} = yield take(SERVICE_OUTPUT);
-
-            yield nprogress.start();
-
-            //Get cashbox to register in cashdesk later
-            const cashBoxes = yield call(fetchAPI, 'GET', '/cash_boxes');
-            const cashBox = _.get(_.filter(cashBoxes, (obj) => obj.id == cashboxId), '[0]');
-
-            const isCashBoxRst =  Boolean(_.get(cashBox, 'rst'));
-
-            const cashOrderPayload = {
-                type: "EXPENSE",
-                cashBoxId: cashboxId,
-                decrease: serviceOutputSum,
-                otherCounterparty: "Service output"
-            };
-
-            //Create CashOrder in our system first
-            const {id: cashOrderId} = yield call(
-                fetchAPI, 'POST', '/cash_orders', null, cashOrderPayload, { handleErrorInternally: true }
-            );
-
-            //If cashbox contains rst it must be registred in cashdesk if possible 
-            if(isCashBoxRst) {
-                yield put(registerServiceOutputCashOrderInCashdesk({cashOrderId}));
+            try {
+                yield call(fetchAPI, 'POST', '/cashdesk/service_input', null, requestPayload, { handleErrorInternally: true});
+            } catch(err) {
+                notification.error({message: err.response.message});
             }
 
-            yield put(fetchCashboxesBalance());
+            yield put(fetchCashboxes());
         } catch (error) {
             yield put(emitError(error));
-            notification.error({ message: _.get(error, 'response.message')}); //Print special error message if it exists
-        } finally {
-            yield nprogress.done();
-        }
-    }
-}
-
-/**
- * For cashboxes with rst we can register them in cashdesk
- */
-export function* registerServiceInputSaga() {
-    while (true) {
-        try {
-            const {payload: {cashOrderId}} = yield take(REGISTER_SERVICE_INPUT_CASH_ORDER_IN_CASHDESK);
-
-            yield nprogress.start();
-
-            yield call(
-                fetchAPI, 'POST', '/cashdesk/service_input_cash_order', null, {localNumber: cashOrderId}, { handleErrorInternally: true }
-            );
-
-            yield put(fetchCashboxesBalance());
-            yield put(fetchCashOrders());
-        } catch (error) {
-            yield put(emitError(error));
-            notification.error({ message: _.get(error, 'response.message')}); //Print special error message if it exists
-        } finally {
-            yield nprogress.done();
-        }
-    }
-}
-
-/**
- * For cashboxes with rst we can register them in cashdesk
- */
-export function* registerServiceOutputSaga() {
-    while (true) {
-        try {
-            const {payload: {cashOrderId}} = yield take(REGISTER_SERVICE_OUTPUT_CASH_ORDER_IN_CASHDESK);
-
-            yield nprogress.start();
-
-            yield call(
-                fetchAPI, 'POST', '/cashdesk/service_output_cash_order', null, {localNumber: cashOrderId}, { handleErrorInternally: true }
-            );
-
-            yield put(fetchCashboxesBalance());
-            yield put(fetchCashOrders());
-        } catch (error) {
-            yield put(emitError(error));
-            notification.error({ message: _.get(error, 'response.message')}); //Print special error message if it exists
         } finally {
             yield nprogress.done();
         }
@@ -274,7 +167,9 @@ export function* xReportSaga() {
                 notification.error({message: err.response.message});
             }
 
-            yield put(fetchCashboxesBalance());
+            
+
+            yield put(fetchCashboxes());
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -460,7 +355,7 @@ export function* printCashOrdersSaga() {
 /**
  * This saga cash order in cash desk by provided cashOrderId
  */
-export function* registerCashOrderInCashdeskSaga() {
+ export function* registerCashOrderInCashdeskSaga() {
     while(true) {
         const {payload: cashOrderId} = yield take(REGISTER_CASH_ORDER_IN_CASHDESK);
 
@@ -488,77 +383,11 @@ export function* registerCashOrderInCashdeskSaga() {
     }
 }
 
-export function* sendEmailWithReceiptSaga() {
-    while(true) {
-        const {payload: {cashOrderId}} = yield take(SEND_EMAIL_WITH_RECEIPT);
-
-        const requestPayload = {
-            cashOrderId
-        };
-
-        try{
-            //Just send an email
-            yield call(fetchAPI, 'POST', `/cashdesk/send_email`, null, requestPayload, { handleErrorInternally: true });
-
-            notification.success();
-        } catch(err) {
-            (err && err.response) && notification.error({
-                message: err.response.message
-            });
-        }
-
-    }
-}
-
-export function* sendSmsWithReceiptSaga() {
-    while(true) {
-        const {payload: {cashOrderId}} = yield take(SEND_SMS_WITH_RECEIPT);
-
-        const requestPayload = {
-            cashOrderId
-        };
-
-        //Just send an sms to receivers
-        yield call(fetchAPI, 'POST', `/cashdesk/send_sms`, null, requestPayload);
-
-        notification.success();
-
-    }
-}
-
-export function* downloadReceiptSaga() {
-    while (true) {
-        try {
-            const {payload: {cashOrderId}} = yield take(DOWNLOAD_RECEIPT);
-
-            const response = yield call( fetchAPI, 'GET', `/cashdesk/receipt`, {data: {cashOrderId} }, null, {rawResponse: true} );
-
-            const reportFile = yield response.blob();
-    
-            const contentDispositionHeader = response.headers.get(
-                'content-disposition',
-            );
-            const fileName = contentDispositionHeader.match(
-                /^attachment; filename="(.*)"/,
-            )[ 1 ];
-            yield saveAs(reportFile, fileName);
-
-            notification.success();
-
-        } catch(err) {
-            emitError(err);
-        }
-    }
-}
-
 export function* saga() {
     yield all([
         call(openShiftSaga),
         call(closeShiftSaga),
         call(serviceInputSaga),
-        call(serviceOutputSaga),
-        call(registerServiceInputSaga),
-        call(registerServiceOutputSaga),
         call(xReportSaga),
         call(fetchCashboxesSaga),
         call(fetchCashboxesBalanceSaga),
@@ -569,9 +398,6 @@ export function* saga() {
         call(fetchCashOrdersSaga),
         call(fetchAnalyticsSaga),
         call(registerCashOrderInCashdeskSaga),
-        call(sendEmailWithReceiptSaga),
-        call(sendSmsWithReceiptSaga),
-        call(downloadReceiptSaga),
         takeLatest(SET_SEARCH_QUERY, handleCashOrdersSearchSaga),
     ]);
 }

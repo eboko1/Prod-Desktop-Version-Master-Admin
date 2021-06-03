@@ -11,7 +11,6 @@ import {
 import nprogress from 'nprogress';
 import { saveAs } from 'file-saver';
 import _ from 'lodash';
-import { notification } from 'antd';
 
 //proj
 import {
@@ -288,11 +287,7 @@ export function* createCashOrderSaga() {
         try {
             const { payload } = yield take(CREATE_CASH_ORDER);
 
-            //Get selected cashbox to register in cashdesk later
-            const cashBoxes = yield call(fetchAPI, 'GET', '/cash_boxes');
-            const cashBox = _.get(_.filter(cashBoxes, (obj) => obj.id == payload.cashBoxId), '[0]');
-
-            const isCashBoxRst =  Boolean(_.get(cashBox, 'rst'));
+            const isCashBoxRst =  Boolean(_.get(payload, 'cashBox.rst'));
             const cashOrder = _.omit(payload, [
                 'counterpartyType',
                 'sumType',
@@ -307,7 +302,6 @@ export function* createCashOrderSaga() {
                 payload.editMode ? `cash_orders/${payload.id}` : 'cash_orders',
                 null,
                 cashOrder,
-                { handleErrorInternally: true }
             );
 
             //If cashbox contains rst it must be registred in cashdesk if possible 
@@ -316,15 +310,8 @@ export function* createCashOrderSaga() {
             }
 
             yield put(createCashOrderSuccess());
-
         } catch (error) {
             yield put(emitError(error));
-
-            //Print special error message if it exists
-            notification.error({
-                message: _.get(error, 'response.message')
-            });
-
         } finally {
             yield put(fetchCashOrders());
         }

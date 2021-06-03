@@ -1,4 +1,3 @@
-import moment from 'moment';
 /**
  * Constants
  * */
@@ -11,9 +10,6 @@ export const FETCH_CASH_ORDER_LOGS_SUCCESS = `${prefix}/FETCH_CASH_ORDER_LOGS_SU
 export const FETCH_CASH_ORDERS_LOGS_RECEIPT = `${prefix}/FETCH_CASH_ORDERS_LOGS_RECEIPT`;
 
 export const SET_CASH_ORDERS_LOGS_PAGE = `${prefix}/SET_CASH_ORDERS_LOGS_PAGE`;
-export const SET_CASH_ORDERS_LOGS_FILTER_DATE_RANGE = `${prefix}/SET_CASH_ORDERS_LOGS_FILTER_DATE_RANGE`;
-
-export const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD';
 
 /**
  * Reducer
@@ -25,11 +21,7 @@ const ReducerState = {
         totalRowsCount: 0,
     },
     filter:    {
-        page: 1,
-        startDate: moment()
-            .subtract(30, 'days')
-            .format(DEFAULT_DATE_FORMAT),
-        endDate: moment().format(DEFAULT_DATE_FORMAT),
+        page: 1
     },
 };
 
@@ -45,26 +37,15 @@ export default function reducer(state = ReducerState, action) {
                 stats: stats
             };
 
-        case SET_CASH_ORDERS_LOGS_PAGE:
-            const {page} = payload;
-            return {
-                ...state,
-                filter: {
-                    ...state.filter,
-                    page: page
-                }
-            };
-
-        case SET_CASH_ORDERS_LOGS_FILTER_DATE_RANGE:
-            const {startDate, endDate} = payload;
-            return {
-                ...state,
-                filter: {
-                    ...state.filter,
-                    startDate: startDate,
-                    endDate: endDate
-                }
-            };
+            case SET_CASH_ORDERS_LOGS_PAGE:
+                const {page} = payload;
+                return {
+                    ...state,
+                    filter: {
+                        ...state.filter,
+                        page: page
+                    }
+                };
 
         default:
             return state;
@@ -90,8 +71,7 @@ export const fetchCashOrdersLogsSuccess = ({cashdeskLogs, stats}) => ({
 });
 
 /**
- * Is used when user want do download receipt.
- * @param param.receiptId - Id of an receipt you want to get information about (example from cashdesk service: DEV_1536726327632732)
+ * Call this if you want do download receipt
  * @returns 
  */
 export const fetchCashOrdersLogsReceipt = ({receiptId}) => ({ 
@@ -104,22 +84,6 @@ export const setCashOrdersLogsPage = ({page}) => {
         dispatch({
             type: SET_CASH_ORDERS_LOGS_PAGE,
             payload: {page}
-        });
-        return dispatch(fetchCashOrdersLogs());
-    }
-};
-
-/**
- * 
- * @param {String} [params.startDate] - Formatted date
- * @param {String} [params.endDate] - Formatted date
- * @returns 
- */
-export const setCashOrdersLogsFilterDateRange = ({startDate, endDate}) => {
-    return function(dispatch) {
-        dispatch({
-            type: SET_CASH_ORDERS_LOGS_FILTER_DATE_RANGE,
-            payload: {startDate, endDate}
         });
         return dispatch(fetchCashOrdersLogs());
     }

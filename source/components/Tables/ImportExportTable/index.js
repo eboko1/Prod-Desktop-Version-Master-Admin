@@ -88,7 +88,7 @@ export default class ImportExportTable extends Component {
                 key: "responsible",
                 render: (row)=>{
                     return (
-                        (row.managerSurname || "") + " " + (row.managerName || "")
+                        (row.managerName || "") + " " + (row.managerSurname || "")
                     )
                 }
             },
@@ -106,36 +106,6 @@ export default class ImportExportTable extends Component {
                 		title: <FormattedMessage id="export_import_pages.documents_count" />,
 		                dataIndex: "docCount",
 		                key: "docCount",
-                        align: 'right',
-                	}
-                ],
-            },
-            {
-                title: <FormattedMessage id="export_import_pages.stats" />,
-                key: "stats",
-                children: [
-                	{
-                		title: <FormattedMessage id="export_import_pages.updatedCount" />,
-		                key: "updatedCount",
-                        dataIndex: "updatedCount",
-                        align: 'right',
-                	},
-                	{
-                		title: <FormattedMessage id="export_import_pages.insertedCount" />,
-		                key: "insertedCount",
-                        dataIndex: "insertedCount",
-                        align: 'right',
-                	},
-                	{
-                		title: <FormattedMessage id="export_import_pages.skippedCount" />,
-		                key: "skippedCount",
-                        dataIndex: "skippedCount",
-                        align: 'right',
-                	},
-                	{
-                		title: <FormattedMessage id="export_import_pages.errorsCount" />,
-		                key: "errorsCount",
-                        dataIndex: "errorsCount",
                         align: 'right',
                 	}
                 ],

@@ -32,6 +32,7 @@ class FavouriteServicesModal extends React.Component{
         this.labors = [];
         this.masterLabors = [];
         this.storeGroups = [];
+        this.storeGroupsTreeData = [];
         this.laborsTreeData = [];
         this.brandOptions = [];
         this.servicesOptions = [];
@@ -91,7 +92,7 @@ class FavouriteServicesModal extends React.Component{
                             style={{maxWidth: 220, color: 'black'}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.props.detailsTreeData}
+                            treeData={this.storeGroupsTreeData}
                             filterTreeNode={(input, node) => {
                                 return (
                                     node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -471,7 +472,56 @@ class FavouriteServicesModal extends React.Component{
         });
         this.labors = this.props.labors;
         this.storeGroups = this.props.details;
+        this.buildStoreGroupsTree();
         this.getOptions();
+    }
+
+    buildStoreGroupsTree() {
+        var treeData = [];
+        for(let i = 0; i < this.props.details.length; i++) {
+            const parentGroup = this.props.details[i];
+            treeData.push({
+                title: `${parentGroup.name} (#${parentGroup.id})`,
+                name: parentGroup.name,
+                value: parentGroup.id,
+                className: Styles.groupTreeOption,
+                key: `${i}`,
+                children: [],
+            })
+            for(let j = 0; j < parentGroup.childGroups.length; j++) {
+                const childGroup = parentGroup.childGroups[j];
+                treeData[i].children.push({
+                    title: `${childGroup.name} (#${childGroup.id})`,
+                    name: childGroup.name,
+                    value: childGroup.id,
+                    className: Styles.groupTreeOption,
+                    key: `${i}-${j}`,
+                    children: [],
+                })
+                for(let k = 0; k < childGroup.childGroups.length; k++) {
+                    const lastNode = childGroup.childGroups[k];
+                    treeData[i].children[j].children.push({
+                        title: `${lastNode.name} (#${lastNode.id})`,
+                        name: lastNode.name,
+                        value: lastNode.id,
+                        className: Styles.groupTreeOption,
+                        key: `${i}-${j}-${k}`,
+                        children: [],
+                    })
+                    for(let l = 0; l < lastNode.childGroups.length; l++) {
+                        const elem = lastNode.childGroups[l];
+                        treeData[i].children[j].children[k].children.push({
+                            title: `${elem.name} (#${elem.id})`,
+                            name: elem.name,
+                            value: elem.id,
+                            className: Styles.groupTreeOption,
+                            key: `${i}-${j}-${k}-${l}`,
+                        })
+                    }
+                }
+            }
+        }
+        this.storeGroupsTreeData = treeData;
     }
 
     getOptions() {
@@ -519,6 +569,7 @@ class FavouriteServicesModal extends React.Component{
         return (
             <>
                 <Button
+                    type="primary"
                     disabled={this.props.disabled}
                     onClick={()=>{
                         this.setState({
@@ -526,9 +577,6 @@ class FavouriteServicesModal extends React.Component{
                         })
                     }}
                     title={this.props.intl.formatMessage({id: "labors_table.favorite_labors"})}
-                    style={{
-                        padding: '0px 8px',
-                    }}
                 >
                     <Icon 
                         type="star"
