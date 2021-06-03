@@ -113,14 +113,23 @@ export function* fetchVehicleDataByVinSaga() {
 
         vin = String(vin).trim();
 
-        const { brand, name: carModel, manufacturedYear } = yield call(fetchAPI, 'GET', `vin/get_list_vehicle_attributes`, {vin: vin});
+        const vehicleListAttributes = yield call(fetchAPI, 'GET', `vin/get_list_vehicle_attributes`, {vin: vin});
+
+        if (_.isEmpty(vehicleListAttributes)) {
+            // shows message car does not exist
+            notification.error({
+                message: "Не удалось определить автомобиль по заданому VIN"
+            });
+        }
+
+        const { brand, name: carModel, manufacturedYear } = vehicleListAttributes;
 
         const brandName = String(brand);
         const carModelName = String(carModel);
 
         console.log("S: ", brand, carModel, manufacturedYear )
 
-        if (manufacturedYear && manufacturedYear.length == 4) {
+        if (manufacturedYear) {
             yield put(setVehicleYear({ year: manufacturedYear}));
 
             // console.log("Year: ", manufacturedYear);
@@ -180,6 +189,8 @@ export function* fetchVehicleDataByVinSaga() {
                     }
                 }
             }
+        } else {
+            yield put(setVehicleYear({ year: undefined}));
         }
 
         yield put(setVehicleMakeName({ makeName: brandName }));
