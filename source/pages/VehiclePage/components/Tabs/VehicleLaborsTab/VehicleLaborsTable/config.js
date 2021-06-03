@@ -8,6 +8,7 @@ import { images } from 'utils';
 
 //Proj
 import { FormattedDatetime } from 'components';
+import { Numeral } from 'commons';
 
 //Own
 import Styles from './styles.m.css';
@@ -93,6 +94,7 @@ export function columnsConfig(props) {
     const normHoursCol = {
         title:     <FormattedMessage id="services_table.norm_hours" />,
         width:     defWidth.normHours,
+        align:     'right',
         dataIndex: 'hours',
         key:       'hours',
     };
@@ -100,13 +102,18 @@ export function columnsConfig(props) {
     const priceCol = {
         title:     <FormattedMessage id="order_form_table.price" />,
         width:     defWidth.price,
+        align:     'right',
         dataIndex: 'price',
         key:       'price',
+        render: (price) => {
+            return (<Numeral mask={"0,00.00"}>{price}</Numeral>);
+        }
     };
 
     const countCol = {
         title:     <FormattedMessage id='order_form_table.count' />,
         width:     defWidth.count,
+        align:     'right',
         dataIndex: 'count',
         key:       'count',
     };
@@ -114,8 +121,12 @@ export function columnsConfig(props) {
     const sumCol = {
         title:     <FormattedMessage id='order_form_table.sum' />,
         width:     defWidth.sum,
+        align:     'right',
         dataIndex: 'sum',
         key:       'sum',
+        render: (sum) => {
+            return (<Numeral mask={"0,00.00"}>{sum}</Numeral>);
+        }
     };
 
     const actionsCol = {
