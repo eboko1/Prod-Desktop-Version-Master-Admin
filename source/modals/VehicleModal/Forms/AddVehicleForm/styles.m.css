@@ -10,3 +10,11 @@
     size: 1.2em;
     color: black
 }
+
+.vehicleDataHint {
+    color: grey;
+    /*font-size: 0.9em;*/
+    margin-left: 0.5em;
+    margin-top: -1.0em;
+
+}

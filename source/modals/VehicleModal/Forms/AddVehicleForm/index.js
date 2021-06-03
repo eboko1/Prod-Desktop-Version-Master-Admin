@@ -117,6 +117,8 @@ export default class AddVehicleFormClass extends React.Component {
             makeId: fields.makeId,
             modelId: fields.modelId,
             modificationId: fields.modificationId,
+            makeName: fields.makeName,
+            modelName: fields.modelName,
         }
         
         return (
@@ -240,6 +242,7 @@ export default class AddVehicleFormClass extends React.Component {
                                 optionValue={'id'}
                                 optionLabel={'name'}
                             />
+                        <h1 className={Styles.vehicleDataHint}>{fields.makeId ? null : fields.makeName}</h1>
                     </Col>
                     <Col span={6}></Col>
                 </Row>
@@ -278,6 +281,7 @@ export default class AddVehicleFormClass extends React.Component {
                                 optionValue={'id'}
                                 optionLabel={'name'}
                             />
+                        <h1 className={Styles.vehicleDataHint}> {fields.modelName}</h1>
                     </Col>
                     <Col span={6}></Col>
                 </Row>

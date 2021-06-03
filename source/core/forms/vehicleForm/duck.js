@@ -47,6 +47,10 @@ export const SET_MAKE_ID = `${prefix}/SET_MAKE_ID`;
 export const SET_MODEL_ID = `${prefix}/SET_MODEL_ID`;
 export const SET_MODIFICATION_ID = `${prefix}/SET_MODIFICATION_ID`;
 
+export const SET_MAKE_NAME = `${prefix}/SET_MAKE_NAME`;
+export const SET_MODEL_NAME = `${prefix}/SET_MODEL_NAME`;
+
+
 
 /**
  * Modes of the modal(or form) wich are supported. Each mode is used to define how to fetch,
@@ -69,6 +73,10 @@ const ReducerState = {
         makeId: undefined,
         modelId: undefined,
         modificationId: undefined,
+
+        // makeName and modelName is used to set plain text from API
+        makeName: undefined,
+        modelName: undefined
     },
 
     fetchingAllVehicleData: false, //Years, makes, modifications, ....
@@ -217,6 +225,26 @@ export default function reducer(state = ReducerState, action) {
                     modificationId
                 }
             };
+
+        case SET_MAKE_NAME:
+            const { makeName } = payload;
+            return {
+                ...state,
+                fields: {
+                    ...state.fields,
+                    makeName,
+                }
+            };
+
+        case SET_MODEL_NAME:
+            const { modelName } = payload;
+            return {
+                ...state,
+                fields: {
+                    ...state.fields,
+                    modelName,
+                }
+            };
         
         case SET_CLIENT_ID:
             const {clientId} = payload;
@@ -277,6 +305,8 @@ export default function reducer(state = ReducerState, action) {
                     makeId: undefined,
                     modelId: undefined,
                     modificationId: undefined,
+                    makeName: undefined,
+                    modelName: undefined,
                 },
                 years:            [], 
                 makes:            [],
@@ -409,6 +439,16 @@ export const setVehicleModelId = ({modelId}) => ({
 export const setVehicleModificationId = ({modificationId}) => ({
     type:    SET_MODIFICATION_ID,
     payload: { modificationId },
+});
+
+export const setVehicleMakeName = ({makeName}) => ({
+    type:    SET_MAKE_NAME,
+    payload: { makeName },
+});
+
+export const setVehicleModelName = ({modelName}) => ({
+    type:    SET_MODEL_NAME,
+    payload: { modelName },
 });
 
 /**
