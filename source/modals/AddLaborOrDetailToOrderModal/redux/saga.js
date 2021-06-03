@@ -32,7 +32,7 @@ export function* fetchOrdersSaga() {
 
             const query = yield select(selectOrdersQuery);
 
-            const { orders, stats } = yield call(fetchAPI, 'GET', `orders`, { ...query, vehicleId: 143954 }, null, {handleErrorInternally: true});
+            const { orders, stats } = yield call(fetchAPI, 'GET', `orders`, { ...query }, null, {handleErrorInternally: true});
 
             yield put(fetchOrdersSuccess({ orders, stats }));
         } catch(error) {

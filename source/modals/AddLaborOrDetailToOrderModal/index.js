@@ -10,13 +10,17 @@ import { resetModal, MODALS, selectModal, selectModalProps } from 'core/modals/d
 import {
     modes,
     fetchOrders,
-    selectOrders,
-    setLabors,
-    setDetails,
     addLaborsToOrder,
     addDetailsToOrder,
-    selectSelectedOrderId,
+    
+    setDetails,
+    setLabors,
     setSelectedOrderId,
+    setVehicleId,
+    
+    selectOrders,
+    selectSelectedOrderId,
+    selectVehicleId,
 } from './redux/duck';
 
 // own
@@ -28,6 +32,7 @@ const mapStateToProps = state => ({
     visible:       selectModal(state),
     orders:        selectOrders(state),
     selectedOrderId: selectSelectedOrderId(state),
+    vehicleId:       selectVehicleId(state),
 });
 
 const mapDispatchToProps = {
@@ -38,13 +43,27 @@ const mapDispatchToProps = {
     addLaborsToOrder,
     addDetailsToOrder,
     setSelectedOrderId,
+    setVehicleId,
 };
 
+/**
+ * @property {String|integer} [modalProps.vehicleId] - Id of a vehicle to sort orders for, if not provided all orders will be available in OrdersTable
+ */
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class AddLaborOrDetailToOrderModal extends Component {
     componentDidMount() {
         this.props.fetchOrders();
+    }
+
+    componentDidUpdate(prevProps) {
+        const prevVehicleId = _.get(prevProps, 'modalProps.vehicleId');
+        const currVehicleId = _.get(this.props, 'modalProps.vehicleId');
+
+        //Update orders list if filter is provided
+        if(prevVehicleId != currVehicleId) {
+            this.props.setVehicleId({vehicleId: currVehicleId});
+        }
     }
 
     /**
@@ -54,21 +73,22 @@ export default class AddLaborOrDetailToOrderModal extends Component {
      */
     handleSubmit = (e) => {
         e.preventDefault();
+        const {
+            modalProps: { mode, labors, details },
+            setLabors,
+            setDetails,
+        } = this.props;
 
-        const {modalProps: {mode}} = this.props;
-
-        if(mode == modes.ADD_LABOR) {
-            const { modalProps: {labors}, setLabors } = this.props;
-            setLabors({services: labors});
-            console.log("labors: ", labors);
-            this.props.addLaborsToOrder();
-        } else if(mode == modes.ADD_DETAIL) {
-            const { modalProps: {details}, setDetails } = this.props;
-            setDetails({details: details});
-            console.log("details: ", details);
-            this.props.addDetailsToOrder();
+        switch (mode) {
+            case modes.ADD_LABOR:
+                setLabors({services: labors});
+                this.props.addLaborsToOrder();
+                break;
+            case modes.ADD_DETAIL:
+                setDetails({details: details});
+                this.props.addDetailsToOrder();
+                break;
         }
-
         this.onClose();
     };
 
