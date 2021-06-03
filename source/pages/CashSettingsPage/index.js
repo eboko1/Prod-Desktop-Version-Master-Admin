@@ -9,33 +9,70 @@ import { v4 } from 'uuid';
 import { Layout, Paper } from 'commons';
 import { CashboxesTable } from 'components/Tables';
 import { permissions, isForbidden } from 'utils';
-import { AddCashboxModal } from 'modals';
-import { setModal, MODALS } from "core/modals/duck";
+import { AddCashboxModal, ServiceInputModal, CashOrderModal } from 'modals';
+import { setModal, resetModal, MODALS } from "core/modals/duck";
+import { clearCashOrderForm } from "core/forms/cashOrderForm/duck";
+
 
 const mapStateToProps = (state) => ({
 	user: state.auth,
+	modal: state.modals.modal,
+    modalProps: state.modals.modalProps,
 });
 
 const mapDispatchToProps = {
 	setModal,
+	resetModal,
+	clearCashOrderForm,
 };
 
-/**
- * Cash setting page is used to work with cashboxes, you can delere create and setting them up.
- * Currently there are different types of cash boxes, some of them are carbook internal features,
- * and others are connected to government servers(via cashdesk api service for example)
- */
 @connect(mapStateToProps, mapDispatchToProps)
 export default class CashSettingsPage extends Component {
 	constructor(props) {
 		super(props);
+
+		this.onOpenServiceInputModal = this.onOpenServiceInputModal.bind(this);
+		this.onOpenCashOrderModal = this.onOpenCashOrderModal.bind(this);
+		this.onCloseCashOrderModal = this.onCloseCashOrderModal.bind(this);
 	}
+
+	state = {
+        cashOrderModalMounted: false,
+    };
 
 	onAddCashboxModal = () => {
 		this.props.setModal(MODALS.ADD_CASHBOX);
 	};
 
+	onOpenServiceInputModal(cashboxId) {
+        this.props.setModal(MODALS.SERVICE_INPUT, {cashboxId});
+    }
+
+	//----------------------
+
+    onOpenCashOrderModal = ({cashboxId}) => {
+        this.props.setModal(MODALS.CASH_ORDER, {
+            cashOrderEntity: {
+                cashBoxId: cashboxId,
+            }
+        });
+        this.setState({ cashOrderModalMounted: true });
+    };
+
+    onCloseCashOrderModal = () => {
+        this.props.resetModal();
+        this.props.clearCashOrderForm();
+        this.setState({ cashOrderModalMounted: false });
+    };
+
+	//---------------------
+
 	render() {
+		const {
+			clearCashOrderForm,
+			modalProps,
+			modal
+		} = this.props;
 		
 		return (
 			<Layout
@@ -54,10 +91,22 @@ export default class CashSettingsPage extends Component {
 			>
 				
 				<Paper>
-					<CashboxesTable/>
+					<CashboxesTable
+						onOpenServiceInputModal={this.onOpenServiceInputModal}
+						onOpenCashOrderModal={this.onOpenCashOrderModal}
+					/>
 				</Paper>
 
-                <AddCashboxModal/>
+				<AddCashboxModal/>
+				<ServiceInputModal />
+				{this.state.cashOrderModalMounted ? (
+                    <CashOrderModal
+                        resetModal={this.onCloseCashOrderModal}
+                        visible={modal}
+                        clearCashOrderForm={clearCashOrderForm}
+                        modalProps={modalProps}
+                    />
+                ) : null}
 			</Layout>
 		);
 	}

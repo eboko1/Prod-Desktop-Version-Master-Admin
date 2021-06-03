@@ -34,15 +34,19 @@ const formItemLayout = {
 @Form.create()
 /**
  * This modal is used to make service inputs, it is autonomous so the only thing you have to provide is cashboxId.
- * 
- * @param props.modalProps.cashboxId
  */
 export default class ServiceInputModal extends Component {
+    constructor(props) {
+        super(props);
+
+        this.onOk = this.onOk.bind(this);
+    }
+
     handleCancel = () => {
 		this.props.resetModal();
 	};
 
-    onOk = (e) => {
+    onOk(e) {
         e.preventDefault();
         const { serviceInput, modalProps: {cashboxId}, form } = this.props;
 
@@ -69,7 +73,7 @@ export default class ServiceInputModal extends Component {
                 destroyOnClose
                 visible={modal === MODALS.SERVICE_INPUT}
                 maskClosable={false}
-                title={<FormattedMessage id="service_input_modal.service_input"/>}
+                title={<FormattedMessage id="service_input_modal.service input"/>}
                 width={'70vh'}
                 onCancel={() => this.handleCancel()}
                 onOk={this.onOk}

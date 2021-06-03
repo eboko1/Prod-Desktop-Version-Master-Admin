@@ -45,7 +45,7 @@ export function* fetchCashOrdersLogsReceiptSaga() {
             const response = yield call(
                 fetchAPI,
                 'GET',
-                `/cashdesk/get_receipt`,
+                `/cashdesk/tax`,
                 {
                     data: {
                         taxId: receiptId,

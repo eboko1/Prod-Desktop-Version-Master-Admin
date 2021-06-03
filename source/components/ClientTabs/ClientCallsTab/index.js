@@ -1,5 +1,5 @@
 /**
- * This tab combines existing functionality for calls(duck, saga) but provides client oriented result.
+ * This tab combines existing functionality for cals(duck, saga) but provides client oriented result.
  * For example we search calls for specific client only ond show only them without charts.
  */
 
@@ -9,11 +9,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Select } from 'antd';
-import moment from 'moment';
 
 // proj
 import { Spinner } from 'commons';
-import { DateRangePicker } from 'components';
+import { DatePickerGroup } from 'components';
 import {
     fetchCalls,
     setCallsDaterange,
@@ -60,11 +59,19 @@ export default class ClientCallsTab extends Component {
 
     componentDidMount() {
         const {
+            fetchCalls,
             setCallsTab,
         } = this.props;
 
+        fetchCalls();
         setCallsTab(tabs.callsTable);//Set this tab as we use this one only here
-        this._setClientFilter();
+    }
+
+    componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        if (this.props.clientEntity.clientId !== prevProps.clientEntity.clientId) {
+            this._setClientFilter();
+        }
     }
 
     /**
@@ -109,31 +116,34 @@ export default class ClientCallsTab extends Component {
         const { clientId } = clientEntity || {};
 
         clientId && setClientFilter({clientId}); //We search all calls for specific client only on this page
+        fetchCalls();
     }
 
     render() {
         const {
+            tab,
             channels,
             callsInitializing,
             callsFetching,
             filter: { startDate, endDate },
         } = this.props;
 
+        const {
+            clientEntity
+        } = this.props;
 
         return callsInitializing ? (
             <Spinner spin={ callsInitializing } />
         ) : (
             <div>
                 <div className={Styles.filters}>
-                    {
-                        callsFetching
-                            ? ""
-                            : <DateRangePicker
-                                dateRange={[moment(startDate), moment(endDate)]}
-                                style={{margin: '0 0 0 8px'}}//prevent default space
-                                onDateChange={this._setCallsDaterange}
-                            />
-                    }
+                    <DatePickerGroup
+                        startDate={ startDate }
+                        endDate={ endDate }
+                        loading={ callsInitializing || callsFetching }
+                        onDaterangeChange={ this._setCallsDaterange }
+                        periodGroup={ tab !== tabs.callsTable }
+                    />
                     {channels && (
                         <Select
                             defaultValue='ALL'

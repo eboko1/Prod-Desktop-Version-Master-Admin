@@ -60,92 +60,97 @@ export default {
             name:     'navigation.catalog',
             items:    [
                 {
-                    key:      '/directories',
-                    link:     book.directoriesPage,
-                    name:     'navigation.directories',
-                },
-                {
-                    key:      '/products',
-                    disabled: user => isForbidden(user, permissions.ACCESS_STORE_PRODUCTS),
-                    link:     book.products,
-                    name:     'navigation.products',
+                    key:      '/cash/settings',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_CASH),
+                    link: book.cashSettingsPage,
+                    name: 'navigation.cash_settings',
                 },
                 {
                     key:      '/clientHotOperations',
                     link:     book.clientHotOperations,
-                    disabled: user => isForbidden(user, permissions.GET_CLIENTS),
-                    name:     'navigation.client_hot_operations',
+                    disabled: user =>
+                        isForbidden(user, permissions.GET_CLIENTS),
+                    name: 'navigation.client_hot_operations',
                 },
                 {
                     key:      '/employees',
                     link:     book.employeesPage,
-                    disabled: user => isForbidden(user, permissions.GET_EMPLOYEES),
-                    name:     'navigation.employees',
+                    disabled: user =>
+                        isForbidden(user, permissions.GET_EMPLOYEES),
+                    name: 'navigation.employees',
                 },
-                // {
-                //     key:      '/cash/settings',
-                //     disabled: user => isForbidden(user, permissions.ACCESS_CATALOGUE_CASH),
-                //     link:     book.cashSettingsPage,
-                //     name:     'navigation.cash_settings',
-                // },
-                // {
-                //     key:      'vehicles',
-                //     link:     book.vehicles,
-                //     name:     'navigation.vehicles',
-                // },
-                // {
-                //     key:      '/warehouses',
-                //     link:     book.warehouses,
-                //     disabled: user => isForbidden(user, permissions.ACCESS_CATALOGUE_STOCK),
-                //     name:     'navigation.warehouses',
-                // },
-                // {
-                //     key:      '/suppliers',
-                //     link:     book.suppliersPage,
-                //     disabled: user => isForbidden(user, permissions.ACCESS_SUPPLIERS),
-                //     name:     'navigation.suppliers',
-                // },
-                // {
-                //     key:      '/products-groups',
-                //     disabled: user => isForbidden(user, permissions.ACCESS_STORE_GROUPS),
-                //     link:     book.productsGroups,
-                //     name:     'navigation.products_groups',
-                // },
-                // {
-                //     key:      '/price-groups',
-                //     disabled: user => isForbidden(user, permissions.ACCESS_PRICE_GROUPS),
-                //     link:     book.priceGroups,
-                //     name:     'navigation.price_groups',
-                // },
-                // {
-                //     key:      '/labors',
-                //     link:     book.laborsPage,
-                //     disabled: user => isForbidden(user, permissions.ACCESS_LABOR_CATALOGUE),
-                //     name:     'navigation.labors_page',
-                // },
-                // {
-                //     key:      '/diagnostic-patterns',
-                //     disabled: user => isForbidden(user, permissions.ACCESS_DIAGNOSTIC_CATALOGUE),
-                //     link:     book.diagnosticPatterns,
-                //     name:     'navigation.diagnostic_patterns',
-                // },
-                // {
-                //     key:      '/repair-map',
-                //     link:     book.repairMapSetting,
-                //     name:     'navigation.repair_map',
-                // },
-                // {
-                //     key:      '/location-settings',
-                //     link:     book.locationSettings,
-                //     disabled: user => isForbidden(user, permissions.ACCESS_CATALOGUE_LOCATIONS),
-                //     name:     'navigation.locations_settings',
-                // },
-                // {
-                //     key:      '/report/analytics',
-                //     link:     book.analytics,
-                //     disabled: user => isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS),
-                //     name:     'navigation.report_analytics',
-                // },
+                {
+                    key:      '/warehouses',
+                    link:     book.warehouses,
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_STOCK),
+                    name: 'navigation.warehouses',
+                },
+                {
+                    key:      '/suppliers',
+                    link:     book.suppliersPage,
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_SUPPLIERS),
+                    name: 'navigation.suppliers',
+                },
+                {
+                    key:      '/products-groups',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_STORE_GROUPS),
+                    link: book.productsGroups,
+                    name: 'navigation.products_groups',
+                },
+                {
+                    key:      '/price-groups',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_PRICE_GROUPS),
+                    link: book.priceGroups,
+                    name: 'navigation.price_groups',
+                },
+                {
+                    key:      '/products',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_STORE_PRODUCTS),
+                    link: book.products,
+                    name: 'navigation.products',
+                },
+                {
+                    key:      '/labors',
+                    link:     book.laborsPage,
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_LABOR_CATALOGUE),
+                    name: 'navigation.labors_page',
+                },
+                {
+                    key:      '/diagnostic-patterns',
+                    disabled: user =>
+                        isForbidden(
+                            user,
+                            permissions.ACCESS_DIAGNOSTIC_CATALOGUE,
+                        ),
+                    link: book.diagnosticPatterns,
+                    name: 'navigation.diagnostic_patterns',
+                },
+                {
+                    key:      '/repair-map',
+                    link: book.repairMapSetting,
+                    name: 'navigation.repair_map',
+                },
+                {
+                    key:      '/location-settings',
+                    link: book.locationSettings,
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_LOCATIONS),
+                    name: 'navigation.locations_settings',
+                },
+                {
+                    key:      '/report/analytics',
+                    link:     book.analytics,
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_ANALYTICS),
+                    name: 'navigation.report_analytics',
+                },
             ],
         },
         /* Accounting */
@@ -155,13 +160,6 @@ export default {
             name:     'navigation.accounting',
             items:    [
                 {
-                    key:      '/cash/bank',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_FINANCE_CASH),
-                    link: book.cashBankPage,
-                    name: 'navigation.cash_bank',
-                },
-                {
                     key:      '/cash/flow',
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_ACCOUNTING),
@@ -169,18 +167,25 @@ export default {
                     name: 'navigation.flow_of_money',
                 },
                 {
-                    key:      '/report/cash_orders_logs',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_CASHBOX_RST_LOGS),
-                    link: book.reportCashOrdersLogs,
-                    name: 'navigation.report_cash_orders_logs',
-                },
-                {
                     key:      '/cash/clients-debts',
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_FINANCE_RECEIVABLE),
                     link: book.cashClientsDebtsPage,
                     name: 'navigation.clients_debts',
+                },
+                {
+                    key:      '/cash/bank',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_FINANCE_CASH),
+                    link: book.cashBankPage,
+                    name: 'navigation.cash_bank',
+                },
+                {
+                    key:      '/report/cash_orders_logs',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_CASHBOX_RST_LOGS),
+                    link: book.reportCashOrdersLogs,
+                    name: 'navigation.report_cash_orders_logs',
                 },
             ],
         },

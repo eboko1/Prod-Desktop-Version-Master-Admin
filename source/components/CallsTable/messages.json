@@ -11,11 +11,8 @@
     "calls-table.record": "Record",
     "calls-table.answered": "Answered",
     "calls-table.missed": "Missed",
-    "calls-table.all": "All",
     "calls-table.no_record": "No record",
-    "calls-table.show_record": "Show record",
-    "calls-table.client": "Client",
-    "calls-table.create_new_client": "Create a new client"
+    "calls-table.show_record": "Show record"
   },
   "ru": {
     "calls-table.date": "Дата",
@@ -29,11 +26,8 @@
     "calls-table.record": "Запись",
     "calls-table.answered": "Принятые",
     "calls-table.missed": "Пропущенные",
-    "calls-table.all": "Все",
     "calls-table.no_record": "Нет записи",
-    "calls-table.show_record": "Показать запись",
-    "calls-table.client": "Клиент",
-    "calls-table.create_new_client": "Создать нового клиента"
+    "calls-table.show_record": "Показать запись"
   },
   "uk": {
     "calls-table.date": "Дата",
@@ -47,10 +41,7 @@
     "calls-table.record": "Запис",
     "calls-table.answered": "Прийняті",
     "calls-table.missed": "Пропущені",
-    "calls-table.all": "Всі",
     "calls-table.no_record": "Немає запису",
-    "calls-table.show_record": "Показати запис",
-    "calls-table.client": "Клієнт",
-    "calls-table.create_new_client": "Створити клієнта"
+    "calls-table.show_record": "Показати запис"
   }
 }

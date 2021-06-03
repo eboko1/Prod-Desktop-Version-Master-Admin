@@ -2,31 +2,19 @@
     word-break: keep-all;
 }
 
-.unregisteredIcon, .sendSMS, .sendMailIcon, .printIcon, .editIcon, .downloadIcon {
-    display: inline-block;
-    margin-left: 8px;
-    font-size: 24px;
-    color: black;
-}
-
 .printIcon {
+    font-size: 24px;
     color: var(--primary);
 }
 
 .editIcon {
+    font-size: 24px;
     color: var(--secondary);
 }
 
-.unregisteredIcon {
-    color: red;
-}
-
-.sendMailIcon {
-    color: blue;
-}
-
-.downloadIcon {
-    color: orange;
+.unregisteredIcon, .sendSMS, .sendMail {
+    font-size: 24px;
+    color: black;
 }
 
 .unregisteredCashOrder {
@@ -39,10 +27,4 @@
 
 .noBreak {
     word-break: keep-all;
-}
-
-/* If component has this class it will be unclickable */
-.disabled{
-    pointer-events: none;
-    color: rgb(172, 172, 172);
 }

@@ -1814,7 +1814,10 @@ export class CashOrderForm extends Component {
                 getFieldDecorator={getFieldDecorator}
                 rules={[
                     {
-                        required: false,
+                        required: isActive,
+                        message: formatMessage({
+                            id: "required_field",
+                        }),
                     },
                 ]}
                 disabled={printMode}

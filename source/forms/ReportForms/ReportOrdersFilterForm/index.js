@@ -391,9 +391,7 @@ class ReportOrdersFilter extends React.Component {
                                     }
                                     options={managers}
                                     optionValue="id" //Will be sent as var
-                                    optionLabel={(option) => {
-                                        return `${_.get(option, 'managerSurname')} ${_.get(option, 'managerName')}`;
-                                    }}
+                                    optionLabel="managerName"
                                     optionDisabled="disabled"
                                     initialValue={managerId}
                                 />
@@ -415,9 +413,7 @@ class ReportOrdersFilter extends React.Component {
                                     }
                                     options={employees}
                                     optionValue="id" //Will be sent as var
-                                    optionLabel={(option) => {
-                                        return `${_.get(option, 'surname')} ${_.get(option, 'name')}`;
-                                    }}
+                                    optionLabel="name"
                                     optionDisabled="disabled"
                                     initialValue={mechanicId}
                                 />
@@ -439,9 +435,7 @@ class ReportOrdersFilter extends React.Component {
                                     }
                                     options={employees}
                                     optionValue="id" //Will be sent as var
-                                    optionLabel={(option) => {
-                                        return `${_.get(option, 'surname')} ${_.get(option, 'name')}`;
-                                    }}
+                                    optionLabel="name"
                                     optionDisabled="disabled"
                                     initialValue={appurtenanciesResponsibleId}
                                 />

@@ -75,13 +75,14 @@ export class EmployeeForm extends Component {
 
 	render() {
 		const { adding, initialEmployee, saveEmployee, fireEmployee } = this.props;
+		console.log(this);
 		const { getFieldDecorator, getFieldValue } = this.props.form;
 		const { formatMessage } = this.props.intl;
 		const managerEnabled = Boolean(getFieldValue('managerEnabled'));
 		const passwordField = this._renderPasswordField();
 
 		return (
-			<Form layout='horizontal'>
+			<Form layout='vertical'>
 				<Row>
 					<Col span={8}>
 						<DecoratedCheckbox

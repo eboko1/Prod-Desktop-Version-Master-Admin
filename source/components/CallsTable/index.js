@@ -2,46 +2,24 @@
 import React, { Component } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { Radio, Table } from "antd";
-import { connect } from "react-redux";
 import _ from "lodash";
 import { v4 } from 'uuid';
 
 // proj
 import { Catcher, Loader } from "commons";
-import { setModal, resetModal, MODALS } from "core/modals/duck";
-import { AddClientModal } from 'modals';
 
 //own
 import { columnsConfig } from "./callsTableConfig.js";
 import Styles from "./styles.m.css";
-
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-const mapStateToProps = state => ({
-    modal: state.modals.modal,
-});
-
-const mapDispatchToProps = {
-    setModal,
-    resetModal,
-}
-
 @injectIntl
-@connect(mapStateToProps, mapDispatchToProps)
 export default class CallsTable extends Component {
     _setCallsTableFilterMode = mode => {
         this.props.setCallsTableMode(mode);
         this.props.fetchCalls();
     };
-
-    /**
-     * When "Create new client" button is pressed we have to open creating modal 
-     * @param params.initialPhoneNuber This phone number will be in modal's phone input
-     */
-     onAddClientModal = ({initialPhoneNumber}={}) => {
-        this.props.setModal(MODALS.ADD_CLIENT, {initialPhoneNumber});
-    }
 
     render() {
         const {
@@ -53,11 +31,7 @@ export default class CallsTable extends Component {
             callsLinksCache,
         } = this.props;
 
-        const columns = columnsConfig({
-            fetchRecordingLink,
-            callsLinksCache,
-            onAddClientModal: this.onAddClientModal
-        });
+        const columns = columnsConfig({ fetchRecordingLink, callsLinksCache });
 
         const pagination = {
             pageSize: 25,
@@ -92,12 +66,6 @@ export default class CallsTable extends Component {
                     scroll={{ x: 1080 }}
                     rowKey={() => v4()}
                 />
-
-                <AddClientModal
-                    visible={this.props.modal}
-                    resetModal={this.props.resetModal}
-                />
-
             </Catcher>
         );
     }
@@ -108,19 +76,11 @@ export default class CallsTable extends Component {
         return (
             <RadioGroup value={filter.mode}>
                 <RadioButton
-                    value="all"
-                    onClick={() => this._setCallsTableFilterMode("all")}
-                >
-                    <FormattedMessage id="calls-table.all" />
-                </RadioButton>
-
-                <RadioButton
                     value="answered"
                     onClick={() => this._setCallsTableFilterMode("answered")}
                 >
                     <FormattedMessage id="calls-table.answered" />
                 </RadioButton>
-                
                 <RadioButton
                     value="missed"
                     onClick={() => this._setCallsTableFilterMode("missed")}

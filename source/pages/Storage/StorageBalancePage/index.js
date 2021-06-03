@@ -101,7 +101,7 @@ class PrintModal extends React.Component{
 			const parentGroup = storeGroups[i];
 			treeData.push({
 				title: `${parentGroup.name} (#${parentGroup.id})`,
-				name: parentGroup.singleName,
+				name: parentGroup.name,
 				value: parentGroup.id,
 				key: `${i}`,
 				children: [],
@@ -111,7 +111,7 @@ class PrintModal extends React.Component{
 				const childGroup = parentGroup.childGroups[j];
 				treeData[i].children.push({
 					title: `${childGroup.name} (#${childGroup.id})`,
-					name: childGroup.singleName,
+					name: childGroup.name,
 					value: childGroup.id,
 					key: `${i}-${j}`,
 					children: [],
@@ -121,7 +121,7 @@ class PrintModal extends React.Component{
 					const lastNode = childGroup.childGroups[k];
 					treeData[i].children[j].children.push({
 						title: `${lastNode.name} (#${lastNode.id})`,
-						name: lastNode.singleName,
+						name: lastNode.name,
 						value: lastNode.id,
 						key: `${i}-${j}-${k}`,
 						children: [],
@@ -131,7 +131,7 @@ class PrintModal extends React.Component{
 						const elem = lastNode.childGroups[l];
 						treeData[i].children[j].children[k].children.push({
 							title: `${elem.name} (#${elem.id})`,
-							name: elem.singleName,
+							name: elem.name,
 							value: elem.id,
 							key: `${i}-${j}-${k}-${l}`,
 							multiplier: elem.priceGroupMultiplier,
@@ -206,7 +206,7 @@ class PrintModal extends React.Component{
                 <Modal
                     width="460px"
                     visible={visible}
-                    title={<FormattedMessage id='navigation.print' />}              
+                    title={<FormattedMessage id="Печать" />}
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                     okButtonProps={{

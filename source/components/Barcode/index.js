@@ -175,7 +175,6 @@ export default class Barcode extends Component {
                 });
                 if(onConfirm) {
                     onConfirm(scanedCode, fullPrefix, codeWithPrefix);
-                    this.handleCancel();
                 }
             } catch(e) {
                 notification.error({
@@ -210,7 +209,7 @@ export default class Barcode extends Component {
     }
 
     render() {
-        const { zIndex, displayBarcode, iconStyle, buttonStyle, button, disabled: propsDisabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon, multipleMode } = this.props;
+        const { zIndex, displayBarcode, iconStyle, button, disabled: propsDisabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon, multipleMode } = this.props;
         const { visible, scanedCode, scanedInputValue } = this.state;
         const id = this.id;
         const iconType = enableScanIcon && !value
@@ -220,13 +219,12 @@ export default class Barcode extends Component {
         const disabled = propsDisabled || isForbidden(user, permissions.ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY);
 
         return !displayBarcode ? (
-            <div title={this.props.intl.formatMessage({id: 'navigation.barcode'})}>
+            <div >
                 {button ? 
                     <Button
                         //type={'primary'}
                         disabled={disabled}
                         onClick={this.showModal}
-                        style={buttonStyle}
                     >
                         <Icon
                             type={iconType}

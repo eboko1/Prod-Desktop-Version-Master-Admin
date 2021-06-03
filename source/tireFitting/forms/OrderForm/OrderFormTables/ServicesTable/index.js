@@ -117,7 +117,7 @@ class ServicesTable extends Component {
                     );
 
                     return employee ? 
-                        `${employee.surname} ${employee.name}`
+                        `${employee.name} ${employee.surname}`
                         : (
                             <FormattedMessage id='long_dash' />
                         );

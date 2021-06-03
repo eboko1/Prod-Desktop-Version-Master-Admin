@@ -5,30 +5,12 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 // proj
-import { isForbidden, permissions } from "utils";
 import { Numeral } from 'commons';
 import { FormattedDatetime } from 'components';
 import book from 'routes/book';
 
 // own
 import Styles from './styles.m.css';
-
-//Width of each column
-const defWidth = {
-    numberCol: 'auto',
-    cashOrderCol: '6%',
-    dateCol: '8%',
-    conterpartyCol: '8%',
-    orderCol: '8%',
-    activityCol: '8%',
-    sumCol: '5%',
-    analyticsCol: '15%',
-    descriptionCol: '8%',
-    rstCodeCol: '5%',
-    actionsCol: 'auto',
-
-    orderAndConterpartyCol: 'auto'
-}
 
 function renderCounterparty(cashOrder) {
     switch (true) {
@@ -73,26 +55,13 @@ function renderCounterparty(cashOrder) {
 
 /* eslint-disable complexity */
 export function columnsConfig(props) {
-
-    const {
-        onRepeatRegistrationInCashdesk,
-        openPrint,
-        openEdit,
-        onSendEmail,
-        onSendSms,
-        downloadReceipt,
-        isMobile,
-        user
-    } = props;
-
     const numberCol = {
         title:     <FormattedMessage id='cash-table.cashbox_num' />,
         dataIndex: 'cashBoxId',
-        width:     defWidth.numberCol,
+        width:  'auto',
         render:    (cashBoxId, { cashBoxName }) => (
             <div className={ Styles.breakWord }>
-                <div>{ cashBoxId }</div>
-                <div>{ cashBoxName }</div>
+                { cashBoxId } { cashBoxName }
             </div>
         ),
     };
@@ -100,13 +69,13 @@ export function columnsConfig(props) {
     const cashOrderCol = {
         title:     <FormattedMessage id='cash-table.order_num' />,
         dataIndex: 'id',
-        width:     defWidth.cashOrderCol,
+        width:  'auto',
     };
 
     const dateCol = {
         title:     <FormattedMessage id='cash-table.date' />,
         dataIndex: 'datetime',
-        width:     defWidth.dateCol,
+        width:  'auto',
         render:    date => (
             <FormattedDatetime datetime={ date } format={ 'DD.MM.YYYY' } />
         ),
@@ -114,13 +83,13 @@ export function columnsConfig(props) {
 
     const conterpartyCol = {
         title:     <FormattedMessage id='cash-table.conterparty' />,
-        width:     defWidth.conterpartyCol,
+        width:  'auto',
         render:    (key, cashOrder) => renderCounterparty(cashOrder),
     };
 
     const orderCol = {
         title:     <FormattedMessage id='cash-table.order' />,
-        width:     defWidth.orderCol,
+        width:  'auto',
         render:    ({orderId, storeDocId, orderNum, documentNumber}) => {
             return orderId ? (
                 <Link
@@ -143,7 +112,7 @@ export function columnsConfig(props) {
     const activityCol = {
         title:     <FormattedMessage id='cash-table.activity' />,
         dataIndex: 'type',
-        width:     defWidth.activityCol,
+        width:  'auto',
         render:    type => (
             <div className={ Styles.noBreak }>
                 <FormattedMessage id={ `cash-order-form.type.${type}` } />
@@ -154,7 +123,7 @@ export function columnsConfig(props) {
     const sumCol = {
         title:     <FormattedMessage id='cash-table.sum' />,
         dataIndex: 'sum',
-        width:     defWidth.sumCol,
+        width:  'auto',
         render:    (key, { increase, decrease }) =>
             increase ? (
                 <div
@@ -187,119 +156,81 @@ export function columnsConfig(props) {
     const analyticsCol = {
         title:     <FormattedMessage id='cash-table.analytics' />,
         dataIndex: 'analyticsName',
-        width:     defWidth.analyticsCol,
+        width:  'auto',
     };
 
     const descriptionCol = {
         title:     <FormattedMessage id='cash-table.comment' />,
         dataIndex: 'description',
-        width:     defWidth.descriptionCol,
+        width:  'auto',
     };
 
-    /** RST is a special device, it has fiscal code */
     const rstCodeCol = {
         title:     'PPO',
         dataIndex: 'fiscalNumber',
-        width:     defWidth.rstCodeCol,
+        width:  'auto',
     };
 
     const actionsCol = {
         key:    'actions',
-        width:     defWidth.actionsCol,
-        render: (key, cashOrder) => {
+        width:  'auto',
+        render: (key, cashOrder) => (
+            <>
+                {
+                    (cashOrder.rst && !cashOrder.isRegisteredWithRst)
+                        ? (
+                            <div>
+                                <Popconfirm
+                                    title={ <FormattedMessage id='cash-table.confirm' />}
+                                    onConfirm={() => props.onRegisterInCashdesk(cashOrder.id)}
+                                    okText={ <FormattedMessage id='yes' /> }
+                                    cancelText={ <FormattedMessage id='no' />}
+                                >
+                                    <Popover content={<FormattedMessage id='cash-table.hint_repeat_registration' />}>
+                                        <Icon
+                                            type='exclamation-circle'
+                                            className={Styles.unregisteredIcon}
+                                        />
+                                    </Popover>
+                                </Popconfirm>
 
-            const rstActionsAccess = !isForbidden(user, permissions.ACCESS_OTHER_OPERATION_RST);
-
-            /** Creates an icon with styles and popup.
-             * @param popMessage - popup hint when hovered
-             * @param options - Icon options (type, className ...)
-             */
-            const iconWithPop = ({popMessage, options}) => {
-                return (
-                    <Popover content={popMessage}>
-                        <Icon {...options}/>
-                    </Popover>
-                );
-            }
-            
-            /** When cashOrder was successfully registered in cashdesk api service those are available */
-            const cashOrderWithRST = (
-                <span>
-                    {iconWithPop({
-                        popMessage: (<FormattedMessage id='cash-table.hint_send_sms' />),
-                        options: {
-                            type: "message",
-                            className: _.join([Styles.sendSMS, rstActionsAccess? "": Styles.disabled], ' '), //Disable access if no scope
-                            onClick: () => onSendSms({cashOrderId: cashOrder.id}),
-                        }
-                    })}
-                    
-                    {iconWithPop({
-                        popMessage: (<FormattedMessage id='cash-table.hint_send_email' />),
-                        options: {
-                            type: "mail",
-                            className: _.join([Styles.sendMailIcon, rstActionsAccess? "": Styles.disabled], ' '), //Disable access if no scope
-                            onClick: () => onSendEmail({cashOrderId: cashOrder.id})
-                        }
-                    })}
-
-                    {iconWithPop({
-                        popMessage: (<FormattedMessage id='cash-table.hint_download_receipt' />),
-                        options: {
-                            type: "download",
-                            className: _.join([Styles.downloadIcon, rstActionsAccess? "": Styles.disabled], ' '), //Disable access if no scope
-                            onClick: () => downloadReceipt({cashOrderId: cashOrder.id})
-                        }
-                    })}
-                </span>
-            );
-            
-            /** When cashOrder was not registered in cashdesk api service those icons are visible */
-            const cashOrderWithFailedRST = (<span>
-                <Popconfirm
-                    title={ <FormattedMessage id='cash-table.confirm' />}
-                    onConfirm={() => onRepeatRegistrationInCashdesk({cashOrder})}
-                    okText={ <FormattedMessage id='yes' /> }
-                    cancelText={ <FormattedMessage id='no' />}
-                >
-                    {iconWithPop({
-                        popMessage: (<FormattedMessage id='cash-table.hint_repeat_registration' />),
-                        options: {
-                            type: "exclamation-circle",
-                            className: _.join([Styles.unregisteredIcon, rstActionsAccess? "": Styles.disabled], ' '), //Disable access if no scope
-                        }
-                    })}
-                </Popconfirm>
-            </span>);
-
-            return (
-                <div>
-                    <span>
-                        {iconWithPop({
-                            popMessage: (<FormattedMessage id='cash-table.hint_print_cash_order' />),
-                            options: {type: "printer", className: Styles.printIcon, onClick: () => openPrint(cashOrder)}
-                        })}
-
-                        {iconWithPop({
-                            popMessage: (<FormattedMessage id='cash-table.hint_edit_cash_order' />),
-                            options: {type: "edit", className: Styles.editIcon, onClick: () => openEdit(cashOrder)}
-                        })}
-                    </span>
-                    {
-                        (cashOrder.rst)
-                            ? cashOrder.isRegisteredWithRst
-                                ? cashOrderWithRST
-                                : cashOrderWithFailedRST
-                            : null
-                    }
-                </div>
-            );
-        },
+                                <Popover content={<FormattedMessage id='cash-table.hint_send_sms' />}>
+                                    <Icon
+                                        type="message"
+                                        className={ Styles.sendSMS }
+                                    />
+                                </Popover>
+                                
+                                <Popover content={<FormattedMessage id='cash-table.hint_send_email' />}>
+                                    <Icon
+                                        type="mail"
+                                        className={ Styles.sendMail }
+                                    />
+                                </Popover>
+                                
+                            </div>
+                        )
+                        : null
+                }
+                <Icon
+                    type='printer'
+                    onClick={ () => props.openPrint(cashOrder) }
+                    className={ Styles.printIcon }
+                />
+                { props.openEdit ? (
+                    <Icon
+                        type='edit'
+                        onClick={ () => props.openEdit(cashOrder) }
+                        className={ Styles.editIcon }
+                    />
+                ) : null }
+            </>
+        ),
     };
 
     const orderAndConterpartyCol = {
         title:     <FormattedMessage id='cash-table.order' />,
-        width:     defWidth.orderAndConterpartyCol,
+        width:  'auto',
         render:    (cashOrder) => {
             const conterparty = renderCounterparty(cashOrder)
             return cashOrder.orderId ? (
@@ -326,7 +257,7 @@ export function columnsConfig(props) {
         },
     };
 
-    return !isMobile ? 
+    return !props.isMobile ? 
     [
         numberCol,
         cashOrderCol,

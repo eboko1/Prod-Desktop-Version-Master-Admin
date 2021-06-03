@@ -33,7 +33,7 @@ export default class EmployeesTable extends Component {
                     <div>
                         {isForbidden(this.props.user, permissions.ACCESS_EMPLOYEE) ? 
                             <>
-                                {`${record.surname} ${record.name}`}
+                                {`${record.name} ${record.surname}`}
                                 <div className={Styles.jobTitle}>
                                     {record.jobTitle}
                                 </div> 
@@ -42,7 +42,7 @@ export default class EmployeesTable extends Component {
                                 className={Styles.employeeName}
                                 to={book.editEmployee.replace(":id", record.id)}
                             >
-                                {`${record.surname} ${record.name}`}
+                                {`${record.name} ${record.surname}`}
                                 <div className={Styles.jobTitle}>
                                     {record.jobTitle}
                                 </div>

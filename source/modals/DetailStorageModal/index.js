@@ -2,11 +2,10 @@
 import React, { Component } from 'react';
 import { Button, Modal, Icon, Select, Input, InputNumber, Spin, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import _ from 'lodash';
 // proj
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
-import { permissions, isForbidden, fetchAPI } from "utils";
+import { permissions, isForbidden } from "utils";
 import { DetailSupplierModal, StoreProductTrackingModal } from 'modals';
 import { AvailabilityIndicator, WarehouseSelect } from 'components';
 // own
@@ -63,7 +62,6 @@ class DetailStorageModal extends React.Component{
                             {this.state.storeOptions.length ? 
                                 <Select
                                     showSearch
-                                    style={{maxWidth: 280}}
                                     value={this.state.storeFilter}
                                     dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 380 }}
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
@@ -88,7 +86,6 @@ class DetailStorageModal extends React.Component{
                             }
                             <Input
                                 allowClear
-                                style={{maxWidth: 280}}
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={this.state.codeFilter}
                                 onChange={(event)=>{
@@ -213,10 +210,7 @@ class DetailStorageModal extends React.Component{
                 title:  ()=>{
                     return (
                         <div>
-                            {!this.props.stockMode ?
-                                <FormattedMessage id="order_form_table.supplier" /> :
-                                <><FormattedMessage id="storage" /> / <FormattedMessage id="wms.cell" /></>
-                            }
+                            <FormattedMessage id="order_form_table.supplier" />
                             <WarehouseSelect 
                                 onChange={ (warehouseId) => this.fetchData(warehouseId) }
                             />
@@ -230,19 +224,13 @@ class DetailStorageModal extends React.Component{
                         <div style={{display: "flex"}}>
                             <Input
                                 style={{maxWidth: 180, color: 'black'}}
-                                value={elem.cellAddress || data}
+                                value={data}
                                 disabled
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                             />
                             {this.props.stockMode ?
                                 <DetailWarehousesCountModal
                                     productId={elem.id}
-                                    onSelect={async (cellAddress, warehouseId, warehouseName)=>{
-                                        elem.cellAddress = cellAddress;
-                                        elem.warehouseId = warehouseId;
-                                        await this.setState({});
-                                        await this.handleOk(elem);
-                                    }}
                                 /> :
                                 <DetailSupplierModal
                                     disabled={this.props.stockMode}
@@ -265,7 +253,7 @@ class DetailStorageModal extends React.Component{
                 render: (data) => {
                     let strVal = String(Math.round(data*10)/10);
                     return (
-                            data ? <span style={{whiteSpace: 'nowrap'}}>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</span> : <FormattedMessage id="long_dash"/>
+                            data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</span> : <FormattedMessage id="long_dash"/>
                     )
                 },
             },
@@ -295,7 +283,7 @@ class DetailStorageModal extends React.Component{
                 render: (data) => {
                     let strVal = String(Math.round(data*10)/10);
                     return (
-                        data ? <span style={{whiteSpace: 'nowrap'}}>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</span> : <FormattedMessage id="long_dash"/>
+                            data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</span> : <FormattedMessage id="long_dash"/>
                     )
                 },
             },
@@ -331,13 +319,13 @@ class DetailStorageModal extends React.Component{
                 },
                 sortDirections: ['descend', 'ascend'],
                 render: (store, elem) => {
-                    console.log(elem.id)
                     return this.props.stockMode ? 
                     (
                         <span
                             style={{color: 'var(--link)', textDecoration: 'underline', cursor: 'pointer'}}
                             onClick={()=>this.setState({
-                                reserveModalVisible: elem.id,
+                                reserveModalVisible: true,
+                                reserveModalId: elem.id,
                             })}
                         >
                             {elem.countInWarehouses} / {elem.available}
@@ -353,11 +341,51 @@ class DetailStorageModal extends React.Component{
             {
                 key:       'select',
                 render: (elem)=>{
+                    var supplierBrandId = elem.supplierBrandId ? elem.supplierBrandId : (elem.price ? elem.price.supplierBrandId : undefined);
+                    var brandId = elem.brandId ? elem.brandId : (elem.price ? elem.price.brandId : undefined);
+                    var name = elem.storeGroupId == 1000000 ? elem.description : elem.storeGroupName;
+                    var supplierOriginalCode = elem.price ? elem.price.supplierOriginalCode : undefined;
+                    var supplierProductNumber = elem.price ? elem.price.supplierProductNumber : undefined;
+                    var supplierPartNumber = elem.price ? elem.price.supplierPartNumber : undefined;
+                    var isFromStock = elem.price ? elem.price.isFromStock : undefined;
+                    var defaultWarehouseId = elem.price ? elem.price.defaultWarehouseId : undefined;
                     return (
                         <Button
                             type="primary"
                             onClick={()=>{
-                                this.handleOk(elem);
+                                if(this.props.onSelect) {
+                                    this.props.onSelect(
+                                        elem.partNumber,
+                                        brandId,
+                                        elem.productId,
+                                        this.props.tableKey,
+                                        elem.storeGroupId,
+                                        name,
+                                        supplierOriginalCode,
+                                        supplierProductNumber,
+                                        supplierPartNumber,
+                                    );
+                                }
+                                if(this.props.setSupplier) {
+                                    this.props.setSupplier(
+                                        elem.businessSupplierId,
+                                        elem.businessSupplierName,
+                                        supplierBrandId, elem.purchasePrice,
+                                        elem.salePrice,
+                                        elem.store,
+                                        supplierOriginalCode,
+                                        supplierProductNumber,
+                                        supplierPartNumber,
+                                        this.props.tableKey,
+                                        isFromStock,
+                                        defaultWarehouseId,
+                                        elem.productId
+                                    );
+                                }
+                                if(this.props.selectProduct) {
+                                    this.props.selectProduct(elem.productId)
+                                }
+                                this.handleCancel();
                             }}
                         >
                             <FormattedMessage id="select" />
@@ -366,59 +394,6 @@ class DetailStorageModal extends React.Component{
                 }
             },
         ];
-    }
-
-    handleOk(elem) {
-        var supplierBrandId = elem.supplierBrandId ? elem.supplierBrandId : (elem.price ? elem.price.supplierBrandId : undefined);
-        var brandId = elem.brandId ? elem.brandId : (elem.price ? elem.price.brandId : undefined);
-        var name = elem.storeGroupId == 1000000 ? elem.description : elem.storeGroupName;
-        var supplierOriginalCode = elem.price ? elem.price.supplierOriginalCode : undefined;
-        var supplierProductNumber = elem.price ? elem.price.supplierProductNumber : undefined;
-        var supplierPartNumber = elem.price ? elem.price.supplierPartNumber : undefined;
-        var isFromStock = elem.price ? elem.price.isFromStock : undefined;
-        var defaultWarehouseId = elem.price ? elem.price.defaultWarehouseId : undefined;
-
-        if(this.props.onSelect) {
-            this.props.onSelect(
-                elem.partNumber,
-                brandId,
-                elem.productId,
-                this.props.tableKey,
-                elem.storeGroupId,
-                name,
-                supplierOriginalCode,
-                supplierProductNumber,
-                supplierPartNumber,
-            );
-        }
-        if(this.props.setSupplier) {
-            this.props.setSupplier(
-                elem.businessSupplierId,
-                elem.businessSupplierName,
-                supplierBrandId,
-                elem.purchasePrice,
-                elem.salePrice,
-                elem.store,
-                supplierOriginalCode,
-                supplierProductNumber,
-                supplierPartNumber,
-                this.props.tableKey,
-                isFromStock,
-                defaultWarehouseId,
-                elem.productId,
-                brandId,
-                elem.cellAddress,
-                elem.warehouseId,
-            );
-        }
-        if(this.props.selectProduct) {
-            this.props.selectProduct({
-                warehouseId: elem.warehouseId,
-                productId: elem.productId,
-                cellAddress: elem.cellAddress
-            })
-        }
-        this.handleCancel();
     }
 
     getAttributeFilter(key) {
@@ -474,10 +449,8 @@ class DetailStorageModal extends React.Component{
         this.state.dataSource[key].price.defaultWarehouseId = defaultWarehouseId;
         this.state.dataSource[key].productId = productId;
         this.setState({
-            update: true,
-        });
-
-        this.handleOk(this.state.dataSource[key]);
+            update: true
+        })
     }
 
     handleCancel = () => {
@@ -492,8 +465,7 @@ class DetailStorageModal extends React.Component{
             codeFilter: undefined,
             attributesFilters: [],
             inStock: false,
-        });
-        if(this.props.hideModal) this.props.hideModal();
+        })
     };
 
     fetchData(warehouseId) {
@@ -529,7 +501,7 @@ class DetailStorageModal extends React.Component{
                     elem.businessSupplierId = 0;
                     elem.businessSupplierName = that.props.intl.formatMessage({id: 'navigation.storage'});
                     elem.purchasePrice = elem.stockPrice;
-                    elem.salePrice = elem.sellingPrice || elem.stockPrice * (elem.priceGroup ? elem.priceGroup.multiplier : 1.4);
+                    elem.salePrice = elem.stockPrice * (elem.priceGroup ? elem.priceGroup.multiplier : 1.4);
                     elem.partNumber = elem.code;
                     elem.description = elem.name;
                     elem.storeGroupId = elem.groupId;
@@ -572,7 +544,7 @@ class DetailStorageModal extends React.Component{
             var that = this;
             let token = localStorage.getItem('_my.carbook.pro_token');
             let url = API_URL;
-            let params = `/tecdoc/replacements?query=${String(this.props.codeFilter).replace(' ', '')}`;
+            let params = `/tecdoc/replacements?query=${this.props.codeFilter.replace(' ', '')}`;
             //if(this.props.storeGroupId) params += `&storeGroupId=${this.props.storeGroupId}`
             if(this.props.brandId) params += `&brandIds=[${this.props.brandId}]`
             url += params;
@@ -603,7 +575,7 @@ class DetailStorageModal extends React.Component{
                         elem.purchasePrice = elem.price.purchasePrice;
                         elem.businessSupplierId = elem.price.businessSupplierId;
                         elem.businessSupplierName = elem.price.businessSupplierName;
-                        elem.salePrice = elem.sellingPrice || elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
+                        elem.salePrice = elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
                     }
                     if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1) {
                         if(that.state.brandFilter.length == 0 && that.props.brandFilter == elem.supplierName) {
@@ -689,7 +661,7 @@ class DetailStorageModal extends React.Component{
                     elem.purchasePrice = elem.price.purchasePrice;
                     elem.businessSupplierId = elem.price.businessSupplierId;
                     elem.businessSupplierName = elem.price.businessSupplierName;
-                    elem.salePrice = elem.sellingPrice || elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
+                    elem.salePrice = elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
                 }
                 if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1) {
                     if(that.state.brandFilter.length == 0 && that.props.brandFilter == elem.supplierName) {
@@ -777,7 +749,7 @@ class DetailStorageModal extends React.Component{
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.visible && !prevProps.visible) {
+        if(this.props.setVisible && prevProps.setVisible) {
             this.fetchData();
             this.setState({
                 visible: true,
@@ -786,7 +758,7 @@ class DetailStorageModal extends React.Component{
     }
 
     render() {
-        const { dataSource, storeFilter, brandFilter, codeFilter, inStock, reserveModalVisible } = this.state;
+        const { dataSource, storeFilter, brandFilter, codeFilter, inStock, reserveModalVisible, reserveModalData } = this.state;
         const disabled = this.props.disabled || this.props.stockMode && isForbidden(this.props.user, permissions.ACCESS_STOCK) || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
         let tblData = [...dataSource];
 
@@ -804,29 +776,27 @@ class DetailStorageModal extends React.Component{
 
         return (
             <div style={{display: 'flex'}}>
-                {!this.props.hideButton &&
-                    <Button
-                        type='primary'
-                        disabled={disabled}
-                        onClick={()=>{
-                            this.fetchData();
-                            this.setState({
-                                visible: true,
-                            })
+                <Button
+                    type='primary'
+                    disabled={disabled}
+                    onClick={()=>{
+                        this.fetchData();
+                        this.setState({
+                            visible: true,
+                        })
+                    }}
+                    title={this.props.intl.formatMessage({id: "details_table.details_catalogue"})}
+                >
+                    <div
+                        style={{
+                            width: 18,
+                            height: 18,
+                            backgroundColor: disabled ? 'black' : 'white',
+                            mask: `url(${this.props.stockMode ? images.stockIcon : images.bookIcon}) no-repeat center / contain`,
+                            WebkitMask: `url(${this.props.stockMode ? images.stockIcon : images.bookIcon}) no-repeat center / contain`,
                         }}
-                        title={this.props.intl.formatMessage({id: "details_table.details_catalogue"})}
-                    >
-                        <div
-                            style={{
-                                width: 18,
-                                height: 18,
-                                backgroundColor: disabled ? 'black' : 'white',
-                                mask: `url(${this.props.stockMode ? images.stockIcon : images.bookIcon}) no-repeat center / contain`,
-                                WebkitMask: `url(${this.props.stockMode ? images.stockIcon : images.bookIcon}) no-repeat center / contain`,
-                            }}
-                        ></div>
-                    </Button>
-                }
+                    ></div>
+                </Button>
                 <Modal
                     width="90%"
                     visible={this.state.visible}
@@ -848,11 +818,12 @@ class DetailStorageModal extends React.Component{
                 </Modal>
                 {this.props.stockMode && 
                     <StoreProductTrackingModal
-                        visible={Boolean(reserveModalVisible)}
-                        productId={reserveModalVisible}
+                        visible={reserveModalVisible}
+                        productId={reserveModalData}
                         hideModal={()=>{
                             this.setState({
-                                reserveModalVisible: undefined,
+                                reserveModalVisible: false,
+                                reserveModalData: undefined,
                             })
                         }}
                     />
@@ -930,173 +901,113 @@ export class PhotoModal extends React.Component{
     }
 }
 
-export class DetailWarehousesCountModal extends React.Component {
+class DetailWarehousesCountModal extends React.Component {
     constructor(props) {
         super(props);
         this.state={
             visible: false,
-            warehousesData: [],
-        };
+            countsOnWarehouses: [],
+            brandName: undefined,
+            code: undefined,
+        }
     }
 
     handleCancel = () => {
         this.setState({
             visible: false,
-        });
-        if(this.props.hideModal) this.props.hideModal();
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if(this.props.visible && !prevProps.visible) {
-            this.fetchData();
-            this.setState({
-                visible: true,
-            })
-        }
-    }
-
-    fetchData = async () => {
-        let warehousesData = [];
-
-        const product = await fetchAPI('GET', `store_products/${this.props.productId}`);
-
-        const warehouses = await fetchAPI('GET', `warehouses`);
-        warehouses.map(({id, name})=>{
-            warehousesData.push({
-                id: id,
-                name: name,
-                count: 0,
-                childs: [
-                    {
-                        //cellAddress: `${id}.`,
-                        count: 0,
-                    }
-                ],
-            })
         })
+    }
 
-        const productWarehouses = await fetchAPI('GET', `store_products/${this.props.productId}/warehouses`);
-
-        for (const [key, value] of Object.entries(productWarehouses)) {
-            const index = warehousesData.findIndex(({id})=>id==key);
-            warehousesData[index].count = Number(value);
-            warehousesData[index].childs[0].count = Number(value);
-        }
-
-        const payload = await fetchAPI('GET', 'wms/cells/statuses', {storeProductId: this.props.productId});
-        
-        payload.list.map((elem)=>{
-            if(elem.warehouse.id) {
-                const index = warehousesData.findIndex(({id})=>id==elem.warehouse.id);
-                warehousesData[index].childs.push({
-                    cellAddress: elem.wmsCellOptions.address,
-                    count: elem.sum,
-                })
-
-                warehousesData[index].childs[0].count -= Number(elem.sum);
+    fetchData = () => {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__ + `/store_products/${this.props.productId}?showCountsOnWarehouses=true`;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            },
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
             }
-        });
-        warehousesData = warehousesData.filter(({count})=>count>0);
-        await this.setState({
-            warehousesData,
-            code: _.get(product, 'code'),
-            brandName: _.get(product, 'brand.name'),
-            name: _.get(product, 'name'),
+            return Promise.resolve(response)
         })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.setState({
+                brandName: data.brandName || data.brand && data.brand.name,
+                code: data.code,
+                countsOnWarehouses: data.countsOnWarehouses,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error);
+        });
     }
 
     render() {
-        const { code, name, brandName, warehousesData, visible } = this.state;
         return(
             <div>
-                {!this.props.hideButton &&
-                    <Button
-                        type='primary'
-                        onClick={()=>{
-                            this.fetchData();
-                            this.setState({
-                                visible: true
-                            });
+                <Button
+                    type='primary'
+                    onClick={()=>{
+                        this.fetchData();
+                        this.setState({
+                            visible: true
+                        });
+                    }}
+                >
+                    <div
+                        style={{
+                            width: 18,
+                            height: 18,
+                            backgroundColor: 'white',
+                            mask: `url(${images.stockIcon}) no-repeat center / contain`,
+                            WebkitMask: `url(${images.stockIcon}) no-repeat center / contain`,
                         }}
-                    >
-                        <div
-                            style={{
-                                width: 18,
-                                height: 18,
-                                backgroundColor: 'white',
-                                mask: `url(${images.stockIcon}) no-repeat center / contain`,
-                                WebkitMask: `url(${images.stockIcon}) no-repeat center / contain`,
-                            }}
-                        ></div>
-                    </Button>
-                }
+                    ></div>
+                </Button>
                 <Modal
-                    visible={visible}
+                    visible={this.state.visible}
                     footer={null}
                     title={<FormattedMessage id="storage.in_stock" />}
                     onCancel={this.handleCancel}
                     style={{
-                        maxWidth: 480,
+                        maxWidth: 380,
                         fontSize: 16,
                     }}
                     maskClosable={false}
                 >
-                    <div
-                        style={{
-                            padding: '0px 4px 14px',
-                            fontSize: 16,
-                            fontWeight: 500,
-                        }}
-                    >
-                        <p>{brandName}</p>
-                        <p>{code}</p>
+                    <div className={Styles.detailWarehousesCountModalLine}>
+                        <div>
+                            <FormattedMessage id="order_form_table.detail_code" />
+                        </div>
+                        <div style={{fontWeight: 700}}>
+                            {this.state.code}
+                        </div>
                     </div>
-                    <div style={{display: 'flex', fontWeight: 500, padding: 8}}>
-                        <div style={{width: '25%'}}><FormattedMessage id='storage'/></div>
-                        <div style={{width: '25%'}}><FormattedMessage id='wms.cell'/></div>
-                        <div style={{width: '25%'}}><FormattedMessage id='count'/></div>
+                    <div className={Styles.detailWarehousesCountModalLine} style={{marginBottom: 18}}>
+                        <div>
+                            <FormattedMessage id="order_form_table.brand" />
+                        </div>
+                        <div style={{fontWeight: 700}}>
+                            {this.state.brandName}
+                        </div>
                     </div>
-                    {warehousesData.map((warehouse, key)=>{
-                        return (
-                            <>
-                                <div key={warehouse.id} style={{display: 'flex', borderTop: '1px solid gray', padding: '2px 8px', fontWeight: 500, alignItems: 'center'}}>
-                                    <div style={{width: '25%'}}>{warehouse.name}</div>
-                                    <div style={{width: '25%'}}></div>
-                                    <div style={{width: '25%'}}>{Number(warehouse.count).toFixed(1)}</div>
-                                    <Button
-                                        type='primary'
-                                        style={{
-                                            opacity: 0,
-                                            pointerEvents: 'none'
-                                        }}
-                                        onClick={()=>{
-                                            this.handleCancel();
-                                            if(this.props.onSelect) this.props.onSelect(undefined, warehouse.id, warehouse.name);
-                                        }}
-                                    >
-                                        <FormattedMessage id='select'/>
-                                    </Button>
-                                </div>
-                                {warehouse.childs.map((elem)=>(
-                                    <div key={elem.cellAddress} style={{display: 'flex', padding: '2px 8px', alignItems: 'center'}}>
-                                        <div style={{width: '25%'}}>{warehouse.name}</div>
-                                        <div style={{width: '25%'}}>{elem.cellAddress}</div>
-                                        <div style={{width: '25%'}}>{Number(elem.count).toFixed(1)}</div>
-                                        <Button
-                                            type='primary'
-                                            onClick={()=>{
-                                                this.handleCancel();
-                                                if(this.props.onSelect) this.props.onSelect(elem.cellAddress, warehouse.id, warehouse.name);
-                                            }}
-                                        >
-                                            <FormattedMessage id='select'/>
-                                        </Button>
-                                    </div>
-                                ))}
-                            </>
-                        )
-                    })}
-                    
+                    {this.state.countsOnWarehouses.map((warehouse, key)=>(
+                        <div className={Styles.detailWarehousesCountModalLine} key={key}>
+                            <div>
+                                {warehouse.name}
+                            </div>
+                            <div>
+                                {warehouse.countOnWarehouse}
+                            </div> 
+                        </div>
+                    ))}
                 </Modal>
             </div>
         )

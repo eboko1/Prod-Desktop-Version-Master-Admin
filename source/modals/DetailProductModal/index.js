@@ -1,5 +1,4 @@
 // vendor
-import _ from 'lodash';
 import React, { Component } from 'react';
 import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox, Spin, Slider, notification } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -310,7 +309,7 @@ class DetailProductModal extends React.Component{
                                 <Select
                                     showSearch
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
-                                    value={elem.supplierId || undefined}
+                                    value={elem.supplierId ? elem.supplierId : undefined}
                                     style={{minWidth: 160, maxWidth: 200}}
                                     dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                                     filterOption={(input, option) => {
@@ -332,7 +331,7 @@ class DetailProductModal extends React.Component{
                                     style={{minWidth: 80, maxWidth: 180, color: 'black'}}
                                     disabled
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
-                                    value={elem.cellAddress || data}
+                                    value={data}
                                 />
                             }
                             <DetailSupplierModal
@@ -573,8 +572,6 @@ class DetailProductModal extends React.Component{
                             comment: undefined,
                             positions: [],
                         },
-                        cellAddress: element.cellAddress,
-                        warehouseId:  element.warehouseId,
                     })
                 }
             });
@@ -667,7 +664,6 @@ class DetailProductModal extends React.Component{
                         detailName: detail.name,
                         storeGroupId: detail.id,
                         detailCode: detail.partNumber,
-                        price: Math.round(detail.sellingPrice*10)/10,
                         comment: {
                             comment: undefined,
                             positions: [],
@@ -692,7 +688,7 @@ class DetailProductModal extends React.Component{
                             productId: businessSupplierId == 0 ? id : undefined,
                             store: store,
                             purchasePrice: Math.round(purchasePrice*10)/10,
-                            price: Math.round(detail.sellingPrice*10)/10 || Math.round(purchasePrice * markup*10)/10,
+                            price: Math.round(purchasePrice * markup*10)/10,
                             supplierOriginalCode: supplierOriginalCode,
                             supplierProductNumber: supplierProductNumber,
                             supplierPartNumber: supplierPartNumber,
@@ -740,7 +736,6 @@ class DetailProductModal extends React.Component{
                             brandId: result.brandId,
                             brandName: result.brandName,
                             detailCode: result.partNumber,
-                            price: Math.round(result.sellingPrice*10)/10,
                             count: 1,
                         };
                     if(result.price) {
@@ -755,7 +750,7 @@ class DetailProductModal extends React.Component{
                             productId: businessSupplierId == 0 ? id : undefined,
                             store: store,
                             purchasePrice: Math.round(purchasePrice*10)/10,
-                            price: Math.round(result.sellingPrice*10)/10 || Math.round(purchasePrice * markup*10)/10,
+                            price: Math.round(purchasePrice * markup*10)/10,
                             supplierOriginalCode: supplierOriginalCode,
                             supplierProductNumber: supplierProductNumber,
                             supplierPartNumber: supplierPartNumber,
@@ -771,15 +766,15 @@ class DetailProductModal extends React.Component{
         }
     }
 
-    setCode(related, code, brandId, productId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber, supplierPartNumber, brandName) {
+    setCode(related, code, brandId, productId, key, storeGroupId, storeGroupName, supplierOriginalCode, supplierProductNumber, supplierPartNumber) {
         const { mainTableSource, relatedDetails, radioValue } = this.state;
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         const currentDetail = related ? relatedDetails[key] : mainTableSource[key];
         this.unsetSupplier(key, related);
-        
+
         currentDetail.detailCode = code;
         currentDetail.brandId = brandId;
-        currentDetail.brandName = _.get(brand, 'brandName', _.get(currentDetail, 'brandName'));
+        currentDetail.brandName = brand.brandName;
         currentDetail.productId = productId;
         currentDetail.supplierOriginalCode = supplierOriginalCode;
         currentDetail.supplierProductNumber = supplierProductNumber;
@@ -795,7 +790,7 @@ class DetailProductModal extends React.Component{
         this.setState({});
     }
 
-    setSupplier(related, supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, supplierPartNumber, key, isFromStock, defaultWarehouseId, productId, brandId, cellAddress, warehouseId) {
+    setSupplier(related, supplierId, supplierName, supplierBrandId, purchasePrice, price, store, supplierOriginalCode, supplierProductNumber, supplierPartNumber, key, isFromStock, defaultWarehouseId, productId, brandId) {
         const { mainTableSource, relatedDetails } = this.state;
         const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         const currentDetail = related ? relatedDetails[key] : mainTableSource[key];
@@ -812,8 +807,6 @@ class DetailProductModal extends React.Component{
         currentDetail.isFromStock = isFromStock;
         currentDetail.reservedFromWarehouseId = defaultWarehouseId;
         currentDetail.productId = isFromStock ? productId : undefined;
-        currentDetail.cellAddress = cellAddress || undefined;
-        currentDetail.warehouseId = warehouseId || undefined;
         if(brand) {
             currentDetail.brandId = brandId;
             currentDetail.brandName = brand && brand.brandName;
@@ -842,8 +835,6 @@ class DetailProductModal extends React.Component{
             currentDetail.supplierPartNumber = undefined;
             currentDetail.store = undefined;
             currentDetail.reservedFromWarehouseId = undefined;
-            currentDetail.cellAddress = undefined;
-            currentDetail.warehouseId = undefined;
         }
 
         if(related) relatedDetails[key] = currentDetail;
@@ -1000,7 +991,7 @@ class DetailProductModal extends React.Component{
 
     componentDidUpdate(prevProps) {
         const { user, visible, detail, allDetails, showOilModal } = this.props;
-        const editing = Boolean(detail && detail.storeGroupId);
+        const editing = Boolean(detail.storeGroupId);
         if(prevProps.visible == false && visible) {
             this.setState({
                 editing: editing,
