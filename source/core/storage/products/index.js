@@ -482,7 +482,7 @@ export function* createProductSaga() {
                 yield fetchAPI('POST', 'barcodes', undefined, [{
                     referenceId: String(response.id),
                     table: 'STORE_PRODUCTS',
-                    customCode: product.barcode,
+                    customCode: product.barcode.includes('STP-') ? product.barcode.substring(9) : product.barcode,
                 }])
             }
             if(func) {

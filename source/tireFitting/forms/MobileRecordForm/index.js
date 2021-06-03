@@ -188,7 +188,7 @@ export class MobileRecordForm extends Component {
             const parentGroup = this.state.details[ i ];
             treeData.push({
                 title:      `${parentGroup.name} (#${parentGroup.id})`,
-                name:       parentGroup.name,
+                name:       parentGroup.singleName,
                 value:      parentGroup.id,
                 key:        `${i}`,
                 children:   [],
@@ -198,7 +198,7 @@ export class MobileRecordForm extends Component {
                 const childGroup = parentGroup.childGroups[ j ];
                 treeData[ i ].children.push({
                     title:      `${childGroup.name} (#${childGroup.id})`,
-                    name:       childGroup.name,
+                    name:       childGroup.singleName,
                     value:      childGroup.id,
                     key:        `${i}-${j}`,
                     children:   [],
@@ -208,7 +208,7 @@ export class MobileRecordForm extends Component {
                     const lastNode = childGroup.childGroups[ k ];
                     treeData[ i ].children[ j ].children.push({
                         title:     `${lastNode.name} (#${lastNode.id})`,
-                        name:      lastNode.name,
+                        name:      lastNode.singleName,
                         value:     lastNode.id,
                         key:       `${i}-${j}-${k}`,
                         children:  [],
@@ -218,7 +218,7 @@ export class MobileRecordForm extends Component {
                         const elem = lastNode.childGroups[ l ];
                         treeData[ i ].children[ j ].children[ k ].children.push({
                             title:     `${elem.name} (#${elem.id})`,
-                            name:      elem.name,
+                            name:      elem.singleName,
                             value:     elem.id,
                             key:       `${i}-${j}-${k}-${l}`,
                             multiplier: elem.priceGroupMultiplier,

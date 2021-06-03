@@ -10,21 +10,23 @@ import {
     Input,
     Modal,
     notification,
-    Checkbox,
+    Popover,
     Dropdown,
     Menu,
 } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from "react-redux";
 import _ from 'lodash';
+import { Link } from 'react-router-dom';
 
 // proj
 import { Catcher } from 'commons';
 import { permissions, isForbidden, images, fetchAPI } from 'utils';
-import { DetailProductModal, FavouriteDetailsModal, StoreProductTrackingModal, SetBarcodeModal } from 'modals';
+import { DetailProductModal, FavouriteDetailsModal, StoreProductTrackingModal, SetBarcodeModal, DetailStorageModal, DetailSupplierModal, DetailWarehousesCountModal } from 'modals';
 import { AvailabilityIndicator } from 'components';
 import { MODALS, setModal } from 'core/modals/duck';
 import { Barcode } from "components";
+import book from 'routes/book';
 
 // own
 import Styles from './styles.m.css';
@@ -57,6 +59,8 @@ class DetailsTable extends Component {
             reserveModalVisible: false,
             reserveModalData: undefined,
             productBarcode: undefined,
+            selectedRowKeys: [],
+            selectedRows: [],
         };
 
         this.storeGroups = [];
@@ -73,153 +77,491 @@ class DetailsTable extends Component {
         );
 
         this.columns = [
-            // {
-            //     key:       'position',
-            //     render:    (row) => {
-            //         return (
-            //             <div>
-            //                 <Icon type="up-square" className={Styles.positionArrows}/>
-            //                 <Icon type="down-square"  className={Styles.positionArrows}/>
-            //             </div>
-            //         )
-            //     },
-            // },
             {
                 title:      ()=>(
-                                <div className={Styles.headerActions}>
-                                    <Barcode
-                                        button
-                                        multipleMode
-                                        prefix={'STP'}
-                                        onConfirm={async (code, pref, fullCode) => {
-                                            const barcodeData = await fetchAPI('GET', 'barcodes',{
-                                                barcode: fullCode,
-                                            });
-                                            const productBarcode = barcodeData.find(({table})=>table == 'STORE_PRODUCTS');
-                                    
-                                            if(productBarcode) {
-                                                const payload = {
-                                                    insertMode: true,
-                                                    details: [],
-                                                    services: [],
-                                                };
-                                                const product = await fetchAPI('GET', `store_products/${productBarcode.referenceId}`);
-                                                payload.details.push({
-                                                    productId: product.id,
-                                                    storeGroupId: product.groupId,
-                                                    name: product.name,
-                                                    productCode: product.code,
-                                                    supplierBrandId: product.brandId,
-                                                    supplierId: 0,
-                                                    count: 1,
-                                                    price: product.sellingPrice || 0,
-                                                    purchasePrice: product.purchasePrice || 0,
-                                                })
-                                                await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
-                                                await this.updateDataSource();
-                                            } else {
-                                                this.setState({
-                                                    productBarcode: code,
-                                                })
-                                                notification.warning({
-                                                    message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
-                                                });
-                                            }
-                                        }}
-                                    />
-                                    <div style={{opacity: 0, pointerEvents: 'none'}}>
+                                <div>
+                                    <div className={Styles.headerActions}>
+                                        <Button
+                                            disabled={ this.props.disabled }
+                                            onClick={ () => {
+                                                this.showDetailProductModal(-1);
+                                            } }
+                                            style={{
+                                                padding: '0px 8px',
+                                                fontSize: 18,
+                                            }}
+                                            title={this.props.intl.formatMessage({id: 'add'})}
+                                        >
+                                            <Icon type='plus'/>
+                                        </Button>
                                         <Barcode
                                             button
+                                            buttonStyle={{
+                                                padding: '0px 8px',
+                                            }}
+                                            multipleMode
+                                            prefix={'STP'}
+                                            onConfirm={async (code, pref, fullCode) => {
+                                                const barcodeData = await fetchAPI('GET', 'barcodes',{
+                                                    barcode: fullCode,
+                                                });
+                                                const productBarcode = barcodeData.find(({table})=>table == 'STORE_PRODUCTS');
+                                        
+                                                if(productBarcode) {
+                                                    const payload = {
+                                                        insertMode: true,
+                                                        details: [],
+                                                        services: [],
+                                                    };
+                                                    const product = await fetchAPI('GET', `store_products/${productBarcode.referenceId}`);
+                                                    payload.details.push({
+                                                        productId: product.id,
+                                                        storeGroupId: product.groupId,
+                                                        name: product.name,
+                                                        productCode: product.code,
+                                                        supplierBrandId: product.brandId,
+                                                        supplierId: 0,
+                                                        count: 1,
+                                                        price: product.sellingPrice || 0,
+                                                        purchasePrice: product.purchasePrice || 0,
+                                                    })
+                                                    await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
+                                                    await this.updateDataSource();
+                                                } else if(code.length > 2) {
+                                                    //4019064001232
+                                                    const tecDocProducts = await fetchAPI('GET', 'tecdoc/ean', {ean: code});
+                                                    if(tecDocProducts && tecDocProducts.length) {
+                                                        const payload = {
+                                                            insertMode: true,
+                                                            details: [],
+                                                            services: [],
+                                                        };
+                                                        payload.details.push({
+                                                            storeGroupId: tecDocProducts[0].storeGroupId,
+                                                            name: tecDocProducts[0].description,
+                                                            productCode: tecDocProducts[0].partNumber,
+                                                            supplierBrandId: tecDocProducts[0].brandId,
+                                                            count: 1,
+                                                            price: 0,
+                                                            purchasePrice: 0,
+                                                        })
+                                                        await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
+                                                        await this.updateDataSource();
+                                                    } else {
+                                                        this.setState({
+                                                            productBarcode: code,
+                                                        })
+                                                        notification.warning({
+                                                            message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
+                                                        });
+                                                    }                                                
+                                                } else {
+                                                    this.setState({
+                                                        productBarcode: code,
+                                                    })
+                                                    notification.warning({
+                                                        message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
+                                                    });
+                                                }
+                                            }}
                                         />
+                                        <FavouriteDetailsModal
+                                            treeData={ this.props.detailsTreeData }
+                                            disabled={ this.props.disabled}
+                                            user={ this.props.user }
+                                            tecdocId={ this.props.tecdocId }
+                                            orderId={ this.props.orderId }
+                                            brands={ this.props.allDetails.brands }
+                                            detail={
+                                                this.state.dataSource[
+                                                    this.state.productModalKey
+                                                ]
+                                            }
+                                            updateDataSource={ this.updateDataSource }
+                                        />
+                                    </div>
+                                    <div
+                                        className={Styles.headerActions}
+                                        style={{
+                                            paddingTop: 6,
+                                            opacity: this.state.selectedRowKeys.length == 0 && 0,
+                                            marginTop: this.state.selectedRowKeys.length == 0 && '-20px',
+                                            transitionDuration: "0.5s",
+                                            pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
+                                        }}
+                                    >
+                                        <Icon
+                                            type="shopping"
+                                            className={Styles.icon}
+                                            title={this.props.intl.formatMessage({id: 'details_table.order'})}
+                                            onClick={async () => {
+                                                await fetchAPI(
+                                                    'POST',
+                                                    `store_docs/order_all_possible`,
+                                                    {
+                                                        ordersAppurtenanciesIds: `[${this.state.selectedRows.map(({id})=>id)}]`,
+                                                    },
+                                                    undefined,
+                                                    { handleErrorInternally: true }
+                                                );
+                                                await notification.success({
+                                                    message: this.props.intl.formatMessage({id: 'details_table.ordered'}),
+                                                });
+                                                await this.updateDataSource();
+                                            }}
+                                        />
+                                        <Icon
+                                            type="plus-square"
+                                            className={Styles.icon}
+                                            title={this.props.intl.formatMessage({id: 'copy'})}
+                                            onClick={async () => {
+                                                const payload = {
+                                                    insertMode: true,
+                                                    details: [
+                                                        ...this.state.selectedRows.map((row)=>(
+                                                            {
+                                                                storeGroupId: row.storeGroupId,
+                                                                name: row.detailName,
+                                                                productCode: row.detailCode,
+                                                                supplierId: row.supplierId,
+                                                                supplierBrandId: row.supplierBrandId || row.brandId,
+                                                                purchasePrice: row.purchasePrice,
+                                                                count: row.count,
+                                                                price: row.price,
+                                                            }
+                                                        ))
+                                                    ],
+                                                }
+                                                await fetchAPI(
+                                                    'PUT',
+                                                    `orders/${this.props.orderId}`,
+                                                    undefined,
+                                                    payload,
+                                                );
+                                                await this.updateDataSource();
+                                            }}
+                                        />
+                                        <Icon
+                                            type="star"
+                                            style={ { color: 'gold' } }
+                                            className={Styles.icon}
+                                            theme={ 'filled' }
+                                            title={this.props.intl.formatMessage({id: 'details_table.add_to_favorite'})}
+                                            onClick={async () => {
+                                                await fetchAPI(
+                                                    'POST',
+                                                    `orders/frequent/details`,
+                                                    {
+                                                        storeGroupIds: `[${this.state.selectedRows.map(({storeGroupId, frequentDetailId})=>{
+                                                            if(!frequentDetailId) return storeGroupId;
+                                                            }
+                                                        )}]`,
+                                                    },
+                                                    undefined,
+                                                    { handleErrorInternally: true }
+                                                );
+                                                await notification.success({
+                                                    message: this.props.intl.formatMessage({id: 'details_table.added'}),
+                                                });
+                                                await this.updateDataSource();
+                                            }}
+                                        />
+                                        <Popconfirm
+                                            title={
+                                                <FormattedMessage id='add_order_form.delete_confirm' />
+                                            }
+                                            onConfirm={ async () => {
+                                                await fetchAPI(
+                                                    'DELETE',
+                                                    `orders/${this.props.orderId}/details`,
+                                                    {
+                                                        ids: `[${
+                                                                this.state.selectedRows
+                                                                    .filter(({reservedCount, agreement}) => !reservedCount && agreement == 'UNDEFINED')
+                                                                    .map(({id})=>id)
+                                                        }]`,
+                                                    },
+                                                    undefined,
+                                                    { handleErrorInternally: true }
+                                                );
+                                                await notification.success({
+                                                    message: this.props.intl.formatMessage({id: 'details_table.deleted'}),
+                                                });
+                                                await this.updateDataSource();
+                                            } }
+                                        >
+                                            <Icon
+                                                type="delete"
+                                                className={Styles.deleteIcon}
+                                                title={this.props.intl.formatMessage({id: 'delete'})}
+                                            />
+                                        </Popconfirm>
                                     </div>
                                 </div>
                             ),
+                align: 'left',
+                width: 'min-content',
                 key:       'buttonGroup',
                 dataIndex: 'key',
-                render:    (data, elem) => {
-                    const confirmed = elem.agreement.toLowerCase();
-                    const stageDisabled = elem.stage == AGREED || elem.stage == ORDERED || elem.stage == ACCEPTED || elem.stage == RESERVED || elem.stage == GIVEN || elem.stage == INSTALLED;
+                render:    (data, row) => {
+                    const confirmed = row.agreement.toLowerCase();
+                    const disabled = confirmed != 'undefined' || this.props.disabled || row.reservedCount;
+                    const prewOrder = row.key-1 >= 0 && this.state.dataSource[row.key-1].order;
+                    const nextOrder = row.key+1 < this.state.dataSource.length && this.state.dataSource[row.key+1].order;
                     return (
-                        <div
-                            style={ {
-                                display:        'flex',
-                                justifyContent: 'space-evenly',
-                            } }
-                        >
-                            <Button
-                                type='primary'
-                                disabled={
-                                    confirmed != 'undefined' ||
-                                    this.props.disabled ||
-                                    elem.reserved ||
-                                    stageDisabled
-                                }
-                                onClick={ () => {
-                                    this.showDetailProductModal(data);
-                                } }
-                                title={ this.props.intl.formatMessage({
-                                    id: 'details_table.add_edit_button',
-                                }) }
-                            >
-                                <div
-                                    style={ {
-                                        width:           18,
-                                        height:          18,
-                                        backgroundColor:
-                                            confirmed != 'undefined' ||
-                                            this.props.disabled ||
-                                            elem.reserved ||
-                                            stageDisabled
-                                                ? 'black'
-                                                : 'white',
-                                        mask:       `url(${images.pistonIcon}) no-repeat center / contain`,
-                                        WebkitMask: `url(${images.pistonIcon}) no-repeat center / contain`,
-                                    } }
-                                ></div>
-                            </Button>
-                            { !elem.detailName ? (
-                                <FavouriteDetailsModal
-                                    treeData={ this.props.detailsTreeData }
-                                    disabled={ this.props.disabled || elem.reserved }
-                                    user={ this.props.user }
-                                    tecdocId={ this.props.tecdocId }
-                                    orderId={ this.props.orderId }
-                                    brands={ this.props.allDetails.brands }
-                                    detail={
-                                        this.state.dataSource[
-                                            this.state.productModalKey
-                                        ]
-                                    }
-                                    updateDataSource={ this.updateDataSource }
+                        <div className={Styles.buttonsBlock}>
+                            <div className={Styles.rowActions}>
+                                <Icon
+                                    type="up-square"
+                                    className={`${Styles.icon} ${(!prewOrder || !row.id) && Styles.disabledIcon}`}
+                                    style={{ fontSize: 22 }}
+                                    onClick={async ()=>{
+                                        await fetchAPI('PUT', 'orders/swap_details', 
+                                            {
+                                                orderId: this.props.orderId,
+                                                order1: row.order,
+                                                order2: prewOrder, 
+                                            },
+                                            undefined,
+                                            { handleErrorInternally: true }
+                                        );
+                                        await this.updateDataSource();
+                                    }}
                                 />
-                            ) : (
+                                <Icon
+                                    type="down-square"
+                                    className={`${Styles.icon} ${(!nextOrder || !row.id) && Styles.disabledIcon}`}
+                                    style={{ fontSize: 22 }}
+                                    onClick={async ()=>{
+                                        await fetchAPI('PUT', 'orders/swap_details', 
+                                            {
+                                                orderId: this.props.orderId,
+                                                order1: row.order,
+                                                order2: nextOrder, 
+                                            }
+                                        );
+                                        await this.updateDataSource();
+                                    }}
+                                />
+                                <Button
+                                    disabled={disabled}
+                                    onClick={ () => {
+                                        this.showDetailProductModal(data);
+                                    } }
+                                    title={ this.props.intl.formatMessage({
+                                        id: 'details_table.add_edit_button',
+                                    }) }
+                                    className={!disabled && Styles.ownIcon}
+                                    style={{
+                                        padding: '0px 8px'
+                                    }}
+                                >
+                                    <div
+                                        style={ {
+                                            width:           18,
+                                            height:          18,
+                                            backgroundColor:
+                                                disabled
+                                                    ? 'var(--text2)'
+                                                    : 'var(--text3)',
+                                            mask:       `url(${images.pistonIcon}) no-repeat center / contain`,
+                                            WebkitMask: `url(${images.pistonIcon}) no-repeat center / contain`,
+                                        } }
+                                    ></div>
+                                </Button>
                                 <QuickEditModal
                                     treeData={ this.props.detailsTreeData }
                                     brands={ this.props.allDetails.brands }
-                                    disabled={
-                                        !elem.detailName || this.props.disabled || elem.reserved || stageDisabled
-                                    }
+                                    allDetails={ this.props.allDetails.details }
+                                    disabled={this.props.disabled || row.reservedCount}
                                     confirmed={ confirmed != 'undefined' }
-                                    detail={ elem }
+                                    detail={ row }
                                     onConfirm={ this.updateDetail }
-                                    tableKey={ elem.key }
+                                    tableKey={ row.key }
                                 />
-                            ) }
+                            </div>
+                            <div className={Styles.rowActions + " " + Styles.iconsRow}>
+                                <Icon
+                                    className={Styles.icon}
+                                    type="shopping"
+                                    title={this.props.intl.formatMessage({id: 'details_table.order'})}
+                                    onClick={async () => {
+                                        await fetchAPI(
+                                            'POST',
+                                            `store_docs/order_all_possible`,
+                                            {
+                                                ordersAppurtenanciesIds: `[${row.id}]`
+                                            }
+                                        );
+                                        await notification.success({
+                                            message: this.props.intl.formatMessage({id: 'details_table.ordered'}),
+                                        });
+                                        await this.updateDataSource();
+                                    }}
+                                />
+                                <Icon
+                                    type="plus-square"
+                                    className={Styles.icon}
+                                    title={this.props.intl.formatMessage({id: 'copy'})}
+                                    onClick={async () => {
+                                        await fetchAPI(
+                                            'PUT',
+                                            `orders/${this.props.orderId}`,
+                                            undefined,
+                                            {
+                                                insertMode: true,
+                                                details: [
+                                                    {
+                                                        storeGroupId: row.storeGroupId,
+                                                        name: row.detailName,
+                                                        productCode: row.detailCode,
+                                                        supplierId: row.supplierId,
+                                                        supplierBrandId: row.supplierBrandId || row.brandId,
+                                                        purchasePrice: row.purchasePrice,
+                                                        count: row.count,
+                                                        price: row.price,
+                                                        putAfter: row.order,
+                                                    }
+                                                ],
+                                            }
+                                        );
+                                        await this.updateDataSource();
+                                    }}
+                                />
+                                <Popconfirm
+                                    title={
+                                        row.frequentDetailId ? (
+                                            <FormattedMessage id='add_order_form.favourite_remove' />
+                                        ) : (
+                                            <FormattedMessage id='add_order_form.favourite_confirm' />
+                                        )
+                                    }
+                                    onConfirm={ async () => {
+                                        if(row.frequentDetailId) {
+                                            await fetchAPI('DELETE', 'orders/frequent/details', { ids: `[${row.frequentDetailId}]`});
+                                            await this.updateDataSource();
+                                        } else {
+                                            await fetchAPI('POST', 'orders/frequent/details', {storeGroupIds: `[${row.storeGroupId}]`})
+                                            await this.updateDataSource();
+                                        }
+                                    } }
+                                >
+                                    <Icon
+                                        className={Styles.icon}
+                                        type='star'
+                                        theme={ row.frequentDetailId ? 'filled' : '' }
+                                        style={ { color: 'gold' } }
+                                        title={ this.props.intl.formatMessage({
+                                            id: row.frequentDetailId
+                                                ? 'delete_from_favorites'
+                                                : 'add_to_favorites',
+                                        }) }
+                                    />
+                                </Popconfirm>
+                                <Popconfirm
+                                    disabled={ disabled}
+                                    title={
+                                        <FormattedMessage id='add_order_form.delete_confirm' />
+                                    }
+                                    onConfirm={ async () => {
+                                        await fetchAPI('DELETE', `orders/${this.props.orderId}/details`, { ids: `[${row.id}]`});
+                                        await this.updateDataSource();
+                                    } }
+                                >
+                                    <Icon
+                                        type='delete'
+                                        title={this.props.intl.formatMessage({id: 'delete'})}
+                                        className={
+                                            disabled
+                                                ? Styles.disabledIcon
+                                                : Styles.deleteIcon
+                                        }
+                                    />
+                                </Popconfirm>
+                            </div>
                         </div>
                     );
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.detail_code' />,
+                title:     ()=>(
+                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                    <FormattedMessage id='order_form_table.detail_code' />
+                                    <div
+                                        className={Styles.headerActions}
+                                        style={{
+                                            paddingLeft: 6,
+                                            opacity: this.state.selectedRowKeys.length == 0 && 0,
+                                            marginTop: this.state.selectedRowKeys.length == 0 && '-20px',
+                                            transitionDuration: "0.5s",
+                                            pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
+                                            justifyContent: 'left'
+                                        }}
+                                    >
+                                        <Icon
+                                            type={'close-circle'}
+                                            style={{
+                                                fontSize: 24,
+                                                color: 'var(--disabled)'
+                                            }}
+                                            title={this.props.intl.formatMessage({id: 'details_table.remove_code'})}
+                                            onClick={async ()=>{
+                                                const payload = {
+                                                    updateMode: true,
+                                                    details:    [],
+                                                }
+                                                this.state.selectedRows.map((elem)=>{
+                                                    if(!elem.reservedCount && elem.agreement == 'UNDEFINED') {
+                                                        payload.details.push({
+                                                            id: elem.id,
+                                                            productCode: null,
+                                                            productId: null,
+                                                            cellAddress: null,
+                                                            warehouseId: null,
+                                                            supplierBrandId: null,
+                                                            supplierId: null,
+                                                        })
+                                                    }
+                                                })
+                                                await fetchAPI('PUT', `orders/${this.props.orderId}`, undefined, payload)
+                                                this.updateDataSource();
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            ),
                 key:       'code',
                 dataIndex: 'detailCode',
                 render:    (data, row) => {
                     return (
                         <div>
-                            <div style={{fontWeight: 700}}>
-                                {row.detailCode || <FormattedMessage id='long_dash' />}
+                            <div style={{fontWeight: 700, textDecoration: row.detailCode && 'underline'}} title={this.props.intl.formatMessage({id: 'details_table.product_card'})}>
+                                {row.productId 
+                                    ? <Link to={ `${book.product}/${row.productId}` }>
+                                        { row.detailCode }
+                                    </Link> 
+                                    : <span
+                                        style={{
+                                            cursor: 'pointer'
+                                        }}
+                                        onClick={()=>{
+                                            this.props.setModal(MODALS.STORE_PRODUCT, {
+                                                code: row.detailCode,
+                                                brandId: row.brandId,
+                                                brandName: row.brandName,
+                                                name: row.detailName,
+                                                groupId: row.storeGroupId,
+                                                onSubmit: async () => {
+                                                    this.updateDataSource();
+                                                }
+                                            });
+                                        }}
+                                    >
+                                        {row.detailCode || <FormattedMessage id='long_dash' />}
+                                    </span>
+                                }
                             </div>
-                            <div>
+                            <div style={{fontSize: 12}}>
                                 {row.detailName}
                             </div>
                         </div>
@@ -230,14 +572,71 @@ class DetailsTable extends Component {
                 title:      <FormattedMessage id='order_form_table.brand' />,
                 key:       'brand',
                 dataIndex: 'brandName',
-                render:    data => {
-                    return data ? data : <FormattedMessage id='long_dash' />;
+                render:    (data, row) => {
+                    return data ?
+                        <div
+                            style={{
+                                cursor: 'pointer',
+                                textDecoration: data && 'underline'
+                            }}
+                            onClick={()=>{
+                                if(!row.reservedCount) {
+                                    this.setState({
+                                        storageModalSelectedRow: row,
+                                    })
+                                }
+                            }}
+                            title={this.props.intl.formatMessage({id: 'details_table.catalog_modal_title'})}
+                        >
+                            {data}
+                        </div> :
+                        <FormattedMessage id='long_dash' />;
                 },
             },
             {
-                title:  <div style={{whiteSpace: 'pre', textAlign: 'left'}}>
+                title:  ()=>(
+                        <div style={{whiteSpace: 'pre', textAlign: 'left', display: 'flex', alignItems: 'center'}}>
                             <FormattedMessage id='storage' /> / <FormattedMessage id='order_form_table.supplier' />
-                        </div>,
+                            <div
+                                className={Styles.headerActions}
+                                style={{
+                                    paddingLeft: 6,
+                                    opacity: this.state.selectedRowKeys.length == 0 && 0,
+                                    marginTop: this.state.selectedRowKeys.length == 0 && '-20px',
+                                    transitionDuration: "0.5s",
+                                    pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
+                                    justifyContent: 'left'
+                                }}
+                            >
+                                <Icon
+                                    type={'close-circle'}
+                                    style={{
+                                        fontSize: 24,
+                                        color: 'var(--disabled)'
+                                    }}
+                                    title={this.props.intl.formatMessage({id: 'details_table.remove_supplier'})}
+                                    onClick={async ()=>{
+                                        const payload = {
+                                            updateMode: true,
+                                            details:    [],
+                                        }
+                                        this.state.selectedRows.map((elem)=>{
+                                            if(!elem.reservedCount && elem.agreement == 'UNDEFINED') {
+                                                payload.details.push({
+                                                    id: elem.id,
+                                                    productId: null,
+                                                    cellAddress: null,
+                                                    warehouseId: null,
+                                                    supplierId: null,
+                                                })
+                                            }
+                                        })
+                                        await fetchAPI('PUT', `orders/${this.props.orderId}`, undefined, payload)
+                                        this.updateDataSource();
+                                    }}
+                                />
+                            </div>
+                        </div>),
                 key:       'supplierName',
                 render:    row => {
                     return (
@@ -246,13 +645,37 @@ class DetailsTable extends Component {
                                 display: 'flex',
                                 justifyContent: 'space-around'
                             }}
+                            title={row.supplierId === 0
+                                ? this.props.intl.formatMessage({id: 'details_table.stock_availability'})
+                                : this.props.intl.formatMessage({id: 'details_table.suppliers_availability'})
+                            }
                         >
-                            <div style={{width: '50%'}}>
+                            <div
+                                style={{width: '50%', cursor: 'pointer', textDecoration: row.supplierName && 'underline'}}
+                                onClick={()=>{
+                                    if(!row.reservedCount) {
+                                        if(row.supplierId !== 0) {
+                                            this.setState({
+                                                supplierModalSelectedRow: row,
+                                            })
+                                        } else {
+                                            this.setState({
+                                                warehousesModalSelectedRow: row,
+                                            })
+                                        }
+                                    }
+                                }}
+                            >
                                 {row.supplierName || <FormattedMessage id='long_dash' />}
                             </div>
-                            <div style={{width: '50%'}}>
-                                <AvailabilityIndicator indexArray={ row.store } />
-                            </div>
+                            {row.supplierId === 0 ?
+                                <div style={{width: '50%'}}>
+                                    {row.cellAddress}
+                                </div> :
+                                <div style={{width: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                    <AvailabilityIndicator indexArray={ row.store } />
+                                </div>
+                            }
                         </div>
                     )
                 },
@@ -268,17 +691,40 @@ class DetailsTable extends Component {
                 dataIndex: 'purchasePrice',
                 render:    (data, row) => {
                     let strVal = Number(data).toFixed(2);
-
-                    return (
+                    
+                    const discount = _.get(this.props, 'discount') || 0;
+                    const marge = row.price || row.purchasePrice 
+                                ? (row.price - row.purchasePrice) * 100 / row.price
+                                : 100;
+                    const markup = row.price && row.purchasePrice 
+                                ? ((row.price / row.purchasePrice) - 1) * 100
+                                : 0;
+                    const content = (
                         <div>
-                            { data ? 
-                                `${strVal}`.replace(
-                                    /\B(?=(\d{3})+(?!\d))/g,
-                                    ' ',
-                                ) : (
-                                    <FormattedMessage id='long_dash' />
-                                ) }
+                            <div>
+                                <FormattedMessage id='order_form_table.marge' />: {marge.toFixed(0)}%
+                            </div>
+                            <div>
+                                <FormattedMessage id='order_form_table.markup' />: {markup.toFixed(0)}%
+                            </div>
+                            <div>
+                                <FormattedMessage id='order_form_table.discount' />: {discount.toFixed(0)}%
+                            </div>
                         </div>
+                    );
+                    return (
+                        <Popover content={content} trigger="hover">
+                            <span style={{cursor: 'pointer', whiteSpace: 'nowrap'}}>
+                                { data ? 
+                                    `${strVal}`.replace(
+                                        /\B(?=(\d{3})+(?!\d))/g,
+                                        ' ',
+                                    )
+                                    : (
+                                        <FormattedMessage id='long_dash' />
+                                    ) }
+                            </span>
+                        </Popover>
                     );
                 },
             },
@@ -286,32 +732,47 @@ class DetailsTable extends Component {
                 title: (
                     <div className={ Styles.numberColumn }>
                         <FormattedMessage id='order_form_table.price' />
-                        <p style={{
-                            color: 'var(--text2)',
-                            fontSize: 12,
-                            fontWeight: 400,
-                        }}>
-                            <FormattedMessage id='without' /> <FormattedMessage id='VAT'/>
-                        </p>
                     </div>
                 ),
                 className: Styles.numberColumn,
                 key:       'price',
                 dataIndex: 'price',
-                render:    data => {
+                render:    (data, row) => {
                     let strVal = Number(data).toFixed(2);
-
+                    
+                    const discount = _.get(this.props, 'discount') || 0;
+                    const marge = row.price || row.purchasePrice 
+                                ? (row.price - row.purchasePrice) * 100 / row.price
+                                : 100;
+                    const markup = row.price && row.purchasePrice 
+                                ? ((row.price / row.purchasePrice) - 1) * 100
+                                : 0;
+                    const content = (
+                        <div>
+                            <div>
+                                <FormattedMessage id='order_form_table.marge' />: {marge.toFixed(0)}%
+                            </div>
+                            <div>
+                                <FormattedMessage id='order_form_table.markup' />: {markup.toFixed(0)}%
+                            </div>
+                            <div>
+                                <FormattedMessage id='order_form_table.discount' />: {discount.toFixed(0)}%
+                            </div>
+                        </div>
+                    );
                     return (
-                        <span>
-                            { data ? 
-                                `${strVal}`.replace(
-                                    /\B(?=(\d{3})+(?!\d))/g,
-                                    ' ',
-                                )
-                                : (
-                                    <FormattedMessage id='long_dash' />
-                                ) }
-                        </span>
+                        <Popover content={content} trigger="hover">
+                            <span style={{cursor: 'pointer', whiteSpace: 'nowrap'}}>
+                                { data ? 
+                                    `${strVal}`.replace(
+                                        /\B(?=(\d{3})+(?!\d))/g,
+                                        ' ',
+                                    )
+                                    : (
+                                        <FormattedMessage id='long_dash' />
+                                    ) }
+                            </span>
+                        </Popover>
                     );
                 },
             },
@@ -338,9 +799,62 @@ class DetailsTable extends Component {
                 },
             },
             {
-                title: (
+                title: () => (
                     <div className={ Styles.numberColumn }>
-                        <FormattedMessage id='storage.RESERVE' />
+                        <div>
+                            <FormattedMessage id='storage.RESERVE' />
+                        </div>
+                        <div
+                            className={Styles.headerActions}
+                            style={{
+                                paddingTop: 6,
+                                opacity: this.state.selectedRowKeys.length == 0 && 0,
+                                marginTop: this.state.selectedRowKeys.length == 0 && '-20px',
+                                transitionDuration: "0.5s",
+                                pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
+                            }}
+                        >
+                            <Icon
+                                type="lock"
+                                className={Styles.icon}
+                                title={this.props.intl.formatMessage({id: 'details_table.reserve'})}
+                                onClick={async () => {
+                                    await fetchAPI(
+                                        'POST',
+                                        `store_docs/reserve_all_possible`,
+                                        {
+                                            ordersAppurtenanciesIds: `[${this.state.selectedRows.map(({id})=>id)}]`,
+                                        },
+                                        undefined,
+                                        { handleErrorInternally: true }
+                                    );
+                                    await notification.success({
+                                        message: this.props.intl.formatMessage({id: 'details_table.reserved'}),
+                                    });
+                                    await this.updateDataSource();
+                                }}
+                            />
+                            <Icon
+                                type="unlock"
+                                className={Styles.icon}
+                                title={this.props.intl.formatMessage({id: 'details_table.unreserve'})}
+                                onClick={async () => {
+                                    await fetchAPI(
+                                        'POST',
+                                        `store_docs/unreserve_all_possible`,
+                                        {
+                                            ordersAppurtenanciesIds: `[${this.state.selectedRows.map(({id})=>id)}]`,
+                                        },
+                                        undefined,
+                                        { handleErrorInternally: true }
+                                    );
+                                    await notification.success({
+                                        message: this.props.intl.formatMessage({id: 'details_table.unreserved'}),
+                                    });
+                                    await this.updateDataSource();
+                                }}
+                            />
+                        </div>
                     </div>
                 ),
                 className: Styles.numberColumn,
@@ -376,28 +890,6 @@ class DetailsTable extends Component {
                     );
                 },
             },
-            // {
-            //     title: (
-            //         <div className={ Styles.numberColumn }>
-            //             <FormattedMessage id='order_form_table.discount' />
-            //         </div>
-            //     ),
-            //     className: Styles.numberColumn,
-            //     key:       'discount',
-            //     dataIndex: 'discount',
-            //     render:    data => {
-            //         return (
-            //             <span>
-            //                 { data
-            //                     ? `${data}`.replace(
-            //                         /\B(?=(\d{3})+(?!\d))/g,
-            //                         ' ',
-            //                     )
-            //                     : 0 }%
-            //             </span>
-            //         );
-            //     },
-            // },
             {
                 title: (
                     <div className={ Styles.numberColumn }>
@@ -414,25 +906,144 @@ class DetailsTable extends Component {
                 className: Styles.numberColumn,
                 key:       'sum',
                 dataIndex: 'sum',
-                render:    data => {
+                render:    (data, row) => {
                     let strVal = Number(data).toFixed(2);
-
+                    
+                    const discount = _.get(this.props, 'discount') || 0;
+                    const marge = row.price || row.purchasePrice 
+                                ? (row.price - row.purchasePrice) * 100 / row.price
+                                : 100;
+                    const markup = row.price && row.purchasePrice 
+                                ? ((row.price / row.purchasePrice) - 1) * 100
+                                : 0;
+                    const content = (
+                        <div>
+                            <div>
+                                <FormattedMessage id='order_form_table.marge' />: {marge.toFixed(0)}%
+                            </div>
+                            <div>
+                                <FormattedMessage id='order_form_table.markup' />: {markup.toFixed(0)}%
+                            </div>
+                            <div>
+                                <FormattedMessage id='order_form_table.discount' />: {discount.toFixed(0)}%
+                            </div>
+                        </div>
+                    );
                     return (
-                        <span>
-                            { data ? 
-                                `${strVal}`.replace(
-                                    /\B(?=(\d{3})+(?!\d))/g,
-                                    ' ',
-                                )
-                                : (
-                                    <FormattedMessage id='long_dash' />
-                                ) }
-                        </span>
+                        <Popover content={content} trigger="hover">
+                            <span style={{cursor: 'pointer', whiteSpace: 'nowrap'}}>
+                                { data ? 
+                                    `${strVal}`.replace(
+                                        /\B(?=(\d{3})+(?!\d))/g,
+                                        ' ',
+                                    )
+                                    : (
+                                        <FormattedMessage id='long_dash' />
+                                    ) }
+                            </span>
+                        </Popover>
                     );
                 },
             },
             {
-                key:        'status',
+                title:  ()=>{
+                            const updateAgreement = async (value) => {
+                                const payload = {
+                                    updateMode: true,
+                                    details:    [],
+                                }
+                                this.state.selectedRows.map((elem)=>{
+                                    payload.details.push({
+                                        id: elem.id,
+                                        agreement: value.toUpperCase(),
+                                    })
+                                })
+                                await fetchAPI('PUT', `orders/${this.props.orderId}`, undefined, payload)
+                                this.updateDataSource();
+                            }
+                            const menu = (
+                                <Menu onClick={this.handleMenuClick}>
+                                    <Menu.Item
+                                        key="undefined"
+                                        onClick={()=>{
+                                            updateAgreement('undefined')
+                                        }}
+                                    >
+                                        <Icon
+                                            type={'question-circle'}
+                                            style={{
+                                                fontSize: 18,
+                                                verticalAlign: 'sub',
+                                                marginRight: 8
+                                            }}
+                                        />
+                                        <FormattedMessage id='agreement.undefined' />
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        key="agreed"
+                                        style={{color: 'var(--green)'}}
+                                        onClick={()=>{
+                                            updateAgreement('agreed')
+                                        }}
+                                    >
+                                        <Icon
+                                            type={'check-circle'}
+                                            style={{
+                                                fontSize: 18,
+                                                verticalAlign: 'sub',
+                                                marginRight: 8,
+                                            }}
+                                        />
+                                        <FormattedMessage id='agreement.agreed' />
+                                    </Menu.Item>
+                                    <Menu.Item
+                                        key="rejected"
+                                        style={{color: 'rgb(255, 126, 126)'}}
+                                        onClick={()=>{
+                                            updateAgreement('rejected')
+                                        }}
+                                    >
+                                        <Icon
+                                            type={'close-circle'}
+                                            style={{
+                                                fontSize: 18,
+                                                marginRight: 8,
+                                            }}
+                                        />
+                                        <FormattedMessage id='agreement.rejected' />
+                                    </Menu.Item>
+                                </Menu>
+                            );
+                            return (
+                                <div>
+                                    <FormattedMessage id='order_form_table.PD' />
+                                    {!isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS) &&
+                                        <div
+                                            className={Styles.headerActions}
+                                            style={{
+                                                paddingTop: 6,
+                                                opacity: this.state.selectedRowKeys.length == 0 && 0,
+                                                marginTop: this.state.selectedRowKeys.length == 0 && '-20px',
+                                                transitionDuration: "0.5s",
+                                                pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
+                                            }}
+                                        >
+                                            <Dropdown
+                                                overlay={menu}
+                                            >
+                                                <Icon
+                                                    type={'question-circle'}
+                                                    style={{
+                                                        fontSize: 24,
+                                                    }}
+                                                />
+                                            </Dropdown>
+                                        </div>
+                                    }
+                                </div>
+                            )
+                        },
+                key:        'agreement',
                 dataIndex:  'agreement',
                 render:     (data, row) => {
                     const key = row.key;
@@ -471,7 +1082,7 @@ class DetailsTable extends Component {
                                         marginRight: 8
                                     }}
                                 />
-                                <FormattedMessage id='status.undefined' />
+                                <FormattedMessage id='agreement.undefined' />
                             </Menu.Item>
                             <Menu.Item
                                 key="agreed"
@@ -488,7 +1099,7 @@ class DetailsTable extends Component {
                                         marginRight: 8,
                                     }}
                                 />
-                                <FormattedMessage id='status.agreed' />
+                                <FormattedMessage id='agreement.agreed' />
                             </Menu.Item>
                             <Menu.Item
                                 key="rejected"
@@ -504,7 +1115,7 @@ class DetailsTable extends Component {
                                         marginRight: 8,
                                     }}
                                 />
-                                <FormattedMessage id='status.rejected' />
+                                <FormattedMessage id='agreement.rejected' />
                             </Menu.Item>
                         </Menu>
                     );
@@ -533,165 +1144,46 @@ class DetailsTable extends Component {
                     )
                 }
             },
-            // {
-            //     title:     <FormattedMessage id='order_form_table.status' />,
-            //     key:       'agreement',
-            //     dataIndex: 'agreement',
-            //     render:    (data, elem) => {
-            //         const key = elem.key;
-            //         const confirmed = data.toLowerCase();
-            //         let color;
-            //         switch (confirmed) {
-            //             case 'rejected':
-            //                 color = 'rgb(255, 126, 126)';
-            //                 break;
-            //             case 'agreed':
-            //                 color = 'var(--green)';
-            //                 break;
-            //             default:
-            //                 color = null;
-            //         }
-
-            //         return (
-            //             <Select
-            //                 disabled={ isForbidden(
-            //                     this.props.user,
-            //                     permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS,
-            //                 ) }
-            //                 style={ { color: color } }
-            //                 value={ confirmed }
-            //                 onChange={ value => {
-            //                     elem.agreement = value.toUpperCase();
-            //                     this.updateDetail(key, elem);
-            //                 } }
-            //             >
-            //                 <Option key={ 0 } value={ 'undefined' }>
-            //                     <FormattedMessage id='status.undefined' />
-            //                 </Option>
-            //                 <Option
-            //                     key={ 1 }
-            //                     value={ 'agreed' }
-            //                     style={ { color: 'var(--green)' } }
-            //                 >
-            //                     <FormattedMessage id='status.agreed' />
-            //                 </Option>
-            //                 <Option
-            //                     key={ 2 }
-            //                     value={ 'rejected' }
-            //                     style={ { color: 'rgb(255, 126, 126)' } }
-            //                 >
-            //                     <FormattedMessage id='status.rejected' />
-            //                 </Option>
-            //             </Select>
-            //         );
-            //     },
-            // },
             {
-                key:    'favourite',
-                render: elem => {
-                    return (
-                        <Popconfirm
-                            title={
-                                elem.frequentDetailId ? (
-                                    <FormattedMessage id='add_order_form.favourite_remove' />
-                                ) : (
-                                    <FormattedMessage id='add_order_form.favourite_confirm' />
-                                )
-                            }
-                            onConfirm={ async () => {
-                                var that = this;
-                                let token = localStorage.getItem(
-                                    '_my.carbook.pro_token',
-                                );
-                                let url = __API_URL__;
-                                let params = '/orders/frequent/details';
-                                if (elem.frequentDetailId) { params += `?ids=[${elem.frequentDetailId}]`; } else { params += `?storeGroupIds=[${elem.storeGroupId}]`; }
-                                url += params;
-                                try {
-                                    const response = await fetch(url, {
-                                        method: elem.frequentDetailId
-                                            ? 'DELETE'
-                                            : 'POST',
-                                        headers: {
-                                            Authorization:  token,
-                                            'Content-Type': 'application/json',
-                                        },
-                                    });
-                                    const result = await response.json();
-                                    if (result.success) {
-                                        that.updateDataSource();
-                                    } else {
-                                        console.log('BAD', result);
-                                    }
-                                } catch (error) {
-                                    console.error('ERROR:', error);
-                                }
-                            } }
-                        >
-                            <Icon
-                                type='star'
-                                theme={ elem.frequentDetailId ? 'filled' : '' }
-                                style={ { color: 'gold', fontSize: 18 } }
-                                title={ this.props.intl.formatMessage({
-                                    id: elem.frequentDetailId
-                                        ? 'delete_from_favorites'
-                                        : 'add_to_favorites',
-                                }) }
-                            />
-                        </Popconfirm>
-                    );
-                },
-            },
-            {
-                key:    'delete',
-                render: elem => {
-                    const confirmed = elem.agreement.toLowerCase();
-                    const stageDisabled = elem.stage == AGREED || elem.stage == ORDERED || elem.stage == ACCEPTED || elem.stage == RESERVED || elem.stage == GIVEN || elem.stage == INSTALLED;
-                    const disabled =
-                        confirmed != 'undefined' || this.props.disabled || elem.reserved;
+                title:     <FormattedMessage id='order_form_table.status' />,
+                key:       'status',
+                dataIndex: 'status',
+                render:    (data, row) => {
+                    let color;
+                    switch (data) {
+                        case 'ENTER_DATA':
+                            color = 'var(--disabled)';
+                            break;
+                        case 'CHOOSE_SUPPLIER':
+                            color = 'var(--approve)';
+                            break;
+                        case 'ORDER':
+                            color = 'var(--db_approve)';
+                            break;
+                        case 'RESERVE':
+                            color = 'var(--db_progress)';
+                            break;
+                        case 'READY':
+                            color = 'var(--db_success)';
+                            break;
+                        default:
+                            color = null;
+                    }
 
-                    return (
-                        <Popconfirm
-                            disabled={ disabled || stageDisabled }
-                            title={
-                                <FormattedMessage id='add_order_form.delete_confirm' />
-                            }
-                            onConfirm={ async () => {
-                                var that = this;
-                                let token = localStorage.getItem(
-                                    '_my.carbook.pro_token',
-                                );
-                                let url = __API_URL__;
-                                let params = `/orders/${this.props.orderId}/details?ids=[${elem.id}]`;
-                                url += params;
-                                try {
-                                    const response = await fetch(url, {
-                                        method:  'DELETE',
-                                        headers: {
-                                            Authorization:  token,
-                                            'Content-Type': 'application/json',
-                                        },
-                                    });
-                                    const result = await response.json();
-                                    if (result.success) {
-                                        that.updateDataSource();
-                                    } else {
-                                        console.log('BAD', result);
-                                    }
-                                } catch (error) {
-                                    console.error('ERROR:', error);
-                                }
+                    return row.id && (
+                        <div 
+                            style={ { 
+                                background: color,
+                                padding: '6px 2px',
+                                textAlign: 'center',
+                                fontWeight: 500,
+                                // textTransform: 'uppercase',
+                                // border: '1px solid black',
                             } }
+                            title={this.props.intl.formatMessage({id: `status.${data}.title`})}
                         >
-                            <Icon
-                                type='delete'
-                                className={
-                                    disabled || stageDisabled
-                                        ? Styles.disabledIcon
-                                        : Styles.deleteIcon
-                                }
-                            />
-                        </Popconfirm>
+                            <FormattedMessage id={`status.${data}`}/>
+                        </div>
                     );
                 },
             },
@@ -705,9 +1197,6 @@ class DetailsTable extends Component {
         });
     }
     hideDetailProductModal() {
-        const { dataSource } = this.state;
-        const lastDetail = dataSource[dataSource.length - 1];
-        lastDetail.barcode = undefined;
         this.setState({
             productModalVisible: false,
         });
@@ -778,6 +1267,8 @@ class DetailsTable extends Component {
             });
             this.setState({
                 dataSource: data.orderDetails,
+                selectedRowKeys: [],
+                selectedRows: [],
                 fetched: true,
             });
         }
@@ -810,6 +1301,8 @@ class DetailsTable extends Component {
             supplierOriginalCode: detail.supplierOriginalCode,
             supplierProductNumber: detail.supplierProductNumber,
             supplierPartNumber: detail.supplierPartNumber,
+            cellAddress: detail.cellAddress,
+            warehouseId: detail.warehouseId,
             comment: detail.comment || {
                 comment: undefined,
                 positions: [],
@@ -929,33 +1422,34 @@ class DetailsTable extends Component {
             oilModalData,
             clearOilData,
         } = this.props;
-        const { fetched, dataSource, productModalVisible, productModalKey, reserveModalVisible, reserveModalData, productBarcode } = this.state;
+        const {
+            fetched,
+            dataSource,
+            productModalVisible,
+            productModalKey,
+            reserveModalVisible,
+            reserveModalData,
+            productBarcode,
+            selectedRowKeys,
+            storageModalSelectedRow,
+            supplierModalSelectedRow,
+            warehousesModalSelectedRow,
+        } = this.state;
 
         const columns = this.columns;
-        if (
-            dataSource.length == 0 ||
-            dataSource[ dataSource.length - 1 ].detailName != undefined
-        ) {
-            dataSource.push({
-                key:          dataSource.length,
-                id:           undefined,
-                storeGroupId: undefined,
-                detailId:     undefined,
-                detailName:   undefined,
-                detailCode:   undefined,
-                brandId:      undefined,
-                brandName:    undefined,
-                comment:      {
-                    comment:   undefined,
-                    positions: [],
-                },
-                count:         0,
-                price:         0,
-                purchasePrice: 0,
-                sum:           0,
-                agreement:     'UNDEFINED',
-            });
-        }
+        
+        const rowSelection = {
+            selectedRowKeys,
+            onChange: (selectedRowKeys, selectedRows) => {
+                this.setState({
+                    selectedRowKeys,
+                    selectedRows,
+                })
+            },
+            getCheckboxProps: record => ({
+                disabled: !record.id,
+            }),
+        };
 
         return (
             <Catcher>
@@ -969,7 +1463,9 @@ class DetailsTable extends Component {
                     columns={ columns }
                     dataSource={ dataSource }
                     pagination={ false }
+                    rowSelection={rowSelection}
                     rowClassName={Styles.detailsTableRow}
+                    //scroll={{ x: 1980 }}
                 />
                 <DetailProductModal
                     labors={ labors }
@@ -983,7 +1479,7 @@ class DetailsTable extends Component {
                     } }
                     brands={ allDetails.brands }
                     allDetails={ allDetails.details }
-                    detail={ dataSource[ productModalKey ] }
+                    detail={ productModalKey < 0 ? {} : dataSource[ productModalKey ] }
                     tableKey={ productModalKey }
                     updateDetail={ this.updateDetail }
                     updateDataSource={ this.updateDataSource }
@@ -991,6 +1487,63 @@ class DetailsTable extends Component {
                     showOilModal={ showOilModal }
                     oilModalData={ oilModalData }
                     clearOilData={ clearOilData }
+                />
+                <DetailStorageModal
+                    hideButton
+                    user={ user }
+                    onSelect={(...args)=>{
+                        console.log(args);
+                        storageModalSelectedRow.detailCode = args[0];
+                        storageModalSelectedRow.brandId = args[1];
+                        storageModalSelectedRow.supplierBrandId = args[1];
+                        storageModalSelectedRow.detailName = args[5];
+                        storageModalSelectedRow.supplierOriginalCode = args[6];
+                        storageModalSelectedRow.supplierPartNumber = args[8];
+                        this.setState({})
+                    }}
+                    tecdocId={ tecdocId }
+                    setSupplier={(...args)=>{
+                        console.log(args);
+
+                        storageModalSelectedRow.supplierId = args[0];
+                        storageModalSelectedRow.purchasePrice = args[3];
+                        storageModalSelectedRow.price = args[4];
+                        storageModalSelectedRow.supplierOriginalCode = args[6];
+                        storageModalSelectedRow.supplierPartNumber = args[8];
+                        this.updateDetail(storageModalSelectedRow.key, storageModalSelectedRow);
+                    }}
+                    codeSearch
+                    storeGroupId={_.get(storageModalSelectedRow, 'storeGroupId')}
+                    codeFilter={_.get(storageModalSelectedRow, 'detailCode')}
+                    stockMode={false}
+                    visible={Boolean(storageModalSelectedRow)}
+                    hideModal={()=>{
+                        this.setState({
+                            storageModalSelectedRow: undefined,
+                        })
+                    }}
+                />
+                <DetailSupplierModal
+                    hideButton
+                    user={user}
+                    onSelect={(...args)=>{
+                        console.log(args);
+                        supplierModalSelectedRow.supplierId = args[0];
+                        supplierModalSelectedRow.purchasePrice = args[3];
+                        supplierModalSelectedRow.price = args[4];
+                        supplierModalSelectedRow.supplierOriginalCode = args[6];
+                        supplierModalSelectedRow.supplierPartNumber = args[8];
+                        this.updateDetail(supplierModalSelectedRow.key, supplierModalSelectedRow);
+                    }}
+                    storeGroupId={_.get(supplierModalSelectedRow, 'storeGroupId')}
+                    brandId={_.get(supplierModalSelectedRow, 'brandId')}
+                    detailCode={_.get(supplierModalSelectedRow, 'detailCode')}
+                    visible={Boolean(supplierModalSelectedRow)}
+                    hideModal={()=>{
+                        this.setState({
+                            supplierModalSelectedRow: undefined,
+                        })
+                    }}
                 />
                 <StoreProductTrackingModal
                     visible={reserveModalVisible}
@@ -1030,6 +1583,22 @@ class DetailsTable extends Component {
                         this.setState({
                             productBarcode: undefined,
                         })
+                    }}
+                />
+                <DetailWarehousesCountModal
+                    hideButton
+                    productId={_.get(warehousesModalSelectedRow, 'productId')}
+                    visible={ Boolean(warehousesModalSelectedRow)}
+                    orderId={ orderId }
+                    hideModal={ () => {
+                        this.setState({
+                            warehousesModalSelectedRow: undefined,
+                        })
+                    } }
+                    onSelect={(address, warehouseId)=>{
+                        warehousesModalSelectedRow.cellAddress = address;
+                        warehousesModalSelectedRow.warehouseId = warehouseId;
+                        this.updateDetail(warehousesModalSelectedRow.key, warehousesModalSelectedRow);
                     }}
                 />
             </Catcher>
@@ -1155,12 +1724,13 @@ class QuickEditModal extends React.Component {
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
                 width:     '10%',
-                render:    data => {
+                render:    (data, elem) => {
                     return (
                         <InputNumber
                             value={ data ? Math.round(data * 10) / 10 : 0 }
                             className={ Styles.detailNumberInput }
                             min={ 0 }
+                            disabled={ this.props.confirmed }
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -1168,7 +1738,9 @@ class QuickEditModal extends React.Component {
                                 `${value}`.replace(/\$\s?|(\s)/g, '')
                             }
                             onChange={ value => {
-                                this.state.dataSource[ 0 ].purchasePrice = value;
+                                const storeGroup = this.props.allDetails.find((detail)=>detail.id == elem.storeGroupId);
+                                elem.purchasePrice = value;
+                                elem.price = elem.purchasePrice * (storeGroup ? storeGroup.priceGroupMultiplier : 1);
                                 this.setState({
                                     update: true,
                                 });
@@ -1314,7 +1886,6 @@ class QuickEditModal extends React.Component {
         return (
             <div>
                 <Button
-                    type='primary'
                     disabled={ this.props.disabled }
                     onClick={ () => {
                         this.setState({
@@ -1323,14 +1894,18 @@ class QuickEditModal extends React.Component {
                         });
                     } }
                     title={ this.props.intl.formatMessage({ id: 'quick_edit' }) }
+                    className={!this.props.disabled && Styles.ownIcon}
+                    style={{
+                        padding: '0px 8px'
+                    }}
                 >
                     <div
                         style={ {
                             width:           18,
                             height:          18,
                             backgroundColor: this.props.disabled
-                                ? 'black'
-                                : 'white',
+                                ? 'var(--text2)'
+                                : 'var(--text3)',
                             mask:       `url(${images.pencilIcon}) no-repeat center / contain`,
                             WebkitMask: `url(${images.pencilIcon}) no-repeat center / contain`,
                         } }
@@ -1407,120 +1982,37 @@ export class ReserveButton extends React.Component {
         });
     }
 
-    reserveProduct = () => {
+    reserveProduct = async () => {
         const { detail, setModal, updateDetail, orderId, reserveWarehouseId, mainWarehouseId, onExit, showReserveModal, intl:{formatMessage} } = this.props;
-        const data = {
-            status: "DONE",
-            documentType: "TRANSFER",
-            type: "EXPENSE",
-            supplierDocNumber: orderId,
-            payUntilDatetime: null,
-            docProducts:[
+        if(!detail.reserved) {
+            await fetchAPI(
+                'POST',
+                `store_docs/reserve_all_possible`,
                 {
-                    productId: detail.productId,
-                    quantity: !detail.reserved ? detail.count : detail.reservedCount,
-                    stockPrice: detail.purchasePrice || 0,
-                }
-            ],
-            warehouseId: !detail.reserved ? detail.reservedFromWarehouseId || mainWarehouseId : reserveWarehouseId,
-            counterpartWarehouseId: !detail.reserved ? reserveWarehouseId : detail.reservedFromWarehouseId || mainWarehouseId,
-            orderId: orderId,
-        };
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/store_docs`;
-        fetch(url, {
-            method:  'POST',
-            headers: {
-                Authorization: token,
-            },
-            body: JSON.stringify(data),
-        })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(response) {
-            if(response.created) {
-                notification.success({
-                    message: detail.reserved ? 
-                        formatMessage({id: 'storage_document.notification.reserve_canceled'}) :
-                        formatMessage({id: 'storage_document.notification.reserved'}, {count: data.docProducts[0].quantity}),
-                    description: `${formatMessage({id: 'storage'})} ${detail.reservedFromWarehouseName}`,
-                });
-                detail.reservedCount = detail.reserved ? 0 : detail.count;
-                detail.reserved = !detail.reserved;
-                updateDetail(detail.key, detail);
-            }
-            else {
-                const { productId } = response.notAvailableProducts[0].productId,
-                      availableCount = response.notAvailableProducts[0].available,
-                      reservedCount = response.notAvailableProducts[0].reservedCount;
+                    ordersAppurtenanciesIds: `[${detail.id}]`,
+                },
+                undefined,
+                { handleErrorInternally: true }
+            );
+            await notification.success({
+                message: this.props.intl.formatMessage({id: 'details_table.reserved'}),
+            });
+        } else {
+            await fetchAPI(
+                'POST',
+                `store_docs/unreserve_all_possible`,
+                {
+                    ordersAppurtenanciesIds: `[${detail.id}]`,
+                },
+                undefined,
+                { handleErrorInternally: true }
+            );
+            await notification.success({
+                message: this.props.intl.formatMessage({id: 'details_table.unreserved'}),
+            });
+        }
 
-                confirm({
-                    title: formatMessage({id: 'storage_document.not_enought_for_reserve'}),
-                    content: (
-                        <div>
-                            <p>{formatMessage({id: 'storage_document.in_stock'})} - {availableCount}.</p>
-                            <p>{formatMessage({id: 'storage_document.available'})} - {availableCount- reservedCount}.</p>
-                            <span
-                                style={{color: 'var(--link)', textDecoration: 'underline', cursor: 'pointer'}}
-                                onClick={()=>showReserveModal(productId)}
-                            >
-                                {formatMessage({id: 'storage_document.more_details'})}...
-                            </span>
-                        </div>
-                    ),
-                    zIndex: 1000,
-                    okButtonProps: {disabled: availableCount - reservedCount < 1},
-                    onOk() {
-                        data.docProducts[0].quantity = availableCount - reservedCount;
-                        fetch(url, {
-                            method:  'POST',
-                            headers: {
-                                Authorization: token,
-                            },
-                            body: JSON.stringify(data),
-                        })
-                        .then(function(response) {
-                            if (response.status !== 200) {
-                                return Promise.reject(new Error(response.statusText));
-                            }
-                            return Promise.resolve(response);
-                        })
-                        .then(function(response) {
-                            return response.json();
-                        })
-                        .then(function(response) {
-                            if(response.created) {
-                                detail.reservedCount = detail.reserved ? 0 : availableCount - reservedCount;
-                                detail.reserved = !detail.reserved;
-                                updateDetail(detail.key, detail);
-                                notification.success({
-                                    message: `Зарезервировано ${data.docProducts[0].quantity} товаров со склада ${detail.reservedFromWarehouseName}`,
-                                });
-                            }
-                            onExit();
-                        })
-                        .catch(function(error) {
-                            console.log('error', error);
-                        });
-                    },
-                    onCancel() {
-                        onExit();
-                    }
-                });
-            }
-        })
-        .catch(function(error) {
-            console.log('error', error);
-            onExit();
-        });
+        await updateDetail(detail.key, detail);
     }
 
     addProduct = () => {

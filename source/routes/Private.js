@@ -71,7 +71,9 @@ import {
     BarcodePage,
     ProductPage,
     WMSPage,
+    VehiclesPage,
     ProductsWithoutCellPage,
+    DirectoriesPage,
 } from 'pages';
 import book from './book';
 
@@ -118,6 +120,11 @@ export default class Private extends Component {
                     path={ book.barcodePage }
                 />
                 { /* Reference book */ }
+                <Route
+                    exact
+                    component={ DirectoriesPage }
+                    path={ book.directoriesPage }
+                />
                 <Route
                     exact
                     render={ props => <ClientPage { ...props } /> }
@@ -272,6 +279,11 @@ export default class Private extends Component {
                     exact
                     path={ book.wms }
                     render={ props => <WMSPage { ...props } /> }
+                />
+                <Route
+                    exact
+                    path={ book.vehicles }
+                    render={ props => <VehiclesPage { ...props } /> }
                 />
                 <Route
                     exact

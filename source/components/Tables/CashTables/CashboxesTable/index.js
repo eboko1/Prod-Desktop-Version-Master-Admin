@@ -33,6 +33,11 @@ const mapDispatchToProps = {
 
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
+/**
+ * Table of cashboxes
+ * @param props.cashboxesFetching - is fetching
+ * @param props.cashboxes - array of cashboxes to show
+ */
 export class CashboxesTable extends Component {
     constructor(props) {
         super(props);
@@ -40,24 +45,16 @@ export class CashboxesTable extends Component {
         this.columns = columnsConfig({
             deleteCashbox:      props.deleteCashbox,
             formatMessage:      props.intl.formatMessage,
-            isCRUDForbidden:    isForbidden(props.user, permissions.ACCESS_CATALOGUE_CASH_CRUD),
-            onOpenServiceInputModal: props.onOpenServiceInputModal,
-            onOpenCashOrderModal: props.onOpenCashOrderModal,
-            openShift: props.openShift,
-            closeShift: props.closeShift,
-            fetchXReport: props.fetchXReport,
-            user: props.user,
+            isCRUDForbidden:    isForbidden(props.user, permissions.ACCESS_CATALOGUE_CASH_CRUD)
         });
     }
-
-    
 
     componentDidMount() {
         this.props.fetchCashboxes();
     }
 
     render() {
-        const { cashboxesFetching, cashboxes, onOpenServiceInputModal, onOpenCashOrderModal } = this.props;
+        const { cashboxesFetching, cashboxes } = this.props;
 
         return (
             <Table

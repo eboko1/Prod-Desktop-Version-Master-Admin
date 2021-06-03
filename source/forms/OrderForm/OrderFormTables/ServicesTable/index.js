@@ -11,6 +11,8 @@ import {
     Button,
     Modal,
     notification,
+    Dropdown,
+    Menu,
 } from 'antd';
 import _ from 'lodash';
 
@@ -42,6 +44,8 @@ class ServicesTable extends Component {
             serviceModalVisible: false,
             serviceModalKey:     0,
             dataSource:          [],
+            selectedRowKeys: [],
+            selectedRows: [],
         };
         this.updateLabor = this.updateLabor.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
@@ -51,63 +55,96 @@ class ServicesTable extends Component {
         this.columns = [
             {
                 title: ()=>(
-                            <div className={Styles.headerActions}>
-                                <Barcode
-                                    button
-                                    multipleMode
-                                    prefix={'LBS'}
-                                    onConfirm={async (code, pref, fullCode)=>{
-                                        const barcodeData = await fetchAPI('GET', 'barcodes',{
-                                            barcode: code,
-                                        });
-                                        const laborBarcode = barcodeData.find(({table})=>table == 'LABORS');
-                                
-                                        if(laborBarcode) {
-                                            const payload = {
-                                                insertMode: true,
-                                                details: [],
-                                                services: [],
-                                            };
-                                            const labor = await fetchAPI('GET', `labors/${laborBarcode.referenceId}`);
-                                            payload.services.push({
-                                                serviceId: labor.id,
-                                                serviceName: labor.name || labor.defaultName,
-                                                employeeId: this.props.defaultEmployeeId,
-                                                serviceHours: 0,
-                                                purchasePrice: 0,
-                                                count: Number(labor.laborPrice.normHours) || 0,
-                                                servicePrice: Number(labor.laborPrice.price) || this.props.normHourPrice,
-                                            })
-                                            await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
-                                            await this.updateDataSource();
-                                        } else {
-                                            notification.warning({
-                                                message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
+                            <div>
+                                <div className={Styles.headerActions}>
+                                    <Button
+                                        disabled={ this.props.disabled }
+                                        onClick={ () => {
+                                            this.showServiceProductModal(-1);
+                                        } }
+                                        style={{
+                                            padding: '0px 8px',
+                                            fontSize: 18,
+                                        }}
+                                        title={this.props.intl.formatMessage({id: 'add'})}
+                                    >
+                                        <Icon type='plus'/>
+                                    </Button>
+                                    <Barcode
+                                        button
+                                        multipleMode
+                                        prefix={'LBS'}
+                                        buttonStyle={{
+                                            padding: '0px 8px',
+                                        }}
+                                        onConfirm={async (code, pref, fullCode)=>{
+                                            const barcodeData = await fetchAPI('GET', 'barcodes',{
+                                                barcode: code,
                                             });
-                                        }
-                                    }}
-                                />
-                                {!isForbidden(this.props.user, permissions.ACCESS_ORDER_LABORS_COMPLEXES) &&
-                                    <ComplexesModal
-                                        normHourPrice={ this.props.normHourPrice }
-                                        disabled={this.props.disabled}
-                                        tecdocId={this.props.tecdocId}
-                                        labors={this.props.labors}
-                                        details={this.props.details}
-                                        detailsTreeData={this.props.detailsTreeData}
-                                        orderId={this.props.orderId}
-                                        reloadOrderForm={this.props.reloadOrderForm}
-                                        laborTimeMultiplier={this.props.laborTimeMultiplier}
+                                            const laborBarcode = barcodeData.find(({table})=>table == 'LABORS');
+                                    
+                                            if(laborBarcode) {
+                                                const payload = {
+                                                    insertMode: true,
+                                                    details: [],
+                                                    services: [],
+                                                };
+                                                const labor = await fetchAPI('GET', `labors/${laborBarcode.referenceId}`);
+                                                payload.services.push({
+                                                    serviceId: labor.id,
+                                                    serviceName: labor.name || labor.defaultName,
+                                                    employeeId: this.props.defaultEmployeeId,
+                                                    serviceHours: 0,
+                                                    purchasePrice: 0,
+                                                    count: Number(labor.laborPrice.normHours) || 0,
+                                                    servicePrice: Number(labor.laborPrice.price) || this.props.normHourPrice,
+                                                })
+                                                await fetchAPI('PUT', `orders/${this.props.orderId}`, null, payload);
+                                                await this.updateDataSource();
+                                            } else {
+                                                notification.warning({
+                                                    message: this.props.intl.formatMessage({id: 'order_form_table.code_not_found'}),
+                                                });
+                                            }
+                                        }}
                                     />
-                                }
+                                    {!isForbidden(this.props.user, permissions.ACCESS_ORDER_LABORS_COMPLEXES) &&
+                                        <ComplexesModal
+                                            normHourPrice={ this.props.normHourPrice }
+                                            disabled={this.props.disabled}
+                                            tecdocId={this.props.tecdocId}
+                                            labors={this.props.labors}
+                                            details={this.props.details}
+                                            detailsTreeData={this.props.detailsTreeData}
+                                            orderId={this.props.orderId}
+                                            reloadOrderForm={this.props.reloadOrderForm}
+                                            laborTimeMultiplier={this.props.laborTimeMultiplier}
+                                        />
+                                    }
+                                    <FavouriteServicesModal
+                                        laborTimeMultiplier={this.props.laborTimeMultiplier}
+                                        disabled={ this.props.disabled }
+                                        normHourPrice={ this.props.normHourPrice }
+                                        defaultEmployeeId={
+                                            this.props.defaultEmployeeId
+                                        }
+                                        tecdocId={ this.props.tecdocId }
+                                        orderId={ this.props.orderId }
+                                        updateDataSource={ this.updateDataSource }
+                                        employees={ this.props.employees }
+                                        user={ this.props.user }
+                                        laborsTreeData={ this.laborsTreeData }
+                                        labors={ this.props.labors }
+                                        detailsTreeData={this.props.detailsTreeData}
+                                    />
+                                </div>
                             </div>
-                            
                         ),
                 key:       'buttonGroup',
                 dataIndex: 'key',
                 render:    (data, elem) => {
-                    const confirmed = elem.agreement.toLowerCase(),
-                          backgroundColor = confirmed != 'undefined' || this.props.disabled ? 'black' : 'white';
+                    const confirmed = elem.agreement.toLowerCase();
+                    const disabled = confirmed != 'undefined' || this.props.disabled;
                     const stageDisabled = elem.stage != INACTIVE;
 
                     return (
@@ -118,23 +155,26 @@ class ServicesTable extends Component {
                             } }
                         >
                             <Button
-                                type='primary'
-                                disabled={
-                                    confirmed != 'undefined' ||
-                                    this.props.disabled
-                                }
+                                disabled={disabled}
+                                style={{
+                                    padding: '0px 8px'
+                                }}
                                 onClick={ () => {
                                     this.showServiceProductModal(data);
                                 } }
                                 title={ this.props.intl.formatMessage({
                                     id: 'labors_table.add_edit_button',
                                 }) }
+                                className={!disabled && Styles.ownIcon}
                             >
                                 <div
                                     style={ {
                                         width:           18,
                                         height:          18,
-                                        backgroundColor: backgroundColor,
+                                        backgroundColor:
+                                            disabled
+                                                ? 'var(--text2)'
+                                                : 'var(--text3)',
                                         mask:       `url(${images.wrenchIcon}) no-repeat center / contain`,
                                         WebkitMask: `url(${images.wrenchIcon}) no-repeat center / contain`,
                                         transform:  'scale(-1, 1)',
@@ -156,7 +196,7 @@ class ServicesTable extends Component {
                                     user={ this.props.user }
                                     laborsTreeData={ this.laborsTreeData }
                                     labors={ this.props.labors }
-                                    details={ this.props.details }
+                                    detailsTreeData={this.props.detailsTreeData}
                                 />
                             ) : (
                                 <QuickEditModal
@@ -204,7 +244,7 @@ class ServicesTable extends Component {
                     );
 
                     return employee ? 
-                        `${employee.name} ${employee.surname}`
+                        `${employee.surname} ${employee.name}`
                         : (
                             <FormattedMessage id='long_dash' />
                         );
@@ -337,58 +377,203 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.status' />,
-                key:       'agreement',
-                dataIndex: 'agreement',
-                render:    (data, elem) => {
-                    const key = elem.key;
+                title:  ()=>{
+                    const updateAgreement = async (value) => {
+                        const payload = {
+                            updateMode: true,
+                            services:    [],
+                        }
+                        this.state.selectedRows.map((elem)=>{
+                            payload.services.push({
+                                id: elem.id,
+                                agreement: value.toUpperCase(),
+                            })
+                        })
+                        await fetchAPI('PUT', `orders/${this.props.orderId}`, undefined, payload)
+                        this.updateDataSource();
+                    }
+                    const menu = (
+                        <Menu onClick={this.handleMenuClick}>
+                            <Menu.Item
+                                key="undefined"
+                                onClick={()=>{
+                                    updateAgreement('undefined')
+                                }}
+                            >
+                                <Icon
+                                    type={'question-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        verticalAlign: 'sub',
+                                        marginRight: 8
+                                    }}
+                                />
+                                <FormattedMessage id='agreement.undefined' />
+                            </Menu.Item>
+                            <Menu.Item
+                                key="agreed"
+                                style={{color: 'var(--green)'}}
+                                onClick={()=>{
+                                    updateAgreement('agreed')
+                                }}
+                            >
+                                <Icon
+                                    type={'check-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        verticalAlign: 'sub',
+                                        marginRight: 8,
+                                    }}
+                                />
+                                <FormattedMessage id='agreement.agreed' />
+                            </Menu.Item>
+                            <Menu.Item
+                                key="rejected"
+                                style={{color: 'rgb(255, 126, 126)'}}
+                                onClick={()=>{
+                                    updateAgreement('rejected')
+                                }}
+                            >
+                                <Icon
+                                    type={'close-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        marginRight: 8,
+                                    }}
+                                />
+                                <FormattedMessage id='agreement.rejected' />
+                            </Menu.Item>
+                        </Menu>
+                    );
+                    return (
+                        <div>
+                            <FormattedMessage id='order_form_table.PD' />
+                            {!isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS) &&
+                                <div
+                                    className={Styles.headerActions}
+                                    style={{
+                                        paddingTop: 6,
+                                        opacity: this.state.selectedRowKeys.length == 0 && 0,
+                                        marginTop: this.state.selectedRowKeys.length == 0 && '-20px',
+                                        transitionDuration: "0.5s",
+                                        pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
+                                    }}
+                                >
+                                    <Dropdown
+                                        overlay={menu}
+                                    >
+                                        <Icon
+                                            type={'question-circle'}
+                                            style={{
+                                                fontSize: 24,
+                                            }}
+                                        />
+                                    </Dropdown>
+                                </div>
+                            }
+                        </div>
+                    )
+                },
+                key:        'agreement',
+                dataIndex:  'agreement',
+                render:     (data, row) => {
+                    const key = row.key;
                     const confirmed = data.toLowerCase();
-                    let color;
+                    let color, icon;
                     switch (confirmed) {
                         case 'rejected':
                             color = 'rgb(255, 126, 126)';
+                            icon = 'close-circle';
                             break;
                         case 'agreed':
                             color = 'var(--green)';
+                            icon = 'check-circle';
                             break;
                         default:
                             color = null;
+                            icon = 'question-circle';
                     }
-
-                    return (
-                        <Select
-                            disabled={ this.props.disabled || isForbidden(
-                                this.props.user,
-                                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
-                            ) }
-                            style={ { color: color } }
-                            value={ confirmed }
-                            onChange={ value => {
-                                elem.agreement = value.toUpperCase();
-                                //elem.stage = value == 'rejected' ? 'CANCELED' : 'INACTIVE';
-                                this.updateLabor(key, elem);
-                            } }
-                        >
-                            <Option key={ 0 } value={ 'undefined' }>
-                                <FormattedMessage id='status.undefined' />
-                            </Option>
-                            <Option
-                                key={ 1 }
-                                value={ 'agreed' }
-                                style={ { color: 'var(--green)' } }
+                    const updateAgreement = (value) => {
+                        row.agreement = value.toUpperCase();
+                        this.updateLabor(key, row);
+                    }
+                    const menu = (
+                        <Menu onClick={this.handleMenuClick}>
+                            <Menu.Item
+                                key="undefined"
+                                onClick={()=>{
+                                    updateAgreement('undefined')
+                                }}
                             >
-                                <FormattedMessage id='status.agreed' />
-                            </Option>
-                            <Option
-                                key={ 2 }
-                                value={ 'rejected' }
-                                style={ { color: 'rgb(255, 126, 126)' } }
+                                <Icon
+                                    type={'question-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        verticalAlign: 'sub',
+                                        marginRight: 8
+                                    }}
+                                />
+                                <FormattedMessage id='agreement.undefined' />
+                            </Menu.Item>
+                            <Menu.Item
+                                key="agreed"
+                                style={{color: 'var(--green)'}}
+                                onClick={()=>{
+                                    updateAgreement('agreed')
+                                }}
                             >
-                                <FormattedMessage id='status.rejected' />
-                            </Option>
-                        </Select>
+                                <Icon
+                                    type={'check-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        verticalAlign: 'sub',
+                                        marginRight: 8,
+                                    }}
+                                />
+                                <FormattedMessage id='agreement.agreed' />
+                            </Menu.Item>
+                            <Menu.Item
+                                key="rejected"
+                                style={{color: 'rgb(255, 126, 126)'}}
+                                onClick={()=>{
+                                    updateAgreement('rejected')
+                                }}
+                            >
+                                <Icon
+                                    type={'close-circle'}
+                                    style={{
+                                        fontSize: 18,
+                                        marginRight: 8,
+                                    }}
+                                />
+                                <FormattedMessage id='agreement.rejected' />
+                            </Menu.Item>
+                        </Menu>
                     );
-                },
+                    return isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS) ? (
+                        <Icon
+                            type={icon}
+                            style={{
+                                fontSize: 24,
+                                color,
+                            }}
+                        />
+                    ) : (
+                        <div>
+                            <Dropdown
+                                overlay={menu}
+                            >
+                                <Icon
+                                    type={icon}
+                                    style={{
+                                        fontSize: 24,
+                                        color,
+                                    }}
+                                />
+                            </Dropdown>
+                        </div>
+                    )
+                }
             },
             {
                 key:    'favourite',
@@ -547,9 +732,6 @@ class ServicesTable extends Component {
         });
     }
     hideServicelProductModal() {
-        const { dataSource } = this.state;
-        const lastService = dataSource[dataSource.length - 1];
-        lastService.barcode = undefined;
         this.setState({
             serviceModalVisible: false,
         });
@@ -719,28 +901,19 @@ class ServicesTable extends Component {
     }
 
     render() {
-        if (
-            this.state.dataSource.length == 0 ||
-            this.state.dataSource[ this.state.dataSource.length - 1 ].serviceName != undefined 
-        ) {
-            this.state.dataSource.push({
-                key:         this.state.dataSource.length,
-                id:          undefined,
-                laborId:     undefined,
-                serviceName: undefined,
-                comment:     {
-                    comment:   undefined,
-                    positions: [],
-                    problems:  [],
-                },
-                count:         0,
-                price:         0,
-                purchasePrice: 0,
-                sum:           0,
-                agreement:     'UNDEFINED',
-            });
-        }
-
+        const { selectedRowKeys } = this.state;
+        const rowSelection = {
+            selectedRowKeys,
+            onChange: (selectedRowKeys, selectedRows) => {
+                this.setState({
+                    selectedRowKeys,
+                    selectedRows,
+                })
+            },
+            getCheckboxProps: record => ({
+                disabled: !record.id,
+            }),
+        };
         return (
             <Catcher>
                 <Table
@@ -748,6 +921,7 @@ class ServicesTable extends Component {
                     dataSource={ this.state.dataSource }
                     columns={ this.columns }
                     pagination={ false }
+                    rowSelection={ rowSelection }
                 />
                 <AddServiceModal
                     laborTimeMultiplier={ this.props.laborTimeMultiplier }
@@ -1028,7 +1202,6 @@ class QuickEditModal extends React.Component {
         return (
             <>
                 <Button
-                    type='primary'
                     disabled={ this.props.disabled }
                     onClick={ () => {
                         this.setState({
@@ -1037,14 +1210,18 @@ class QuickEditModal extends React.Component {
                         });
                     } }
                     title={ this.props.intl.formatMessage({ id: 'quick_edit' }) }
+                    className={!this.props.disabled && Styles.ownIcon}
+                    style={{
+                        padding: '0px 8px'
+                    }}
                 >
                     <div
                         style={ {
                             width:           18,
                             height:          18,
                             backgroundColor: this.props.disabled
-                                ? 'black'
-                                : 'white',
+                                ? 'var(--text2)'
+                                : 'var(--text3)',
                             mask:       `url(${images.pencilIcon}) no-repeat center / contain`,
                             WebkitMask: `url(${images.pencilIcon}) no-repeat center / contain`,
                         } }
