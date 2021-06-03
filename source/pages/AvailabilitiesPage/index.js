@@ -333,7 +333,7 @@ class AvailabilitiesPage extends Component {
         })
     }
 
-    componentWillMount() {
+    componentDidMount() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = __API_URL__;
@@ -360,6 +360,7 @@ class AvailabilitiesPage extends Component {
                     <Option key={i} value={elem.id}>
                         {`${elem.code} (${elem.name})`}
                     </Option>);
+            that.setState();
         })
         .catch(function (error) {
             console.log('error', error)
@@ -388,6 +389,7 @@ class AvailabilitiesPage extends Component {
                     <Option key={i} value={elem.id}>
                         {elem.name}
                     </Option>);
+            that.setState();
         })
         .catch(function (error) {
             console.log('error', error)
