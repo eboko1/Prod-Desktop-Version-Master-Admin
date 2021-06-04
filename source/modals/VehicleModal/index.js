@@ -12,19 +12,16 @@ import {
     createVehicle,
     updateVehicle,
     clearVehicleData,
-    selectClientId,
     setClientId,
 } from './redux/duck';
 
 // own
 import Styles from './styles.m.css';
 import { AddVehicleForm, EditVehicleForm, ViewVehicleForm} from './Forms';
-import { ClientsTable } from './components';
 
 const mapStateToProps = state => ({
     modalProps:    selectModalProps(state),
     visible:       selectModal(state),
-    selectedClientId:    selectClientId(state),
 });
 
 const mapDispatchToProps = {
@@ -115,7 +112,6 @@ export default class VehicleModal extends Component {
         const {
             visible,
             modalProps,
-            selectedClientId,
         } = this.props;
 
         const mode = _.get(modalProps, "mode", this.defaultModalProps.mode);
@@ -129,9 +125,6 @@ export default class VehicleModal extends Component {
                     visible={ visible === MODALS.VEHICLE }
                     onOk={ this.handleSubmit }
                     onCancel={ this.resetAllFormsAndCloseModal }
-                    okButtonProps={{
-						disabled: !selectedClientId,
-					}}
                     title={
                         <div className={Styles.title}>
                            {<FormattedMessage id='vehicle_page.title' />}   
@@ -143,25 +136,19 @@ export default class VehicleModal extends Component {
                                 (() => {
                                     switch (mode) {
                                         case modes.ADD: return (
-                                            <div>
-                                                <ClientsTable />
-                                                <div className={Styles.formContainer}>
-                                                    <AddVehicleForm
-                                                        getFormRefCB={this.saveVehicleFormRef}//Get form refference
-                                                    />
-                                                </div>
+                                            <div className={Styles.formContainer}>
+                                                <AddVehicleForm
+                                                    getFormRefCB={this.saveVehicleFormRef}//Get form refference
+                                                />
                                             </div>
                                         );
 
                                         case modes.EDIT: return (
-                                            <div>
-                                                <ClientsTable />
-                                                <div className={Styles.formContainer}>
-                                                    <EditVehicleForm
-                                                        getFormRefCB={this.saveVehicleFormRef}//Get form refference
-                                                        vehicleId={vehicleId}
-                                                    />
-                                                </div>
+                                            <div className={Styles.formContainer}>
+                                                <EditVehicleForm
+                                                    getFormRefCB={this.saveVehicleFormRef}//Get form refference
+                                                    vehicleId={vehicleId}
+                                                />
                                             </div>
                                         );
 

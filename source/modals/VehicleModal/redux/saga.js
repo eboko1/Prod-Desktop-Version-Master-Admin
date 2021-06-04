@@ -257,13 +257,12 @@ export function* createVehicleSaga() {
             vehicleYear,
         };
 
-        yield call(
-            fetchAPI,
-            'POST',
-            `clients/${clientId}/vehicles`,
-            null,
-            payload,
-        );
+        //Create vehicle for user if we have its id else just create a vehicle
+        if(clientId) {
+            yield call( fetchAPI, 'POST', `clients/${clientId}/vehicles`, null, payload );
+        } else {
+            yield call( fetchAPI, 'POST', `clients/add_vehicle`, null, payload );
+        }
     }
 }
 
