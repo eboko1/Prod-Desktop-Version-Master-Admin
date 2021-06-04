@@ -152,7 +152,7 @@ export default class ClientVehicleTransfer extends Component {
                             <Select
                                 showSearch
                                 disabled
-                                value={clientId}
+                                value={clientId ? clientId : "Нету собственника"}
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                                 style={{color: 'var(--text)'}}
                                 onChange={(value, option)=>{
@@ -164,11 +164,11 @@ export default class ClientVehicleTransfer extends Component {
                                 }}
                             >
                                 {
-                                    clients.map(({clientId, name, surname, phones, vehicles}, key)=>
+                                    clientId && (clients.map(({clientId, name, surname, phones, vehicles}, key)=>
                                         <Option value={clientId} key={key} vehicles={vehicles}>
                                             {name} {surname} {phones[0]}
                                         </Option>
-                                    )
+                                    ))
                                 }
                             </Select>
                             <Select

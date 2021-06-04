@@ -180,7 +180,7 @@ export default class GeneralInfoTab extends Component {
                                                     <ClientVehicleTransfer
                                                         clientId={client.clientId}
                                                         vehicleId={vehicle.id}
-                                                        vehicles={client.vehicles}
+                                                        vehicles={[vehicle]}
                                                     />
                                                 </span>
                                             )
@@ -255,7 +255,7 @@ export default class GeneralInfoTab extends Component {
                                             <ClientVehicleTransfer
                                                 clientId={client.clientId}
                                                 vehicleId={vehicle.id}
-                                                vehicles={client.vehicles}
+                                                vehicles={[vehicle]}
                                             />
                                         </span>
                                     )
