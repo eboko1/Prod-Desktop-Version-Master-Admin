@@ -165,10 +165,15 @@ export const fetchOrdersSuccess = ({orders, stats}) => ({
     payload: { orders, stats },
 });
 
-export const setOrdersPage = ({page}) => ({
-    type:    SET_ORDERS_PAGE,
-    payload: {page},
-});
+export const setOrdersPage = ({page}) => {
+    return function(dispatch) {
+        dispatch({
+            type:    SET_ORDERS_PAGE,
+            payload: {page},
+        });
+        dispatch(fetchOrders());
+    }
+};
 
 export const setOrdersFetching = (value) => ({
     type:    SET_ORDERS_FETCHING,
