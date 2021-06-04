@@ -4,14 +4,13 @@
  */
 
 /* Constants */
-export const moduleName = 'vehicleForm';
+export const moduleName = 'vehicleModal';
 const prefix = `cpb/${moduleName}`;
 
 export const FETCH_VEHICLE = `${prefix}/FETCH_VEHICLE`;
 export const FETCH_VEHICLE_SUCCESS = `${prefix}/FETCH_VEHICLE_SUCCESS`;
 
 export const FETCH_VEHICLE_DATA_BY_VIN = `${prefix}/FETCH_VEHICLE_DATA_BY_VIN`;
-// export const FETCH_VEHICLE_DATA_BY_VIN_SUCCESS = `${prefix}/FETCH_VEHICLE_DATA_BY_VIN_SUCCESS`;
 
 export const FETCH_CLIENTS = `${prefix}/FETCH_CLIENTS`;
 export const FETCH_CLIENTS_SUCCESS = `${prefix}/FETCH_CLIENTS_SUCCESS`;
@@ -120,12 +119,6 @@ export default function reducer(state = ReducerState, action) {
                     stats: clientsStats,
                 },
             };
-        // case FETCH_VEHICLE_DATA_BY_VIN_SUCCESS:
-        //     const { vehicle } = payload;
-        //     return {
-        //         ...state,
-        //         vehicle: vehicle,
-        //     };
         case FETCH_VEHICLE_YEARS_SUCCESS:
             const { years } = payload;
             return {
@@ -321,21 +314,21 @@ export default function reducer(state = ReducerState, action) {
 
 /* Selectors */
 
-export const selectVehicle = state => state.forms[ moduleName ].vehicle;
-export const selectFields = state => state.forms[ moduleName ].fields;
-export const selectClientId = state => state.forms[ moduleName ].fields.clientId;
-export const selectYears = state => state.forms[ moduleName ].years;
-export const selectMakes = state => state.forms[ moduleName ].makes;
-export const selectModels = state => state.forms[ moduleName ].models;
-export const selectModifications = state => state.forms[ moduleName ].modifications;
-export const selectFetchingAllVehicleData = state => state.forms[ moduleName ].fetchingAllVehicleData;
+export const selectVehicle = state => state[ moduleName ].vehicle;
+export const selectFields = state => state[ moduleName ].fields;
+export const selectClientId = state => state[ moduleName ].fields.clientId;
+export const selectYears = state => state[ moduleName ].years;
+export const selectMakes = state => state[ moduleName ].makes;
+export const selectModels = state => state[ moduleName ].models;
+export const selectModifications = state => state[ moduleName ].modifications;
+export const selectFetchingAllVehicleData = state => state[ moduleName ].fetchingAllVehicleData;
 
 /** -----------------Clients -------------------------- */
-export const selectFetchingClients = state => state.forms[ moduleName ].fetchingClients;
-export const selectClients = state => state.forms[ moduleName ].clientsData.clients;
-export const selectClientsStats = state => state.forms[ moduleName ].clientsData.stats;
-export const selectClientsFilters = state => state.forms[ moduleName ].clientsData.filters;
-export const selectClientsSort = state => state.forms[ moduleName ].clientsData.sort;
+export const selectFetchingClients = state => state[ moduleName ].fetchingClients;
+export const selectClients = state => state[ moduleName ].clientsData.clients;
+export const selectClientsStats = state => state[ moduleName ].clientsData.stats;
+export const selectClientsFilters = state => state[ moduleName ].clientsData.filters;
+export const selectClientsSort = state => state[ moduleName ].clientsData.sort;
 
 /* Actions */
 

@@ -58,6 +58,7 @@ import reportCashOrdersLogsReducer, {moduleName as reportCashOrdersLogsModule} f
 
 //Reducers of components structured by "feature first structure": https://reactjs.org/docs/faq-structure.html
 import addLaborOrDetailToOrderReducer, {moduleName as addLaborOrDetailToOrderModule} from 'modals/AddLaborOrDetailToOrderModal/redux/duck';
+import vehicleModalReducer, {moduleName as vehicleModalModule} from 'modals/VehicleModal/redux/duck';
 
 // own
 import history from './history';
@@ -120,6 +121,7 @@ const appState = {
     [ vehiclesModule ]:             vehiclesReducer,
 
     [ addLaborOrDetailToOrderModule ]: addLaborOrDetailToOrderReducer,
+    [ vehicleModalModule ]:            vehicleModalReducer,
 };
 
 const appReducer = combineReducers({ ...persistedState, ...appState });

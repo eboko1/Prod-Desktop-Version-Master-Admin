@@ -21,7 +21,7 @@ import {
     setClientsPage,
     setClientsSearchQuery,
     setClientId,
-} from 'core/forms/vehicleForm/duck';
+} from '../../redux/duck';
 
 //Own
 import { columnsConfig } from './config';

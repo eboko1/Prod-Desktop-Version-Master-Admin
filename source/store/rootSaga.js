@@ -71,7 +71,6 @@ import { saga as brandsFormSaga } from 'core/forms/brandsForm/saga';
 import { saga as setDetailProductSaga } from 'core/forms/setDetailProduct/saga';
 import { saga as spreadBusinessSaga } from 'core/forms/spreadBusinessBrands/saga';
 import { saga as cashOrderFormSaga } from 'core/forms/cashOrderForm/saga';
-import { saga as vehicleFormSaga } from 'core/forms/vehicleForm/saga';
 
 
 // storage
@@ -86,6 +85,7 @@ import { saga as storageMovementSaga } from 'core/storage/storeMovement';
 
 //Sagas of components structured by "feature first structure": https://reactjs.org/docs/faq-structure.html
 import { saga as addLaborOrDetailToOrderSaga } from 'modals/AddLaborOrDetailToOrderModal/redux/saga';
+import { saga as vehicleModalSaga } from 'modals/VehicleModal/redux/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -152,7 +152,7 @@ export default function* rootSaga() {
         // cash
         cashSaga(),
         cashOrderFormSaga(),
-        vehicleFormSaga(),
+        vehicleModalSaga(),
         // statistics
         chartSaga(),
         reviewsSaga(),

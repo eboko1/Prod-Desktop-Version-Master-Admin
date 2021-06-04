@@ -27,7 +27,7 @@ import {
     setVehicleModelId,
     setVehicleModificationId,
     fetchVehicleDataByVin,
-} from 'core/forms/vehicleForm/duck';
+} from '../../redux/duck';
 
 //own
 import Styles from './styles.m.css'

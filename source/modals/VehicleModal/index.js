@@ -14,7 +14,7 @@ import {
     clearVehicleData,
     selectClientId,
     setClientId,
-} from 'core/forms/vehicleForm/duck';
+} from './redux/duck';
 
 // own
 import Styles from './styles.m.css';
