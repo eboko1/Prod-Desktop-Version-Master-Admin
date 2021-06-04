@@ -78,14 +78,6 @@ export default class ClientContainer extends Component {
                             clientId={clientId}
                             fetchClient={fetchClient}
                         />
-                        {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
-                            <AddClientVehicleForm
-                                addClientVehicle={this.props.createClientVehicle.bind(
-                                    null,
-                                    clientId,
-                                )}
-                            />
-                        ) : null}
                     </TabPane>
                     <TabPane
                         tab={
