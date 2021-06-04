@@ -1,7 +1,7 @@
 //vendor
 import React from 'react';
 import { FormattedMessage, injectIntl } from "react-intl";
-import { Form, Col, Row, Button, Spin } from 'antd';
+import {Form, Col, Row, Button, Spin, AutoComplete} from 'antd';
 import { connect } from 'react-redux';
 import { v4 } from 'uuid';
 
@@ -33,7 +33,7 @@ import {
 import Styles from './styles.m.css'
 import {
     DecoratedSelect,
-    DecoratedInput,
+    DecoratedInput, DecoratedAutoComplete,
 } from "forms/DecoratedFields";
 
 const mapStateToProps = state => ({
@@ -252,34 +252,50 @@ export default class VehicleEditFormClass extends React.Component {
                             </div>
                         </Col>
                         <Col span={12}>
-                            <DecoratedSelect
-                                    field="modelId"
-                                    showSearch
-                                    hasFeedback
-                                    formItem
-                                    getFieldDecorator={getFieldDecorator}
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: this.props.intl.formatMessage({
-                                                id: "required_field",
-                                            }),
-                                        },
-                                    ]}
-                                    placeholder={formatMessage({id:'add_client_form.model_placeholder'})}
-                                    initialValue={initValues.modelId}
-                                    disabled={!_.get(fields, 'makeId')}
-                                    disabled={!_.get(fields, 'makeId')}
-                                    onSelect={value => {
-                                        setVehicleModelId({modelId: value});
+                            <DecoratedAutoComplete
+                                formItem
+                                hasFeedback
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: formatMessage({
+                                            id: "required_field",
+                                        }),
+                                    },
+                                ]}
+                                placeholder={formatMessage({id:'add_client_form.model_placeholder'})}
+                                disabled={!_.get(fields, 'makeId')}
+                                getFieldDecorator={ getFieldDecorator }
+                                field={ "modelId" }
+                                initialValue={_.get(_.filter(models, obj => obj.id == initValues.modelId), '[0].name') || initValues.modelName}
+                                onSelect={value => {
+                                    const selectedModelId = _.get(_.filter(models, obj => String(obj.name).toLowerCase() == String(value).toLowerCase()), '[0].id');
+                                    console.log("Select: ", value, " Id: ", selectedModelId);
+                                    if(selectedModelId) {
+                                        setVehicleModelId({modelId: selectedModelId});
                                         fetchVehicleModifications();
                                         resetFields();
-                                    }}
-                                    getPopupContainer={trigger => trigger.parentNode}
-                                    options={models || {}}
-                                    optionValue={'id'}
-                                    optionLabel={'name'}
-                                />
+                                    }
+                                }}
+                                getPopupContainer={trigger => trigger.parentNode}
+                                showSearch
+                                dropdownMatchSelectWidth={ false }
+                            >
+                                {
+                                    (models || []).map(
+                                        option => {
+                                            return (
+                                                <AutoComplete.Option
+                                                    value={ option.name }
+                                                    key={ v4() }
+                                                >
+                                                    { option.name }
+                                                </AutoComplete.Option>
+                                            )
+                                        }
+                                    )
+                                }
+                            </DecoratedAutoComplete>
                             <h1 className={Styles.vehicleDataHint}> {fields.modelName}</h1>
                         </Col>
                         <Col span={6}></Col>
