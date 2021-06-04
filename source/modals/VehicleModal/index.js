@@ -40,10 +40,10 @@ const mapDispatchToProps = {
  * This component has three modes, each mode takes its must_have reuired parameters only(nothing more), depending on a selected mode.
  * This modal used default carbook modals "wizard", you have to call setModal(MODAL.MY_MODAL, {...modalProps}).
  * 
- * @property {string} modalProps.mode - this defines i which mode modal is running, dependinr on this parameter different forms are shown. Available one of: "ADD", "EDIT", "VIEW".
- * @property {number|string} [modalProps.clientId] - used only if you are in "ADD" mode, initial clientId
- * @property {number|string} modalProps.vehicleId - Used to fetch data about vehicle in "EDIT" and "VIEW" mode
- * @property {function onClose() } onClose - callback function, called when modal closes
+ * @property { string } modalProps.mode - this defines i which mode modal is running, dependinr on this parameter different forms are shown. Available one of: "ADD", "EDIT", "VIEW".
+ * @property { number|string } [ modalProps.clientId ] - used only if you are in "ADD" mode, initial clientId
+ * @property { number|string } modalProps.vehicleId - Used to fetch data about vehicle in "EDIT" and "VIEW" mode
+ * @property { function() } onClose - callback function, called when modal closes
  * 
  * @example <caption>Open in "ADD" mode, used to add a new vehicle</caption>
  * this.props.setModal(MODALS.VEHICLE, {mode: "ADD"});
