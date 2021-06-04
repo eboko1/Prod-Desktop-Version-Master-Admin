@@ -74,13 +74,14 @@ export function* fetchVehicleSaga() {
             yield put(setFetchingVehicle(false));
             yield put(fetchVehicleSuccess({vehicle}));
 
-            const { clientId } = vehicle;
+            if (vehicle.clientId) {
+                const { clientId } = vehicle;
 
-            const client = yield call(fetchAPI, 'GET', `clients/${clientId}`);
+                const client = yield call(fetchAPI, 'GET', `clients/${clientId}`);
 
-            yield put(setFetchingVehicleClient(false));
-            yield put(fetchVehicleSuccess({client}));
-
+                yield put(setFetchingVehicleClient(false));
+                yield put(fetchVehicleSuccess({client}));
+            }
 
         } catch (error) {
             yield put(emitError(error));
