@@ -4,7 +4,6 @@ import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 
 //Proj
-import { Numeral } from "commons";
 
 //Own
 import Styles from './styles.m.css';
@@ -51,14 +50,11 @@ export function columnsConfig() {
     };
 
     const priceCol = {
-        title:     <FormattedMessage id='order_form_table.price' />, // should be translation
+        title:     <FormattedMessage id='order_form_table.price' />,
         width:     defWidth.price,
         align:     'right',
         dataIndex: 'price',
         key:       'price',
-        render: (price) => {
-            return (<Numeral mask={"0,00.00"}>{price}</Numeral>);
-        }
     };
     
     const workTimCol = {
@@ -70,14 +66,11 @@ export function columnsConfig() {
     };
 
     const sumCol = {
-        title:     <FormattedMessage id='orders.sum' />, // should be translation
+        title:     <FormattedMessage id='orders.sum' />,
         width:     defWidth.sum,
         align:     'right',
         dataIndex: 'sum',
         key:       'sum',
-        render: (sum) => {
-            return (<Numeral mask={"0,00.00"}>{sum}</Numeral>);
-        }
     };
 
 
