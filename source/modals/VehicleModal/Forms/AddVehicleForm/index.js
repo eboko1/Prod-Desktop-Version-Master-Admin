@@ -122,7 +122,8 @@ export default class AddVehicleFormClass extends React.Component {
             modelName: fields.modelName,
         }
 
-        const showModelIsNotSelectedWarning = Boolean(isFieldTouched("modelId") && !_.get(initValues, "modelId"));
+        // if field is touched or default value was provided and model was not selected(automatically or manually) then show a warning
+        const showModelIsNotSelectedWarning = Boolean((isFieldTouched("modelId") || _.get(initValues, "modelName")) && !_.get(initValues, "modelId")) ;
 
         return (
             <Form>

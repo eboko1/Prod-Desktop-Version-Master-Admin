@@ -118,8 +118,9 @@ export default class VehicleEditFormClass extends React.Component {
             modificationId: fields.modificationId,
         }
 
-        const showModelIsNotSelectedWarning = Boolean(isFieldTouched("modelId") && !_.get(initValues, "modelId"));
-        
+        // if field is touched or default value was provided and model was not selected(automatically or manually) then show a warning
+        const showModelIsNotSelectedWarning = Boolean((isFieldTouched("modelId") || _.get(initValues, "modelName")) && !_.get(initValues, "modelId")) ;
+
         return fetchingAllVehicleData
             ? (<Spin />)
             : (
