@@ -313,7 +313,12 @@ export default class GeneralInfoTab extends Component {
                             <div className={Styles.buttonsContainer}>
                                 <Row className={Styles.row}>
                                     <Col span={6}>
-                                        <Button className={Styles.button} type="primary" onClick={() => linkTo(`${book.order}/${_.get(generalData, 'latestOrderData.orderId')}`)}>
+                                        <Button className={Styles.button} type="primary" onClick={() => {
+                                            const orderId = _.get(generalData, 'latestOrderData.orderId')
+
+                                            if (orderId)
+                                                linkTo(`${book.order}/${orderId}`)
+                                        }}>
                                             <FormattedMessage id='vehicle_page.record' />
                                             <FormattedDatetime format={DATE_FORMATT} datetime={_.get(generalData, 'latestOrderData.datetime')} />
                                         </Button>
@@ -333,7 +338,7 @@ export default class GeneralInfoTab extends Component {
 
                                 <Row className={Styles.row}>
                                     <Col span={6}>
-                                        <a href={`${_.get(generalData, 'linkData.link')}`}>
+                                        <a href={`${_.get(generalData, 'linkData.link') || '#!'}`}>
                                             <Button className={Styles.button} type="primary" >
                                                 {<FormattedMessage id='vehicle_page.calculation' />}
                                             </Button>
