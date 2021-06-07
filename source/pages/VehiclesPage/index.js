@@ -12,9 +12,11 @@ import VehiclesTable from './components/VehiclesTable';
 import {Button, Icon} from "antd";
 import {setModal, MODALS} from "core/modals/duck";
 import { VehicleModal } from "modals";
+import { fetchVehicles } from "core/vehicles/duck";
 
 const mapStateToProps = state => ({});
 const mapDispatchToProps = {
+    fetchVehicles,
     setModal,
 }
 
@@ -65,7 +67,11 @@ export default class VehiclesPage extends Component {
             >
                <VehiclesTable />
 
-                <VehicleModal/>
+                <VehicleModal
+                    onClose={() => {
+                        this.props.fetchVehicles();
+                    }}
+                />
             </Layout>
         )
     }
