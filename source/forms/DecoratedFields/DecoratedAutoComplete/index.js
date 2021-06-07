@@ -33,6 +33,8 @@ export const DecoratedAutoComplete = memo(
             showSearch,
             allowClear,
             placeholder,
+            defaultOpen,
+            open,
             notFoundContent,
             onSearch,
             onChange,
@@ -71,6 +73,8 @@ export const DecoratedAutoComplete = memo(
                 onSearch={ onSearch }
                 onSelect={ onSelect }
                 placeholder={ placeholder }
+                defaultOpen={ defaultOpen }
+                open={ open }
                 notFoundContent={
                     notFoundContent ? 
                         notFoundContent

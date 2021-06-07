@@ -42,6 +42,7 @@ export const SET_MODIFICATION_ID = `${prefix}/SET_MODIFICATION_ID`;
 
 export const SET_MAKE_NAME = `${prefix}/SET_MAKE_NAME`;
 export const SET_MODEL_NAME = `${prefix}/SET_MODEL_NAME`;
+export const SET_SELECT_TYPE = `${prefix}/SET_SELECT_TYPE`;
 
 
 
@@ -69,7 +70,8 @@ const ReducerState = {
 
         // makeName and modelName is used to set plain text from API
         makeName: undefined,
-        modelName: undefined
+        modelName: undefined,
+        selectType: undefined
     },
 
     fetchingAllVehicleData: false, //Years, makes, modifications, ....
@@ -211,6 +213,16 @@ export default function reducer(state = ReducerState, action) {
                     modelName,
                 }
             };
+
+        case SET_SELECT_TYPE:
+            const { selectType } = payload;
+            return {
+                ...state,
+                fields: {
+                    ...state.fields,
+                    selectType,
+                }
+            };
         
         case SET_CLIENT_ID:
             const {clientId} = payload;
@@ -241,6 +253,7 @@ export default function reducer(state = ReducerState, action) {
                     modificationId: undefined,
                     makeName: undefined,
                     modelName: undefined,
+                    selectType: undefined,
                 },
                 years:            [], 
                 makes:            [],
@@ -367,6 +380,11 @@ export const setVehicleMakeName = ({makeName}) => ({
 export const setVehicleModelName = ({modelName}) => ({
     type:    SET_MODEL_NAME,
     payload: { modelName },
+});
+
+export const setSelectType = ({selectType}) => ({
+    type:    SET_SELECT_TYPE,
+    payload: { selectType },
 });
 
 /**

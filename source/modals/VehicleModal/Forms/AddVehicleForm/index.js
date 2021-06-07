@@ -26,6 +26,7 @@ import {
     setVehicleModelId,
     setVehicleModificationId,
     fetchVehicleDataByVin,
+    setSelectType,
 } from '../../redux/duck';
 
 //own
@@ -61,6 +62,7 @@ const mapDispatchToProps = {
     setVehicleMakeId,
     setVehicleModelId,
     setVehicleModificationId,
+    setSelectType,
 };
 
 /**
@@ -104,6 +106,7 @@ export default class AddVehicleFormClass extends React.Component {
             setVehicleYear,
             setVehicleMakeId,
             setVehicleModelId,
+            setSelectType,
             setVehicleModificationId,
             form,
             intl: {formatMessage},
@@ -120,10 +123,13 @@ export default class AddVehicleFormClass extends React.Component {
             modificationId: fields.modificationId,
             makeName: fields.makeName,
             modelName: fields.modelName,
+            selectType: fields.selectType
         }
 
         // if field is touched or default value was provided and model was not selected(automatically or manually) then show a warning
         const showModelIsNotSelectedWarning = Boolean((isFieldTouched("modelId") || _.get(initValues, "modelName")) && !_.get(initValues, "modelId")) ;
+
+        let showModelDropdownOpened = Boolean(fields.selectType === 'NONE' || fields.selectType === 'MULTIPLE');
 
         return (
             <Form>
@@ -277,12 +283,19 @@ export default class AddVehicleFormClass extends React.Component {
                             placeholder={formatMessage({id:'add_client_form.model_placeholder'})}
                             disabled={!_.get(fields, 'makeId')}
                             getFieldDecorator={ getFieldDecorator }
-                            initialValue={_.get(_.filter(models, obj => obj.id == initValues.modelId), '[0].name') || initValues.modelName}
+                            open={showModelDropdownOpened}
+                            initialValue={
+                                _.get(_.filter(models, obj => obj.id == initValues.modelId), '[0].name')
+                                ||
+                                (fields.selectType !== 'NONE' &&
+                                    _.get(String(initValues.modelName).split(' '), '[0]')
+                                )
+                            }
                             onSelect={value => {
                                 const selectedModelId = _.get(_.filter(models, obj => String(obj.name).toLowerCase() == String(value).toLowerCase()), '[0].id');
-                                console.log("Select: ", value, " Id: ", selectedModelId);
                                 if(selectedModelId) {
                                     setVehicleModelId({modelId: selectedModelId});
+                                    setSelectType({ selectType: undefined});
                                     fetchVehicleModifications();
                                     resetFields();
                                 }
