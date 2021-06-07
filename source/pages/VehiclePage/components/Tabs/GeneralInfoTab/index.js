@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Button, Tabs, Icon, Row, Col, Spin, Popover} from 'antd';
+import {Button, Tabs, Icon, Row, Col, Spin, Popover, notification} from 'antd';
 import history from 'store/history';
 import _ from 'lodash';
 import { v4 } from 'uuid';
@@ -84,7 +84,16 @@ export default class GeneralInfoTab extends Component {
      */
     onCreateOrder = ({clientId, vehicleId}) => {
         const {user} = this.props;
-        this.props.createOrder({clientId, managerId: user.id, vehicleId});
+
+        if (!clientId) {
+            notification.error({
+                message: this.props.intl.formatMessage({
+                    id: `vehicle_page.add_owner_vehicle`,
+                })
+            })
+        } else {
+            this.props.createOrder({clientId, managerId: user.id, vehicleId});
+        }
     }
 
     onEditVehicle = ({vehicleId}) => {

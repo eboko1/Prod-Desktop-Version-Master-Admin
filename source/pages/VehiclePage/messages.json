@@ -36,8 +36,9 @@
     "vehicle_page.hint_send_via_email": "Send to the client via email",
     "vehicle_page.hint_copy_to_clipboard": "Copy to clipboard",
     "vehicle_page.hint_add_labor_to_order": "Add labor to order",
-    "vehicle_page.hint_add_detail_to_order": "Add detail to order"
-    
+    "vehicle_page.hint_add_detail_to_order": "Add detail to order",
+    "vehicle_page.add_owner_vehicle": "Add vehicle owner"
+
   },
   "ru": {
     "vehicle_page.title": "Автомобиль",
@@ -76,7 +77,8 @@
     "vehicle_page.hint_send_via_email": "Послать клиенту по мейлу",
     "vehicle_page.hint_copy_to_clipboard": "Скопировать",
     "vehicle_page.hint_add_labor_to_order": "Добавить работы в н/з",
-    "vehicle_page.hint_add_detail_to_order": "Добавить запчасти в н/з"
+    "vehicle_page.hint_add_detail_to_order": "Добавить запчасти в н/з",
+    "vehicle_page.add_owner_vehicle": "Добавьте собственника авто"
   },
   "uk": {
     "vehicle_page.title": "Автомобіль",
@@ -115,5 +117,6 @@
     "vehicle_page.hint_send_via_email": "Надіслати клієнту мейлом",
     "vehicle_page.hint_copy_to_clipboard": "Скопіювати",
     "vehicle_page.hint_add_labor_to_order": "Додати роботи в н/з",
-    "vehicle_page.hint_add_detail_to_order": "Додати запчастини в н/з"
+    "vehicle_page.hint_add_detail_to_order": "Додати запчастини в н/з",
+    "vehicle_page.add_owner_vehicle": "Додайте власника авто"
   }}

@@ -297,7 +297,10 @@ export function* fetchVehicleRecommendationsSaga() {
 export function* createOrderSaga() {
     while(true) {
         const { payload: {clientId, managerId, vehicleId} } = yield take(CREATE_ORDER);
-        if(!clientId) continue;
+
+        if (!clientId) {
+            continue;
+        }
         
         const client = yield call(fetchAPI, 'GET', `clients/${clientId}`);//Get client
         
