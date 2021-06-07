@@ -111,7 +111,7 @@ export default class VehiclePage extends Component {
                 description={<FormattedMessage id={ 'vehicle_page.description'}/>}
                 controls={<FormattedMessage id={ 'vehicle_page.controls'}/>}
             >
-                <Tabs type="card" tabPosition="right" tabBarGutter={15}>
+                <Tabs type="card" tabPosition="right">
                     <TabPane tab={<FormattedMessage id={ 'vehicle_page.general_info'}/>} key="general_info">
                         <GeneralInfoTab />
                     </TabPane>

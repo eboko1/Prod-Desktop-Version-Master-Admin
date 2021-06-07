@@ -107,7 +107,7 @@ export default class VehicleEditFormClass extends React.Component {
             intl: {formatMessage},
         } = this.props;
         
-        const { getFieldDecorator, resetFields} = form;
+        const { getFieldDecorator, resetFields, isFieldTouched} = form;
 
         const initValues = {
             number: fields.number,
@@ -117,6 +117,8 @@ export default class VehicleEditFormClass extends React.Component {
             modelId: fields.modelId,
             modificationId: fields.modificationId,
         }
+
+        const showModelIsNotSelectedWarning = Boolean(isFieldTouched("modelId") && !_.get(initValues, "modelId"));
         
         return fetchingAllVehicleData
             ? (<Spin />)
@@ -253,6 +255,7 @@ export default class VehicleEditFormClass extends React.Component {
                         </Col>
                         <Col span={12}>
                             <DecoratedAutoComplete
+                                field={ "modelId" }
                                 formItem
                                 hasFeedback
                                 rules={[
@@ -263,10 +266,13 @@ export default class VehicleEditFormClass extends React.Component {
                                         }),
                                     },
                                 ]}
+                                formItemLayout={{
+                                    validateStatus: showModelIsNotSelectedWarning? "warning": undefined,
+                                    help: showModelIsNotSelectedWarning? formatMessage({id: "vehicle_modal.warning_model_is_not_selected"}): ""
+                                }}
                                 placeholder={formatMessage({id:'add_client_form.model_placeholder'})}
                                 disabled={!_.get(fields, 'makeId')}
                                 getFieldDecorator={ getFieldDecorator }
-                                field={ "modelId" }
                                 initialValue={_.get(_.filter(models, obj => obj.id == initValues.modelId), '[0].name') || initValues.modelName}
                                 onSelect={value => {
                                     const selectedModelId = _.get(_.filter(models, obj => String(obj.name).toLowerCase() == String(value).toLowerCase()), '[0].id');
