@@ -48,6 +48,7 @@ import {
     FETCH_VEHICLE_ATTRIBUTES,
     FETCH_VEHICLE_ORDERS_LATEST,
     selectVehicleAppurtenancesSort,
+    selectVehicleAppurtenancesFilters,
     selectVehicleOrdersSort,
     fetchVehicleAttributesSuccess,
     fetchVehicleOrdersLatestSuccess,
@@ -256,10 +257,11 @@ export function* fetchVehicleAppurtenancesSaga() {
             const vehicleId = yield select(selectExpandedVehicleId);
 
             const sort = yield select(selectVehicleAppurtenancesSort);
+            const filters = yield select(selectVehicleAppurtenancesFilters);
 
             yield nprogress.start();
 
-            const {appurtenances, appurtenancesStats} = yield call(fetchAPI, 'GET', `orders/appurtenances/${vehicleId}`, { page: sort.page });
+            const {appurtenances, appurtenancesStats} = yield call(fetchAPI, 'GET', `orders/appurtenances/${vehicleId}`, { page: sort.page, ...filters });
 
             yield put(fetchVehicleAppurtenancesSuccess({appurtenances, stats: appurtenancesStats}));
         } catch (error) {

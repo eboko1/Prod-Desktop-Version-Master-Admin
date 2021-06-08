@@ -379,39 +379,51 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 vehicleAppurtenancesData: {
                     ...state.vehicleAppurtenancesData,
-                    codeQuery: appurtenancesCodeSearchQuery,
+                    filters: {
+                        ...state.vehicleAppurtenancesData.filters,
+                        codeQuery: appurtenancesCodeSearchQuery,
+                    }
                 }
             };
         
         case SET_APPURTENANCIES_BRAND_SEARCH_QUERY:
-            const { codeQuery: appurtenancesBrandSearchQuery } = payload;
+            const { brandQuery: appurtenancesBrandSearchQuery } = payload;
             return {
                 ...state,
                 vehicleAppurtenancesData: {
                     ...state.vehicleAppurtenancesData,
-                    brandQuery: appurtenancesBrandSearchQuery,
+                    filters: {
+                        ...state.vehicleAppurtenancesData.filters,
+                        brandQuery: appurtenancesBrandSearchQuery,
+                    }
                 }
             };
         
         
         case SET_APPURTENANCIES_NAME_SEARCH_QUERY:
-            const { codeQuery: appurtenancesNameSearchQuery } = payload;
+            const { nameQuery: appurtenancesNameSearchQuery } = payload;
             return {
                 ...state,
                 vehicleAppurtenancesData: {
                     ...state.vehicleAppurtenancesData,
-                    nameQuery: appurtenancesNameSearchQuery,
+                    filters: {
+                        ...state.vehicleAppurtenancesData.filters,
+                        nameQuery: appurtenancesNameSearchQuery,
+                    }
                 }
             };
         
         
         case SET_APPURTENANCIES_SUPPLIER_SEARCH_QUERY:
-            const { codeQuery: appurtenancesSupplierSearchQuery } = payload;
+            const { supplierQuery: appurtenancesSupplierSearchQuery } = payload;
             return {
                 ...state,
                 vehicleAppurtenancesData: {
                     ...state.vehicleAppurtenancesData,
-                    supplierQuery: appurtenancesSupplierSearchQuery,
+                    filters: {
+                        ...state.vehicleAppurtenancesData.filters,
+                        supplierQuery: appurtenancesSupplierSearchQuery,
+                    }
                 }
             };
         
