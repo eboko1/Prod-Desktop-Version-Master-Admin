@@ -25,7 +25,7 @@ import {
     fetchVehicleYearsSuccess,
     fetchVehicleMakesSuccess,
     fetchVehicleModelsSuccess,
-    fetchVehicleModificationsSuccess,
+    fetchVehicleModificationsSuccess, setModelDropdownState,
 } from './duck';
 
 import {
@@ -165,9 +165,12 @@ export function* fetchVehicleDataByVinSaga() {
                                 yield put(setVehicleModelId({ modelId: firstModelId }));
                                 console.log("Type is: SINGLE")
                                 yield put(setSelectType({ selectType: 'SINGLE' }));
+                                yield put(setModelDropdownState(false));
+
                             } else {
                                 console.log("Type is: MULTIPLE")
                                 yield put(setSelectType({ selectType: 'MULTIPLE' }));
+                                yield put(setModelDropdownState(true));
                             }
 
                             const { modifications } = yield call(fetchAPI, 'GET', 'vehicles_info', {year: manufacturedYear, makeId: firstMakeId, modelId: firstModelId});
@@ -176,6 +179,7 @@ export function* fetchVehicleDataByVinSaga() {
                         } else {
                             console.log("Type is: NONE")
                             yield put(setSelectType({ selectType: 'NONE' }));
+                            yield put(setModelDropdownState(true));
                         }
                     }
                 }

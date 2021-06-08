@@ -27,6 +27,7 @@ import {
     setVehicleModificationId,
     fetchVehicleDataByVin,
     setSelectType,
+    setModelDropdownState,
 } from '../../redux/duck';
 
 //own
@@ -63,6 +64,7 @@ const mapDispatchToProps = {
     setVehicleModelId,
     setVehicleModificationId,
     setSelectType,
+    setModelDropdownState,
 };
 
 /**
@@ -108,6 +110,7 @@ export default class AddVehicleFormClass extends React.Component {
             setVehicleModelId,
             setSelectType,
             setVehicleModificationId,
+            setModelDropdownState,
             form,
             intl: {formatMessage},
         } = this.props;
@@ -126,10 +129,20 @@ export default class AddVehicleFormClass extends React.Component {
             selectType: fields.selectType
         }
 
+        console.log("INit: ", initValues)
+
         // if field is touched or default value was provided and model was not selected(automatically or manually) then show a warning
         const showModelIsNotSelectedWarning = Boolean((isFieldTouched("modelId") || _.get(initValues, "modelName")) && !_.get(initValues, "modelId")) ;
 
-        let showModelDropdownOpened = Boolean(fields.selectType === 'NONE' || fields.selectType === 'MULTIPLE');
+        let showModelDropdownOpened = (fields.selectType == undefined) ? undefined : (fields.selectType === 'NONE' || fields.selectType === 'MULTIPLE');
+
+        console.log("SH: ", showModelDropdownOpened)
+
+        console.log("T: ",    _.get(_.filter(models, obj => obj.id == initValues.modelId), '[0].name')
+            ||
+            (fields.selectType !== 'NONE' &&
+                _.get(String(initValues.modelName || '').split(' '), '[0]')
+            ))
 
         return (
             <Form>
@@ -283,7 +296,12 @@ export default class AddVehicleFormClass extends React.Component {
                             placeholder={formatMessage({id:'add_client_form.model_placeholder'})}
                             disabled={!_.get(fields, 'makeId')}
                             getFieldDecorator={ getFieldDecorator }
-                            open={showModelDropdownOpened}
+                            // onFocus={() => {
+                            //     if (fields.selectType == undefined)
+                            //         setModelDropdownState(true);
+                            //{/*}}*/}
+                            // open={fields.modelDropdownState}
+                            // defaultOpen={true}
                             initialValue={
                                 _.get(_.filter(models, obj => obj.id == initValues.modelId), '[0].name')
                                 ||
@@ -296,6 +314,7 @@ export default class AddVehicleFormClass extends React.Component {
                                 if(selectedModelId) {
                                     setVehicleModelId({modelId: selectedModelId});
                                     setSelectType({ selectType: undefined});
+                                    setModelDropdownState(false);
                                     fetchVehicleModifications();
                                     resetFields();
                                 }

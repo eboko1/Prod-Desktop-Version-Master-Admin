@@ -43,6 +43,7 @@ export const SET_MODIFICATION_ID = `${prefix}/SET_MODIFICATION_ID`;
 export const SET_MAKE_NAME = `${prefix}/SET_MAKE_NAME`;
 export const SET_MODEL_NAME = `${prefix}/SET_MODEL_NAME`;
 export const SET_SELECT_TYPE = `${prefix}/SET_SELECT_TYPE`;
+export const SET_MODEL_DROPDOWN_STATE = `${prefix}/SET_MODEL_DROPDOWN_STATE`;
 
 
 
@@ -69,9 +70,10 @@ const ReducerState = {
         modificationId: undefined,
 
         // makeName and modelName is used to set plain text from API
-        makeName: undefined,
-        modelName: undefined,
-        selectType: undefined
+        makeName: '',
+        modelName: '',
+        selectType: undefined,
+        modelDropdownState: false,
     },
 
     fetchingAllVehicleData: false, //Years, makes, modifications, ....
@@ -158,6 +160,9 @@ export default function reducer(state = ReducerState, action) {
                     makeId: undefined,
                     modelId: undefined,
                     modificationId: undefined,
+                    makeName: undefined,
+                    modelName: undefined,
+                    selectType: undefined
                 }
             };
 
@@ -170,6 +175,9 @@ export default function reducer(state = ReducerState, action) {
                     makeId,
                     modelId: undefined,
                     modificationId: undefined,
+                    makeName: undefined,
+                    modelName: undefined,
+                    selectType: undefined
                 }
             };
 
@@ -181,6 +189,9 @@ export default function reducer(state = ReducerState, action) {
                     ...state.fields,
                     modelId,
                     modificationId: undefined,
+                    makeName: undefined,
+                    modelName: undefined,
+                    selectType: undefined
                 }
             };
 
@@ -223,6 +234,14 @@ export default function reducer(state = ReducerState, action) {
                     selectType,
                 }
             };
+        case SET_MODEL_DROPDOWN_STATE:
+            return {
+                ...state,
+                fields: {
+                    ...state.fields,
+                    modelDropdownState: payload
+                }
+            };
         
         case SET_CLIENT_ID:
             const {clientId} = payload;
@@ -254,6 +273,7 @@ export default function reducer(state = ReducerState, action) {
                     makeName: undefined,
                     modelName: undefined,
                     selectType: undefined,
+                    modelDropdownState: false,
                 },
                 years:            [], 
                 makes:            [],
@@ -385,6 +405,11 @@ export const setVehicleModelName = ({modelName}) => ({
 export const setSelectType = ({selectType}) => ({
     type:    SET_SELECT_TYPE,
     payload: { selectType },
+});
+
+export const setModelDropdownState = (modelDropdownState) => ({
+    type:    SET_MODEL_DROPDOWN_STATE,
+    payload: modelDropdownState,
 });
 
 /**
