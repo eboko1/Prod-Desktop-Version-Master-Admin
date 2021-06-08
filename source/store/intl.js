@@ -130,6 +130,7 @@ import ReportAnalyticsModal from 'modals/ReportModals/ReportAnalyticsModal/messa
 import ServiceInputModal from 'modals/Cashbox/ServiceInputModal/messages';
 import ServiceOutputModal from 'modals/Cashbox/ServiceOutputModal/messages';
 import VehicleModal from 'modals/VehicleModal/messages';
+import AddLaborOrDetailToOrderModal from 'modals/AddLaborOrDetailToOrderModal/messages';
 
 // components
 import StatusIcons from 'components/StatusIcons/messages';
@@ -279,6 +280,7 @@ const messages = merge.all([
     ServiceInputModal,
     ServiceOutputModal,
     VehicleModal,
+    AddLaborOrDetailToOrderModal,
 
     // components
     StatusIcons,

@@ -52,6 +52,7 @@ const mapDispatchToProps = {
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class AddLaborOrDetailToOrderModal extends Component {
+    
     componentDidMount() {
         this.props.fetchOrders();
     }
@@ -122,7 +123,7 @@ export default class AddLaborOrDetailToOrderModal extends Component {
 					}}
                     title={
                         <div className={Styles.title}>
-                           AddLaborOrDetailToOrderModal   
+                         {<FormattedMessage id='add_labor_detail_to_order_modal.title' />}
                         </div>
                     }
                 >
