@@ -129,20 +129,10 @@ export default class AddVehicleFormClass extends React.Component {
             selectType: fields.selectType
         }
 
-        console.log("INit: ", initValues)
-
         // if field is touched or default value was provided and model was not selected(automatically or manually) then show a warning
         const showModelIsNotSelectedWarning = Boolean((isFieldTouched("modelId") || _.get(initValues, "modelName")) && !_.get(initValues, "modelId")) ;
 
         let showModelDropdownOpened = (fields.selectType == undefined) ? undefined : (fields.selectType === 'NONE' || fields.selectType === 'MULTIPLE');
-
-        console.log("SH: ", showModelDropdownOpened)
-
-        console.log("T: ",    _.get(_.filter(models, obj => obj.id == initValues.modelId), '[0].name')
-            ||
-            (fields.selectType !== 'NONE' &&
-                _.get(String(initValues.modelName || '').split(' '), '[0]')
-            ))
 
         return (
             <Form>
@@ -189,7 +179,10 @@ export default class AddVehicleFormClass extends React.Component {
                             getFieldDecorator={getFieldDecorator}
                         />
                     </Col>
-                    <Col span={6}> <Button type="primary" onClick={() => fetchVehicleDataByVin()}>Get car</Button> </Col>
+                    <Col span={6}> <Button type="primary" onClick={() => {
+                        fetchVehicleDataByVin();
+                        resetFields();
+                    }}>Get car</Button> </Col>
                 </Row>
 
                 <Row className={Styles.row}>
