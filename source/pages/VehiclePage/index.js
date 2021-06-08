@@ -3,14 +3,14 @@ import React, {Component} from 'react';
 import {FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Button, Tabs, Icon, Row, Col, Input} from 'antd';
+import { Tabs, Icon } from 'antd';
 import _ from 'lodash';
 import { v4 } from 'uuid';
 
 // proj
-import {Layout, Spinner} from 'commons';
-import { FormattedDatetime } from "components";
+import {Layout, StyledButton} from 'commons';
 import book from 'routes/book';
+import history from 'store/history';
 import {
     /*-------Fetchers----*/
     fetchVehicle,
@@ -109,7 +109,17 @@ export default class VehiclePage extends Component {
             <Layout
                 title={<FormattedMessage id={ 'vehicle_page.title'}/>}
                 description={<FormattedMessage id={ 'vehicle_page.description'}/>}
-                controls={<FormattedMessage id={ 'vehicle_page.controls'}/>}
+                controls={
+                    <div>
+                        <StyledButton 
+                            onClick={() => {
+                                history.push({
+                                    pathname: `${book.vehicles}`
+                                });
+                            }}
+                        ><Icon type="rollback" /></StyledButton>
+                    </div>
+                }
             >
                 <Tabs type="card" tabPosition="right">
                     <TabPane tab={<FormattedMessage id={ 'vehicle_page.general_info'}/>} key="general_info">

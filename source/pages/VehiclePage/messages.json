@@ -2,7 +2,6 @@
   "en": {
     "vehicle_page.title": "Vehicle",
     "vehicle_page.description": "General information about the car",
-    "vehicle_page.controls": "Controls",
     "vehicle_page.general_info": "General info",
     "vehicle_page.norm_hours": "Norm hours",
     "vehicle_page.orders": "Orders",
@@ -43,7 +42,6 @@
   "ru": {
     "vehicle_page.title": "Автомобиль",
     "vehicle_page.description": "Общая информация об автомобиле",
-    "vehicle_page.controls": "Элементы управления",
     "vehicle_page.general_info": "Общая информация",
     "vehicle_page.norm_hours": "Нормо-часы",
     "vehicle_page.orders": "Ремонты",
@@ -83,7 +81,6 @@
   "uk": {
     "vehicle_page.title": "Автомобіль",
     "vehicle_page.description": "Загальна інформація по автомобілю",
-    "vehicle_page.controls": "Елементи управління",
     "vehicle_page.general_info": "Загальна інформація",
     "vehicle_page.norm_hours": "Нормо-години",
     "vehicle_page.orders": "Ремонти",
