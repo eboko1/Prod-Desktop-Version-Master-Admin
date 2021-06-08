@@ -130,9 +130,17 @@ export default class AddVehicleFormClass extends React.Component {
         }
 
         // if field is touched or default value was provided and model was not selected(automatically or manually) then show a warning
-        const showModelIsNotSelectedWarning = Boolean((isFieldTouched("modelId") || _.get(initValues, "modelName")) && !_.get(initValues, "modelId")) ;
+        const showModelIsNotSelectedWarning = Boolean((isFieldTouched("modelId") || _.get(initValues, "modelName")) && !_.get(initValues, "modelId"));
 
-        let showModelDropdownOpened = (fields.selectType == undefined) ? undefined : (fields.selectType === 'NONE' || fields.selectType === 'MULTIPLE');
+        const sortedYears = (years || []).sort((year1, year2) => {
+            if (year1 > year2) {
+                return -1;
+            } else if (year1 < year2) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;
+        });
 
         return (
             <Form>
@@ -215,7 +223,7 @@ export default class AddVehicleFormClass extends React.Component {
                                     resetFields();
                                 }}
                                 getPopupContainer={trigger => trigger.parentNode}
-                                options={_.map((years || []).reverse(), year => ({year: String(year)}))} //Convert array of years into array of objects each of them contains "year" field of type String(else error will be thrown)
+                                options={_.map(sortedYears, year => ({year: String(year)}))} //Convert array of years into array of objects each of them contains "year" field of type String(else error will be thrown)
                                 optionValue={'year'}
                                 optionLabel={'year'}
                             />
