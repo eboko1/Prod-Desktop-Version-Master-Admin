@@ -26,7 +26,7 @@ import Styles from './styles.m.css';
 /**
  * @property {*} [props.searchQuery] - Initial client phone number, will be used if provided proper value
  * @property {*} [props.modalProps.initialPhoneNumber] - Initial client phone number, will be used if provided proper value
- * @property {function} [onSubmit] - Callbeck when submit button cliekced
+ * @property {Function()} [onSubmit] - Callbeck when submit button cliekced
  */
 @injectIntl
 @withReduxForm2({
@@ -55,7 +55,7 @@ export default class AddClientModal extends Component {
         const { setModal, saveModal } = this.props;
 
         saveModal();
-        setModal(MODALS.VEHICLE, {mode: "ADD"});
+        setModal(MODALS.VEHICLE, {mode: "ADD", autoSubmit: false});
     }
 
     /**
@@ -138,11 +138,15 @@ export default class AddClientModal extends Component {
             isMobile,
             vehicleTypes,
             modalProps,
+
+            addClientVehicle,
+
             intl: { formatMessage }
         } = this.props;
 
         //Get initial phone from props or modalProps
-        const clientSearchQuery = searchQuery || _.get(modalProps, 'initialPhoneNumber');            
+        const clientSearchQuery = searchQuery || _.get(modalProps, 'initialPhoneNumber');
+        console.log("Vehicles: ", vehicles);     
 
         return (
             <Modal
@@ -154,7 +158,6 @@ export default class AddClientModal extends Component {
                 cancelText={ <FormattedMessage id='cancel' /> }
                 okText={ <FormattedMessage id='add' /> }
                 wrapClassName={ Styles.addClientModal }
-                // centered
                 visible={ visible === MODALS.ADD_CLIENT }
                 onOk={ () => this.onSubmit() }
                 onCancel={ () => resetModal() }
@@ -177,13 +180,14 @@ export default class AddClientModal extends Component {
                         vehicles={ vehicles }
                     />
                 ) }
-                {/* <AddClientVehicleForm
+                <AddClientVehicleForm
                     vehicleTypes={vehicleTypes}
                     addClientVehicle={ this.props.addClientVehicle }
-                /> */}
+                />
 
                 <VehicleModal
                     onClose={() => this.onCloseVehicleModal()}
+                    onSubmit={({ vehicle }) => addClientVehicle(vehicle) }
                 />
             </Modal>
         );
