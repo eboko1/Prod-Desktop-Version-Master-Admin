@@ -319,7 +319,11 @@ export default class VehicleEditFormClass extends React.Component {
                                     )
                                 }
                             </DecoratedAutoComplete>
-                            <h1 className={Styles.vehicleDataHint}> {fields.modelName}</h1>
+
+                            <h1 className={Styles.vehicleDataHint}>
+                                <b className={Styles.vehicleDataHintFirst}>{String(fields.modelName || '').split(' ')[0]}</b>
+                                {String(fields.modelName || '').split(' ').slice(1).join(' ')}
+                            </h1>
                         </Col>
                         <Col span={6}></Col>
                     </Row>
