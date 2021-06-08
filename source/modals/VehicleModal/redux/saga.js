@@ -17,6 +17,7 @@ import {
     setFetchingAllVehicleData,
     setVehicleMakeName,
     setVehicleModelName,
+    setSelectType,
 
     selectFields,
 
@@ -150,6 +151,29 @@ export function* fetchVehicleDataByVinSaga() {
 
                         const {models} = yield call(fetchAPI, 'GET', 'vehicles_info', {year: manufacturedYear, makeId: firstMakeId});
                         yield put(fetchVehicleModelsSuccess({models}));
+
+                        const filteredModels = _.filter(models, (model) => {
+                            const modelName = String(model.name).toLowerCase();
+
+                            return modelName.includes(carModelName.toLowerCase()) || carModelName.includes(modelName.toLowerCase());
+                        });
+
+                        const firstModelId = _.get(filteredModels, '[0].id');
+
+                        if (firstModelId) {
+                            if (filteredModels.length == 1) {
+                                yield put(setVehicleModelId({ modelId: firstModelId }));
+                                yield put(setSelectType({ selectType: 'SINGLE' }));
+                            } else {
+                                yield put(setSelectType({ selectType: 'MULTIPLE' }));
+                            }
+
+                            const { modifications } = yield call(fetchAPI, 'GET', 'vehicles_info', {year: manufacturedYear, makeId: firstMakeId, modelId: firstModelId});
+
+                            yield put(fetchVehicleModificationsSuccess({modifications}));
+                        } else {
+                            yield put(setSelectType({ selectType: 'NONE' }));
+                        }
                     }
                 }
             }
