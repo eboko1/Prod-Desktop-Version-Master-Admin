@@ -3,7 +3,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import {v4} from 'uuid';
-import { Button, Popover } from 'antd';
+import { Button, Input, Popover } from 'antd';
 import { images } from 'utils';
 
 //Proj
@@ -35,7 +35,11 @@ const defWidth = {
 export function columnsConfig(props) {
 
     const {
-        onAddDetailToOrder
+        onAddDetailToOrder,
+        onCodeSearch,
+        onBrandSearch,
+        onNameSearch,
+        onSupplierSearch,
     } = props;
 
     const orderCol = {
@@ -44,9 +48,9 @@ export function columnsConfig(props) {
         dataIndex: 'orderNum',
         key:       'orderNum',
         render:    (orderNum) => (
-            <>
+            <div>
                 {orderNum}
-            </>
+            </div>
         ),
     };
 
@@ -64,28 +68,64 @@ export function columnsConfig(props) {
 
 
     const codeCol = {
-        title:     <FormattedMessage id='order_form_table.product_code' />,
+        title:     () => {
+            return (
+                <div>
+                    <FormattedMessage id='order_form_table.product_code' />
+                    <Input
+                        onChange={(e) => onCodeSearch(_.get(e, 'target.value'))}
+                    />
+                </div>
+            )
+        },
         width:     defWidth.code,
         dataIndex: 'code',
         key:       'code',
     };
 
    const brandNameCol = {
-        title:     <FormattedMessage id='order_form_table.brand' />,
+        title:     () => {
+            return (
+                <div>
+                    <FormattedMessage id='order_form_table.brand' />
+                    <Input
+                        onChange={(e) => onBrandSearch(_.get(e, 'target.value'))}
+                    />
+                </div>
+            )
+        },
         width:     defWidth.brandName,
         dataIndex: 'supplierBrandName',
         key:       'supplierBrandName',
     };
 
     const nameCol = {
-        title:     <FormattedMessage id='storage.product_name' />,
+        title:     () => {
+            return (
+                <div>
+                    <FormattedMessage id='storage.product_name' />
+                    <Input
+                        onChange={(e) => onNameSearch(_.get(e, 'target.value'))}
+                    />
+                </div>
+            )
+        },
         width:     defWidth.name,
         dataIndex: 'name',
         key:       'name',
     };
 
     const supplierNameCol = {
-        title:     <FormattedMessage id='storage.business_supplier' />,
+        title:     () => {
+            return (
+                <div>
+                    <FormattedMessage id='storage.business_supplier' />
+                    <Input
+                        onChange={(e) => onSupplierSearch(_.get(e, 'target.value'))}
+                    />
+                </div>
+            )
+        },
         width:     defWidth.supplierName,
         dataIndex: 'supplierName',
         key:       'supplierName',

@@ -16,6 +16,11 @@ import {
     selectVehicleAppurtenancesFetching,
 
     setPageAppurtenances,
+    setAppurtenancesCodeSearchQuery,
+    setAppurtenancesBrandSearchQuery,
+    setAppurtenancesNameSearchQuery,
+    setAppurtenancesSupplierSearchQuery,
+
 } from 'core/vehicles/duck';
 
 //Own
@@ -33,12 +38,46 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     setPageAppurtenances,
     setModal,
+    setAppurtenancesCodeSearchQuery,
+    setAppurtenancesBrandSearchQuery,
+    setAppurtenancesNameSearchQuery,
+    setAppurtenancesSupplierSearchQuery,
 }
 
 @withRouter
 @injectIntl
 @connect( mapStateToProps, mapDispatchToProps)
 export default class VehicleAppurtenancesTable extends React.Component {
+    constructor(props) {
+        super(props);
+
+        const {
+            setAppurtenancesCodeSearchQuery,
+            setAppurtenancesBrandSearchQuery,
+            setAppurtenancesNameSearchQuery,
+            setAppurtenancesSupplierSearchQuery,
+        } = props;
+
+        /** Search appurtenances by code */
+        this.handleCodeSearch = _.debounce(value => {
+            setAppurtenancesCodeSearchQuery({codeQuery: value.replace(/[+()]/g,'')});
+        }, 1000).bind(this);
+
+        /** Search appurtenances by brand */
+        this.handleBrandSearch = _.debounce(value => {
+            setAppurtenancesBrandSearchQuery({brandQuery: value.replace(/[+()]/g,'')});
+        }, 1000).bind(this);
+
+        /** Search appurtenances by name */
+        this.handleNameSearch = _.debounce(value => {
+            setAppurtenancesNameSearchQuery({nameQuery: value.replace(/[+()]/g,'')});
+        }, 1000).bind(this);
+
+        /** Search appurtenances by supplier */
+        this.handleSupplierSearch = _.debounce(value => {
+            setAppurtenancesSupplierSearchQuery({supplierQuery: value.replace(/[+()]/g,'')});
+        }, 1000).bind(this);
+    }
 
     onAddDetailToOrder = ({detail}) => {
         const { match: {params: {id}}} = this.props;
@@ -50,10 +89,17 @@ export default class VehicleAppurtenancesTable extends React.Component {
             appurtenances,
             stats,
             sort,
-            intl: {formatMessage},
             setPageAppurtenances,
             fetching,
         } = this.props;
+
+        const columns = columnsConfig({
+            onAddDetailToOrder: this.onAddDetailToOrder,
+            onCodeSearch: this.handleCodeSearch,
+            onBrandSearch: this.handleBrandSearch,
+            onNameSearch: this.handleNameSearch,
+            onSupplierSearch: this.handleSupplierSearch,
+        });
 
         const pagination = {
             pageSize: 25,
@@ -75,7 +121,7 @@ export default class VehicleAppurtenancesTable extends React.Component {
                     className={Styles.table}
                     dataSource={appurtenances}
                     pagination={pagination}
-                    columns={columnsConfig({onAddDetailToOrder: this.onAddDetailToOrder})}
+                    columns={columns}
                     scroll={ { x: 'auto', y: '80vh' } }
                     rowKey={() => v4()}
                     bordered

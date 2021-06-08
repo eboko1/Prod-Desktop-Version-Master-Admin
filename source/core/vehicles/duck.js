@@ -59,6 +59,12 @@ export const SET_NORM_HOURS_SEARCH_QUERY = `${prefix}/SET_NORM_HOURS_SEARCH_QUER
 
 export const SET_EXPANDED_VEHICLE_ID = `${prefix}/SET_EXPANDED_VEHICLE_ID`;
 
+/* -------------------------Appurtenances---------------------------------- */
+export const SET_APPURTENANCES_CODE_SEARCH_QUERY = `${prefix}/SET_APPURTENANCES_CODE_SEARCH_QUERY`;
+export const SET_APPURTENANCIES_BRAND_SEARCH_QUERY = `${prefix}/SET_APPURTENANCIES_BRAND_SEARCH_QUERY`;
+export const SET_APPURTENANCIES_NAME_SEARCH_QUERY = `${prefix}/SET_APPURTENANCIES_NAME_SEARCH_QUERY`;
+export const SET_APPURTENANCIES_SUPPLIER_SEARCH_QUERY = `${prefix}/SET_APPURTENANCIES_SUPPLIER_SEARCH_QUERY`;
+
 
 /** Reducer **/
 
@@ -119,7 +125,10 @@ const ReducerState = {
             page: 1
         },
         filters: {
-            query: undefined,
+            codeQuery: undefined,
+            brandQuery: undefined,
+            nameQuery: undefined,
+            supplierQuery: undefined,
         },
         fetching: false,
     },
@@ -363,6 +372,49 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 expandedVehicleId: vehicleId
             };
+        
+        case SET_APPURTENANCES_CODE_SEARCH_QUERY:
+            const { codeQuery: appurtenancesCodeSearchQuery } = payload;
+            return {
+                ...state,
+                vehicleAppurtenancesData: {
+                    ...state.vehicleAppurtenancesData,
+                    codeQuery: appurtenancesCodeSearchQuery,
+                }
+            };
+        
+        case SET_APPURTENANCIES_BRAND_SEARCH_QUERY:
+            const { codeQuery: appurtenancesBrandSearchQuery } = payload;
+            return {
+                ...state,
+                vehicleAppurtenancesData: {
+                    ...state.vehicleAppurtenancesData,
+                    brandQuery: appurtenancesBrandSearchQuery,
+                }
+            };
+        
+        
+        case SET_APPURTENANCIES_NAME_SEARCH_QUERY:
+            const { codeQuery: appurtenancesNameSearchQuery } = payload;
+            return {
+                ...state,
+                vehicleAppurtenancesData: {
+                    ...state.vehicleAppurtenancesData,
+                    nameQuery: appurtenancesNameSearchQuery,
+                }
+            };
+        
+        
+        case SET_APPURTENANCIES_SUPPLIER_SEARCH_QUERY:
+            const { codeQuery: appurtenancesSupplierSearchQuery } = payload;
+            return {
+                ...state,
+                vehicleAppurtenancesData: {
+                    ...state.vehicleAppurtenancesData,
+                    supplierQuery: appurtenancesSupplierSearchQuery,
+                }
+            };
+        
 
         case FETCH_VEHICLE_ORDERS_SUCCESS:
             const {orders, stats: vehicleOrdersStats} = payload;
@@ -776,5 +828,49 @@ export const setExpandedVehicleId = ({vehicleId}) => {
         });
 
         vehicleId && (vehicleId != "") && dispatch(fetchVehicleOrders()); //Fetch only if Id is valid
+    }
+};
+
+export const setAppurtenancesCodeSearchQuery = ({codeQuery}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_APPURTENANCES_CODE_SEARCH_QUERY,
+            payload: {codeQuery}
+        });
+
+        dispatch(fetchVehicleAppurtenances());
+    }
+};
+
+export const setAppurtenancesBrandSearchQuery = ({brandQuery}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_APPURTENANCIES_BRAND_SEARCH_QUERY,
+            payload: {brandQuery}
+        });
+
+        dispatch(fetchVehicleAppurtenances());
+    }
+};
+
+export const setAppurtenancesNameSearchQuery = ({nameQuery}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_APPURTENANCIES_NAME_SEARCH_QUERY,
+            payload: {nameQuery}
+        });
+
+        dispatch(fetchVehicleAppurtenances());
+    }
+};
+
+export const setAppurtenancesSupplierSearchQuery = ({supplierQuery}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_APPURTENANCIES_SUPPLIER_SEARCH_QUERY,
+            payload: {supplierQuery}
+        });
+
+        dispatch(fetchVehicleAppurtenances());
     }
 };
