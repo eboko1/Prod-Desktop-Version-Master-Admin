@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
@@ -15,6 +15,7 @@ import {
 
 import { MODALS, setModal, saveModal, loadModal } from 'core/modals/duck';
 import { VehicleModal } from 'modals';
+import { StyledButton } from 'commons';
 
 import { AbstractClientForm } from 'forms';
 import { ClientsVehiclesTable } from 'forms/OrderForm/OrderFormTables';
@@ -169,8 +170,15 @@ export default class AddClientModal extends Component {
                     wrappedComponentRef={ this.props.wrappedComponentRef }
                     addClientFormData={ addClientFormData }
                 />
-
-                <Button onClick={() => this.onOpenVehicleModal()}>Add a new vehicle</Button>
+                
+                <div className={Styles.addVehicleButtonCont} >
+                    <StyledButton
+                        type={"primary"}
+                        onClick={() => this.onOpenVehicleModal()}
+                    >
+                        Add a new vehicle
+                    </StyledButton>
+                </div>
 
                 { !_.isEmpty(vehicles) && (
                     <ClientsVehiclesTable
