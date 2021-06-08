@@ -288,7 +288,7 @@ export default class VehicleEditFormClass extends React.Component {
                                     _.get(_.filter(models, obj => obj.id == initValues.modelId), '[0].name')
                                     ||
                                     (fields.selectType !== 'NONE' &&
-                                        _.get(String(initValues.modelName).split(' '), '[0]')
+                                        _.get(String(initValues.modelName || '').split(' '), '[0]')
                                     )
                                 }
                                 onSelect={value => {
@@ -319,7 +319,11 @@ export default class VehicleEditFormClass extends React.Component {
                                     )
                                 }
                             </DecoratedAutoComplete>
-                            <h1 className={Styles.vehicleDataHint}> {fields.modelName}</h1>
+
+                            <h1 className={Styles.vehicleDataHint}>
+                                <b className={Styles.vehicleDataHintFirst}>{String(fields.modelName || '').split(' ')[0]}</b>
+                                {String(fields.modelName || '').split(' ').slice(1).join(' ')}
+                            </h1>
                         </Col>
                         <Col span={6}></Col>
                     </Row>

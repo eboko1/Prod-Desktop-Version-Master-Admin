@@ -189,9 +189,6 @@ export default function reducer(state = ReducerState, action) {
                     ...state.fields,
                     modelId,
                     modificationId: undefined,
-                    makeName: undefined,
-                    modelName: undefined,
-                    selectType: undefined
                 }
             };
 
@@ -242,7 +239,7 @@ export default function reducer(state = ReducerState, action) {
                     modelDropdownState: payload
                 }
             };
-        
+
         case SET_CLIENT_ID:
             const {clientId} = payload;
             return {
