@@ -1,3 +1,10 @@
+/* 
+    This is common component, it provides functionality to work with modals,
+    you can open one modal at a time only, but new extended functionality allows you 
+    to save modal's state and open a new one. Then you can load hiden modal and work with that one
+    without losing any data.
+*/
+
 /* Constants */
 export const moduleName = 'modals';
 const prefix = `cpb/${moduleName}`;

@@ -16,7 +16,7 @@ import {
 import { MODALS, setModal, saveModal, loadModal } from 'core/modals/duck';
 import { VehicleModal } from 'modals';
 
-import { AbstractClientForm, AddClientVehicleForm } from 'forms';
+import { AbstractClientForm } from 'forms';
 import { ClientsVehiclesTable } from 'forms/OrderForm/OrderFormTables';
 import { withReduxForm2 } from 'utils';
 
@@ -24,6 +24,7 @@ import { withReduxForm2 } from 'utils';
 import Styles from './styles.m.css';
 
 /**
+ * This modal is used to add a new client with or without vehicles.
  * @property {*} [props.searchQuery] - Initial client phone number, will be used if provided proper value
  * @property {*} [props.modalProps.initialPhoneNumber] - Initial client phone number, will be used if provided proper value
  * @property {Function()} [onSubmit] - Callbeck when submit button cliekced
@@ -146,7 +147,6 @@ export default class AddClientModal extends Component {
 
         //Get initial phone from props or modalProps
         const clientSearchQuery = searchQuery || _.get(modalProps, 'initialPhoneNumber');
-        console.log("Vehicles: ", vehicles);     
 
         return (
             <Modal
@@ -180,10 +180,6 @@ export default class AddClientModal extends Component {
                         vehicles={ vehicles }
                     />
                 ) }
-                <AddClientVehicleForm
-                    vehicleTypes={vehicleTypes}
-                    addClientVehicle={ this.props.addClientVehicle }
-                />
 
                 <VehicleModal
                     onClose={() => this.onCloseVehicleModal()}

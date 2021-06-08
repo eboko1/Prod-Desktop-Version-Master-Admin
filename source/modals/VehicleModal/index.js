@@ -45,9 +45,10 @@ const mapDispatchToProps = {
 };
 
 /**
- * This modal is self sufficient component. It takes few parameters to work with and then it fetches, proceed and sends all data automatically.
- * This component has three modes, each mode takes its must_have reuired parameters only(nothing more), depending on a selected mode.
- * This modal used default carbook modals "wizard", you have to call setModal(MODAL.MY_MODAL, {...modalProps}).
+ * This modal is self sufficient component(but it can be used with callbacks).
+ * It takes a few parameters to work with and then it fetches, proceed and sends all data automatically(you can disable autoSubmit).
+ * This component has three modes, each mode takes its must_have parameters(depending on a selected mode).
+ * This modal uses default carbook modals "wizard", you have to call setModal(MODAL.MY_MODAL, {...modalProps}).
  * 
  * @property { string } modalProps.mode                - this defines i which mode modal is running, dependinr on this parameter different forms are shown. Available one of: "ADD", "EDIT", "VIEW".
  * @property { number|string } [ modalProps.clientId ] - used only if you are in "ADD" mode, initial clientId
