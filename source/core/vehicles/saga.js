@@ -42,6 +42,7 @@ import {
     FETCH_VEHICLE_NORM_HOURS,
     FETCH_VEHICLE_LABORS,
     CREATE_ORDER,
+    DELETE_VEHICLE,
     FETCH_VEHICLE_APPURTENANCES,
     FETCH_VEHICLE_RECOMMENDATIONS,
     FETCH_VEHICLE_ATTRIBUTES,
@@ -345,6 +346,27 @@ export function* createOrderSaga() {
     }
 }
 
+export function* deleteVehicleSaga() {
+    while (true) {
+        const {
+            payload: { vehicleId },
+        } = yield take(DELETE_VEHICLE);
+
+        try {
+            yield call(
+                fetchAPI,
+                'DELETE',
+                `clients/vehicles/${vehicleId}`,
+                null,
+                null,
+                { handleErrorInternally: true },
+            );
+        } catch ({ response, status }) {
+            yield put(emitError({ response, status }));
+        }
+    }
+}
+
 export function* saga() {
     yield all([
         call(fetchVehicleSaga),
@@ -357,5 +379,6 @@ export function* saga() {
         call(fetchVehicleAppurtenancesSaga),
         call(fetchVehicleRecommendationsSaga),
         call(createOrderSaga),
+        call(deleteVehicleSaga),
     ]);
 }

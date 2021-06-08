@@ -29,8 +29,8 @@ import {
     selectFetchingVehicleAttributes,
     selectFetchingVehicleClient,
     selectFetchingVehicle,
+    deleteVehicle,
 } from 'core/vehicles/duck';
-import { deleteClientVehicle } from "core/client/duck";
 
 // own
 import Styles from './styles.m.css';
@@ -61,7 +61,7 @@ const mapDispatchToProps = {
     fetchVehicleOrdersLatest,
 
     createOrder,
-    deleteClientVehicle
+    deleteVehicle
 };
 
 @withRouter
@@ -122,7 +122,8 @@ export default class GeneralInfoTab extends Component {
             fetchingVehicle,
             fetchingVehicleClient,
             fetchingOrdersLatest,
-            fetchingVehicleAttributes
+            fetchingVehicleAttributes,
+            deleteVehicle
         } = this.props;
 
         return (
@@ -173,7 +174,7 @@ export default class GeneralInfoTab extends Component {
                                             className={Styles.deleteIcon}
                                             type="delete"
                                             onClick={() => {
-                                                deleteClientVehicle(_.get(client, 'clientId'), _.get(vehicle, 'id'));
+                                                deleteVehicle({vehicleId: _.get(vehicle, 'id')});
                                                 history.push({
                                                     pathname: `${book.vehicles}`
                                                 });

@@ -31,6 +31,7 @@ export const FETCH_VEHICLE_RECOMMENDATIONS = `${prefix}/FETCH_VEHICLE_RECOMMENDA
 export const FETCH_VEHICLE_RECOMMENDATIONS_SUCCESS = `${prefix}/FETCH_VEHICLE_RECOMMENDATIONS_SUCCESS`;
 
 export const CREATE_ORDER = `${prefix}/CREATE_ORDER`;
+export const DELETE_VEHICLE = `${prefix}/DELETE_VEHICLE`;
 
 export const SET_FETCHING_VEHICLE = `${prefix}/SET_FETCHING_VEHICLE`;
 export const SET_FETCHING_VEHICLE_ORDERS = `${prefix}/SET_FETCHING_VEHICLE_ORDERS`;
@@ -609,9 +610,14 @@ export const fetchVehicleRecommendationsSuccess = ({recommendations, stats}) => 
  * @param {*} params.clientId - id of a client
  * @param {*} params.managerId - id of a manager who created an order(current user)
  */
- export const createOrder = ({clientId, managerId, vehicleId}) => ({
+export const createOrder = ({clientId, managerId, vehicleId}) => ({
     type: CREATE_ORDER,
     payload: {clientId, managerId, vehicleId}
+});
+
+export const deleteVehicle = ({vehicleId}) => ({
+    type: DELETE_VEHICLE,
+    payload: {vehicleId}
 });
 
 /** Set filtering page, automatically fetches vehicles */
