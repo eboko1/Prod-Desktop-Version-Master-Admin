@@ -277,61 +277,71 @@ export default class AddVehicleFormClass extends React.Component {
                         </div>
                     </Col>
                     <Col span={12}>
-                        <DecoratedAutoComplete
-                            field={ "modelId" }
-                            formItem
-                            hasFeedback
-                            rules={[
-                                {
-                                    required: true,
-                                    message: formatMessage({
-                                        id: "required_field",
-                                    }),
-                                },
-                            ]}
-                            formItemLayout={{
-                                validateStatus: showModelIsNotSelectedWarning? "warning": undefined,
-                                help: showModelIsNotSelectedWarning? formatMessage({id: "vehicle_modal.warning_model_is_not_selected"}): ""
-                            }}
-                            placeholder={formatMessage({id:'add_client_form.model_placeholder'})}
-                            disabled={!_.get(fields, 'makeId')}
-                            getFieldDecorator={ getFieldDecorator }
-                            initialValue={
-                                _.get(_.filter(models, obj => obj.id == initValues.modelId), '[0].name')
-                                ||
-                                (fields.selectType !== 'NONE' &&
-                                    _.get(String(initValues.modelName || '').split(' '), '[0]')
-                                )
-                            }
-                            onSelect={value => {
-                                const selectedModelId = _.get(_.filter(models, obj => String(obj.name).toLowerCase() == String(value).toLowerCase()), '[0].id');
-                                if(selectedModelId) {
-                                    setVehicleModelId({modelId: selectedModelId});
-                                    setSelectType({ selectType: undefined});
-                                    setModelDropdownState(false);
-                                    fetchVehicleModifications();
-                                    resetFields();
+
+                        <div onClick={() => {
+                            if (fields.selectType == undefined)
+                                setModelDropdownState(!fields.modelDropdownState);
+                        }}>
+                            <DecoratedAutoComplete
+                                field={ "modelId" }
+                                formItem
+                                hasFeedback
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: formatMessage({
+                                            id: "required_field",
+                                        }),
+                                    },
+                                ]}
+                                formItemLayout={{
+                                    validateStatus: showModelIsNotSelectedWarning? "warning": undefined,
+                                    help: showModelIsNotSelectedWarning? formatMessage({id: "vehicle_modal.warning_model_is_not_selected"}): ""
+                                }}
+                                placeholder={formatMessage({id:'add_client_form.model_placeholder'})}
+                                disabled={!_.get(fields, 'makeId')}
+                                getFieldDecorator={ getFieldDecorator }
+                                autoCompleteLayout={{
+                                    open: fields.modelDropdownState
+                                }}
+                                initialValue={
+                                    _.get(_.filter(models, obj => obj.id == initValues.modelId), '[0].name')
+                                    ||
+                                    (fields.selectType !== 'NONE' &&
+                                        _.get(String(initValues.modelName || '').split(' '), '[0]')
+                                    )
                                 }
-                            }}
-                            getPopupContainer={trigger => trigger.parentNode}
-                            showSearch
-                            dropdownMatchSelectWidth={ false }
-                        >
-                            {
-                                (models || []).map(
-                                    option => {
-                                        return (
-                                            <AutoComplete.Option
-                                                value={ option.name }
-                                                key={ v4() }
-                                            >
-                                                { option.name }
-                                            </AutoComplete.Option>
-                                        )
+                                onSelect={value => {
+                                    const selectedModelId = _.get(_.filter(models, obj => String(obj.name).toLowerCase() == String(value).toLowerCase()), '[0].id');
+                                    if(selectedModelId) {
+                                        setVehicleModelId({modelId: selectedModelId});
+                                        setSelectType({ selectType: undefined});
+                                        setModelDropdownState(false);
+                                        fetchVehicleModifications();
+                                        resetFields();
                                     }
-                                )
-                            }
-                        </DecoratedAutoComplete>
+                                }}
+                                getPopupContainer={trigger => trigger.parentNode}
+                                showSearch
+                                dropdownMatchSelectWidth={ false }
+                            >
+                                {
+                                    (models || []).map(
+                                        option => {
+                                            return (
+                                                <AutoComplete.Option
+                                                    value={ option.name }
+                                                    key={ v4() }
+                                                >
+                                                    { option.name }
+                                                </AutoComplete.Option>
+                                            )
+                                        }
+                                    )
+                                }
+                            </DecoratedAutoComplete>
+
+                        </div>
                         <h1 className={Styles.vehicleDataHint}>
                             <b className={Styles.vehicleDataHintFirst}>{String(fields.modelName || '').split(' ')[0]}</b>
                             {String(fields.modelName || '').split(' ').slice(1).join(' ')}

@@ -8,6 +8,10 @@ import { v4 } from 'uuid';
 const Option = AutoComplete.Option;
 const FormItem = Form.Item;
 
+/**
+ * @property {Object} [autoCompleteLayout] - access AutoComplete component from antd
+ * @property {Object} [formItemLayout] - access FormItem component from antd
+ */
 export const DecoratedAutoComplete = memo(
     forwardRef((props, ref) => {
         const {
@@ -48,6 +52,7 @@ export const DecoratedAutoComplete = memo(
             labelInValue,
             optionLabelProp,
             getItemValue,
+            autoCompleteLayout,
 
             cnStyles,
             dropdownMatchSelectWidth,
@@ -110,6 +115,8 @@ export const DecoratedAutoComplete = memo(
                                   .toLowerCase()
                                   .indexOf(input.toLowerCase()) >= 0
                 }
+
+                { ...autoCompleteLayout }
             >
                 { children
                     ? children
