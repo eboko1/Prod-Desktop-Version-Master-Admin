@@ -5,6 +5,8 @@ import _ from 'lodash';
 
 //proj
 import { fetchAPI } from 'utils';
+import book from 'routes/book';
+import history from 'store/history';
 
 // own
 import {
@@ -250,11 +252,18 @@ export function* createVehicleSaga() {
         };
 
         //Create vehicle for user if we have its id else just create a vehicle
-        if(clientId) {
-            yield call( fetchAPI, 'POST', `clients/${clientId}/vehicles`, null, payload );
-        } else {
-            yield call( fetchAPI, 'POST', `clients/add_vehicle`, null, payload );
-        }
+        const { inserted } = yield call(
+            fetchAPI,
+            'POST',
+            clientId? `clients/${clientId}/vehicles`: `clients/add_vehicle`,
+            null,
+            payload
+        );
+
+        //Redirect to vehicle page
+        history.push({
+            pathname: `${book.vehicle}/${inserted}`
+        });
     }
 }
 

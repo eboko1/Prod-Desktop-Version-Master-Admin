@@ -4,13 +4,13 @@ import {FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {Button, Tabs, Icon, Row, Col, Spin, Popover, notification} from 'antd';
-import history from 'store/history';
 import _ from 'lodash';
 import { v4 } from 'uuid';
 
 // proj
 import { FormattedDatetime } from "components";
 import book from 'routes/book';
+import history from 'store/history';
 import { VehicleModal } from 'modals';
 import {setModal, MODALS} from 'core/modals/duck';
 import {
