@@ -283,12 +283,11 @@ export default class AddVehicleFormClass extends React.Component {
                             placeholder={formatMessage({id:'add_client_form.model_placeholder'})}
                             disabled={!_.get(fields, 'makeId')}
                             getFieldDecorator={ getFieldDecorator }
-                            open={showModelDropdownOpened}
                             initialValue={
                                 _.get(_.filter(models, obj => obj.id == initValues.modelId), '[0].name')
                                 ||
                                 (fields.selectType !== 'NONE' &&
-                                    _.get(String(initValues.modelName).split(' '), '[0]')
+                                    _.get(String(initValues.modelName || '').split(' '), '[0]')
                                 )
                             }
                             onSelect={value => {

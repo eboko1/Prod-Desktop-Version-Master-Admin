@@ -158,6 +158,9 @@ export default function reducer(state = ReducerState, action) {
                     makeId: undefined,
                     modelId: undefined,
                     modificationId: undefined,
+                    makeName: undefined,
+                    modelName: undefined,
+                    selectType: undefined,
                 }
             };
 
@@ -170,6 +173,9 @@ export default function reducer(state = ReducerState, action) {
                     makeId,
                     modelId: undefined,
                     modificationId: undefined,
+                    makeName: undefined,
+                    modelName: undefined,
+                    selectType: undefined,
                 }
             };
 

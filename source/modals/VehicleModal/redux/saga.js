@@ -163,10 +163,8 @@ export function* fetchVehicleDataByVinSaga() {
                         if (firstModelId) {
                             if (filteredModels.length == 1) {
                                 yield put(setVehicleModelId({ modelId: firstModelId }));
-                                console.log("Type is: SINGLE")
                                 yield put(setSelectType({ selectType: 'SINGLE' }));
                             } else {
-                                console.log("Type is: MULTIPLE")
                                 yield put(setSelectType({ selectType: 'MULTIPLE' }));
                             }
 
@@ -174,7 +172,6 @@ export function* fetchVehicleDataByVinSaga() {
 
                             yield put(fetchVehicleModificationsSuccess({modifications}));
                         } else {
-                            console.log("Type is: NONE")
                             yield put(setSelectType({ selectType: 'NONE' }));
                         }
                     }

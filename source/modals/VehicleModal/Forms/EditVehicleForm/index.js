@@ -288,7 +288,7 @@ export default class VehicleEditFormClass extends React.Component {
                                     _.get(_.filter(models, obj => obj.id == initValues.modelId), '[0].name')
                                     ||
                                     (fields.selectType !== 'NONE' &&
-                                        _.get(String(initValues.modelName).split(' '), '[0]')
+                                        _.get(String(initValues.modelName || '').split(' '), '[0]')
                                     )
                                 }
                                 onSelect={value => {
