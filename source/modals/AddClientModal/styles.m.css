@@ -6,3 +6,9 @@
 .addClientModal :global(.ant-modal-footer) {
     text-align: center;
 }
+
+.addVehicleButtonCont {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
