@@ -372,6 +372,7 @@ export default class GeneralInfoTab extends Component {
                         const { match: {params: {id}}} = this.props;
                         this.props.fetchVehicle({vehicleId: id});
                     }}
+                    onSubmit={() => window.location.reload()}
                 />
             </div>
         )
