@@ -116,49 +116,62 @@ export default class VehiclePage extends Component {
                         <GeneralInfoTab />
                     </TabPane>
 
-                    <TabPane tab={
-                        <div>
-                            <FormattedMessage id={ 'vehicle_page.norm_hours'}/>
-                            ({normHoursStats.totalRowsCount})
-                        </div>
-                    } key="norm_hours">
+                    <TabPane
+                        tab={
+                            <div>
+                                <FormattedMessage id={ 'vehicle_page.norm_hours'}/>
+                                ({normHoursStats.totalRowsCount})
+                            </div>
+                        }
+                        key="norm_hours"
+                    >
                         <VehicleNormHoursTab />
                     </TabPane>
 
-                    <TabPane tab={
-                        <div>
-                            <FormattedMessage id={ 'vehicle_page.orders'}/>
-                            ({ordersStats.countOrders})
-                        </div>
-                    } key="orders">
+                    <TabPane
+                        tab={
+                            <div>
+                                <FormattedMessage id={ 'vehicle_page.orders'}/>
+                                ({ordersStats.countOrders})
+                            </div>
+                        }
+                        key="orders"
+                    >
                         <VehicleOrdersTab />
                     </TabPane>
 
-                    <TabPane tab={
-                        <div>
-                            <FormattedMessage id={ 'vehicle_page.labors'}/>
-                             ({laborsStats.totalRowsCount})
-                        </div>
-
-                    } key="labors">
+                    <TabPane
+                        tab={
+                            <div>
+                                <FormattedMessage id={ 'vehicle_page.labors'}/>
+                                ({laborsStats.totalRowsCount})
+                            </div>
+                        }
+                        key="labors"
+                    >
                         <VehicleLaborsTab />
                     </TabPane>
 
-                    <TabPane tab={
-                        <div>
-                            <FormattedMessage id={ 'vehicle_page.spare_parts'}/>
-                            ({appurtenancesStats.totalRowsCount})
-                        </div>
-                    } key="spare_parts">
+                    <TabPane
+                        tab={
+                            <div>
+                                <FormattedMessage id={ 'vehicle_page.spare_parts'}/>
+                                ({appurtenancesStats.totalRowsCount})
+                            </div>
+                        } key="spare_parts"
+                    >
                         <VehicleSparePartsTab />
                     </TabPane>
 
-                    <TabPane tab={
-                        <div>
-                            <FormattedMessage id={ 'vehicle_page.recommendations'}/>
-                            ({recommendationsStats.totalRowsCount})
-                        </div>
-                    } key="recommendations">
+                    <TabPane
+                        tab={
+                            <div>
+                                <FormattedMessage id={ 'vehicle_page.recommendations'}/>
+                                ({recommendationsStats.totalRowsCount})
+                            </div>
+                        }
+                        key="recommendations"
+                    >
                         <VehicleRecomendationsTab />
                     </TabPane>
 
