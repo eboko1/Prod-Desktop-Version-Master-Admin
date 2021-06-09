@@ -1,7 +1,7 @@
 // vendor
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Button, Popover } from 'antd';
+import {Button, Input, Popover} from 'antd';
 import { v4 } from 'uuid';
 import _ from 'lodash';
 import { images } from 'utils';
@@ -9,6 +9,7 @@ import { images } from 'utils';
 //Proj
 import { FormattedDatetime } from 'components';
 import { Numeral } from 'commons';
+import { laborsSortFields } from "core/vehicles/duck";
 
 //Own
 import Styles from './styles.m.css';
@@ -29,10 +30,17 @@ const defWidth = {
     count:                  '5%',
     sum:                    '10%',
     actions:                '5%',
-    
 }
 
 export function columnsConfig(props) {
+
+    const {
+        // onAddDetailToOrder,
+        onServiceNameSearch,
+        onDefaultNameSearch,
+        onStoreGroupNameSearch,
+        onEmployeeFullNameSearch,
+    } = props;
 
     const {
         onAddLaborToOrder
@@ -42,7 +50,8 @@ export function columnsConfig(props) {
         title:     <FormattedMessage id='orders.order' />,
         width:     defWidth.order,
         dataIndex: 'orderNum',
-        key:       'orderNum',
+        key:       laborsSortFields.orderId,
+        sorter:    true,
         render:    (orderNum) => (
             <>
                 {orderNum}
@@ -54,7 +63,8 @@ export function columnsConfig(props) {
         title:     <FormattedMessage id='orders.creation_date' />,
         width:     defWidth.datetime,
         dataIndex: 'orderDatetime',
-        key:       'orderDatetime',
+        key:       laborsSortFields.datetime,
+        sorter:    true,
         render:    (orderDatetime) => (
             <>
                 <FormattedDatetime datetime={orderDatetime} format={DEFAULT_DATETIME}/>
@@ -64,31 +74,71 @@ export function columnsConfig(props) {
 
 
     const laborCol = {
-        title:     <FormattedMessage id="order_form_table.detail_name" />,
+        title:     () => {
+            return (
+                <div>
+                    <FormattedMessage id="order_form_table.detail_name" />
+                    <Input
+                        onChange={(e) => onServiceNameSearch(_.get(e, 'target.value'))}
+                    />
+                </div>
+                )
+        },
         width:     defWidth.labor,
         dataIndex: 'serviceName',
-        key:       'serviceName',
+        key:       laborsSortFields.serviceName,
+        sorter:    true,
     };
 
    const typeCol = {
-        title:     <FormattedMessage id="order_form_table.service_type" />,
+        title:     () => {
+            return (
+                <div>
+                    <FormattedMessage id="order_form_table.service_type" />,
+                    <Input
+                        onChange={(e) => onDefaultNameSearch(_.get(e, 'target.value'))}
+                    />
+                </div>
+            )
+        },
         width:     defWidth.type,
         dataIndex: 'defaultName',
-        key:       'defaultName',
-    };
+        key:       laborsSortFields.defaultName,
+        sorter:    true,
+   };
 
     const storeGroupNameCol = {
-        title:     <FormattedMessage id='order_form_table.store_group' />,
+        title:     () => {
+            return (
+                <div>
+                    <FormattedMessage id='order_form_table.store_group' />,
+                    <Input
+                        onChange={(e) => onStoreGroupNameSearch(_.get(e, 'target.value'))}
+                    />
+                </div>
+            )
+        },
         width:     defWidth.begin_datetime,
         dataIndex: 'storeGroupName',
-        key:       'storeGroupName',
+        key:       laborsSortFields.storeGroupName,
+        sorter:    true,
     };
 
     const mechanicCol = {
-        title:     <FormattedMessage id='employee.is_mechanic' /> ,
+        title:     () => {
+            return (
+                <div>
+                    <FormattedMessage id='employee.is_mechanic' /> ,
+                    <Input
+                        onChange={(e) => onEmployeeFullNameSearch(_.get(e, 'target.value'))}
+                    />
+                </div>
+            )
+        },
         width:     defWidth.mechanic,
         dataIndex: 'employeeFullName',
-        key:       'employeeFullName',
+        key:       laborsSortFields.employeeFullName,
+        sorter:    true,
     };
 
     const normHoursCol = {
@@ -96,7 +146,8 @@ export function columnsConfig(props) {
         width:     defWidth.normHours,
         align:     'right',
         dataIndex: 'hours',
-        key:       'hours',
+        key:       laborsSortFields.hours,
+        sorter:    true,
     };
 
     const priceCol = {
@@ -104,7 +155,8 @@ export function columnsConfig(props) {
         width:     defWidth.price,
         align:     'right',
         dataIndex: 'price',
-        key:       'price',
+        key:       laborsSortFields.price,
+        sorter:    true,
         render: (price) => {
             return (<Numeral mask={"0,00.00"}>{price}</Numeral>);
         }
@@ -115,7 +167,8 @@ export function columnsConfig(props) {
         width:     defWidth.count,
         align:     'right',
         dataIndex: 'count',
-        key:       'count',
+        key:       laborsSortFields.count,
+        sorter:    true,
     };
 
     const sumCol = {
@@ -123,7 +176,8 @@ export function columnsConfig(props) {
         width:     defWidth.sum,
         align:     'right',
         dataIndex: 'sum',
-        key:       'sum',
+        key:       laborsSortFields.sum,
+        sorter:    true,
         render: (sum) => {
             return (<Numeral mask={"0,00.00"}>{sum}</Numeral>);
         }
