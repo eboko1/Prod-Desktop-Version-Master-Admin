@@ -21,6 +21,8 @@ import {
     setLaborsDefaultNameSearchQuery,
     setLaborsStoreGroupNameSearchQuery,
     setLaborsEmployeeFullNameSearchQuery,
+    setLaborsSort,
+    sortValues,
 } from 'core/vehicles/duck';
 
 //Own
@@ -42,6 +44,7 @@ const mapDispatchToProps = {
     setLaborsDefaultNameSearchQuery,
     setLaborsStoreGroupNameSearchQuery,
     setLaborsEmployeeFullNameSearchQuery,
+    setLaborsSort
 }
 
 @withRouter
@@ -87,6 +90,29 @@ export default class VehicleLaborsTable extends React.Component {
         this.props.setModal(MODALS.ADD_LABOR_OR_DETAIL_TO_ORDER, {labors: [labor], mode: "ADD_LABOR", vehicleId: id});
     }
 
+    /** Called when labors table is changed, used to handle sorting */
+    handleTableChange = (pagination, filters, sorter) => {
+        if (!sorter) return;
+
+        const { setLaborsSort } = this.props;
+
+        const sortField = _.get(sorter, 'columnKey', undefined);
+        const sortOrder = _.get(sorter, 'order', undefined);
+
+        // make sorting object, if no sorting, make all undefined
+        const sort = {
+            sortField: sortOrder? sortField: undefined,
+            sortOrder: (sortOrder == 'ascend')
+                           ? sortValues.asc
+                           : (sortOrder == 'descend')
+                    ? sortValues.desc
+                    : undefined,
+        };
+
+        console.log(sort);
+        setLaborsSort(sort);
+    };
+
     render() {
         const {
             labors,
@@ -98,7 +124,6 @@ export default class VehicleLaborsTable extends React.Component {
 
 
         const columns = columnsConfig({
-            // onAddDetailToOrder: this.onAddDetailToOrder,
             onServiceNameSearch: this.handleServiceNameSearch,
             onDefaultNameSearch: this.handleDefaultNameSearch,
             onStoreGroupNameSearch: this.handleStoreGroupNameSearch,
@@ -129,6 +154,7 @@ export default class VehicleLaborsTable extends React.Component {
                     // columns={columnsConfig({onAddLaborToOrder: this.onAddLaborToOrder})}
                     scroll={ { x: 'auto', y: '80vh' } }
                     rowKey={() => v4()}
+                    onChange={this.handleTableChange}
                     bordered
                 />
 

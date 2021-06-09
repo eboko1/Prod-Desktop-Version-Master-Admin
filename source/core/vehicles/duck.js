@@ -71,11 +71,11 @@ export const SET_LABORS_SERVICE_NAME_SEARCH_QUERY = `${prefix}/SET_LABORS_SERVIC
 export const SET_LABORS_DEFAULT_NAME_SEARCH_QUERY = `${prefix}/SET_LABORS_DEFAULT_NAME_SEARCH_QUERY`;
 export const SET_LABORS_STORE_GROUP_NAME_SEARCH_QUERY = `${prefix}/SET_LABORS_STORE_GROUP_NAME_SEARCH_QUERY`;
 export const SET_LABORS_EMPLOYEE_FULL_NAME_SEARCH_QUERY = `${prefix}/SET_LABORS_EMPLOYEE_FULL_NAME_SEARCH_QUERY`;
-// export const SET_LABORS_SORT = `${prefix}/SET_LABORS_SORT`;
+export const SET_LABORS_SORT = `${prefix}/SET_LABORS_SORT`;
 
 
 // sortOrder: Joi.string().valid(['asc', 'desc']).optional(),
-// sortField: Joi.string().valid(['appurtenanceId', 'code', 'supplierBrandName', 'name', 'supplierName', 'count', 'orderId', 'price', 'sum']).optional(),
+// sortField: Joi.string().valid(['orderId', 'datetime', 'serviceName', 'defaultName', 'storeGroupName', 'employeeFullName', 'count', 'hours', 'price', 'sum']).optional(),
 
 /** Valid values that can be used for sorting by field */
 export const sortValues = Object.freeze({
@@ -93,6 +93,20 @@ export const appurtenancesSortFields = Object.freeze({
     supplierName: 'supplierName',
     count: 'count',
     purchasePrice: 'purchasePrice',
+    price: 'price',
+    sum: 'sum',
+});
+
+/** Valid filed names for sorting */
+export const laborsSortFields = Object.freeze({
+    orderId: 'orderId',
+    datetime: 'datetime',
+    serviceName: 'serviceName',
+    defaultName: 'defaultName',
+    storeGroupName: 'storeGroupName',
+    employeeFullName: 'employeeFullName',
+    count: 'count',
+    hours: 'hours',
     price: 'price',
     sum: 'sum',
 });
@@ -141,7 +155,9 @@ const ReducerState = {
         labors: [], //Array of labors made for vehicle in different orders
         stats: {},
         sort: {
-            page: 1
+            page: 1,
+            sortFiled: undefined,
+            sortOrder: undefined,
         },
         filters: {
             serviceNameQuery: undefined,
@@ -526,6 +542,20 @@ export default function reducer(state = ReducerState, action) {
                     filters: {
                         ...state.vehicleLaborsData.filters,
                         employeeFullNameQuery: laborsEmployeeFullNameQuery
+                    }
+                }
+            };
+
+        case SET_LABORS_SORT:
+            const { sortOrder: laborsSortOrder, sortField: laborsSortField } = payload;
+            return {
+                ...state,
+                vehicleLaborsData: {
+                    ...state.vehicleLaborsData,
+                    sort: {
+                        ...state.vehicleLaborsData.sort,
+                        sortField: laborsSortField,
+                        sortOrder: laborsSortOrder,
                     }
                 }
             };
@@ -1042,6 +1072,17 @@ export const setLaborsEmployeeFullNameSearchQuery = ({employeeFullNameQuery}) =>
         dispatch({
             type: SET_LABORS_EMPLOYEE_FULL_NAME_SEARCH_QUERY,
             payload: { employeeFullNameQuery }
+        });
+
+        dispatch(fetchVehicleLabors());
+    }
+};
+
+export const setLaborsSort = ({sortField, sortOrder}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_LABORS_SORT,
+            payload: {sortField, sortOrder}
         });
 
         dispatch(fetchVehicleLabors());

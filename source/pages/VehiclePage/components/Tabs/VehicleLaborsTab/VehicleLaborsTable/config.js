@@ -9,6 +9,7 @@ import { images } from 'utils';
 //Proj
 import { FormattedDatetime } from 'components';
 import { Numeral } from 'commons';
+import { laborsSortFields } from "core/vehicles/duck";
 
 //Own
 import Styles from './styles.m.css';
@@ -29,7 +30,6 @@ const defWidth = {
     count:                  '5%',
     sum:                    '10%',
     actions:                '5%',
-    
 }
 
 export function columnsConfig(props) {
@@ -50,7 +50,8 @@ export function columnsConfig(props) {
         title:     <FormattedMessage id='orders.order' />,
         width:     defWidth.order,
         dataIndex: 'orderNum',
-        key:       'orderNum',
+        key:       laborsSortFields.orderId,
+        sorter:    true,
         render:    (orderNum) => (
             <>
                 {orderNum}
@@ -62,7 +63,8 @@ export function columnsConfig(props) {
         title:     <FormattedMessage id='orders.creation_date' />,
         width:     defWidth.datetime,
         dataIndex: 'orderDatetime',
-        key:       'orderDatetime',
+        key:       laborsSortFields.datetime,
+        sorter:    true,
         render:    (orderDatetime) => (
             <>
                 <FormattedDatetime datetime={orderDatetime} format={DEFAULT_DATETIME}/>
@@ -84,7 +86,8 @@ export function columnsConfig(props) {
         },
         width:     defWidth.labor,
         dataIndex: 'serviceName',
-        key:       'serviceName',
+        key:       laborsSortFields.serviceName,
+        sorter:    true,
     };
 
    const typeCol = {
@@ -100,8 +103,9 @@ export function columnsConfig(props) {
         },
         width:     defWidth.type,
         dataIndex: 'defaultName',
-        key:       'defaultName',
-    };
+        key:       laborsSortFields.defaultName,
+        sorter:    true,
+   };
 
     const storeGroupNameCol = {
         title:     () => {
@@ -116,7 +120,8 @@ export function columnsConfig(props) {
         },
         width:     defWidth.begin_datetime,
         dataIndex: 'storeGroupName',
-        key:       'storeGroupName',
+        key:       laborsSortFields.storeGroupName,
+        sorter:    true,
     };
 
     const mechanicCol = {
@@ -132,7 +137,8 @@ export function columnsConfig(props) {
         },
         width:     defWidth.mechanic,
         dataIndex: 'employeeFullName',
-        key:       'employeeFullName',
+        key:       laborsSortFields.employeeFullName,
+        sorter:    true,
     };
 
     const normHoursCol = {
@@ -140,7 +146,8 @@ export function columnsConfig(props) {
         width:     defWidth.normHours,
         align:     'right',
         dataIndex: 'hours',
-        key:       'hours',
+        key:       laborsSortFields.hours,
+        sorter:    true,
     };
 
     const priceCol = {
@@ -148,7 +155,8 @@ export function columnsConfig(props) {
         width:     defWidth.price,
         align:     'right',
         dataIndex: 'price',
-        key:       'price',
+        key:       laborsSortFields.price,
+        sorter:    true,
         render: (price) => {
             return (<Numeral mask={"0,00.00"}>{price}</Numeral>);
         }
@@ -159,7 +167,8 @@ export function columnsConfig(props) {
         width:     defWidth.count,
         align:     'right',
         dataIndex: 'count',
-        key:       'count',
+        key:       laborsSortFields.count,
+        sorter:    true,
     };
 
     const sumCol = {
@@ -167,7 +176,8 @@ export function columnsConfig(props) {
         width:     defWidth.sum,
         align:     'right',
         dataIndex: 'sum',
-        key:       'sum',
+        key:       laborsSortFields.sum,
+        sorter:    true,
         render: (sum) => {
             return (<Numeral mask={"0,00.00"}>{sum}</Numeral>);
         }
