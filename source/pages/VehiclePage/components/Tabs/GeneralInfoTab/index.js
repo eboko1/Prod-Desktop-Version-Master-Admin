@@ -8,7 +8,7 @@ import _ from 'lodash';
 import { v4 } from 'uuid';
 
 // proj
-import { FormattedDatetime } from "components";
+import {Barcode, FormattedDatetime} from "components";
 import book from 'routes/book';
 import history from 'store/history';
 import { VehicleModal, TecDocInfoModal } from 'modals';
@@ -138,7 +138,24 @@ export default class GeneralInfoTab extends Component {
                             controls={
                                 <div>
                                     <Popover content={<FormattedMessage id="vehicle_page.hint_barcode_modal"/>}>
-                                        <Icon className={Styles.barcodeIcon} type="barcode" />
+                                        <span style={{ width: '2em'}}>
+                                               <Barcode
+                                                   value={vehicle.barcode}
+                                                   referenceId={vehicle.id}
+                                                   table={'CLIENTS_VEHICLES'}
+                                                   prefix={'CVH'}
+                                                   iconStyle={{
+                                                       fontSize: 24,
+                                                       marginLeft: 4,
+                                                   }}
+                                                   onConfirm={()=>{
+                                                       // TODO reload page
+                                                       window.location.reload();
+                                                       // fetchClient(clientId)
+                                                   }}
+                                               />
+                                        </span>
+
                                     </Popover>
                                     
                                     <Popover content={<FormattedMessage id="vehicle_page.hint_vehicle_info_modal"/>}>
