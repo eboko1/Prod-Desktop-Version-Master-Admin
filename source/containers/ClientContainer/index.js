@@ -72,8 +72,6 @@ export default class ClientContainer extends Component {
             ACCESS_RECEIVABLES_GET,
         } = permissions;
 
-        console.log("OR: ", callStats)
-
         return (
             <Catcher>
                 <Tabs

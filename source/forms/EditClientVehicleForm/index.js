@@ -25,6 +25,8 @@ import {
 // own
 import Styles from "./styles.m.css";
 import { ClientVehicleTransfer } from "modals";
+import book from "routes/book";
+import { withRouter } from "react-router-dom";
 
 const Option = Select.Option;
 const { confirm } = Modal;
@@ -36,6 +38,7 @@ const openNotificationWithIcon = (type, message, description) => {
     });
 };
 
+@withRouter
 @injectIntl
 @withReduxForm2({
     name: "clientVehicleForm",
@@ -130,6 +133,8 @@ export class EditClientVehicleForm extends Component {
             user,
             vehicleTypes,
 
+            history,
+
             setSelectedVehicle,
             setEditVehicle,
             setModal,
@@ -194,7 +199,10 @@ export class EditClientVehicleForm extends Component {
                 renderItem={(item, index) => (
                     <List.Item className={Styles.listItem}>
                         <Form className={Styles.form}>
-                            <Row gutter={8} type="flex" align="bottom">
+                            <Row gutter={8} type="flex" align="bottom"
+                                 onClick={() => {history.push(`${book.vehicle}/${item.id}`)}}
+                                 className={Styles.vehicleItem}
+                            >
                                 <Col span={4}>
                                     {vehicleLabel(item, index)}{" "}
                                     {editableItem === index && !editVehicle && (

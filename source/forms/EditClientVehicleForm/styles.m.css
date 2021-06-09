@@ -57,3 +57,10 @@
 .newOrderIcon {
     font-size: 16px;
 }
+
+.vehicleItem {
+    &:hover {
+         cursor: pointer;
+        
+     }
+}
