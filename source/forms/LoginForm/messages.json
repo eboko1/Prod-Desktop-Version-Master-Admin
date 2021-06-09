@@ -35,7 +35,7 @@
     "login_form.go_to_mail": "Запрос отправлен на почту!",
     "login_form.go_to_mail_description": "Перейдите на указанный Вами email при регистрации для восстановления пароля.",
     "login_form.error": "Ошибка",
-    "login_form.no_login_found": "Указанного Вами логина нету в нашей базе данных.",
+    "login_form.no_login_found": "Указанного Вами логина нет в нашей базе данных.",
     "login_form.password_expired": "Сессия восстановления пароля более не валидна. Пожалуйста, повторите попытку.",
     "login_form.back_to_form": "Вернуться к форме",
     "login_form.back_to_login": "Вернуться к логину",
