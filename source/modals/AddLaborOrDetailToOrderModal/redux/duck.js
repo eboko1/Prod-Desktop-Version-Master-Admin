@@ -38,6 +38,7 @@ const ReducerState = {
         stats: {},
         query: { //Filters
             page: 1,
+            status: "not_complete",
             query: undefined,
             vehicleId: undefined,
         },
