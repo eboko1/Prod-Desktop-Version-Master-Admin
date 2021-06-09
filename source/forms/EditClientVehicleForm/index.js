@@ -7,7 +7,7 @@ import _ from "lodash";
 // proj
 import { withReduxForm2 } from "utils";
 import { AddClientVehicleForm } from "forms";
-import { StyledButton } from "commons";
+import { MODALS, setModal } from "core/modals/duck";
 import { DecoratedInput, DecoratedCheckbox, DecoratedSelect, DecoratedInputNumber } from "forms/DecoratedFields";
 import { permissions, isForbidden } from "utils";
 import { Barcode } from "components";
@@ -45,7 +45,8 @@ const openNotificationWithIcon = (type, message, description) => {
         setEditVehicle,
         setSelectedVehicle,
         handleError,
-        createOrderForClient
+        createOrderForClient,
+        setModal
     },
     mapStateToProps: state => ({
         user: state.auth,
@@ -131,6 +132,7 @@ export class EditClientVehicleForm extends Component {
 
             setSelectedVehicle,
             setEditVehicle,
+            setModal,
         } = this.props;
         const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
         const isEditForbidden = isForbidden(user, CREATE_EDIT_DELETE_CLIENTS);
@@ -394,10 +396,13 @@ export class EditClientVehicleForm extends Component {
                                             <Icon
                                                 type="edit"
                                                 className={Styles.editIcon}
-                                                onClick={() =>
-                                                    this.props.setEditableItem(
-                                                        index,
-                                                    )
+                                                onClick={() => {
+                                                        console.log("Here: ", item);
+                                                        setModal(MODALS.VEHICLE, {mode: "EDIT", vehicleId: item.id});
+                                                    }
+                                                    // this.props.setEditableItem(
+                                                    //     index,
+                                                    // )
                                                 }
                                             />
                                         )
