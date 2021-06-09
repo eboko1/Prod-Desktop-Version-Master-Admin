@@ -10,6 +10,7 @@ import { v4 } from 'uuid';
 import { MODALS, setModal } from 'core/modals/duck';
 import { AddLaborOrDetailToOrderModal } from 'modals';
 import {
+    sortValues,
     selectVehicleAppurtenances,
     selectVehicleAppurtenancesStats,
     selectVehicleAppurtenancesSort,
@@ -20,6 +21,7 @@ import {
     setAppurtenancesBrandSearchQuery,
     setAppurtenancesNameSearchQuery,
     setAppurtenancesSupplierSearchQuery,
+    setAppurtenancesSort,
 
 } from 'core/vehicles/duck';
 
@@ -42,6 +44,7 @@ const mapDispatchToProps = {
     setAppurtenancesBrandSearchQuery,
     setAppurtenancesNameSearchQuery,
     setAppurtenancesSupplierSearchQuery,
+    setAppurtenancesSort,
 }
 
 @withRouter
@@ -84,6 +87,29 @@ export default class VehicleAppurtenancesTable extends React.Component {
         this.props.setModal(MODALS.ADD_LABOR_OR_DETAIL_TO_ORDER, {details: [detail], mode: "ADD_DETAIL", vehicleId: id});
     }
 
+    /** Called when table is changed, used to handle sorting */
+    handleTableChange = (pagination, filters, sorter) => {
+        if (!sorter) return;
+
+        const { setAppurtenancesSort } = this.props;
+
+        const sortField = _.get(sorter, 'columnKey', undefined);
+        const sortOrder = _.get(sorter, 'order', undefined);
+
+        // make sorting object, if no sorting, make all undefined
+        const sort = {
+            sortField: sortOrder? sortField: undefined,
+            sortOrder: (sortOrder == 'ascend')
+                ? sortValues.asc
+                : (sortOrder == 'descend')
+                    ? sortValues.desc
+                    : undefined,
+        };
+
+        console.log(sort);
+        setAppurtenancesSort(sort);
+    };
+
     render() {
         const {
             appurtenances,
@@ -124,6 +150,7 @@ export default class VehicleAppurtenancesTable extends React.Component {
                     columns={columns}
                     scroll={ { x: 'auto', y: '80vh' } }
                     rowKey={() => v4()}
+                    onChange={this.handleTableChange}
                     bordered
                 />
 

@@ -261,7 +261,7 @@ export function* fetchVehicleAppurtenancesSaga() {
 
             yield nprogress.start();
 
-            const {appurtenances, appurtenancesStats} = yield call(fetchAPI, 'GET', `orders/appurtenances/${vehicleId}`, { page: sort.page, ...filters });
+            const {appurtenances, appurtenancesStats} = yield call(fetchAPI, 'GET', `orders/appurtenances/${vehicleId}`, { ...sort, ...filters });
 
             yield put(fetchVehicleAppurtenancesSuccess({appurtenances, stats: appurtenancesStats}));
         } catch (error) {

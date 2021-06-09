@@ -64,10 +64,31 @@ export const SET_APPURTENANCES_CODE_SEARCH_QUERY = `${prefix}/SET_APPURTENANCES_
 export const SET_APPURTENANCIES_BRAND_SEARCH_QUERY = `${prefix}/SET_APPURTENANCIES_BRAND_SEARCH_QUERY`;
 export const SET_APPURTENANCIES_NAME_SEARCH_QUERY = `${prefix}/SET_APPURTENANCIES_NAME_SEARCH_QUERY`;
 export const SET_APPURTENANCIES_SUPPLIER_SEARCH_QUERY = `${prefix}/SET_APPURTENANCIES_SUPPLIER_SEARCH_QUERY`;
+export const SET_APPURTENANCIES_SORT = `${prefix}/SET_APPURTENANCIES_SORT`;
+
+
+// sortOrder: Joi.string().valid(['asc', 'desc']).optional(),
+// sortField: Joi.string().valid(['appurtenanceId', 'code', 'supplierBrandName', 'name', 'supplierName', 'count', 'orderId', 'price', 'sum']).optional(),
+
+/** Valid values that can be used for sorting by field */
+export const sortValues = Object.freeze({
+    asc: 'asc',
+    desc: 'desc',
+});
+
+/** Valid filed names for sorting */
+export const appurtenancesSortFields = Object.freeze({
+    code: 'code',
+    supplierBrandName: 'supplierBrandName',
+    name: 'name',
+    supplierName: 'supplierName',
+    count: 'count',
+    price: 'price',
+    sum: 'sum',
+});
 
 
 /** Reducer **/
-
 const ReducerState = {
     vehicles:      [],      // All vehicles, array of the can be used in a table
     stats:         {},      // Vehicles stats
@@ -122,7 +143,9 @@ const ReducerState = {
         appurtenances: [], //Array of appurtenances made for vehicle in different orders
         stats: {},
         sort: {
-            page: 1
+            page: 1,
+            sortFiled: undefined,
+            sortOrder: undefined,
         },
         filters: {
             codeQuery: undefined,
@@ -423,6 +446,20 @@ export default function reducer(state = ReducerState, action) {
                     filters: {
                         ...state.vehicleAppurtenancesData.filters,
                         supplierQuery: appurtenancesSupplierSearchQuery,
+                    }
+                }
+            };
+        
+        case SET_APPURTENANCIES_SORT:
+            const { sortOrder: appurtenancesSortOrder, sortField: appurtenancesSortField } = payload;
+            return {
+                ...state,
+                vehicleAppurtenancesData: {
+                    ...state.vehicleAppurtenancesData,
+                    sort: {
+                        ...state.vehicleAppurtenancesData.sort,
+                        sortField: appurtenancesSortField,
+                        sortOrder: appurtenancesSortOrder,
                     }
                 }
             };
@@ -881,6 +918,17 @@ export const setAppurtenancesSupplierSearchQuery = ({supplierQuery}) => {
         dispatch({
             type: SET_APPURTENANCIES_SUPPLIER_SEARCH_QUERY,
             payload: {supplierQuery}
+        });
+
+        dispatch(fetchVehicleAppurtenances());
+    }
+};
+
+export const setAppurtenancesSort = ({sortField, sortOrder}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_APPURTENANCIES_SORT,
+            payload: {sortField, sortOrder}
         });
 
         dispatch(fetchVehicleAppurtenances());

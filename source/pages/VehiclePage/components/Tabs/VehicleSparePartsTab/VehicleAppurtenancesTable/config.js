@@ -9,6 +9,7 @@ import { images } from 'utils';
 //Proj
 import { FormattedDatetime } from 'components';
 import { Numeral } from 'commons';
+import { appurtenancesSortFields } from 'core/vehicles/duck';
 
 //Own
 import Styles from './styles.m.css';
@@ -80,7 +81,8 @@ export function columnsConfig(props) {
         },
         width:     defWidth.code,
         dataIndex: 'code',
-        key:       'code',
+        key:       appurtenancesSortFields.code,
+        sorter:    true,
     };
 
    const brandNameCol = {
@@ -96,7 +98,8 @@ export function columnsConfig(props) {
         },
         width:     defWidth.brandName,
         dataIndex: 'supplierBrandName',
-        key:       'supplierBrandName',
+        key:       appurtenancesSortFields.supplierBrandName,
+        sorter:    true,
     };
 
     const nameCol = {
@@ -112,7 +115,8 @@ export function columnsConfig(props) {
         },
         width:     defWidth.name,
         dataIndex: 'name',
-        key:       'name',
+        key:       appurtenancesSortFields.name,
+        sorter:    true,
     };
 
     const supplierNameCol = {
@@ -128,7 +132,8 @@ export function columnsConfig(props) {
         },
         width:     defWidth.supplierName,
         dataIndex: 'supplierName',
-        key:       'supplierName',
+        key:       appurtenancesSortFields.supplierName,
+        sorter:    true,
     };
 
 
@@ -149,6 +154,8 @@ export function columnsConfig(props) {
         align:     'right',
         dataIndex: 'price',
         key:       'price',
+        key:       appurtenancesSortFields.price,
+        sorter:    true,
         render: (price) => {
             return (<Numeral mask={"0,00.00"}>{price}</Numeral>);
         }
@@ -159,7 +166,8 @@ export function columnsConfig(props) {
         width:     defWidth.count,
         align:     'right',
         dataIndex: 'count',
-        key:       'count',
+        key:       appurtenancesSortFields.count,
+        sorter:    true,
     };
 
     const sumCol = {
@@ -167,7 +175,8 @@ export function columnsConfig(props) {
         width:     defWidth.sum,
         align:     'right',
         dataIndex: 'sum',
-        key:       'sum',
+        key:       appurtenancesSortFields.sum,
+        sorter:    true,
         render: (sum) => {
             return (<Numeral mask={"0,00.00"}>{sum}</Numeral>);
         }
