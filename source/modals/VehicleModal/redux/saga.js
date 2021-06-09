@@ -1,6 +1,6 @@
 // vendor
 import { notification } from 'antd';
-import { call, put, all, take, select } from 'redux-saga/effects';
+import { call, put, all, take, select, fork } from 'redux-saga/effects';
 import _ from 'lodash';
 
 //proj
@@ -39,8 +39,59 @@ import {
     FETCH_VEHICLE_MODELS,
     FETCH_VEHICLE_MODIFICATIONS,
     FETCH_ALL_VEHICLE_DATA,
+    SET_VEHICLE_INIT_VALUES,
     FETCH_VEHICLE_DATA_BY_VIN
 } from './duck';
+
+// ------------------------- Workers ----------------------
+
+/**
+ * Used to initialized vehicle values. Automatically fetches all required data.
+ * @param [ initValues.number ]
+ * @param [ initValues.vin ]
+ * @param [ initValues.year ]
+ * @param [ initValues.makeId ]
+ * @param [ initValues.modelId ]
+ * @param [ initValues.modificationId ]
+ */
+function* setAllVehicleDataWorker(payload) {
+    const {
+        number,
+        vin,
+        year,
+        makeId,
+        modelId,
+        modificationId,
+    }  = payload;
+
+    yield put(setVehicleNumber({number}));
+    yield put(setVehicleVin({vin}));
+    yield put(setVehicleYear({year}));
+    yield put(setVehicleMakeId({makeId}));
+    yield put(setVehicleModelId({modelId}));
+    yield put(setVehicleModificationId({modificationId}));
+    
+    //Fetch data for each field if needed
+    const { years } = yield call(fetchAPI, 'GET', 'vehicles_info');
+    yield put(fetchVehicleYearsSuccess({years}));
+
+    if(year) {
+        const { makes } = yield call(fetchAPI, 'GET', 'vehicles_info', {year});
+        yield put(fetchVehicleMakesSuccess({makes}));
+    }
+
+    if(year && makeId) {
+        const {models} = yield call(fetchAPI, 'GET', 'vehicles_info', {year, makeId});
+        yield put(fetchVehicleModelsSuccess({models}));
+    }
+
+    if(year && makeId && modificationId) {
+        const {modifications} = yield call(fetchAPI, 'GET', 'vehicles_info', {year, makeId, modelId});
+        yield put(fetchVehicleModificationsSuccess({modifications}));
+    }
+}
+
+// ------------------- Watchers -----------------------
 
 export function* fetchVehicleSaga() {
     while (true) {
@@ -63,35 +114,31 @@ export function* fetchAllVehicleDataSaga() {
         const vehicle = yield call(fetchAPI, 'GET', `clients/vehicles/${vehicleId}`);
         yield put(fetchVehicleSuccess({vehicle}));
 
-        const {
-            vehicleNumber: number,
-            vehicleVin: vin,
-            year,
-            makeId,
-            vehicleModelId: modelId,
-            vehicleModificationId: modificationId,
-        } = vehicle;
+        const initValues = {
+            number: vehicle.vehicleNumber,
+            vin: vehicle.vehicleVin,
+            year: vehicle.year,
+            makeId: vehicle.makeId,
+            modelId: vehicle.vehicleModelId,
+            modificationId: vehicle.vehicleModificationId,
+        }
 
-        yield put(setVehicleNumber({number}));
-        yield put(setVehicleVin({vin}));
-        yield put(setVehicleMakeId({makeId}));
-        yield put(setVehicleYear({year}));
-        yield put(setVehicleMakeId({makeId}));
-        yield put(setVehicleModelId({modelId}));
-        yield put(setVehicleModificationId({modificationId}));
+        yield fork(setAllVehicleDataWorker, initValues);
+
+        yield put(setFetchingAllVehicleData(false));
+    }
+}
+
+/**
+ * Initialize vehicle by provided fields without fetching vehicle by id
+ */
+export function* initializeVehicleDataSaga() {
+    while (true) {
+        const { payload: initValues } = yield take(SET_VEHICLE_INIT_VALUES);
+        yield put(setFetchingAllVehicleData(true));
+
+        yield fork(setAllVehicleDataWorker, initValues);
         
-        const { years } = yield call(fetchAPI, 'GET', 'vehicles_info');
-        yield put(fetchVehicleYearsSuccess({years}));
-
-        const { makes } = yield call(fetchAPI, 'GET', 'vehicles_info', {year});
-        yield put(fetchVehicleMakesSuccess({makes}));
-
-        const {models} = yield call(fetchAPI, 'GET', 'vehicles_info', {year, makeId});
-        yield put(fetchVehicleModelsSuccess({models}));
-
-        const {modifications} = yield call(fetchAPI, 'GET', 'vehicles_info', {year, makeId, modelId});
-        yield put(fetchVehicleModificationsSuccess({modifications}));
-
         yield put(setFetchingAllVehicleData(false));
     }
 }
@@ -313,6 +360,7 @@ export function* saga() {
     yield all([
         call(fetchVehicleSaga),
         call(fetchAllVehicleDataSaga),
+        call(initializeVehicleDataSaga),
         call(fetchVehicleDataByVinSaga),
         call(fetchVehiclesYearsSaga),
         call(fetchVehiclesMakesSaga),

@@ -39,6 +39,7 @@ export const SET_YEAR = `${prefix}/SET_YEAR`;
 export const SET_MAKE_ID = `${prefix}/SET_MAKE_ID`;
 export const SET_MODEL_ID = `${prefix}/SET_MODEL_ID`;
 export const SET_MODIFICATION_ID = `${prefix}/SET_MODIFICATION_ID`;
+export const SET_VEHICLE_INIT_VALUES = `${prefix}/SET_VEHICLE_INIT_VALUES`;
 
 export const SET_MAKE_NAME = `${prefix}/SET_MAKE_NAME`;
 export const SET_MODEL_NAME = `${prefix}/SET_MODEL_NAME`;
@@ -441,4 +442,18 @@ export const updateVehicle = ({vehicleId}) => ({
  */
 export const clearVehicleData = () => ({
     type:    CLEAR_VEHICLE_DATA,
+});
+
+/**
+ * Used to initialized vehicle values. Automatically fetches all required data.
+ * @param [ initValues.number ]
+ * @param [ initValues.vin ]
+ * @param [ initValues.year ]
+ * @param [ initValues.makeId ]
+ * @param [ initValues.modelId ]
+ * @param [ initValues.modificationId ]
+ */
+export const setVehicleInitValues = (initValues = {}) => ({
+    type: SET_VEHICLE_INIT_VALUES,
+    payload: initValues,
 });
