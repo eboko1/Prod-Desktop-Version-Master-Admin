@@ -47,8 +47,9 @@ export function columnsConfig(props) {
         title:     <FormattedMessage id='orders.order' />,
         width:     defWidth.order,
         dataIndex: 'orderNum',
-        key:       'orderNum',
-        render:    (orderNum) => (
+        key:       appurtenancesSortFields.orderId,
+        sorter:    true,
+        ender:    (orderNum) => (
             <div>
                 {orderNum}
             </div>
@@ -59,7 +60,8 @@ export function columnsConfig(props) {
         title:     <FormattedMessage id='orders.creation_date' />,
         width:     defWidth.datetime,
         dataIndex: 'orderDatetime',
-        key:       'orderDatetime',
+        key:       appurtenancesSortFields.datetime,
+        sorter:    true,
         render:    (orderDatetime) => (
             <>
                 <FormattedDatetime datetime={orderDatetime} format={DEFAULT_DATETIME}/>
@@ -142,7 +144,8 @@ export function columnsConfig(props) {
         width:     defWidth.purchasePrice,
         align:     'right',
         dataIndex: 'purchasePrice',
-        key:       'purchasePrice',
+        key:       appurtenancesSortFields.purchasePrice,
+        sorter:    true,
         render: (purchasePrice) => {
             return (<Numeral mask={"0,00.00"}>{purchasePrice}</Numeral>);
         }

@@ -78,11 +78,14 @@ export const sortValues = Object.freeze({
 
 /** Valid filed names for sorting */
 export const appurtenancesSortFields = Object.freeze({
+    orderId: 'orderId',
+    datetime: 'datetime',
     code: 'code',
     supplierBrandName: 'supplierBrandName',
     name: 'name',
     supplierName: 'supplierName',
     count: 'count',
+    purchasePrice: 'purchasePrice',
     price: 'price',
     sum: 'sum',
 });
