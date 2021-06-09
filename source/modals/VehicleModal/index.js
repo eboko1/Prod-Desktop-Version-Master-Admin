@@ -179,7 +179,7 @@ export default class VehicleModal extends Component {
             <div>
                 <Modal
                     destroyOnClose={true}
-                    width={ (mode == modes.VIEW)? '50%': '70%' }
+                    width={ (mode == modes.VIEW)? '50%': '60%' }
                     visible={ visible === MODALS.VEHICLE }
                     onOk={ this.handleSubmit }
                     onCancel={ this.resetAllFormsAndCloseModal }
@@ -189,7 +189,7 @@ export default class VehicleModal extends Component {
                         </div>
                     }
                 >
-                    <div style={{minHeight: '50vh'}}>
+                    <div style={{minHeight: '40vh'}}>
                             {
                                 (() => {
                                     switch (mode) {

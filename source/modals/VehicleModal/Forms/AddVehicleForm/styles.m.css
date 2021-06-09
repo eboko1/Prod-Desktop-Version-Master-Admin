@@ -1,5 +1,5 @@
 .row {
-    min-height: 6em;
+    min-height: 4em;
 }
 
 .colText {
@@ -13,11 +13,15 @@
 
 .vehicleDataHint {
     color: grey;
-    /*font-size: 0.9em;*/
     margin-left: 0.5em;
     margin-top: -1.0em;
 
 }
 .vehicleDataHintFirst {
     font-weight: bold;
+}
+
+.button {
+    min-width: 8em;
+    margin-left: 1em;
 }
