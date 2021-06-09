@@ -1,20 +1,15 @@
 // vendor
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Icon, Popover, Button } from 'antd';
+import { Button } from 'antd';
 import _ from 'lodash';
-import { v4 } from "uuid";
-
-//Proj
-import book from 'routes/book';
-import { permissions, isForbidden } from 'utils';
 
 export function columnsConfig(props) {
 
     const {
         formatMessage,
         removeClientVehicle,
+        openEditModal,
     }= props;
 
     const makeNameCol = {
@@ -66,20 +61,17 @@ export function columnsConfig(props) {
     }
 
     const editCol = {
-        title: this.props.intl.formatMessage({id: 'edit'}),
+        title: formatMessage({id: 'edit'}),
         key:    'edit',
-        render: (text, record) => {
-            return (
-                <EditVheliceModal
-                    vehicleTypes={ this.props.vehicleTypes}
-                    vehicle={ this.props.vehicles[ record.index ] }
-                    addClientVehicle={ this.props.addClientVehicle }
-                    index={ record.index }
-                    removeClientVehicle={ this.props.removeClientVehicle }
-                />
-            );
-        },
-    },
+        render: (text, record) => (
+            <Button
+                type='primary'
+                onClick={ () => openEditModal({vehicle: record})}
+            >
+               <FormattedMessage id='edit' />
+            </Button>
+        ),
+    }
     
     const deleteCol = {
         title: formatMessage({

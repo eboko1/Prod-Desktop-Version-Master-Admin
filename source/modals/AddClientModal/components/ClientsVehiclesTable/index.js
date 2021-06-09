@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Button } from 'antd';
+import { Table } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { v4 } from 'uuid';
 
@@ -11,6 +11,13 @@ import { Catcher } from 'commons';
 import Styles from './styles.m.css';
 import { columnsConfig } from './config';
 
+/**
+ * Used to display vehicles and its basic controls
+ * 
+ * @property { Array } vehicles - Array of vehicles
+ * @property { Function } removeClientVehicle - used to remove vehicle by its index
+ * @property { Function({vehicle}) } openEditModal - used to open modal for editing vehicle without vehicleId
+ */
 @injectIntl
 class ClientsVehiclesTable extends Component {
     constructor(props) {
@@ -18,17 +25,15 @@ class ClientsVehiclesTable extends Component {
 
         const {
             removeClientVehicle,
-            intl
+            intl,
+            openEditModal,
         } = this.props;
 
         this.columns = columnsConfig({
             formatMessage: intl.formatMessage,
-            removeClientVehicle: removeClientVehicle,    
+            removeClientVehicle: removeClientVehicle,
+            openEditModal,   
         });
-    }
-
-    onEditVehicle = () => {
-
     }
 
     render() {
@@ -38,7 +43,11 @@ class ClientsVehiclesTable extends Component {
         return (
             <Catcher>
                 <Table
-                    dataSource={ vehicles }
+                    dataSource={ vehicles.map((vehicle, index) => ({
+                        ...vehicle,
+                        index,
+                        key: v4(),
+                    })) }
                     className={ Styles.clientsVehiclesTable }
                     columns={ columns }
                     pagination={ false }
@@ -50,69 +59,5 @@ class ClientsVehiclesTable extends Component {
         );
     }
 }
-
-class EditVheliceModal extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            visible: false,
-        };
-    }
-
-    showModal = () => {
-        this.setState({
-            visible: true,
-        });
-    };
-
-    editClientVehicle = vehicle => {
-        const { addClientVehicle, removeClientVehicle, index } = this.props;
-        removeClientVehicle(index);
-        addClientVehicle(vehicle);
-        this.handleCancel;
-    };
-
-    handleCancel = () => {
-        this.setState({
-            visible: false,
-        });
-    };
-
-    render() {
-        const {
-            vehicle,
-            addClientVehicle,
-            removeClientVehicle,
-            index,
-            vehicleTypes,
-        } = this.props;
-
-        const { visible } = this.state;
-
-        return (
-            <>
-                <Button type='primary' onClick={ this.showModal }>
-                    <FormattedMessage id='edit' />
-                </Button>
-                <Modal
-                    visible={ visible }
-                    title={ <FormattedMessage id='edit' /> }
-                    onCancel={ this.handleCancel }
-                    footer={ null }
-                    maskClosable={false}
-                >
-                    <AddClientVehicleForm
-                        { ...vehicle }
-                        vehicleTypes={vehicleTypes}
-                        editClientVehicle={ this.editClientVehicle }
-                        editMode
-                    />
-                </Modal>
-            </>
-        );
-    }
-}
-
 
 export default ClientsVehiclesTable;
