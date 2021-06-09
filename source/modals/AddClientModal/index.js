@@ -18,11 +18,12 @@ import { VehicleModal } from 'modals';
 import { StyledButton } from 'commons';
 
 import { AbstractClientForm } from 'forms';
-import { ClientsVehiclesTable } from 'forms/OrderForm/OrderFormTables';
+// import { ClientsVehiclesTable } from 'forms/OrderForm/OrderFormTables';
 import { withReduxForm2 } from 'utils';
 
 // own
 import Styles from './styles.m.css';
+import { ClientsVehiclesTable } from './components';
 
 /**
  * This modal is used to add a new client with or without vehicles.
@@ -53,11 +54,40 @@ export default class AddClientModal extends Component {
     /**
      * Open vehicle modal to crate a new vehicle
      */
-    onOpenVehicleModal = () => {
-        const { setModal, saveModal } = this.props;
+    onOpenAddVehicleModal = () => {
+        const { setModal, saveModal, addClientVehicle } = this.props;
 
         saveModal();
-        setModal(MODALS.VEHICLE, {mode: "ADD", autoSubmit: false});
+        setModal(MODALS.VEHICLE, {
+            mode: "ADD",
+            autoSubmit: false,
+            onClose: () => this.onCloseVehicleModal(),
+            onSubmit: ({ vehicle }) => {
+                console.log("Vehicle added: ", vehicle);
+                addClientVehicle(vehicle);
+            },
+        });
+    }
+
+    /**
+     * Open vehicle modal to edit a vehicle
+     */
+    onOpenEditVehicleModal = ({vehicle}) => {
+        const { setModal, saveModal, addClientVehicle, removeClientVehicle } = this.props;
+
+        console.log("Vehicle for editing: ", vehicle);
+
+        saveModal();
+        setModal(MODALS.VEHICLE, {
+            mode: "ADD",
+            initValues: vehicle,
+            autoSubmit: false,
+            onClose: () => this.onCloseVehicleModal(),
+            onSubmit: ({ vehicle }) => {
+                removeClientVehicle(vehicle.index),
+                addClientVehicle(vehicle);
+            },
+        });
     }
 
     /**
@@ -138,10 +168,7 @@ export default class AddClientModal extends Component {
             searchQuery,
             vehicles,
             isMobile,
-            vehicleTypes,
             modalProps,
-
-            addClientVehicle,
 
             intl: { formatMessage }
         } = this.props;
@@ -174,25 +201,19 @@ export default class AddClientModal extends Component {
                 <div className={Styles.addVehicleButtonCont} >
                     <StyledButton
                         type={"primary"}
-                        onClick={() => this.onOpenVehicleModal()}
+                        onClick={() => this.onOpenAddVehicleModal()}
                     >
                         { <FormattedMessage id='add-client-form.add_vehicle' /> }
                     </StyledButton>
                 </div>
 
-                { !_.isEmpty(vehicles) && (
-                    <ClientsVehiclesTable
-                        vehicleTypes={vehicleTypes}
-                        removeClientVehicle={ this.props.removeClientVehicle }
-                        addClientVehicle={ this.props.addClientVehicle }
-                        vehicles={ vehicles }
-                    />
-                ) }
-
-                <VehicleModal
-                    onClose={() => this.onCloseVehicleModal()}
-                    onSubmit={({ vehicle }) => addClientVehicle(vehicle) }
+                <ClientsVehiclesTable
+                    removeClientVehicle={ this.props.removeClientVehicle }
+                    openEditModal={this.onOpenEditVehicleModal}
+                    vehicles={ vehicles }
                 />
+
+                <VehicleModal />
             </Modal>
         );
     }

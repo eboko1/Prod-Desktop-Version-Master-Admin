@@ -12,12 +12,14 @@ import {
     createVehicle,
     updateVehicle,
     clearVehicleData,
-    setClientId,
-
+    
     selectFields,
     selectMakes,
     selectModels,
     selectModifications,
+    
+    setClientId,
+    setVehicleInitValues
 } from './redux/duck';
 
 // own
@@ -38,10 +40,10 @@ const mapDispatchToProps = {
     createVehicle,
     updateVehicle,
     clearVehicleData,
-    setClientId,
     resetModal,
-
     
+    setClientId,
+    setVehicleInitValues,
 };
 
 /**
@@ -50,13 +52,20 @@ const mapDispatchToProps = {
  * This component has three modes, each mode takes its must_have parameters(depending on a selected mode).
  * This modal uses default carbook modals "wizard", you have to call setModal(MODAL.MY_MODAL, {...modalProps}).
  * 
- * @property { string } modalProps.mode                - this defines i which mode modal is running, dependinr on this parameter different forms are shown. Available one of: "ADD", "EDIT", "VIEW".
- * @property { number|string } [ modalProps.clientId ] - used only if you are in "ADD" mode, initial clientId
- * @property { number|string } modalProps.vehicleId    - Used to fetch data about vehicle in "EDIT" and "VIEW" mode
- * @property { number|string } [ modalProps.autoSubmit = true ]   - Whenever you want a modal to create or update vehicle automatically when submit pressed
+ * @property { String } modalProps.mode                  - this defines i which mode modal is running, dependinr on this parameter different forms are shown. Available one of: "ADD", "EDIT", "VIEW".
+ * @property { Number|String } modalProps.vehicleId      - Used to fetch data about vehicle in "EDIT" and "VIEW" mode
+ * @property { Number|String } [ modalProps.clientId ]   - used only if you are in "ADD" mode, initial clientId
+ * @property { Number|String } [ modalProps.autoSubmit = true ]   - Whenever you want a modal to create or update vehicle automatically when submit pressed
  * 
- * @property { Function() } [ onClose ]                - callback function, called when modal closes(after cancel or submit)
- * @property { Function({ vehicle }) } [ onSubmit ]    - callback function, called when submit button was pressed and validations passed
+ * @property { Function() } [ modalProps.onClose ]                - callback function, called when modal closes(after cancel or submit)
+ * @property { Function({ vehicle }) } [ modalProps.onSubmit ]    - callback function, called when submit button was pressed and validations passed
+ * 
+ * @property { Number|String } [ modalProps.initValues ]          - used only if you are in "ADD" mode, initial values for vehicle fields
+ * @property { Number|String } [ modalProps.initValues.number ]        
+ * @property { Number|String } [ modalProps.initValues.vin ]        
+ * @property { Number|String } [ modalProps.initValues.makeId ]        
+ * @property { Number|String } [ modalProps.initValues.modelId ]        
+ * @property { Number|String } [ modalProps.initValues.modificationId ]
  * 
  * @example <caption>Open in "ADD" mode, used to add a new vehicle</caption>
  * this.props.setModal(MODALS.VEHICLE, {mode: "ADD"});
@@ -81,6 +90,17 @@ export default class VehicleModal extends Component {
     defaultModalProps = {
         mode: modes.ADD,
         autoSubmit: true, // Automatically create or update vehicle
+    }
+    
+    componentDidUpdate(prevProps) {
+        const prevInitValues = _.get(prevProps, 'modalProps.initValues');
+        const currInitValues = _.get(this.props, 'modalProps.initValues');
+        const mode = _.get(this.props, "modalProps.mode", this.defaultModalProps.mode);
+
+        //Initialize some values if they were provided
+        if(!_.isEqual(prevInitValues, currInitValues) && mode == modes.ADD) {
+            this.props.setVehicleInitValues(currInitValues);
+        }
     }
 
     /**
@@ -119,15 +139,16 @@ export default class VehicleModal extends Component {
      */
     handleSubmitCallback = () => {
         const {
-            onSubmit,
             fields,
             makes,
             models,
             modifications,
+            modalProps,
         } = this.props;
 
         const { makeId, modelId, modificationId } = fields;
 
+        const onSubmit = _.get(modalProps, 'onSubmit');
         const makeName = _.get(_.filter(makes, obj => obj.id == makeId), '[0].name');
         const modelName = _.get(_.filter(models, obj => obj.id == modelId), '[0].name');
         const modificationName = _.get(_.filter(modifications, obj => obj.id == modificationId), '[0].name');
@@ -152,12 +173,20 @@ export default class VehicleModal extends Component {
      * This is used to reset all form's fields, clear all fetched data and close modal
      */
     resetAllFormsAndCloseModal = () => {
-        this.props.clearVehicleData();
+        const {
+            clearVehicleData,
+            resetModal,
+            setClientId,
+            modalProps,
+        } = this.props;
+        clearVehicleData();
         this.vehicleForm && this.vehicleForm.resetFields();
-        this.props.resetModal();
-        this.props.setClientId({clientId: undefined}); //Reset
+        resetModal();
+        setClientId({clientId: undefined}); //Reset
 
-        this.props.onClose && this.props.onClose();//Callback
+        const onClose = _.get(modalProps, 'onClose');
+
+        onClose && onClose();//Callback
     }
 
     /** Save ref to currently rendered form */

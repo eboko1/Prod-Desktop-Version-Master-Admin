@@ -42,7 +42,10 @@ export default class VehiclesPage extends Component {
     }
 
     onAddVehicle = () => {
-        this.props.setModal(MODALS.VEHICLE, { mode: "ADD" });
+        this.props.setModal(MODALS.VEHICLE, {
+            mode: "ADD",
+            onClose: () => this.props.fetchVehicles()
+    });
     }
 
     render() {
@@ -65,13 +68,9 @@ export default class VehiclesPage extends Component {
                     </Button>
                 }
             >
-               <VehiclesTable />
+                <VehiclesTable />
 
-                <VehicleModal
-                    onClose={() => {
-                        this.props.fetchVehicles();
-                    }}
-                />
+                <VehicleModal />
             </Layout>
         )
     }
