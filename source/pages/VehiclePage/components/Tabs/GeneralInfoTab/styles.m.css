@@ -34,12 +34,11 @@
     margin-bottom: 1em;
 }
 
-
-/* Icons ------------------------------------------------------------ */
 .barcodeIcon {
-    color: black;
+    display: inline-block;
 }
 
+/* Icons ------------------------------------------------------------ */
 .infoIcon {
     color: var(--paletteColor7);
 }
@@ -73,7 +72,7 @@
     color: white;
 }
 
-.barcodeIcon, .infoIcon, .editIcon, .deleteIcon, .changeVehicleOwnerIcon, .sendSMSIcon, .sendMailIcon, .copyIcon {
+.infoIcon, .editIcon, .deleteIcon, .changeVehicleOwnerIcon, .sendSMSIcon, .sendMailIcon, .copyIcon {
     font-size: 24px;
     margin-right: 0.25em;
     margin-left: 0.25em;

@@ -49,6 +49,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
 };
 
+/**
+ * @property {*} barcodeClassName - custom styles for barcode container
+ */
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Barcode extends Component {
@@ -210,7 +213,7 @@ export default class Barcode extends Component {
     }
 
     render() {
-        const { zIndex, displayBarcode, iconStyle, buttonStyle, button, disabled: propsDisabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon, multipleMode } = this.props;
+        const { barcodeClassName, zIndex, displayBarcode, iconStyle, buttonStyle, button, disabled: propsDisabled, style, onConfirm, prefix, user, referenceId, value, enableScanIcon, multipleMode } = this.props;
         const { visible, scanedCode, scanedInputValue } = this.state;
         const id = this.id;
         const iconType = enableScanIcon && !value
@@ -220,7 +223,7 @@ export default class Barcode extends Component {
         const disabled = propsDisabled || isForbidden(user, permissions.ACCESS_STORE_PRODUCT_BARCODE_FUNCTIONALITY);
 
         return !displayBarcode ? (
-            <div title={this.props.intl.formatMessage({id: 'navigation.barcode'})}>
+            <div className={ barcodeClassName } title={this.props.intl.formatMessage({id: 'navigation.barcode'})}>
                 {button ? 
                     <Button
                         //type={'primary'}

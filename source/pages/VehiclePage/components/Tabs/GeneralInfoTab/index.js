@@ -144,19 +144,18 @@ export default class GeneralInfoTab extends Component {
                                     <Popover content={<FormattedMessage id="vehicle_page.hint_barcode_modal"/>}>
                                         <span style={{ width: '2em'}}>
                                                <Barcode
-                                                   value={vehicle.barcode}
-                                                   referenceId={vehicle.id}
-                                                   table={'CLIENTS_VEHICLES'}
-                                                   prefix={'CVH'}
-                                                   iconStyle={{
-                                                       fontSize: 24,
-                                                       marginLeft: 4,
-                                                   }}
-                                                   onConfirm={()=>{
-                                                       // TODO reload page
-                                                       window.location.reload();
-                                                       // fetchClient(clientId)
-                                                   }}
+                                                    barcodeClassName={Styles.barcodeIcon}
+                                                    value={vehicle.barcode}
+                                                    referenceId={vehicle.id}
+                                                    table={'CLIENTS_VEHICLES'}
+                                                    prefix={'CVH'}
+                                                    iconStyle={{
+                                                        fontSize: 24,
+                                                        marginLeft: 4,
+                                                    }}
+                                                    onConfirm={()=>{
+                                                        window.location.reload();
+                                                    }}
                                                />
                                         </span>
 
