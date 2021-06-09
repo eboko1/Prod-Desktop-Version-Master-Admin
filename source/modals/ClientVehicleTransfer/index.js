@@ -152,7 +152,7 @@ export default class ClientVehicleTransfer extends Component {
                             <Select
                                 showSearch
                                 disabled
-                                value={clientId ? clientId : "Нету собственника"}
+                                value={clientId ? clientId :  <FormattedMessage id='not_owner' /> }
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                                 style={{color: 'var(--text)'}}
                                 onChange={(value, option)=>{
