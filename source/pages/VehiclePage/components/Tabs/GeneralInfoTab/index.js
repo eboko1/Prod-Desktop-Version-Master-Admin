@@ -11,7 +11,7 @@ import { v4 } from 'uuid';
 import { FormattedDatetime } from "components";
 import book from 'routes/book';
 import history from 'store/history';
-import { VehicleModal } from 'modals';
+import { VehicleModal, TecDocInfoModal } from 'modals';
 import {setModal, MODALS} from 'core/modals/duck';
 import {
     fetchVehicle,
@@ -142,7 +142,9 @@ export default class GeneralInfoTab extends Component {
                                     </Popover>
                                     
                                     <Popover content={<FormattedMessage id="vehicle_page.hint_vehicle_info_modal"/>}>
-                                        <Icon className={Styles.infoIcon} type="question-circle" />
+                                        <TecDocInfoModal
+                                            modificationId={vehicle && vehicle.tecdocId}
+                                            />
                                     </Popover>
 
                                     <Popover content={<FormattedMessage id="vehicle_page.hint_view_vehicle_modal"/>}>
