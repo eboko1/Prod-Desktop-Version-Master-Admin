@@ -33,7 +33,7 @@ export function columnsConfig() {
                     <Link
                         to={ `${book.vehicle}/${vehicle.clientVehicleId}` }
                     >
-                        {`${_.get(vehicle, 'make')} ${_.get(vehicle, 'model')}`}
+                        {`${_.get(vehicle, 'make')} ${_.get(vehicle, 'model')} ${_.get(vehicle, 'year')}`}
                     </Link>
                 </div>
             );
