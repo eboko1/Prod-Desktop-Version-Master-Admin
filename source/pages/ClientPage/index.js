@@ -56,9 +56,13 @@ export default class ClientPage extends Component {
      * Open modal to add a new vehicle for current client
      */
     onAddVehicle = () => {
-        const { clientEntity } = this.props;
+        const { clientEntity, fetchClient } = this.props;
 
-        this.props.setModal(MODALS.VEHICLE, {mode: "ADD", clientId: clientEntity.clientId});
+        this.props.setModal(MODALS.VEHICLE, {
+            mode: "ADD",
+            clientId: clientEntity.clientId,
+            onClose: () => fetchClient(clientEntity.clientId)
+        });
     }
 
     render() {
@@ -104,9 +108,7 @@ export default class ClientPage extends Component {
                     fetchClient={ fetchClient }
                 />
 
-                <VehicleModal
-                    onClose={() => fetchClient(clientEntity.clientId)}
-                />
+                <VehicleModal />
             </Layout>
         );
     }

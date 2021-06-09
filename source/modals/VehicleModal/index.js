@@ -40,8 +40,6 @@ const mapDispatchToProps = {
     clearVehicleData,
     setClientId,
     resetModal,
-
-    
 };
 
 /**
@@ -55,8 +53,8 @@ const mapDispatchToProps = {
  * @property { number|string } modalProps.vehicleId    - Used to fetch data about vehicle in "EDIT" and "VIEW" mode
  * @property { number|string } [ modalProps.autoSubmit = true ]   - Whenever you want a modal to create or update vehicle automatically when submit pressed
  * 
- * @property { Function() } [ onClose ]                - callback function, called when modal closes(after cancel or submit)
- * @property { Function({ vehicle }) } [ onSubmit ]    - callback function, called when submit button was pressed and validations passed
+ * @property { Function() } [ modalProps.onClose ]                - callback function, called when modal closes(after cancel or submit)
+ * @property { Function({ vehicle }) } [ modalProps.onSubmit ]    - callback function, called when submit button was pressed and validations passed
  * 
  * @example <caption>Open in "ADD" mode, used to add a new vehicle</caption>
  * this.props.setModal(MODALS.VEHICLE, {mode: "ADD"});
@@ -119,15 +117,16 @@ export default class VehicleModal extends Component {
      */
     handleSubmitCallback = () => {
         const {
-            onSubmit,
             fields,
             makes,
             models,
             modifications,
+            modalProps,
         } = this.props;
 
         const { makeId, modelId, modificationId } = fields;
 
+        const onSubmit = _.get(modalProps, 'onSubmit');
         const makeName = _.get(_.filter(makes, obj => obj.id == makeId), '[0].name');
         const modelName = _.get(_.filter(models, obj => obj.id == modelId), '[0].name');
         const modificationName = _.get(_.filter(modifications, obj => obj.id == modificationId), '[0].name');
@@ -152,12 +151,20 @@ export default class VehicleModal extends Component {
      * This is used to reset all form's fields, clear all fetched data and close modal
      */
     resetAllFormsAndCloseModal = () => {
-        this.props.clearVehicleData();
+        const {
+            clearVehicleData,
+            resetModal,
+            setClientId,
+            modalProps,
+        } = this.props;
+        clearVehicleData();
         this.vehicleForm && this.vehicleForm.resetFields();
-        this.props.resetModal();
-        this.props.setClientId({clientId: undefined}); //Reset
+        resetModal();
+        setClientId({clientId: undefined}); //Reset
 
-        this.props.onClose && this.props.onClose();//Callback
+        const onClose = _.get(modalProps, 'onClose');
+
+        onClose && onClose();//Callback
     }
 
     /** Save ref to currently rendered form */

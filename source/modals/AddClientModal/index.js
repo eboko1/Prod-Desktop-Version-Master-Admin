@@ -53,12 +53,33 @@ export default class AddClientModal extends Component {
     /**
      * Open vehicle modal to crate a new vehicle
      */
-    onOpenVehicleModal = () => {
+    onOpenAddVehicleModal = () => {
         const { setModal, saveModal } = this.props;
 
         saveModal();
-        setModal(MODALS.VEHICLE, {mode: "ADD", autoSubmit: false});
+        setModal(MODALS.VEHICLE, {
+            mode: "ADD",
+            autoSubmit: false,
+            onClose: () => this.onCloseVehicleModal(),
+            onSubmit: ({ vehicle }) => addClientVehicle(vehicle),
+        });
     }
+
+    // /**
+    //  * Open vehicle modal to edit a vehicle
+    //  */
+    // onOpenEditVehicleModal = () => {
+    //     const { setModal, saveModal } = this.props;
+
+    //     saveModal();
+    //     setModal(MODALS.VEHICLE, {
+    //         mode: "EDIT",
+    //         vehicleId: ,
+    //         autoSubmit: false,
+    //         onClose: () => this.onCloseVehicleModal(),
+    //         onSubmit: ({ vehicle }) => addClientVehicle(vehicle),
+    //     });
+    // }
 
     /**
      * Reopen client modal after vehicle modal was closed
@@ -174,7 +195,7 @@ export default class AddClientModal extends Component {
                 <div className={Styles.addVehicleButtonCont} >
                     <StyledButton
                         type={"primary"}
-                        onClick={() => this.onOpenVehicleModal()}
+                        onClick={() => this.onOpenAddVehicleModal()}
                     >
                         { <FormattedMessage id='add-client-form.add_vehicle' /> }
                     </StyledButton>
@@ -182,17 +203,14 @@ export default class AddClientModal extends Component {
 
                 { !_.isEmpty(vehicles) && (
                     <ClientsVehiclesTable
-                        vehicleTypes={vehicleTypes}
+                        // vehicleTypes={vehicleTypes}
                         removeClientVehicle={ this.props.removeClientVehicle }
-                        addClientVehicle={ this.props.addClientVehicle }
+                        // addClientVehicle={ this.props.addClientVehicle }
                         vehicles={ vehicles }
                     />
                 ) }
 
-                <VehicleModal
-                    onClose={() => this.onCloseVehicleModal()}
-                    onSubmit={({ vehicle }) => addClientVehicle(vehicle) }
-                />
+                <VehicleModal />
             </Modal>
         );
     }

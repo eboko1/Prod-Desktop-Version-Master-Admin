@@ -97,7 +97,11 @@ export default class GeneralInfoTab extends Component {
     }
 
     onEditVehicle = ({vehicleId}) => {
-        this.props.setModal(MODALS.VEHICLE, {mode: "EDIT", vehicleId});
+        this.props.setModal(MODALS.VEHICLE, {
+            mode: "EDIT",
+            vehicleId,
+            onSubmit: () => window.location.reload()
+        });
     }
 
     onAddVehicle = ({clientId}) => {
@@ -370,13 +374,7 @@ export default class GeneralInfoTab extends Component {
 
                 </Block>
 
-                <VehicleModal
-                    onClose={() => {
-                        const { match: {params: {id}}} = this.props;
-                        this.props.fetchVehicle({vehicleId: id});
-                    }}
-                    onSubmit={() => window.location.reload()}
-                />
+                <VehicleModal />
             </div>
         )
     }
