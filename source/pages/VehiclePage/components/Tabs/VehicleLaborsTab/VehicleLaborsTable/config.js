@@ -1,7 +1,7 @@
 // vendor
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Button, Popover } from 'antd';
+import {Button, Input, Popover} from 'antd';
 import { v4 } from 'uuid';
 import _ from 'lodash';
 import { images } from 'utils';
@@ -35,6 +35,14 @@ const defWidth = {
 export function columnsConfig(props) {
 
     const {
+        // onAddDetailToOrder,
+        onServiceNameSearch,
+        onDefaultNameSearch,
+        onStoreGroupNameSearch,
+        onEmployeeFullNameSearch,
+    } = props;
+
+    const {
         onAddLaborToOrder
     } = props;
 
@@ -64,28 +72,64 @@ export function columnsConfig(props) {
 
 
     const laborCol = {
-        title:     <FormattedMessage id="order_form_table.detail_name" />,
+        title:     () => {
+            return (
+                <div>
+                    <FormattedMessage id="order_form_table.detail_name" />
+                    <Input
+                        onChange={(e) => onServiceNameSearch(_.get(e, 'target.value'))}
+                    />
+                </div>
+                )
+        },
         width:     defWidth.labor,
         dataIndex: 'serviceName',
         key:       'serviceName',
     };
 
    const typeCol = {
-        title:     <FormattedMessage id="order_form_table.service_type" />,
+        title:     () => {
+            return (
+                <div>
+                    <FormattedMessage id="order_form_table.service_type" />,
+                    <Input
+                        onChange={(e) => onDefaultNameSearch(_.get(e, 'target.value'))}
+                    />
+                </div>
+            )
+        },
         width:     defWidth.type,
         dataIndex: 'defaultName',
         key:       'defaultName',
     };
 
     const storeGroupNameCol = {
-        title:     <FormattedMessage id='order_form_table.store_group' />,
+        title:     () => {
+            return (
+                <div>
+                    <FormattedMessage id='order_form_table.store_group' />,
+                    <Input
+                        onChange={(e) => onStoreGroupNameSearch(_.get(e, 'target.value'))}
+                    />
+                </div>
+            )
+        },
         width:     defWidth.begin_datetime,
         dataIndex: 'storeGroupName',
         key:       'storeGroupName',
     };
 
     const mechanicCol = {
-        title:     <FormattedMessage id='employee.is_mechanic' /> ,
+        title:     () => {
+            return (
+                <div>
+                    <FormattedMessage id='employee.is_mechanic' /> ,
+                    <Input
+                        onChange={(e) => onEmployeeFullNameSearch(_.get(e, 'target.value'))}
+                    />
+                </div>
+            )
+        },
         width:     defWidth.mechanic,
         dataIndex: 'employeeFullName',
         key:       'employeeFullName',

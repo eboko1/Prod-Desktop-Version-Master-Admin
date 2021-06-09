@@ -13,7 +13,14 @@ import {
     selectVehicleLabors,
     selectVehicleLaborsStats,
     selectVehicleLaborsSort,
-    setPageLabors, selectVehicleLaborsFetching,
+    setPageLabors,
+    selectVehicleLaborsFetching,
+
+
+    setLaborsServiceNameSearchQuery,
+    setLaborsDefaultNameSearchQuery,
+    setLaborsStoreGroupNameSearchQuery,
+    setLaborsEmployeeFullNameSearchQuery,
 } from 'core/vehicles/duck';
 
 //Own
@@ -31,12 +38,49 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     setPageLabors,
     setModal,
+    setLaborsServiceNameSearchQuery,
+    setLaborsDefaultNameSearchQuery,
+    setLaborsStoreGroupNameSearchQuery,
+    setLaborsEmployeeFullNameSearchQuery,
 }
 
 @withRouter
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class VehicleLaborsTable extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        const {
+            setLaborsServiceNameSearchQuery,
+            setLaborsDefaultNameSearchQuery,
+            setLaborsStoreGroupNameSearchQuery,
+            setLaborsEmployeeFullNameSearchQuery,
+        } = props;
+
+        /** Search labors by service name(найменування) */
+        this.handleServiceNameSearch = _.debounce(value => {
+            setLaborsServiceNameSearchQuery({serviceNameQuery: value.replace(/[+()]/g,'')})
+            // setAppurtenancesCodeSearchQuery({codeQuery: value.replace(/[+()]/g,'')});
+        }, 1000).bind(this);
+
+        /** Search labors by  default name (тип)*/
+        this.handleDefaultNameSearch = _.debounce(value => {
+            setLaborsDefaultNameSearchQuery({defaultNameQuery: value.replace(/[+()]/g,'')});
+        }, 1000).bind(this);
+
+        /** Search labors by store group(група товару) */
+        this.handleStoreGroupNameSearch = _.debounce(value => {
+            setLaborsStoreGroupNameSearchQuery({storeGroupNameQuery: value.replace(/[+()]/g,'')});
+        }, 1000).bind(this);
+
+        /** Search labors by employee full name */
+        this.handleEmployeeFullNameSearch = _.debounce(value => {
+            setLaborsEmployeeFullNameSearchQuery({employeeFullNameQuery: value.replace(/[+()]/g,'')});
+        }, 1000).bind(this);
+    }
+
 
     onAddLaborToOrder = ({labor}) => {
         const { match: {params: {id}}} = this.props;
@@ -52,6 +96,17 @@ export default class VehicleLaborsTable extends React.Component {
             fetching
         } = this.props;
 
+
+        const columns = columnsConfig({
+            // onAddDetailToOrder: this.onAddDetailToOrder,
+            onServiceNameSearch: this.handleServiceNameSearch,
+            onDefaultNameSearch: this.handleDefaultNameSearch,
+            onStoreGroupNameSearch: this.handleStoreGroupNameSearch,
+            onEmployeeFullNameSearch: this.handleEmployeeFullNameSearch,
+            onAddLaborToOrder: this.onAddLaborToOrder,
+        });
+
+
         const pagination = {
             pageSize: 25,
             size: "large",
@@ -62,17 +117,16 @@ export default class VehicleLaborsTable extends React.Component {
             },
         }
 
-        console.log("Labors: ", labors);
-
         return (
             <div className={Styles.tableCont}>
                 <Table
                     rowClassName={() => Styles.tableRow}
                     loading={fetching}
+                    columns={columns}
                     className={Styles.table}
                     dataSource={labors}
                     pagination={pagination}
-                    columns={columnsConfig({onAddLaborToOrder: this.onAddLaborToOrder})}
+                    // columns={columnsConfig({onAddLaborToOrder: this.onAddLaborToOrder})}
                     scroll={ { x: 'auto', y: '80vh' } }
                     rowKey={() => v4()}
                     bordered

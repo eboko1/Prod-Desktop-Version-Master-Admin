@@ -66,6 +66,13 @@ export const SET_APPURTENANCIES_NAME_SEARCH_QUERY = `${prefix}/SET_APPURTENANCIE
 export const SET_APPURTENANCIES_SUPPLIER_SEARCH_QUERY = `${prefix}/SET_APPURTENANCIES_SUPPLIER_SEARCH_QUERY`;
 export const SET_APPURTENANCIES_SORT = `${prefix}/SET_APPURTENANCIES_SORT`;
 
+/* -------------------------Labors---------------------------------- */
+export const SET_LABORS_SERVICE_NAME_SEARCH_QUERY = `${prefix}/SET_LABORS_SERVICE_NAME_SEARCH_QUERY`;
+export const SET_LABORS_DEFAULT_NAME_SEARCH_QUERY = `${prefix}/SET_LABORS_DEFAULT_NAME_SEARCH_QUERY`;
+export const SET_LABORS_STORE_GROUP_NAME_SEARCH_QUERY = `${prefix}/SET_LABORS_STORE_GROUP_NAME_SEARCH_QUERY`;
+export const SET_LABORS_EMPLOYEE_FULL_NAME_SEARCH_QUERY = `${prefix}/SET_LABORS_EMPLOYEE_FULL_NAME_SEARCH_QUERY`;
+// export const SET_LABORS_SORT = `${prefix}/SET_LABORS_SORT`;
+
 
 // sortOrder: Joi.string().valid(['asc', 'desc']).optional(),
 // sortField: Joi.string().valid(['appurtenanceId', 'code', 'supplierBrandName', 'name', 'supplierName', 'count', 'orderId', 'price', 'sum']).optional(),
@@ -137,7 +144,11 @@ const ReducerState = {
             page: 1
         },
         filters: {
-            query: undefined
+            serviceNameQuery: undefined,
+            defaultNameQuery: undefined,
+            storeGroupNameQuery: undefined,
+            employeeFullNameQuery: undefined
+            // query: undefined
         },
         fetching: false,
     },
@@ -466,7 +477,59 @@ export default function reducer(state = ReducerState, action) {
                     }
                 }
             };
+
+        case SET_LABORS_SERVICE_NAME_SEARCH_QUERY:
+            const { serviceNameQuery: laborsServiceNameQuery } = payload;
+            return {
+                ...state,
+                vehicleLaborsData: {
+                    ...state.vehicleLaborsData,
+                    filters: {
+                        ...state.vehicleLaborsData.filters,
+                        serviceNameQuery: laborsServiceNameQuery,
+                    }
+                }
+            };       
         
+        case SET_LABORS_DEFAULT_NAME_SEARCH_QUERY:
+            const { defaultNameQuery: laborsDefaultNameQuery } = payload;
+            return {
+                ...state,
+                vehicleLaborsData: {
+                    ...state.vehicleLaborsData,
+                    filters: {
+                        ...state.vehicleLaborsData.filters,
+                        defaultNameQuery: laborsDefaultNameQuery,
+                    }
+                }
+            };
+                   
+        case SET_LABORS_STORE_GROUP_NAME_SEARCH_QUERY:
+            const { storeGroupNameQuery: laborsStoreGroupNameQuery } = payload;
+            return {
+                ...state,
+                vehicleLaborsData: {
+                    ...state.vehicleLaborsData,
+                    filters: {
+                        ...state.vehicleLaborsData.filters,
+                        storeGroupNameQuery: laborsStoreGroupNameQuery,
+                    }
+                }
+            };
+                               
+        case SET_LABORS_EMPLOYEE_FULL_NAME_SEARCH_QUERY:
+            const { employeeFullNameQuery: laborsEmployeeFullNameQuery } = payload;
+            return {
+                ...state,
+                vehicleLaborsData: {
+                    ...state.vehicleLaborsData,
+                    filters: {
+                        ...state.vehicleLaborsData.filters,
+                        employeeFullNameQuery: laborsEmployeeFullNameQuery
+                    }
+                }
+            };
+            
 
         case FETCH_VEHICLE_ORDERS_SUCCESS:
             const {orders, stats: vehicleOrdersStats} = payload;
@@ -883,6 +946,7 @@ export const setExpandedVehicleId = ({vehicleId}) => {
     }
 };
 
+//--------------Appurtenances----------------------
 export const setAppurtenancesCodeSearchQuery = ({codeQuery}) => {
     return (dispatch) => {
         dispatch({
@@ -935,5 +999,51 @@ export const setAppurtenancesSort = ({sortField, sortOrder}) => {
         });
 
         dispatch(fetchVehicleAppurtenances());
+    }
+};
+
+//----------------Labors---------------------
+
+export const setLaborsServiceNameSearchQuery = ({serviceNameQuery}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_LABORS_SERVICE_NAME_SEARCH_QUERY,
+            payload: { serviceNameQuery }
+        });
+
+        dispatch(fetchVehicleLabors());
+    }
+};
+
+export const setLaborsDefaultNameSearchQuery = ({defaultNameQuery}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_LABORS_DEFAULT_NAME_SEARCH_QUERY,
+            payload: { defaultNameQuery }
+        });
+
+        dispatch(fetchVehicleLabors());
+    }
+};
+
+export const setLaborsStoreGroupNameSearchQuery = ({storeGroupNameQuery}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_LABORS_STORE_GROUP_NAME_SEARCH_QUERY,
+            payload: { storeGroupNameQuery }
+        });
+
+        dispatch(fetchVehicleLabors());
+    }
+};
+
+export const setLaborsEmployeeFullNameSearchQuery = ({employeeFullNameQuery}) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_LABORS_EMPLOYEE_FULL_NAME_SEARCH_QUERY,
+            payload: { employeeFullNameQuery }
+        });
+
+        dispatch(fetchVehicleLabors());
     }
 };
