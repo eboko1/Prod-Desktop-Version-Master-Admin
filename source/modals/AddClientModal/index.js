@@ -176,7 +176,7 @@ export default class AddClientModal extends Component {
                         type={"primary"}
                         onClick={() => this.onOpenVehicleModal()}
                     >
-                        { <FormattedMessage id='not_owner' /> }
+                        { <FormattedMessage id='add-client-form.add_vehicle' /> }
                     </StyledButton>
                 </div>
 
