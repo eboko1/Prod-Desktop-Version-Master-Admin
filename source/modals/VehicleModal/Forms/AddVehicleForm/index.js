@@ -168,7 +168,7 @@ export default class AddVehicleFormClass extends React.Component {
                             getFieldDecorator={getFieldDecorator}
                         />
                     </Col>
-                    <Col span={6}> <Button type="primary" >Get vin</Button> </Col>
+                    <Col span={6}> <Button className={Styles.button} type="primary" >Get vin</Button> </Col>
                 </Row>
 
                 <Row className={Styles.row}>
@@ -187,10 +187,18 @@ export default class AddVehicleFormClass extends React.Component {
                             getFieldDecorator={getFieldDecorator}
                         />
                     </Col>
-                    <Col span={6}> <Button type="primary" onClick={() => {
-                        fetchVehicleDataByVin();
-                        resetFields();
-                    }}>Get car</Button> </Col>
+                    <Col span={6}>
+                        <Button
+                            className={Styles.button}
+                            type="primary"
+                            onClick={() => {
+                                fetchVehicleDataByVin();
+                                resetFields();
+                            }}
+                        >
+                            Get car
+                        </Button>
+                    </Col>
                 </Row>
 
                 <Row className={Styles.row}>
