@@ -95,6 +95,14 @@ export default function reducer(state = ReducerState, action) {
     }
 }
 
+/**
+ * Selectors
+ * */
+
+export const stateSelector = state => state[ moduleName ];
+export const selectClientMRDsStats = state => state[ moduleName ].stats;
+
+
 export const fetchClientMRDs = ({clientId}) => ({ 
     type:    FETCH_CLIENT_MRDS,
     payload: { clientId },

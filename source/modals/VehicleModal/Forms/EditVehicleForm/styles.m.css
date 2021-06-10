@@ -1,0 +1,28 @@
+.row {
+    min-height: 4em;
+}
+
+.colText {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px;
+    size: 1.2em;
+    color: black
+}
+
+.vehicleDataHint {
+    color: grey;
+    margin-left: 0.5em;
+    margin-top: -1.0em;
+
+}
+
+.vehicleDataHintFirst {
+    font-weight: bold;
+}
+
+.button {
+    min-width: 8em;
+    margin-left: 1em;
+}

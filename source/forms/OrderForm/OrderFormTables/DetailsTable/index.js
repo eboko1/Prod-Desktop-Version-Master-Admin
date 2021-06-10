@@ -1017,27 +1017,29 @@ class DetailsTable extends Component {
                             return (
                                 <div>
                                     <FormattedMessage id='order_form_table.PD' />
-                                    <div
-                                        className={Styles.headerActions}
-                                        style={{
-                                            paddingTop: 6,
-                                            opacity: this.state.selectedRowKeys.length == 0 && 0,
-                                            marginTop: this.state.selectedRowKeys.length == 0 && '-20px',
-                                            transitionDuration: "0.5s",
-                                            pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
-                                        }}
-                                    >
-                                        <Dropdown
-                                            overlay={menu}
+                                    {!isForbidden(this.props.user, permissions.ACCESS_ORDER_DETAILS_CHANGE_STATUS) &&
+                                        <div
+                                            className={Styles.headerActions}
+                                            style={{
+                                                paddingTop: 6,
+                                                opacity: this.state.selectedRowKeys.length == 0 && 0,
+                                                marginTop: this.state.selectedRowKeys.length == 0 && '-20px',
+                                                transitionDuration: "0.5s",
+                                                pointerEvents: this.state.selectedRowKeys.length == 0 && 'none',
+                                            }}
                                         >
-                                            <Icon
-                                                type={'question-circle'}
-                                                style={{
-                                                    fontSize: 24,
-                                                }}
-                                            />
-                                        </Dropdown>
-                                    </div>
+                                            <Dropdown
+                                                overlay={menu}
+                                            >
+                                                <Icon
+                                                    type={'question-circle'}
+                                                    style={{
+                                                        fontSize: 24,
+                                                    }}
+                                                />
+                                            </Dropdown>
+                                        </div>
+                                    }
                                 </div>
                             )
                         },

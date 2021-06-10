@@ -89,11 +89,6 @@ export default {
                 //     name:     'navigation.cash_settings',
                 // },
                 // {
-                //     key:      'vehicles',
-                //     link:     book.vehicles,
-                //     name:     'navigation.vehicles',
-                // },
-                // {
                 //     key:      '/warehouses',
                 //     link:     book.warehouses,
                 //     disabled: user => isForbidden(user, permissions.ACCESS_CATALOGUE_STOCK),
@@ -192,6 +187,8 @@ export default {
             items:    [
                 {
                     key:  '/wms',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_CATALOGUE_WMS),
                     link: book.wms,
                     name: 'navigation.wms',
                 },
@@ -239,6 +236,8 @@ export default {
                 },
                 {
                     key:  '/products-without-cell',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_STORE_PRODUCTS),
                     link: book.productsWithoutCell,
                     name: 'navigation.products_without_cell',
                 }

@@ -20,8 +20,7 @@
     "test:watch": "yarn test -- --watch",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --config='./jest/jest.test.config.json'",
     "soundcheck": "jest --config='./jest/jest.config.json'",
-    "prettier": "prettier-eslint --print-width 80 --list-different 'source/**/*.js'; prettier-eslint --print-width 80 --write 'source/**/*.js'",
-    "commitmsg": "commitlint -e $GIT_PARAMS"
+    "prettier": "prettier-eslint --print-width 80 --list-different 'source/**/*.js'; prettier-eslint --print-width 80 --write 'source/**/*.js'"
   },
   "dependencies": {
     "@antv/data-set": "^0.10.1",

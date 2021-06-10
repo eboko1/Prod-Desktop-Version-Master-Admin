@@ -27,8 +27,8 @@ const struct = [
             },
             {
                 itemName:  'navigation.vehicles',
-                disabled:  true,
-                link:      book.exception,
+                disabled:  false,
+                link:      book.vehicles,
                 color:     'var(--db_approve)'
             },
             {
@@ -50,8 +50,8 @@ const struct = [
         items: [
             {
                 itemName:  'navigation.vehicles',
-                disabled:  true,
-                link:      book.exception,
+                disabled:  false,
+                link:      book.vehicles,
                 color:     'var(--db_progress)'
             },
             {

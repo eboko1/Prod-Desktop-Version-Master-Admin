@@ -34,6 +34,10 @@ const formItemLayout = {
     colon: false,
 };
 
+
+/**
+ * @property {funtion} addClientVehicle - Pass function to add client vehicle
+ */
 @injectIntl
 @withReduxForm2({
     name: "addClientVehicleForm",

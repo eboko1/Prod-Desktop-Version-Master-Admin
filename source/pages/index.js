@@ -44,6 +44,7 @@ import RepairMapSettingPage from './RepairMapSettingPage';
 import BarcodePage from './BarcodePage';
 import ProductPage from './ProductPage';
 import WMSPage from './WMSPage';
+import VehiclePage from './VehiclePage';
 import VehiclesPage from './VehiclesPage';
 import DirectoriesPage from './DirectoriesPage';
 
@@ -101,6 +102,7 @@ export {
     BarcodePage,
     ProductPage,
     WMSPage,
+    VehiclePage,
     VehiclesPage,
     DirectoriesPage,
 };

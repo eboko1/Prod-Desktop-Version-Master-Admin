@@ -7,7 +7,7 @@ import _ from "lodash";
 // proj
 import { withReduxForm2 } from "utils";
 import { AddClientVehicleForm } from "forms";
-import { StyledButton } from "commons";
+import { MODALS, setModal } from "core/modals/duck";
 import { DecoratedInput, DecoratedCheckbox, DecoratedSelect, DecoratedInputNumber } from "forms/DecoratedFields";
 import { permissions, isForbidden } from "utils";
 import { Barcode } from "components";
@@ -24,6 +24,10 @@ import {
 
 // own
 import Styles from "./styles.m.css";
+import { ClientVehicleTransfer } from "modals";
+import book from "routes/book";
+import { withRouter } from "react-router-dom";
+
 const Option = Select.Option;
 const { confirm } = Modal;
 
@@ -34,6 +38,7 @@ const openNotificationWithIcon = (type, message, description) => {
     });
 };
 
+@withRouter
 @injectIntl
 @withReduxForm2({
     name: "clientVehicleForm",
@@ -43,7 +48,8 @@ const openNotificationWithIcon = (type, message, description) => {
         setEditVehicle,
         setSelectedVehicle,
         handleError,
-        createOrderForClient
+        createOrderForClient,
+        setModal
     },
     mapStateToProps: state => ({
         user: state.auth,
@@ -127,8 +133,11 @@ export class EditClientVehicleForm extends Component {
             user,
             vehicleTypes,
 
+            history,
+
             setSelectedVehicle,
             setEditVehicle,
+            setModal,
         } = this.props;
         const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
         const isEditForbidden = isForbidden(user, CREATE_EDIT_DELETE_CLIENTS);
@@ -190,9 +199,13 @@ export class EditClientVehicleForm extends Component {
                 renderItem={(item, index) => (
                     <List.Item className={Styles.listItem}>
                         <Form className={Styles.form}>
-                            <Row gutter={8} type="flex" align="bottom">
+                            <Row gutter={8} type="flex" align="bottom"
+                                 className={Styles.vehicleItem}
+                            >
                                 <Col span={4}>
-                                    {vehicleLabel(item, index)}{" "}
+                                    <a onClick={() => {history.push(`${book.vehicle}/${item.id}`)}}>
+                                        {vehicleLabel(item, index)}{" "}
+                                    </a>
                                     {editableItem === index && !editVehicle && (
                                         <Button
                                             icon="swap"
@@ -392,10 +405,13 @@ export class EditClientVehicleForm extends Component {
                                             <Icon
                                                 type="edit"
                                                 className={Styles.editIcon}
-                                                onClick={() =>
-                                                    this.props.setEditableItem(
-                                                        index,
-                                                    )
+                                                onClick={() => {
+                                                        console.log("Here: ", item);
+                                                        setModal(MODALS.VEHICLE, {mode: "EDIT", vehicleId: item.id});
+                                                    }
+                                                    // this.props.setEditableItem(
+                                                    //     index,
+                                                    // )
                                                 }
                                             />
                                         )
@@ -445,231 +461,5 @@ export class EditClientVehicleForm extends Component {
                 )}
             />
         );
-    }
-}
-
-
-
-
-
-
-
-
-
-
-@injectIntl
-class ClientVehicleTransfer extends Component {
-    constructor(props) {
-        super(props);
-        this.state={
-            visible: false,
-            clients: [],
-            clientId: undefined,
-            newOwnerId: undefined,
-            vehicles: [],
-            vehicleId: undefined,
-            searchValue: "",
-        }
-    }
-
-    handleCancel = () => {
-        this.setState({
-            visible: false,
-            visible: false,
-            clients: [],
-            newOwnerId: undefined,
-            newOwnerId: undefined,
-            vehicles: [],
-            vehicleId: undefined,
-        })
-    }
-
-    handleOk = () => {
-        var that = this;
-        confirm({
-            title: `${that.props.intl.formatMessage({id: 'clients-page.vehicle_transfer_confirm'})}   `,
-            onOk() {
-                let token = localStorage.getItem('_my.carbook.pro_token');
-                let url = __API_URL__ + `/clients/vehicles/${that.state.vehicleId}`;
-                fetch(url, {
-                    method: "PUT",
-                    headers: {
-                        Authorization: token,
-                    },
-                    body: JSON.stringify({clientId: that.state.newOwnerId})
-                })
-                .then(function(response) {
-                    if (response.status !== 200) {
-                        return Promise.reject(new Error(response.statusText));
-                    }
-                    return Promise.resolve(response);
-                })
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(data) {
-                    window.location.reload();
-                })
-                .catch(function(error) {
-                    console.log("error", error);
-                    openNotificationWithIcon(
-                        "error",
-                        that.props.intl.formatMessage({
-                            id: "vehicle_transfer.error",
-                        }),
-                    );
-                });
-                that.handleCancel();
-            },
-        });
-    }
-
-    fetchData() {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = __API_URL__ + `/clients`;
-        fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: token,
-            },
-        })
-        .then(function(response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText));
-            }
-            return Promise.resolve(response);
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            that.setState({
-                clients: data.clients,
-            })
-        })
-        .catch(function(error) {
-            console.log("error", error);
-        });
-    }
-
-    render() {
-        const { visible, clients, vehicles, newOwnerId, clientId, vehicleId, searchValue } = this.state;
-        return (
-            <>
-                <Icon
-                    type="sync"
-                    className={Styles.carTransferIcon}
-                    onClick={() => {
-                        this.setState({
-                            visible: true,
-                            clientId: Number(this.props.clientId),
-                            vehicleId: Number(this.props.vehicleId),
-                            vehicles: this.props.vehicles,
-                        });
-                        this.fetchData();
-                    }}
-                />
-                <Modal
-                    visible={visible}
-                    onOk={this.handleOk}
-                    onCancel={this.handleCancel}
-                    style={{
-                        minWidth: 640
-                    }}
-                    maskClosable={false}
-                >
-                    <div
-                        style={{
-                            display: 'flex',
-                        }}
-                    >
-                        <div style={{width: '50%'}}>
-                            <span style={{fontWeight: 500}}>От</span>
-                            <Select
-                                showSearch
-                                disabled
-                                value={clientId}
-                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                                style={{color: 'var(--text)'}}
-                                onChange={(value, option)=>{
-                                    this.setState({
-                                        clientId: value,
-                                        vehicles: option.props.vehicles,
-                                        vehicleId: option.props.vehicles.length ? option.props.vehicles[0].id : undefined,
-                                    })
-                                }}
-                            >
-                                {
-                                    clients.map(({clientId, name, surname, phones, vehicles}, key)=>
-                                        <Option value={clientId} key={key} vehicles={vehicles}>
-                                            {name} {surname} {phones[0]}
-                                        </Option>
-                                    )    
-                                }
-                            </Select>
-                            <Select
-                                showSearch
-                                disabled
-                                style={{color: 'var(--text)'}}
-                                value={vehicleId}
-                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                                onChange={(value, option)=>{
-                                    this.setState({
-                                        vehicleId: value,
-                                    })
-                                }}
-                            >
-                                {
-                                    vehicles.map(({id, make, model}, key)=>
-                                        <Option value={id} key={key}>
-                                            {make} {model}
-                                        </Option>
-                                    )
-                                }
-                            </Select>
-                        </div>
-                        <div style={{width: '50%'}}>
-                            <span style={{fontWeight: 500}}>Кому</span>
-                            <Select
-                                showSearch
-                                value={newOwnerId}
-                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
-                                onChange={(value, option)=>{
-                                    this.setState({
-                                        newOwnerId: value,
-                                    })
-                                }}
-                                onSearch={(input)=>{
-                                    this.setState({
-                                        searchValue: input,
-                                    })
-                                }}
-                                onBlur={()=>{
-                                    this.setState({
-                                        searchValue: "",
-                                    })
-                                }}
-                                filterOption={(input, option) => {
-                                    const searchValue = String(option.props.children).toLowerCase().replace(/[+\-()., ]/g,'');
-                                    const inputValue = input.toLowerCase();
-                                    return searchValue.indexOf(inputValue) >= 0;
-                                }}
-                            >
-                                {
-                                    searchValue.length > 2 ?
-                                    clients.map(({clientId, name, surname, phones}, key)=>
-                                        <Option value={clientId} key={key}>
-                                            {name} {surname} {phones[0]}
-                                        </Option>
-                                    ) :
-                                    []
-                                }
-                            </Select>
-                        </div>
-                    </div>
-                </Modal>
-            </>
-        )
     }
 }

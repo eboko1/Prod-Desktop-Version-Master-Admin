@@ -1,0 +1,13 @@
+{
+    "en": {
+        "vehicle_modal.warning_model_is_not_selected": "Model is not selected!",
+        "vehicle_modal.add": "Add Labor or detail to order modal"
+        
+    },
+    "ru": {
+        "vehicle_modal.warning_model_is_not_selected": "Модель не выбрана!"
+    },
+    "uk": {
+        "vehicle_modal.warning_model_is_not_selected": "Модель не вибрано!"
+    }
+}
