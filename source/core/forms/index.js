@@ -22,12 +22,8 @@ import brandsReducer, { moduleName as brands } from './brandsForm/duck';
 import addRoleReducer, { moduleName as addRole } from './addRoleForm/duck';
 import editRoleReducer, { moduleName as editRole } from './editRoleForm/duck';
 
-import addClientVehicleReducer, {
-    moduleName as addClientVehicle,
-} from './addClientVehicleForm/duck';
-import editClientVehicleReducer, {
-    moduleName as editClientVehicle,
-} from './editClientVehicleForm/duck';
+import addClientVehicleReducer, { moduleName as addClientVehicle } from './addClientVehicleForm/duck';
+import editClientVehicleReducer, { moduleName as editClientVehicle } from './editClientVehicleForm/duck';
 
 import addClientRequisiteReducer, {
     moduleName as addClientRequisite,

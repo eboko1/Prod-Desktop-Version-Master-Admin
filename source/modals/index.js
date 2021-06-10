@@ -26,12 +26,15 @@ import LaborsNormHourModal from './LaborsNormHourModal';
 import OilModal from './OilModal';
 import ComplexesModal from './ComplexesModal';
 import VehicleLocationModal from './VehicleLocationModal';
+import VehicleModal from './VehicleModal';
 import LocationHistoryModal from './LocationHistoryModal';
 import StoreProductTrackingModal from './StoreProductTrackingModal';
 import SyncImportExportModal from './SyncImportExportModal';
 import SyncConflictsModal from './SyncConflictsModal';
 import SetBarcodeModal from './SetBarcodeModal';
 import WMSCellsModal from './WMSCellsModal';
+import ClientVehicleTransfer from "modals/ClientVehicleTransfer";
+import AddLaborOrDetailToOrderModal from './AddLaborOrDetailToOrderModal';
 
 //cashbox
 import AddCashboxModal from './Cashbox/AddCashboxModal';
@@ -79,6 +82,7 @@ export {
     OilModal,
     ComplexesModal,
     VehicleLocationModal,
+    VehicleModal,
     LocationHistoryModal,
     ReportOrdersFilterModal,
     ReportOrdersExportModal,
@@ -89,4 +93,6 @@ export {
     SyncConflictsModal,
     SetBarcodeModal,
     WMSCellsModal,
+    ClientVehicleTransfer,
+    AddLaborOrDetailToOrderModal,
 };

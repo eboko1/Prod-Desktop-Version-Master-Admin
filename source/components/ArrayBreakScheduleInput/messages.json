@@ -11,7 +11,8 @@
         "array-break-schedule.break_type": "Type",
         "array-break-schedule.comment": "Comment",
         "array-break-schedule.beginDate": "From",
-        "array-break-schedule.endDate": "To"
+        "array-break-schedule.endDate": "To",
+        "array-break-schedule.store_group": "Store group"
     },
     "ru": {
         "holiday": "Праздник",
@@ -25,7 +26,8 @@
         "array-break-schedule.break_type": "Тип",
         "array-break-schedule.comment": "Комментарий",
         "array-break-schedule.beginDate": "Дата начала",
-        "array-break-schedule.endDate": "Дата конца"
+        "array-break-schedule.endDate": "Дата конца",
+        "array-break-schedule.store_group": "Группа товара"
     },
     "uk": {
         "holiday": "Свято",
@@ -40,6 +42,7 @@
         "array-break-schedule.break_type": "Тип",
         "array-break-schedule.comment": "Коментар",
         "array-break-schedule.beginDate": "Дата початку",
-        "array-break-schedule.endDate": "Дата кінця"
+        "array-break-schedule.endDate": "Дата кінця",
+        "array-break-schedule.store_group": "Група товару"
     }
 }

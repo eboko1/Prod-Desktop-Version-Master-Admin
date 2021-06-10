@@ -51,6 +51,10 @@ export default class ClientHotOperationsPage extends Component {
 
     componentDidMount() {
         this.props.fetchClients();
+        const { location } = this.props;
+        if(location.state && location.state.showForm) {
+            this.onAddClientModal();
+        }
     }
 
     /**

@@ -1,0 +1,36 @@
+.table {
+    min-width: 0 !important;
+    padding: 5px;
+    width: 100%;
+}
+
+.table :global(.ant-table-header) {
+    text-transform: uppercase;
+    min-width: 0 !important; /*IMPORTANT it solves antd table issue when scrolling is added*/
+    font-size: 0.8em;
+    font-style: bold;
+    padding: 0;
+}
+
+.table :global(.ant-pagination) {
+    float: none;
+    justify-content: center;
+    display: flex;
+}
+
+.table :global(th) {
+    padding: 6px 4px 6px 4px !important; /*Remove bug: when text overflows, header shifts left*/
+}
+
+.tableCont {
+    border-radius: 0.8em;
+    padding: 5px;
+    background-color: rgb(216, 216, 216);
+    box-shadow: 5px 5px 0.8em rgb(107, 107, 107);
+    margin: 10px;
+    width: 100%;
+}
+
+.tableRow {
+    background-color: rgb(240, 240, 240);
+}

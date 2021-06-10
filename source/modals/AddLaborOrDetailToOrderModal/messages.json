@@ -1,0 +1,26 @@
+{
+    "en": {
+        "report_analytics_modal.view_analytics": "View analytics",
+        "report_analytics_modal.create_analytics": "Create analytics",
+        "report_analytics_modal.edit_analytics": "Edit analytics",
+        "report_analytics_modal.create_analytics_analytics": "Create analytics",
+        "report_analytics_modal.create_analytics_catalog": "Create catalog",
+        "add_labor_detail_to_order_modal.title": "Add labor (detail) to order"
+    },
+    "ru": {
+        "report_analytics_modal.view_analytics": "Посмотреть аналитику",
+        "report_analytics_modal.create_analytics": "Создать аналитику",
+        "report_analytics_modal.edit_analytics": "Редактировать аналитику",
+        "report_analytics_modal.create_analytics_analytics": "Создать аналитику",
+        "report_analytics_modal.create_analytics_catalog": "Создать каталог",
+        "add_labor_detail_to_order_modal.title": "Добавить работу (запчасти) в наряд-заказ"
+    },
+    "uk": {
+        "report_analytics_modal.view_analytics": "Переглянути аналітику",
+        "report_analytics_modal.create_analytics": "Створити аналітику",
+        "report_analytics_modal.edit_analytics": "Редагувати аналітику",
+        "report_analytics_modal.create_analytics_analytics": "Створити аналітику",
+        "report_analytics_modal.create_analytics_catalog": "Створити каталог",
+        "add_labor_detail_to_order_modal.title": "Додати роботу (запчастини) в наряд-замовлення"
+    }
+}

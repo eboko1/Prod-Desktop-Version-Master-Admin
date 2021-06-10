@@ -60,6 +60,8 @@ import SyncImportExport from 'pages/SyncImportExport/messages';
 import ProductPage from 'pages/ProductPage/messages';
 import WMSPage from 'pages/WMSPage/messages';
 import DirectoriesPage from 'pages/DirectoriesPage/messages';
+import VehiclePage from 'pages/VehiclePage/messages';
+import VehiclesPage from 'pages/VehiclesPage/messages';
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
@@ -127,6 +129,9 @@ import ReportOrdersExportModal from 'modals/ReportModals/ReportOrdersExportModal
 import ReportAnalyticsModal from 'modals/ReportModals/ReportAnalyticsModal/messages';
 import ServiceInputModal from 'modals/Cashbox/ServiceInputModal/messages';
 import ServiceOutputModal from 'modals/Cashbox/ServiceOutputModal/messages';
+import VehicleModal from 'modals/VehicleModal/messages';
+import AddLaborOrDetailToOrderModal from 'modals/AddLaborOrDetailToOrderModal/messages';
+import ClientVehicleTransfer from 'modals/ClientVehicleTransfer/messages';
 
 // components
 import StatusIcons from 'components/StatusIcons/messages';
@@ -212,6 +217,8 @@ const messages = merge.all([
     ProductPage,
     WMSPage,
     DirectoriesPage,
+    VehiclePage,
+    VehiclesPage,
 
     // containers
     OrdersContainer,
@@ -273,6 +280,9 @@ const messages = merge.all([
     ReportAnalyticsModal,
     ServiceInputModal,
     ServiceOutputModal,
+    VehicleModal,
+    AddLaborOrDetailToOrderModal,
+    ClientVehicleTransfer,
 
     // components
     StatusIcons,
