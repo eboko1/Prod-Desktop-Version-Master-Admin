@@ -76,6 +76,7 @@ export function columnsConfig(props) {
                 <div>
                     <FormattedMessage id='order_form_table.product_code' />
                     <Input
+                        onClick={(e) => e.stopPropagation()} //Stop trigering parent's onClick event
                         onChange={(e) => onCodeSearch(_.get(e, 'target.value'))}
                     />
                 </div>
@@ -93,6 +94,7 @@ export function columnsConfig(props) {
                 <div>
                     <FormattedMessage id='order_form_table.brand' />
                     <Input
+                        onClick={(e) => e.stopPropagation()} //Stop trigering parent's onClick event
                         onChange={(e) => onBrandSearch(_.get(e, 'target.value'))}
                     />
                 </div>
@@ -110,6 +112,7 @@ export function columnsConfig(props) {
                 <div>
                     <FormattedMessage id='storage.product_name' />
                     <Input
+                        onClick={(e) => e.stopPropagation()} //Stop trigering parent's onClick event
                         onChange={(e) => onNameSearch(_.get(e, 'target.value'))}
                     />
                 </div>
@@ -127,6 +130,7 @@ export function columnsConfig(props) {
                 <div>
                     <FormattedMessage id='storage.business_supplier' />
                     <Input
+                        onClick={(e) => e.stopPropagation()} //Stop trigering parent's onClick event
                         onChange={(e) => onSupplierSearch(_.get(e, 'target.value'))}
                     />
                 </div>

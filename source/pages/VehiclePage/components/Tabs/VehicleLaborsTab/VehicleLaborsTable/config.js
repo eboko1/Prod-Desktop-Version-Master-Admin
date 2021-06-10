@@ -79,6 +79,7 @@ export function columnsConfig(props) {
                 <div>
                     <FormattedMessage id="order_form_table.detail_name" />
                     <Input
+                        onClick={(e) => e.stopPropagation()} //Stop trigering parent's onClick event
                         onChange={(e) => onServiceNameSearch(_.get(e, 'target.value'))}
                     />
                 </div>
@@ -96,6 +97,7 @@ export function columnsConfig(props) {
                 <div>
                     <FormattedMessage id="order_form_table.service_type" />,
                     <Input
+                        onClick={(e) => e.stopPropagation()} //Stop trigering parent's onClick event
                         onChange={(e) => onDefaultNameSearch(_.get(e, 'target.value'))}
                     />
                 </div>
@@ -113,6 +115,7 @@ export function columnsConfig(props) {
                 <div>
                     <FormattedMessage id='order_form_table.store_group' />,
                     <Input
+                        onClick={(e) => e.stopPropagation()} //Stop trigering parent's onClick event
                         onChange={(e) => onStoreGroupNameSearch(_.get(e, 'target.value'))}
                     />
                 </div>
@@ -130,6 +133,7 @@ export function columnsConfig(props) {
                 <div>
                     <FormattedMessage id='employee.is_mechanic' /> ,
                     <Input
+                        onClick={(e) => e.stopPropagation()} //Stop trigering parent's onClick event
                         onChange={(e) => onEmployeeFullNameSearch(_.get(e, 'target.value'))}
                     />
                 </div>
