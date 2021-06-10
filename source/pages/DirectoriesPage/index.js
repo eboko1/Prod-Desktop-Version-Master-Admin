@@ -12,6 +12,7 @@ import moment from 'moment';
 import { Layout } from 'commons';
 import book from 'routes/book';
 import {permissions, isForbidden} from 'utils';
+
 // own
 import Styles from './styles.m.css';
 
@@ -27,7 +28,7 @@ const struct = [
             },
             {
                 itemName:  'navigation.vehicles',
-                disabled:  false,
+                disabled:  user => isForbidden(user, permissions.GET_CLIENTS),
                 link:      book.vehicles,
                 color:     'var(--db_approve)'
             },
@@ -50,7 +51,7 @@ const struct = [
         items: [
             {
                 itemName:  'navigation.vehicles',
-                disabled:  false,
+                disabled:  user => isForbidden(user, permissions.GET_CLIENTS),
                 link:      book.vehicles,
                 color:     'var(--db_progress)'
             },
@@ -261,20 +262,24 @@ export default class DirectoriesPage extends Component {
     };
 
     _renderItem = (blockTitle, {itemName, link, disabled, color, oldApp}, key) => {
+
+        const { user } = this.props;
+        const itemDisabled = _.isFunction(disabled)? disabled(user): disabled;
+
         return (
-            <div key={ key } className={ disabled ? Styles.disabledItem + " " + Styles.item : Styles.item }>
+            <div key={ key } className={ itemDisabled ? Styles.disabledItem + " " + Styles.item : Styles.item }>
                 {oldApp ?
                     <a
                         className={Styles.buttonLink}
                         href={link}
                     >
-                        <Button className={Styles.itemButton} disabled={disabled} style={{background: color, fontWeight: 500}}>
+                        <Button className={Styles.itemButton} disabled={itemDisabled} style={{background: color, fontWeight: 500}}>
                             <FormattedMessage id={itemName} />
                         </Button>
                     </a>
                     :
                     <Link to={link} className={Styles.buttonLink}>
-                        <Button className={Styles.itemButton} disabled={disabled} style={{background: color, fontWeight: 500}}>
+                        <Button className={Styles.itemButton} disabled={itemDisabled} style={{background: color, fontWeight: 500}}>
                             <FormattedMessage id={itemName} />
                         </Button>
                     </Link>

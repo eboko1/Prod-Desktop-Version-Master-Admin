@@ -38,7 +38,7 @@ const ReducerState = {
         stats: {},
         query: { //Filters
             page: 1,
-            status: "not_complete",
+            statuses: ['call', 'redundant', 'approve', 'not_complete', 'progress', 'reserve', 'required', 'invite'],
             query: undefined,
             vehicleId: undefined,
         },

@@ -16,6 +16,7 @@ import {
 import { MODALS, setModal, saveModal, loadModal } from 'core/modals/duck';
 import { VehicleModal } from 'modals';
 import { StyledButton } from 'commons';
+import { permissions, isForbidden } from "utils";
 
 import { AbstractClientForm } from 'forms';
 // import { ClientsVehiclesTable } from 'forms/OrderForm/OrderFormTables';
@@ -45,6 +46,7 @@ import { ClientsVehiclesTable } from './components';
         loadModal
     },    
     mapStateToProps: state => ({
+        user: state.auth,
         isMobile: state.ui.views.isMobile,
         modalProps: state.modals.modalProps,
     }),
@@ -169,6 +171,7 @@ export default class AddClientModal extends Component {
             vehicles,
             isMobile,
             modalProps,
+            user,
 
             intl: { formatMessage }
         } = this.props;
@@ -201,6 +204,7 @@ export default class AddClientModal extends Component {
                 <div className={Styles.addVehicleButtonCont} >
                     <StyledButton
                         type={"primary"}
+                        disabled={isForbidden(user, permissions.GET_CLIENTS)}
                         onClick={() => this.onOpenAddVehicleModal()}
                     >
                         { <FormattedMessage id='add-client-form.add_vehicle' /> }

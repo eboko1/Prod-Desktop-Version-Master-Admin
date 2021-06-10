@@ -11,6 +11,7 @@ import { v4 } from 'uuid';
 import {Layout, StyledButton} from 'commons';
 import book from 'routes/book';
 import history from 'store/history';
+import { permissions, isForbidden } from "utils";
 import {
     /*-------Fetchers----*/
     fetchVehicle,
@@ -48,19 +49,17 @@ import {
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
+    user:        state.auth,
     vehicle:     selectVehicle(state),
     client:      selectClient(state),
     generalData: selectGeneralData(state),
 
     // stats
-    ordersStats: selectVehicleOrdersStats(state),
-    normHoursStats: selectVehicleNormHoursStats(state),
-    laborsStats: selectVehicleLaborsStats(state),
-    appurtenancesStats: selectVehicleAppurtenancesStats(state),
+    ordersStats:          selectVehicleOrdersStats(state),
+    normHoursStats:       selectVehicleNormHoursStats(state),
+    laborsStats:          selectVehicleLaborsStats(state),
+    appurtenancesStats:   selectVehicleAppurtenancesStats(state),
     recommendationsStats: selectVehicleRecommendationsStats(state),
-
-    // fetchers for loader
-
 });
 
 const mapDispatchToProps = {
@@ -81,17 +80,28 @@ const mapDispatchToProps = {
 export default class VehiclePage extends Component {
     constructor(props) {
         super(props);
+
+        const { user } = props;
+
+        this.tabsPermisions = {
+            orderDetailsForbidden:   isForbidden(user, permissions.ACCESS_ORDER_DETAILS),
+            orderNormHoursForbidden: isForbidden(user, permissions.ACCESS_NORM_HOURS_MODAL_WINDOW),
+            orderServicesForbidden:  isForbidden(user, permissions.ACCESS_ORDER_SERVICES),
+            orderCommentsForbidden:  isForbidden(user, permissions.ACCESS_ORDER_COMMENTS),
+        }
     }
 
     componentDidMount() {
         const { match: {params: {id}}} = this.props;
+
         this.props.fetchVehicle({vehicleId: id});
         this.props.setExpandedVehicleId({vehicleId: id});
+
         this.props.fetchVehicleOrders();
         this.props.fetchVehicleNormHours();
-        this.props.fetchVehicleLabors();
-        this.props.fetchVehicleAppurtenances();
-        this.props.fetchVehicleRecommendations();
+        !this.tabsPermisions.orderServicesForbidden && this.props.fetchVehicleLabors();
+        !this.tabsPermisions.orderDetailsForbidden && this.props.fetchVehicleAppurtenances();
+        !this.tabsPermisions.orderCommentsForbidden && this.props.fetchVehicleRecommendations();
 
     }
 
@@ -127,6 +137,7 @@ export default class VehiclePage extends Component {
                     </TabPane>
 
                     <TabPane
+                        disabled={this.tabsPermisions.orderNormHoursForbidden}
                         tab={
                             <div>
                                 <FormattedMessage id={ 'vehicle_page.norm_hours'}/>
@@ -151,6 +162,7 @@ export default class VehiclePage extends Component {
                     </TabPane>
 
                     <TabPane
+                        disabled={this.tabsPermisions.orderServicesForbidden}
                         tab={
                             <div>
                                 <FormattedMessage id={ 'vehicle_page.labors'}/>
@@ -163,6 +175,7 @@ export default class VehiclePage extends Component {
                     </TabPane>
 
                     <TabPane
+                        disabled={this.tabsPermisions.orderDetailsForbidden}
                         tab={
                             <div>
                                 <FormattedMessage id={ 'vehicle_page.spare_parts'}/>
@@ -174,6 +187,7 @@ export default class VehiclePage extends Component {
                     </TabPane>
 
                     <TabPane
+                        disabled={this.tabsPermisions.orderCommentsForbidden}
                         tab={
                             <div>
                                 <FormattedMessage id={ 'vehicle_page.recommendations'}/>

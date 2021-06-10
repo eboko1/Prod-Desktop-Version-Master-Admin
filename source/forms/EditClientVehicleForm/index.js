@@ -139,8 +139,9 @@ export class EditClientVehicleForm extends Component {
             setEditVehicle,
             setModal,
         } = this.props;
-        const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
+        const { CREATE_EDIT_DELETE_CLIENTS, GET_CLIENTS } = permissions;
         const isEditForbidden = isForbidden(user, CREATE_EDIT_DELETE_CLIENTS);
+        const isViewVehicleForbidden = isForbidden(user, GET_CLIENTS);
 
         if (errors.length) {
             const currentComponentErrors = errors.filter(({ response }) =>
@@ -203,7 +204,9 @@ export class EditClientVehicleForm extends Component {
                                  className={Styles.vehicleItem}
                             >
                                 <Col span={4}>
-                                    <a onClick={() => {history.push(`${book.vehicle}/${item.id}`)}}>
+                                    <a onClick={() => {
+                                        !isViewVehicleForbidden && history.push(`${book.vehicle}/${item.id}`)
+                                    }}>
                                         {vehicleLabel(item, index)}{" "}
                                     </a>
                                     {editableItem === index && !editVehicle && (
