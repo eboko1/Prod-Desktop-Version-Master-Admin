@@ -200,11 +200,12 @@ export class EditClientVehicleForm extends Component {
                     <List.Item className={Styles.listItem}>
                         <Form className={Styles.form}>
                             <Row gutter={8} type="flex" align="bottom"
-                                 onClick={() => {history.push(`${book.vehicle}/${item.id}`)}}
                                  className={Styles.vehicleItem}
                             >
                                 <Col span={4}>
-                                    {vehicleLabel(item, index)}{" "}
+                                    <a onClick={() => {history.push(`${book.vehicle}/${item.id}`)}}>
+                                        {vehicleLabel(item, index)}{" "}
+                                    </a>
                                     {editableItem === index && !editVehicle && (
                                         <Button
                                             icon="swap"
