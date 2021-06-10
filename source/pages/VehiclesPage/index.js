@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 
 // proj
 import {Layout} from 'commons';
-
+import {permissions, isForbidden} from 'utils';
 
 // own
 import VehiclesTable from './components/VehiclesTable';
@@ -14,7 +14,9 @@ import {setModal, MODALS} from "core/modals/duck";
 import { VehicleModal } from "modals";
 import { fetchVehicles } from "core/vehicles/duck";
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+    user: state.auth,
+});
 const mapDispatchToProps = {
     fetchVehicles,
     setModal,
@@ -23,17 +25,11 @@ const mapDispatchToProps = {
 /**
  * This page was created to maintain all vehicles of the station(show tables, subtables, controls and other).
  * There is used "feature first" files structure(reffer to react documentaion), it means
- * that each one time used component can be found deeper in a tree structure
+ * that each one-time used component can be found deeper in a tree structure
  * 
  * Each subcomponent is self-sufficient and requires only necessary data from parrent,
  * other data can be fetched and stored by redux saga/duck.
- * 
- * This page accepts no parameters.
- * 
- * Release date: 31.05.2021
  */
-
-// @withRouter
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class VehiclesPage extends Component {
@@ -45,10 +41,11 @@ export default class VehiclesPage extends Component {
         this.props.setModal(MODALS.VEHICLE, {
             mode: "ADD",
             onClose: () => this.props.fetchVehicles()
-    });
+        });
     }
 
     render() {
+        const { user } = this.props;
 
         return (
             <Layout
@@ -60,6 +57,7 @@ export default class VehiclesPage extends Component {
                             margin:   '0 15px 0 0',
                             fontSize: 18,
                         } }
+                        disabled={isForbidden(user, permissions.GET_CLIENTS)}
                         onClick={ () => {
                             this.onAddVehicle()
                         }}
