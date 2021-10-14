@@ -1,0 +1,28 @@
+{
+  "viewportWidth": 1240,
+  "viewportHeight": 960,
+  "//viewportWidth": 414,
+  "//viewportHeight": 736,
+  "projectId": "qwyh1u",
+  "chromeWebSecurity": false,
+  
+
+  "env": {
+    "TestLogin":"test@admin.com",
+    "DevLogin":"dev@admin.com",
+    "ProdLogin":"prod@admin.com",
+    "Password":"456789",
+  
+    "TestSpecialistLogin":"0502333355",
+    "TestSpecialistPassword":"Specialist.Pro-01.21",
+    "DevSpecialistLogin":"0400000010",
+    "DevSpecialistPassword":"123456",
+  
+    "baseUrlTest":"https://test-my.carbook.pro",
+    "baseUrlDev":"https://dev-my.carbook.pro",
+    "baseUrlProd":"https://my.carbook.pro",
+    "baseApiUrl":"https://test-api.carbook.pro"
+
+    
+  }
+}

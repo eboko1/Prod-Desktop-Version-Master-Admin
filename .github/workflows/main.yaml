@@ -1,0 +1,48 @@
+name: Base Tests
+#off
+on:
+  push:
+    branches:
+      - main
+      - test_specialist
+      - test_master
+
+      - dev_specialist    
+      - dev_master
+      
+      - prod_specialist
+      - prod_master
+jobs:
+
+  base-test-master-admin-elec-linux-run:
+    # ubuntu-latest - Firefox, windows-latest - edge, ubuntu-20.04 -chrome
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name:  base-test-master-admin-elec-linux-run
+        uses: cypress-io/github-action@v2
+        with:
+          start: npm start
+          record: true
+          # edge, firefox
+        env:
+          # pass the Dashboard record key as an environment variable
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_SECRET_RECORD_KEY }}
+          # Recommended: pass the GitHub token lets this action correctly
+          # determine the unique run id necessary to re-run the checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+© 2021 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
