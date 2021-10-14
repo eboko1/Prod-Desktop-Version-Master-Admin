@@ -1,8 +1,0 @@
-.switchBusinessList {
-    height: 50vh;
-    overflow: scroll;
-}
-
-.switchBusinessListItem {
-    cursor: pointer;
-}

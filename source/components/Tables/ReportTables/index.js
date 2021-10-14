@@ -1,1 +1,0 @@
-export {default as ReportLoadKPITable} from './ReportLoadKPITable';

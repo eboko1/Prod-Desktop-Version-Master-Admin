@@ -1,9 +1,0 @@
-export { StoreProductsTable } from './StoreProductsTable';
-export { ExpensesTable } from './ExpensesTable';
-export { IncomesTable } from './IncomesTable';
-export { PriceGroupsTable } from './PriceGroupsTable';
-export { TrackingTable } from './TrackingTable';
-export { StoreBalanceTable } from './StoreBalanceTable';
-export { StoreMovementTable } from './StoreMovementTable';
-export { ProductsExcelTable } from './ProductsExcelTable';
-export { StoreDocumentProductsTable } from './StoreDocumentProductsTable';

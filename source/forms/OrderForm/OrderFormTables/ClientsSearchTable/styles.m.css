@@ -1,9 +1,0 @@
-.clientsSearchTable {
-    display: block;
-    height: 300px;
-    overflow: scroll;
-}
-
-.clientsSearchTableHidden {
-    display: none;
-}
