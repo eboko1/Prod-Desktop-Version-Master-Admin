@@ -14,7 +14,7 @@ on:
       - prod_master
 jobs:
 
-  base-test-master-admin-elec-linux-run:
+  desktop-prod-master-admin-e-l-run:
     # ubuntu-latest - Firefox, windows-latest - edge, ubuntu-20.04 -chrome
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v2
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
-      - name:  base-test-master-admin-elec-linux-run
+      - name: desktop-prod-master-admin-e-l-run
         uses: cypress-io/github-action@v2
         with:
           start: npm start
