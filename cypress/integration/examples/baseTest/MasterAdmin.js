@@ -969,6 +969,29 @@ it('28.Ремонт (Р)', function(){
   cy.wait(2000);
 })
 
+it('33. Додавання Коментарів', function(){
+    cy.visit(success);
+    cy.get('.styles-m__logo---2zDPJ').click()
+    cy.wait(4000);
+    cy.get('.ant-input-search > .ant-input').type(idClient)//пошук
+    cy.wait(2000);
+    cy.get('a.styles-m__ordernLink---T-qWz').first().click({force: true});
+    cy.log('Вибір Н/З');
+    cy.wait(4000);
+    cy.get('#ОВ > .styles-m__mapChildsBlock---1oGYD > :nth-child(2) > .ant-btn').click();
+    cy.wait(1000);
+    cy.get('.ant-tabs-tabpane-active > :nth-child(2) > .ant-form-item-label > label').should('exist');
+    cy.get('.ant-input.styles-m__comment---3QjTs').clear().type('Не заляпать бампер мастилом');
+    ///////cy.get('.styles-m__commentsBlock---vzjO9 > .ant-row > .ant-form-item-label > label').contains('ZZZ');
+    cy.log('Стан автомобіля');
+    cy.get('#vehicleCondition').type('Замінити повітряні фільтри мотора');
+    cy.wait(2000);
+    cy.get('.ant-tabs-tabpane-active > :nth-child(3) > .ant-form-item-label').should('exist');
+    cy.get('.ant-tabs-nav > :nth-child(1) > :nth-child(6)').contains('2')
+    cy.wait(1000);
+    cy.get('.anticon-save > svg').first().click({force: true});
+    cy.wait(4000);
+})
   it('29.Оплата і видача (ОВ)', function(){
     cy.visit(progress);
     cy.get('.styles-m__logo---2zDPJ').click()
@@ -1044,30 +1067,6 @@ it('32. Перевірка завантаженних файлів', function(){
        //// cy.readFile(path.join('cypress/downloads', 'invoice-'+codeNZ+'.pdf')).should("exist");
   })
 });
-
-  it('33. Додавання Коментарів', function(){
-        cy.visit(success);
-        cy.get('.styles-m__logo---2zDPJ').click()
-        cy.wait(4000);
-        cy.get('.ant-input-search > .ant-input').type(idClient)//пошук
-        cy.wait(2000);
-        cy.get('a.styles-m__ordernLink---T-qWz').first().click({force: true});
-        cy.log('Вибір Н/З');
-        cy.wait(4000);
-        cy.get('#ОВ > .styles-m__mapChildsBlock---1oGYD > :nth-child(2) > .ant-btn').click();
-        cy.wait(1000);
-        cy.get('.ant-tabs-tabpane-active > :nth-child(2) > .ant-form-item-label > label').should('exist');
-        cy.get('.ant-input.styles-m__comment---3QjTs').clear().type('Не заляпать бампер мастилом');
-        ///////cy.get('.styles-m__commentsBlock---vzjO9 > .ant-row > .ant-form-item-label > label').contains('ZZZ');
-        cy.log('Стан автомобіля');
-        cy.get('#vehicleCondition').type('Замінити повітряні фільтри мотора');
-        cy.wait(2000);
-        cy.get('.ant-tabs-tabpane-active > :nth-child(3) > .ant-form-item-label').should('exist');
-        cy.get('.ant-tabs-nav > :nth-child(1) > :nth-child(6)').contains('2')
-        cy.wait(1000);
-        cy.get('.anticon-save > svg').first().click({force: true});
-        cy.wait(4000);
-    })
 
   it('34. Вкладка Історія в н/з', function(){
     cy.visit(success);
