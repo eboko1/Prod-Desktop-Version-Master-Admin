@@ -740,7 +740,7 @@ it('20. Додавання Товару через модалку Товару',
     cy.get('.ant-menu-submenu').contains('Довідники та налаштування').click()
     cy.get('button').contains('Товари').last().click({force: true})
     cy.get('.ant-btn').click()
-    cy.get('#code').type(idClient+'X')
+    cy.get('#code').first().type(idClient+'X')
     cy.get(':nth-child(3) > .ant-col-15 > .ant-form-item-control > .ant-form-item-children > .ant-select > .ant-select-selection').type('100 Plus')
     cy.wait(2000);
     cy.get('.ant-select-dropdown-menu-item').click({force: true})
@@ -752,7 +752,7 @@ it('20. Додавання Товару через модалку Товару',
     cy.get('#certificate').type('00000000000000000')
     cy.get('.ant-form').find('button').click()   //.contains('Застосувати')
     cy.wait(2000);
-    cy.get(':nth-child(1) > :nth-child(1) > div > .ant-input').type(idClient+'X')
+    cy.get(':nth-child(1) > :nth-child(1) > div > .ant-input').first().type(idClient+'X')
     cy.wait(3000);
     cy.get('.ant-table-content td').first().should('exist')
   });
