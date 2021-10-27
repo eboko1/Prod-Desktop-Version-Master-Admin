@@ -17,7 +17,7 @@ var second = parseInt(date.getSeconds())+10
 var minute = parseInt(date.getMinutes())+10
 var codeNZ =''
 
-//const idClient ='7947'
+//const idClient ='27916'
 
 
 describe ('Prod|Desktop|UA|', function(){
@@ -304,8 +304,10 @@ describe ('Prod|Desktop|UA|', function(){
          cy.url().should('include', '/order/')
         })
         .then(()=>{
-         cy.wait(5000);
          cy.get('.styles-m__dropdownTitle---3Vlog > :nth-child(2) > span').first().click({ force: true }); // Статус Запис
+         cy.wait(2000);
+         cy.get('.ant-dropdown-menu > :nth-child(3)').first().click({ force: true });
+         cy.wait(5000);
         })
     });
 
