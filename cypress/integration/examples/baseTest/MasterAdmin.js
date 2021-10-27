@@ -740,7 +740,7 @@ it('20. Додавання Товару через модалку Товару',
     cy.get('.ant-menu-submenu').contains('Довідники та налаштування').click()
     cy.get('button').contains('Товари').last().click({force: true})
     cy.get('.ant-btn').click()
-    cy.get('#code').first().type(idClient+'X')
+    cy.get('#code').type(idClient+'X')
     cy.get(':nth-child(3) > .ant-col-15 > .ant-form-item-control > .ant-form-item-children > .ant-select > .ant-select-selection').type('100 Plus')
     cy.wait(2000);
     cy.get('.ant-select-dropdown-menu-item').click({force: true})
