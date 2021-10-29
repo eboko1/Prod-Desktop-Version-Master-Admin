@@ -21,7 +21,6 @@ var codeNZ =''
 
 //const idClient ='28950'
 
-
 describe ('Prod|Desktop|UA|', function(){
   beforeEach('User LogIn ', () => {
     cy.visit(baseUrl)
