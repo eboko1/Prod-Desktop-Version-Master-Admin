@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+const { start } = require("repl");
+
 const url = ''   
 
 
@@ -970,7 +972,7 @@ it('28.Ремонт (Р)', function(){
 })
 
 it('33. Додавання Коментарів', function(){
-    cy.visit(success);
+    cy.visit(progress);
     cy.get('.styles-m__logo---2zDPJ').click()
     cy.wait(4000);
     cy.get('.ant-input-search > .ant-input').type(idClient)//пошук
