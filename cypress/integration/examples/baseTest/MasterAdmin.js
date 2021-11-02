@@ -1,16 +1,12 @@
 /// <reference types="cypress" />
 
-//const { start } = require("repl");
 
-const url = ''   
-
-
-const baseUrl = 'https://'+url+'my.carbook.pro';
-const appointments = 'https://'+url+'my.carbook.pro/orders/appointments';
-const approve = 'https://'+url+'my.carbook.pro/orders/approve';
-const progress = 'https://'+url+'my.carbook.pro/orders/progress';
-const success = 'https://'+url+'my.carbook.pro/orders/success';
-const cancel = 'https://'+url+'my.carbook.pro/orders/cancel';
+const baseUrl = 'https://'+Cypress.env('url')+'my.carbook.pro';
+const appointments = 'https://'+Cypress.env('url')+'my.carbook.pro/orders/appointments';
+const approve = 'https://'+Cypress.env('url')+'my.carbook.pro/orders/approve';
+const progress = 'https://'+Cypress.env('url')+'my.carbook.pro/orders/progress';
+const success = 'https://'+Cypress.env('url')+'my.carbook.pro/orders/success';
+const cancel = 'https://'+Cypress.env('url')+'my.carbook.pro/orders/cancel';
 
 
 var date = new Date();
@@ -24,7 +20,7 @@ var codeNZ =''
 describe ('Prod|Desktop|UA|', function(){
   beforeEach('User LogIn ', () => {
     cy.visit(baseUrl)
-    cy.get('#login.ant-input').type(Cypress.env('ProdLogin'));  
+    cy.get('#login.ant-input').type(Cypress.env('Login'));  
     cy.get('#password').type(Cypress.env('Password'));
     cy.get('button').click()
     cy.intercept('GET', baseUrl+'/dashboard')

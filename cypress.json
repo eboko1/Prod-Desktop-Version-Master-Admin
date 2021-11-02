@@ -8,21 +8,14 @@
   
 
   "env": {
-    "TestLogin":"test@admin.com",
-    "DevLogin":"dev@admin.com",
-    "ProdLogin":"prod@admin.com",
+    "url":"",
+    "Login":"my@admin.com",
     "Password":"456789",
-  
+    "TestLogin":"test@admin.com",
+      
     "TestSpecialistLogin":"0502333355",
     "TestSpecialistPassword":"Specialist.Pro-01.21",
     "DevSpecialistLogin":"0400000010",
-    "DevSpecialistPassword":"123456",
-  
-    "baseUrlTest":"https://test-my.carbook.pro",
-    "baseUrlDev":"https://dev-my.carbook.pro",
-    "baseUrlProd":"https://my.carbook.pro",
-    "baseApiUrl":"https://test-api.carbook.pro"
-
-    
+    "DevSpecialistPassword":"123456"
   }
 }
