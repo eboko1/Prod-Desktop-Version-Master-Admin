@@ -126,14 +126,14 @@ describe ('Prod|Desktop|UA|', function(){
         })
        .then(()=>{
             cy.log('Марка авто')
-            cy.get(':nth-child(5) > .ant-col-12').click().type('NISSAN')
+            cy.get(':nth-child(4) > .ant-col-12').click().type('NISSAN')
             cy.wait(2000)
             cy.get('.ant-select-dropdown-menu-item-active').click()
             cy.wait(2000)
         })
         .then(()=>{
             cy.log('Модель авто');
-            cy.get(':nth-child(6) > .ant-col-12').click().type('MICRA')
+            cy.get(':nth-child(5) > .ant-col-12').click().type('MICRA')
             cy.wait(2000)
             cy.get('.ant-select-dropdown-menu-item-active').click()
             cy.wait(2000)
@@ -141,7 +141,7 @@ describe ('Prod|Desktop|UA|', function(){
         })
         .then(()=>{
             cy.log('Модифікація авто');
-            cy.get(':nth-child(7) > .ant-col-12').click().type('1.4 16V')
+            cy.get(':nth-child(6) > .ant-col-12').click().type('1.4 16V')
             cy.wait(2000)
             cy.get('.ant-select-dropdown-menu-item-active').click()
         })
