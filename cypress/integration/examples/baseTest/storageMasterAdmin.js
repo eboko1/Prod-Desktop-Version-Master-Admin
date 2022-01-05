@@ -1,7 +1,5 @@
 /// <reference types="cypress" />
-////import LoginPage from '../../support/pageObject/loginPage';
 
-////const loginPage = new LoginPage();
 const path = require("path");
 const baseUrl = 'https://'+Cypress.env('url')+'my.carbook.pro';
 const textServise = 'Доставка Запчастин'
