@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "runHeadless": "./node_modules/.bin/cypress run --headless",
-    "runHeaded": "./node_modules/.bin/cypress run --headed --browser electron"
+    "runHeadless": "cypress run --headless",
+    "runHeaded": "cypress run --headed --browser electron"
   },
   "repository": {
     "type": "git",
